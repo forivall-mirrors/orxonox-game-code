@@ -107,7 +107,7 @@ namespace orxonox
       { mySet_.insert(2); }
       
       void blub2()
-      { for( std::set<uint32_t>::iterator it=mySet_.begin(); it!=mySet_.end(); ++it ) COUT(0) << *it << endl; }
+      { for( std::set<uint32_t>::iterator it=mySet_.begin(); it!=mySet_.end(); ++it ) orxout() << *it << endl; }
   };
 }
 

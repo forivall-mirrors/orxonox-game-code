@@ -215,7 +215,7 @@ namespace orxonox
             this->mode_ = forceFieldMode::newtonianGravity;
         else
         {
-            COUT(2) << "Wrong mode '" << mode << "' in ForceField. Setting to 'tube'." << std::endl;
+            orxout(internal_warning) << "Wrong mode '" << mode << "' in ForceField. Setting to 'tube'." << endl;
             this->mode_ = forceFieldMode::tube;
         }
     }

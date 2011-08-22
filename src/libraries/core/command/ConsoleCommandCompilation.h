@@ -41,7 +41,16 @@ namespace orxonox
 {
     _CoreExport void source(const std::string& filename);
     _CoreExport std::string echo(const std::string& text);
-    _CoreExport void puts(bool newline, const std::string& test);
+
+    _CoreExport void orxout_level(const std::string& level_name, const std::string& text);
+    _CoreExport void orxout_level_context(const std::string& level_name, const std::string& context_name, const std::string& text);
+
+    _CoreExport void log(const std::string& text);
+    _CoreExport void error(const std::string& text);
+    _CoreExport void warning(const std::string& text);
+    _CoreExport void status(const std::string& text);
+    _CoreExport void info(const std::string& text);
+    _CoreExport void debug(const std::string& text);
 
     _CoreExport void write(const std::string& filename, const std::string& text);
     _CoreExport void append(const std::string& filename, const std::string& text);

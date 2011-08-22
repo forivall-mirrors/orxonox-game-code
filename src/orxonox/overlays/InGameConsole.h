@@ -63,7 +63,6 @@ namespace orxonox
         void deactivate();
 
         void linesChanged();
-        void onlyLastLineChanged();
         void lineAdded();
         void inputChanged();
         void cursorChanged();

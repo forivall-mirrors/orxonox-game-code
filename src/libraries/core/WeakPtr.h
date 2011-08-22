@@ -64,7 +64,7 @@
     @code
     void myCallback()                                   // definition of the callback function
     {
-        COUT(0) << "Object destroyed" << std::endl;
+        orxout() << "Object destroyed" << endl;
     }
 
     MyClass* object = new MyClass();                    // create an instance of MyClass

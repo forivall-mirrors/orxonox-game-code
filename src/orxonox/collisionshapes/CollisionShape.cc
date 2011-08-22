@@ -202,7 +202,7 @@ namespace orxonox
         // If the vectors are not in the same direction, then this is no longer a uniform scaling.
         if(scale_.crossProduct(scale).squaredLength() != 0.0f)
         {
-            CCOUT(2) << "Warning: Non-uniform scaling is not yet supported." << endl;
+            orxout(internal_warning) << "Non-uniform scaling is not yet supported." << endl;
             return;
         }
 

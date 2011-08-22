@@ -28,7 +28,7 @@
 
 #include "Acknowledgement.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "network/GamestateHandler.h"
 #include "network/Host.h"
 
@@ -63,7 +63,7 @@ unsigned int Acknowledgement::getSize() const{
 }
 
 bool Acknowledgement::process(orxonox::Host* host){
-  COUT(5) << "processing ACK with ID: " << getAckID() << endl;
+  orxout(verbose_more, context::packets) << "processing ACK with ID: " << getAckID() << endl;
   bool b = host->ackGamestate(getAckID(), peerID_);
   delete this;
   return b;

@@ -27,8 +27,10 @@
  */
 
 #include "PeerList.h"
-#include <network/packet/ServerInformation.h>
+
 #include <cstdio>
+#include "util/Output.h"
+#include "network/packet/ServerInformation.h"
 
 namespace orxonox
 {
@@ -39,7 +41,7 @@ namespace orxonox
   PeerList::addPeer( ENetPeer *toadd )
   { /* error correction */
     if( toadd == NULL ) 
-    { fprintf( stderr, "PeerList::addPeer: empty peer given.\n" );
+    { orxout(internal_error, context::master_server) << "PeerList::addPeer: empty peer given." << endl;
       return -1;
     }
 

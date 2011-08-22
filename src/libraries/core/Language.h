@@ -50,14 +50,14 @@
 
      - Get the localisation of the entry in the configured language:
        @code
-       std::cout << Language::getInstance()->getLocalisation("name of the entry") << std::endl;
+       orxout() << Language::getInstance()->getLocalisation("name of the entry") << endl;
        @endcode
 
     Example:
     @code
     int age = 20;
     AddLanguageEntry("user_age", "Age");
-    std::cout << GetLocalisation("user_age") << ": " << age << std::endl;
+    orxout() << GetLocalisation("user_age") << ": " << age << endl;
     @endcode
 
     Resulting output:

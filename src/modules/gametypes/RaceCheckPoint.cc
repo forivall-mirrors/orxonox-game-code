@@ -28,9 +28,10 @@
 
 #include "RaceCheckPoint.h"
 
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Convert.h"
+#include "chat/ChatManager.h"
 
 #include "SpaceRace.h"
 
@@ -109,9 +110,9 @@ namespace orxonox
             if (gametype)
             {
                 const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
-                            + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1) + "\n";
-                COUT(3) << message;
+                            + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1);
                 const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
+                ChatManager::message(message);
             }
         }
     }

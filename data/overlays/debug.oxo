@@ -39,14 +39,6 @@
 
 <Template name="defaultHUD">
   <OverlayGroup name = "defaultHUD" scale = "1, 1">
-    <ChatOverlay
-     name     = "chat"
-     position = "0.03, 0.08"
-     font     = "VeraMono"
-     caption  = ""
-     textsize = 0.025
-    />
-
     <KillMessage
      name     = "killmessage"
      position = "0.5, 0.15"
@@ -81,6 +73,14 @@
      textsize = 0.05
      colour   = "0.5, 0.5, 1.0, 1.0"
      align    = "center"
+    />
+
+    <ChatOverlay
+     name     = "chat"
+     position = "0.03, 0.08"
+     font     = "VeraMono"
+     caption  = ""
+     textsize = 0.025
     />
 
   </OverlayGroup>

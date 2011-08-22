@@ -56,7 +56,7 @@ namespace orxonox
     {
         RegisterRootObject(NotificationManager);
 
-        COUT(3) << "NotificatioManager created." << std::endl;
+        orxout(internal_info, context::notifications) << "NotificatioManager created." << endl;
     }
 
     /**
@@ -70,7 +70,7 @@ namespace orxonox
             it->second->destroy();
         this->allNotificationsList_.clear();
 
-        COUT(3) << "NotificationManager destroyed." << std::endl;
+        orxout(internal_info, context::notifications) << "NotificationManager destroyed." << endl;
     }
 
     /**
@@ -131,7 +131,7 @@ namespace orxonox
         }
 
         if(commandExecuted)
-            COUT(3) << "Notification command \"" << NotificationListener::command2Str(command) << "\" executed." << endl;
+            orxout(internal_info, context::notifications) << "Notification command \"" << NotificationListener::command2Str(command) << "\" executed." << endl;
 
         return commandExecuted;
     }
@@ -197,7 +197,7 @@ namespace orxonox
             }
         }
 
-        COUT(4) << "Notification (&" << notification << ") registered with the NotificationManager." << std::endl;
+        orxout(verbose, context::notifications) << "Notification (&" << notification << ") registered with the NotificationManager." << endl;
 
         return true;
     }
@@ -218,7 +218,7 @@ namespace orxonox
         // Remove the Notification from the list of Notifications of the input NotificationQueue.
         this->removeNotification(notification, *(this->notificationLists_.find(queue->getName())->second));
 
-        COUT(4) << "Notification (&" << notification << ") unregistered with the NotificationManager from NotificationQueue " << queue->getName() << "." << std::endl;
+        orxout(verbose, context::notifications) << "Notification (&" << notification << ") unregistered with the NotificationManager from NotificationQueue " << queue->getName() << "." << endl;
     }
 
     /**
@@ -350,7 +350,7 @@ namespace orxonox
 
         queue->update(); // Update the queue.
         
-        COUT(4) << "NotificationQueue '" << queue->getName() << "' registered with the NotificationManager." << std::endl;
+        orxout(verbose, context::notifications) << "NotificationQueue '" << queue->getName() << "' registered with the NotificationManager." << endl;
         return true;
     }
 
@@ -383,7 +383,7 @@ namespace orxonox
         // Remove the Notifications list that was associated with the input NotificationQueue.
         this->notificationLists_.erase(queue->getName());
         
-        COUT(4) << "NotificationQueue '" << queue->getName() << "' unregistered with the NotificationManager." << std::endl;
+        orxout(verbose, context::notifications) << "NotificationQueue '" << queue->getName() << "' unregistered with the NotificationManager." << endl;
     }
 
     /**

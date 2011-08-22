@@ -152,10 +152,10 @@ namespace orxonox
             // Save it.
             finalImage->save(PathConfig::getInstance().getLogPathString() + "screenshot_" + getTimestamp() + this->fileExtension_);
             delete finalImage;
-            COUT(3) << "Finished taking " << this->gridSize_*this->windowWidth_ << "x" << this->gridSize_*this->windowHeight_ << " pixel HD screenshot. Storing in log/." << endl;
+            orxout(user_info) << "Finished taking " << this->gridSize_*this->windowWidth_ << "x" << this->gridSize_*this->windowHeight_ << " pixel HD screenshot. Storing in log/." << endl;
         }
         else
-            COUT(1) << "There needs to be an active camera to make screenshots." << endl;
+            orxout(user_error) << "There needs to be an active camera to make screenshots." << endl;
 
         this->cleanup();
     }
@@ -256,7 +256,7 @@ namespace orxonox
                 // Place the tempBuffer content at the right position
                 this->buffer_->blitToMemory(this->finalPicturePB_->getSubVolume(subBox));
                 
-                COUT(4) << "Created screenshot number " << nbScreenshots << " for multi grid HD screenshot." << endl;
+                orxout(internal_info) << "Created screenshot number " << nbScreenshots << " for multi grid HD screenshot." << endl;
                 
             }
             

@@ -29,14 +29,14 @@
 #ifndef _ChatInputHandler_H__
 #define _ChatInputHandler_H__
 
-#include <OrxonoxPrereqs.h>
+#include "OrxonoxPrereqs.h"
 
 #include <string>
 #include <CEGUIForwardRefs.h>
 #include <CEGUIcolour.h>
 
 #include "util/Singleton.h"
-#include "network/ChatListener.h"
+#include "chat/ChatListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -111,8 +111,7 @@ namespace orxonox // tolua_export
        * Deal with incoming chat (which means in our case: Add it to the
        * history window of the full chat window)
        */
-      void incomingChat( const std::string& message,
-        unsigned int senderID );
+      void incomingChat(const std::string& message, const std::string& name);
 
       /** \param full true means show full chat window with history,
             false means show only an input line

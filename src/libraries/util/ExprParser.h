@@ -54,12 +54,12 @@ namespace orxonox
         {
             if (!expr.getRemains().empty())
             {
-                COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << std::endl;
+                orxout(user_warning) << "Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << endl;
             }
             float result = expr.getResult();
         }
         else
-            COUT(1) << "Error: Cannot calculate expression: Parse error." << std::endl;
+            orxout(user_error) << "Cannot calculate expression: Parse error." << endl;
         @endcode
         getRemains() returns the expression after what could be parsed. For instance
         \c "2*3 text" will return \c "text" as remains.

@@ -68,7 +68,7 @@
 #include "CorePrereqs.h"
 
 #include <cstdlib>
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "Identifier.h"
 
 namespace orxonox
@@ -118,15 +118,15 @@ namespace orxonox
             {
                 if (!identifier || !identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
-                    COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
+                    orxout(internal_error) << "An error occurred in SubclassIdentifier (Identifier.h):" << endl;
                     if (identifier)
                     {
-                        COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << '!' << std::endl;
-                        COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
+                        orxout(internal_error) << "Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << '!' << endl;
+                        orxout(internal_error) << "SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << endl;
                     }
                     else
                     {
-                        COUT(1) << "Error: Can't assign NULL identifier" << std::endl;
+                        orxout(internal_error) << "Can't assign NULL identifier" << endl;
                     }
                 }
                 else
@@ -176,17 +176,17 @@ namespace orxonox
                     // Something went terribly wrong
                     if (this->identifier_)
                     {
-                        COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << '!' << std::endl;
-                        COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
+                        orxout(user_error) << "An error occurred in SubclassIdentifier (Identifier.h):" << endl;
+                        orxout(user_error) << "Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << '!' << endl;
+                        orxout(user_error) << "Couldn't fabricate a new Object." << endl;
                     }
                     else
                     {
-                        COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                        COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined." << std::endl;
+                        orxout(user_error) << "An error occurred in SubclassIdentifier (Identifier.h):" << endl;
+                        orxout(user_error) << "Couldn't fabricate a new Object - Identifier is undefined." << endl;
                     }
 
-                    COUT(1) << "Aborting..." << std::endl;
+                    orxout(user_error) << "Aborting..." << endl;
                     abort();
                     return 0;
                 }

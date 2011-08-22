@@ -99,7 +99,7 @@ namespace orxonox
     {
         RegisterRootObject(InputManager);
 
-        CCOUT(4) << "Constructing..." << std::endl;
+        orxout(internal_status, context::input) << "InputManager: Constructing..." << endl;
 
         // Allocate space for the function call buffer
         this->callBuffer_.reserve(16);
@@ -127,7 +127,7 @@ namespace orxonox
         ModifyConsoleCommand(__CC_InputManager_name, __CC_calibrate_name).setObject(this);
         ModifyConsoleCommand(__CC_InputManager_name, __CC_reload_name).setObject(this);
 
-        CCOUT(4) << "Construction complete." << std::endl;
+        orxout(internal_status, context::input) << "InputManager: Construction complete." << endl;
         internalState_ = Nothing;
     }
 
@@ -142,7 +142,7 @@ namespace orxonox
     */
     void InputManager::loadDevices()
     {
-        CCOUT(4) << "Loading input devices..." << std::endl;
+        orxout(verbose, context::input) << "InputManager: Loading input devices..." << endl;
 
         // When loading the devices they should not already be loaded
         assert(internalState_ & Bad);
@@ -195,7 +195,7 @@ namespace orxonox
             oisInputManager_ = OIS::InputManager::createInputSystem(paramList);
             // Exception-safety
             Loki::ScopeGuard guard = Loki::MakeGuard(OIS::InputManager::destroyInputSystem, oisInputManager_);
-            CCOUT(4) << "Created OIS input manager." << std::endl;
+            orxout(verbose, context::input) << "Created OIS input manager." << endl;
 
             if (oisInputManager_->getNumberOfDevices(OIS::OISKeyboard) > 0)
                 devices_[InputDeviceEnumerator::Keyboard] = new Keyboard(InputDeviceEnumerator::Keyboard, oisInputManager_);
@@ -218,7 +218,7 @@ namespace orxonox
         // Reorder states in case some joy sticks were added/removed
         this->updateActiveStates();
 
-        CCOUT(4) << "Input devices loaded." << std::endl;
+        orxout(verbose, context::input) << "Input devices loaded." << endl;
     }
 
     //! Creates a new orxonox::Mouse
@@ -232,12 +232,12 @@ namespace orxonox
             }
             catch (const std::exception& ex)
             {
-                CCOUT(2) << "Warning: Failed to create Mouse:" << ex.what() << std::endl
-                         << "Proceeding without mouse support." << std::endl;
+                orxout(user_warning, context::input) << "Failed to create Mouse:" << ex.what() << '\n'
+                                                     << "Proceeding without mouse support." << endl;
             }
         }
         else
-            CCOUT(2) << "Warning: No mouse found! Proceeding without mouse support." << std::endl;
+            orxout(user_warning, context::input) << "No mouse found! Proceeding without mouse support." << endl;
     }
 
     //! Creates as many joy sticks as are available.
@@ -251,7 +251,7 @@ namespace orxonox
             }
             catch (const std::exception& ex)
             {
-                CCOUT(2) << "Warning: Failed to create joy stick: " << ex.what() << std::endl;
+                orxout(user_warning, context::input) << "Failed to create joy stick: " << ex.what() << endl;
             }
         }
 
@@ -269,7 +269,7 @@ namespace orxonox
 
     InputManager::~InputManager()
     {
-        CCOUT(3) << "Destroying..." << std::endl;
+        orxout(internal_status, context::input) << "InputManager: Destroying..." << endl;
 
         // Leave all active InputStates (except "empty")
         while (this->activeStates_.size() > 1)
@@ -294,7 +294,7 @@ namespace orxonox
         ModifyConsoleCommand(__CC_InputManager_name, __CC_calibrate_name).setObject(0);
         ModifyConsoleCommand(__CC_InputManager_name, __CC_reload_name).setObject(0);
 
-        CCOUT(3) << "Destruction complete." << std::endl;
+        orxout(internal_status, context::input) << "InputManager: Destruction complete." << endl;
     }
 
     /**
@@ -305,7 +305,7 @@ namespace orxonox
     */
     void InputManager::destroyDevices()
     {
-        CCOUT(4) << "Destroying devices..." << std::endl;
+        orxout(verbose, context::input) << "InputManager: Destroying devices..." << endl;
 
         BOOST_FOREACH(InputDevice*& device, devices_)
         {
@@ -314,7 +314,7 @@ namespace orxonox
             const std::string& className = device->getClassName();
             delete device;
             device = 0;
-            CCOUT(4) << className << " destroyed." << std::endl;
+            orxout(verbose, context::input) << className << " destroyed." << endl;
         }
         devices_.resize(InputDeviceEnumerator::FirstJoyStick);
 
@@ -325,13 +325,13 @@ namespace orxonox
         }
         catch (const OIS::Exception& ex)
         {
-            COUT(1) << "OIS::InputManager destruction failed" << ex.eText << std::endl
-                    << "    Potential resource leak!" << std::endl;
+            orxout(internal_error, context::input) << "OIS::InputManager destruction failed" << ex.eText << '\n'
+                                                   << "Potential resource leak!" << endl;
         }
         oisInputManager_ = NULL;
 
         internalState_ |= Bad;
-        CCOUT(4) << "Destroyed devices." << std::endl;
+        orxout(verbose, context::input) << "Destroyed devices." << endl;
     }
 
     // ############################################################
@@ -342,7 +342,7 @@ namespace orxonox
     void InputManager::reload()
     {
         if (internalState_ & Calibrating)
-            CCOUT(2) << "Warning: Cannot reload input system. Joy sticks are currently being calibrated." << std::endl;
+            orxout(internal_warning, context::input) << "Cannot reload input system. Joy sticks are currently being calibrated." << endl;
         else
             reloadInternal();
     }
@@ -350,13 +350,13 @@ namespace orxonox
     //! Internal reload method. Destroys the OIS devices and loads them again.
     void InputManager::reloadInternal()
     {
-        CCOUT(4) << "Reloading ..." << std::endl;
+        orxout(verbose, context::input) << "InputManager: Reloading ..." << endl;
 
         this->destroyDevices();
         this->loadDevices();
 
         internalState_ &= ~Bad;
-        CCOUT(4) << "Reloading complete." << std::endl;
+        orxout(verbose, context::input) << "InputManager: Reloading complete." << endl;
     }
 
     // ############################################################
@@ -470,8 +470,8 @@ namespace orxonox
 
     void InputManager::calibrate()
     {
-        COUT(0) << "Move all joy stick axes fully in all directions." << std::endl
-                << "When done, put the axex in the middle position and press enter." << std::endl;
+        orxout(message) << "Move all joy stick axes fully in all directions." << '\n'
+                        << "When done, put the axex in the middle position and press enter." << endl;
 
         BOOST_FOREACH(InputDevice* device, devices_)
             if (device != NULL)
@@ -494,7 +494,7 @@ namespace orxonox
         // Clear buffers to prevent button hold events
         this->clearBuffers();
 
-        COUT(0) << "Calibration has been stored." << std::endl;
+        orxout(message) << "Calibration has been stored." << endl;
     }
 
     //! Gets called by WindowEventListener upon focus change --> clear buffers
@@ -534,8 +534,8 @@ namespace orxonox
                 {
                     if (it->second->getPriority() == priority)
                     {
-                        COUT(2) << "Warning: Could not add an InputState with the same priority '"
-                            << static_cast<int>(priority) << "' != 0." << std::endl;
+                        orxout(internal_warning, context::input) << "Could not add an InputState with the same priority '"
+                            << static_cast<int>(priority) << "' != 0." << endl;
                         return 0;
                     }
                 }
@@ -547,7 +547,7 @@ namespace orxonox
         }
         else
         {
-            COUT(2) << "Warning: Could not add an InputState with the same name '" << name << "'." << std::endl;
+            orxout(internal_warning, context::input) << "Could not add an InputState with the same name '" << name << "'." << endl;
             return 0;
         }
     }
@@ -597,7 +597,7 @@ namespace orxonox
     {
         if (name == "empty")
         {
-            COUT(2) << "InputManager: Leaving the empty state is not allowed!" << std::endl;
+            orxout(internal_warning, context::input) << "InputManager: Leaving the empty state is not allowed!" << endl;
             return false;
         }
         // get pointer from the map with all stored handlers
@@ -622,7 +622,7 @@ namespace orxonox
     {
         if (name == "empty")
         {
-            COUT(2) << "InputManager: Removing the empty state is not allowed!" << std::endl;
+            orxout(internal_warning, context::input) << "InputManager: Removing the empty state is not allowed!" << endl;
             return false;
         }
         std::map<std::string, InputState*>::iterator it = statesByName_.find(name);
@@ -648,7 +648,7 @@ namespace orxonox
     {
         if (name == "empty")
         {
-            COUT(2) << "InputManager: Changing the empty state is not allowed!" << std::endl;
+            orxout(internal_warning, context::input) << "InputManager: Changing the empty state is not allowed!" << endl;
             return false;
         }
         std::map<std::string, InputState*>::iterator it = statesByName_.find(name);

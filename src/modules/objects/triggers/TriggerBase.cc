@@ -127,7 +127,7 @@ namespace orxonox {
         else if (modeName == TriggerBase::xor_s)
             this->setMode(TriggerMode::EventTriggerXOR);
         else
-            COUT(2) << "Invalid mode '" << modeName << "' in TriggerBase " << this->getName() << " &(" << this << "). Leaving mode at '" << this->getModeString() << "'." << std::endl;
+            orxout(internal_warning, context::triggers) << "Invalid mode '" << modeName << "' in TriggerBase " << this->getName() << " &(" << this << "). Leaving mode at '" << this->getModeString() << "'." << endl;
     }
 
     /**

@@ -103,6 +103,7 @@ namespace orxonox
     {
         RegisterObject(GraphicsManager);
 
+        orxout(internal_status) << "initializing GraphicsManager..." << endl;
         this->setConfigValues();
 
         // Ogre setup procedure (creating Ogre::Root)
@@ -113,7 +114,7 @@ namespace orxonox
         // Load resources
         resources_.reset(new XMLFile("DefaultResources.oxr"));
         resources_->setLuaSupport(false);
-        Loader::open(resources_.get());
+        Loader::open(resources_.get(), ClassTreeMask(), false);
 
         // Only for runs in the build directory (not installed)
         if (PathConfig::buildDirectoryRun())
@@ -121,17 +122,21 @@ namespace orxonox
 
         extResources_.reset(new XMLFile("resources.oxr"));
         extResources_->setLuaSupport(false);
-        Loader::open(extResources_.get());
+        Loader::open(extResources_.get(), ClassTreeMask(), false);
 
         if (bLoadRenderer)
         {
             // Reads the ogre config and creates the render window
             this->upgradeToGraphics();
         }
+
+        orxout(internal_status) << "finished initializing GraphicsManager" << endl;
     }
 
     void GraphicsManager::destroy()
     {
+        orxout(internal_status) << "destroying GraphicsManager..." << endl;
+
         Loader::unload(debugOverlay_.get());
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_);
@@ -147,6 +152,8 @@ namespace orxonox
         safeObjectDelete(&ogreRoot_);
         safeObjectDelete(&ogreLogger_);
         safeObjectDelete(&ogreWindowEventListener_);
+
+        orxout(internal_status) << "finished destroying GraphicsManager" << endl;
     }
 
     void GraphicsManager::setConfigValues()
@@ -157,12 +164,6 @@ namespace orxonox
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
             .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
-        SetConfigValue(ogreLogLevelTrivial_ , 5)
-            .description("Corresponding orxonox debug level for ogre Trivial");
-        SetConfigValue(ogreLogLevelNormal_  , 4)
-            .description("Corresponding orxonox debug level for ogre Normal");
-        SetConfigValue(ogreLogLevelCritical_, 2)
-            .description("Corresponding orxonox debug level for ogre Critical");
     }
 
     /**
@@ -178,6 +179,8 @@ namespace orxonox
         if (renderWindow_ != NULL)
             return;
 
+        orxout(internal_info) << "GraphicsManager upgrade to graphics" << endl;
+
         // load all the required plugins for Ogre
         this->loadOgrePlugins();
 
@@ -188,6 +191,8 @@ namespace orxonox
         // already been initialised. If you need to load resources later, you will have to
         // choose another resource group.
         Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+        orxout(internal_info) << "GraphicsManager finished upgrade to graphics" << endl;
     }
 
     /**
@@ -196,16 +201,16 @@ namespace orxonox
     */
     void GraphicsManager::loadOgreRoot()
     {
-        COUT(3) << "Setting up Ogre..." << std::endl;
+        orxout(internal_info) << "Setting up Ogre..." << endl;
 
         if (ogreConfigFile_.empty())
         {
-            COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
+            orxout(internal_warning) << "Ogre config file set to \"\". Defaulting to config.cfg" << endl;
             ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
         }
         if (ogreLogFile_.empty())
         {
-            COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
+            orxout(internal_warning) << "Ogre log file set to \"\". Defaulting to ogre.log" << endl;
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
@@ -215,17 +220,17 @@ namespace orxonox
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
         ogreLogger_ = new Ogre::LogManager();
-        COUT(4) << "Ogre LogManager created" << std::endl;
+        orxout(internal_info) << "Ogre LogManager created" << endl;
 
         // create our own log that we can listen to
         Ogre::Log *myLog;
         myLog = ogreLogger_->createLog(ogreLogFilepath.string(), true, false, false);
-        COUT(4) << "Ogre Log created" << std::endl;
+        orxout(internal_info) << "Ogre Log created" << endl;
 
         myLog->setLogDetail(Ogre::LL_BOREME);
         myLog->addListener(this);
 
-        COUT(4) << "Creating Ogre Root..." << std::endl;
+        orxout(internal_info) << "Creating Ogre Root..." << endl;
 
         // check for config file existence because Ogre displays (caught) exceptions if not
         if (!boost::filesystem::exists(ogreConfigFilepath))
@@ -239,11 +244,13 @@ namespace orxonox
         // Leave plugins file empty. We're going to do that part manually later
         ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
 
-        COUT(3) << "Ogre set up done." << std::endl;
+        orxout(internal_info) << "Ogre set up done." << endl;
     }
 
     void GraphicsManager::loadOgrePlugins()
     {
+        orxout(internal_info) << "loading ogre plugins" << endl;
+
         // Plugin path can have many different locations...
         std::string pluginPath = specialConfig::ogrePluginsDirectory;
 #ifdef DEPENDENCY_PACKAGE_ENABLE
@@ -276,11 +283,11 @@ namespace orxonox
 
     void GraphicsManager::loadRenderer()
     {
-        CCOUT(4) << "Configuring Renderer" << std::endl;
+        orxout(internal_info) << "GraphicsManager: Configuring Renderer" << endl;
 
         bool updatedConfig = Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp();
         if (updatedConfig)
-            COUT(2) << "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << std::endl;
+            orxout(user_info)<< "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << endl;
 
         if (!ogreRoot_->restoreConfig() || updatedConfig)
         {
@@ -290,7 +297,7 @@ namespace orxonox
                 Core::getInstance().updateOgreConfigTimestamp();
         }
 
-        CCOUT(4) << "Creating render window" << std::endl;
+        orxout(internal_info) << "Creating render window" << endl;
 
         this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
         // Propagate the size of the new winodw
@@ -316,9 +323,9 @@ namespace orxonox
     void GraphicsManager::loadDebugOverlay()
     {
         // Load debug overlay to show info about fps and tick time
-        COUT(4) << "Loading Debug Overlay..." << std::endl;
+        orxout(internal_info) << "Loading Debug Overlay..." << endl;
         debugOverlay_.reset(new XMLFile("debug.oxo"));
-        Loader::open(debugOverlay_.get());
+        Loader::open(debugOverlay_.get(), ClassTreeMask(), false);
     }
 
     /**
@@ -395,12 +402,12 @@ namespace orxonox
     void GraphicsManager::messageLogged(const std::string& message,
         Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName)
     {
-        int orxonoxLevel;
+        OutputLevel orxonoxLevel;
         std::string introduction;
         // Do not show caught OGRE exceptions in front
         if (message.find("EXCEPTION") != std::string::npos)
         {
-            orxonoxLevel = OutputLevel::Debug;
+            orxonoxLevel = level::internal_error;
             introduction = "Ogre, caught exception: ";
         }
         else
@@ -408,21 +415,21 @@ namespace orxonox
             switch (lml)
             {
             case Ogre::LML_TRIVIAL:
-                orxonoxLevel = this->ogreLogLevelTrivial_;
+                orxonoxLevel = level::verbose_more;
                 break;
             case Ogre::LML_NORMAL:
-                orxonoxLevel = this->ogreLogLevelNormal_;
+                orxonoxLevel = level::verbose;
                 break;
             case Ogre::LML_CRITICAL:
-                orxonoxLevel = this->ogreLogLevelCritical_;
+                orxonoxLevel = level::internal_warning;
                 break;
             default:
-                orxonoxLevel = 0;
+                orxonoxLevel = level::debug_output;
             }
             introduction = "Ogre: ";
         }
-        OutputHandler::getOutStream(orxonoxLevel)
-            << introduction << message << std::endl;
+
+        orxout(orxonoxLevel, context::ogre) << introduction << message << endl;
     }
 
     size_t GraphicsManager::getRenderWindowHandle()

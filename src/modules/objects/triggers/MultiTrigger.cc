@@ -71,7 +71,7 @@ namespace orxonox
     */
     MultiTrigger::~MultiTrigger()
     {
-        COUT(4) << "Destroying MultiTrigger &" << this << ". " << this->stateQueue_.size() << " states still in queue. Deleting." << std::endl;
+        orxout(verbose, context::triggers) << "Destroying MultiTrigger &" << this << ". " << this->stateQueue_.size() << " states still in queue. Deleting." << endl;
         while(this->stateQueue_.size() > 0)
         {
             MultiTriggerState* state = this->stateQueue_.front().second;
@@ -93,7 +93,7 @@ namespace orxonox
         XMLPortParam(MultiTrigger, "broadcast", setBroadcast, getBroadcast, xmlelement, mode);
         XMLPortParamLoadOnly(MultiTrigger, "target", addTarget, xmlelement, mode).defaultValues("Pawn"); //TODO: Remove load only
 
-        COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << std::endl;
+        orxout(verbose, context::triggers) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << endl;
     }
 
 
@@ -131,7 +131,7 @@ namespace orxonox
                 // If the state is NULL. (This really shouldn't happen)
                 if(state == NULL)
                 {
-                    COUT(1) << "In MultiTrigger '" << this->getName() << "' (&" << this << "), Error: State of new states queue was NULL. State ignored." << std::endl;
+                    orxout(internal_error, context::triggers) << "In MultiTrigger '" << this->getName() << "' (&" << this << "), Error: State of new states queue was NULL. State ignored." << endl;
                     queue->pop();
                     continue;
                 }
@@ -240,9 +240,9 @@ namespace orxonox
                         {
                             // Print some debug output if the state has changed.
                             if(state->originator != NULL)
-                                COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
+                                orxout(verbose, context::triggers) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << bActive << ", triggered: " << state->bTriggered << "." << endl;
                             else
-                                COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: NULL, active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
+                                orxout(verbose, context::triggers) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: NULL, active: " << bActive << ", triggered: " << state->bTriggered << "." << endl;
 
                             // If the MultiTrigger has a parent trigger, that is itself a MultiTrigger, it needs to call a method to notify him, that its activity has changed.
                             if(this->parent_ != NULL && this->parent_->isMultiTrigger())
@@ -253,7 +253,7 @@ namespace orxonox
                         if(this->remainingActivations_ == 0 && !bActive)
                         {
                             this->BaseObject::setActive(false);
-                            COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") ran out of activations. Setting it to inactive." << std::endl;
+                            orxout(verbose, context::triggers) << "MultiTrigger '" << this->getName() << "' (&" << this << ") ran out of activations. Setting it to inactive." << endl;
                         }
                     }
 
@@ -300,7 +300,7 @@ namespace orxonox
         // If the target is not a valid class name display an error.
         if (target == NULL)
         {
-            COUT(1) << "Error: '" << targetStr << "' is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << std::endl;
+            orxout(internal_error, context::triggers) << "'" << targetStr << "' is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << endl;
             return;
         }
 
@@ -328,7 +328,7 @@ namespace orxonox
         // If the target is not a valid class name display an error.
         if (target == NULL)
         {
-            COUT(1) << "Error: '" << targetStr << "' is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << std::endl;
+            orxout(internal_error, context::triggers) << "'" << targetStr << "' is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << endl;
             return;
         }
 
@@ -446,13 +446,13 @@ namespace orxonox
         if(originator == NULL)
         {
             this->fireEvent(status);
-            COUT(4) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. status: " << status << "." << std::endl;
+            orxout(verbose, context::triggers) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. status: " << status << "." << endl;
             return;
         }
 
         MultiTriggerContainer* container = new MultiTriggerContainer(this, this, originator);
         this->fireEvent(status, container);
-        COUT(4) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), status: " << status << "." << std::endl;
+        orxout(verbose, context::triggers) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), status: " << status << "." << endl;
         delete container;
     }
 

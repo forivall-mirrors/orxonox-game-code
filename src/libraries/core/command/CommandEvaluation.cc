@@ -130,7 +130,7 @@ namespace orxonox
             *error = CommandExecutor::Success;
 
             if (!this->execCommand_)
-                *error = CommandExecutor::Error;
+                *error = CommandExecutor::Inexistent;
             else if (!this->execCommand_->isActive())
                 *error = CommandExecutor::Deactivated;
             else if (!this->execCommand_->hasAccess())
@@ -150,7 +150,7 @@ namespace orxonox
             // check if the argument evaluation succeded
             if (this->bEvaluatedArguments_)
             {
-                COUT(6) << "CE_execute (evaluation): " << this->execCommand_->getName() << " with " << this->numberOfEvaluatedArguments_ << " arguments: " << this->arguments_[0] << ' ' << this->arguments_[1] << ' ' << this->arguments_[2] << ' ' << this->arguments_[3] << ' ' << this->arguments_[4] << std::endl;
+                orxout(verbose, context::commands) << "CE_execute (evaluation): " << this->execCommand_->getName() << " with " << this->numberOfEvaluatedArguments_ << " arguments: " << this->arguments_[0] << ' ' << this->arguments_[1] << ' ' << this->arguments_[2] << ' ' << this->arguments_[3] << ' ' << this->arguments_[4] << endl;
 
                 // pass as many arguments to the executor as were evaluated (thus the executor can still use additional default values)
                 switch (this->numberOfEvaluatedArguments_)
@@ -185,8 +185,8 @@ namespace orxonox
         if (!this->execCommand_)
         {
             if (bPrintError)
-                COUT(1) << "Error: Can't evaluate arguments, no console command assigned." << std::endl;
-            return CommandExecutor::Error;
+                orxout(internal_error, context::commands) << "Can't evaluate arguments, no console command assigned." << endl;
+            return CommandExecutor::Inexistent;
         }
 
         int error;
@@ -199,7 +199,7 @@ namespace orxonox
         if (!error)
             this->bEvaluatedArguments_ = true;
         else if (bPrintError)
-            COUT(1) << "Error: Can't evaluate arguments, not enough arguments given." << std::endl;
+            orxout(internal_error, context::commands) << "Can't evaluate arguments, not enough arguments given." << endl;
 
         return error;
     }

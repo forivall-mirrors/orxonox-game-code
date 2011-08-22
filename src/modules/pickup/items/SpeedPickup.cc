@@ -179,7 +179,7 @@ namespace orxonox
 
         if(ship == NULL)
         {
-            COUT(1) << "Invalid PickupCarrier in SpeedPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid PickupCarrier in SpeedPickup." << endl;
         }
 
         return ship;
@@ -220,7 +220,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid duration in SpeedPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid duration in SpeedPickup." << endl;
             this->duration_ = 0.0f;
         }
     }
@@ -239,7 +239,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid speedAdd in SpeedPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid speedAdd in SpeedPickup." << endl;
             this->speedAdd_ = 0.0f;
         }
     }
@@ -258,7 +258,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid speedMultiply in SpeedPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid speedMultiply in SpeedPickup." << endl;
             this->speedMultiply_ = 1.0f;
         }
     }

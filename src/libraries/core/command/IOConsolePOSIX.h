@@ -65,7 +65,6 @@ namespace orxonox
 
         // Methods from ShellListener
         void linesChanged();
-        void onlyLastLineChanged();
         void lineAdded();
         void inputChanged();
         void cursorChanged();

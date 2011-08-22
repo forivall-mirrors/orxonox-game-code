@@ -93,7 +93,7 @@ namespace orxonox
             if (fileInfo != NULL)
                 this->setSource(path);
             else
-                COUT(3) << "Sound: " << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << std::endl;
+                orxout(internal_warning, context::sound) << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << endl;
         }
     }
 

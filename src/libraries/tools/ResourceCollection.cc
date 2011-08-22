@@ -61,7 +61,7 @@ namespace orxonox
     {
         if (resourceGroup.empty())
         {
-            COUT(2) << "Warning: \"\" is not a valid resource group." << std::endl;
+            orxout(internal_warning) << "\"\" is not a valid resource group." << endl;
             return;
         }
         if (!resourceLocations_.empty())

@@ -54,7 +54,7 @@
     </collisionShapes>
 
 <?lua
-  include("includes/weaponSettingsPirate.oxi")
+  include("../includes/weaponSettingsPirate.oxi")
 ?>
   </SpaceShip>
 </Template>

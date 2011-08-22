@@ -41,8 +41,6 @@
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
 #include "WANDiscoverable.h"
-// #include "MasterServerComm.h"
-// #include "MasterServerProtocol.h"
 
 
 namespace orxonox
@@ -60,14 +58,8 @@ namespace orxonox
     Server(int port, const std::string& bindAddress);
     ~Server();
 
-    /* helpers */
-    void helper_ConnectToMasterserver();
-    void helper_HandleMasterServerRequests();
-    int replyhandler( char *addr, ENetEvent *ev );
-
     void open();
     void close();
-    bool processChat(const std::string& message, unsigned int playerID);
     void queuePacket(ENetPacket *packet, int clientID, uint8_t channelID);
     virtual bool sendPacket( packet::Packet* packet ){ return packet->send( static_cast<Host*>(this) ); }
     void update(const Clock& time);
@@ -88,9 +80,9 @@ namespace orxonox
     void disconnectClient( uint32_t clientID );
     bool sendGameStates();
     bool sendObjectDeletes();
-    virtual bool chat(const std::string& message);
-    virtual bool broadcast(const std::string& message);
-    bool sendChat(const std::string& message, unsigned int clientID);
+    bool isValidTarget(unsigned int targetID);
+    virtual void doSendChat(const std::string& message, unsigned int sourceID, unsigned int targetID);
+    virtual void doReceiveChat(const std::string& message, unsigned int sourceID, unsigned int targetID);
     void syncClassid(unsigned int clientID);
 
     float timeSinceLastUpdate_;

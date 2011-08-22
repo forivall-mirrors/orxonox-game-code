@@ -38,12 +38,13 @@ namespace packet {
 #define   PACKET_FLAGS_CHAT PacketFlag::Reliable
 
 /* Some lengths */
-#define   _PACKETID         0
-const int _PLAYERID     =   _PACKETID + sizeof(Type::Value);
-#define   _MESSAGELENGTH    _PLAYERID + sizeof(uint32_t)
-#define   _MESSAGE          _MESSAGELENGTH + sizeof(uint32_t)
+#define _PACKETID         0
+#define _SOURCEID         _PACKETID + sizeof(Type::Value)
+#define _TARGETID         _SOURCEID + sizeof(uint32_t)
+#define _MESSAGELENGTH    _TARGETID + sizeof(uint32_t)
+#define _MESSAGE          _MESSAGELENGTH + sizeof(uint32_t)
 
-Chat::Chat( const std::string& message, unsigned int playerID )
+Chat::Chat( const std::string& message, unsigned int sourceID, unsigned int targetID )
  : Packet()
 {
   /* Add chat flag to packet flags */
@@ -56,7 +57,8 @@ Chat::Chat( const std::string& message, unsigned int playerID )
   data_=new unsigned char[ getSize() ];
 
   *(Type::Value *)(data_ + _PACKETID ) = Type::Chat;
-  *(unsigned int *)(data_ + _PLAYERID ) = playerID;
+  *(unsigned int *)(data_ + _SOURCEID ) = sourceID;
+  *(unsigned int *)(data_ + _TARGETID ) = targetID;
   *(unsigned int *)(data_ + _MESSAGELENGTH ) = messageLength_;
 
   /* cast the hell out of the message string, and copy it into the
@@ -80,9 +82,9 @@ unsigned int Chat::getSize() const{
 }
 
 bool Chat::process(orxonox::Host* host){
-  bool b = host->incomingChat(std::string((const char*)data_+_MESSAGE), *(uint32_t *)(data_+_PLAYERID));
+  host->doReceiveChat(std::string((const char*)data_+_MESSAGE), *(uint32_t *)(data_+_SOURCEID), *(uint32_t *)(data_+_TARGETID));
   delete this;
-  return b;
+  return true;
 }
 
 unsigned char *Chat::getMessage(){

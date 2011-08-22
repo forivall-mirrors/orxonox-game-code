@@ -18,7 +18,6 @@
  #
 
 SET_SOURCE_FILES(NETWORK_SRC_FILES
-  ChatListener.cc
   Client.cc
   ClientConnection.cc
   ClientConnectionListener.cc
@@ -44,7 +43,6 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
 )
 
 SET_SOURCE_FILES(NETWORK_HDR_FILES
-  ChatListener.h
   Client.h
   ClientConnection.h
   ClientConnectionListener.h
@@ -60,6 +58,7 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   WANDiscoverable.h
   WANDiscovery.h
   MasterServerComm.h
+  NetworkChatListener.h
   NetworkFunction.h
   NetworkPrecompiledHeaders.h
   NetworkPrereqs.h

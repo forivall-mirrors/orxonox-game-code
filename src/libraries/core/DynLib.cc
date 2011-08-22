@@ -67,7 +67,7 @@ namespace orxonox
     void DynLib::load()
     {
         // Log library load
-        COUT(2) << "Loading module " << mName << std::endl;
+        orxout(internal_info) << "Loading module " << mName << endl;
 
         std::string name = mName;
 #ifdef ORXONOX_PLATFORM_LINUX
@@ -98,7 +98,7 @@ namespace orxonox
     void DynLib::unload()
     {
         // Log library unload
-        COUT(4) << "Unloading module " << mName << std::endl;
+        orxout(internal_info) << "Unloading module " << mName << endl;
 
         if (DYNLIB_UNLOAD( m_hInst ))
         {

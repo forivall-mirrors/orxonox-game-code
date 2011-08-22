@@ -205,7 +205,7 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(1) << "Invalid PickupCarrier in InvisiblePickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid PickupCarrier in InvisiblePickup." << endl;
         }
         return pawn;
     }
@@ -224,7 +224,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid duration in InvisiblePickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid duration in InvisiblePickup." << endl;
             this->duration_ = 0.0f;
         }
     }

@@ -47,7 +47,7 @@ namespace orxonox
     RocketController::RocketController(BaseObject* creator) : Controller(creator)
     {
         RegisterObject(RocketController);
-        COUT(5)<< "RocketController constructed\n";
+//        orxout() << "RocketController constructed" << endl;
 
         // Create a rocket for the controller.
         this->rocket_ = new SimpleRocket(this);
@@ -72,7 +72,7 @@ namespace orxonox
 
     RocketController::~RocketController()
     {
-        COUT(5)<< "RocketController destroyed\n";
+//        orxout() << "RocketController destroyed" << endl;
     }
 
     /**

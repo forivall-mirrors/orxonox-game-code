@@ -140,9 +140,9 @@ namespace orxonox
         if (!this->hasStarted() || this->hasEnded())
             return;
 
-        COUT(0) << "Points standing:" << std::endl << "Team 1: "<< pointsTeam1_ << std::endl << "Team 2: " << pointsTeam2_ << std::endl;
-        if(pointsTeam1_ >=1700 && pointsTeam1_ < 2000) COUT(0) << "Team 1 is near victory!" << std::endl;
-        if(pointsTeam2_ >=1700 && pointsTeam2_ < 2000) COUT(0) << "Team 2 is near victory!" << std::endl;
+        orxout(message) << "Points standing:" << '\n' << "Team 1: "<< pointsTeam1_ << '\n' << "Team 2: " << pointsTeam2_ << endl;
+        if(pointsTeam1_ >=1700 && pointsTeam1_ < 2000) orxout(message) << "Team 1 is near victory!" << endl;
+        if(pointsTeam2_ >=1700 && pointsTeam2_ < 2000) orxout(message) << "Team 2 is near victory!" << endl;
     }
 
 
@@ -178,12 +178,12 @@ namespace orxonox
 
             if (this->pointsTeam1_ > this->pointsTeam2_)
             {
-                COUT(0) << "Team 1 has won the match" << std::endl;
+                orxout(message) << "Team 1 has won the match" << endl;
                 winningteam = 0;
             }
             else
             {
-                COUT(0) << "Team 2 has won the match" << std::endl;
+                orxout(message) << "Team 2 has won the match" << endl;
                 winningteam = 1;
             }
 

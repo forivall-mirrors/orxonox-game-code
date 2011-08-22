@@ -29,7 +29,7 @@
 
 #include "GSMasterServer.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 
@@ -49,12 +49,12 @@ namespace orxonox
 
   void GSMasterServer::activate()
   {
+    orxout(user_status) << "Starting masterserver" << endl;
+
     /* TODO make this work for masterserver as well */
     //GameMode::setIsServer(true);
 
     this->mserver = new MasterServer();
-    COUT(0) << "Loading masterserver mode" << std::endl;
-
     this->mserver->run();
   }
 

@@ -58,11 +58,11 @@ namespace orxonox
     {
         if (this->bActive_)
         {
-            COUT(2) << "Warning: Detected Event loop in EventListener \"" << this->getName() << '"' << std::endl;
+            orxout(internal_warning, context::events) << "Detected Event loop in EventListener \"" << this->getName() << '"' << endl;
             return;
         }
 
-        COUT(4) << "EventListener, processing event: originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << ")" << ", activate: " << event.activate_ << ", name: " << event.name_ << std::endl;
+        orxout(verbose, context::events) << "EventListener, processing event: originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << ")" << ", activate: " << event.activate_ << ", name: " << event.name_ << endl;
 
         this->bActive_ = true;
         //TODO: Why not this->fireEvent(event)?

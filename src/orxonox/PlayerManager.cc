@@ -56,7 +56,7 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             if (clientID != 0)
-                COUT(3) << "client connected" << std::endl;
+                orxout(internal_info) << "client connected" << endl;
 
             // create new HumanPlayer instance
             HumanPlayer* player = new HumanPlayer(0);
@@ -76,7 +76,7 @@ namespace orxonox
         if (GameMode::isMaster())
         {
             if (clientID != 0)
-                COUT(3) << "client disconnected" << std::endl;
+                orxout(internal_info) << "client disconnected" << endl;
 
             // remove from clients-map
             PlayerInfo* player = this->clients_[clientID];

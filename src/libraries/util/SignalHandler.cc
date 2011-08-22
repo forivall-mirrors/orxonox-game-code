@@ -38,7 +38,7 @@
 #include <cstring>
 #include <cstdio>
 
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {
@@ -126,7 +126,7 @@ namespace orxonox
       // if the signalhandler has already been destroyed then don't do anything
       if( SignalHandler::singletonPtr_s == 0 )
       {
-        COUT(0) << "Received signal " << sigName.c_str() << std::endl << "Can't write backtrace because SignalHandler is already destroyed" << std::endl;
+        orxout(user_error) << "Received signal " << sigName.c_str() << endl << "Can't write backtrace because SignalHandler is already destroyed" << endl;
         exit(EXIT_FAILURE);
       }
 
@@ -136,7 +136,7 @@ namespace orxonox
       }
 
 
-      COUT(0) << "Received signal " << sigName.c_str() << std::endl << "Try to write backtrace to file orxonox_crash.log" << std::endl;
+      orxout(user_error) << "Received signal " << sigName.c_str() << endl << "Try to write backtrace to file orxonox_crash.log" << endl;
 
       
       // First start GDB which will be attached to this process later on
@@ -205,18 +205,18 @@ namespace orxonox
         // make sure gdb is allowed to attach to our PID even if there are some system restrictions
 #ifdef PR_SET_PTRACER
         if( prctl(PR_SET_PTRACER, gdbPid, 0, 0, 0) == -1 )
-          COUT(0) << "could not set proper permissions for GDB to attach to process..." << endl;
+          orxout(user_error) << "could not set proper permissions for GDB to attach to process..." << endl;
 #endif
         
         // wait for message from parent when it has attached gdb
         int someData;
 
         if( read( sigPipe[0], &someData, sizeof(someData) ) != sizeof(someData) )
-          COUT(0) << "something went wrong :(" << std::endl;
+          orxout(user_error) << "something went wrong :(" << endl;
 
         if ( someData != 0x12345678 )
         {
-          COUT(0) << "something went wrong :(" << std::endl;
+          orxout(user_error) << "something went wrong :(" << endl;
         }
 
         return;
@@ -327,7 +327,7 @@ namespace orxonox
 
       if ( fwrite( bt.c_str(), 1, bt.length(), f ) != bt.length() )
       {
-        COUT(0) << "could not write " << bt.length() << " byte to " << getInstance().filename << std::endl;
+        orxout(user_error) << "could not write " << bt.length() << " byte to " << getInstance().filename << endl;
         exit(EXIT_FAILURE);
       }
 
@@ -363,8 +363,9 @@ namespace orxonox
 /// Overwrite the original abort() function in MinGW to enable a break point.
 _UtilExport void __cdecl abort()
 {
-    COUT(1) << "This application has requested the Runtime to terminate it in an unusual way." << std::endl;
-    COUT(1) << "Please contact the application's support team for more information." << std::endl;
+    using namespace orxonox;
+    orxout(user_error) << "This application has requested the Runtime to terminate it in an unusual way." << endl;
+    orxout(user_error) << "Please contact the application's support team for more information." << endl;
     DebugBreak();
     exit(0x3);
 }
@@ -372,8 +373,9 @@ _UtilExport void __cdecl abort()
 /// Overwrite the original _abort() function in MinGW to enable a break point.
 _UtilExport void __cdecl _assert(const char* expression, const char* file, int line)
 {
-    COUT(1) << "Assertion failed: " << expression << ", file " << file << ", line " << line << std::endl;
-    COUT(1) << std::endl;
+    using namespace orxonox;
+    orxout(user_error) << "Assertion failed: " << expression << ", file " << file << ", line " << line << endl;
+    orxout(user_error) << endl;
     abort();
 }
 #endif
@@ -422,51 +424,51 @@ namespace orxonox
         {
             bExecuting = true;
 
-            COUT(1) << std::endl;
+            orxout(user_error) << endl;
 
             // if the signalhandler has already been destroyed then don't do anything
             if (SignalHandler::singletonPtr_s == 0)
             {
-                COUT(1) << "Caught an unhandled exception" << std::endl << "Can't write backtrace because SignalHandler is already destroyed" << std::endl;
+                orxout(user_error) << "Caught an unhandled exception" << endl << "Can't write backtrace because SignalHandler is already destroyed" << endl;
                 exit(EXIT_FAILURE);
             }
 
-            COUT(1) << "Caught an unhandled exception" << std::endl << "Try to write backtrace to orxonox_crash.log..." << std::endl;
+            orxout(user_error) << "Caught an unhandled exception" << endl << "Try to write backtrace to orxonox_crash.log..." << endl;
 
             // write the crash log
             std::ofstream crashlog(SignalHandler::getInstance().filename_.c_str());
 
             time_t now = time(NULL);
 
-            crashlog << "=======================================================" << std::endl;
+            crashlog << "=======================================================" << endl;
             crashlog << "= Time: " << std::string(ctime(&now));
-            crashlog << "=======================================================" << std::endl;
-            crashlog << std::endl;
+            crashlog << "=======================================================" << endl;
+            crashlog << endl;
 
             const std::string& error = SignalHandler::getExceptionType(pExceptionInfo);
 
-            crashlog << error << std::endl;
-            crashlog << std::endl;
+            crashlog << error << endl;
+            crashlog << endl;
 
             const std::string& callstack = SignalHandler::getStackTrace(pExceptionInfo);
 
-            crashlog << "Call stack:" << std::endl;
-            crashlog << callstack << std::endl;
+            crashlog << "Call stack:" << endl;
+            crashlog << callstack << endl;
 
             crashlog.close();
 
             // print the same information also to the console
-            COUT(1) << std::endl;
-            COUT(1) << error << std::endl;
-            COUT(1) << std::endl;
-            COUT(1) << "Call stack:" << std::endl;
-            COUT(1) << callstack << std::endl;
+            orxout(user_error) << endl;
+            orxout(user_error) << error << endl;
+            orxout(user_error) << endl;
+            orxout(user_error) << "Call stack:" << endl;
+            orxout(user_error) << callstack << endl;
 
             bExecuting = false;
         }
         else
         {
-            COUT(1) << "An error occurred while writing the backtrace" << std::endl;
+            orxout(user_error) << "An error occurred while writing the backtrace" << endl;
         }
 
         if (SignalHandler::getInstance().prevExceptionFilter_)

@@ -33,6 +33,7 @@
 
 #include "util/Clock.h"
 #include "util/Math.h"
+#include "util/output/ConsoleWriter.h"
 #include "core/Game.h"
 #include "core/input/InputBuffer.h"
 
@@ -42,7 +43,7 @@ namespace orxonox
 
     //! Redirects std::cout, creates the corresponding Shell and changes the terminal mode
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false))
+        : shell_(new Shell("Console", false))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")
@@ -51,7 +52,7 @@ namespace orxonox
         , lastOutputLineHeight_(0)
     {
         // Disable standard this->cout_ logging
-        OutputHandler::getInstance().disableCout();
+        ConsoleWriter::getInstance().disable();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
@@ -94,7 +95,7 @@ namespace orxonox
         // Process output written to std::cout in the meantime
         std::cout.flush();
         if (!this->origCout_.str().empty())
-            this->shell_->addOutput(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::Cout);
 
         this->shell_->unregisterListener(this);
 
@@ -107,7 +108,7 @@ namespace orxonox
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard this->cout_ logging again
-        OutputHandler::getInstance().enableCout();
+        ConsoleWriter::getInstance().enable();
 
         resetTerminalMode();
         this->shell_->destroy();
@@ -187,7 +188,7 @@ namespace orxonox
         std::cout.flush();
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutput(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::Cout);
             this->origCout_.str("");
         }
     }
@@ -199,16 +200,27 @@ namespace orxonox
         WORD colour = 0;
         switch (type)
         {
-        case Shell::Error:   colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED; break;
-        case Shell::Warning: colour = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_RED; break;
-        case Shell::Info:
-        case Shell::Debug:
-        case Shell::Verbose:
-        case Shell::Ultra:   colour = FOREGROUND_INTENSITY                                     ; break;
-        case Shell::Command: colour =                        FOREGROUND_GREEN                  | FOREGROUND_BLUE; break;
-        case Shell::Hint:    colour =                        FOREGROUND_GREEN | FOREGROUND_RED                  ; break;
-        case Shell::TDebug:  colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED | FOREGROUND_BLUE; break;
-        default:             colour =                        FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE; break;
+            case Shell::Message:
+            case Shell::DebugOutput:     colour = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
+
+            case Shell::UserError:       colour = FOREGROUND_INTENSITY | FOREGROUND_RED | 0                | 0              ; break;
+            case Shell::UserWarning:     colour = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | 0              ; break;
+            case Shell::UserStatus:      colour = FOREGROUND_INTENSITY | 0              | FOREGROUND_GREEN | 0              ; break;
+            case Shell::UserInfo:        colour = FOREGROUND_INTENSITY | 0              | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
+
+            case Shell::InternalError:   colour = 0                    | FOREGROUND_RED | 0                | 0              ; break;
+            case Shell::InternalWarning: colour = 0                    | FOREGROUND_RED | FOREGROUND_GREEN | 0              ; break;
+            case Shell::InternalStatus:  colour = 0                    | 0              | FOREGROUND_GREEN | 0              ; break;
+            case Shell::InternalInfo:    colour = 0                    | 0              | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
+
+            case Shell::Verbose:         colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
+            case Shell::VerboseMore:     colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
+            case Shell::VerboseUltra:    colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
+
+            case Shell::Command:         colour = FOREGROUND_INTENSITY | FOREGROUND_RED | 0                | FOREGROUND_BLUE; break;
+            case Shell::Hint:            colour = 0                    | FOREGROUND_RED | 0                | FOREGROUND_BLUE; break;
+
+            default:                     colour = 0                    | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
         }
 
         // Print output line
@@ -237,7 +249,7 @@ namespace orxonox
             || !GetConsoleMode(this->stdInHandle_, &this->originalTerminalSettings_)
             || !SetConsoleMode(this->stdInHandle_, 0))
         {
-            COUT(1) << "Error: Could not set Windows console settings" << std::endl;
+            orxout(user_error) << "Could not set Windows console settings" << endl;
             return;
         }
         FlushConsoleInputBuffer(this->stdInHandle_);
@@ -317,7 +329,7 @@ namespace orxonox
     //! Called if a command is about to be executed
     void IOConsole::executed()
     {
-        this->shell_->addOutput(this->promptString_ + this->shell_->getInput() + '\n', Shell::Command);
+        this->shell_->addOutput(this->promptString_ + this->shell_->getInput(), Shell::Command);
     }
 
     //! Called if the console gets closed
@@ -374,20 +386,6 @@ namespace orxonox
         pos.X = rawCursorPos % this->terminalWidth_;
         pos.Y = this->inputLineRow_ + rawCursorPos / this->terminalWidth_;
         SetConsoleCursorPosition(stdOutHandle_, pos);
-    }
-
-    //! Called if only the last output-line has changed
-    void IOConsole::onlyLastLineChanged()
-    {
-        int newLineHeight = 1 + this->shell_->getNewestLineIterator()->first.size() / this->terminalWidth_;
-        // Compute the number of new lines needed
-        int newLines = newLineHeight - this->lastOutputLineHeight_;
-        this->lastOutputLineHeight_ = newLineHeight;
-        // Scroll console if necessary
-        if (newLines > 0) // newLines < 0 is assumed impossible
-            this->createNewOutputLines(newLines);
-        Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
-        this->printOutputLine(it->first, it->second, makeCOORD(0, this->inputLineRow_ - newLineHeight));
     }
 
     //! Called if a new output line was added

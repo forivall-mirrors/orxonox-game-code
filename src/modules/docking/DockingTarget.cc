@@ -52,7 +52,7 @@ namespace orxonox
     {
         SUPER(DockingTarget, XMLPort, xmlelement, mode);
 
-        COUT(4) << "DockingTarget with name '" << this->getName() << "' created.." << std::endl;
+        orxout(verbose, context::docking) << "DockingTarget with name '" << this->getName() << "' created.." << endl;
     }
 
 }

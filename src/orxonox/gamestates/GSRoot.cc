@@ -76,12 +76,12 @@ namespace orxonox
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; ++it)
         {
             if (dynamic_cast<Synchronisable*>(*it))
-                COUT(0) << "object: " << it->getIdentifier()->getName() << " id: " << dynamic_cast<Synchronisable*>(*it)->getObjectID() << std::endl;
+                orxout(debug_output) << "object: " << it->getIdentifier()->getName() << " id: " << dynamic_cast<Synchronisable*>(*it)->getObjectID() << endl;
             else
-                COUT(0) << "object: " << it->getIdentifier()->getName() << std::endl;
+                orxout(debug_output) << "object: " << it->getIdentifier()->getName() << endl;
             nr++;
         }
-        COUT(0) << "currently got " << nr << " objects" << std::endl;
+        orxout(debug_output) << "currently got " << nr << " objects" << endl;
     }
 
     void GSRoot::activate()

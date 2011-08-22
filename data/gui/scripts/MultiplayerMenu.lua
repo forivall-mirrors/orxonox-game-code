@@ -116,10 +116,10 @@ function P.showServerList()
     elseif P.joinMode == 2 then
         local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
         CEGUI.toListbox(listbox):resetList()
-        local discovery = orxonox.WANDiscovery:getInstance()
-        cout(0, "discovering.\n" )
+        local discovery = orxonox.WANDiscovery()
+        orxout("discovering." )
         discovery:discover()
-        cout(0, "discovered.\n" )
+        orxout("discovered." )
         P.serverList = {}
         local index = 0
         local servername = ""

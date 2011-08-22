@@ -33,7 +33,7 @@
 #include <cpptcl/cpptcl.h>
 
 #include "SpecialConfig.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "core/PathConfig.h"
@@ -105,7 +105,7 @@ namespace orxonox
                 this->interpreter_->eval("rename exit ::tcl::exit; proc exit {} { execute exit }");
             }
             catch (Tcl::tcl_error const &e)
-            {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+            {   orxout(internal_error, context::tcl) << "Tcl error while creating Tcl-interpreter: " << e.what() << endl;   }
         }
     }
 
@@ -128,7 +128,10 @@ namespace orxonox
             interpreter->eval("source \"" + TclBind::getInstance().tclDataPath_ + "/init.tcl\"");
         }
         catch (Tcl::tcl_error const &e)
-        {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl; COUT(1) << "Error: Tcl isn't properly initialized. Orxonox might possibly not work like that." << std::endl;   }
+        {
+            orxout(internal_error, context::tcl) << "Tcl error while creating Tcl-interpreter: " << e.what() << endl;
+            orxout(user_error, context::tcl) << "Tcl isn't properly initialized. Orxonox might possibly not work like that." << endl;
+        }
 
         return interpreter;
     }
@@ -153,7 +156,7 @@ namespace orxonox
     */
     std::string TclBind::tcl_query(Tcl::object const &args)
     {
-        COUT(4) << "Tcl_query: " << args.get() << std::endl;
+        orxout(verbose, context::commands) << "Tcl_query: " << args.get() << endl;
         return TclBind::tcl_helper(args, true);
     }
 
@@ -162,7 +165,7 @@ namespace orxonox
     */
     void TclBind::tcl_execute(Tcl::object const &args)
     {
-        COUT(4) << "Tcl_execute: " << args.get() << std::endl;
+        orxout(verbose, context::commands) << "Tcl_execute: " << args.get() << endl;
         TclBind::tcl_helper(args, false);
     }
 
@@ -183,16 +186,12 @@ namespace orxonox
         else
             error = evaluation.execute();
 
-        switch (error)
+        if (error)
         {
-            case CommandExecutor::Error:       COUT(1) << "Error: Can't execute command \"" << command << "\", command doesn't exist. (B)" << std::endl; break;
-            case CommandExecutor::Incomplete:  COUT(1) << "Error: Can't execute command \"" << command << "\", not enough arguments given. (B)" << std::endl; break;
-            case CommandExecutor::Deactivated: COUT(1) << "Error: Can't execute command \"" << command << "\", command is not active. (B)" << std::endl; break;
-            case CommandExecutor::Denied:      COUT(1) << "Error: Can't execute command \"" << command << "\", access denied. (B)" << std::endl; break;
+            orxout(user_error) << "Can't execute command \"" << command << "\", " + CommandExecutor::getErrorDescription(error) + ". (TclBind)" << endl;
+            if (error == CommandExecutor::Inexistent)
+                orxout(user_info) << "Did you mean \"" << evaluation.getCommandSuggestion() << "\"?" << endl;
         }
-
-        if (error == CommandExecutor::Error)
-            COUT(3) << "Did you mean \"" << evaluation.getCommandSuggestion() << "\"?" << std::endl;
 
         return result;
     }
@@ -210,7 +209,7 @@ namespace orxonox
                 return TclBind::getInstance().interpreter_->eval("uplevel #0 " + tclcode);
             }
             catch (Tcl::tcl_error const &e)
-            {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
+            {   orxout(user_error, context::tcl) << "Tcl error: " << e.what() << endl;   }
         }
 
         return "";
@@ -222,7 +221,7 @@ namespace orxonox
     */
     void TclBind::bgerror(const std::string& error)
     {
-        COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
+        orxout(user_error, context::tcl) << "Tcl background error: " << stripEnclosingBraces(error) << endl;
     }
 
     /**
@@ -242,7 +241,7 @@ namespace orxonox
             return TclBind::getInstance().interpreter_->eval(tclcode);
         }
         catch (Tcl::tcl_error const &e)
-        {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
+        {   orxout(user_error, context::tcl) << "Tcl error: " << e.what() << endl;   }
 
         if (error)
             *error = CommandExecutor::Error;

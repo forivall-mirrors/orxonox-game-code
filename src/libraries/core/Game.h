@@ -46,7 +46,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/preprocessor/cat.hpp>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
@@ -214,8 +214,8 @@ namespace orxonox
         }
         else
         {
-            COUT(0) << "Error: Cannot declare two GameStates with the same name." << std::endl;
-            COUT(0) << "       Ignoring second one ('" << stateName << "')." << std::endl;
+            orxout(internal_warning) << "Cannot declare two GameStates with the same name." << endl;
+            orxout(internal_warning) << "Ignoring second one ('" << stateName << "')." << endl;
         }
 
         // Create a factory to delay GameState creation

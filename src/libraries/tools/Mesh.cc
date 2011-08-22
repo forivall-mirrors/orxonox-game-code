@@ -71,7 +71,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load mesh \"" << meshsource << '"' << std::endl;
+                orxout(internal_error) << "Couldn't load mesh \"" << meshsource << '"' << endl;
                 this->entity_ = 0;
             }
         }

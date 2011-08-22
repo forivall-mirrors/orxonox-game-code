@@ -69,7 +69,7 @@ namespace orxonox
     {
         bool temp = true;
 
-        COUT(4) << "Invoking QuestEffects on player: " << player << " ."  << std::endl;
+        orxout(verbose, context::quests) << "Invoking QuestEffects on player: " << player << " ."  << endl;
 
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
             temp = temp && (*effect)->invoke(player);

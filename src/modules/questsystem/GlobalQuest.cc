@@ -70,7 +70,7 @@ namespace orxonox
 
         XMLPortObject(GlobalQuest, QuestEffect, "reward-effects", addRewardEffect, getRewardEffects, xmlelement, mode);
 
-        COUT(4) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
+        orxout(verbose, context::quests) << "New GlobalQuest {" << this->getId() << "} created." << endl;
     }
 
     /**
@@ -86,7 +86,7 @@ namespace orxonox
     {
         if(!this->isFailable(player)) // Check whether the Quest can be failed.
         {
-            COUT(4) << "A non-completable quest was trying to be failed." << std::endl;
+            orxout(verbose, context::quests) << "A non-completable quest was trying to be failed." << endl;
             return false;
         }
 
@@ -113,7 +113,7 @@ namespace orxonox
     {
         if(!this->isCompletable(player)) // Check whether the Quest can be completed.
         {
-            COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
+            orxout(verbose, context::quests) << "A non-completable quest was trying to be completed." << endl;
             return false;
         }
 
@@ -226,7 +226,7 @@ namespace orxonox
 
         this->rewards_.push_back(effect); // Add the QuestEffect to the list.
 
-        COUT(4) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
+        orxout(verbose, context::quests) << "Reward effect was added to Quest {" << this->getId() << "}." << endl;
         return true;
     }
 

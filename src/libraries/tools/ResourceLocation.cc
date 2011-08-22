@@ -79,7 +79,7 @@ namespace orxonox
             path = PathConfig::getExternalDataPath() / this->getPath();
         else
         {
-            COUT(2) << "Warning: ResourceLocation '" << this->getPath() << "' does not seem to exist" << std::endl;
+            orxout(internal_warning) << "ResourceLocation '" << this->getPath() << "' does not seem to exist" << endl;
             return;
         }
 
@@ -100,7 +100,7 @@ namespace orxonox
         }
         catch (const Ogre::Exception& ex)
         {
-            COUT(1) << "Removing of a ResourceLocation failed: " << ex.what() << std::endl;
+            orxout(internal_error) << "Removing of a ResourceLocation failed: " << ex.what() << endl;
         }
     }
 }

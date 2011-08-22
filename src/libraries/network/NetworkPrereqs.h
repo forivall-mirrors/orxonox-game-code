@@ -117,7 +117,6 @@ typedef uint8_t       ENetChannelID;
 
 namespace orxonox
 {
-  class ChatListener;
   class Client;
   class ClientConnection;
   class ClientConnectionListener;
@@ -129,15 +128,21 @@ namespace orxonox
   class GamestateHandler;
   class GamestateManager;
   class Host;
+  class MasterServer;
+  class MasterServerComm;
+  class NetworkChatListener;
   class NetworkFunctionBase;
   struct NetworkFunctionPointer;
   class NetworkFunctionStatic;
   template <class T>
   class NetworkMemberFunction;
   class NetworkMemberFunctionBase;
+  class PeerList;
   class Server;
   class ServerConnection;
   class TrafficControl;
+  class WANDiscoverable;
+  class WANDiscovery;
 
   // packet
   namespace packet

@@ -260,7 +260,7 @@ namespace orxonox
     {
         if(!this->engineTemplate_.empty())
         {
-            COUT(4)<<"Loading an engine template: "<<this->engineTemplate_<<"\n";
+            orxout(verbose, context::templates) << "Loading an engine template: " << this->engineTemplate_ << endl;
             Template *temp = Template::getTemplate(this->engineTemplate_);
             if(temp)
             {

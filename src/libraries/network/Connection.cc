@@ -143,7 +143,7 @@ namespace orxonox
       this->outgoingEventsMutex_->unlock();
       while( outgoingEventsCount > 0 )
       {
-//         COUT(0) << "outgoing event" << endl;
+//         orxout(verbose, context::network) << "outgoing event" << endl;
         this->outgoingEventsMutex_->lock();
         outgoingEvent outEvent = this->outgoingEvents_.front();
         this->outgoingEvents_.pop_front();

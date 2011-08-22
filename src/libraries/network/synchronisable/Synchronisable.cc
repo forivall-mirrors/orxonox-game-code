@@ -129,15 +129,15 @@ namespace orxonox
     }
 //     assert( !header.isDiffed() );
 
-    COUT(4) << "fabricating object with id: " << header.getObjectID() << std::endl;
+    orxout(verbose, context::network) << "fabricating object with id: " << header.getObjectID() << endl;
 
     Identifier* id = ClassByID(header.getClassID());
     if (!id)
     {
         for(int i = 0; i<160; i++)
-            COUT(0) << "classid: " << i << " identifier: " << ClassByID(i) << endl;
-        COUT(0) << "Assertion failed: id" << std::endl;
-        COUT(0) << "Possible reason for this error: Client received a synchronizable object whose class has no factory." << std::endl;
+            orxout(user_error, context::network) << "classid: " << i << " identifier: " << ClassByID(i) << endl;
+        orxout(user_error, context::network) << "Assertion failed: id" << endl;
+        orxout(user_error, context::network) << "Possible reason for this error: Client received a synchronizable object whose class has no factory." << endl;
         abort();
     }
     assert(id);
@@ -167,7 +167,7 @@ namespace orxonox
     if( creator )
       bo->setLevel(creator->getLevel());          // Note: this ensures that the level is known on the client for child objects of the scene (and the scene itself)
     //assert(no->classID_ == header.getClassID());
-    COUT(4) << "fabricate objectID_: " << no->objectID_ << " classID_: " << no->classID_ << std::endl;
+    orxout(verbose, context::network) << "fabricate objectID_: " << no->objectID_ << " classID_: " << no->classID_ << endl;
           // update data and create object/entity...
     bool b = no->updateData(mem, mode, true);
     assert(b);
@@ -241,7 +241,7 @@ namespace orxonox
 #ifndef NDEBUG
     uint8_t* oldmem = mem;
     if (this->classID_==0)
-      COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
+      orxout(internal_info, context::network) << "classid 0 " << this->getIdentifier()->getName() << endl;
 #endif
 
     if (this->classID_ == static_cast<uint32_t>(-1))
@@ -257,20 +257,20 @@ namespace orxonox
     mem += SynchronisableHeader::getSize();
     // end copy header
 
-    CCOUT(5) << "getting data from objectID_: " << objectID_ << ", classID_: " << classID_ << std::endl;
-//     COUT(4) << "objectid: " << this->objectID_ << ":";
+    orxout(verbose_more, context::network) << "getting data from objectID_: " << objectID_ << ", classID_: " << classID_ << endl;
+//     orxout(verbose, context::network) << "objectid: " << this->objectID_ << ":";
     // copy to location
     for(i=syncList_.begin(); i!=syncList_.end(); ++i)
     {
       uint32_t varsize = (*i)->getData( mem, mode );
-//       COUT(4) << " " << varsize;
+//       orxout(verbose, context::network) << " " << varsize;
       tempsize += varsize;
       sizes.push_back(varsize);
       ++test;
       //tempsize += (*i)->getSize( mode );
     }
     assert(tempsize!=0);  // if this happens an empty object (with no variables) would be transmitted
-//     COUT(4) << endl;
+//     orxout(verbose, context::network) << endl;
 
     header.setObjectID( this->objectID_ );
     header.setCreatorID( this->creatorID_ );
@@ -304,8 +304,8 @@ namespace orxonox
     
     if(syncList_.empty())
     {
+      orxout(internal_warning, context::network) << "Synchronisable::updateData syncList_ is empty" << endl;
       assert(0);
-      COUT(2) << "Synchronisable::updateData syncList_ is empty" << std::endl;
       return false;
     }
 
@@ -325,7 +325,7 @@ namespace orxonox
       return true;
     }
 
-    //COUT(5) << "Synchronisable: objectID_ " << syncHeader.getObjectID() << ", classID_ " << syncHeader.getClassID() << " size: " << syncHeader.getDataSize() << " synchronising data" << std::endl;
+    //orxout(verbose_more, context::network) << "Synchronisable: objectID_ " << syncHeader.getObjectID() << ", classID_ " << syncHeader.getClassID() << " size: " << syncHeader.getDataSize() << " synchronising data" << endl;
     if( !syncHeaderLight.isDiffed() )
     {
       SynchronisableHeader syncHeader2(mem);
@@ -343,11 +343,11 @@ namespace orxonox
     else
     {
       mem += SynchronisableHeaderLight::getSize();
-//       COUT(0) << "objectID: " << this->objectID_ << endl;
+//       orxout(debug_output, context::network) << "objectID: " << this->objectID_ << endl;
       while( mem < data+syncHeaderLight.getDataSize()+SynchronisableHeaderLight::getSize() )
       {
         VariableID varID = *(VariableID*)mem;
-//         COUT(0) << "varID: " << varID << endl;
+//         orxout(debug_output, context::network) << "varID: " << varID << endl;
         assert( varID < syncList_.size() );
         mem += sizeof(VariableID);
         syncList_[varID]->putData( mem, mode, forceCallback );

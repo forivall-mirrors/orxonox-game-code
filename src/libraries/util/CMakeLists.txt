@@ -25,7 +25,6 @@ BUILD_UNIT StableBuildUnit.cc
   Convert.cc
   CRC32.cc
   ExprParser.cc
-  OutputHandler.cc
   Scope.cc
   ScopedSingletonManager.cc
   SharedPtr.cc
@@ -40,6 +39,8 @@ END_BUILD_UNIT
   SignalHandler.cc
   StringUtils.cc
 )
+
+ADD_SUBDIRECTORY(output)
 
 ORXONOX_ADD_LIBRARY(util
   FIND_HEADER_FILES

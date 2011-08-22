@@ -73,36 +73,13 @@ namespace orxonox
   }
 
   /* react to incoming chat */
-  void ChatHistory::incomingChat(const std::string& message,
-    unsigned int senderID)
+  void ChatHistory::incomingChat(const std::string& message, const std::string& /*name*/)
   {
-    /* --> a) look up the actual name of the sender */
-    std::string text;
-
-#ifndef CHATTEST
-    /* get sender ID and prepend it to the message */
-    if (senderID != NETWORK_PEER_ID_UNKNOWN)
-    {
-      /* if we can't find anything, use "unknown" as default */
-      std::string name = "unknown";
-
-      PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
-      if (player)
-        name = player->getName();
-
-      text = name + ": " + message;
-    }
-    else
-      text = message;
-#else
-    text = message;
-#endif
-
     /* add the line to the history */
-    this->chat_hist_addline( text );
+    this->chat_hist_addline( message );
 
     /* add the line to the log */
-    this->chat_hist_logline( text );
+    this->chat_hist_logline( message );
   }
 
   /* Synchronize logfile onto the hard drive */ /* MARK MARK */
@@ -130,7 +107,7 @@ namespace orxonox
   {
     /* output the line to the file if logging is enabled */
     if( this->hist_log_enabled )
-      this->hist_logfile << toadd << std::endl;
+      this->hist_logfile << toadd << endl;
     return 0;
   }
 
@@ -153,7 +130,7 @@ namespace orxonox
     if( !this->hist_logfile )
     { this->hist_log_enabled = false;
 #ifndef CHATTEST
-      COUT(2) << "Warning: Could not open logfile." << std::endl;
+      orxout(internal_warning) << "Could not open logfile." << endl;
 #endif
     }
 
@@ -184,10 +161,10 @@ namespace orxonox
     /* output all the strings */
     for( it = this->hist_buffer.begin(); it != this->hist_buffer.end();
       ++it )
-      std::cout << *it << std::endl;
+      orxout(debug_output) << *it << endl;
 
     /* output size */
-    std::cout << "Size: " << hist_buffer.size() << std::endl;
+    orxout(debug_output) << "Size: " << hist_buffer.size() << endl;
   }
 
 #ifndef CHATTEST

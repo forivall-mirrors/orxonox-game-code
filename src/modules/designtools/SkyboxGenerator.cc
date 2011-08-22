@@ -148,7 +148,7 @@ namespace orxonox
                 entity = HumanController::getLocalControllerSingleton()->getControllableEntity();
             else
             {
-                COUT(1) << "You must be in a level to generate a skybox." << endl;
+                orxout(user_error) << "You must be in a level to generate a skybox." << endl;
                 this->bGenerateSkybox_ = false;
                 return;
             }
@@ -174,7 +174,7 @@ namespace orxonox
                 // Add the log path to the standard resource group.
                 Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getInstance().getLogPathString(), "FileSystem", Resource::getDefaultResourceGroup());
                 
-                COUT(4) << "Setting up SkyboxGenerator..." << endl;
+                orxout(internal_status) << "Setting up SkyboxGenerator..." << endl;
                 
                 this->bSetup_ = false;
                 this->bWait_ = true;
@@ -193,7 +193,7 @@ namespace orxonox
                 if(rotate.second != 0)
                     entity->pitch(Degree((float)rotate.second));
                 
-                COUT(4) << "Created face number " << this->faceCounter_ << "." << endl;
+                orxout(internal_info) << "Created face number " << this->faceCounter_ << "." << endl;
                 // Check whether we've generated all 6 faces.
                 if(++this->faceCounter_ >= 6)
                     this->bCreateFace_ = false;
@@ -224,7 +224,7 @@ namespace orxonox
                 // Unpause.
                 CommandExecutor::execute("pause");
                 
-                COUT(3) << "Skybox with face size " << this->size_ << "x" << this->size_ << " pixels created. Storing in log/." << endl;
+                orxout(user_info) << "Skybox with face size " << this->size_ << "x" << this->size_ << " pixels created. Storing in log/." << endl;
             }
         }
     }

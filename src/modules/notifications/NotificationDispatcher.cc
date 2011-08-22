@@ -136,7 +136,7 @@ namespace orxonox
         if(!triggered || !this->isActive()) // If the NotificationDispatcher is inactive it cannot be executed.
             return false;
 
-        COUT(4) << "NotificationDispatcher (&" << this << ") triggered." << std::endl;
+        orxout(verbose, context::notifications) << "NotificationDispatcher (&" << this << ") triggered." << endl;
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         PlayerInfo* player = NULL;
@@ -154,7 +154,7 @@ namespace orxonox
 
         if(player == NULL)
         {
-            COUT(4) << "The NotificationDispatcher was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            orxout(verbose, context::notifications) << "The NotificationDispatcher was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << endl;
             return false;
         }
 

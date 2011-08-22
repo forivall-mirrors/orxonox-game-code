@@ -71,7 +71,7 @@ namespace orxonox
 
         this->defaultRepresentation_ = new PickupRepresentation();
 
-        COUT(3) << "PickupManager created." << std::endl;
+        orxout(internal_info, context::pickups) << "PickupManager created." << endl;
     }
 
     /**
@@ -100,7 +100,7 @@ namespace orxonox
 
         this->indexes_.clear();
 
-        COUT(3) << "PickupManager destroyed." << std::endl;
+        orxout(internal_info, context::pickups) << "PickupManager destroyed." << endl;
     }
 
     /**
@@ -125,7 +125,7 @@ namespace orxonox
 
         this->representations_[identifier] = representation;
 
-        COUT(4) << "PickupRepresentation &" << representation << " registered with the PickupManager." << std::endl;
+        orxout(verbose, context::pickups) << "PickupRepresentation &" << representation << " registered with the PickupManager." << endl;
         return true;
     }
 
@@ -150,7 +150,7 @@ namespace orxonox
 
         this->representations_.erase(it);
 
-        COUT(4) << "PickupRepresentation &" << representation << " unregistered with the PickupManager." << std::endl;
+        orxout(verbose, context::pickups) << "PickupRepresentation &" << representation << " unregistered with the PickupManager." << endl;
         return true;
     }
 
@@ -207,7 +207,7 @@ namespace orxonox
         std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
         if(it == this->representations_.end()) // If there is no PickupRepresentation associated with the input PickupIdentifier.
         {
-            COUT(4) << "PickupManager::getRepresentation() returned default representation." << std::endl;
+            orxout(verbose, context::pickups) << "PickupManager::getRepresentation() returned default representation." << endl;
             return this->defaultRepresentation_;
         }
 
@@ -283,7 +283,7 @@ namespace orxonox
         // If the input Pickupable (i.e its identifier) is not present in the list the PickupManager has.
         if(manager.pickupInventoryContainers_.find(pickup) == manager.pickupInventoryContainers_.end())
         {
-            COUT(1) << "Error: Pickupable &(" << pickup << ") was not registered with PickupManager for the PickupInventory, when it changed used." << std::endl;
+            orxout(internal_error, context::pickups) << "Pickupable &(" << pickup << ") was not registered with PickupManager for the PickupInventory, when it changed used." << endl;
             return;
         }
 

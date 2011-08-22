@@ -86,8 +86,8 @@
     Some other code:
     @code
     MyObject orxonoxobject;
-    std::cout << "Name:    " << orxonoxobject.getName() << std::endl;
-    std::cout << "Version: " << orxonoxobject.getVersion() << std::endl;
+    orxout() << "Name:    " << orxonoxobject.getName() << endl;
+    orxout() << "Version: " << orxonoxobject.getVersion() << endl;
     @endcode
 
     Output:
@@ -199,8 +199,8 @@ namespace orxonox
         }
         else
         {
-            COUT(2) << "Warning: Couldn't reset config-value '" << entryName << "' in class '"
-                    << ClassIdentifier<T>::getIdentifier()->getName() << "', corresponding container doesn't exist." << std::endl;
+            orxout(user_warning, context::config) << "Couldn't reset config-value '" << entryName << "' in class '"
+                                                  << ClassIdentifier<T>::getIdentifier()->getName() << "', corresponding container doesn't exist." << endl;
         }
     }
 }
@@ -237,8 +237,8 @@ namespace orxonox
     } \
     else \
     { \
-        COUT(2) << "Warning: Couln't modify config-value '" << entryName << "' in class '" \
-                << ClassByObjectType(object)->getName() << "', corresponding container doesn't exist." << std::endl; \
+        orxout(user_warning, context::config) << "Couldn't modify config-value '" << entryName << "' in class '" \
+                                              << ClassByObjectType(object)->getName() << "', corresponding container doesn't exist." << endl; \
     }
 
 /** Modifies a runtime configurable value by using a modifier and some arguments.

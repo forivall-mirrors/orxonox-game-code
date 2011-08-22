@@ -108,6 +108,17 @@
 #  endif
 #endif
 
+// Declare a function deprecated
+#ifndef __DEPRECATED__
+#  if defined(ORXONOX_COMPILER_GCC)
+#    define __DEPRECATED__(function) function __attribute__ ((deprecated))
+#  elif defined(ORXONOX_COMPILER_MSVC)
+#    define __DEPRECATED__(function) __declspec(deprecated) function
+#  else
+#    define __DEPRECATED__(function) function
+#  endif
+#endif
+
 #ifndef __UNIQUE_NUMBER__
 #  if defined(ORXONOX_COMPILER_GCC) && ORXONOX_COMP_VER >= 430
 #    define __UNIQUE_NUMBER__ __COUNTER__

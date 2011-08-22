@@ -73,6 +73,8 @@ namespace orxonox
 
     void GSLevel::activate()
     {
+        orxout(user_status) << "Loading level" << endl;
+
         if (GameMode::showsGraphics())
         {
             gameInputState_ = InputManager::getInstance().createInputState("game");
@@ -154,7 +156,6 @@ namespace orxonox
             this->staticObjects_.insert(*it);
 
         // call the loader
-        COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
         bool loaded = Loader::open(startFile_);
 
@@ -168,21 +169,21 @@ namespace orxonox
         Loader::unload(startFile_);
         delete startFile_;
 
-        COUT(3) << "Unloaded level. Remaining objects:" << std::endl;
+        orxout(internal_info) << "Remaining objects:" << endl;
         unsigned int i = 0;
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
         {
             std::set<BaseObject*>::const_iterator find = this->staticObjects_.find(*it);
             if (find == this->staticObjects_.end())
             {
-                COUT(3) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << "), references: " << it->getReferenceCount() << std::endl;
+                orxout(internal_info) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << "), references: " << it->getReferenceCount() << endl;
             }
         }
-        COUT(3) << i << " objects remaining.";
+        orxout(internal_info) << i << " objects remaining.";
         if (i == 0)
-            COUT(3) << " Well done!" << std::endl;
+            orxout(internal_info) << " Well done!" << endl;
         else
-            COUT(3) << " Try harder!" << std::endl;
+            orxout(internal_info) << " Try harder!" << endl;
     }
 
     /**

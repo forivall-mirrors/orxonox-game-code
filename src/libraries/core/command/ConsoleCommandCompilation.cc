@@ -37,7 +37,7 @@
 #include <set>
 #include <string>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/ExprParser.h"
 #include "util/StringUtils.h"
 #include "ConsoleCommand.h"
@@ -45,15 +45,119 @@
 
 namespace orxonox
 {
-//    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
     SetConsoleCommand("echo", echo);
-//    SetConsoleCommand("puts", puts);                                                    // disabled because we use the implementation in Tcl
 
+    SetConsoleCommand("orxout", orxout_level);
+    SetConsoleCommand("orxout_context", orxout_level_context);
+
+    SetConsoleCommand("log"    , log    );
+    SetConsoleCommand("error"  , error  ).hide();
+    SetConsoleCommand("warning", warning).hide();
+    SetConsoleCommand("status" , status ).hide();
+    SetConsoleCommand("info"   , info   ).hide();
+    SetConsoleCommand("debug"  , debug  ).hide();
+
+//    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
 //    SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());      // disabled because we use the implementation in Tcl
 //    SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
 //    SetConsoleCommand("write", write).argumentCompleter(0, autocompletion::files());    // disabled because we use the implementation in Tcl
 
     SetConsoleCommand("calculate", calculate);
+
+    /**
+        @brief Simply returns the arguments.
+    */
+    std::string echo(const std::string& text)
+    {
+        return text;
+    }
+
+    /**
+        @brief Builds a map that maps the levels of all output levels to their ID.
+    */
+    std::map<std::string, OutputLevel> getOutputLevelsMap()
+    {
+        std::map<std::string, OutputLevel> levels;
+
+        levels["message"]          = level::message;
+        levels["debug_output"]     = level::debug_output;
+        levels["user_error"]       = level::user_error;
+        levels["user_warning"]     = level::user_warning;
+        levels["user_status"]      = level::user_status;
+        levels["user_info"]        = level::user_info;
+        levels["internal_error"]   = level::internal_error;
+        levels["internal_warning"] = level::internal_warning;
+        levels["internal_status"]  = level::internal_status;
+        levels["internal_info"]    = level::internal_info;
+        levels["verbose"]          = level::verbose;
+        levels["verbose_more"]     = level::verbose_more;
+        levels["verbose_ultra"]    = level::verbose_ultra;
+
+        return levels;
+    }
+
+    /**
+        @brief Prints text to the console.
+        @param level_name The name of the output level
+    */
+    void orxout_level(const std::string& level_name, const std::string& text)
+    {
+        static std::map<std::string, OutputLevel> levels = getOutputLevelsMap();
+
+        OutputLevel level = level::debug_output;
+        std::map<std::string, OutputLevel>::iterator it = levels.find(level_name);
+        if (it != levels.end())
+            level = it->second;
+        else
+            orxout(internal_warning) << "'" << level_name << "' is not a valid output level" << endl;
+
+        orxout(level) << text << endl;
+    }
+
+    /**
+        @brief Prints text to the console.
+        @param level_name The name of the output level
+        @param context_name The name of the output context
+    */
+    void orxout_level_context(const std::string& level_name, const std::string& context_name, const std::string& text)
+    {
+        static std::map<std::string, OutputLevel> levels = getOutputLevelsMap();
+
+        OutputLevel level = level::debug_output;
+        std::map<std::string, OutputLevel>::iterator it = levels.find(level_name);
+        if (it != levels.end())
+            level = it->second;
+        else
+            orxout(internal_warning) << "'" << level_name << "' is not a valid output level" << endl;
+
+        OutputContextContainer context = registerContext(context_name);
+
+        orxout(level, context) << text << endl;
+    }
+
+    /// @brief Prints text to the console and the logfile.
+    void log(const std::string& text)
+    { orxout() << text << endl; }
+
+    /// @brief Prints output with error level.
+    void error(const std::string& text)
+    { orxout(user_error) << text << endl; }
+
+    /// @brief Prints output with warning level.
+    void warning(const std::string& text)
+    { orxout(user_warning) << text << endl; }
+
+    /// @brief Prints output with status level.
+    void status(const std::string& text)
+    { orxout(user_status) << text << endl; }
+
+    /// @brief Prints output with info level.
+    void info(const std::string& text)
+    { orxout(user_info) << text << endl; }
+
+    /// @brief Prints debug output with verbose level.
+    void debug(const std::string& text)
+    { orxout(verbose, context::tcl) << text << endl; }
 
     /**
         @brief Reads the content of a file and executes the commands in it line by line.
@@ -65,7 +169,7 @@ namespace orxonox
         std::set<std::string>::const_iterator it = executingFiles.find(filename);
         if (it != executingFiles.end())
         {
-            COUT(1) << "Error: Recurring source command in \"" << filename << "\". Stopped execution." << std::endl;
+            orxout(user_error) << "Recurring source command in \"" << filename << "\". Stopped execution." << endl;
             return;
         }
 
@@ -75,7 +179,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't open file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't open file \"" << filename << "\"." << endl;
             return;
         }
 
@@ -94,29 +198,6 @@ namespace orxonox
     }
 
     /**
-        @brief Simply returns the arguments.
-    */
-    std::string echo(const std::string& text)
-    {
-        return text;
-    }
-
-    /**
-        @brief Writes text to the console, depending on the first argument with or without a line-break after it.
-    */
-    void puts(bool newline, const std::string& text)
-    {
-        if (newline)
-        {
-            COUT(0) << stripEnclosingBraces(text) << std::endl;
-        }
-        else
-        {
-            COUT(0) << stripEnclosingBraces(text);
-        }
-    }
-
-    /**
         @brief Writes text to a file.
     */
     void write(const std::string& filename, const std::string& text)
@@ -126,11 +207,11 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't write to file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't write to file \"" << filename << "\"." << endl;
             return;
         }
 
-        file << text << std::endl;
+        file << text << endl;
         file.close();
     }
 
@@ -144,11 +225,11 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't append to file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't append to file \"" << filename << "\"." << endl;
             return;
         }
 
-        file << text << std::endl;
+        file << text << endl;
         file.close();
     }
 
@@ -162,7 +243,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't read from file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't read from file \"" << filename << "\"." << endl;
             return "";
         }
 
@@ -191,17 +272,17 @@ namespace orxonox
         {
             if (expr.getResult() == 42.0)
             {
-                COUT(3) << "Greetings from the restaurant at the end of the universe." << std::endl;
+                orxout(user_info) << "Greetings from the restaurant at the end of the universe." << endl;
             }
             if (!expr.getRemains().empty())
             {
-                COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << std::endl;
+                orxout(user_warning) << "Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << endl;
             }
             return static_cast<float>(expr.getResult());
         }
         else
         {
-            COUT(1) << "Error: Cannot calculate expression: Parse error." << std::endl;
+            orxout(user_error) << "Cannot calculate expression: Parse error." << endl;
             return 0;
         }
     }

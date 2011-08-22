@@ -250,7 +250,7 @@ namespace orxonox
         mask.include(Class(LevelInfo));
 
         // Iterate over all the found *.oxw files
-        COUT(3) << "Loading LevelInfos..." << std::endl;
+        orxout(internal_info) << "Loading LevelInfos..." << endl;
         std::set<std::string> names;
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
@@ -280,12 +280,12 @@ namespace orxonox
 
                 // Warn about levels with the same name.
                 if(!names.insert(info->getName()).second)
-                    COUT(2) << "Warning: Multiple levels (" << info->getXMLFilename() << ") with name '" << info->getName() << "' found!" << std::endl;
+                    orxout(internal_warning) << "Multiple levels (" << info->getXMLFilename() << ") with name '" << info->getName() << "' found!" << endl;
 
                 // Warn about multiple items so that it gets fixed quickly
                 if(availableLevels_.find(info) != availableLevels_.end())
                 {
-                    COUT(2) << "Warning: Multiple levels (" << info->getXMLFilename() << ") with same name '" << info->getName() << "' and filename found! Exluding..." << std::endl;
+                    orxout(internal_warning) << "Multiple levels (" << info->getXMLFilename() << ") with same name '" << info->getName() << "' and filename found! Exluding..." << endl;
                     // Delete LevelInfoItem to avoid a dangling pointer
                     delete info;
                 }

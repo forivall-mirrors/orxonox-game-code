@@ -50,7 +50,7 @@ namespace orxonox
         RegisterRootObject(PickupIdentifier);
 
         if(pickup == NULL)
-            COUT(1) << "Error, PickupIdentifier was created without a valid Pickupable." << std::endl;
+            orxout(internal_error, context::pickups) << "PickupIdentifier was created without a valid Pickupable." << endl;
 
         this->pickup_ = pickup;
     }
@@ -82,7 +82,7 @@ namespace orxonox
         // If the two have a different number of parameters then obviously something is very wrong.
         if(!(this->parameters_.size() == identifier->parameters_.size()))
         {
-            COUT(1) << "Something went wrong in PickupIdentifier!" << std::endl;
+            orxout(internal_error, context::pickups) << "Something went wrong in PickupIdentifier!" << endl;
             return this->parameters_.size()-identifier->parameters_.size();
         }
 
@@ -92,7 +92,7 @@ namespace orxonox
             // If a parameter present in one of the identifiers is not found in the other, once again, something is very wrong.
             if(identifier->parameters_.find(it->first) == identifier->parameters_.end())
             {
-                COUT(1) << "Something went wrong in PickupIdentifier!" << std::endl;
+                orxout(internal_error, context::pickups) << "Something went wrong in PickupIdentifier!" << endl;
                 return -1;
             }
             if(identifier->parameters_.find(it->first)->second != it->second)
@@ -114,11 +114,11 @@ namespace orxonox
     */
     bool PickupIdentifier::addParameter(std::string & name, std::string & value)
     {
-        COUT(4) << "PickupIdentifier " << name << ", " << value << std::endl;
+        orxout(verbose, context::pickups) << "PickupIdentifier " << name << ", " << value << endl;
 
         if(!(this->parameters_.find(name) == this->parameters_.end()))
         {
-            COUT(4) << "Request for adding a parameter that already exists for the PickupIdentififer was denied. name: '" << name << "', value: '" << value << "'."<<  std::endl;
+            orxout(verbose, context::pickups) << "Request for adding a parameter that already exists for the PickupIdentififer was denied. name: '" << name << "', value: '" << value << "'."<<  endl;
             return false;
         }
 

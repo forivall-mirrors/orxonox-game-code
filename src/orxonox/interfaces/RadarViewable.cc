@@ -82,7 +82,7 @@ namespace orxonox
 //             this->radarObjectShape_ = radar->addObjectDescription(str);
 //         else
 //         {
-//             CCOUT(2) << "Attempting to access the radar, but the radar is non existent." << std::endl;
+//             orxout(internal_warning) << "Attempting to access the radar, but the radar is non existent." << endl;
 //         }
 //         this->radarObjectDescription_ = str;
 //     }
@@ -105,7 +105,7 @@ namespace orxonox
     {
         if (!object)
         {
-            COUT(1) << "Assertion: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
+            orxout(user_error) << "Assertion: Every RadarViewable has to be assigned a WorldEntity pointer!" << endl;
             assert(0);
         }
     }

@@ -20,10 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau (original)
+ *      Sandro 'smerkli' Merkli
  *   Co-authors:
- *      Sandro 'smerkli' Merkli (adaptions to WAN)
- *      ...
+ *      Oliver Scheuss (original)
  *
  */
 
@@ -32,19 +31,15 @@
 #include <enet/enet.h>
 #include <cstring>
 
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 
 
 namespace orxonox
 {
-  ManageScopedSingleton(WANDiscovery, ScopeID::Graphics, true);
-
-
   WANDiscovery::WANDiscovery()
   {
     /* debugging output */
-    COUT(4) << "Creating WANDiscovery.\n";
+    orxout(verbose, context::master_server) << "Creating WANDiscovery." << endl;
   
     /* register object in orxonox */
     RegisterObject(WANDiscovery);
@@ -54,15 +49,15 @@ namespace orxonox
 
     /* initialize it and see if it worked */
     if( msc.initialize() )
-      COUT(2) << "Error: could not initialize master server communications!\n";
+      orxout(internal_error, context::master_server) << "Could not initialize master server communications!" << endl;
 
     /* connect and see if it worked */
     if( msc.connect( this->msaddress.c_str(), ORX_MSERVER_PORT ) )
-      COUT(2) << "Error: could not connect to master server at " 
-        << this->msaddress << std::endl;
+      orxout(internal_error, context::master_server) << "Could not connect to master server at " 
+        << this->msaddress << endl;
 
     /* debugging output */
-    COUT(4) << "Initialization of WANDiscovery complete.\n";
+    orxout(verbose, context::master_server) << "Initialization of WANDiscovery complete." << endl;
   }
 
   void WANDiscovery::setConfigValues()
@@ -80,11 +75,11 @@ namespace orxonox
   }
 
   /* callback for the network reply poller */
-  int rhandler( char *addr, ENetEvent *ev )
+  int WANDiscovery::rhandler( char *addr, ENetEvent *ev )
   { 
     /* error recognition */
     if( !ev || !ev->packet || !ev->packet->data )
-    { COUT(2) << "Bad arguments received in WANDiscovery's reply handler.\n";
+    { orxout(internal_warning, context::master_server) << "Bad arguments received in WANDiscovery's reply handler." << endl;
       return 0;
     }
 
@@ -103,7 +98,7 @@ namespace orxonox
         MSPROTO_SERVERLIST_ITEM_LEN+1) );
 
       /* add to list */
-      WANDiscovery::getInstance().servers_.push_back( toadd );
+      this->servers_.push_back( toadd );
     }
     else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
@@ -132,7 +127,7 @@ namespace orxonox
     while( i > 0 )
     {
       /* poll for reply and act according to what was received */
-      switch( this->msc.pollForReply( rhandler, 500 ) )
+      switch( this->msc.pollForReply( this, 500 ) )
       { case 0: /* no event occured, decrease timeout */
           --i; break;
         case 1: /* got a list element, continue */ 

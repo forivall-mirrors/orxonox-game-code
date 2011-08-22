@@ -92,7 +92,7 @@ namespace orxonox
         {
             Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
             if (!camera)
-                COUT(3) << "HumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
+                orxout(internal_warning) << "HumanController, Warning: Using a ControllableEntity without Camera" << endl;
         }
     }
 
@@ -196,7 +196,7 @@ namespace orxonox
             this->boostingTimeout_.startTimer();
             
             this->controllableEntity_->boost(this->boosting_);
-            COUT(4) << "Start boosting" << endl;
+//            orxout() << "Start boosting" << endl;
         }
     }
 
@@ -210,7 +210,7 @@ namespace orxonox
         this->boostingTimeout_.stopTimer();
 
         this->controllableEntity_->boost(this->boosting_);
-        COUT(4) << "Stop boosting" << endl;
+//        orxout() << "Stop boosting" << endl;
     }
 
     void HumanController::greet()
@@ -256,8 +256,8 @@ namespace orxonox
             const Vector3& position = HumanController::localController_s->controllableEntity_->getPosition();
             const Quaternion& orientation = HumanController::localController_s->controllableEntity_->getOrientation();
 
-            COUT(0) << "position=\"" << position.x << ", " << position.y << ", " << position.z << "\" ";
-            COUT(0) << "orientation=\"" << orientation.w << ", " << orientation.x << ", " << orientation.y << ", " << orientation.z << "\"" << std::endl;
+            orxout(message) << "position=\"" << position.x << ", " << position.y << ", " << position.z << "\" "
+                            << "orientation=\"" << orientation.w << ", " << orientation.x << ", " << orientation.y << ", " << orientation.z << "\"" << endl;
         }
     }
 

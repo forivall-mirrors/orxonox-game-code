@@ -85,6 +85,7 @@ ORXONOX_ADD_LIBRARY(core
     input/InputManager.h
     input/KeyBinder.h
     input/KeyBinderManager.h
+    ../util/output/OutputDefinitions.h
   PCH_FILE
     CorePrecompiledHeaders.h
   LINK_LIBRARIES

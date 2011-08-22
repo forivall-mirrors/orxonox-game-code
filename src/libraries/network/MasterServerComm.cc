@@ -27,7 +27,8 @@
  */
 
 #include "MasterServerComm.h"
-#include "util/Debug.h"
+#include "util/Output.h"
+#include "WANDiscovery.h"
 
 namespace orxonox
 {
@@ -43,7 +44,7 @@ namespace orxonox
   {
     /* initialize Enet */
     if( enet_initialize () != 0 )
-    { COUT(1) << "An error occurred while initializing ENet.\n";
+    { orxout(internal_error, context::master_server) << "An error occurred while initializing ENet." << endl;
       return 1;
     }
 
@@ -60,8 +61,8 @@ namespace orxonox
 
     /* see if it worked */
     if (this->client == NULL)
-    { COUT(1) << "An error occurred while trying to create an " 
-        << "ENet client host.\n";
+    { orxout(internal_error, context::master_server) << "An error occurred while trying to create an " 
+        << "ENet client host." << endl;
       return 1;
     }
 
@@ -84,19 +85,19 @@ namespace orxonox
     this->peer = enet_host_connect(this->client, &this->address, 2, 0);    
 
     if( this->peer == NULL )
-    { COUT(2) << "ERROR: No available peers for initiating an ENet"
-        << " connection.\n";
+    { orxout(internal_error, context::master_server) << "No available peers for initiating an ENet"
+        << " connection." << endl;
       return -1;
     }
 
     /* Wait up to 2 seconds for the connection attempt to succeed. */
     if (enet_host_service (this->client, &this->event, 500) > 0 &&
         this->event.type == ENET_EVENT_TYPE_CONNECT )
-      COUT(3) << "Connection to master server succeeded.\n";
+      orxout(internal_info, context::master_server) << "Connection to master server succeeded." << endl;
     else
     {
       enet_peer_reset (this->peer);
-      COUT(2) << "ERROR: connection to " << address << " failed.\n";
+      orxout(internal_warning, context::master_server) << "Connection to " << address << " failed." << endl;
       return -1;
     }
 
@@ -127,7 +128,7 @@ void MasterServerComm::update()
           break;
 
         case ENET_EVENT_TYPE_DISCONNECT:
-          COUT(4) << "Disconnect from master server successful.\n"; 
+          orxout(verbose, context::master_server) << "Disconnect from master server successful." << endl; 
           return 0;
         default: break;
       }
@@ -148,12 +149,11 @@ void MasterServerComm::update()
    * - the event
    * so we can also make callbacks from objects
    */
-  int MasterServerComm::pollForReply( int (*callback)( char*, ENetEvent* ),
-    int delayms )
+  int MasterServerComm::pollForReply( WANDiscovery* listener, int delayms )
   { 
     /* see whether anything happened */
     /* WORK MARK REMOVE THIS OUTPUT */
-    COUT(2) << "polling masterserver...\n";
+    orxout(verbose, context::master_server) << "polling masterserver..." << endl;
 
     /* address buffer */
     char *addrconv = NULL;
@@ -175,7 +175,7 @@ void MasterServerComm::update()
         case ENET_EVENT_TYPE_RECEIVE: 
           addrconv = (char *) calloc( 50, 1 );
           if( !addrconv ) 
-          { COUT(2) << "MasterServerComm.cc: Could not allocate memory!\n";
+          { orxout(internal_warning, context::master_server) << "MasterServerComm.cc: Could not allocate memory!" << endl;
             break;
           }
 
@@ -184,7 +184,7 @@ void MasterServerComm::update()
             addrconv, 49 );
 
           /* DEBUG */
-          COUT(3) << "MasterServer Debug: A packet of length " 
+          orxout(verbose, context::master_server) << "MasterServer Debug: A packet of length " 
             << this->event.packet->dataLength 
             << " containing " << this->event.packet->data
             << " was received from " << addrconv 
@@ -192,8 +192,8 @@ void MasterServerComm::update()
           /* END DEBUG */
 
           /* call the supplied callback, if any. */
-          if( (*callback) != NULL )
-            retval = (*callback)( addrconv, &(this->event) );
+          if( listener != NULL )
+            retval = listener->rhandler( addrconv, &(this->event) );
 
           /* clean up */
           enet_packet_destroy( event.packet );

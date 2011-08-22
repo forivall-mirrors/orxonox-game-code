@@ -131,7 +131,7 @@ namespace orxonox
     {
         if (type != WorldEntity::Dynamic)
         {
-            CCOUT(1) << "Error: Cannot tell a FpsPlayer not to be dynamic! Ignoring." << std::endl;
+            orxout(internal_warning) << "Cannot tell a FpsPlayer not to be dynamic! Ignoring." << endl;
             assert(false); // Only in debug mode
             return false;
         }

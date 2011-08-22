@@ -142,7 +142,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+            orxout(user_error, context::config) << "Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << endl;
         }
         return false;
     }
@@ -181,7 +181,7 @@ namespace orxonox
         {
             if (index > MAX_VECTOR_INDEX)
             {
-                COUT(1) << "Error: Index " << index << " is too large." << std::endl;
+                orxout(user_error, context::config) << "Index " << index << " is too large." << endl;
                 return false;
             }
 
@@ -202,7 +202,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+            orxout(user_error, context::config) << "Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << endl;
             return false;
         }
     }
@@ -217,7 +217,7 @@ namespace orxonox
         if (this->bIsVector_)
             return this->set(this->valueVector_.size(), input);
 
-        COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+        orxout(user_error, context::config) << "Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << endl;
         return false;
     }
 
@@ -240,10 +240,10 @@ namespace orxonox
 
                 return true;
             }
-            COUT(1) << "Error: Invalid vector-index." << std::endl;
+            orxout(user_error, context::config) << "Invalid vector-index." << endl;
         }
 
-        COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+        orxout(user_error, context::config) << "Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << endl;
         return false;
     }
 
@@ -311,11 +311,11 @@ namespace orxonox
         {
             if (!success)
             {
-                COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << std::endl;
+                orxout(user_error, context::config) << "Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << endl;
             }
             else
             {
-                COUT(1) << "Error: Invalid vector-index." << std::endl;
+                orxout(user_error, context::config) << "Invalid vector-index." << endl;
             }
             return false;
         }

@@ -43,7 +43,7 @@
 #include <cassert>
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/ScopedSingletonManager.h"
 #include "synchronisable/Synchronisable.h"
 #include "packet/Chat.h"
@@ -115,28 +115,32 @@ namespace orxonox
     ClientConnection::addPacket(packet, channelID);
   }
 
-  bool Client::processChat(const std::string& message, unsigned int playerID)
-  {
-//    COUT(1) << "Player " << playerID << ": " << message << std::endl;
-    return true;
-  }
-
   void Client::printRTT()
   {
-    COUT(0) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
+    orxout(message) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
   }
 
   /**
-   * This function implements the method of sending a chat message to the server
+   * @brief Sends a chat message to the server.
    * @param message message to be sent
-   * @return result(true/false)
+   * @param sourceID the ID of the sender
+   * @param targetID the ID of the receiver
    */
-  bool Client::chat(const std::string& message)
+  void Client::doSendChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
   {
-    packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
-    return m->send(static_cast<Host*>(this));
+    // send the message to the server
+    packet::Chat* packet = new packet::Chat(message, sourceID, targetID);
+    packet->send(static_cast<Host*>(this));
   }
 
+  /**
+   * @brief Gets called if a packet::Chat packet is received. Calls the parent function which passes the message to the listeners.
+   */
+  void Client::doReceiveChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
+  {
+    // call the parent function which passes the message to the listeners
+    Host::doReceiveChat(message, sourceID, targetID);
+  }
 
   /**
    * Processes incoming packets, sends a gamestate to the server and does the cleanup
@@ -149,10 +153,9 @@ namespace orxonox
     if(timeSinceLastUpdate_>=NETWORK_PERIOD)
     {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-      //     COUT(3) << '.';
       if ( isConnected() && isSynched_ )
       {
-        COUT(4) << "popping partial gamestate: " << std::endl;
+        orxout(verbose, context::network) << "popping partial gamestate: " << endl;
 //         packet::Gamestate *gs = GamestateClient::getGamestate();
         if( GamestateManager::update() )
         {
@@ -165,9 +168,9 @@ namespace orxonox
         }
         //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
 //         if(gs){
-//           COUT(4) << "client tick: sending gs " << gs << std::endl;
+//           orxout(verbose, context::network) << "client tick: sending gs " << gs << endl;
 //           if( !gs->send() )
-//             COUT(2) << "Problem adding partial gamestate to queue" << std::endl;
+//             orxout(internal_warning, context::network) << "Problem adding partial gamestate to queue" << endl;
 //         // gs gets automatically deleted by enet callback
 //         }
         FunctionCallManager::sendCalls(static_cast<Host*>(this));
@@ -203,7 +206,7 @@ namespace orxonox
     Game::getInstance().popState();
     Game::getInstance().popState();
   }
-  
+
   void Client::processPacket(packet::Packet* packet)
   {
     if( packet->isReliable() )
@@ -216,8 +219,4 @@ namespace orxonox
     else
       packet->process(static_cast<Host*>(this));
   }
-
-
-
-
 }

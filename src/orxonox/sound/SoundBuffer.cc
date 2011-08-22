@@ -50,7 +50,7 @@ namespace orxonox
         shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(filename);
         if (fileInfo == NULL)
         {
-            COUT(2) << "Sound: Warning: Sound file '" << filename << "' not found" << std::endl;
+            orxout(internal_error, context::sound) << "Sound file '" << filename << "' not found" << endl;
             return;
         }
         // Open data stream
@@ -143,7 +143,7 @@ namespace orxonox
         int ret = ov_open_callbacks(dataStream.get(), &vf, NULL, 0, vorbisCallbacks);
         if (ret < 0)
         {
-            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
+            orxout(internal_error, context::sound) << "libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << endl;
             ov_clear(&vf);
             ThrowException(General, "Sound Error: Ogg file loader failed when opening the bitstream");
         }
@@ -159,7 +159,7 @@ namespace orxonox
             }
             else if (ret < 0)
             {
-                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                orxout(internal_error, context::sound) << "libvorbisfile: error reading the file" << endl;
                 ov_clear(&vf);
                 ThrowException(General, "Sound Error: Ogg file loader failed when decoding the file");
             }

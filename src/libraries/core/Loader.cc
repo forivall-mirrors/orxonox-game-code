@@ -32,7 +32,7 @@
 #include <tinyxml/ticpp.h>
 #include <boost/scoped_ptr.hpp>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "BaseObject.h"
@@ -48,10 +48,10 @@ namespace orxonox
     std::vector<std::pair<const XMLFile*, ClassTreeMask> > Loader::files_s;
     ClassTreeMask Loader::currentMask_s;
 
-    bool Loader::open(const XMLFile* file, const ClassTreeMask& mask)
+    bool Loader::open(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
     {
         Loader::add(file, mask);
-        return Loader::load(file, mask);
+        return Loader::load(file, mask, bVerbose);
     }
 
     void Loader::close()
@@ -92,16 +92,16 @@ namespace orxonox
         Loads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
     @param mask
         A ClassTreeMask, which defines which types of classes are loaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @return
         Returns true if successful.
     */
-    bool Loader::load(const ClassTreeMask& mask, bool verbose)
+    bool Loader::load(const ClassTreeMask& mask, bool bVerbose)
     {
         bool success = true;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
-            if (!Loader::load(it->first, it->second * mask, verbose))
+            if (!Loader::load(it->first, it->second * mask, bVerbose))
                 success = false;
 
         return success;
@@ -123,15 +123,15 @@ namespace orxonox
         Reloads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
     @param mask
         A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @return
         Returns true if successful.
     */
-    bool Loader::reload(const ClassTreeMask& mask, bool verbose)
+    bool Loader::reload(const ClassTreeMask& mask, bool bVerbose)
     {
         Loader::unload(mask);
-        return Loader::load(mask, verbose);
+        return Loader::load(mask, bVerbose);
     }
 
     /**
@@ -141,14 +141,14 @@ namespace orxonox
         The file to be loaded.
     @param mask
         A ClassTreeMask, which defines which types of classes are loaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @param bRemoveLuaTags
         If true lua tags are just ignored and removed. The default is false.
     @return
         Returns true if successful.
     */
-    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool verbose, bool bRemoveLuaTags)
+    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose, bool bRemoveLuaTags)
     {
         if (!file)
             return false;
@@ -169,7 +169,7 @@ namespace orxonox
             shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename());
             if (info == NULL)
             {
-                COUT(1) << "Error: Could not find XML file '" << file->getFilename() << "'." << std::endl;
+                orxout(user_error, context::loader) << "Could not find XML file '" << file->getFilename() << "'." << endl;
                 return false;
             }
             xmlInput = Resource::open(file->getFilename())->getAsString();
@@ -186,15 +186,15 @@ namespace orxonox
 
         try
         {
-            if(verbose)
+            if(bVerbose)
             {
-                COUT(0) << "Start loading " << file->getFilename() << "..." << std::endl;
-                COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
+                orxout(user_info) << "Start loading " << file->getFilename() << "..." << endl;
+                orxout(internal_info, context::loader) << "Mask: " << Loader::currentMask_s << endl;
             }
             else
             {
-                COUT(4) << "Start loading " << file->getFilename() << "..." << std::endl;
-                COUT(4) << "Mask: " << Loader::currentMask_s << std::endl;
+                orxout(verbose, context::loader) << "Start loading " << file->getFilename() << "..." << endl;
+                orxout(verbose_more, context::loader) << "Mask: " << Loader::currentMask_s << endl;
             }
 
             ticpp::Document xmlfile(file->getFilename());
@@ -207,7 +207,7 @@ namespace orxonox
             for (ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++)
                 rootElement.InsertEndChild(*child);
 
-            COUT(4) << "  creating root-namespace..." << std::endl;
+            orxout(verbose, context::loader) << "  creating root-namespace..." << endl;
             Namespace* rootNamespace = new Namespace(0);
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setFile(file);
@@ -215,37 +215,37 @@ namespace orxonox
             rootNamespace->setRoot(true);
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
-            if(verbose)
-                COUT(0) << "Finished loading " << file->getFilename() << '.' << std::endl;
+            if(bVerbose)
+                orxout(user_info) << "Finished loading " << file->getFilename() << '.' << endl;
             else
-                COUT(4) << "Finished loading " << file->getFilename() << '.' << std::endl;
+                orxout(verbose, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
 
-            COUT(4) << "Namespace-tree:" << std::endl << rootNamespace->toString("  ") << std::endl;
+            orxout(verbose, context::loader) << "Namespace-tree:" << '\n' << rootNamespace->toString("  ") << endl;
 
             return true;
         }
         catch (ticpp::Exception& ex)
         {
-            COUT(1) << std::endl;
-            COUT(1) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
+            orxout(user_error, context::loader) << endl;
+            orxout(user_error, context::loader) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
+            orxout(user_error, context::loader) << ex.what() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
             return false;
         }
         catch (Exception& ex)
         {
-            COUT(1) << std::endl;
-            COUT(1) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
+            orxout(user_error, context::loader) << endl;
+            orxout(user_error, context::loader) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
+            orxout(user_error, context::loader) << ex.what() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
             return false;
         }
         catch (...)
         {
-            COUT(1) << std::endl;
-            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
-            COUT(1) << Exception::handleMessage() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
+            orxout(user_error, context::loader) << endl;
+            orxout(user_error, context::loader) << "An error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
+            orxout(user_error, context::loader) << Exception::handleMessage() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
             return false;
         }
     }
@@ -270,15 +270,15 @@ namespace orxonox
         The file to be reloaded.
     @param mask
         A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @return
         Returns true if successful.
     */
-    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
+    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
     {
         Loader::unload(file, mask);
-        return Loader::load(file, mask, verbose);
+        return Loader::load(file, mask, bVerbose);
     }
 
     bool Loader::getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags)
@@ -336,9 +336,9 @@ namespace orxonox
             }
             if (!expectedValue)
             {
-                COUT(2) << "Warning: Error in level file" << std::endl;
+                orxout(internal_error, context::loader) << "Error in level file" << endl;
                 // TODO: error handling
-                return false; 
+                return false;
             }
         }
 

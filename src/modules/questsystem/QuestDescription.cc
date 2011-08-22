@@ -78,7 +78,7 @@ namespace orxonox
         XMLPortParam(QuestDescription, "failMessage", setFailMessage, getFailMessage, xmlelement, mode);
         XMLPortParam(QuestDescription, "completeMessage", setCompleteMessage, getCompleteMessage, xmlelement, mode);
 
-        COUT(4) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
+        orxout(verbose, context::quests) << "New QuestDescription with title '" << this->getTitle() << "' created." << endl;
     }
 
     /**
@@ -108,13 +108,13 @@ namespace orxonox
                 message = "You successfully completed the quest: '" + this->title_ + '\'';
             else
             {
-                COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;
+                orxout(internal_warning, context::quests) << "Bad input in notificationHelper, this should not be happening!" << endl;
                 return false;
             }
         }
         else
         {
-            COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;
+            orxout(internal_warning, context::quests) << "Bad input in notificationHelper, this should not be happening!" << endl;
             return false;
         }
 

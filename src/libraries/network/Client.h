@@ -72,7 +72,7 @@ namespace orxonox
   public:
     Client();
     ~Client();
-    
+
     static Client* getInstance(){ return singletonPtr_s; } // tolua_export
 
     bool establishConnection();
@@ -80,9 +80,8 @@ namespace orxonox
     bool closeConnection();
     void queuePacket(ENetPacket* packet, int clientID, uint8_t channelID);
     virtual bool sendPacket( packet::Packet* packet ){ return packet->send( static_cast<Host*>(this) ); }
-    bool processChat(const std::string& message, unsigned int playerID);
-    virtual bool chat(const std::string& message);
-    virtual bool broadcast(const std::string& message) { return false; }
+    virtual void doSendChat(const std::string& message, unsigned int sourceID, unsigned int targetID);
+    virtual void doReceiveChat(const std::string& message, unsigned int sourceID, unsigned int targetID);
     virtual void printRTT();
 
     void update(const Clock& time);

@@ -84,7 +84,7 @@ namespace orxonox
             this->interpreter_->def("::orxonox::irc::info", IRC::tcl_info, Tcl::variadic());
         }
         catch (Tcl::tcl_error const &e)
-        {   COUT(1) << "Tcl (IRC) error: " << e.what();   }
+        {   orxout(user_error, context::tcl) << "Tcl (IRC) error: " << e.what() << endl;   }
 
         this->nickname_ = "orx" + multi_cast<std::string>(static_cast<unsigned int>(rand()));
         TclThreadManager::execute(threadID, "set nickname " + this->nickname_);
@@ -99,7 +99,7 @@ namespace orxonox
         if (!IRC::getInstance().interpreter_)
         {
             IRC::getInstance().initialize();
-            COUT(1) << "Error: IRC client wasn't yet initialized, please try again." << std::endl;
+            orxout(user_error) << "IRC client wasn't yet initialized, please try again." << endl;
             return false;
         }
 
@@ -109,7 +109,7 @@ namespace orxonox
             return true;
         }
         catch (Tcl::tcl_error const &e)
-        {   COUT(1) << "Tcl (IRC) error: " << e.what();   }
+        {   orxout(user_error, context::tcl) << "Tcl (IRC) error: " << e.what() << endl;   }
 
         return false;
     }
@@ -138,24 +138,24 @@ namespace orxonox
     /// Tcl-callback: Prints a message that was received from the current IRC channel to the console.
     void IRC::tcl_say(Tcl::object const &channel, Tcl::object const &nick, Tcl::object const &args)
     {
-        COUT(0) << "IRC> " << nick.get() << ": " << stripEnclosingBraces(args.get()) << std::endl;
+        orxout(message) << "IRC> " << nick.get() << ": " << stripEnclosingBraces(args.get()) << endl;
     }
 
     /// Tcl-callback: Prints a private message that was received from a user to the console.
     void IRC::tcl_privmsg(Tcl::object const &query, Tcl::object const &nick, Tcl::object const &args)
     {
-        COUT(0) << "IRC (" << query.get() << ")> " << nick.get() << ": " << stripEnclosingBraces(args.get()) << std::endl;
+        orxout(message) << "IRC (" << query.get() << ")> " << nick.get() << ": " << stripEnclosingBraces(args.get()) << endl;
     }
 
     /// Tcl-callback: Prints an action-message (usually /me ...) that was received from the current IRC channel to the console.
     void IRC::tcl_action(Tcl::object const &channel, Tcl::object const &nick, Tcl::object const &args)
     {
-        COUT(0) << "IRC> * " << nick.get() << ' ' << stripEnclosingBraces(args.get()) << std::endl;
+        orxout(message) << "IRC> * " << nick.get() << ' ' << stripEnclosingBraces(args.get()) << endl;
     }
 
     /// Tcl-callback: Prints all kinds of information that were received from the IRC server or channel (connection info, join, part, modes, ...) to the console.
     void IRC::tcl_info(Tcl::object const &channel, Tcl::object const &args)
     {
-        COUT(0) << "IRC> --> " << stripEnclosingBraces(args.get()) << std::endl;
+        orxout(message) << "IRC> --> " << stripEnclosingBraces(args.get()) << endl;
     }
 }

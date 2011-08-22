@@ -83,7 +83,7 @@ namespace orxonox
         if(this->quest_ != NULL)
             this->quest_->addListener(this); // Adds the QuestListener to the Quests list of listeners.
 
-        COUT(4) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getMode() << "'." << std::endl;
+        orxout(verbose, context::quests) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getMode() << "'." << endl;
     }
 
     /**
@@ -145,7 +145,7 @@ namespace orxonox
             this->mode_ = QuestListenerMode::Complete;
         else
         {
-            COUT(2) << "QuestListener with invalid mode '" << mode << "' created. Mode set to 'all'." << std::endl;
+            orxout(internal_warning, context::quests) << "QuestListener with invalid mode '" << mode << "' created. Mode set to 'all'." << endl;
             this->mode_ = QuestListenerMode::All;
             return false;
         }

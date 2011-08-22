@@ -87,8 +87,9 @@ namespace orxonox
     class Exception;
     class ExprParser;
     class MultiType;
-    class OutputHandler;
     class OutputListener;
+    class OutputManager;
+    class OutputStream;
     template <ScopeID::Value>
     class Scope;
     template <class, ScopeID::Value>

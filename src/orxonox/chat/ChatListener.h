@@ -26,24 +26,35 @@
  *
  */
 
-#ifndef _NETWORK_ChatListener__
-#define _NETWORK_ChatListener__
+#ifndef _ChatListener_H__
+#define _ChatListener_H__
 
-#include "NetworkPrereqs.h"
+#include "OrxonoxPrereqs.h"
+
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _NetworkExport ChatListener : virtual public OrxonoxClass
+    /**
+        @brief Classes inheriting from this interface get a notification whenever a chat
+        message was sent through ChatManager.
+    */
+    class _OrxonoxExport ChatListener : virtual public OrxonoxClass
     {
+        friend class ChatManager;
+
         public:
-            /* constructor, destructor */
-            ChatListener();
+            ChatListener(); // implemented in ChatManager.cc
             virtual ~ChatListener() {}
 
-            /* What to do with incoming chat */
-            virtual void incomingChat(const std::string& message, unsigned int senderID) = 0;
+        protected:
+            /**
+                @brief Gets called whenever a chat message was sent through ChatManager.
+                @param message The whole message (including name of the sender if available)
+                @param name The name of the sender (if available, otherwise "")
+            */
+            virtual void incomingChat(const std::string& message, const std::string& name) = 0;
     };
 }
 
-#endif /* _NETWORK_ChatListener__ */
+#endif /* _ChatListener_H__ */

@@ -178,7 +178,7 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(1) << "Invalid PickupCarrier in DronePickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid PickupCarrier in DronePickup." << endl;
         }
 
         return pawn;
