@@ -10,9 +10,24 @@
    maxhealth         = 200
    initialhealth     = 100
 
-   primaryThrust     = 100;
-   auxilaryThrust    = 30;
-   rotationThrust    = 25;
+   shieldhealth        = 25
+   initialshieldhealth = 25
+   maxshieldhealth     = 40
+   shieldabsorption    = 0.6
+   reloadrate          = 2
+   reloadwaittime      = 0.5
+
+   primaryThrust     = 100
+   auxilaryThrust    = 30
+   rotationThrust    = 25
+
+   lift = 1;
+   stallSpeed = 220;
+
+   boostPower            = 10
+   boostPowerRate        = 1
+   boostRate             = 5
+   boostCooldownDuration = 10
 
    collisionType     = "dynamic"
    mass              = 100
