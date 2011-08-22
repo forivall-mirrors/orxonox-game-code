@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file RocketMunition.h
+    @brief Implementation of the RocketMunition class.
+*/
+
 #include "RocketMunition.h"
 #include "core/CoreIncludes.h"
 

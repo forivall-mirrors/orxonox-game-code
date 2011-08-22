@@ -20,11 +20,16 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss
+ *      Gabriel Nadler
  *   Co-authors:
  *      simonmie
  *
  */
+
+/**
+    @file SimpleRocket.h
+    @brief Definition of the SimpleRocket class.
+*/
 
 #ifndef _SimpleRocket_H__
 #define _SimpleRocket_H__
@@ -32,9 +37,10 @@
 #include "weapons/WeaponsPrereqs.h"
 
 #include "tools/Timer.h"
-#include "worldentities/ControllableEntity.h"
+
 #include "graphics/ParticleSpawner.h"
 #include "interfaces/RadarViewable.h"
+#include "worldentities/ControllableEntity.h"
 
 #include "BasicProjectile.h"
 
@@ -44,9 +50,11 @@ namespace orxonox
 
     /**
     @brief
-        SimpleRocket, follows direction from a Rocketcontroller, has fuel for 80% of its lifetime, afterwards it's fire disappears.
+        SimpleRocket is a target seeking, intelligent rocket. It follows its target until it either hits something or runs out of fuel.
+        The steering is done by the RocketController.
     @author
-       Gabriel Nadler (Original file: Oli Scheuss)
+       Gabriel Nadler
+    @ingroup WeaponsProjectiles
     */
     class _WeaponsExport SimpleRocket : public ControllableEntity, public BasicProjectile, public RadarViewable
     {
@@ -54,10 +62,8 @@ namespace orxonox
             SimpleRocket(BaseObject* creator);
             virtual ~SimpleRocket();
             virtual void tick(float dt);
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a SimpleRocket through XML.
 
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
-            void destroyObject();
 
             void disableFire(); //!< Method to disable the fire and stop all acceleration
 
@@ -75,64 +81,56 @@ namespace orxonox
             @param value  The amount by which the SimpleRocket is to be moved.
             */
             inline void moveFrontBack(float value)
-            { this->moveFrontBack(Vector2(value, 0)); }
+                { this->moveFrontBack(Vector2(value, 0)); }
             /**
             @brief Moves the SimpleRocket in the Right/Left-direction by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be moved.
             */
             inline void moveRightLeft(float value)
-            { this->moveRightLeft(Vector2(value, 0)); }
+                { this->moveRightLeft(Vector2(value, 0)); }
             /**
             @brief Moves the SimpleRocket in the Up/Down-direction by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be moved.
             */
             inline void moveUpDown(float value)
-            { this->moveUpDown(Vector2(value, 0)); }
+                { this->moveUpDown(Vector2(value, 0)); }
 
             /**
             @brief Rotates the SimpleRocket around the y-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotateYaw(float value)
-            { this->rotateYaw(Vector2(value, 0)); }
+                { this->rotateYaw(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the x-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotatePitch(float value)
-            {
-                this->rotatePitch(Vector2(value, 0)); }
+                { this->rotatePitch(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the z-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotateRoll(float value)
-            {
-                this->rotateRoll(Vector2(value, 0)); }
+                { this->rotateRoll(Vector2(value, 0)); }
 
-            void setOwner(Pawn* owner);
-            inline Pawn* getOwner() const
-                { return this->owner_; }
+            virtual void setShooter(Pawn* shooter);
 
             inline bool hasFuel() const
-            { return this->fuel_; }
+                { return this->fuel_; }
 
 
         private:
-            WeakPtr<Pawn> owner_;
-            Vector3 localAngularVelocity_;
+            static const float FUEL_PERCENTAGE = 0.8f; //!< Percentage of lifetime the rocket has fuel
+            
+            Vector3 localAngularVelocity_; //!< Variable to temporarily store accumulated steering command input.
             bool fuel_; //!< Bool is true while the rocket "has fuel"
 
-
-            WeakPtr<PlayerInfo> player_;
-            Timer destroyTimer_;
-            float lifetime_;
-            static const int FUEL_PERCENTAGE=80; //!<Percentage of Lifetime the rocket has fuel
+            WeakPtr<PlayerInfo> player_; //!< The player the SimpleRocket belongs to.
+            Timer destroyTimer_; //!< Timer to destroy the projectile after its lifetime has run out.
+            float lifetime_; //!< The time the projectile exists.
 
             ParticleEmitter* fire_; //!< Fire-Emittor
-
-
-
     };
 
 }

@@ -26,11 +26,16 @@
  *
  */
 
+/**
+    @file ParticleProjectile.h
+    @brief Implementation of the ParticleProjectile class.
+*/
+
 #include "ParticleProjectile.h"
 
 #include <OgreParticleEmitter.h>
-#include "tools/ParticleInterface.h"
 #include "core/CoreIncludes.h"
+#include "tools/ParticleInterface.h"
 #include "Scene.h"
 
 namespace orxonox
@@ -43,6 +48,7 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
+            // Create the particles.
             this->particles_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/shot3_small", LODParticle::Normal);
             this->attachOgreObject(this->particles_->getParticleSystem());
             this->particles_->setKeepParticlesInLocalSpace(0);
@@ -62,10 +68,15 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Is called when the visibility of the ParticleProjectile has changed.
+    */
     void ParticleProjectile::changedVisibility()
     {
         SUPER(ParticleProjectile, changedVisibility);
 
+        // Change the visibility of the particles.
         if (this->particles_)
             this->particles_->setEnabled(this->isVisible());
     }

@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file LaserMunition.h
+    @brief Implementation of the LaserMunition class.
+*/
+
 #include "LaserMunition.h"
 #include "core/CoreIncludes.h"
 
@@ -47,7 +52,7 @@ namespace orxonox
         this->bAllowMunitionRefilling_ = true;
         this->bAllowMultiMunitionRemovementUnderflow_ = true;
 
-        this->replenishIntervall_ = 0.5f;
+        this->replenishInterval_ = 0.5f;
         this->replenishMunitionAmount_ = 1;
     }
 }

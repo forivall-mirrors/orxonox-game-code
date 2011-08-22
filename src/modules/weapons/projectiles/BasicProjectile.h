@@ -26,57 +26,109 @@
  *
  */
 
+/**
+    @file BasicProjectile.h
+    @brief Definition of the BasicProjectile class.
+*/
+
 #ifndef _BasicProjectile_H__
 #define _BasicProjectile_H__
 
 #include "weapons/WeaponsPrereqs.h"
 
-#include "tools/Timer.h"
+#include "worldentities/pawns/Pawn.h"
+
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Baseclass of all projectiles. Defines the damage the projectile does.
+
+    @author
+        Simon Miescher
+    @ingroup WeaponsProjectiles
+    */
     class _WeaponsExport BasicProjectile : public virtual OrxonoxClass
     {
         public:
             BasicProjectile();
-
             virtual ~BasicProjectile();
 
-            static bool basicCollidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint, Pawn* owner, BasicProjectile* this_);
-
-            void basicDestroyObject();
-
+            /**
+            @brief Set the normal damage done by this projectile.
+                   Normal damage can be (partially) absorbed by shields.
+            @param damage The amount of damage. Must be non-negative.
+            */
             inline void setDamage(float damage)
-                { this->damage_ = damage;  }
+                { if(damage >= 0.0f)  { this->damage_ = damage; return; } COUT(1) << "The input projectile damage must be non-negative. Ignoring..." << endl; }
+            /**
+            @brief Get the normal damage done by this projectile.
+                   Normal damage can be (partially) absorbed by shields.
+            @return Returns the amount of damage. Is non-negative.
+            */
             inline float getDamage() const
                 { return this->damage_; }
 
+            /**
+            @brief Set the health-damage done by this projectile.
+                   Health-damage cannot be absorbed by shields.
+            @param healthdamage The amount of damage. Must be non-negative.
+            */
             inline void setHealthDamage(float healthdamage)
-                { this->healthdamage_ = healthdamage; }
+                { if(healthdamage >= 0.0f)  { this->healthdamage_ = healthdamage; return; } COUT(1) << "The input projectile health-damage must be non-negative. Ignoring..." << endl; }
+            /**
+            @brief Get the health-damage done by this projectile.
+                   Health-damage cannot be absorbed by shields.
+            @return healthdamage The amount of damage. Is non-negative.
+            */
             inline float getHealthDamage() const
                 { return this->healthdamage_; }
 
+            /**
+            @brief Set the shield-damage done by this projectile.
+                   Shield-damage only reduces shield health.
+            @param shielddamage The amount of damage. Must be non-negative.
+            */
             inline void setShieldDamage(float shielddamage)
-                { this->shielddamage_ = shielddamage;  } //ShieldDamage wird korrekt gesettet vom XML-File
+                { if(shielddamage >= 0.0f)  { this->shielddamage_ = shielddamage; return; } COUT(1) << "The input projectile shield-damage must be non-negative. Ignoring..." << endl; }
+            /**
+            @brief Get the shield-damage done by this projectile.
+                   Shield-damage only reduces shield health.
+            @param shielddamage The amount of damage. Is non-negative.
+            */
             inline float getShieldDamage() const
                 { return this->shielddamage_; }
 
+            /**
+            @brief Set the entity that fired the projectile.
+            @param shooter A pointer to the Pawn that fired the projectile.
+            */
+            virtual void setShooter(Pawn* shooter)
+                { this->shooter_ = shooter; }
+            /**
+            @brief Get the entity that fired the projectile.
+            @return Returns a pointer to the Pawn that fired the projectile.
+            */
+            inline Pawn* getShooter(void)
+                { return this->shooter_; }
 
-            inline void setBDestroy(bool bDestroy)
-                { this->bDestroy_ = bDestroy;  }
-            inline float getBDestroy() const
-                { return this->bDestroy_; }
+            virtual void destroyObject(void);
 
+        protected:
+            bool processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            void destroyCheck(void);
 
         private:
-//            WeakPtr<Pawn> owner_; //owner cannot be set in BasicProjectile, because it's already defined in MobileEntity and Movable Entity
+            WeakPtr<Pawn> shooter_; //!< The entity that fired the projectile.
 
-            float damage_;
-            float healthdamage_;
-            float shielddamage_;
+            float damage_; //!< The amount of normal damage. Normal damage can be (partially) absorbed by shields.
+            float healthdamage_; //!< The amount of health-damage. Health-damage cannot be absorbed by shields.
+            float shielddamage_; //!< The amount of shield-damage. Shield-damage only reduces shield health.
 
-            bool bDestroy_;
+            bool bDestroy_; //!< Boolean, to check whether a projectile should be destroyed.
     };
 }
 

@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file LightningGun.h
+    @brief Definition of the LightningGun class.
+*/
+
 #ifndef _LightningGun_H__
 #define _LightningGun_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        A slow ball of lightning.
+    @author
+        Joel Smely
+    @ingroup WeaponsWeaponModes
+    */
     class _WeaponsExport LightningGun : public WeaponMode
     {
         public:
@@ -43,7 +56,7 @@ namespace orxonox
             virtual void fire();
 
        private:
-            float speed_;
+            float speed_; //!< The speed of the fired projectile.
     };
 }
 

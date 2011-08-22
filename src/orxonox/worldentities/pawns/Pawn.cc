@@ -46,7 +46,6 @@
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSet.h"
 
-
 namespace orxonox
 {
     CreateFactory(Pawn);
@@ -255,7 +254,6 @@ namespace orxonox
     Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
 
 */
-
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )

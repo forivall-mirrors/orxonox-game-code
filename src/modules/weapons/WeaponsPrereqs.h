@@ -80,6 +80,8 @@ namespace orxonox
     class LightningGunProjectile;
     class ParticleProjectile;
     class Projectile;
+    class Rocket;
+    class SimpleRocket;
 
     // weaponmodes
     class EnergyDrink;
@@ -87,6 +89,8 @@ namespace orxonox
     class HsW01;
     class LaserFire;
     class LightningGun;
+    class RocketFire;
+    class SimpleRocketFire;
 }
 
 #endif /* _WeaponsPrereqs_H__ */

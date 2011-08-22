@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file EnergyDrink.h
+    @brief Definition of the EnergyDrink class.
+*/
+
 #ifndef _EnergyDrink_H__
 #define _EnergyDrink_H__
 
@@ -37,6 +42,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Shoots a can.
+    @author
+        Hagen Seifert
+    @ingroup WeaponsWeaponModes
+    */
     class _WeaponsExport EnergyDrink : public WeaponMode
     {
         public:
@@ -47,18 +60,34 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         private:
-            void setMaterial(const std::string& material);
-            inline const std::string& getMaterial()
+            /**
+            @brief Set the material of the EnergyDrink.
+            @param material The name of the material.
+            */
+            void setMaterial(const std::string& material)
+                { this->material_ = material; }
+            /**
+            @brief Get the material of the EnergyDrink.
+            @return Returns the material name.
+            */
+            inline const std::string& getMaterial() const
                 { return this->material_; }
-            void setDelay(float d);
-            float getDelay() const;
-            void shot();
-            void muendungsfeuer();
 
-            std::string material_;
-            float speed_;
-            float delay_;
-            Timer delayTimer_;
+            void setDelay(float delay);
+            /**
+            @brief Get the firing delay.
+            @return Returns the delay in seconds.
+            */
+            float getDelay() const
+                { return this->delay_; }
+
+            void shot();
+            void muzzleflash();
+
+            std::string material_; //!< The material.
+            float speed_; //!< The speed of the EnergyDrink.
+            float delay_; //!< The firing delay.
+            Timer delayTimer_; //!< The timer to delay the firing.
     };
 }
 

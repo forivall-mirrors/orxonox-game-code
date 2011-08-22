@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file FusionMunition.h
+    @brief Implementation of the FusionMunition class.
+*/
+
 #include "FusionMunition.h"
 #include "core/CoreIncludes.h"
 

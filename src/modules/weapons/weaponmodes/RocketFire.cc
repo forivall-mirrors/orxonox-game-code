@@ -26,16 +26,22 @@
  *
  */
 
+/**
+    @file RocketFire.h
+    @brief Implementation of the RocketFire class.
+*/
+
 #include "RocketFire.h"
 
-#include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "weapons/projectiles/Rocket.h"
+#include "util/Math.h"
 
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
+
+#include "weapons/projectiles/Rocket.h"
 
 namespace orxonox
 {
@@ -47,8 +53,8 @@ namespace orxonox
 
         this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
-        this->damage_ = 0;
-        this->speed_ = 500;
+        this->damage_ = 0.0f;
+        this->speed_ = 500.0f;
 
         this->setMunitionName("RocketMunition");
         // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
@@ -58,8 +64,10 @@ namespace orxonox
     {
     }
 
-    /* Creates the Rocket object, sets its properties to the RocketFire properties
-     */
+    /**
+    @brief
+        Fires the weapon. Creates the Rocket and fires it.
+    */
     void RocketFire::fire()
     {
         Rocket* rocket = new Rocket(this);
@@ -70,7 +78,7 @@ namespace orxonox
         rocket->setVelocity(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_);
         rocket->scale(2);
 
-        rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        rocket->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         rocket->setDamage(this->getDamage());
         rocket->setShieldDamage(this->getShieldDamage());
         rocket->setHealthDamage(this->getHealthDamage());

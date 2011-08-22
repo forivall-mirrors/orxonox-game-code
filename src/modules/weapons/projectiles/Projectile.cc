@@ -26,15 +26,20 @@
  *
  */
 
+/**
+    @file Projectile.h
+    @brief Implementation of the Projectile class.
+*/
+
 #include "Projectile.h"
 
-#include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/Executor.h"
+
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "worldentities/pawns/Pawn.h"
-#include "graphics/ParticleSpawner.h"
 
 namespace orxonox
 {
@@ -45,21 +50,20 @@ namespace orxonox
         RegisterObject(Projectile);
 
         this->setConfigValues();
-        this->owner_ = 0;
 
         // Get notification about collisions
         if (GameMode::isMaster())
         {
-            this->setMass(1.0);
+            this->setMass(1.0f);
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
             SphereCollisionShape* shape = new SphereCollisionShape(this);
-            shape->setRadius(20);
+            shape->setRadius(20.0f);
             this->attachCollisionShape(shape);
 
-            this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Projectile::destroyObject, this)));
+            this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&BasicProjectile::destroyObject, this)));
         }
     }
 
@@ -69,7 +73,7 @@ namespace orxonox
 
     void Projectile::setConfigValues()
     {
-        SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
+        SetConfigValue(lifetime_, 4.0f).description("The time in seconds a projectile stays alive");
     }
 
 
@@ -80,25 +84,12 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->getBDestroy())
-            this->destroy(); // TODO: use a scheduler instead of deleting the object right here in tick()
+        this->destroyCheck();
     }
 
-    void Projectile::destroyObject()
-    {
-        if (GameMode::isMaster())
-            this->destroy();
-    }
-
-    /* Calls the collidesAgainst function of BasicProjectile
-     */
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
+        return this->processCollision(otherObject, contactPoint);
     }
 
-    void Projectile::setOwner(Pawn* owner)
-    {
-        this->owner_ = owner;
-    }
 }

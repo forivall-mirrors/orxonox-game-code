@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file BillboardProjectile.h
+    @brief Definition of the BillboardProjectile class.
+*/
+
 #ifndef _BillboardProjectile_H__
 #define _BillboardProjectile_H__
 
@@ -37,6 +42,15 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        A BillboardProjectile is a projectile that is represented by a Billboard.
+
+    @author
+        Fabian 'x3n' Landau
+    @ingroup WeaponsProjectiles
+    */
     class _WeaponsExport BillboardProjectile : public Projectile
     {
         public:
@@ -48,7 +62,7 @@ namespace orxonox
             virtual void changedVisibility();
 
         private:
-            BillboardSet billboard_;
+            BillboardSet billboard_; //!< The billboard that represents the projectile.
     };
 }
 

@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file LightningGunProjectile.h
+    @brief Definition of the LightningGunProjectile class.
+*/
+
 #ifndef _LightningGunProjectile_H__
 #define _LightningGunProjectile_H__
 
@@ -37,6 +42,15 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        The LightningGunProjectile is a projectile that is represented by a looped series of billboards.
+        
+    @author
+        Joel Smely
+    @ingroup WeaponsProjectiles
+    */
     class _WeaponsExport LightningGunProjectile : public BillboardProjectile
     {
         public:
@@ -45,14 +59,14 @@ namespace orxonox
 
             virtual void setMaterial(const std::string& material);
 
-        protected:
-            void changeTexture();
-            unsigned int textureIndex_;
-            unsigned int maxTextureIndex_;
-            Timer textureTimer_;
-            std::string materialBase_;
-      private:
+        private:
             void registerVariables();
+            void changeTexture();
+            
+            unsigned int textureIndex_; //!< The current index of the texture. (i.e. the index of the currently displayed texture)
+            unsigned int maxTextureIndex_; //!< The maximal index.
+            Timer textureTimer_; //!< A timer that loops and changes textures each time it expires.
+            std::string materialBase_; //!< The base name of the material.
     };
 }
 

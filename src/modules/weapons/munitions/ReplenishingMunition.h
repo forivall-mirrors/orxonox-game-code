@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file ReplenishingMunition.h
+    @brief Definition of the ReplenishingMunition class.
+*/
+
 #ifndef _ReplenishingMunition_H__
 #define _ReplenishingMunition_H__
 
@@ -36,6 +41,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Munition that is replenished by a certain amount each time interval.
+    @author
+        Fabian 'x3n' Landau
+    @ingroup WeaponsMunitions
+    */
     class _WeaponsExport ReplenishingMunition : public Munition
     {
         public:
@@ -43,14 +56,14 @@ namespace orxonox
             virtual ~ReplenishingMunition() {}
 
         protected:
-            float replenishIntervall_;
-            unsigned int replenishMunitionAmount_;
+            float replenishInterval_; //!< The interval in which the munition is replenished.
+            unsigned int replenishMunitionAmount_; //!< The amount by which it is replenished.
 
         private:
             void replenish();
             void initializeTimer();
 
-            Timer replenishingTimer_;
+            Timer replenishingTimer_; //!< Timer to do the replenishing.
     };
 }
 

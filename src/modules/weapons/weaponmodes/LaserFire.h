@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file LaserFire.h
+    @brief Definition of the LaserFire class.
+*/
+
 #ifndef _LaserFire_H__
 #define _LaserFire_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Shoots a particle laser.
+    @author
+        Martin Polak
+    @ingroup WeaponsWeaponModes
+    */
     class _WeaponsExport LaserFire : public WeaponMode
     {
         public:
@@ -43,7 +56,7 @@ namespace orxonox
             virtual void fire();
 
         private:
-            float speed_;
+            float speed_; //!< The speed of the fired projectile.
     };
 }
 

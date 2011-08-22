@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file RocketMunition.h
+    @brief Definition of the RocketMunition class.
+*/
+
 #ifndef _RocketMunition_H__
 #define _RocketMunition_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Munition for the Rocket.
+    @author
+        Fabian 'x3n' Landau
+    @ingroup WeaponsMunitions
+    */
     class _WeaponsExport RocketMunition : public Munition
     {
         public:

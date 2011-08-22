@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file HsW01.h
+    @brief Definition of the HsW01 class.
+*/
+
 #ifndef _HsW01_H__
 #define _HsW01_H__
 
@@ -36,6 +41,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Shoots laser beams.
+    @author
+        Hagen Seifert
+    @ingroup WeaponsWeaponModes
+    */
     class _WeaponsExport HsW01 : public WeaponMode
     {
         public:
@@ -46,17 +59,34 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         private:
-            void setMaterial(const std::string& material);
-            std::string& getMaterial();
-            void setDelay(float d);
-            float getDelay() const;
-            void shot();
-            void muendungsfeuer();
+            /**
+            @brief Set the material.
+            @param material The material name.
+            */
+            void setMaterial(const std::string& material)
+                { this->material_ = material; }
+            /**
+            @brief Get the material.
+            @return Returns the material name.
+            */
+            const std::string& getMaterial() const
+                { return this->material_; }
 
-            std::string material_;
-            float speed_;
-            float delay_;
-            Timer delayTimer_;
+            void setDelay(float delay);
+            /**
+            @brief Get the firing delay.
+            @return Returns the firing delay in seconds.
+            */
+            float getDelay() const
+                { return this->delay_; }
+
+            void shot();
+            void muzzleflash();
+
+            std::string material_; //!< The material.
+            float speed_; //!< The speed of the fired projectile.
+            float delay_; //!< The firing delay.
+            Timer delayTimer_; //!< A timer to delay the firing.
     };
 }
 

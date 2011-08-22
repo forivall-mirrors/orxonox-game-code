@@ -20,32 +20,36 @@
 *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *
 *   Author:
-*     Gabriel Nadler, Originalfile: Oli Scheuss
+*     Gabriel Nadler
 *   Co-authors:
 *      ...
 *
 */
 
+/**
+    @file BasicProjectile.h
+    @brief Implementation of the BasicProjectile class.
+*/
+
 #include "RocketController.h"
-#include "projectiles/SimpleRocket.h"
+
 #include "util/Math.h"
-#include "weapons/projectiles/SimpleRocket.h"
-#include "util/Debug.h"
-#include "weapons/weaponmodes/SimpleRocketFire.h"
 #include "worldentities/pawns/Pawn.h"
+#include "projectiles/SimpleRocket.h"
+#include "weaponmodes/SimpleRocketFire.h"
 
 namespace orxonox
 {
     /**
     @brief
-    Constructor.
+        Constructor.
     */
     RocketController::RocketController(BaseObject* creator) : Controller(creator)
     {
         RegisterObject(RocketController);
         COUT(5)<< "RocketController constructed\n";
 
-
+        // Create a rocket for the controller.
         this->rocket_ = new SimpleRocket(this);
         this->rocket_->setController(this);
         this->setControllableEntity(dynamic_cast<ControllableEntity*> (this->rocket_));
@@ -54,42 +58,31 @@ namespace orxonox
 
     /**
     @brief
-    The controlling happens here. This method defines what the controller has to do each tick.
+        The controlling happens here. This method defines what the controller has to do each tick.
     @param dt
-    The duration of the tick.
+        The duration of the tick.
     */
     void RocketController::tick(float dt)
     {
-
         if (this->target_ && this->rocket_->hasFuel()) {
-            this->setTargetPosition();
-            this->moveToTargetPosition();
+            this->updateTargetPosition();
+            this->moveToPosition(this->targetPosition_);
         }
-
-
     }
-
 
     RocketController::~RocketController()
     {
         COUT(5)<< "RocketController destroyed\n";
     }
 
-    void RocketController::setTargetPosition()
+    /**
+    @brief
+        Update the position of the target.
+    */
+    void RocketController::updateTargetPosition()
     {
-        this->targetPosition_=this->target_->getWorldPosition(); //don't really note a difference in the rocket behaviour xD
+        this->targetPosition_ = this->target_->getWorldPosition(); //don't really note a difference in the rocket behaviour xD
         //this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getWorldPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getWorldPosition(), this->target_->getVelocity());
-    }
-    void RocketController::moveToTargetPosition()
-    {
-        this->moveToPosition(this->targetPosition_);
-    }
-
-
-
-    void RocketController::setTarget(WorldEntity* target)
-    {
-        this->target_ = target;
     }
 
     void RocketController::moveToPosition(const Vector3& target)
@@ -108,8 +101,5 @@ namespace orxonox
         this->rocket_->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
         this->rocket_->rotatePitch(sgn(coord.y)*coord.y*coord.y);
     }
-
-
-
 
 }

@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file RocketFire.h
+    @brief Definition of the RocketFire class.
+*/
+
 #ifndef _RocketFire_H__
 #define _RocketFire_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Fires the (steerable) Rocket.
+    @author
+        Oliver Scheuss
+    @ingroup WeaponsWeaponModes
+    */
     class _WeaponsExport RocketFire : public WeaponMode
     {
         public:
@@ -43,7 +56,7 @@ namespace orxonox
             virtual void fire();
 
         private:
-            float speed_;
+            float speed_; //!< The speed of the Rocket.
     };
 }
 

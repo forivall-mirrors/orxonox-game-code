@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file FusionMunition.h
+    @brief Definition of the FusionMunition class.
+*/
+
 #ifndef _FusionMunition_H__
 #define _FusionMunition_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        FusionMunition.
+    @author
+        Martin Polak
+    @ingroup WeaponsMunitions
+    */
     class _WeaponsExport FusionMunition : public Munition
     {
         public:
