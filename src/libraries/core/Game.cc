@@ -177,8 +177,7 @@ namespace orxonox
         this->updateGameStateStack();
 
         orxout(user_status) << "Game loaded" << endl;
-        orxout(internal_status) << "--------------------------------------------------" << endl;
-        orxout(internal_status) << "starting main loop..." << endl;
+        orxout(internal_status) << "-------------------- starting main loop --------------------" << endl;
 
         // START GAME
         // first delta time should be about 0 seconds
@@ -233,8 +232,7 @@ namespace orxonox
                 this->updateFPSLimiter();
         }
 
-        orxout(internal_status) << "finished main loop" << endl;
-        orxout(internal_status) << "--------------------------------------------------" << endl;
+        orxout(internal_status) << "-------------------- finished main loop --------------------" << endl;
 
         // UNLOAD all remaining states
         while (this->loadedStates_.size() > 1)

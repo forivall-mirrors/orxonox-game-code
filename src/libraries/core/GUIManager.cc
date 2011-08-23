@@ -320,6 +320,7 @@ namespace orxonox
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
 
         // Initialise the Lua framework and load the schemes
+        orxout(user_info) << "Loading user interface..." << endl;
         this->luaState_->doFile("InitialiseGUI.lua");
 
         // Create the root nodes
