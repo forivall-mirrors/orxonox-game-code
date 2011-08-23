@@ -370,6 +370,8 @@ namespace orxonox
     {
         SetConfigValue(guiScheme_, GUIManager::defaultScheme_).description("Changes the current GUI scheme.").callback(this, &GUIManager::changedGUIScheme);
         SetConfigValue(numScrollLines_, 1).description("How many lines to scroll in a list if the scroll wheel is used");
+        SetConfigValue(bPreloadMenuSheets_, false).description("Pre-load menu sheets during startup");
+
         SetConfigValueExternal(outputLevelCeguiLog_, BaseWriter::getConfigurableSectionName(), "outputLevelCeguiLog", CEGUI::Standard).description("The log level of the CEGUI log file").callback(this, &GUIManager::changedCeguiOutputLevel);
     }
 
