@@ -75,7 +75,7 @@ function P:load()
     self:onLoad()
 
     -- Also load additional sheets to avoid display lags
-    if self.loadAlong then
+    if self.loadAlong and orxonox.GUIManager:preloadMenuSheets() then
         for k, sheet in pairs(self.loadAlong) do
             loadSheet(sheet)
         end

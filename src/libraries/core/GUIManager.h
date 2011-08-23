@@ -110,6 +110,7 @@ namespace orxonox // tolua_export
         void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export
         void setBackgroundImage(const std::string& image);
 
+        static bool preloadMenuSheets() { return GUIManager::getInstance().bPreloadMenuSheets_; } // tolua_export
         static bool inDevMode(void); // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
@@ -199,7 +200,8 @@ namespace orxonox // tolua_export
         std::string guiScheme_;
         bool oldCEGUI_;
 
-        int numScrollLines_; ///< How many lines to scroll in a list if the scroll wheel is used
+        int numScrollLines_;        ///< How many lines to scroll in a list if the scroll wheel is used
+        bool bPreloadMenuSheets_;   ///< If true, menu sheets are pre-loaded during startup
 
     }; // tolua_export
 } // tolua_export
