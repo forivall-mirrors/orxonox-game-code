@@ -182,14 +182,17 @@ namespace orxonox
         orxout(internal_info) << "GraphicsManager upgrade to graphics" << endl;
 
         // load all the required plugins for Ogre
+        orxout(user_info) << "Loading Ogre plugins..." << endl;
         this->loadOgrePlugins();
 
+        orxout(user_info) << "Creating render window..." << endl;
         this->loadRenderer();
 
         // Initialise all resources (do this AFTER the renderer has been loaded!)
         // Note: You can only do this once! Ogre will check whether a resource group has
         // already been initialised. If you need to load resources later, you will have to
         // choose another resource group.
+        orxout(user_info) << "Initializing all resource groups..." << endl;
         Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
         orxout(internal_info) << "GraphicsManager finished upgrade to graphics" << endl;

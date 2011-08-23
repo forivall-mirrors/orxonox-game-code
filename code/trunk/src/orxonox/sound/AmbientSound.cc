@@ -91,9 +91,14 @@ namespace orxonox
             const std::string& path = "ambient/" + mood + '/' + this->ambientSource_;
             shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
             if (fileInfo != NULL)
+            {
+                orxout(user_info) << "Loading ambient sound " << path << "..." << endl; // TODO: make this output internal if we implement sound streaming
                 this->setSource(path);
+            }
             else
+            {
                 orxout(internal_warning, context::sound) << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << endl;
+            }
         }
     }
 
