@@ -75,11 +75,11 @@ namespace orxonox
     */
     void HealthPickup::initialize(void)
     {
-        this->health_ = 0;
-        this->healthRate_ = 0;
+        this->health_ = 0.0f;
+        this->healthRate_ = 0.0f;
         this->healthType_ = pickupHealthType::limited;
-        this->maxHealthSave_ = 0;
-        this->maxHealthOverwrite_ = 0;
+        this->maxHealthSave_ = 0.0f;
+        this->maxHealthOverwrite_ = 0.0f;
 
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
@@ -120,7 +120,7 @@ namespace orxonox
         XMLPortParam(HealthPickup, "healthType", setHealthType, getHealthType, xmlelement, mode);
 
         if(!this->isContinuous())
-            this->healthRate_ = 0.0;
+            this->healthRate_ = 0.0f;
 
         this->initializeIdentifier();
     }
@@ -172,7 +172,7 @@ namespace orxonox
             }
 
             // If all health has been transferred.
-            if(this->getHealth() == 0)
+            if(this->getHealth() == 0.0f)
             {
                 this->setUsed(false);
             }
@@ -196,7 +196,7 @@ namespace orxonox
                 if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                     this->Pickupable::destroy();
 
-                float health = 0;
+                float health = 0.0f;
                 switch(this->getHealthTypeDirect())
                 {
                     case pickupHealthType::permanent:
@@ -233,7 +233,7 @@ namespace orxonox
 
                 if(pawn == NULL)
                 {
-                    orxout(internal_error, context::pickups) << "Something went horribly wrong in Health Pickup. PickupCarrier is no Pawn." << endl;
+                    orxout(internal_error, context::pickups) << "Something went horribly wrong in Health Pickup. PickupCarrier is '" << carrier->getIdentifier()->getName() << "' instead of Pawn." << endl;
                     this->Pickupable::destroy();
                     return;
                 }
@@ -247,7 +247,7 @@ namespace orxonox
             }
 
             // If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
-            if(this->isOnce() || (this->isContinuous() && this->getHealth() == 0))
+            if(this->isOnce() || (this->isContinuous() && this->getHealth() == 0.0f))
             {
                 this->Pickupable::destroy();
             }
@@ -266,9 +266,7 @@ namespace orxonox
         Pawn* pawn = dynamic_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
-        {
             orxout(internal_error, context::pickups) << "Invalid PickupCarrier in HealthPickup." << endl;
-        }
 
         return pawn;
     }
@@ -325,13 +323,11 @@ namespace orxonox
     void HealthPickup::setHealth(float health)
     {
         if(health >= 0.0f)
-        {
             this->health_ = health;
-        }
         else
         {
-            orxout(internal_error, context::pickups) << "Invalid health in HealthPickup." << endl;
-            this->health_ = 0.0;
+            orxout(internal_error, context::pickups) << "Invalid health '" << health << "' in HealthPickup. The health must be non.negative." << endl;
+            this->health_ = 0.0f;
         }
     }
 
@@ -343,14 +339,10 @@ namespace orxonox
     */
     void HealthPickup::setHealthRate(float rate)
     {
-        if(rate >= 0)
-        {
+        if(rate >= 0.0f)
             this->healthRate_ = rate;
-        }
         else
-        {
-            orxout(internal_error, context::pickups) << "Invalid healthSpeed in HealthPickup." << endl;
-        }
+            orxout(internal_error, context::pickups) << "Invalid healthRate '" << rate << "' in HealthPickup. The healthRate must be non-negative." << endl;
     }
 
     /**
@@ -362,21 +354,13 @@ namespace orxonox
     void HealthPickup::setHealthType(std::string type)
     {
         if(type == HealthPickup::healthTypeLimited_s)
-        {
             this->setHealthTypeDirect(pickupHealthType::limited);
-        }
         else if(type == HealthPickup::healthTypeTemporary_s)
-        {
             this->setHealthTypeDirect(pickupHealthType::temporary);
-        }
         else if(type == HealthPickup::healthTypePermanent_s)
-        {
             this->setHealthTypeDirect(pickupHealthType::permanent);
-        }
         else
-        {
-            orxout(internal_error, context::pickups) << "Invalid healthType in HealthPickup." << endl;
-        }
+            orxout(internal_error, context::pickups) << "Invalid healthType '" << type << "' in HealthPickup." << endl;
     }
 
 }

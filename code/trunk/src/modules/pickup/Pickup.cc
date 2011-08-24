@@ -158,18 +158,12 @@ namespace orxonox
     */
     void Pickup::setActivationType(const std::string& type)
     {
-        if(Pickup::activationTypeImmediate_s.compare(type) == 0)
-        {
+        if(type == Pickup::activationTypeImmediate_s)
             this->activationType_ = pickupActivationType::immediate;
-        }
-        else if(Pickup::activationTypeOnUse_s.compare(type) == 0)
-        {
+        else if(type == Pickup::activationTypeOnUse_s)
             this->activationType_ = pickupActivationType::onUse;
-        }
         else
-        {
-            orxout(internal_error, context::pickups) << "Invalid activationType '" << type << "' in pickup." << endl;
-        }
+            orxout(internal_error, context::pickups) << "Invalid activationType '" << type << "' in " << this->getIdentifier()->getName() << "." << endl;
     }
 
     /**
@@ -180,18 +174,12 @@ namespace orxonox
     */
     void Pickup::setDurationType(const std::string& type)
     {
-        if(Pickup::durationTypeOnce_s.compare(type) == 0)
-        {
+        if(type == Pickup::durationTypeOnce_s)
             this->durationType_ = pickupDurationType::once;
-        }
-        else if(Pickup::durationTypeContinuous_s.compare(type) == 0)
-        {
+        else if(type == Pickup::durationTypeContinuous_s)
             this->durationType_ = pickupDurationType::continuous;
-        }
         else
-        {
-            orxout(internal_error, context::pickups) << "Invalid durationType '" << type << "' in pickup." << endl;
-        }
+            orxout(internal_error, context::pickups) << "Invalid durationType '" << type << "' in " << this->getIdentifier()->getName() << "." << endl;
     }
 
     /**
