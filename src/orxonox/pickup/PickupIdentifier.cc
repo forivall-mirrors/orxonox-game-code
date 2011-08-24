@@ -74,7 +74,7 @@ namespace orxonox
         assert(identifier->pickup_);
         assert(this->pickup_);
 
-        // If the classIdentifiers are not the same (meaning the PickupIdentifiers identify different classes), the obviously the two Pickupables identified by the PickupIdentifiers cannot be the same. An ordering is established through the alphabetical ordering of the respective classnames.
+        // If the classIdentifiers are not the same (meaning the PickupIdentifiers identify different classes), then obviously the two Pickupables identified by the PickupIdentifiers cannot be the same. An ordering is established through the alphabetical ordering of the respective classnames.
         if(!identifier->pickup_->getIdentifier()->isExactlyA(this->pickup_->getIdentifier()))
             return this->pickup_->getIdentifier()->getName().compare(identifier->pickup_->getIdentifier()->getName());
 
@@ -82,7 +82,7 @@ namespace orxonox
         // If the two have a different number of parameters then obviously something is very wrong.
         if(!(this->parameters_.size() == identifier->parameters_.size()))
         {
-            orxout(internal_error, context::pickups) << "Something went wrong in PickupIdentifier!" << endl;
+            orxout(internal_error, context::pickups) << "Two PickupIdentifiers of the same Class have a different number of parameters. " << this->parameters_.size() << " vs. " << identifier->parameters_.size() << ". This indicates a bug in " << this->pickup_->getIdentifier()->getName() << "." << endl;
             return this->parameters_.size()-identifier->parameters_.size();
         }
 
@@ -92,7 +92,7 @@ namespace orxonox
             // If a parameter present in one of the identifiers is not found in the other, once again, something is very wrong.
             if(identifier->parameters_.find(it->first) == identifier->parameters_.end())
             {
-                orxout(internal_error, context::pickups) << "Something went wrong in PickupIdentifier!" << endl;
+                orxout(internal_error, context::pickups) << this->pickup_->getIdentifier()->getName() <<  " Something went wrong in PickupIdentifier!" << endl;
                 return -1;
             }
             if(identifier->parameters_.find(it->first)->second != it->second)
