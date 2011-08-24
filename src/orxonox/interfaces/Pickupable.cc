@@ -345,18 +345,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-        This method needs to be implemented by any Class inheriting from Pickupable.
-    @param item
-        A reference to a pointer to the OrxonoxClass that is to be duplicated.
-    */
-    void Pickupable::clone(OrxonoxClass*& item)
-    {
-        SUPER(Pickupable, clone, item);
-    }
-
-    /**
-    @brief
         Method to transcribe a Pickupable as a Rewardable to the player.
     @param player
         A pointer to the PlayerInfo, do whatever you want with it.

@@ -565,7 +565,7 @@ namespace orxonox
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(11, clone, true, OrxonoxClass* item)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(11, clone, true, OrxonoxClass*& item)
             (item)
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
