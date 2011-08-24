@@ -116,6 +116,8 @@
                         orxout(verbose, context::super) << "Added SuperFunctionCaller for " << #functionname << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << endl; \
                         ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_##functionname <T>; \
                     } \
+                    else if (((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_->getParentIdentifier() != ClassIdentifier<T>::getIdentifier()) \
+                        orxout(internal_warning, context::super) << "SuperFunctionCaller for " << #functionname << " in " << ((ClassIdentifier<T>*)(*it))->getName() << " calls function of " << ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_->getParentIdentifier()->getName() << " but " << ClassIdentifier<T>::getIdentifier()->getName() << " is also possible (do you use multiple inheritance?)" << endl; \
                 } \
             } \
         }; \
@@ -186,6 +188,10 @@
                         orxout(verbose, context::super) << "adding functionpointer to " << ((ClassIdentifier<T>*)(*it))->getName() << endl;
                         ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_##functionname <T>;
                     }
+
+                    // If there is already a caller, but for another parent, print a warning
+                    else if (((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_->getParentIdentifier() != ClassIdentifier<T>::getIdentifier())
+                        orxout(internal_warning, context::super) << "SuperFunctionCaller for " << #functionname << " in " << ((ClassIdentifier<T>*)(*it))->getName() << " calls function of " << ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_->getParentIdentifier()->getName() << " but " << ClassIdentifier<T>::getIdentifier()->getName() << " is also possible (do you use multiple inheritance?)" << endl;
                 }
             }
         };
@@ -346,6 +352,7 @@ namespace orxonox
                 public: \
                     virtual void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) = 0; \
                     virtual ~SuperFunctionCaller_##functionname () {} \
+                    virtual Identifier* getParentIdentifier() const = 0; \
             }; \
             \
             template <class T> \
@@ -354,6 +361,11 @@ namespace orxonox
                 public: \
                     inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) \
                     { \
+                    } \
+                    \
+                    Identifier* getParentIdentifier() const \
+                    { \
+                        return ClassIdentifier<T>::getIdentifier(); \
                     } \
             }; \
             \
@@ -399,6 +411,11 @@ namespace orxonox
         #define SUPER_FUNCTION_GLOBAL_DECLARATION_PART2 \
                                                         ; \
                     } \
+                    \
+                    Identifier* getParentIdentifier() const \
+                    { \
+                        return ClassIdentifier<T>::getIdentifier(); \
+                    } \
             };
 
         #define SUPER_CALL_ARGUMENTSfalse(...) OrxonoxClass* object
@@ -432,6 +449,7 @@ namespace orxonox
             public:
                 virtual void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) = 0;
                 virtual ~SuperFunctionCaller_##functionname () {}
+                virtual Identifier* getParentIdentifier() const = 0;
         };
 
         // Fallback if the base is pure virtual
@@ -442,6 +460,11 @@ namespace orxonox
                 // Fallback does nothing
                 inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) )
                 {
+                }
+
+                Identifier* getParentIdentifier() const
+                {
+                    return ClassIdentifier<T>::getIdentifier();
                 }
         };
 
@@ -485,6 +508,11 @@ namespace orxonox
                 inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) )
                 {
                     (dynamic_cast<T*>(object))->T:: functionname ( Call the function with it's arguments );
+                }
+
+                Identifier* getParentIdentifier() const
+                {
+                    return ClassIdentifier<T>::getIdentifier();
                 }
         }
     */
