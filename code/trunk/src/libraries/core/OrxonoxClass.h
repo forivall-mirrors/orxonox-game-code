@@ -114,8 +114,6 @@ namespace orxonox
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
 
-            virtual void clone(OrxonoxClass*& item) {}
-
             /// Returns the number of @ref orxonox::SmartPtr "smart pointers" that point to this object.
             inline unsigned int getReferenceCount() const
                 { return this->referenceCount_; }
@@ -196,7 +194,6 @@ namespace orxonox
             virtual void objectDeleted() = 0;
     };
 
-    SUPER_FUNCTION(11, OrxonoxClass, clone, false);
 }
 
 #endif /* _OrxonoxClass_H__ */

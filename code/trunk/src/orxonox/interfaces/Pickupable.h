@@ -136,7 +136,12 @@ namespace orxonox
             bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this Pickupable.
 
             Pickupable* clone(void); //!< Creates a duplicate of the Pickupable.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
+            /**
+            @brief Creates a duplicate of the input OrxonoxClass.
+                   This method needs to be implemented by any Class inheriting from Pickupable.
+            @param item A reference to a pointer to the OrxonoxClass that is to be duplicated.
+            */
+            virtual void clone(OrxonoxClass*& item) {}
 
             /**
             @brief Get the PickupIdentifier of this Pickupable.
@@ -199,6 +204,7 @@ namespace orxonox
     SUPER_FUNCTION(10, Pickupable, changedUsed, false);
     SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
     SUPER_FUNCTION(13, Pickupable, changedPickedUp, false);
+    SUPER_FUNCTION(11, Pickupable, clone, false);
 }
 
 #endif /* _Pickupable_H__ */
