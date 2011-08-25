@@ -213,7 +213,7 @@
 
 <?lua for i=0,0,1 do
 x=800
-health=2750
+health=2050
 ?>
     <!--Transporter 1-->
     <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
@@ -285,7 +285,7 @@ z=j*300
              </controller>
         </SpaceShip>
         <!--Second Spaceship team 0 (player: team 0)-->
-        <SpaceShip position="0,0,100" lookat="2000,0,-950" health="400" maxhealth="400" initialhealth="400" >
+        <SpaceShip position="0,0,100" lookat="2000,0,-950" health="500" maxhealth="400" initialhealth="400" >
              <templates>
                   <Template link=spaceshipassff />
             </templates>
@@ -302,7 +302,7 @@ z=j*300
              </controller>
         </SpaceShip>
         <!--third Spaceship team 0 (player: team 0)-->
-        <SpaceShip position="0,0,-100" lookat="2000,0,-1050" health="400" maxhealth="400" initialhealth="400" >
+        <SpaceShip position="0,0,-100" lookat="2000,0,-1050" health="500" maxhealth="400" initialhealth="400" >
              <templates>
                   <Template link=spaceshipassff />
             </templates>
@@ -366,7 +366,7 @@ z=math.random(-8000,8000)
     <DistanceTrigger name="activateTeam0No1" position="8000,0,3100" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
 
 <!--TEAM NO 1 (activationType : distance || killing a spaceship what belongs to TEAM 0 NO 0)-->
-<?lua for i=0,9,1 do
+<?lua for i=0,14,1 do
 x=math.random(-500,500)
 y=math.random(-300,300)
 z=math.random(-300,300)
@@ -379,7 +379,7 @@ z=math.random(-300,300)
                         <Template link=spaceshipassff />
                     </templates>
                     <controller>
-                        <WaypointPatrolController alertnessradius=2000 team=0 active=false>
+                        <WaypointPatrolController alertnessradius=2100 team=0 active=false>
                             <waypoints>
                                 <Model mesh="cube.mesh" scale=0 position="<?lua print(4500+x) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>" />
                                 <Model mesh="cube.mesh" scale=0 position="<?lua print(x-4000) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>" />
