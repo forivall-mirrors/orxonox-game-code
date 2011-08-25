@@ -239,7 +239,6 @@ namespace orxonox
             WeakPtr<Controller> controller_;
             CameraPosition* reverseCamera_;
             WeakPtr<WorldEntity> target_;
-            WeakPtr<Controller> test_;
     };
 }
 
