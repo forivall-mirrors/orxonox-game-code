@@ -46,17 +46,57 @@ include("templates/pickupRepresentationTemplates.oxt")
       include("includes/pickups.oxi")
     ?>
 
-    <WorldAmbientSound
-      ambientSource="Jupiter.ogg"
-      looping="true"
-      playOnLoad="true"
-    />
-<!-- AlphaCentauri.ogg-->
+  <WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg-->
+
+
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <!-- Script code="artificialcontroller setbotlevel 0.1" /-->
 
 <!-- END OF INCLUDES & NECESSARITIES -->
+
+<!-- QUESTS: TODO! STORY!!
+    <LocalQuest id="orxonox-weaponsystem-check">
+        <QuestDescription title="Tutorial" description="Before we  serious missions you have to proof that " /> //The description of the quest.
+        <subquests>
+            <Quest id ="questId1" />
+            <Quest id="questIdn" />
+        </subquests>
+        <hints>
+            <QuestHint id="hintId1" /> //A list of n QuestHints, see QuestHint for the full XML representation of those.
+            ...
+            <QuestHint id="hintIdn" />
+        </hints>
+        <fail-effects>
+            <QuestEffect /> //A list of QuestEffects, invoked when the Quest is failed, see QuestEffect for the full XML representation.
+            ...
+            <QuestEffect />
+        </fail-effects>
+        <complete-effects>
+            <QuestEffect /> //A list of QuestEffects, invoked when the Quest is completed, see QuestEffect for the full XML representation.
+            ...
+            <QuestEffect />
+        </complete-effects>
+    </LocalQuest-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- TUTORIAL-TODO: -->
 
@@ -67,31 +107,32 @@ include("templates/pickupRepresentationTemplates.oxt")
 
 <!--
 Four boxes for aiming
-TODO: Turn engine off at the beginning.
+
 TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by using the left mouse button."
 "The laser is a standard weapon. It is fast and precise but does not deal much damage. Now do the same with the next target, but right click instead."
 "That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That should be your favourite in close range combat or if you want to hit a really slow enemy. Try to destroy the next box by right clicking at it."
 "The target seeking rockets follow their target on their own and the explosive load shouldn't be underestimated. Now its time to hit the last target with the hand guided rocket. You can release one by pressing T once. Note: If you miss the target, you can get out of the rocket by clicking or pressing T once more."
 
-TODO: send in waypoint controlled ship that moves
-
 "Task complete. Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. Now lets move to a slightly more difficult target. Take a look at your radar. The red dot is an enemy's ship. Try to turn your ship towards it, such that the red dot is in the radar's centre. You should be able to see it then directly. Your task is to destroy it."
 
-TODO: Turn engine on. Display a waypoint.
 "Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
-"That thing you've just collected is a drone. It will follow and protect you."
-TODO: send in a level 0.1 bot on a pirate ship.
-"Hi. We have been attacked by a pirate lately. Please protect us. The drone pickup will help you."
 
 -->
 
-
+    <DistanceTrigger name="spawndelaytrigger0" position="-200,0,0" target="Pawn" distance=10 stayActive="true" />
+    <SimpleNotification message="Welcome to the Orxonox Tutorial.">
+        <events>
+            <trigger>
+                <EventListener event="spawndelaytrigger0" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 <!-------------------------------------- PART ONE: Destroy boxes --------------------------------------->
     <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=2 />
     <SimpleNotification message="Destroy those four boxes.">
         <events>
             <trigger>
-                <EventListener event=spawndelaytrigger1 />
+                <EventListener event="spawndelaytrigger1" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -100,7 +141,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
     <SimpleNotification message=" 1. Aim the a the red cycle.">
         <events>
             <trigger>
-                <EventListener event=spawndelaytrigger2 />
+                <EventListener event="spawndelaytrigger2" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -109,17 +150,13 @@ TODO: send in a level 0.1 bot on a pirate ship.
     <SimpleNotification message="2. Click! (hold the left mouse button)">
         <events>
             <trigger>
-                <EventListener event=spawndelaytrigger3 />
+                <EventListener event="spawndelaytrigger3" />
             </trigger>
         </events>
     </SimpleNotification>
 
-<!-- static briefing END // Interactive briefing start --> 
-
-  <SimpleNotification message="Right click on the next target." broadcast="true">
-        <events>
-            <trigger>
-                <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+<!-- @Objects: 4 boxes (uncontrolled pawns) -->
+                <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
                     <attached>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
@@ -127,14 +164,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
                         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
                     </collisionShapes>
                 </Pawn>
-            </trigger>
-        </events>
-    </SimpleNotification>
 
-  <SimpleNotification message="Middle click on the next target." broadcast="true">
-        <events>
-            <trigger>
-                <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
                     <!--events>
                         <visibility>
                             <EventListener event=spawndelaytrigger3 />
@@ -148,6 +179,69 @@ TODO: send in a level 0.1 bot on a pirate ship.
                         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
                     </collisionShapes>
                 </Pawn>
+                <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+
+<!-- @Triggers: boxtrigger1 <-> one   box   destroyed
+                boxtrigger2 <-> two   boxes destroyed
+                boxtrigger3 <-> three boxes destroyed
+                boxtrigger4 <-> four  boxes destroyed  -->
+    <EventTrigger name="boxtrigger4" activations="1" stayactive="true">
+      <events>
+        <trigger>
+          <EventListener event="box" />
+        </trigger>
+      </events>
+      <EventTrigger name="boxtrigger3" activations="1" stayactive="true">
+        <events>
+          <trigger>
+            <EventListener event="box" />
+          </trigger>
+        </events>
+        <EventTrigger name="boxtrigger2" activations="1" stayactive="true">
+          <events>
+            <trigger>
+              <EventListener event="box" />
+            </trigger>
+          </events>
+          <EventTrigger name="boxtrigger1" activations="1" stayactive="true">
+            <events>
+              <trigger>
+                <EventListener event="box" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+
+
+  <SimpleNotification message="Right click on the next target." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="boxtrigger1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+  <SimpleNotification message="Middle click on the next target." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="boxtrigger2" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -156,14 +250,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
   <SimpleNotification message="Aim at the last target and press 'T'." broadcast="true">
         <events>
             <trigger>
-                <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
+                <EventListener event="boxtrigger3" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -171,14 +258,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
   <SimpleNotification message="Fly towards the pirates. Press 'W'." broadcast="true">
         <events>
             <trigger>
-                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
+                <EventListener event="boxtrigger4" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -195,12 +275,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-
-
-  <SimpleNotification message="Now get the other one." broadcast="true">
-        <events>
-            <trigger>
-                <SpaceShip position="0,2000,200" lookat="0,0,0">
+<!-- @Objects: 2 pirates moving in squares, nolethal -->
+                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget">
                     <templates>
                       <Template link=spaceshippirate />
                     </templates>
@@ -215,14 +291,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
                     </WaypointController>
                   </controller>
                 </SpaceShip>
-            </trigger>
-        </events>
-    </SimpleNotification>
 
-  <SimpleNotification message="Fly towards the space station (grey dot)." broadcast="true">
-        <events>
-            <trigger>
-                <SpaceShip position="0,2000,400" lookat="0,0,0">
+                <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget">
                   <templates>
                     <Template link=spaceshippirate />
                   </templates>
@@ -230,18 +300,51 @@ TODO: send in a level 0.1 bot on a pirate ship.
                     <WaypointController>
                       <waypoints>
                         <Model mesh="cube.mesh" scale=8 position="  0,2400,1000" />
-                        <Model mesh="cube.mesh" scale=8 position="  0,2400,500" />
-                        <Model mesh="cube.mesh" scale=8 position="500,2400,500" />
-                        <Model mesh="cube.mesh" scale=8 position="500,2400, 1000" />
+                        <Model mesh="cube.mesh" scale=8 position="  0,2400, 500" />
+                        <Model mesh="cube.mesh" scale=8 position="500,2400, 500" />
+                        <Model mesh="cube.mesh" scale=8 position="500,2400,1000" />
                       </waypoints>
                     </WaypointController>
                   </controller>
                 </SpaceShip>
+
+<!-- @Triggers: movingpirates1 <-> one  pirate  dead
+                movingpirates2 <-> both pirates dead  -->
+    <EventTrigger name="movingpirates2" activations="1" stayactive="true">
+      <events>
+        <trigger>
+          <EventListener event="movingtarget" />
+        </trigger>
+      </events>
+      <EventTrigger name="movingpirates1" activations="1" stayactive="true">
+        <events>
+          <trigger>
+            <EventListener event="movingtarget" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </EventTrigger>
+
+
+    <SimpleNotification message="Now get the other one."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="movingpirates1" />
             </trigger>
         </events>
     </SimpleNotification>
 
-<!--------------------------------------PART THREE: to the space station --------------------------------------->
+    <SimpleNotification message="Fly towards the space station (grey dot)."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="movingpirates2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+
+<!--------------------------------------PART THREE: the space station --------------------------------------->
     <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=2 />
     <SimpleNotification message="Welcome to the Duball Space Station!">
         <events>
@@ -278,7 +381,9 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-<StaticEntity position="-1000,-300,700" collisionType=static>
+
+<!-- @Objects: DuBall Space Station, (no pawn!) -->
+    <StaticEntity position="-1000,-300,700" collisionType=static>
       <attached>
         <Model scale=13 mesh="DuBall1.mesh" position = "-100,0,0"/>
         <Model scale=13 mesh="DuBall2.mesh" position = "100,0,0"/>
@@ -290,11 +395,10 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <SphereCollisionShape radius="120"           position = "100,0,0" />
         <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
       </collisionShapes>
-</StaticEntity>
+    </StaticEntity>
 
 
-
-<!-- PORTALS -->
+<!-- @Objects: PORTAL: from DuBall to HydroHarvester  -->
     <Template name=PortalDefault>
         <PortalEndPoint>
             <attached>
@@ -316,7 +420,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
     <PortalLink fromID="2" toID="1" />
 <!-- PORTALS END-->
 
-    <DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=700 stayActive="true" delay=0 />
+    <!--DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=700 stayActive="true" delay=0 /-->
     <SimpleNotification message="Find the Hydrogen Farmer.">
         <events>
             <trigger>
@@ -324,6 +428,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
             </trigger>
         </events>
     </SimpleNotification>
+
 <!-------------------------------------- PART FOUR : Get Help --------------------------------------->   
     <DistanceTrigger name="famer1" position="-48200,100,0" target="Pawn" distance=650 stayActive="true" delay=0 />
     <SimpleNotification message="We just received a message from DuBall.">
@@ -343,9 +448,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-<!-- TODO: c) enemy -->
 
-    <!-- HYDROGEN FARMER & DOCKING?? -->
+<!-- @Objects: HYDROGEN FARMER & DOCKING -->
     <SpaceShip position="-48900,100,0" roll=90 yaw=0 pitch=20 mass=10000 health=100000 >
       <attached>
         <!-- Docking -->
@@ -415,9 +519,17 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <DockingTarget name="spaceShip" />
       </attached>
     </SpaceShip>
+<!-- hydrogen farmer & docking END -->
 
 
-<!-- Pickup - find better place !! -->
+<!-- @Objects: Pickup - find better place !! -->
+    <PickupSpawner position="-48650,700,100" triggerDistance="70" respawnTime="30" maxSpawnedItems="1">
+      <pickup>
+        <ShieldPickup template=hugeshieldpickup />
+      </pickup>
+    </PickupSpawner>
+
+
     <DistanceTrigger name="pickup" position="-48650,700,100" target="Pawn" distance=60 stayActive="true" delay=0 />
     <SimpleNotification message="This pickup protects your spaceship.">
         <events>
@@ -426,24 +538,18 @@ TODO: send in a level 0.1 bot on a pirate ship.
             </trigger>
         </events>
     </SimpleNotification>
-
-    <PickupSpawner position="-48650,700,100" triggerDistance="70" respawnTime="30" maxSpawnedItems="1">
-      <pickup>
-        <ShieldPickup template=hugeshieldpickup />
-      </pickup>
-    </PickupSpawner>
 <!-- Pickup-->
 
-    <DistanceTrigger name="attack" position="-48650,700,100" target="Pawn" distance=100 stayActive="true" delay=4 />
-    <SimpleNotification message="Return before it is too late. Boost with 'Space'.">
+    <DistanceTrigger name="warning" position="-48650,700,100" target="Pawn" distance=100 stayActive="true" delay=4 />
+    <SimpleNotification message="Return before it's too late. Boost with 'Space'.">
         <events>
             <trigger>
-                <EventListener event=attack />
+                <EventListener event=warning />
             </trigger>
         </events>
     </SimpleNotification>
 
-
+<!-- @Objects: planet && spaceboundaries  -->
     <Planet
       position="-44000,0,0"
       scale="2500"
@@ -461,6 +567,9 @@ TODO: send in a level 0.1 bot on a pirate ship.
       collisiondamage = 2
       enablecollisiondamage = true
     >
+      <attached>
+        <Model mesh="sphere.mesh" mass=10 position="0,0,0" scale=2500 />
+      </attached>
       <!--attached>
         <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" /> 
       </attached-->  <!-- Forcefield kills HYDROGEN FARMER-->
@@ -468,7 +577,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <SphereCollisionShape radius="2400" position="0,0,0" /> <!-- Nasty: Collisionradius =! planet scale -->
       </collisionShapes>
     </Planet>
-
+    <SpaceBoundaries reactionMode=2 warnDistance="1" maxDistance="2750" showDistance="2800" healthDecrease="0.1" position="-44000,0,0"/>
 
 
 <!-------------------------------------- The attack --------------------------------------->
@@ -480,8 +589,43 @@ TODO: send in a level 0.1 bot on a pirate ship.
      - update spaceshipTransporter
      - bots do friendly fire (is drone function reusable?) 
 -->
+
+<!-- @Triggers: toHydroFamer <-> first  portal usage
+                ondock       <-> successfull docking
+                attack       <-> second portal usage -->
+
+    <DistanceTrigger name="attack" position="-1400,-500,800" target="Pawn" distance=100 stayActive="true" >
+        <EventTrigger name="ondock" activations="1" stayactive="true" delay=6>
+          <events>
+            <trigger>
+              <EventListener event="dockMe" />
+            </trigger>
+          </events>
+            <DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=100 stayActive="true" />
+        </EventTrigger>
+    </DistanceTrigger>
+
+    <SimpleNotification message="WHY IS THIS MESSAGE NOT DISPLAYED ??"> <!-- ondock-message should be: "Return before it's too late. Boost with 'Space'." -->
+        <events>
+            <trigger>
+                <EventListener event=ondock />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Several serious enemies are approaching!">
+        <events>
+            <trigger>
+                <EventListener event=attack />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+
+<!-- @Objects: 6 pirates, heading towards DuBall, attacking  -->
 <!-- 1 -->
-    <SpaceShip position="3000,-4000,4000" lookat="-1300,-600,900">
+    <SpaceShip position="3000,-4000,4000" lookat="-1300,-600,900" name="attacker">
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -500,7 +644,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </controller>
     </SpaceShip>
 <!-- 2 -->
-    <SpaceShip position="3000,-4000,-4000" lookat="-1300,-600,900">
+    <SpaceShip position="3000,-4000,-4000" lookat="-1300,-600,900" name="attacker">
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -519,7 +663,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </controller>
     </SpaceShip>
 <!-- 3 -->
-    <SpaceShip position="-4000,-3000,4000" lookat="-1300,-600,900">
+    <SpaceShip position="-4000,-3000,4000" lookat="-1300,-600,900" name="attacker">
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -538,7 +682,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </controller>
     </SpaceShip>
 <!-- 4 -->
-    <SpaceShip position="-3000,-3000,-5000" lookat="-1300,-600,900">
+    <SpaceShip position="-3000,-3000,-5000" lookat="-1300,-600,900" name="attacker">
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -557,7 +701,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </controller>
     </SpaceShip>
 <!-- 5 -->
-    <SpaceShip position="4000,4000,3000" lookat="-1300,-600,900">
+    <SpaceShip position="4000,4000,3000" lookat="-1300,-600,900" name="attacker">
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -576,7 +720,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </controller>
     </SpaceShip>
 <!-- 6 -->
-    <SpaceShip position="2000,-4000,5000" lookat="-1300,-600,900">
+    <SpaceShip position="2000,-4000,5000" lookat="-1300,-600,900" name="attacker">
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -595,34 +739,149 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </controller>
     </SpaceShip>
 
+<!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,6] -->
+    <EventTrigger name="attacktrigger6" activations="1" stayactive="true">
+      <events>
+        <trigger>
+          <EventListener event="attacker" />
+        </trigger>
+      </events>
+      <EventTrigger name="attacktrigger5" activations="1" stayactive="true">
+        <events>
+          <trigger>
+            <EventListener event="attacker" />
+          </trigger>
+        </events>
+        <EventTrigger name="attacktrigger4" activations="1" stayactive="true">
+          <events>
+            <trigger>
+              <EventListener event="attacker" />
+            </trigger>
+          </events>
+          <EventTrigger name="attacktrigger3" activations="1" stayactive="true">
+            <events>
+              <trigger>
+                <EventListener event="attacker" />
+              </trigger>
+            </events>
+            <EventTrigger name="attacktrigger2" activations="1" stayactive="true">
+              <events>
+                <trigger>
+                  <EventListener event="attacker" />
+                </trigger>
+              </events>
+              <EventTrigger name="attacktrigger1" activations="1" stayactive="true">
+                <events>
+                  <trigger>
+                    <EventListener event="attacker" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </EventTrigger>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
 
-<!--- TODO: Catch event when all enemies are dead; display an end message --->
+
+    <SimpleNotification message="5 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger1" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="4 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger2" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="3 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger3" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="2 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger4" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+    <SimpleNotification message="One enemy left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger5" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+    <SimpleNotification message="Well done. You finished this tutorial." broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+<!-- @Triggers: postAttack <-> delayed attacktrigger6 -->
+    <EventTrigger name="postAttack1" activations="1" stayactive="true" delay=3>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <EventTrigger name="postAttack2" activations="1" stayactive="true" delay=6>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Either quit by pressing 'Esc' or ..." broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="postAttack1" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="... continue by using the new portal." broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="postAttack2" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+
 <!--- Message: Mission accomplished. Well done. Either you return to the main menu by pressing 'Esc' & then the button 'return to main menu'
       or you might want to discover some further tricks. Then use the new portal. --->
 
 <!-------------------------------------- |Bonus Part| --------------------------------------->
-<!-- PortalEndPoint is not invisible (and triggered yet); billboard has to be removed later.
-    <Billboard position="-48900,0,0" material="Examples/Flare" colour="7010,10010,-5010" scale=5/>
-    <Template name=PortalDefault>
-        <PortalEndPoint>
-            <attached>
-                <Billboard material="Portals/Default" />
-            </attached>
-        </PortalEndPoint>
-    </Template>
 
-    <PortalEndPoint position="800,-700,500" id="3" distance="50" target="MobileEntity" design="PortalDefault">
+<!-- @Objects: 6 pirates, heading towards DuBall, attacking  -->
+    <PortalEndPoint position="700,-600,500" id="3" distance="50" target="MobileEntity" design="PortalDefault" visible=true>
         <events>
             <visibility>
-                <EventListener event=bonus />
+                <EventListener event="postAttack2" />
             </visibility>
         </events>
     </PortalEndPoint>
 
-    <PortalEndPoint position="7000,10000,-5000" id="4" distance="70" target="MobileEntity" design="PortalDefault">
+    <PortalEndPoint position="7000,10000,-5000" id="4" distance="70" target="MobileEntity" design="PortalDefault" visible=true>
         <events>
             <visibility>
-                <EventListener event=bonus />
+                <EventListener event="postAttack2" />
             </visibility>
         </events>
     </PortalEndPoint>
@@ -630,7 +889,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
     <PortalLink fromID="3" toID="4" />
     <PortalLink fromID="4" toID="3" />
 
-    <DistanceTrigger name="bonus1" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=4 />
+    <DistanceTrigger name="bonus1" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=2 />
     <SimpleNotification message="Rotate your ship. Press 'Q' or 'E'. ">
         <events>
             <trigger>
@@ -639,7 +898,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus2" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=8 />
+    <DistanceTrigger name="bonus2" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=7 />
     <SimpleNotification message="Switch the camera's position. Press 'C'. ">
         <events>
             <trigger>
@@ -657,7 +916,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus4" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=16 />
+    <DistanceTrigger name="bonus4" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=17 />
     <SimpleNotification message="Have a look at the main menu's settings.">
         <events>
             <trigger>
@@ -666,8 +925,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus5" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=20 />
-    <SimpleNotification message="E.g: Settings->Miscellaneous->Nr. of bots">
+    <DistanceTrigger name="bonus5" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=22 />
+    <SimpleNotification message="E.g: Settings > Miscellaneous > Nr. of bots">
         <events>
             <trigger>
                 <EventListener event=bonus5 />
@@ -675,17 +934,16 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus6" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=24 />
-    <SimpleNotification message="That's it.">
+    <DistanceTrigger name="bonus6" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=27 />
+    <SimpleNotification message="That's it. Have fun with some bots.">
         <events>
             <trigger>
                 <EventListener event=bonus6 />
             </trigger>
         </events>
     </SimpleNotification>
--->
-<!-- ATTENTION: DOESN'T WORK YET
-    < Script code="artificialcontroller setbotlevel 0.1">
+
+    <Script code="addBots 3" onLoad="false">
         <events>
             <trigger>
                 <EventListener event=bonus6 />
@@ -693,62 +951,19 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </Script>
 
-    < Script code="addbots 3">
+    <Script code="artificialcontroller setbotlevel 0.1" onLoad="false">
         <events>
             <trigger>
                 <EventListener event=bonus6 />
             </trigger>
         </events>
     </Script>
--->
-
-<!--------------------------------------DUMP YARD --------------------------------------->
-
-
-<!-- Idea: Pawndeath should trigger several , delayed events. -->
-    <!--EventTrigger name="PawnDied4" >
-        <events>
-            <trigger>
-                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
-            </trigger>
-        </events>
-    </EventTrigger-->
-
-    <!--SimpleNotification message="Manual rockets are difficult to use.">
-        <events>
-            <trigger>
-                <EventListener event=PawnDied4 />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <Trigger name=boxend1 mode=and >
-        <EventTrigger name=trigger6>
-            <events>
-                <trigger>
-                    <EventListener event=PawnDied4/>
-                </trigger>
-            </events>
-        </EventTrigger>
-        <DistanceTrigger name="boxend2" position="-200,0,0" target="Pawn" distance=100 stayActive="true" delay=2 />
-    </Trigger>
-
-    <SimpleNotification message="Let's move on to the pirate ships.">
-        <events>
-            <trigger>
-                <EventListener event=boxend1 />
-            </trigger>
-        </events>
-    </SimpleNotification-->
-
 
   </Scene>
 </Level>
-
+<!-- TODO: 
+! Quest Interface
+! Problem with triggers (bug! e.g. at boxes, fast destroy)
+- Foolproof text messages (e.g. verspätete Nachrichten unterdrücken)
+- Clear Message Output: ""
+ -->
