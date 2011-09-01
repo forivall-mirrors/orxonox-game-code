@@ -400,6 +400,43 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
     </StaticEntity>
 
 
+<!-- 
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger1 />
+                  </trigger>
+                </events>
+                <EventTrigger invert=true>
+                  <events>
+                    <trigger>
+                      <EventListener event=trigger2 />
+                    </trigger>
+                  </events>
+                </EventTrigger>
+              </EventTrigger>
+            </visibility>
+          </events>
+Activated: after destroying pirates after successfull docking// Deactivated: @Beginning, after first usage, after second usage
+
+activate:
+
+                <EventListener event="movingpirates2" />
+
+                <EventListener event=ondock />
+
+deactivate:
+
+
+                <EventListener event=toHydroFarmer />
+
+
+                <EventListener event=attack />
+
+-->
+
 <!-- @Objects: PORTAL: from DuBall to HydroHarvester  -->
     <Template name=PortalDefault>
         <PortalEndPoint>
@@ -410,14 +447,86 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
     </Template>
 
     <PortalEndPoint position="-1400,-500,800" id="1" distance="50" target="MobileEntity" design="PortalDefault">
-        <!--events>
-            <visibility>
-                <EventListener event=portal />
-            </visibility>
-        </events-->
+          <events>
+            <activity>
+              <Trigger mode="or" activations="2">
+                <Trigger mode="and" activations="1">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event="movingpirates2" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event=toHydroFarmer />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </Trigger>
+                <Trigger mode="and" activations="1">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event=ondock />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event=attack />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </Trigger>
+              </Trigger>
+            </activity>
+          </events>
     </PortalEndPoint>
 
-    <PortalEndPoint position="-47000,-1000,1300" id="2" distance="70" target="MobileEntity" design="PortalDefault" />
+    <PortalEndPoint position="-47000,-1000,1300" id="2" distance="70" target="MobileEntity" design="PortalDefault">
+          <events>
+            <activity>
+              <Trigger mode="or" activations="2">
+                <Trigger mode="and" activations="1">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event="movingpirates2" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event=toHydroFarmer />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </Trigger>
+                <Trigger mode="and" activations="1">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event=ondock />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event=attack />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </Trigger>
+              </Trigger>
+            </activity>
+          </events>
+    </PortalEndPoint>
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
 <!-- PORTALS END-->
