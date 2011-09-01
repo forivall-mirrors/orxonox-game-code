@@ -30,10 +30,10 @@ include("templates/pickupRepresentationTemplates.oxt")
   <NotificationQueueCEGUI
     name="narrative"
     targets="simpleNotification"
-    size=1
-    displayTime=30
+    size=3
+    displayTime=3.9
     position="0.2, 0, 0.1, 0"
-    fontSize="24"
+    fontSize="23"
     fontColor="0.3, 1, 0.2, 0.8"
     alignment="HorzCentred"
     displaySize="0.6, 0, 0, 0"
@@ -57,7 +57,7 @@ include("templates/pickupRepresentationTemplates.oxt")
 
 <!-- QUESTS: TODO! STORY!!
     <LocalQuest id="orxonox-weaponsystem-check">
-        <QuestDescription title="Tutorial" description="Before we  serious missions you have to proof that " /> //The description of the quest.
+        <QuestDescription title="Tutorial" description=" " /> //The description of the quest.
         <subquests>
             <Quest id ="questId1" />
             <Quest id="questIdn" />
@@ -127,8 +127,10 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
             </trigger>
         </events>
     </SimpleNotification>
-<!-------------------------------------- PART ONE: Destroy boxes --------------------------------------->
-    <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=2 />
+<!-------------------------------------- PART ZERO: How to fly --------------------------------------->
+
+<!-------------------------------------- PART ONE : Destroy boxes --------------------------------------->
+    <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=4 />
     <SimpleNotification message="Destroy those four boxes.">
         <events>
             <trigger>
@@ -137,7 +139,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="spawndelaytrigger2" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=5 />
+    <DistanceTrigger name="spawndelaytrigger2" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=8.1 />
     <SimpleNotification message=" 1. Aim the a the red cycle.">
         <events>
             <trigger>
@@ -146,7 +148,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="spawndelaytrigger3" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=8 />
+    <DistanceTrigger name="spawndelaytrigger3" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=12.2 />
     <SimpleNotification message="2. Click! (hold the left mouse button)">
         <events>
             <trigger>
@@ -165,7 +167,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
                     </collisionShapes>
                 </Pawn>
 
-                <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box visible="true">
                     <!--events>
                         <visibility>
                             <EventListener event=spawndelaytrigger3 />
@@ -200,25 +202,25 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
                 boxtrigger2 <-> two   boxes destroyed
                 boxtrigger3 <-> three boxes destroyed
                 boxtrigger4 <-> four  boxes destroyed  -->
-    <EventTrigger name="boxtrigger4" activations="1" stayactive="true">
+    <EventTrigger name="boxtrigger4" activations="1" stayactive="true" delay=0.1>
       <events>
         <trigger>
           <EventListener event="box" />
         </trigger>
       </events>
-      <EventTrigger name="boxtrigger3" activations="1" stayactive="true">
+      <EventTrigger name="boxtrigger3" activations="1" stayactive="true" delay=0.1>
         <events>
           <trigger>
             <EventListener event="box" />
           </trigger>
         </events>
-        <EventTrigger name="boxtrigger2" activations="1" stayactive="true">
+        <EventTrigger name="boxtrigger2" activations="1" stayactive="true" delay=0.1>
           <events>
             <trigger>
               <EventListener event="box" />
             </trigger>
           </events>
-          <EventTrigger name="boxtrigger1" activations="1" stayactive="true">
+          <EventTrigger name="boxtrigger1" activations="1" stayactive="true" delay=0.1>
             <events>
               <trigger>
                 <EventListener event="box" />
@@ -276,7 +278,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
     </SimpleNotification>
 
 <!-- @Objects: 2 pirates moving in squares, nolethal -->
-                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget">
+                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" >
                     <templates>
                       <Template link=spaceshippirate />
                     </templates>
@@ -310,13 +312,13 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
 
 <!-- @Triggers: movingpirates1 <-> one  pirate  dead
                 movingpirates2 <-> both pirates dead  -->
-    <EventTrigger name="movingpirates2" activations="1" stayactive="true">
+    <EventTrigger name="movingpirates2" activations="1" stayactive="true" delay=0.1>
       <events>
         <trigger>
           <EventListener event="movingtarget" />
         </trigger>
       </events>
-      <EventTrigger name="movingpirates1" activations="1" stayactive="true">
+      <EventTrigger name="movingpirates1" activations="1" stayactive="true" delay=0.1>
         <events>
           <trigger>
             <EventListener event="movingtarget" />
@@ -345,7 +347,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
 
 
 <!--------------------------------------PART THREE: the space station --------------------------------------->
-    <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=2 />
+    <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=1 />
     <SimpleNotification message="Welcome to the Duball Space Station!">
         <events>
             <trigger>
@@ -540,14 +542,6 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
     </SimpleNotification>
 <!-- Pickup-->
 
-    <DistanceTrigger name="warning" position="-48650,700,100" target="Pawn" distance=100 stayActive="true" delay=4 />
-    <SimpleNotification message="Return before it's too late. Boost with 'Space'.">
-        <events>
-            <trigger>
-                <EventListener event=warning />
-            </trigger>
-        </events>
-    </SimpleNotification>
 
 <!-- @Objects: planet && spaceboundaries  -->
     <Planet
@@ -564,20 +558,16 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
       rotationrate="1.0"
       atmospheresize="80.0f"
       imagesize="1024.0f"
-      collisiondamage = 2
-      enablecollisiondamage = true
+      collisiondamage = "2"
+      enablecollisiondamage = "false"
     >
-      <attached>
-        <Model mesh="sphere.mesh" mass=10 position="0,0,0" scale=2500 />
-      </attached>
       <!--attached>
         <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" /> 
       </attached-->  <!-- Forcefield kills HYDROGEN FARMER-->
       <collisionShapes>
-        <SphereCollisionShape radius="2400" position="0,0,0" /> <!-- Nasty: Collisionradius =! planet scale -->
+        <SphereCollisionShape radius="2500" position="0,0,0" />
       </collisionShapes>
     </Planet>
-    <SpaceBoundaries reactionMode=2 warnDistance="1" maxDistance="2750" showDistance="2800" healthDecrease="0.1" position="-44000,0,0"/>
 
 
 <!-------------------------------------- The attack --------------------------------------->
@@ -605,7 +595,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </EventTrigger>
     </DistanceTrigger>
 
-    <SimpleNotification message="WHY IS THIS MESSAGE NOT DISPLAYED ??"> <!-- ondock-message should be: "Return before it's too late. Boost with 'Space'." -->
+    <SimpleNotification message="Return before it's too late. Boost with 'Space'." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=ondock />
@@ -625,7 +615,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
 
 <!-- @Objects: 6 pirates, heading towards DuBall, attacking  -->
 <!-- 1 -->
-    <SpaceShip position="3000,-4000,4000" lookat="-1300,-600,900" name="attacker">
+    <SpaceShip position="3000,-4000,4000" lookat="-1300,-600,900" name="attacker"visible="true">
+        <events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events>
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -644,7 +639,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </controller>
     </SpaceShip>
 <!-- 2 -->
-    <SpaceShip position="3000,-4000,-4000" lookat="-1300,-600,900" name="attacker">
+    <SpaceShip position="3000,-4000,-4000" lookat="-1300,-600,900" name="attacker" visible="true">
+        <events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events>
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -663,7 +663,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </controller>
     </SpaceShip>
 <!-- 3 -->
-    <SpaceShip position="-4000,-3000,4000" lookat="-1300,-600,900" name="attacker">
+    <SpaceShip position="-4000,-3000,4000" lookat="-1300,-600,900" name="attacker" visible="true">
+        <events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events>
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -682,7 +687,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </controller>
     </SpaceShip>
 <!-- 4 -->
-    <SpaceShip position="-3000,-3000,-5000" lookat="-1300,-600,900" name="attacker">
+    <SpaceShip position="-3000,-3000,-5000" lookat="-1300,-600,900" name="attacker" visible="true">
+        <events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events>
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -701,7 +711,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </controller>
     </SpaceShip>
 <!-- 5 -->
-    <SpaceShip position="4000,4000,3000" lookat="-1300,-600,900" name="attacker">
+    <SpaceShip position="4000,4000,3000" lookat="-1300,-600,900" name="attacker"visible="true">
+        <events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events>
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -720,7 +735,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </controller>
     </SpaceShip>
 <!-- 6 -->
-    <SpaceShip position="2000,-4000,5000" lookat="-1300,-600,900" name="attacker">
+    <SpaceShip position="2000,-4000,5000" lookat="-1300,-600,900" name="attacker" visible="true">
+        <events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events>
         <templates>
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
@@ -746,31 +766,31 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
           <EventListener event="attacker" />
         </trigger>
       </events>
-      <EventTrigger name="attacktrigger5" activations="1" stayactive="true">
+      <EventTrigger name="attacktrigger5" activations="1" stayactive="true" delay=0.1>
         <events>
           <trigger>
             <EventListener event="attacker" />
           </trigger>
         </events>
-        <EventTrigger name="attacktrigger4" activations="1" stayactive="true">
+        <EventTrigger name="attacktrigger4" activations="1" stayactive="true" delay=0.1>
           <events>
             <trigger>
               <EventListener event="attacker" />
             </trigger>
           </events>
-          <EventTrigger name="attacktrigger3" activations="1" stayactive="true">
+          <EventTrigger name="attacktrigger3" activations="1" stayactive="true" delay=0.1>
             <events>
               <trigger>
                 <EventListener event="attacker" />
               </trigger>
             </events>
-            <EventTrigger name="attacktrigger2" activations="1" stayactive="true">
+            <EventTrigger name="attacktrigger2" activations="1" stayactive="true" delay=0.1>
               <events>
                 <trigger>
                   <EventListener event="attacker" />
                 </trigger>
               </events>
-              <EventTrigger name="attacktrigger1" activations="1" stayactive="true">
+              <EventTrigger name="attacktrigger1" activations="1" stayactive="true" delay=0.1>
                 <events>
                   <trigger>
                     <EventListener event="attacker" />
@@ -855,7 +875,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
       </events>
     </SimpleNotification>
 
-    <SimpleNotification message="... continue by using the new portal." broadcast="true">
+    <SimpleNotification message="... stay here to learn some tricks." broadcast="true">
       <events>
         <trigger>
           <EventListener event="postAttack2" />
@@ -863,34 +883,61 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
       </events>
     </SimpleNotification>
 
-
-<!--- Message: Mission accomplished. Well done. Either you return to the main menu by pressing 'Esc' & then the button 'return to main menu'
-      or you might want to discover some further tricks. Then use the new portal. --->
-
 <!-------------------------------------- |Bonus Part| --------------------------------------->
+<!-- @Triggers: "bonusX" <->  delayed "attacktrigger6" -->
+    <EventTrigger name="bonus1" activations="1" stayactive="true" delay=10>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus2" activations="1" stayactive="true" delay=16>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus3" activations="1" stayactive="true" delay=22>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus4" activations="1" stayactive="true" delay=28>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus5" activations="1" stayactive="true" delay=32.1>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus6" activations="1" stayactive="true" delay=36.2>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus7" activations="1" stayactive="true" delay=4>
+      <events>
+        <trigger>
+          <EventListener event="bonus6" />
+        </trigger>
+      </events>
+    </EventTrigger>
 
-<!-- @Objects: 6 pirates, heading towards DuBall, attacking  -->
-    <PortalEndPoint position="700,-600,500" id="3" distance="50" target="MobileEntity" design="PortalDefault" visible=true>
-        <events>
-            <visibility>
-                <EventListener event="postAttack2" />
-            </visibility>
-        </events>
-    </PortalEndPoint>
 
-    <PortalEndPoint position="7000,10000,-5000" id="4" distance="70" target="MobileEntity" design="PortalDefault" visible=true>
-        <events>
-            <visibility>
-                <EventListener event="postAttack2" />
-            </visibility>
-        </events>
-    </PortalEndPoint>
 
-    <PortalLink fromID="3" toID="4" />
-    <PortalLink fromID="4" toID="3" />
-
-    <DistanceTrigger name="bonus1" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=2 />
-    <SimpleNotification message="Rotate your ship. Press 'Q' or 'E'. ">
+    <SimpleNotification message="Rotate your ship. Press 'Q' or 'E'. "  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus1 />
@@ -898,8 +945,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus2" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=7 />
-    <SimpleNotification message="Switch the camera's position. Press 'C'. ">
+    <SimpleNotification message="Switch the camera's position. Press 'C'. "  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus2 />
@@ -907,8 +953,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus3" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=12 />
-    <SimpleNotification message="360° view: press 'Ctrl' + use the mouse ">
+    <SimpleNotification message="360° view: press 'Ctrl' + use the mouse "  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus3 />
@@ -916,8 +961,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus4" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=17 />
-    <SimpleNotification message="Have a look at the main menu's settings.">
+    <SimpleNotification message="Have a look at the main menu's settings."  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus4 />
@@ -925,8 +969,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus5" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=22 />
-    <SimpleNotification message="E.g: Settings > Miscellaneous > Nr. of bots">
+    <SimpleNotification message="E.g: Settings > Miscellaneous > Nr. of bots"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus5 />
@@ -934,8 +977,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="bonus6" position="7000,10000,-5000" target="Pawn" distance=100 stayActive="true" delay=27 />
-    <SimpleNotification message="That's it. Have fun with some bots.">
+    <SimpleNotification message="You successfully finished Mission One!"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus6 />
@@ -943,7 +985,16 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 
-    <Script code="addBots 3" onLoad="false">
+    <SimpleNotification message="Press 'Esc' and return to the main menu."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus7 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+    <!--Script code="addBots 3" onLoad="false">
         <events>
             <trigger>
                 <EventListener event=bonus6 />
@@ -957,13 +1008,12 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
                 <EventListener event=bonus6 />
             </trigger>
         </events>
-    </Script>
+    </Script-->
 
   </Scene>
 </Level>
 <!-- TODO: 
 ! Quest Interface
-! Problem with triggers (bug! e.g. at boxes, fast destroy)
 - Foolproof text messages (e.g. verspätete Nachrichten unterdrücken)
-- Clear Message Output: ""
+- Radar visibility & Hud Markers
  -->
