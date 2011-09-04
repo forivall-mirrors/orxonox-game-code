@@ -400,43 +400,6 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
     </StaticEntity>
 
 
-<!-- 
-          <events>
-            <visibility>
-              <EventTrigger>
-                <events>
-                  <trigger>
-                    <EventListener event=trigger1 />
-                  </trigger>
-                </events>
-                <EventTrigger invert=true>
-                  <events>
-                    <trigger>
-                      <EventListener event=trigger2 />
-                    </trigger>
-                  </events>
-                </EventTrigger>
-              </EventTrigger>
-            </visibility>
-          </events>
-Activated: after destroying pirates after successfull docking// Deactivated: @Beginning, after first usage, after second usage
-
-activate:
-
-                <EventListener event="movingpirates2" />
-
-                <EventListener event=ondock />
-
-deactivate:
-
-
-                <EventListener event=toHydroFarmer />
-
-
-                <EventListener event=attack />
-
--->
-
 <!-- @Objects: PORTAL: from DuBall to HydroHarvester  -->
     <Template name=PortalDefault>
         <PortalEndPoint>
@@ -461,7 +424,7 @@ deactivate:
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
-                        <EventListener event=toHydroFarmer />
+                        <EventListener event="toHydroFarmer" />
                       </trigger>
                     </events>
                   </EventTrigger>
@@ -470,18 +433,25 @@ deactivate:
                   <EventTrigger>
                     <events>
                       <trigger>
-                        <EventListener event=ondock />
+                        <EventListener event="ondock" />
                       </trigger>
                     </events>
                   </EventTrigger>
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
-                        <EventListener event=attack />
+                        <EventListener event="attack" />
                       </trigger>
                     </events>
                   </EventTrigger>
                 </Trigger>
+                <EventTrigger>
+                  <events>
+                    <trigger>
+                      <EventListener event="HydroFarmer" />
+                    </trigger>
+                  </events>
+                </EventTrigger>
               </Trigger>
             </activity>
           </events>
@@ -490,7 +460,7 @@ deactivate:
     <PortalEndPoint position="-47000,-1000,1300" id="2" distance="70" target="MobileEntity" design="PortalDefault">
           <events>
             <activity>
-              <Trigger mode="or" activations="2">
+              <Trigger mode="or" activations="3">
                 <Trigger mode="and" activations="1">
                   <EventTrigger>
                     <events>
@@ -502,7 +472,7 @@ deactivate:
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
-                        <EventListener event=toHydroFarmer />
+                        <EventListener event="toHydroFarmer" />
                       </trigger>
                     </events>
                   </EventTrigger>
@@ -511,28 +481,53 @@ deactivate:
                   <EventTrigger>
                     <events>
                       <trigger>
-                        <EventListener event=ondock />
+                        <EventListener event="ondock" />
                       </trigger>
                     </events>
                   </EventTrigger>
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
-                        <EventListener event=attack />
+                        <EventListener event="attack" />
                       </trigger>
                     </events>
                   </EventTrigger>
                 </Trigger>
+                <EventTrigger>
+                  <events>
+                    <trigger>
+                      <EventListener event="HydroFarmer" />
+                    </trigger>
+                  </events>
+                </EventTrigger>
               </Trigger>
             </activity>
           </events>
     </PortalEndPoint>
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
+<!-- ????????????????????????????????????????????????????? why does this NOT work ??
+                <Trigger mode="and" activations="1">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event="HydroFarmer" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event="attack" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </Trigger>
+-->
 <!-- PORTALS END-->
 
-    <!--DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=700 stayActive="true" delay=0 /-->
-    <SimpleNotification message="Find the Hydrogen Farmer.">
+
+    <SimpleNotification message="Dock to the Hydrogen Farmer.">
         <events>
             <trigger>
                 <EventListener event=toHydroFarmer />
@@ -561,7 +556,7 @@ deactivate:
 
 
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
-    <SpaceShip position="-48900,100,0" roll=90 yaw=0 pitch=20 mass=10000 health=100000 >
+    <SpaceShip position="-48900,100,0" roll=90 yaw=0 pitch=20 mass=10000 health=100000 name="HydroFarmer">
       <attached>
         <!-- Docking -->
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -625,11 +620,49 @@ deactivate:
         </attached>
     </Dock>
 
-    <SpaceShip template="spaceshipspacecruiser" position="-48900,800,0" orientation="-0.14, 0.68, 0.68, 0.223" health="300" maxhealth="400" initialhealth="300">
+    <SpaceShip template="spaceshipspacecruiser" position="-48900,800,0" orientation="-0.14, 0.68, 0.68, 0.223" health="300" maxhealth="400" initialhealth="300" name="cruiser" >
       <attached>
         <DockingTarget name="spaceShip" />
       </attached>
     </SpaceShip>
+
+
+          <Trigger name="cruiserFriendlyFire" mode="and" activations="2">
+            <EventTrigger>
+              <events>
+                <trigger>
+                  <EventListener event="cruiser" />
+                </trigger>
+              </events>
+            </EventTrigger>
+            <EventTrigger invert=true>
+              <events>
+                <trigger>
+                  <EventListener event="ondock" />
+                </trigger>
+              </events>
+            </EventTrigger>
+          </Trigger>
+
+
+    <SimpleNotification message="You killed the Hydrogen Farmer!" broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="HydroFarmer" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="You killed the SpaceCruiser!" broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="cruiserFriendlyFire" /><!--cruiserFriendlyFire-->
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+
 <!-- hydrogen farmer & docking END -->
 
 
@@ -1125,4 +1158,6 @@ deactivate:
 ! Quest Interface
 - Foolproof text messages (e.g. verspätete Nachrichten unterdrücken)
 - Radar visibility & Hud Markers
+- End Tutorial, if either the Hydrogen Farmer or the SpaceCruiser gets destroyed.
+
  -->

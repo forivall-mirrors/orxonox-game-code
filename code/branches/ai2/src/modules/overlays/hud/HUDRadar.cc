@@ -63,7 +63,7 @@ namespace orxonox
         this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.png";
         this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.png";
         this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.png";
-
+        this->setDetectionLimit( 10000.0f );
         this->owner_ = 0;
     }
 
@@ -92,6 +92,8 @@ namespace orxonox
     void HUDRadar::addObject(RadarViewable* object)
     {
         if (object == dynamic_cast<RadarViewable*>(this->owner_))
+            return;
+        if( showObject(object) == false ) //do not show objects that are "invisible" or "radar invisible"
             return;
 
         // Make sure the object hasn't been added yet
@@ -122,8 +124,12 @@ namespace orxonox
 
     void HUDRadar::objectChanged( RadarViewable* rv )
     {
-        if (rv == dynamic_cast<RadarViewable*>(this->owner_))
+        if(rv == dynamic_cast<RadarViewable*>(this->owner_)) //case: player changed
             return;
+        if( showObject(rv) == false ) //case: (radar) invisible object changed
+            return;
+        if( this->radarObjects_.find(rv) == this->radarObjects_.end() ) // if (radar) invisibility becomes (radar) visible
+            this->addObject(rv);
         assert( this->radarObjects_.find(rv) != this->radarObjects_.end() );
         Ogre::PanelOverlayElement* panel = this->radarObjects_[rv];
         panel->setMaterialName(TextureGenerator::getMaterialName(
@@ -171,7 +177,10 @@ namespace orxonox
             Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
             coord *= math::pi / 3.5f; // small adjustment to make it fit the texture
             it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
-            it->second->show();
+            if( distance < detectionLimit_ || detectionLimit_ < 0 )
+                it->second->show();
+            else
+                it->second->hide();
 
             // if this object is in focus, then set the focus marker
             if (isFocus)
@@ -182,6 +191,17 @@ namespace orxonox
             }
         }
     }
+
+    bool HUDRadar::showObject(RadarViewable* rv)
+    {
+        if ( rv == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
+            return false;
+        assert( rv->getWorldEntity() );
+        if ( rv->getWorldEntity()->isVisible()==false || rv->getRadarVisibility()==false )
+            return false;
+        return true;
+    }
+
 
     void HUDRadar::changedOwner()
     {

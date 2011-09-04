@@ -56,6 +56,11 @@ namespace orxonox
         float getHalfDotSizeDistance() const { return this->halfDotSizeDistance_; }
         void setHalfDotSizeDistance(float distance) { this->halfDotSizeDistance_ = distance; }
 
+        void setDetectionLimit( float limit )
+        { this->detectionLimit_ = limit; }
+        float getDetectionLimit() const
+        { return this->detectionLimit_; }
+
         float getMaximumDotSize() const { return this->maximumDotSize_; }
         void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }
 
@@ -68,6 +73,7 @@ namespace orxonox
         virtual void removeObject(RadarViewable* viewable);
         virtual void objectChanged( RadarViewable* rv );
         void radarTick(float dt);
+        bool showObject( RadarViewable* rv ); //!< Do not display an object on radar, if showObject(.) is false.
 
         void gatherObjects();
 
@@ -82,7 +88,7 @@ namespace orxonox
         float maximumDotSize_;
 
         float sensitivity_;
-
+        float detectionLimit_;
         ControllableEntity* owner_;
     };
 }
