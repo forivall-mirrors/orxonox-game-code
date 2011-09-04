@@ -37,7 +37,7 @@
 #include "util/Math.h"
 #include "core/OrxonoxClass.h"
 #include "core/SmartPtr.h"
-
+//TODO: if a RadarViewable changes visibility or activity, the event is not correctly working
 namespace orxonox
 {
     class BaseObject;

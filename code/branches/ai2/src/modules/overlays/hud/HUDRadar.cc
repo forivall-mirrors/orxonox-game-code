@@ -123,17 +123,9 @@ namespace orxonox
     }
 
     void HUDRadar::objectChanged( RadarViewable* rv )
-    {
-        if(rv == dynamic_cast<RadarViewable*>(this->owner_)) //case: player changed
-            return;
-        if( showObject(rv) == false ) //case: (radar) invisible object changed
-            return;
-        if( this->radarObjects_.find(rv) == this->radarObjects_.end() ) // if (radar) invisibility becomes (radar) visible
-            this->addObject(rv);
-        assert( this->radarObjects_.find(rv) != this->radarObjects_.end() );
-        Ogre::PanelOverlayElement* panel = this->radarObjects_[rv];
-        panel->setMaterialName(TextureGenerator::getMaterialName(
-            shapeMaterials_[rv->getRadarObjectShape()], rv->getRadarObjectColour()));
+    {// The new implementation behaves more precisely, since inactive RadarViewables are not displayed anymore.
+        this->removeObject(rv);
+        this->addObject(rv);
     }
 
     void HUDRadar::gatherObjects()

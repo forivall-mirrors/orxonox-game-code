@@ -451,4 +451,19 @@ namespace orxonox
         ControllableEntity::startLocalHumanControl();
         this->isHumanShip_ = true;
     }
+
+    void Pawn::changedActivity(void)
+    {
+        SUPER(Pawn, changedActivity);
+
+        this->setRadarVisibility(this->isActive());
+    }
+
+    void Pawn::changedVisibility(void)
+    {
+        SUPER(Pawn, changedVisibility);
+        //this->setVisible(this->isVisible());
+        this->setRadarVisibility(this->isVisible());
+    }
+
 }

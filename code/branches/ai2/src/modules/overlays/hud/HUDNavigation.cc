@@ -163,16 +163,13 @@ void HUDNavigation::tick ( float dt )
     sortedObjectList_.sort ( compareDistance );
 
     unsigned int markerCount_ = 0;
-    bool closeEnough_ = false; //inly display objects that are close enough to be relevant for the player
+    bool closeEnough_ = false; //only display objects that are close enough to be relevant for the player
 //         for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++markerCount_, ++listIt )
     {
         ObjectMap::iterator it = activeObjectList_.find ( listIt->first );
-        if( detectionLimit_ < 0 )
-            closeEnough_ = true ;
-        else
-            closeEnough_ = listIt->second < detectionLimit_ ;
-        if ( markerCount_ < markerLimit_ && closeEnough_ ) // display on HUD íf statement is true
+        closeEnough_ = listIt->second < detectionLimit_ ;
+        if ( markerCount_ < markerLimit_ && (closeEnough_ ||  detectionLimit_ < 0) ) // display on HUD if the statement is true
         {
 
 

@@ -48,17 +48,15 @@ include("templates/pickupRepresentationTemplates.oxt")
 
   <WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg-->
 
-
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-    <!-- Script code="artificialcontroller setbotlevel 0.1" /-->
+    <SpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
 
 <!-- END OF INCLUDES & NECESSARITIES -->
 
-<!-- QUESTS: TODO! STORY!!
-    <LocalQuest id="orxonox-weaponsystem-check">
-        <QuestDescription title="Tutorial" description=" " /> //The description of the quest.
-        <subquests>
+    <LocalQuest id="missionOne.basicFlying">
+        <QuestDescription title="Flying" description="INSERT STORY HERE. The first thing you have to learn is flying. Use 'W' to accelerate and steer with your mouse. In order to know where to fly there are two detection systems. The navigation markers highlite important objects directly in the level. If you can't directly see those objects, there are arrows which indicate how you have to steer. The second device is the radar. There you get an overview of all objects near you. In order to find an object that you spotted on radar, you have to steer in a way that the corresponding dot is in the center of the radar. Now you can find the corresponding object straight ahead. Your goal is to fly to the first waypoint. It's that orange dot on the radar." failmessage="" completeMessage="Well done." />
+        <!--subquests>
             <Quest id ="questId1" />
             <Quest id="questIdn" />
         </subquests>
@@ -76,50 +74,72 @@ include("templates/pickupRepresentationTemplates.oxt")
             <QuestEffect /> //A list of QuestEffects, invoked when the Quest is completed, see QuestEffect for the full XML representation.
             ...
             <QuestEffect />
-        </complete-effects>
-    </LocalQuest-->
+        </complete-effects-->
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.weaponsystemI">
+        <QuestDescription title="Weaponsystem I" description="INSERT STORY HERE. Test your four different weapons on the four boxes. The four weapons are laser (left click), plasma (right click), self targeting rockets (middle click) and manual rockets (press 'T'). Attention if you use manual rockets: Press 'T' only once to start the rocket. If you miss your target you can get out of the rocket, by clicking or pressing 'T' once more." failmessage="" completeMessage="All right." />
+        <!--subquests>
+            <Quest id ="questId1" />
+            <Quest id="questIdn" />
+        </subquests>
+        <hints>
+            <QuestHint id="hintId1" />
+            
+"The laser is a standard weapon. It is fast and precise but does not deal much damage."
+"That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That could be your favourite weapon for close range combat or if you want to hit a really slow enemy."
+"The target seeking rockets follow slow targets on their own."
+"Task complete. Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. The total amount of both manual and target seeking rockets is limited to 10."
+
+
+            <QuestHint id="hintIdn" />
+        </hints>
+        <fail-effects>
+            <QuestEffect />
+            ...
+            <QuestEffect />
+        </fail-effects>
+        <complete-effects>
+            <QuestEffect />
+            ...
+            <QuestEffect />
+        </complete-effects-->
+    </LocalQuest>
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <QuestEffectBeacon position="800,700,600" times="1">
+            <effects>
+                <AddQuest questId="missionOne.basicFlying" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="questStart"/>
+                </execute>
+            </events>
+            <attached>
+                <DistanceTrigger name="questStart" position="0,0,0" distance="50" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" delay="2" />
+            </attached>
+        </QuestEffectBeacon>
 
 
 <!-- TUTORIAL-TODO: -->
-
-<!-- 1. Aiming & Weapons (static targets, moving targets, dangerous targets)--> <!-- 3 Mouse buttons + "T"-->
-<!-- 2. Flying & manoeuvring (basic flying, using pickups, forcefields, docks & portals) --> <!-- "W","S","SPACE"-->
+<!-- 1. Flying & manoeuvring (basic flying, using pickups, forcefields, docks & portals) --> <!-- "W","S","SPACE"-->
+<!-- 2. Aiming & Weapons (static targets, moving targets, dangerous targets)--> <!-- 3 Mouse buttons + "T"-->
 <!-- 3. Game handling (quests, knowing when a game is over :-), pausing, chat, ... ) --> <!--"F3", "F2", "ESC" -->
 <!-- 4. Extras (other things to discover) --> <!-- "Q","E","A","D","C", "CTRL", "", ... -->
 
 <!--
-Four boxes for aiming
 
-TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by using the left mouse button."
-"The laser is a standard weapon. It is fast and precise but does not deal much damage. Now do the same with the next target, but right click instead."
-"That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That should be your favourite in close range combat or if you want to hit a really slow enemy. Try to destroy the next box by right clicking at it."
-"The target seeking rockets follow their target on their own and the explosive load shouldn't be underestimated. Now its time to hit the last target with the hand guided rocket. You can release one by pressing T once. Note: If you miss the target, you can get out of the rocket by clicking or pressing T once more."
 
-"Task complete. Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. Now lets move to a slightly more difficult target. Take a look at your radar. The red dot is an enemy's ship. Try to turn your ship towards it, such that the red dot is in the radar's centre. You should be able to see it then directly. Your task is to destroy it."
 
 "Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
 
 -->
 
-    <DistanceTrigger name="spawndelaytrigger0" position="-200,0,0" target="Pawn" distance=10 stayActive="true" />
+    <DistanceTrigger name="spawndelaytrigger0" position="800,700,600" target="Pawn" distance=10 stayActive="true"/>
     <SimpleNotification message="Welcome to the Orxonox Tutorial.">
         <events>
             <trigger>
@@ -128,6 +148,16 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
         </events>
     </SimpleNotification>
 <!-------------------------------------- PART ZERO: How to fly --------------------------------------->
+
+
+
+
+
+
+
+
+
+
 
 <!-------------------------------------- PART ONE : Destroy boxes --------------------------------------->
     <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=4 />
@@ -715,9 +745,6 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
 <!-------------------------------------- The attack --------------------------------------->
 
 <!-- TODO:
-     - better performance: 4-8 Transporters from different directions heading towards duball's station
-     - attached with triggers: - if all bots died, then display end message
-                               - do a count down: 'x enemies left'
      - update spaceshipTransporter
      - bots do friendly fire (is drone function reusable?) 
 -->
@@ -1151,7 +1178,7 @@ TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by us
             </trigger>
         </events>
     </Script-->
-
+    <!-- Script code="artificialcontroller setbotlevel 0.1" /-->
   </Scene>
 </Level>
 <!-- TODO: 
