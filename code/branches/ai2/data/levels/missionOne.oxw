@@ -46,68 +46,79 @@ include("templates/pickupRepresentationTemplates.oxt")
       include("includes/pickups.oxi")
     ?>
 
-  <WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg-->
+    <WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg-->
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
 
 <!-- END OF INCLUDES & NECESSARITIES -->
 
     <LocalQuest id="missionOne.basicFlying">
         <QuestDescription title="Flying" description="INSERT STORY HERE. The first thing you have to learn is flying. Use 'W' to accelerate and steer with your mouse. In order to know where to fly there are two detection systems. The navigation markers highlite important objects directly in the level. If you can't directly see those objects, there are arrows which indicate how you have to steer. The second device is the radar. There you get an overview of all objects near you. In order to find an object that you spotted on radar, you have to steer in a way that the corresponding dot is in the center of the radar. Now you can find the corresponding object straight ahead. Your goal is to fly to the first waypoint. It's that orange dot on the radar." failmessage="" completeMessage="Well done." />
-        <!--subquests>
-            <Quest id ="questId1" />
-            <Quest id="questIdn" />
-        </subquests>
-        <hints>
-            <QuestHint id="hintId1" /> //A list of n QuestHints, see QuestHint for the full XML representation of those.
-            ...
-            <QuestHint id="hintIdn" />
-        </hints>
-        <fail-effects>
-            <QuestEffect /> //A list of QuestEffects, invoked when the Quest is failed, see QuestEffect for the full XML representation.
-            ...
-            <QuestEffect />
-        </fail-effects>
         <complete-effects>
-            <QuestEffect /> //A list of QuestEffects, invoked when the Quest is completed, see QuestEffect for the full XML representation.
-            ...
-            <QuestEffect />
-        </complete-effects-->
+            <AddQuest questId="missionOne.weaponsystem" />
+        </complete-effects>
     </LocalQuest>
 
-    <LocalQuest id="missionOne.weaponsystemI">
-        <QuestDescription title="Weaponsystem I" description="INSERT STORY HERE. Test your four different weapons on the four boxes. The four weapons are laser (left click), plasma (right click), self targeting rockets (middle click) and manual rockets (press 'T'). Attention if you use manual rockets: Press 'T' only once to start the rocket. If you miss your target you can get out of the rocket, by clicking or pressing 'T' once more." failmessage="" completeMessage="All right." />
-        <!--subquests>
-            <Quest id ="questId1" />
-            <Quest id="questIdn" />
+    <LocalQuest id="missionOne.weaponsystem">
+        <QuestDescription title="Weaponsystem" description="INSERT STORY HERE." failmessage="" completeMessage="All right." />
+        <subquests>
+            <LocalQuest id ="missionOne.weaponsystemI">
+                <QuestDescription title="Destroy Boxes" description="Test your four different weapons on the four boxes. The four weapons are laser (left click), plasma (right click), self targeting rockets (middle click) and manual rockets (press 'T'). Attention if you use manual rockets: Press 'T' only once to start the rocket. If you miss your target you can get out of the rocket, by clicking or pressing 'T' once more." failmessage="" completeMessage="" />
+                <complete-effects>
+                    <AddQuest questId="missionOne.weaponsystemII" />
+                </complete-effects>
+            </LocalQuest>
+            <LocalQuest id="missionOne.weaponsystemII">
+                <QuestDescription title="" description="" failmessage="" completeMessage="" />
+                <complete-effects>
+                    <AddQuest questId="missionOne.DuballStation" />
+                </complete-effects>
+            </LocalQuest>
         </subquests>
         <hints>
-            <QuestHint id="hintId1" />
-            
-"The laser is a standard weapon. It is fast and precise but does not deal much damage."
-"That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That could be your favourite weapon for close range combat or if you want to hit a really slow enemy."
-"The target seeking rockets follow slow targets on their own."
-"Task complete. Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. The total amount of both manual and target seeking rockets is limited to 10."
-
-
-            <QuestHint id="hintIdn" />
+            <QuestHint id="missionOne.weaponsystem.laser">
+              <QuestDescription title="Laser" description="The laser is a standard weapon. It is fast and precise but does not deal much damage." />
+            </QuestHint>
+            <QuestHint id="missionOne.weaponsystem.lightningGun">
+              <QuestDescription title="Lightninggun" description="That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That could be your favourite weapon for close range combat or if you want to hit a really slow enemy." />
+            </QuestHint>
+            <QuestHint id="missionOne.weaponsystem.targetSeekingRocket">
+              <QuestDescription title="Target Seeking Rocket" description="The target seeking rockets follow slow targets on their own." />
+            </QuestHint>
+            <QuestHint id="missionOne.weaponsystem.manualrocket">
+              <QuestDescription title="Manual Rocket" description="Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. The total amount of both manual and target seeking rockets is limited to 10." />
+            </QuestHint>
         </hints>
-        <fail-effects>
-            <QuestEffect />
-            ...
-            <QuestEffect />
-        </fail-effects>
         <complete-effects>
-            <QuestEffect />
-            ...
-            <QuestEffect />
-        </complete-effects-->
+        </complete-effects>
     </LocalQuest>
 
+    <LocalQuest id="missionOne.DuballStation">
+        <QuestDescription title="Duball Space Station" description="Fly towards the Duball Space Station. The grey radar marker will lead you to its position." failmessage="" completeMessage="Well done." />
+        <complete-effects>
+            <AddQuest questId="missionOne.getHelp" />
+        </complete-effects>
+    </LocalQuest>
 
+    <LocalQuest id="missionOne.getHelp">
+        <QuestDescription title="Get Help" description="There are enemies approaching. You can't handle it on your own. Fortunately there's a shortcut to the next friendly unit. Use the portal (grey dot) to get near the Hydrogen Farmer. There you might get help - as far as we know there should be a stronger spaceship docked to the Hydrogen Farmer. In order to be able to use that stronger spaceship you have to dock to the Hydrogen Farmer. Simply fly to the center of the Hydrogen Farmer, which is between its three legs." failmessage="" completeMessage="Well done." />
+        <complete-effects>
+            <AddQuest questId="missionOne.getHome" />
+        </complete-effects>
+    </LocalQuest>
 
+    <LocalQuest id="missionOne.getHome">
+        <QuestDescription title="Return ASAP" description="" failmessage="" completeMessage="Well done." />
+        <complete-effects>
+            <AddQuest questId="missionOne.defence" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.defence">
+        <QuestDescription title="Defence" description="" failmessage="" completeMessage="Well done." />
+    </LocalQuest>
 
 
         <QuestEffectBeacon position="800,700,600" times="1">
@@ -132,8 +143,6 @@ include("templates/pickupRepresentationTemplates.oxt")
 <!-- 4. Extras (other things to discover) --> <!-- "Q","E","A","D","C", "CTRL", "", ... -->
 
 <!--
-
-
 
 "Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
 
@@ -186,10 +195,11 @@ include("templates/pickupRepresentationTemplates.oxt")
             </trigger>
         </events>
     </SimpleNotification>
-
+                <BlinkingBillboard position="-200,0,0" frequency=0.2 amplitude=1 material="Flares/lensflare" colour="0,0,1"/>
 <!-- @Objects: 4 boxes (uncontrolled pawns) -->
                 <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
                     <attached>
+                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
                     <collisionShapes>
@@ -198,13 +208,8 @@ include("templates/pickupRepresentationTemplates.oxt")
                 </Pawn>
 
                 <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box visible="true">
-                    <!--events>
-                        <visibility>
-                            <EventListener event=spawndelaytrigger3 />
-                        </visibility>
-                   </events-->
-
                     <attached>
+                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
                     <collisionShapes>
@@ -213,6 +218,7 @@ include("templates/pickupRepresentationTemplates.oxt")
                 </Pawn>
                 <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
                     <attached>
+                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
                     <collisionShapes>
@@ -222,6 +228,7 @@ include("templates/pickupRepresentationTemplates.oxt")
                 <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
                     <attached>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                     </attached>
                     <collisionShapes>
                         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
@@ -309,6 +316,15 @@ include("templates/pickupRepresentationTemplates.oxt")
 
 <!-- @Objects: 2 pirates moving in squares, nolethal -->
                 <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" >
+                    <attached>
+                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1">
+                            <events>
+                                <visibility>
+                                    <EventListener event="boxtrigger4" />
+                                </visibility>
+                            </events>
+                        </BlinkingBillboard>
+                    </attached>
                     <templates>
                       <Template link=spaceshippirate />
                     </templates>
@@ -325,6 +341,15 @@ include("templates/pickupRepresentationTemplates.oxt")
                 </SpaceShip>
 
                 <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget">
+                    <attached>
+                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1">
+                            <events>
+                                <visibility>
+                                    <EventListener event="boxtrigger4" />
+                                </visibility>
+                            </events>
+                        </BlinkingBillboard>
+                    </attached>
                   <templates>
                     <Template link=spaceshippirate />
                   </templates>
@@ -675,7 +700,7 @@ include("templates/pickupRepresentationTemplates.oxt")
           </Trigger>
 
 
-    <SimpleNotification message="You killed the Hydrogen Farmer!" broadcast="true">
+    <SimpleNotification message="Oh no! You killed the Hydrogen Farmer!" broadcast="true">
         <events>
             <trigger>
                 <EventListener event="HydroFarmer" />
@@ -683,7 +708,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="You killed the SpaceCruiser!" broadcast="true">
+    <SimpleNotification message="Oh no! You killed the SpaceCruiser!" broadcast="true">
         <events>
             <trigger>
                 <EventListener event="cruiserFriendlyFire" /><!--cruiserFriendlyFire-->
@@ -794,7 +819,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
         <controller>
-            <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
                 <waypoints>
                     <Model mesh="cube.mesh" scale=0 position="-1300,-600,900" />
                     <Model mesh="cube.mesh" scale=0 position="0,0,0" />
@@ -818,7 +843,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
         <controller>
-            <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
                 <waypoints>
                     <Model mesh="cube.mesh" scale=0 position="-1300,-600,900" />
                     <Model mesh="cube.mesh" scale=0 position="0,0,0" />
@@ -842,7 +867,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
         <controller>
-            <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
                 <waypoints>
                     <Model mesh="cube.mesh" scale=0 position="-1300,-600,900" />
                     <Model mesh="cube.mesh" scale=0 position="0,0,0" />
@@ -866,7 +891,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
         <controller>
-            <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
                 <waypoints>
                     <Model mesh="cube.mesh" scale=0 position="-1300,-600,900" />
                     <Model mesh="cube.mesh" scale=0 position="0,0,0" />
@@ -890,7 +915,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
         <controller>
-            <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
                 <waypoints>
                     <Model mesh="cube.mesh" scale=0 position="-1300,-600,900" />
                     <Model mesh="cube.mesh" scale=0 position="0,0,0" />
@@ -914,7 +939,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <Template link=spaceshippirate /> <!--spaceshipTransporter -->
         </templates>
         <controller>
-            <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
                 <waypoints>
                     <Model mesh="cube.mesh" scale=0 position="-1300,-600,900" />
                     <Model mesh="cube.mesh" scale=0 position="0,0,0" />
