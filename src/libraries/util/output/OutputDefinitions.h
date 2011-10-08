@@ -116,8 +116,8 @@ namespace orxonox
 
     namespace context
     {
-        static const OutputContextMask all       = 0xFFFFFFFFFFFFFFFF; ///< Context mask, all bits set to 1
-        static const OutputContextMask none      = 0x0000000000000000; ///< Context mask, all bits set to 0
+        static const OutputContextMask all       = 0xFFFFFFFFFFFFFFFFull; ///< Context mask, all bits set to 1
+        static const OutputContextMask none      = 0x0000000000000000ull; ///< Context mask, all bits set to 0
 
         static const OutputContextSubID no_subcontext = 0; ///< Used as ID for contexts which are not sub-contexts
 
