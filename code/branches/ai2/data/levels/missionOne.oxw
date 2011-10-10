@@ -156,21 +156,84 @@ include("templates/pickupRepresentationTemplates.oxt")
             </trigger>
         </events>
     </SimpleNotification>
+
+<BlinkingBillboard position="-900,640,600" frequency=0.4 amplitude=2 material="Flares/lensflare" colour="1,1,0">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=flying4 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+<Billboard position="-900,640,600" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=flying4 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
 <!-------------------------------------- PART ZERO: How to fly --------------------------------------->
+    <DistanceTrigger name="flying1" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=4/>
+    <SimpleNotification message="Let's fly to the blinking light.">
+        <events>
+            <trigger>
+                <EventListener event="flying1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
+    <DistanceTrigger name="flying2" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=8/>
+    <SimpleNotification message="Use 'W' to accelerate and the mouse to steer.">
+        <events>
+            <trigger>
+                <EventListener event="flying2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
+    <!--DistanceTrigger name="flying3" position="800,700,600" target="Pawn" distance=20 stayActive="true" delay=12/>
+    <SimpleNotification message="Point with the mouse to the blinking light.">
+        <events>
+            <trigger>
+                <EventListener event="flying3" />
+            </trigger>
+        </events>
+    </SimpleNotification-->
 
+    <DistanceTrigger name="flying4" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=1/>
+    <SimpleNotification message="Three red arrows just appeared.">
+        <events>
+            <trigger>
+                <EventListener event="flying4" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-
-
-
-
+    <DistanceTrigger name="flying5" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=5/>
+    <SimpleNotification message="Follow those red arrows.">
+        <events>
+            <trigger>
+                <EventListener event="flying5" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
 
 
 <!-------------------------------------- PART ONE : Destroy boxes --------------------------------------->
-    <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=4 />
-    <SimpleNotification message="Destroy those four boxes.">
+    <DistanceTrigger name="spawndelaytrigger1" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=9 />
+    <SimpleNotification message="Destroy the four boxes.">
         <events>
             <trigger>
                 <EventListener event="spawndelaytrigger1" />
@@ -178,8 +241,8 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="spawndelaytrigger2" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=8.1 />
-    <SimpleNotification message=" 1. Aim the a the red cycle.">
+    <DistanceTrigger name="spawndelaytrigger2" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=13 />
+    <SimpleNotification message=" 1. Aim the a red cycle.">
         <events>
             <trigger>
                 <EventListener event="spawndelaytrigger2" />
@@ -187,7 +250,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="spawndelaytrigger3" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=12.2 />
+    <DistanceTrigger name="spawndelaytrigger3" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=17 />
     <SimpleNotification message="2. Click! (hold the left mouse button)">
         <events>
             <trigger>
@@ -195,11 +258,15 @@ include("templates/pickupRepresentationTemplates.oxt")
             </trigger>
         </events>
     </SimpleNotification>
-                <BlinkingBillboard position="-200,0,0" frequency=0.2 amplitude=1 material="Flares/lensflare" colour="0,0,1"/>
+
 <!-- @Objects: 4 boxes (uncontrolled pawns) -->
                 <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                    <events>
+                      <visibility>
+                        <EventListener event="flying4" />
+                      </visibility>
+                    </events>
                     <attached>
-                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
                     <collisionShapes>
@@ -208,8 +275,12 @@ include("templates/pickupRepresentationTemplates.oxt")
                 </Pawn>
 
                 <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box visible="true">
+                    <events>
+                      <visibility>
+                        <EventListener event="flying4" />
+                      </visibility>
+                    </events>
                     <attached>
-                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
                     <collisionShapes>
@@ -217,8 +288,12 @@ include("templates/pickupRepresentationTemplates.oxt")
                     </collisionShapes>
                 </Pawn>
                 <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                    <events>
+                      <visibility>
+                        <EventListener event="flying4" />
+                      </visibility>
+                    </events>
                     <attached>
-                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
                     <collisionShapes>
@@ -226,9 +301,13 @@ include("templates/pickupRepresentationTemplates.oxt")
                     </collisionShapes>
                 </Pawn>
                 <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                    <events>
+                      <visibility>
+                        <EventListener event="flying4" />
+                      </visibility>
+                    </events>
                     <attached>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1"/>
                     </attached>
                     <collisionShapes>
                         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
@@ -294,7 +373,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-  <SimpleNotification message="Fly towards the pirates. Press 'W'." broadcast="true">
+  <SimpleNotification message="Try to hit the pirates while you are flying." broadcast="true">
         <events>
             <trigger>
                 <EventListener event="boxtrigger4" />
@@ -304,27 +383,14 @@ include("templates/pickupRepresentationTemplates.oxt")
 
 
 <!--------------------------------------PART TWO: Moving targets --------------------------------------->
-    <DistanceTrigger name="movingtargets" position="0,500,0" target="Pawn" distance=180 stayActive="true" delay=2 />
-    <Billboard position="0,500,0" material="Examples/Flare" colour="0.5,0,0" scale=3/><!-- TODO: hide. -->
-    <SimpleNotification message="Try to hit the pirates while you are flying.">
-        <events>
-            <trigger>
-                <EventListener event=movingtargets />
-            </trigger>
-        </events>
-    </SimpleNotification>
 
-<!-- @Objects: 2 pirates moving in squares, nolethal -->
+<!-- @Objects: 2 pirates moving in squares, nonlethal -->
                 <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" >
-                    <attached>
-                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1">
                             <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
                                 </visibility>
                             </events>
-                        </BlinkingBillboard>
-                    </attached>
                     <templates>
                       <Template link=spaceshippirate />
                     </templates>
@@ -341,15 +407,11 @@ include("templates/pickupRepresentationTemplates.oxt")
                 </SpaceShip>
 
                 <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget">
-                    <attached>
-                        <BlinkingBillboard frequency=0.2 amplitude=1.2 material="Flares/lensflare" colour="0,0,1">
                             <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
                                 </visibility>
                             </events>
-                        </BlinkingBillboard>
-                    </attached>
                   <templates>
                     <Template link=spaceshippirate />
                   </templates>
@@ -402,7 +464,30 @@ include("templates/pickupRepresentationTemplates.oxt")
 
 
 <!--------------------------------------PART THREE: the space station --------------------------------------->
-    <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=1 />
+    <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=1 >
+      <events>
+        <activity>
+          <EventListener event="movingpirates2" />
+        </activity>
+      </events>
+    </DistanceTrigger>
+
+    <EventTrigger name="duball2" activations="1" stayactive="true" delay=4 >
+      <events>
+        <trigger>
+          <EventListener event="duball1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <EventTrigger name="duball3" activations="1" stayactive="true" delay=4 >
+      <events>
+        <trigger>
+          <EventListener event="duball2" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
     <SimpleNotification message="Welcome to the Duball Space Station!">
         <events>
             <trigger>
@@ -411,8 +496,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="duball2" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=5 />
-    <SimpleNotification message="Warning: Something big is coming.">
+    <SimpleNotification message="Warning: Something big is coming." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=duball2 />
@@ -420,20 +504,10 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <!--DistanceTrigger name="duball3" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=9 />
-    <SimpleNotification message="Get some help,  before it is too late.">
+    <SimpleNotification message="Use the portals to get help. (grey dot)" broadcast="true">
         <events>
             <trigger>
                 <EventListener event=duball3 />
-            </trigger>
-        </events>
-    </SimpleNotification-->
-
-    <DistanceTrigger name="duball4" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=10 />
-    <SimpleNotification message="Use the portals to get help. (grey dot)">
-        <events>
-            <trigger>
-                <EventListener event=duball4 />
             </trigger>
         </events>
     </SimpleNotification>
@@ -681,12 +755,15 @@ include("templates/pickupRepresentationTemplates.oxt")
       </attached>
     </SpaceShip>
 
+<!-- TESTBOX-->
 
-          <Trigger name="cruiserFriendlyFire" mode="and" activations="2">
-            <EventTrigger>
+<!-- TESTBOX-->
+
+          <Trigger name="cruiserKilled" mode="and" stayActive="true">
+            <EventTrigger  stayActive="true">
               <events>
                 <trigger>
-                  <EventListener event="cruiser" />
+                  <EventListener event="cruiser"/>
                 </trigger>
               </events>
             </EventTrigger>
@@ -700,6 +777,34 @@ include("templates/pickupRepresentationTemplates.oxt")
           </Trigger>
 
 
+            <EventTrigger delay=4 name="earlyEnd">
+              <events>
+                <trigger>
+                  <EventListener event="cruiserKilled" />
+                </trigger>
+              </events>
+              <events>
+                <activity>
+                  <EventListener event="movingpirates2" />
+                </activity>
+              </events>
+            </EventTrigger>
+
+            <EventTrigger delay=4 name="earlyEnd">
+              <events>
+                <trigger>
+                  <EventListener event="HydroFarmer" />
+                </trigger>
+              </events>
+              <events>
+                <activity>
+                  <EventListener event="movingpirates2" />
+                </activity>
+              </events>
+            </EventTrigger>
+
+
+
     <SimpleNotification message="Oh no! You killed the Hydrogen Farmer!" broadcast="true">
         <events>
             <trigger>
@@ -711,11 +816,18 @@ include("templates/pickupRepresentationTemplates.oxt")
     <SimpleNotification message="Oh no! You killed the SpaceCruiser!" broadcast="true">
         <events>
             <trigger>
-                <EventListener event="cruiserFriendlyFire" /><!--cruiserFriendlyFire-->
+                <EventListener event="cruiserKilled" />
             </trigger>
         </events>
     </SimpleNotification>
 
+    <SimpleNotification message="Press 'Esc' and restart the mission." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="earlyEnd" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
 
 <!-- hydrogen farmer & docking END -->
@@ -1209,7 +1321,7 @@ include("templates/pickupRepresentationTemplates.oxt")
 <!-- TODO: 
 ! Quest Interface
 - Foolproof text messages (e.g. verspätete Nachrichten unterdrücken)
-- Radar visibility & Hud Markers
-- End Tutorial, if either the Hydrogen Farmer or the SpaceCruiser gets destroyed.
+- Radar visibility & Hud Markers (done)
+- End Tutorial, if either the Hydrogen Farmer or the SpaceCruiser gets destroyed. (~done)
 
  -->
