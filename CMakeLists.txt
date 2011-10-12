@@ -23,6 +23,7 @@
  #    Configures some basics and controls the configuration scripts
  #
 
+
 IF(WIN32)
   CMAKE_MINIMUM_REQUIRED(VERSION 2.6.3 FATAL_ERROR)
 ELSE()
