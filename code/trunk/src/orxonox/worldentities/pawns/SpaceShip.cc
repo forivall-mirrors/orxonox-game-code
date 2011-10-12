@@ -297,12 +297,6 @@ namespace orxonox
         }
     }
 
-        /**
-    @brief
-        Add an Engine to the SpaceShip.
-    @param engine
-        A pointer to the Engine to be added.
-    */
     void SpaceShip::addEngine(orxonox::Engine* engine)
     {
         OrxAssert(engine != NULL, "The engine cannot be NULL.");
@@ -503,16 +497,18 @@ namespace orxonox
     */
     void SpaceShip::resetCamera()
     {
-        Camera *camera = this->getCamera();
-        if (camera == 0)
-        {
-            orxout(internal_warning) << "Failed to reset camera!" << endl;
-            return;
-        }
-
-        this->shakeDt_ = 0.0f;
-        camera->setPosition(this->cameraOriginalPosition_);
-        camera->setOrientation(this->cameraOriginalOrientation_);
+	if(this->hasLocalController() && this->hasHumanController())
+	{
+            Camera *camera = this->getCamera();
+            if (camera == 0)
+            {
+                orxout(internal_warning) << "Failed to reset camera!" << endl;
+                return;
+            }
+            this->shakeDt_ = 0.0f;
+            camera->setPosition(this->cameraOriginalPosition_);
+            camera->setOrientation(this->cameraOriginalOrientation_);
+	}
     }
 
 }

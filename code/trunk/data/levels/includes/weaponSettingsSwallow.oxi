@@ -13,13 +13,14 @@
           <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
         </links>
         <Weapon>
-          <HsW01 mode=0 munitionpershot=0 delay=0 damage=2.5 material="Flares/point_lensflare" />
-          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.5,0.6,1.7" />
+          <HsW01 mode=0 munitionpershot=0 delay=0 damage=3.14159 material="Flares/point_lensflare" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 0.5,0.6,1.7" />
+
           <LightningGun mode=1 muzzleoffset="0,0,0" damage=3.14159 shielddamage=20/>
         </Weapon>
         <Weapon>
-          <HsW01 mode=0 munitionpershot=0 delay=0  damage=2.5 material="Flares/point_lensflare" />
-          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset="-0.5,0.6,1.7" />
+          <HsW01 mode=0 munitionpershot=0 delay=0  damage=3.14159 material="Flares/point_lensflare" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-0.5,0.6,1.7" />
           <LightningGun mode=1 muzzleoffset="0,0,0" damage=3.14159 shielddamage=20/>
         </Weapon>
       </WeaponPack>

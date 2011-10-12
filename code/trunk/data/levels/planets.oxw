@@ -79,7 +79,7 @@
       angularDamping="0"
       mass="5000000"
       pitch="0"
-      mesh="planets/ganymede.mesh"
+      mesh="planets/muunilinst.mesh"
       atmosphere="atmosphere1"
       rotationaxis="1,0,0"
       rotationrate="1.0"

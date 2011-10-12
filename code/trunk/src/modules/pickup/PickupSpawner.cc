@@ -180,7 +180,7 @@ namespace orxonox
         // If the PickupSpawner is active.
         if(GameMode::isMaster() && this->isActive())
         {
-            SmartPtr<PickupSpawner> temp = this; //Create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
+            WeakPtr<PickupSpawner> spawner = this; // Create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
 
             // Remove PickupCarriers from the blocked list if they have exceeded their time.
             for(std::map<PickupCarrier*, std::time_t>::iterator it = this->blocked_.begin(); it != this->blocked_.end(); )
@@ -194,9 +194,12 @@ namespace orxonox
             // Iterate trough all Pawns.
             for(ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
+                if(spawner == NULL) // Stop if the PickupSpawner has been deleted (e.g. because it has run out of pickups to distribute).
+                    break;
+
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(*it);
-                // If a PickupCarrier, that fits the target-range of the Pickupable spawned by this PickupSpawnder, is in trigger-distance and the carrier is not blocked.
+                // If a PickupCarrier, that fits the target-range of the Pickupable spawned by this PickupSpawner, is in trigger-distance and the carrier is not blocked.
                 if(distance.length() < this->triggerDistance_ && carrier != NULL && this->blocked_.find(carrier) == this->blocked_.end())
                 {
                     if(carrier->isTarget(this->pickup_))

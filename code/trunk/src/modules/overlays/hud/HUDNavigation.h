@@ -84,6 +84,11 @@ private:
     float getNavMarkerSize() const
     { return navMarkerSize_; }
 
+    void setDetectionLimit( float limit )
+    { this->detectionLimit_ = limit; }
+    float getDetectionLimit() const
+    { return this->detectionLimit_; }
+
     void setTextSize ( float size );
     float getTextSize() const;
 
@@ -101,9 +106,9 @@ private:
     std::string fontName_;
     float textSize_;
 
-    unsigned int markerLimit_;; //TODO: is it possible to set this over the console and/or the IG-Setting
-
-
+    unsigned int markerLimit_; //TODO: is it possible to set this over the console and/or the IG-Setting
+    float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value.
+                           //!< In order to bypass this behaviour, set a negative detectionLimit_. Then the detection range is "infinite".
 };
 }
 

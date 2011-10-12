@@ -65,6 +65,7 @@ namespace orxonox
         protected:
             virtual void action();
             void ownerDied();
+            bool friendlyFire(); //<! returns true if the owner_ would be hit.
             bool isShooting_;
 
         private:
