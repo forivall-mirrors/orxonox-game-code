@@ -1,0 +1,35 @@
+--- ticpp.h
++++ ticpp.h
+@@ -38,9 +38,7 @@
+ @todo add TYPECOUNT support. See ticpp::NodeFactory.
+ @todo Add a quick reference
+ */
+-#ifndef TIXML_USE_TICPP
+-	#define TIXML_USE_TICPP
+-#endif
++#ifdef TIXML_USE_TICPP
+ 
+ #ifndef TICPP_INCLUDED
+ #define TICPP_INCLUDED
+@@ -1231,6 +1229,7 @@
+ 
+ 		T* m_tiXmlPointer;		/**< Internal pointer to the TiXml Class which is being wrapped */
+ 
++	public:
+ 		/**
+ 		@internal
+ 		Gets the internal TinyXML pointer.
+@@ -1242,6 +1241,7 @@
+ 			ValidatePointer();
+ 			return m_tiXmlPointer;
+ 		}
++	protected:
+ 
+ 		/**
+ 		@internal
+@@ -1903,3 +1903,5 @@
+ }
+ 
+ #endif	// TICPP_INCLUDED
++
++#endif // TIXML_USE_TICPP
