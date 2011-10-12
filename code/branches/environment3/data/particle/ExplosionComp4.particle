@@ -1,0 +1,76 @@
+
+particle_system ExplosionComp4
+{
+	quota	10
+	material	BaseWhite
+	particle_width	100
+	particle_height	100
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	texcoord
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+}
+
+particle_system Orxonox/ExplosionComp4
+{
+	quota	500
+	material	PE/explosion
+	particle_width	24.19
+	particle_height	25.08
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	texcoord
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Point
+	{
+		angle	9.73
+		colour	1 1 1 1
+		colour_range_start	1 1 1 1
+		colour_range_end	1 1 1 1
+		direction	0 1 0
+		emission_rate	2000
+		position	0 0 0
+		velocity	300
+		velocity_min	300
+		velocity_max	300
+		time_to_live	0.1802
+		time_to_live_min	0.1802
+		time_to_live_max	0.1802
+		duration	0.08
+		duration_min	0.08
+		duration_max	0.08
+		repeat_delay	0.1802
+		repeat_delay_min	0.1802
+		repeat_delay_max	0.1802
+	}
+
+	affector DirectionRandomiser
+	{
+		randomness	0
+		scope	0.2703
+		keep_velocity	false
+	}
+
+	affector LinearForce
+	{
+		force_vector	-16.8065 62.4805 6.57674
+		force_application	add
+	}
+}
