@@ -1,0 +1,270 @@
+<LevelInfo
+ name = "Presentation X 2nd"
+ description = "2nd Presentation level for Orxonox Convention X"
+ tags = "presentation"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipGhost.oxt")
+  include("templates/spaceshipHXY.oxt")
+  include("templates/spaceshipTransporter.oxt")
+  include("templates/spaceshipHXYSL.oxt")
+  include("templates/spaceshipTransporterSL.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+ gametype     = TeamDeathmatch
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" />
+
+   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+   
+    <?lua
+      for i = 1, 50, 1 do
+        x = math.random() * 2000  + 4000
+        y = math.random() * 4000 - 2000
+        z = math.random() * 2000 - 1000
+        s = math.random() * 100
+    ?>
+      <MovableEntity collisiontype=dynamic mass="<?lua print(s*10)?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
+        <attached>
+          <Model position="0,0,0" scale="<?lua print(s) ?>" mesh="asteroid_UV.mesh" />
+        </attached>
+        <collisionShapes>
+          <SphereCollisionShape radius="<?lua print(s*0.9) ?>" />
+        </collisionShapes>
+      </MovableEntity>
+      <ParticleSpawner position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" source="Orxonox/Steam" lifetime=3.0 loop=1 />
+    <?lua end ?>
+
+    <?lua
+      elements = {"BodyDebris1.mesh", "CockpitDebris.mesh", "LightningGun.mesh", "WingDebris1.mesh", "WingDebris2.mesh", "satellitedish.mesh", "Thruster.mesh"}
+      sizes = {4, 4, 4, 4, 4, 10, 20}
+      
+      elements.length = function()
+        return table.getn(elements)
+      end
+      
+      for i = 1, 100, 1 do
+        x = math.random() * 750 - 4500
+        y = math.random() * 1000 + 2000
+        z = math.random() * 500 + 1000
+        e = math.floor(math.random()*elements.length()+1)
+    ?>
+      <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30- 15) ?>">
+        <attached>
+          <Model position="0,0,0" scale="<?lua print(sizes[e]) ?>" mesh="<?lua print( elements[e]) ?>" />
+        </attached>
+      </MovableEntity>
+    <?lua end ?>
+
+    <?lua
+      for i = 1,12, 1 do
+    ?>
+      <SpaceShip position="<?lua print(math.random()*500 + 4500) ?>,<?lua print(-(math.random()*500 -250)) ?>,<?lua print(i*50 - 150) ?>" >
+        <templates>
+          <Template link=spaceshipHXYSL />
+        </templates>
+        <controller>
+          <WaypointPatrolController alertnessradius=4000 team=0 active=true>
+            <waypoints>
+              <StaticEntity position="5000,<?lua print(math.random()*50)?> ,<?lua print(i*50 -150) ?>" />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <SpaceShip position="5000,100,100" >
+      <templates>
+        <Template link=spaceshipTransporterSL />
+      </templates>
+      <controller>
+        <WaypointPatrolController name=pirate  target=pirate alertnessradius=1000 team=0 active=false>
+          <waypoints>
+            <StaticEntity position="5000,100,1100" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
+
+    <Destroyer
+      position          = "-5000,100 ,100"
+      collisionType     = dynamic
+      mass              = 100000
+      angularDamping    = 0.9999999
+      health            = 1000
+      maxhealth         = 1000
+      initialhealth     = 1000
+    >
+      <controller>
+        <WaypointPatrolController team=1 />
+      </controller>
+      <attached>
+        <Model mesh="Carrier.mesh" scale="5" />
+        <Backlight
+          mainstate=activity
+          active=false
+          scale=0.4
+          name=bltest
+          position=" 7.6, 0, 6"
+          colour="0.2, 0.65, 1.0, 1.0"
+          width=15
+          length=1500
+          lifetime=2
+          elements=50
+          trailmaterial="Trail/backlighttrail"
+          turnontime=1
+          turnofftime=1
+          material="Flares/ThrusterFlare1"
+        />
+        <?lua
+          for i=0,8,1 do
+        ?>
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?> ,15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?>,-15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+        <?lua end ?>
+
+        <Backlight
+          scale=1
+          position=" 169, 75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare"
+        />
+        <Backlight
+          scale=1
+          position=" 169, -75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare"
+        />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </Destroyer>
+
+    <?lua
+      for i = 1, 50, 1 do
+        x = -(math.random() * 2000  + 4000)
+        y = math.random() * 4000 - 2000
+        z = math.random() * 2000 - 1000
+        s = math.random() * 100
+    ?>
+      <MovableEntity collisiontype=dynamic mass="<?lua print(s*10)?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
+        <attached>
+          <Model position="0,0,0" scale="<?lua print(s) ?>" mesh="asteroid_ice.mesh" />
+        </attached>
+        <collisionShapes>
+          <SphereCollisionShape radius="<?lua print(s*0.9)?>" />
+        </collisionShapes>
+      </MovableEntity>
+      <ParticleSpawner position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" source="Orxonox/Steam" lifetime=3.0 loop=1 />
+    <?lua end ?>
+
+    <!-- EventDispatcher>
+      <targets>
+        <EventTarget target=attack />
+        <EventTarget target=wait />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="0, 0, 4500" distance=100 target="SpaceShip" stayactive=true />
+        </activity>
+      </events>
+    </EventDispatcher>
+
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=wait />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="0, 0, 4500" distance=100 target="SpaceShip" stayactive=false />
+        </activity>
+      </events>
+    </EventDispatcher -->
+
+    <?lua
+      for i = 1,25, 1 do
+    ?>
+      <SpaceShip position="<?lua print(-(math.random()*500 + 4500)) ?>,<?lua print(-(math.random()*500 -250)) ?>,<?lua print(i*50 - 150) ?>" >
+        <templates>
+          <Template link=spaceshipghost />
+        </templates>
+        <controller>
+          <WaypointPatrolController name=attack alertnessradius=15000 team=1 active=false>
+            <events>
+              <activity>
+                <DistanceTrigger position="-5000, 100, 100" distance=2000 target="Camera" stayactive=true />
+              </activity>
+            </events>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <WorldAmbientSound source="Earth.ogg" looping="true" playOnLoad="false">
+      <events>
+        <activity>
+          <DistanceTrigger position="2000,0,0" distance=500 target="Camera" />
+        </activity>
+      </events>
+    </WorldAmbientSound>
+
+    <SpawnPoint position="5000,0,2000" spawnclass=SpaceShip pawndesign=spaceshipassff  team=0 />
+    
+  </Scene>
+</Level>
