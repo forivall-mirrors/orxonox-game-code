@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="orxonox/MiscConfigMenu/Background" >
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="MenuWidgets/StaticText" Name="orxonox/MicsConfigMenu/ConfigWindow" >
+            <Property Name="Text" Value="Miscellaneous" />
+            <Property Name="Alpha" Value="0.8" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="HorzFormatting" Value="HorzCentred" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="VertFormatting" Value="TopAligned" />
+            <Property Name="UnifiedAreaRect" Value="{{0.15,0},{0.2125,0},{0.85,0},{0.6375,0}}" />
+            <Window Type="MenuWidgets/StaticText" Name="orxonox/MiscConfigMenu/Wrapper" >
+                <Property Name="TextColours" Value="FF4444FF" />
+                <Property Name="InheritsAlpha" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="HorzFormatting" Value="HorzCentred" />
+                <Property Name="VertFormatting" Value="TopAligned" />
+                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.92,0}}" />
+                <Window Type="MenuWidgets/ScrollablePane" Name="orxonox/MiscConfigMenu/MiscConfigPane" >
+                    <Property Name="ContentArea" Value="l:0 t:0 r:0 b:0" />
+                    <Property Name="HorzStepSize" Value="0.005" />
+                    <Property Name="VertStepSize" Value="0.005" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="HorzOverlapSize" Value="0.01" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.005,0},{0.01,0},{0.995,0},{0.99,0}}" />
+                    <Property Name="VertOverlapSize" Value="0.01" />
+                    <Property Name="HorzScrollPosition" Value="0" />
+                    <Property Name="VertScrollPosition" Value="0" />
+                </Window>
+            </Window>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/MiscConfigMenu/MiscConfigBackButton" >
+            <Property Name="Text" Value="Back" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
+            <Event Name="Clicked" Function="MiscConfigMenu.MiscConfigBackButton_clicked"/>
+        </Window>
+    </Window>
+</GUILayout>

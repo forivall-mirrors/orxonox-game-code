@@ -1,0 +1,111 @@
+--- OISPrereqs.h	(revision 7141)
++++ OISPrereqs.h	(working copy)
+@@ -60,7 +60,7 @@
+ #		define OIS_XBOX_PLATFORM
+ #	else
+ #		define OIS_WIN32_PLATFORM
+-#		if defined( OIS_DYNAMIC_LIB )
++#		if !defined( OIS_STATIC_LIB )
+ #			undef _OISExport
+ 			//Ignorable Dll interface warning...
+ #           if !defined(OIS_MINGW_COMPILER)
+
+
+--- linux/EventHelpers.cpp	(revision 5668)
++++ linux/EventHelpers.cpp	(working copy)
+@@ -35,6 +35,20 @@
+ # include <iostream>
+ #endif
+ 
++// Fixes for missing macros in input.h
++#ifndef FF_EFFECT_MIN
++#define FF_EFFECT_MIN FF_RUMBLE
++#endif
++#ifndef FF_EFFECT_MAX
++#define FF_EFFECT_MAX FF_RAMP
++#endif
++#ifndef FF_WAVEFORM_MIN
++#define FF_WAVEFORM_MIN FF_SQUARE
++#endif
++#ifndef FF_WAVEFORM_MAX
++#define FF_WAVEFORM_MAX FF_CUSTOM
++#endif
++
+ using namespace std;
+ using namespace OIS;
+ 
+
+--- win32/Win32ForceFeedback.cpp
++++ win32/Win32ForceFeedback.cpp
+@@ -25,7 +25,7 @@
+ #include <math.h>
+ 
+ // 0 = No trace; 1 = Important traces; 2 = Debug traces
+-#define OIS_WIN32_JOYFF_DEBUG 1
++#define OIS_WIN32_JOYFF_DEBUG 0
+ 
+ #if (defined (_DEBUG) || defined(OIS_WIN32_JOYFF_DEBUG))
+   #include <iostream>
+
+
+--- win32/Win32JoyStick.cpp
++++ win32/Win32JoyStick.cpp
+@@ -26,6 +26,14 @@
+ #include "OISEvents.h"
+ #include "OISException.h"
+ 
++// (Orxonox): Required for MinGW to compile properly
++#ifdef __MINGW32__
++#  include <oaidl.h>
++#  ifndef __MINGW_EXTENSION
++#    define __MINGW_EXTENSION __extension__
++#  endif
++#endif
++
+ #include <cassert>
+ #include <wbemidl.h>
+ #include <oleauto.h>
+@@ -39,6 +47,11 @@
+    }
+ #endif
+ 
++// (Orxonox): MinGW doesn't have swscanf_s
++#ifdef __MINGW32__
++#	define swscanf_s swscanf
++#endif
++
+ #ifdef OIS_WIN32_XINPUT_SUPPORT
+ #	pragma comment(lib, "xinput.lib")
+ #endif
+@@ -583,7 +596,12 @@
+     bool bCleanupCOM = SUCCEEDED(hr);
+ 
+     // Create WMI
++    // (Orxonox): Fix for MinGW
++#ifdef __MINGW32__
++    hr = CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&pIWbemLocator);
++#else
+     hr = CoCreateInstance(__uuidof(WbemLocator), NULL, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID*)&pIWbemLocator);
++#endif
+     if( FAILED(hr) || pIWbemLocator == NULL )
+         goto LCleanup;
+ 
+
+--- mac/MacHIDManager.cpp
++++ mac/MacHIDManager.cpp
+@@ -406,6 +406,7 @@
+ 			switch(iType)
+ 			{
+ 				case OISJoyStick:
++                {
+ 					int totalDevs = totalDevices(iType);
+ 					int freeDevs = freeDevices(iType);
+ 					int devID = totalDevs - freeDevs;
+@@ -413,6 +414,7 @@
+ 					obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
+ 					(*it)->inUse = true;
+ 					return obj;
++                }
+ 				case OISTablet:
+ 					//Create MacTablet
+ 					break;
