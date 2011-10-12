@@ -4,13 +4,9 @@ local P = createMenuSheet("SingleplayerMenu")
 
 P.levelList = {}
 P.itemList = {}
-P.showAll = false
 
 function P.onLoad()
-    local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
-    local button = tolua.cast(window,"CEGUI::Checkbox")
-    button:setSelected(false)
-    P.createLevelList()
+    P.createLevelList(nil)
 
     --buttons are arranged in a 1x2 matrix
     P:setButton(1, 1, {
@@ -24,17 +20,7 @@ function P.onLoad()
     })
 end
 
-function P.onShow()
-    if P.showAll ~= orxonox.GUIManager:inDevMode() then
-        local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
-        local button = tolua.cast(window,"CEGUI::Checkbox")
-        P.showAll = not P.showAll
-        button:setSelected(P.showAll)
-        P.createLevelList()
-    end
-end
-
-function P.createLevelList()
+function P.createLevelList(tag)
     P.levelList = {}
     P.itemList = {}
     local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/SingleplayerLevelListbox"))
@@ -47,7 +33,9 @@ function P.createLevelList()
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if level ~= nil then
-            if P.showAll or not level:hasTag("test") then
+            if tag == nil then
+                table.insert(P.levelList, level)
+            elseif level:hasTag(tag) then
                 table.insert(P.levelList, level)
             end
         end
@@ -77,15 +65,6 @@ function P.SingleplayerStartButton_clicked(e)
             hideAllMenuSheets()
         end
     end
-end
-
-function P.SingleplayerShowAll_clicked(e)
-    local checkbox = tolua.cast(winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox"), "CEGUI::Checkbox")
-    local show = checkbox:isSelected()
-    if show ~= P.showAll then
-        P.showAll = show
-        P.createLevelList()
-   end
 end
 
 function P.SingleplayerBackButton_clicked(e)

@@ -15,15 +15,21 @@
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
             <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.2875,0},{0.75,0},{0.7,0}}" />
-            <Window Type="MenuWidgets/Listbox" Name="orxonox/SingleplayerLevelListbox" >
+            <Window Type="MenuWidgets/TabControl" Name="orxonox/SingleplayerTabControl" >
+                <Property Name="TabHeight" Value="{0,26.4388}" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.85,0}}" />
-            </Window>
-            <Window Type="MenuWidgets/Checkbox" Name="orxonox/SingleplayerShowAllCheckbox" >
-                <Property Name="Text" Value="show all" />
-                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.65,0},{0.87,0},{0.8,0},{.97,0}}" />
-                <Event Name="CheckStateChanged" Function="SingleplayerMenu.SingleplayerShowAll_clicked"/>
+                <Property Name="TabPanePosition" Value="Top" />
+                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.1,0},{0.95,0},{0.925,0}}" />
+				<Window Type="MenuWidgets/Listbox" Name="orxonox/SingleplayerLevelListbox" >
+                    <Property Name="Text" Value="Show All" />
+					<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+					<Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.85,0}}" />
+				</Window>
+				<Window Type="MenuWidgets/Listbox" Name="orxonox/SingleplayerLevelListboxx" >
+                    <Property Name="Text" Value="Tests" />
+					<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+					<Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.85,0}}" />
+				</Window>
             </Window>
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/SingleplayerStartButton" >
