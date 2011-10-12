@@ -1,0 +1,55 @@
+<LevelInfo
+ name = "Notifications showcase"
+ description = "Level to test and showcase notifications."
+ tags = "test, showcase"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ name         = "Presentation"
+ description  = "A simple testlevel"
+>
+    <templates>
+        <Template link=lodtemplate_default />
+    </templates>
+    <?lua include("includes/notifications.oxi") ?>
+
+    <Scene
+        ambientlight = "0.5, 0.5, 0.5"
+        skybox       = "Orxonox/skypanoramagen1"
+    >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <CommandNotification preMessage="Open the PickupInventory by pressing '" postMessage="'." command="OrxonoxOverlay toggleVisibility PickupInventory">
+        <events>
+            <trigger>
+                <DistanceTrigger name=trigger position="0,0,-100" distance=10 target="Pawn" />
+            </trigger>
+        </events>
+    </CommandNotification>
+    <Billboard position="0,0,-100" colour="1.0,1.0,0" material="Examples/Flare" />
+
+    <SimpleNotification message="Awesome!!!">
+        <events>
+            <trigger>
+                <DistanceTrigger name=trigger position="0,0,100" distance=10 target="Pawn" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    <Billboard position="0,0,100" colour="1.0,0,1.0" material="Examples/Flare" />
+
+    <?lua
+      for i = 1, 10, 1 do
+    ?>
+        <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <?lua end ?>
+
+  </Scene>
+</Level>
