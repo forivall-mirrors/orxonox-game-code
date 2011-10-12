@@ -92,7 +92,7 @@ namespace orxonox
         this->registerVariables();
 
         this->isHumanShip_ = this->hasLocalController();
-        
+
         this->setSyncMode(ObjectDirection::Bidirectional); // needed to synchronise e.g. aimposition
     }
 
@@ -449,4 +449,19 @@ namespace orxonox
         ControllableEntity::startLocalHumanControl();
         this->isHumanShip_ = true;
     }
+
+    void Pawn::changedActivity(void)
+    {
+        SUPER(Pawn, changedActivity);
+
+        this->setRadarVisibility(this->isActive());
+    }
+
+    void Pawn::changedVisibility(void)
+    {
+        SUPER(Pawn, changedVisibility);
+        //this->setVisible(this->isVisible());
+        this->setRadarVisibility(this->isVisible());
+    }
+
 }

@@ -51,6 +51,7 @@ namespace orxonox
         this->owner_ = 0;
         this->drone_ = 0;
         this->isShooting_ = false;
+        this->setAccuracy(10);
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&DroneController::action, this)));
 
@@ -91,48 +92,78 @@ namespace orxonox
     @param dt
         The duration of the tick.
     */
+    /* PORTALS workaround:
+    if the owner uses a portal -> distance between owner and drone is huge -> is detected by drone
+    -> drone searches for portal -> drone adds portal as waypoint -> drone flies towards portal //ignores owner
+    -> if the drone used a portal, then the distance to the owner is small -> remove waypoint // back to normal mode
+
+    */
     void DroneController::tick(float dt)
     {
         if (this->getDrone() && this->getOwner())
         {
-            if (this->target_)
-            {
-                float distanceToTargetSquared = (this->getDrone()->getWorldPosition() - this->target_->getWorldPosition()).squaredLength();
-                if (distanceToTargetSquared < (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
+            if (this->waypoints_.size() > 0 ) //Waypoint functionality: Drone should follow it's master through portals
+            {// Idea: after using the the portal, the master is far away.
+                WorldEntity* wPoint = this->waypoints_[this->waypoints_.size()-1];
+                if(wPoint)
                 {
-                    this->isShooting_ = true;
-                    this->aimAtTarget();
-                    this->getDrone()->fire(0);
+                    float distanceToOwnerSquared = (this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength();
+                    this->absoluteMoveToPosition(wPoint->getWorldPosition()); //simplified function - needs WORKAROUND
+                    if (distanceToOwnerSquared <= 90000.0f) //WORKAROUND: if the Drone is again near its owner, the portal has been used correctly.
+                    {
+                        this->waypoints_.pop_back(); // if goal is reached, remove it from the list
+                        this->positionReached(); //needed??
+                    }
+
                 }
+                else
+                    this->waypoints_.pop_back(); // remove invalid waypoints
             }
+            else
+            {
+                if (this->target_)
+                {
+                    float distanceToTargetSquared = (this->getDrone()->getWorldPosition() - this->target_->getWorldPosition()).squaredLength();
+                    if (distanceToTargetSquared < (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
+                    {
+                       this->isShooting_ = true;
+                       this->aimAtTarget();
+                       if(!this->friendlyFire())
+                           this->getDrone()->fire(0);
+                    }
+               }
 
-            float maxDistanceSquared = this->getDrone()->getMaxDistanceToOwner()*this->getDrone()->getMaxDistanceToOwner();
-            float minDistanceSquared = this->getDrone()->getMinDistanceToOwner()*this->getDrone()->getMinDistanceToOwner();
-            if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared)
-            {
-                this->moveToPosition(this->getOwner()->getWorldPosition()); //fly towards owner
-            }
-            else if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength() < minDistanceSquared)
-            {
-                this->moveToPosition(-this->getOwner()->getWorldPosition()); //fly away from owner
-            }
-            else if (!this->isShooting_)
-            {
-                float random = rnd(2.0f);
-                float randomSelection = rnd(6.0f);
-                if((int)randomSelection==0) drone_->moveUpDown(random);
-                else if((int)randomSelection==1) drone_->moveRightLeft(random);
-                else if((int)randomSelection==2) drone_->moveFrontBack(random);
-                else if((int)randomSelection==3) drone_->rotateYaw(random);
-                else if((int)randomSelection==4) drone_->rotatePitch(random);
-                else if((int)randomSelection==5) drone_->rotateRoll(random);
-            }
 
-            this->isShooting_ = false;
+                float maxDistanceSquared = this->getDrone()->getMaxDistanceToOwner()*this->getDrone()->getMaxDistanceToOwner();
+                float minDistanceSquared = this->getDrone()->getMinDistanceToOwner()*this->getDrone()->getMinDistanceToOwner();
+                if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > 20.0f*maxDistanceSquared)
+                {//FIX: if the drone's owner uses portal, the drone searches for the portal & adds it as a waypoint.
+                    this->updatePointsOfInterest("PortalEndPoint", 500.0f); //possible conflict: speed-pickup
+                }
+                if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared)
+                {
+                    this->moveToPosition(this->getOwner()->getWorldPosition()); //fly towards owner
+                }
+                else if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength() < minDistanceSquared)
+                {
+                    this->moveToPosition(-this->getOwner()->getWorldPosition()); //fly away from owner
+                }
+                else if (!this->isShooting_)
+                {
+                    float random = rnd(2.0f);
+                    float randomSelection = rnd(6.0f);
+                    if((int)randomSelection==0) drone_->moveUpDown(random);
+                    else if((int)randomSelection==1) drone_->moveRightLeft(random);
+                    else if((int)randomSelection==2) drone_->moveFrontBack(random);
+                    else if((int)randomSelection==3) drone_->rotateYaw(random);
+                    else if((int)randomSelection==4) drone_->rotatePitch(random);
+                    else if((int)randomSelection==5) drone_->rotateRoll(random);
+                }
+
+                this->isShooting_ = false;
+            }
         }
-
         SUPER(AIController, tick, dt);
-
     }
 
     void DroneController::ownerDied()
@@ -145,5 +176,24 @@ namespace orxonox
             this->drone_->destroy();
         else
             this->destroy();
+    }
+
+    bool DroneController::friendlyFire()
+    {   ControllableEntity* droneEntity_ = this->getControllableEntity();
+        if (!droneEntity_) return false;
+        if(!owner_) return false;
+        if(this->bHasTargetPosition_)
+        {
+            Vector3 ownerPosition_ = owner_->getPosition();
+            Vector3 toOwner_ = owner_->getPosition() - droneEntity_->getPosition();
+            Vector3 toTarget_ = targetPosition_ - droneEntity_->getPosition();
+            if(toTarget_.length() < toOwner_.length()) return false; //owner is far away = in safty
+            float angleToOwner = getAngle(droneEntity_->getPosition(), droneEntity_->getOrientation() * WorldEntity::FRONT, ownerPosition_);
+            float angleToTarget = getAngle(droneEntity_->getPosition(), droneEntity_->getOrientation() * WorldEntity::FRONT, targetPosition_);
+            float angle = angleToOwner - angleToTarget;//angle between target and owner, observed by the drone
+            if(std::sin(angle)*toOwner_.length() < 5.0f)//calculate owner's distance to shooting line
+            return true;
+        }
+        return false;//Default return value: Usually there is no friendlyFire
     }
 }

@@ -4,7 +4,6 @@ local P = createMenuSheet("QuestGUI")
 
 P.questManager = nil -- The QuestManager.
 P.showActive = true -- Whether the active or finished quest list is displayed.
-P.currentQuest = nil -- The quest that is currently displayed.
 P.player = nil -- The player the quests are displayed for.
 P.quests = {}
 P.subquests = {}
@@ -28,7 +27,13 @@ function P.onShow()
     P.player = orxonox.GUIManager:getInstance():getPlayer(P.name)
 
     -- Load the list of quests to be displayed.
-    P.loadQuestsList(P.currentQuest)
+    P.loadQuestsList()
+    -- Pause the game - possible conflict for multiplayer quests
+    orxonox.execute("setPause 1")
+end
+
+function P.onQuit()
+    orxonox.execute("setPause 0")
 end
 
 -- Loads the list of quests, depending on P.showActive, either the active (P.showActive == true) or the finished, i.e. inactive quests are loaded.
@@ -170,8 +175,6 @@ function P.loadQuest(quest)
         local window = winMgr:getWindow("orxonox/QuestGUI/Quest/Wrapper")
         window:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize-P.scrollbarWidth), CEGUI.UDim(0,offset+P.borderSize)))
     end
-
-    P.currentQuest = quest
 end
 
 -- Clear the currently displayed quest.
@@ -203,8 +206,6 @@ function P.clearQuest()
         i = i+1
     end
     hints:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.scrollbarWidth-P.borderSize), CEGUI.UDim(0, 0)))
-
-    P.currentQuest = nil
 end
 
 -- Clear the quests list

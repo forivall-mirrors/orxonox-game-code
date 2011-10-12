@@ -234,7 +234,8 @@ namespace orxonox
             return;
 
         this->controllableEntity_->setController(0);
-        this->controllableEntity_->destroyHud(); // HACK-ish
+        if(this->isHumanPlayer()) // TODO: Multiplayer?
+            this->controllableEntity_->destroyHud(); // HACK-ish
         
 //        this->controllableEntity_ = this->previousControllableEntity_.back();
         do {
@@ -247,7 +248,7 @@ namespace orxonox
             this->controller_->setControllableEntity(this->controllableEntity_);
 
          // HACK-ish
-        if(this->controllableEntity_ != NULL)
+        if(this->controllableEntity_ != NULL && this->isHumanPlayer())
             this->controllableEntity_->createHud();
 
         if ( GameMode::isMaster() )

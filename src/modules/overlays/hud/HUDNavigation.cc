@@ -62,6 +62,7 @@ bool compareDistance ( std::pair<RadarViewable*, unsigned int > a, std::pair<Rad
 void HUDNavigation::setConfigValues()
 {
   SetConfigValue(markerLimit_, 3);
+
 }
 
 CreateFactory ( HUDNavigation );
@@ -76,6 +77,7 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     setFont ( "Monofur" );
     setTextSize ( 0.05f );
     setNavMarkerSize ( 0.05f );
+    setDetectionLimit( 10000.0f );
 }
 
 HUDNavigation::~HUDNavigation()
@@ -94,9 +96,10 @@ void HUDNavigation::XMLPort ( Element& xmlelement, XMLPort::Mode mode )
 {
     SUPER ( HUDNavigation, XMLPort, xmlelement, mode );
 
-    XMLPortParam ( HUDNavigation, "font",          setFont,          getFont,          xmlelement, mode );
-    XMLPortParam ( HUDNavigation, "textSize",      setTextSize,      getTextSize,      xmlelement, mode );
-    XMLPortParam ( HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "font",           setFont,           getFont,           xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "textSize",       setTextSize,       getTextSize,       xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "navMarkerSize",  setNavMarkerSize,  getNavMarkerSize,  xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode );
 }
 
 void HUDNavigation::setFont ( const std::string& font )
@@ -160,13 +163,13 @@ void HUDNavigation::tick ( float dt )
     sortedObjectList_.sort ( compareDistance );
 
     unsigned int markerCount_ = 0;
-
+    bool closeEnough_ = false; //only display objects that are close enough to be relevant for the player
 //         for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++markerCount_, ++listIt )
     {
         ObjectMap::iterator it = activeObjectList_.find ( listIt->first );
-
-        if ( markerCount_ < markerLimit_ )
+        closeEnough_ = listIt->second < detectionLimit_ ;
+        if ( markerCount_ < markerLimit_ && (closeEnough_ ||  detectionLimit_ < 0) ) // display on HUD if the statement is true
         {
 
 
@@ -276,7 +279,7 @@ void HUDNavigation::tick ( float dt )
             it->second.panel_->show();
             it->second.text_->show();
         }
-        else
+        else // do not display on HUD
         {
             it->second.panel_->hide();
             it->second.text_->hide();
@@ -308,7 +311,7 @@ void HUDNavigation::sizeChanged()
 
 void HUDNavigation::addObject ( RadarViewable* object )
 {
-    if( showObject(object)==false )
+    if( showObject(object) == false )
         return;
 
     if ( activeObjectList_.size() >= markerLimit_ )
@@ -395,7 +398,7 @@ bool HUDNavigation::showObject(RadarViewable* rv)
     if ( rv == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
         return false;
     assert( rv->getWorldEntity() );
-    if ( rv->getWorldEntity()->isVisible()==false || rv->getRadarVisibility()==false )
+    if ( rv->getWorldEntity()->isVisible() == false || rv->getRadarVisibility() == false )
         return false;
     return true;
 }

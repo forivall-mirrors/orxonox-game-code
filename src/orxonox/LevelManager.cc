@@ -86,7 +86,7 @@ namespace orxonox
     */
     void LevelManager::setConfigValues()
     {
-        SetConfigValue(defaultLevelName_, "presentationDM.oxw")
+        SetConfigValue(defaultLevelName_, "missionOne.oxw")
             .description("Sets the pre selection of the level in the main menu.");
     }
 
@@ -157,7 +157,7 @@ namespace orxonox
     {
         if (this->levels_.size() > 0)
         {
-            // Activate the level that is the first in the list of levels whose activity has been requested. 
+            // Activate the level that is the first in the list of levels whose activity has been requested.
             this->levels_.front()->setActive(true);
             // Make every player enter the newly activated level.
             for (std::map<unsigned int, PlayerInfo*>::const_iterator it = PlayerManager::getInstance().getClients().begin(); it != PlayerManager::getInstance().getClients().end(); ++it)
@@ -271,7 +271,7 @@ namespace orxonox
                 // We don't need the loaded stuff anymore
                 Loader::unload(&file);
 
-                if(info == NULL) 
+                if(info == NULL)
                 {
                     // Create a default LevelInfoItem object that merely contains the name
                     std::string filenameWOExtension = it->substr(0, it->find(".oxw"));

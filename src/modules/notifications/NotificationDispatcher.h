@@ -49,7 +49,9 @@ namespace orxonox
     @brief
         A NotificationDispatcher is an entity that, upon being triggered, dispatches (or sends) a specified @ref orxonox::Notification "Notification".
 
-        There is one parameter to be set, the @b sender . The sender specifies the part of Orxonox the sent @ref orxonox::Notification "Notification" comes from. The default value is set by the classes implementing NotificationDispatcher.
+        There are two parameter to be set:
+        - The @b sender . The sender specifies the part of Orxonox the sent @ref orxonox::Notification "Notification" comes from. The default value is set by the classes implementing NotificationDispatcher.
+        - The @b broadcast . Specifies whether messages are broadcast (i.e. sent to all clients) or just sent to a specific player.
 
         Its standard usage is:
         @code
@@ -61,7 +63,9 @@ namespace orxonox
             </event>
         </NotificationDispatcher>
         @endcode
-        But keep in mind, that NotificationDispatcher is an abstract class and in this example @ref orxonox::PlayerTrigger "PlayerTrigger" stands for any event that is caused by a @ref orxonox::PlayerTrigger "PlayerTrigger", so instead of @ref orxonox::PlayerTrigger "PlayerTrigger", there could be a @ref orxonox::DistanceTrigger "DistanceTrigger", or a @ref orxonox::DistanceMultiTrigger "DistanceMutliTrigger", or even an @ref orxonox::EventListener "EventListener" that waits for an event coming from any kind of @ref orxonox::PlayerTrigger "PlayerTrigger".
+        But keep in mind, that NotificationDispatcher is an abstract class.
+        Also in this example @ref orxonox::PlayerTrigger "PlayerTrigger" stands for any event that is caused by a @ref orxonox::PlayerTrigger "PlayerTrigger", so instead of @ref orxonox::PlayerTrigger "PlayerTrigger", there could be a @ref orxonox::DistanceTrigger "DistanceTrigger", or a @ref orxonox::DistanceMultiTrigger "DistanceMutliTrigger", or even an @ref orxonox::EventListener "EventListener" that waits for an event coming from any kind of @ref orxonox::PlayerTrigger "PlayerTrigger".
+        If the NotificationDispatcher is not set to broadcast only events caused by @ref orxonox::PlayerTrigger "PlayerTriggers" trigger a message since the information obtained by the @ref orxonox::PlayerTrigger "PlayerTrigger" is used to identify the client to which the message should be sent.
 
     @author
         Damian 'Mozork' Frick
@@ -83,18 +87,34 @@ namespace orxonox
             */
             const std::string& getSender(void) const
                 { return this->sender_; }
-                        /**
+            /**
             @brief Set the sender of the Notification dispatched by this NotificationDispatcher.
             @param sender The name of the sender.
             */
             void setSender(const std::string& sender)
                 { this->sender_ = sender; }
 
-            void dispatch(unsigned int clientId); //!< Dispatches a specific Notification.
+            /**
+            @brief Check whether the NotificationDispatcher is set to broadcast.
+            @return Returns true if the NotificationDispatcher is set to broadcast.
+            */
+            bool isBroadcasting(void) const
+                { return this->bBroadcast_; }
+            /**
+            @brief Set the NotificationDispatcher to broadcast.
+            @param broadcast Whether the NotificationDispatcher is set to broadcast or singlecast.
+            */
+            void setBroadcasting(bool v)
+                { this->bBroadcast_ = v; }
+
+            void broadcast(void); //!< Broadcasts a specific Notification.
+            void broadcastHelper(void); //!< Helper function for broadcast.
+            void dispatch(unsigned int clientId); //!< Dispatches a specific Notification to a given client.
             bool trigger(bool triggered, BaseObject* trigger); //!< Is called when the NotificationDispatcher is triggered.
 
         protected:
             std::string sender_; //!< The name of the sender of the Notification dispatched by this NotificationDispatcher.
+            bool bBroadcast_; //!< Whether the NotificationDispatcher is broadcasting.
 
             void registerVariables(void); //!< Register some variables for synchronisation.
 
@@ -104,7 +124,7 @@ namespace orxonox
             @return Returns the notification message.
             */
             virtual const std::string& createNotificationMessage(void)
-                { return *(new std::string("")); }
+                { return BLANKSTRING; }
 
     };
 

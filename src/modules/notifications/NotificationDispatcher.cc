@@ -49,6 +49,7 @@ namespace orxonox
 
     CreateUnloadableFactory(NotificationDispatcher);
 
+    registerMemberNetworkFunction(NotificationDispatcher, broadcastHelper);
     registerMemberNetworkFunction(NotificationDispatcher, dispatch);
 
     /**
@@ -60,6 +61,7 @@ namespace orxonox
         RegisterObject(NotificationDispatcher);
 
         this->sender_ = NotificationListener::NONE;
+        this->bBroadcast_ = false;
         this->registerVariables();
     }
 
@@ -80,9 +82,10 @@ namespace orxonox
     {
         SUPER(NotificationDispatcher, XMLPort, xmlelement, mode);
 
-        XMLPortParam(NotificationDispatcher, "sender", getSender, setSender, xmlelement, mode);
-        
-        XMLPortEventSink(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
+        XMLPortParam(NotificationDispatcher, "sender", setSender, getSender, xmlelement, mode);
+        XMLPortParam(NotificationDispatcher, "broadcast", setBroadcasting, isBroadcasting, xmlelement, mode);
+
+        XMLPortEventSink(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode);
     }
 
     void NotificationDispatcher::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -103,13 +106,40 @@ namespace orxonox
 
     /**
     @brief
+        Broadcasts a specific Notification.
+    */
+    void NotificationDispatcher::broadcast(void)
+    {
+        // TODO: Needed?
+        const std::string message = this->createNotificationMessage();
+        NotificationListener::sendNotification(message, this->getSender(), notificationMessageType::info, notificationSendMode::local);
+
+        // Broadcast
+        if(!GameMode::isStandalone())
+        {
+            callMemberNetworkFunction(NotificationDispatcher, broadcastHelper, this->getObjectID(), NETWORK_PEER_ID_BROADCAST);
+        }
+    }
+
+    /**
+    @brief
+        Helper function for broadcast.
+    */
+    void NotificationDispatcher::broadcastHelper(void)
+    {
+        this->dispatch(Host::getPlayerID());
+    }
+
+    /**
+    @brief
         Dispatches a Notification with a message supplied by the createNotificationMessage() method, which can be overloaded.
     @param clientId
         The id of the client the notification should be dispatched to.
     */
     void NotificationDispatcher::dispatch(unsigned int clientId)
     {
-        if(GameMode::isStandalone() || Host::getPlayerID() == clientId || this->getSyncMode() == 0x0)
+        // We don't call sendNotification() directly on the server, because if might be necessary that createNotificationMessage() is executed on the client as the message may be client-specific.
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId || this->getSyncMode() == ObjectDirection::None)
         {
             const std::string message = this->createNotificationMessage();
             // TODO: Make the type configurable.
@@ -137,6 +167,13 @@ namespace orxonox
             return false;
 
         orxout(verbose, context::notifications) << "NotificationDispatcher (&" << this << ") triggered." << endl;
+
+        // If the NotificationDispatcher is set to broadcast.
+        if(this->isBroadcasting())
+        {
+            this->broadcast();
+            return true;
+        }
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         PlayerInfo* player = NULL;

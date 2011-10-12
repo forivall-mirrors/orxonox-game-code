@@ -104,7 +104,7 @@ namespace orxonox
             std::string id_; //!< Identifier. Must be unique.
             QuestDescription* description_; //!< The QuestDescription of the QuestItem.
 
-            bool registered_;
+            bool registered_; //!< Whether the QuestItem is registered with the QuestManager.
 
     };
 

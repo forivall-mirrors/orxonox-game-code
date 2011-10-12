@@ -46,12 +46,7 @@
       </collisionShapes>
     </StaticEntity>
 
-    <PickupSpawner position="-160,65,10" triggerDistance="10" respawnTime="5" maxSpawnedItems="10"><!--EasterEgg-->
-      <pickup>
-        <InvisiblePickup template=mediuminvisiblepickup />
-      </pickup>
-    </PickupSpawner>
-    <PickupSpawner position="-160,60,17" triggerDistance="10" respawnTime="5" maxSpawnedItems="10"><!--EasterEgg-->
+    <PickupSpawner position="-160,60,17" triggerDistance="20" respawnTime="5" maxSpawnedItems="10"><!--EasterEgg-->
       <pickup>
         <InvisiblePickup template=hugeinvisiblepickup />
       </pickup>

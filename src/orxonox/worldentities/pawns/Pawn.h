@@ -169,6 +169,8 @@ namespace orxonox // tolua_export
 
             virtual const Vector3& getCarrierPosition(void) const
                 { return this->getWorldPosition(); };
+            virtual void changedActivity(void); //!< To enable radarviewability when the activity is changed
+            virtual void changedVisibility(void); //!< To enable proper radarviewability when the visibility is changed
 
         protected:
             virtual void preDestroy();
@@ -194,7 +196,7 @@ namespace orxonox // tolua_export
             float health_;
             float maxHealth_;
             float initialHealth_;
-            
+
             float shieldHealth_;
             float maxShieldHealth_;
             float initialShieldHealth_;
