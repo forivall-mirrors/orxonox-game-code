@@ -3,10 +3,17 @@
 local P = createMenuSheet("SingleplayerMenu")
 
 P.levelList = {}
-P.itemList = {}
 
 function P.onLoad()
-    P.createLevelList(nil)
+    P.createLevelList()
+    
+    -- create tabs with desired tab as argument (nil for all)
+    P.createFilterTab("Show All", nil)
+    P.createFilterTab("Tests", "test")
+    P.createFilterTab("Tutorials", "tutorial")
+    P.createFilterTab("Showcases", "showcase")
+    P.createFilterTab("SP?", "singleplayer")
+    P.createFilterTab("Presentations", "presentation")
 
     --buttons are arranged in a 1x2 matrix
     P:setButton(1, 1, {
@@ -20,42 +27,56 @@ function P.onLoad()
     })
 end
 
-function P.createLevelList(tag)
+function P.createLevelList()
     P.levelList = {}
-    P.itemList = {}
-    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/SingleplayerLevelListbox"))
-    listbox:resetList()
-    orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
-    local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     local size = orxonox.LevelManager:getInstance():getNumberOfLevels()
     local index = 0
     local level = nil
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if level ~= nil then
-            if tag == nil then
-                table.insert(P.levelList, level)
-            elseif level:hasTag(tag) then
-                table.insert(P.levelList, level)
-            end
+            table.insert(P.levelList, level)
         end
         index = index + 1
     end
+end
 
+function P.createFilterTab(name, tag)
+    -- create unique tab window name
+    local tabName = "orxonox/SingleplayerLevelListbox"
+    if tag ~= nil then
+        tabName = tabName..tag
+    end
+    -- add new tab window with desired name
+    local tabControl = winMgr:getWindow("orxonox/SingleplayerTabControl")
+    local newWindow = winMgr:createWindow("MenuWidgets/Listbox", tabName)
+    newWindow:setText(name)
+    newWindow:setProperty("UnifiedMaxSize", "{{1,0},{1,0}}")
+    newWindow:setProperty("UnifiedAreaRect", "{{0.05,0},{0.15,0},{0.95,0},{0.85,0}}")
+    tabControl:addChildWindow(tabName)
+    -- fill listbox with items
+    local listbox = CEGUI.toListbox(newWindow)
+    listbox:resetList()
+    orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
+    local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     for k,v in pairs(P.levelList) do
-        local item = CEGUI.createListboxTextItem(v:getName())
-        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        listbox:addItem(item)
-        if v:getXMLFilename() == preselect then
-            listbox:setItemSelectState(item, true)
+        -- only add level if it has desired tag
+        if tag == nil or v:hasTag(tag) then
+            local item = CEGUI.createListboxTextItem(v:getName())
+            item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+            listbox:addItem(item)
+            if v:getXMLFilename() == preselect then
+                listbox:setItemSelectState(item, true)
+            end
+            orxonox.GUIManager:setTooltipTextHelper(item, v:getDescription())
         end
-        P.itemList[k] = listbox:getListboxItemFromIndex(k-1)
-        orxonox.GUIManager:setTooltipTextHelper(P.itemList[k], v:getDescription())
     end
 end
 
 function P.SingleplayerStartButton_clicked(e)
-    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/SingleplayerLevelListbox"))
+    -- choose the active listbox
+    local tabControl = CEGUI.toTabControl(winMgr:getWindow("orxonox/SingleplayerTabControl"))
+    local listbox = CEGUI.toListbox(tabControl:getTabContentsAtIndex(tabControl:getSelectedTabIndex()))
     local choice = listbox:getFirstSelectedItem()
     if choice ~= nil then
         local index = listbox:getItemIndex(choice)
