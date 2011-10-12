@@ -296,7 +296,12 @@ namespace orxonox
             this->resetCamera();
         }
     }
-
+    /**
+    @brief
+        Add an Engine to the SpaceShip.
+    @param engine
+        A pointer to the Engine to be added.
+    */
     void SpaceShip::addEngine(orxonox::Engine* engine)
     {
         OrxAssert(engine != NULL, "The engine cannot be NULL.");
