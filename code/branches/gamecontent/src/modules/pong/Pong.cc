@@ -38,13 +38,13 @@
 #include "core/command/Executor.h"
 
 #include "gamestates/GSLevel.h"
+#include "chat/ChatManager.h"
 
 #include "PongCenterpoint.h"
 #include "PongBall.h"
 #include "PongBat.h"
 #include "PongBot.h"
 #include "PongAI.h"
-
 namespace orxonox
 {
     // Events to allow to react to scoring of a player, in the level-file.
@@ -74,6 +74,7 @@ namespace orxonox
 
         // Set the type of Bots for this particular Gametype.
         this->botclass_ = Class(PongBot);
+	this->scoreLimit_ = 3; //TODO: 21
     }
 
     /**
@@ -279,8 +280,28 @@ namespace orxonox
             this->bat_[1]->setPosition( this->center_->getFieldDimension().x / 2, 0, 0);
         }
 
+        // If a palyer gets 21 points, he won the game -> end of game
+        
+        PlayerInfo* player1 = this->getLeftPlayer();
+        PlayerInfo* player2 = this->getRightPlayer();
+        if(player1==NULL||player2==NULL) return; //safety
+        if(this->getScore(player1) >= scoreLimit_)
+        {
+            std::string name1=player1->getName();
+            std::string message(name1 + " has won!");
+            ChatManager::message(message);
+            this->end();
+        }
+        else if(this->getScore(player2) >= scoreLimit_)
+        {
+             std::string name2=player2->getName();
+             std::string message2(name2 + " has won!");
+             ChatManager::message(message2);
+             this->end();
+        }
         // Restart the timer to start the ball.
         this->starttimer_.startTimer();
+
     }
 
     /**

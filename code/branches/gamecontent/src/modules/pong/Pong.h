@@ -93,7 +93,8 @@ namespace orxonox
             WeakPtr<PongCenterpoint> center_; //!< The playing field.
             WeakPtr<PongBall> ball_; //!< The Pong ball.
             WeakPtr<PongBat> bat_[2]; //!< The two bats.
-            Timer starttimer_; //!< A timer to delay the start of the game.
+	    Timer starttimer_; //!< A timer to delay the start of the game.
+            int scoreLimit_; //!< If a player scored that much points, the game is ended.
     };
 }
 
