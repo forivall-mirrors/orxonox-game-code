@@ -80,8 +80,9 @@ namespace orxonox
             */
             void setCenterpoint(PongCenterpoint* center)
                 { this->center_ = center; }
-
-            PlayerInfo* getLeftPlayer() const; //!< Get the left player.
+            void setConfigValues(); //!< Makes scoreLimit configurable.
+            
+	    PlayerInfo* getLeftPlayer() const; //!< Get the left player.
             PlayerInfo* getRightPlayer() const; //!< Get the right player.
 
         protected:

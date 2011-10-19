@@ -121,6 +121,8 @@ namespace orxonox
             bool bShowScore_; //!< Whether the score of the players is shown.
             bool bShowLeftPlayer_; //!< Whether the left player is shown.
             bool bShowRightPlayer_; //!< Whether the right player is shown.
+            PlayerInfo* player1_; //!< Store information about left player permanently.
+            PlayerInfo* player2_; //!< Same for the right player. To end the game properly.
     };
 }
 #endif /* _PongScore_H__ */

@@ -36,6 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/command/Executor.h"
+#include "core/ConfigValueIncludes.h"
 
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
@@ -74,7 +75,8 @@ namespace orxonox
 
         // Set the type of Bots for this particular Gametype.
         this->botclass_ = Class(PongBot);
-	this->scoreLimit_ = 3; //TODO: 21
+	this->scoreLimit_ = 10;
+	this->setConfigValues();
     }
 
     /**
@@ -290,6 +292,7 @@ namespace orxonox
             std::string name1=player1->getName();
             std::string message(name1 + " has won!");
             ChatManager::message(message);
+this->tick(0);
             this->end();
         }
         else if(this->getScore(player2) >= scoreLimit_)
@@ -297,6 +300,7 @@ namespace orxonox
              std::string name2=player2->getName();
              std::string message2(name2 + " has won!");
              ChatManager::message(message2);
+this->tick(0);
              this->end();
         }
         // Restart the timer to start the ball.
@@ -340,5 +344,14 @@ namespace orxonox
             return this->bat_[1]->getPlayer();
         else
             return 0;
+    }
+
+    /**
+     @brief
+         Make scoreLimit_ configurable e.g. in the menu.
+     */
+    void Pong::setConfigValues()
+    {
+        SetConfigValue(scoreLimit_, 10).description("The player first reaching those points wins.");
     }
 }
