@@ -33,6 +33,8 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 
+#include "items/Engine.h"
+
 namespace orxonox
 {
     CreateUnloadableFactory(SpaceRace);
@@ -43,7 +45,12 @@ namespace orxonox
         this->checkpointsReached_ = 0;
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
+        
     }
+    
+  // void SpaceRace::SetConfigValues(){
+    //SUPER(Gametype,setConfigValues);
+    //this->Gametype::SetConfigValue(initialStartCountdown_, 3.0f);}
 
     void SpaceRace::end()
     {
@@ -80,13 +87,56 @@ namespace orxonox
     }
 
     void SpaceRace::start()
-    {
-        Gametype::start();
-
+    {	int i=0;
+        for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
+        {this->maxSpeedBack_[i]=it->getMaxSpeedBack();
+        this->maxSpeedFront_[i]=it->getMaxSpeedFront();
+        this->maxSpeedLeftRight_[i]=it->getMaxSpeedLeftRight();
+        this->maxSpeedUpDown_[i]=(it->getMaxSpeedUpDown());
+        
+        it->setMaxSpeedBack(0);
+        it->setMaxSpeedFront(0);
+        it->setMaxSpeedLeftRight(0);
+        it->setMaxSpeedUpDown(0);
+        
+        i++;
+        }
+        //Gametype::start();
+        this->addBots(this->numberOfBots_);
+   this->spawnPlayersIfRequested();
+   
+   	
+       Gametype::checkStart();
+	
+	i=0;
+     for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
+        {
+        it->setMaxSpeedBack(this->maxSpeedBack_[i]);
+         it->setMaxSpeedFront(this->maxSpeedFront_[i]);
+         it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_[i]);
+         it->setMaxSpeedUpDown(this->maxSpeedUpDown_[i]);
+         i++;
+         
+      
+        }
+		delete &this->maxSpeedBack_;
+		delete &this->maxSpeedFront_;
+		delete &this->maxSpeedLeftRight_;
+		delete &this->maxSpeedUpDown_;
         std::string message("The match has started! Reach the check points as quickly as possible!");
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
+      
     }
+
+	void SpaceRace::tick(float dt)
+	{SUPER(SpaceRace,tick,dt);
+	
+	
+		//if(const_cast<GametypeInfo*>(this->getGametypeInfo())->isStartCountdownRunning()){
+		//const_cast<GametypeInfo*>(this->getGametypeInfo())->start();}
+	}
+	
 
     void SpaceRace::newCheckpointReached()
     {

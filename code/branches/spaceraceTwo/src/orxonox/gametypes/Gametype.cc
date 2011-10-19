@@ -122,22 +122,24 @@ namespace orxonox
 
         if (this->gtinfo_->isStartCountdownRunning() && !this->gtinfo_->hasStarted())
             this->gtinfo_->countdownStartCountdown(dt);
-
+			
         if (!this->gtinfo_->hasStarted())
         {
             for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
             {
                 // Inform the GametypeInfo that the player is ready to spawn.
-                if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
+                if(it->first->isHumanPlayer() && it->first->isReadyToSpawn()){
                     this->gtinfo_->playerReadyToSpawn(it->first);
+                   
+                }
             }
-                    
-            this->checkStart();
+                 
+           	this->checkStart();
         }
         else if (!this->gtinfo_->hasEnded())
-            this->spawnDeadPlayersIfRequested();
+           { this->spawnDeadPlayersIfRequested();
 
-        this->assignDefaultPawnsIfNeeded();
+        this->assignDefaultPawnsIfNeeded();}
     }
 
     void Gametype::start()

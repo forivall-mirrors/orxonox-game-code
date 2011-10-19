@@ -155,6 +155,8 @@ namespace orxonox
             virtual void resetTimer();
             virtual void resetTimer(float t);
 
+	
+
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 

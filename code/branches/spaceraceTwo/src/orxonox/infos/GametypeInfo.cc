@@ -70,9 +70,9 @@ namespace orxonox
         
         this->bStarted_ = false;
         this->bEnded_ = false;
-        this->startCountdown_ = 0.0f;
+        this->startCountdown_ = 10.0f;
         this->bStartCountdownRunning_ = false;
-        this->counter_ = 0;
+        this->counter_ = 10;
         this->spawned_ = false;
         this->readyToSpawn_ = false;
 
