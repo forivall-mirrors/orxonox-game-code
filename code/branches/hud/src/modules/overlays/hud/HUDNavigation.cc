@@ -192,7 +192,7 @@ void HUDNavigation::tick ( float dt )
                 outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
             // Get Distance to HumanController and save it in the TextAreaOverlayElement.
             //it->second.text_->setCaption ( multi_cast<std::string> ( dist ) );
-			it->second.text_->setCaption(it->first->getRVName());
+			it->second.text_->setCaption(it->first->getRVName()); //only for test purposes
 
             if ( outOfView )
             {
