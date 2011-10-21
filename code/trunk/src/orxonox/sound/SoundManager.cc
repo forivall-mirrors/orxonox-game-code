@@ -79,9 +79,9 @@ namespace orxonox
         SetConfigValue(bDisableSound_, false);
         if (bDisableSound_)
             ThrowException(InitialisationAborted, "Sound: Not loading at all");
-        if (!alutInitWithoutContext(NULL, NULL))
+/*      if (!alutInitWithoutContext(NULL, NULL))
             ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
-        Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
+        Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);*/
 
 /*
         // Get list of available sound devices and display them
@@ -148,7 +148,7 @@ namespace orxonox
         this->createSoundSources(this->minSources_ - 1);
 
         // Disarm guards
-        alutExitGuard.Dismiss();
+//      alutExitGuard.Dismiss();
         closeDeviceGuard.Dismiss();
         desroyContextGuard.Dismiss();
         resetPlaysSoundGuard.Dismiss();
@@ -198,8 +198,8 @@ namespace orxonox
 #else
         alcCloseDevice(this->device_);
 #endif
-        if (!alutExit())
-            orxout(internal_error, context::sound) << "Closing ALUT failed: " << alutGetErrorString(alutGetError()) << endl;
+/*      if (!alutExit())
+            orxout(internal_error, context::sound) << "Closing ALUT failed: " << alutGetErrorString(alutGetError()) << endl;*/
     }
 
     void SoundManager::setConfigValues()
