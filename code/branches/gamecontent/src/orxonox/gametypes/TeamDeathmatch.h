@@ -55,7 +55,6 @@ namespace orxonox
             virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
 
             int getTeam(PlayerInfo* player);
-
             inline const ColourValue& getTeamColour(int teamnr) const
                 { return this->teamcolours_[teamnr]; }
 

@@ -21,6 +21,7 @@ include("templates/pickupRepresentationTemplates.oxt")
 <Level
  name         = "Mission One"
  description  = "How to steer a spaceship."
+ gametype     = "Mission"
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -395,7 +396,7 @@ include("templates/pickupRepresentationTemplates.oxt")
                       <Template link=spaceshippirate />
                     </templates>
                     <controller>
-                      <WaypointController>
+                      <WaypointController team=1>
                          <waypoints>
                           <Model mesh="cube.mesh" scale=8 position="  0,1700,-200" />
                           <Model mesh="cube.mesh" scale=8 position="  0,1700,-700" />
@@ -416,7 +417,7 @@ include("templates/pickupRepresentationTemplates.oxt")
                     <Template link=spaceshippirate />
                   </templates>
                   <controller>
-                    <WaypointController>
+                    <WaypointController team=1>
                       <waypoints>
                         <Model mesh="cube.mesh" scale=8 position="  0,2400,1000" />
                         <Model mesh="cube.mesh" scale=8 position="  0,2400, 500" />

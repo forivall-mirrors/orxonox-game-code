@@ -66,8 +66,12 @@ namespace orxonox
     void TeamGametype::playerEntered(PlayerInfo* player)
     {
         Gametype::playerEntered(player);
+        this->findAndSetTeam(player);
+    }
 
-        std::vector<unsigned int> playersperteam(this->teams_, 0);
+    void TeamGametype::findAndSetTeam(PlayerInfo* player)
+    {
+         std::vector<unsigned int> playersperteam(this->teams_, 0);
 
         for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
             if (it->second < static_cast<int>(this->teams_) && it->second >= 0)
@@ -85,6 +89,7 @@ namespace orxonox
         }
 
         this->teamnumbers_[player] = minplayersteam;
+
     }
 
     bool TeamGametype::playerLeft(PlayerInfo* player)

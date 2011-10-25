@@ -9,4 +9,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   LastManStanding.cc
   LastTeamStanding.cc
   TeamGametype.cc
+  Mission.cc
 )

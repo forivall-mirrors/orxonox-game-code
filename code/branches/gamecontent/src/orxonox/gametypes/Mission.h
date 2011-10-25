@@ -20,42 +20,44 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Johannes Ritz
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _WaypointPatrolController_H__
-#define _WaypointPatrolController_H__
+#ifndef _Mission_H__
+#define _Mission_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "tools/Timer.h"
-#include "WaypointController.h"
+//#include "Gametype.h"
+#include "TeamGametype.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WaypointPatrolController : public WaypointController
+    class _OrxonoxExport Mission : public TeamGametype
     {
         public:
-            WaypointPatrolController(BaseObject* creator);
-            virtual ~WaypointPatrolController() {}
+            Mission(BaseObject* creator);
+            virtual ~Mission() {}
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
-            inline void setAlertnessRadius(float radius)
-                { this->alertnessradius_ = radius; }
-            inline float getAlertnessRadius() const
-                { return this->alertnessradius_; }
+            virtual void start();
+            virtual void end();
+            virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
+            inline void setLives(unsigned int amount)
+                {this->lives_ = amount;}
+	    inline unsigned int getLives()
+                {return this->lives_;}
 
         protected:
-            void searchEnemy();
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+            bool missionAccomplished_; //<! indicates if player successfully finsihed the mission;
+            int lives_; //<! amount of player's lives <-> nr. of retries
 
-            float alertnessradius_;
-            Timer patrolTimer_;
     };
 }
 
-#endif /* _WaypointPatrolController_H__ */
+#endif /* _Mission_H__ */
+

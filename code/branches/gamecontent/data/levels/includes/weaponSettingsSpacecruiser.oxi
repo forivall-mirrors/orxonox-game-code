@@ -6,7 +6,6 @@
       <WeaponSlot position=" 14,-31,-184" />
       <WeaponSlot position="-34,-30,-169" />
       <WeaponSlot position=" 34,-30,-169" />
-
     </weaponslots>
     <weaponsets>
       <WeaponSet firemode=0 />

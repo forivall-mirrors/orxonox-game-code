@@ -10,10 +10,10 @@
    maxhealth         = 400
    initialhealth     = 300
 
-   shieldhealth        = 60
-   initialshieldhealth = 60
-   maxshieldhealth     = 80
-   shieldabsorption    = 0.8
+   shieldhealth        = 75
+   initialshieldhealth = 75
+   maxshieldhealth     = 90
+   shieldabsorption    = 0.9
    reloadrate          = 1
    reloadwaittime      = 1
 
@@ -56,13 +56,13 @@
 
     </attached>
     <collisionShapes>
-      <BoxCollisionShape position="0,-30,-108"   halfExtents="38,6,62" />
-      <BoxCollisionShape position="0,-20,-108"   halfExtents="20,6,40" />
-      <BoxCollisionShape position="-16,-35,-112"  halfExtents="15,5,57" roll=-14 pitch=3.5/>
-      <BoxCollisionShape position="16,-35,-112"   halfExtents="15,5,57" roll=14 pitch=3.5/>
-      <BoxCollisionShape position="19,-21.5,-108" halfExtents="18,5,52" roll=-21 />
-      <BoxCollisionShape position="-19,-21.5,-108"halfExtents="18,5,52" roll=21 />
-      <BoxCollisionShape position="0,-21,-169"halfExtents="18,1,16" pitch=-30x />
+      <BoxCollisionShape position="0,-30,-108"     halfExtents="38,6,62" />
+      <BoxCollisionShape position="0,-20,-108"     halfExtents="20,6,40" />
+      <BoxCollisionShape position="-16,-35,-112"   halfExtents="15,5,57" roll=-14 pitch=3.5/>
+      <BoxCollisionShape position="16,-35,-112"    halfExtents="15,5,57" roll=14 pitch=3.5/>
+      <BoxCollisionShape position="19,-21.5,-108"  halfExtents="18,5,52" roll=-21 />
+      <BoxCollisionShape position="-19,-21.5,-108" halfExtents="18,5,52" roll=21 />
+      <BoxCollisionShape position="0,-21,-169"     halfExtents="18,1,16" pitch=-30 />
 
     </collisionShapes>
 <?lua
@@ -74,16 +74,9 @@
 <Template name=spaceshipcruisercameras defaults=0>
   <SpaceShip>
     <camerapositions>
-      <CameraPosition position="0,10,  40" drag=true mouselook=true />
-      <CameraPosition position="0,20,  80" drag=true mouselook=true />
+      <CameraPosition position="0,15,  60" drag=true mouselook=true />
       <CameraPosition position="0,30, 120" drag=true mouselook=true />
-      <CameraPosition position="0,20,-260" drag=true mouselook=true yaw=180/>
-      <CameraPosition position="0,30,-350" drag=true mouselook=true yaw=180/>
-      <!--CameraPosition position="0,150,-25" pitch=-90 drag=true />
-      <CameraPosition position="0,0,-40" yaw=180 drag=true />
-      <CameraPosition position="0,3,-14" yaw=0 />
-      <CameraPosition position="-50,5,-8" yaw=-90 drag=true />
-      <CameraPosition position="50,5,-8" yaw=90 drag=true /-->
+      <CameraPosition position="0,40, 350" drag=true mouselook=true />
     </camerapositions>
   </SpaceShip>
 </Template>
@@ -92,10 +85,10 @@
   <MultiStateEngine
    boostfactor    = 2
 
-   speedfront     = 150
-   speedback      =  50
-   speedleftright =  50
-   speedupdown    =  50
+   speedfront     = 200
+   speedback      =  70
+   speedleftright =  70
+   speedupdown    =  70
 
    defEngineSndNormal = "sounds/Engine_low.ogg"
    defEngineSndBoost = "sounds/Engine_high.ogg"

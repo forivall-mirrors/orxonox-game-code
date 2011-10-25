@@ -122,7 +122,7 @@ namespace orxonox
             inline const std::string& getHUDTemplate() const
                 { return this->gtinfo_->getHUDTemplate(); }
 
-            void addBots(unsigned int amount);
+            virtual void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
 
             inline unsigned int getNumberOfPlayers() const

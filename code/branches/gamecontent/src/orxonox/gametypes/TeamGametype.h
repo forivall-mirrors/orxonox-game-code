@@ -46,6 +46,7 @@ namespace orxonox
             void setConfigValues();
 
             virtual void playerEntered(PlayerInfo* player);
+            virtual void findAndSetTeam(PlayerInfo* player);
             virtual bool playerLeft(PlayerInfo* player);
 
             virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);

@@ -292,7 +292,6 @@ namespace orxonox
             std::string name1=player1->getName();
             std::string message(name1 + " has won!");
             ChatManager::message(message);
-this->tick(0);
             this->end();
         }
         else if(this->getScore(player2) >= scoreLimit_)
@@ -300,7 +299,6 @@ this->tick(0);
              std::string name2=player2->getName();
              std::string message2(name2 + " has won!");
              ChatManager::message(message2);
-this->tick(0);
              this->end();
         }
         // Restart the timer to start the ball.

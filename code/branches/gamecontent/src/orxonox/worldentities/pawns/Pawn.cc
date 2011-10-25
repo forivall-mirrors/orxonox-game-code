@@ -454,7 +454,7 @@ namespace orxonox
     {
         SUPER(Pawn, changedActivity);
 
-        this->setRadarVisibility(this->isActive());
+        this->setRadarVisibility(this->isVisible());
     }
 
     void Pawn::changedVisibility(void)
