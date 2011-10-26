@@ -79,6 +79,7 @@ namespace orxonox
         this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
+	this->bHasTargetOrientation_=false;
         this->speedCounter_ = 0.2f;
         this->targetPosition_ = Vector3::ZERO;
 
@@ -371,9 +372,14 @@ namespace orxonox
 
             if (distance < 300)
             {
+		 if (bHasTargetOrientation_)
+		    {
+			copyTargetOrientation();
+		    }
                 if (distance < 40)
                 {
                     this->getControllableEntity()->moveFrontBack(0.8f*SPEED_MASTER);
+		   
                 } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
 
             } else {
@@ -384,12 +390,32 @@ namespace orxonox
         if (distance < 10)
         {
             this->positionReached();
+	    bHasTargetOrientation_=false;
         }
     }
 
     void ArtificialController::moveToTargetPosition()
     {
         this->moveToPosition(this->targetPosition_);
+    }
+
+    void ArtificialController::copyOrientation(const Quaternion& orient)
+    {
+	//roll angle in radian, difference between master and slave
+	float diff=orient.getRoll().valueRadians()-(this->getControllableEntity()->getOrientation().getRoll().valueRadians());
+	if ((diff<math::twoPi && diff>math::pi) || diff>(math::pi)*3)
+	{
+		diff=diff-math::twoPi;
+	}
+	this->getControllableEntity()->rotateRoll(1.0f*ROTATEFACTOR_MASTER*diff);
+    }
+
+    void ArtificialController::copyTargetOrientation()
+    {
+	if (bHasTargetOrientation_)
+  	{
+		copyOrientation(targetOrientation_);
+	}
     }
 
     /**
@@ -475,11 +501,11 @@ namespace orxonox
             this->myMaster_ = 0;
         }
     }
-
-    /**
+ /**
         @brief Commands the slaves of a master into a formation. Sufficiently fast not to be called within tick. Initiated by a master.
     */
-    void ArtificialController::commandSlaves()
+
+void ArtificialController::commandSlaves()
     {
         if(this->state_ != MASTER) return;
 
@@ -493,27 +519,28 @@ namespace orxonox
             this->slaves_.front()->setTargetPosition(dest);
         }
         else
+	// formation:
         {
             dest += 1.0f*orient*WorldEntity::BACK;
             Vector3 pos = Vector3::ZERO;
+	    bool left=true;
             int i = 1;
-
+	    
             for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
                 pos = Vector3::ZERO;
-                if (i <= 1) pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::LEFT);
-                if (i == 2) pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
-                if (i == 3) pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::UP);
-                if (i >= 4)
-                {
-                    pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::DOWN);
-                    i = 1;
-                    dest += (float)FORMATION_LENGTH*(orient*WorldEntity::BACK);
-                    (*it)->setTargetPosition(pos);
-                    continue;
-                }
-                i++;
+		if (left)
+		{
+                    pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::LEFT);
+		} else
+		{
+		    pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
+		    i++;
+		    dest+=FORMATION_LENGTH*(orient*WorldEntity::BACK);
+		}		
+		(*it)->setTargetOrientation(orient);
                 (*it)->setTargetPosition(pos);
+		left=!left;
             }
         }
     }
@@ -818,6 +845,18 @@ orxout() << "~follow distance: " << distance << "SpeedCounter: " << this->speedC
     {
         this->targetPosition_ = Vector3(rnd(-2000,2000), rnd(-2000,2000), rnd(-2000,2000));
         this->bHasTargetPosition_ = true;
+    }
+
+    void ArtificialController::setTargetOrientation(const Quaternion& orient)
+    {
+	this->targetOrientation_=orient;	
+	this->bHasTargetOrientation_=true;
+    }
+
+    void ArtificialController::setTargetOrientation(Pawn* target)
+    {
+	if (target)
+	    setTargetOrientation(target->getOrientation());
     }
 
     void ArtificialController::setTarget(Pawn* target)

@@ -95,6 +95,8 @@ namespace orxonox
 
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
+	    void copyOrientation(const Quaternion& orient);
+	    void copyTargetOrientation();
 
             virtual void positionReached() {}
 
@@ -123,6 +125,9 @@ namespace orxonox
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();
 
+	    void setTargetOrientation(const Quaternion& orient);
+	    void setTargetOrientation(Pawn* target);
+
             void setTarget(Pawn* target);
             void searchNewTarget();
             void forgetTarget();
@@ -137,6 +142,10 @@ namespace orxonox
 
             bool bHasTargetPosition_;
             Vector3 targetPosition_;
+
+	    bool bHasTargetOrientation_;
+	    Quaternion targetOrientation_;
+
             WeakPtr<Pawn> target_;
             bool bShooting_;
 
