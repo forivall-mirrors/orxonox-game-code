@@ -68,7 +68,6 @@ namespace orxonox
 					this->settingsChanged();
 				}
 			}
-
 		std::string getRVName() const
 			{ return this->RVName; }
 

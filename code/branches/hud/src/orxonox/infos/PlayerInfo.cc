@@ -170,6 +170,11 @@ namespace orxonox
         }
 
         this->changedControllableEntity();
+		SpaceShip* spaceship = dynamic_cast<SpaceShip*>(entity);
+        if (spaceship != NULL)
+        {
+            spaceship->setRVName(this->getName());
+        }
     }
 
     void PlayerInfo::startTemporaryControl(ControllableEntity* entity)
@@ -189,12 +194,6 @@ namespace orxonox
             this->controller_->setControllableEntity(entity);
 
         this->changedControllableEntity();
-
-		SpaceShip* spaceship = dynamic_cast<SpaceShip*>(entity);
-		if (spaceship != NULL)
-		{
-			spaceship->setRVName(this->getName());
-		}
     }
 
     void PlayerInfo::stopControl()

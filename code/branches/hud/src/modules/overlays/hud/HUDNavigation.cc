@@ -172,8 +172,12 @@ void HUDNavigation::tick ( float dt )
 
             // Get Distance to HumanController and save it in the TextAreaOverlayElement.
             int dist = listIt->second;
-            it->second.text_->setCaption ( multi_cast<std::string> ( dist ) );
-            float textLength = multi_cast<std::string> ( dist ).size() * it->second.text_->getCharHeight() * 0.3f;
+
+            //it->second.text_->setCaption ( multi_cast<std::string> ( dist ) ); //display distance next to cursor
+            //float textLength = multi_cast<std::string> ( dist ).size() * it->second.text_->getCharHeight() * 0.3f;
+            
+            it->second.text_->setCaption(it->first->getRVName()); //display name next to cursor
+            float textLength = it->first->getRVName().size() * it->second.text_->getCharHeight() * 0.3f;
 
             // Transform to screen coordinates
             Vector3 pos = camTransform * it->first->getRVWorldPosition();
@@ -190,9 +194,6 @@ void HUDNavigation::tick ( float dt )
             }
             else
                 outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
-            // Get Distance to HumanController and save it in the TextAreaOverlayElement.
-            //it->second.text_->setCaption ( multi_cast<std::string> ( dist ) );
-			it->second.text_->setCaption(it->first->getRVName()); //only for test purposes
 
             if ( outOfView )
             {
