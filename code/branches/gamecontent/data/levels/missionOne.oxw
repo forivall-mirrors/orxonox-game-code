@@ -47,18 +47,147 @@ include("templates/pickupRepresentationTemplates.oxt")
       include("includes/pickups.oxi")
     ?>
 
-    <WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg-->
+    <WorldAmbientSound source="Earth.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg, Mars.ogg-->
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-
-
 <!-- END OF INCLUDES & NECESSARITIES -->
 
+<!-- SPAWNPOINT & START OF QUESTS via spawntrigger -->
+    <EventMultiTrigger name=spawntrigger>
+        <events>
+            <trigger>
+                <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+            </trigger>
+        </events>
+    </EventMultiTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <AddQuest questId="missionOne.basicFlying" />
+                <!--AddQuestHint hintId ="quest1hint3" /-->
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=spawntrigger />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.basicFlying" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=flying4 />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!-- //TODO: end navigation quest -->
+
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.navigation" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="navigationend" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.weaponsystemI" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=boxtrigger4 />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.weaponsystemII" />
+                <CompleteQuest questId="missionOne.weaponsystem" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=movingpirates2 />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.DuballStation" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=duball3 />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.getHelp" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=ondock />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.getHome" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=attack />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.defence" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=attacktrigger6 />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+
     <LocalQuest id="missionOne.basicFlying">
-        <QuestDescription title="Flying" description="INSERT STORY HERE. The first thing you have to learn is flying. Use 'W' to accelerate and steer with your mouse. In order to know where to fly there are two detection systems. The navigation markers highlite important objects directly in the level. If you can't directly see those objects, there are arrows which indicate how you have to steer. The second device is the radar. There you get an overview of all objects near you. In order to find an object that you spotted on radar, you have to steer in a way that the corresponding dot is in the center of the radar. Now you can find the corresponding object straight ahead. Your goal is to fly to the first waypoint. It's that orange dot on the radar." failmessage="" completeMessage="Well done." />
+        <QuestDescription title="Flying" description="Can you see the blinking light straight ahead? Your goal is to fly through it.
+Use 'W' to accelerate and steer with your mouse.
+
+Further flying moves:
+S          : break
+Q and E : roll
+Space    : boost
+
+P.S: Whenever a new quest is added you can view it by pressing F3." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="missionOne.navigation" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.navigation">
+        <QuestDescription title="Navigation" description="The next goal is to find and move towards the test targets for your weaponsystem. The three arrows that just appeared down in the right corner of your screen indicate in which direction you have to turn your spacefighter to find your next targets.
+
+Alternative navigation: There's a the green circle in the left corner - the radar. The red dots on the radar represent your targets. If you manage to move your spaceship in a way such that a dot is at the center of the radar, you will be able to see the concerning object straight ahead." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.weaponsystem" />
+            <AddQuest questId="missionOne.weaponsystemI" />
         </complete-effects>
     </LocalQuest>
 
@@ -97,14 +226,14 @@ include("templates/pickupRepresentationTemplates.oxt")
     </LocalQuest>
 
     <LocalQuest id="missionOne.DuballStation">
-        <QuestDescription title="Duball Space Station" description="Fly towards the Duball Space Station. The grey radar marker will lead you to its position." failmessage="" completeMessage="Well done." />
+        <QuestDescription title="Duball Space Station" description="Fly towards the Duball Space Station. The grey radar marker will lead you to its position." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.getHelp" />
         </complete-effects>
     </LocalQuest>
 
     <LocalQuest id="missionOne.getHelp">
-        <QuestDescription title="Get Help" description="There are enemies approaching. You can't handle it on your own. Fortunately there's a shortcut to the next friendly unit. Use the portal (grey dot) to get near the Hydrogen Farmer. There you might get help - as far as we know there should be a stronger spaceship docked to the Hydrogen Farmer. In order to be able to use that stronger spaceship you have to dock to the Hydrogen Farmer. Simply fly to the center of the Hydrogen Farmer, which is between its three legs." failmessage="" completeMessage="Well done." />
+        <QuestDescription title="Get Help" description="There are enemies approaching. You can't handle it on your own. Fortunately there's a shortcut to the next friendly unit. Use the portal (grey dot) to get near the Hydrogen Farmer. There you might get help - as far as we know there should be a stronger spaceship docked to the Hydrogen Farmer. In order to be able to use that stronger spaceship you have to dock to the Hydrogen Farmer. Simply fly to the center of the Hydrogen Farmer, which is between its three legs." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.getHome" />
         </complete-effects>
@@ -118,11 +247,11 @@ include("templates/pickupRepresentationTemplates.oxt")
     </LocalQuest>
 
     <LocalQuest id="missionOne.defence">
-        <QuestDescription title="Defence" description="" failmessage="" completeMessage="Well done." />
+        <QuestDescription title="Defence" description="" failmessage="" completeMessage="Yeah! You did it." />
     </LocalQuest>
 
 
-        <QuestEffectBeacon position="800,700,600" times="1">
+        <!--QuestEffectBeacon position="800,700,600" times="1">
             <effects>
                 <AddQuest questId="missionOne.basicFlying" />
             </effects>
@@ -134,7 +263,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             <attached>
                 <DistanceTrigger name="questStart" position="0,0,0" distance="50" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" delay="2" />
             </attached>
-        </QuestEffectBeacon>
+        </QuestEffectBeacon-->
 
 
 <!-- TUTORIAL-TODO: -->
@@ -143,14 +272,8 @@ include("templates/pickupRepresentationTemplates.oxt")
 <!-- 3. Game handling (quests, knowing when a game is over :-), pausing, chat, ... ) --> <!--"F3", "F2", "ESC" -->
 <!-- 4. Extras (other things to discover) --> <!-- "Q","E","A","D","C", "CTRL", "", ... -->
 
-<!--
-
-"Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
-
--->
-
-    <DistanceTrigger name="spawndelaytrigger0" position="800,700,600" target="Pawn" distance=10 stayActive="true"/>
-    <SimpleNotification message="Welcome to the Orxonox Tutorial.">
+    <DistanceTrigger name="spawndelaytrigger0" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=2/>
+    <SimpleNotification message="Press 'F3' to see your mission briefing.">
         <events>
             <trigger>
                 <EventListener event="spawndelaytrigger0" />
@@ -184,8 +307,10 @@ include("templates/pickupRepresentationTemplates.oxt")
             </visibility>
           </events>
 </Billboard>
+
 <!-------------------------------------- PART ZERO: How to fly --------------------------------------->
-    <DistanceTrigger name="flying1" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=4/>
+
+    <DistanceTrigger name="flying1" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=6/>
     <SimpleNotification message="Let's fly to the blinking light.">
         <events>
             <trigger>
@@ -194,7 +319,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="flying2" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=8/>
+    <DistanceTrigger name="flying2" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=10/>
     <SimpleNotification message="Use 'W' to accelerate and the mouse to steer.">
         <events>
             <trigger>
@@ -202,17 +327,11 @@ include("templates/pickupRepresentationTemplates.oxt")
             </trigger>
         </events>
     </SimpleNotification>
+<!-- QUEST-Trigger && Message Trigger -->
+    <DistanceTrigger name="navigationend" position="0,0,0" distance=800 target="ControllableEntity" stayActive="false" delay=1.1>
+        <DistanceTrigger name="flying4" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=1/>
+    </DistanceTrigger>
 
-    <!--DistanceTrigger name="flying3" position="800,700,600" target="Pawn" distance=20 stayActive="true" delay=12/>
-    <SimpleNotification message="Point with the mouse to the blinking light.">
-        <events>
-            <trigger>
-                <EventListener event="flying3" />
-            </trigger>
-        </events>
-    </SimpleNotification-->
-
-    <DistanceTrigger name="flying4" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=1/>
     <SimpleNotification message="Three red arrows just appeared.">
         <events>
             <trigger>
@@ -230,7 +349,13 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-
+    <SimpleNotification message="navigationend triggered! But why already yet?" broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="navigationend" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
 <!-------------------------------------- PART ONE : Destroy boxes --------------------------------------->
     <DistanceTrigger name="spawndelaytrigger1" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=9 />

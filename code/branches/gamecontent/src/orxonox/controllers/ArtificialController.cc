@@ -1109,7 +1109,7 @@ orxout() << "~follow distance: " << distance << "SpeedCounter: " << this->speedC
         if(this->getControllableEntity())
         {
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
-            if(pawn)
+            if(pawn && pawn->isA(Class(SpaceShip))) //fix for First Person Mode: check for SpaceShip
             {
                 this->weaponModes_.clear(); // reset previous weapon information
                 WeaponSlot* wSlot = 0;
