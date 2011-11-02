@@ -1,7 +1,8 @@
 <LevelInfo
   name = "Events showcase"
   description = "Level to test and showcase events."
-  tags = "test, showcase" 
+  tags = "test, showcase"
+  screenshot = "eventsshowcase.png"
 />
 
 <?lua

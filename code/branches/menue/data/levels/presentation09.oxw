@@ -2,6 +2,7 @@
  name = "Presentation X 3rd"
  description = "3rd Presentation level for Orxonox Convention X"
  tags = "presentation"
+ screenshot = "presentationx3rd.png"
 />
 
 <?lua

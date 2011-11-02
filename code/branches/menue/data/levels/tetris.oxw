@@ -2,6 +2,7 @@
  name = "Tetris"
  description = "Tetris in space!"
  tags = ""
+ screenshot = "tetris.png"
 />
 
 <?lua

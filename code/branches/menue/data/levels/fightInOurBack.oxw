@@ -2,6 +2,7 @@
   name = "Fight in our Back"
   description = "Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
   tags = ""
+  screenshot = "fightinourback.png"
 />
 
 <?lua

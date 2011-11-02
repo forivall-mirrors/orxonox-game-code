@@ -2,6 +2,7 @@
  name = "Last Man Standing"
  description = "Be the sole survivor."
  tags = ""
+ screenshot = "lastmanstanding.png"
 />
 
 <?lua

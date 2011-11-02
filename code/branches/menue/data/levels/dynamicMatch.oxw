@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Dynamic Match"
+ description = "In progress -level for dynamicmatch"
+ screenshot = "dynamicMatch.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")

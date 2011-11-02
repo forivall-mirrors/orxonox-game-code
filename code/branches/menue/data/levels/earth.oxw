@@ -2,6 +2,7 @@
  name = "Earth Demonstration"
  description = "1:100 Scale Model of Earth with Gravity"
  tags = "showcase"
+ screenshot = "earthdemonstration.png"
 />
 
 <?lua

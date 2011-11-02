@@ -2,6 +2,7 @@
  name = "MyTestLevel"
  description = "A level to test the Class SpaceBoundaries."
  tags = "test"
+ screenshot = "mytestlevel.png"
 />
 
 <?lua

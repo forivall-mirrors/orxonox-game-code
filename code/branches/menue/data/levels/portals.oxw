@@ -3,6 +3,7 @@
  name = "Portals"
  description = "Level for testing portals"
  tags = "tutorial"
+ screenshot = "portals.png"
 />
 
 <?lua

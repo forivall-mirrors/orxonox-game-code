@@ -2,6 +2,7 @@
  name = "Planet Demonstration"
  description = "Demonstration of Planets"
  tags = "showcase"
+ screenshot = "planetdemonstration.png"
 />
 
 <?lua

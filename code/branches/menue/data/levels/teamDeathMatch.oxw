@@ -2,6 +2,7 @@
  name = "Team Deathmatch"
  description = "Fight against each other in teams."
  tags = ""
+ screenshot = "teamdeathmatch.png"
 />
 
 <?lua

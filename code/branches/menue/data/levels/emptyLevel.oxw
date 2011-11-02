@@ -2,6 +2,7 @@
  name = "Empty level"
  description = "A level with absolutely nothing in it."
  tags = "test"
+ screenshot = "emptylevel.png"
 />
 
 <?lua

@@ -2,6 +2,7 @@
  name = "Last Team Standing"
  description = "Survive as a team."
  tags = "singleplayer"
+ screenshot = "lastteamstanding.png"
 />
 <?lua
   include("stats.oxo")

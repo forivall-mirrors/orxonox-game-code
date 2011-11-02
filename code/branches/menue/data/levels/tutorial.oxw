@@ -2,6 +2,7 @@
  name = "Coding Tutorial"
  description = "Level for the coding tutorial."
  tags = "tutorial"
+ screenshot = "codingtutorial.png"
 />
 
 <?lua

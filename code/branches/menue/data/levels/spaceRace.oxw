@@ -2,6 +2,7 @@
  name = "Space Race"
  description = "Test level for the gametype Space Race."
  tags = "test"
+ screenshot = "spacerace.png"
 />
 
 <?lua

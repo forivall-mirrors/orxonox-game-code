@@ -2,6 +2,7 @@
  name = "Waypoints Testlevel"
  description = "Testing waypoings for AI controlled spaceships."
  tags = "test"
+ screenshot = "waypointstestlevel.png"
 />
 
 <?lua

@@ -2,6 +2,7 @@
  name = "Stars Testlevel"
  description = "Level to test stars"
  tags = "test"
+ screenshot = "starstestlevel.png"
 />
 
 <?lua

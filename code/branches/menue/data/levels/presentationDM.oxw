@@ -2,6 +2,7 @@
  name = "Presentation DM"
  description = "Presentation Level"
  tags = "presentation"
+ screenshot = "presentationdm.png"
 />
 
 <?lua

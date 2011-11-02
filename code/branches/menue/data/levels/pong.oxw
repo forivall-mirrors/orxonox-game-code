@@ -2,6 +2,7 @@
  name = "Pong"
  description = "Pong in space!"
  tags = ""
+ screenshot = "pong.png"
 />
 
 <?lua

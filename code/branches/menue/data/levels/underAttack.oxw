@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "UnderAttack testing"
+ description = "A simple testlevel"
+ screenshot = "underattack.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")

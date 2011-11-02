@@ -2,6 +2,7 @@
  name = "FPS testlevel"
  description = "Level to test First Person Shooter"
  tags = "test"
+ screenshot = "fpstestlevel.png"
 />
 
 <?lua

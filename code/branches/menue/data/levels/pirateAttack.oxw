@@ -2,6 +2,7 @@
  name = "Pirate Attack"
  description = "Dani's Testlevel"
  tags = "test"
+ screenshot = "pirateattack.png"
 />
 
 <?lua

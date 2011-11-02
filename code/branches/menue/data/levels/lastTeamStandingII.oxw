@@ -2,6 +2,7 @@
  name = "On the fly"
  description = "Survive as a team."
  tags = ""
+ screenshot = "onthefly.png"
 />
 <?lua
   include("stats.oxo")

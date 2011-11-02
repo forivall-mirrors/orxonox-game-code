@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Asteroids Race"
+ description = "testmap for gametype asteroid race"
+ screenshot = "asteroids.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")

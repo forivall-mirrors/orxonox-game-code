@@ -2,6 +2,7 @@
  name = "The Time Machine"
  description = "A simple level. The only goal is to defeat as much enemies as you can."
  tags = "singleplayer"
+ screenshot = "thetimemachine.png"
 />
 
 <?lua 

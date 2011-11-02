@@ -2,6 +2,7 @@
  name = "Notifications showcase"
  description = "Level to test and showcase notifications."
  tags = "test, showcase"
+ screenshot = "notificationsshowcase.png"
 />
 
 <?lua

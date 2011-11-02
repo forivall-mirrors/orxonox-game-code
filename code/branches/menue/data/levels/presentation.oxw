@@ -2,6 +2,7 @@
  name = "Presentation"
  description = "Presentation Level"
  tags = "presentation"
+ screenshot = "presentation.png"
 />
 
 <?lua

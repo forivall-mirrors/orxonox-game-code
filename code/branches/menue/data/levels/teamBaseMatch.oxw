@@ -2,6 +2,7 @@
  name = "Teambase Match"
  description = "Fight for the bases."
  tags = ""
+ screenshot = "teambasematch.png"
 />
 
 <?lua
