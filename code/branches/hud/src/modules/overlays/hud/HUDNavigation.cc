@@ -24,6 +24,7 @@
  *   Co-authors:
  *      Reto Grieder
  *      Oliver Scheuss
+ *      Matthias Spalinger
  *
  */
 
@@ -76,6 +77,7 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     setFont ( "Monofur" );
     setTextSize ( 0.05f );
     setNavMarkerSize ( 0.05f );
+    this->showDistance = false;
 }
 
 HUDNavigation::~HUDNavigation()
@@ -140,7 +142,19 @@ float HUDNavigation::getTextSize() const
     return textSize_;
 }
 
+float HUDNavigation::getArrowSizeX(int dist)
+{    
+    if (dist < 600) 
+        dist = 600;
+    return this->getActualSize().x * 900 * navMarkerSize_ / dist;
+}
 
+float HUDNavigation::getArrowSizeY(int dist)
+{    
+    if (dist < 600)
+        dist = 600;   
+    return this->getActualSize().y * 900 * navMarkerSize_ / dist;
+}
 
 void HUDNavigation::tick ( float dt )
 {
@@ -172,12 +186,19 @@ void HUDNavigation::tick ( float dt )
 
             // Get Distance to HumanController and save it in the TextAreaOverlayElement.
             int dist = listIt->second;
+            float textLength = 0.0f;
 
-            //it->second.text_->setCaption ( multi_cast<std::string> ( dist ) ); //display distance next to cursor
-            //float textLength = multi_cast<std::string> ( dist ).size() * it->second.text_->getCharHeight() * 0.3f;
-            
-            it->second.text_->setCaption(it->first->getRVName()); //display name next to cursor
-            float textLength = it->first->getRVName().size() * it->second.text_->getCharHeight() * 0.3f;
+            //display distance next to cursor
+            if (showDistance){
+            it->second.text_->setCaption ( multi_cast<std::string> ( dist ) );
+            textLength = multi_cast<std::string> ( dist ).size() * it->second.text_->getCharHeight() * 0.3f;
+            }
+
+            //display name next to cursor
+            else{
+            it->second.text_->setCaption(it->first->getRVName()); 
+            textLength = it->first->getRVName().size() * it->second.text_->getCharHeight() * 0.3f;
+            }
 
             // Transform to screen coordinates
             Vector3 pos = camTransform * it->first->getRVWorldPosition();
@@ -205,6 +226,12 @@ void HUDNavigation::tick ( float dt )
                     it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "arrows.png", it->first->getRadarObjectColour()) );
                     it->second.wasOutOfView_ = true;
                 }
+
+                //float xDistScale = this->getActualSize().x * 1000.0f * navMarkerSize_ / dist;
+                //float yDistScale = this->getActualSize().y * 1000.0f * navMarkerSize_ / dist;
+
+                // Adjust Arrowsize according to distance
+                it->second.panel_->setDimensions(getArrowSizeX(dist),getArrowSizeY(dist));
 
                 // Switch between top, bottom, left and right position of the arrow at the screen border
                 if ( pos.x < pos.y )
@@ -261,6 +288,7 @@ void HUDNavigation::tick ( float dt )
                 {
                   //it->second.panel_->setMaterialName ( "Orxonox/NavTDC" );
                     it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "tdc.png", it->first->getRadarObjectColour()) );
+                    it->second.panel_->setDimensions ( navMarkerSize_ * this->getActualSize().x, navMarkerSize_ * this->getActualSize().y );
                     it->second.wasOutOfView_ = false;
                 }
 

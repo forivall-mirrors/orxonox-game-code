@@ -23,6 +23,7 @@
  *      Felix Schulthess
  *   Co-authors:
  *      Reto Grieder
+ *      Matthias Spalinger
  *
  */
 
@@ -96,10 +97,13 @@ private:
     typedef std::list < std::pair<RadarViewable*, unsigned int > > sortedList;
     sortedList sortedObjectList_;
 
+    float getArrowSizeX(int dist);    
+    float getArrowSizeY(int dist);
 
     float navMarkerSize_;
     std::string fontName_;
     float textSize_;
+    bool showDistance;
 
     unsigned int markerLimit_;; //TODO: is it possible to set this over the console and/or the IG-Setting
 
