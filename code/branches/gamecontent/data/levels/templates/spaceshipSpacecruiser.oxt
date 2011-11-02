@@ -66,7 +66,7 @@
 
     </collisionShapes>
 <?lua
-  include("includes/weaponSettingsSpacecruiser.oxi")
+  include("../includes/weaponSettingsSpacecruiser.oxi")
 ?>
   </SpaceShip>
 </Template>

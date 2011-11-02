@@ -95,7 +95,16 @@ include("templates/pickupRepresentationTemplates.oxt")
             </events>
         </QuestEffectBeacon>
 
-        <!-- //TODO: end weaponsystemI -->
+<!--helper trigger to end the weaponsystemI quest -->
+    <DistanceTrigger name="boxend" position="0,0,0" distance=950 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="boxtrigger4" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -103,12 +112,21 @@ include("templates/pickupRepresentationTemplates.oxt")
             </effects>
             <events>
                 <execute>
-                    <EventListener event="boxtrigger4" />
+                    <EventListener event="boxend" />
                 </execute>
             </events>
         </QuestEffectBeacon>
 
-
+<!--helper trigger to end the weaponsystemII quest -->
+    <DistanceTrigger name="piratesend" position="0,0,0" distance=2000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="movingpirates2" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -116,10 +134,22 @@ include("templates/pickupRepresentationTemplates.oxt")
             </effects>
             <events>
                 <execute>
-                    <EventListener event=movingpirates2 />
+                    <EventListener event=piratesend />
                 </execute>
             </events>
         </QuestEffectBeacon>
+
+<!--helper trigger to end the DuBallStation quest -->
+    <DistanceTrigger name="duballend" position="-1000,-300,700" distance=2000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="duball3" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -127,10 +157,21 @@ include("templates/pickupRepresentationTemplates.oxt")
             </effects>
             <events>
                 <execute>
-                    <EventListener event=duball3 />
+                    <EventListener event=duballend />
                 </execute>
             </events>
         </QuestEffectBeacon>
+
+<!--helper trigger to end the getHelp quest -->
+    <DistanceTrigger name="getHelpEnd" position="-48900,0,0" distance=2000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="ondock" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -138,10 +179,21 @@ include("templates/pickupRepresentationTemplates.oxt")
             </effects>
             <events>
                 <execute>
-                    <EventListener event=ondock />
+                    <EventListener event=getHelpEnd />
                 </execute>
             </events>
         </QuestEffectBeacon>
+
+<!--helper trigger to end the getHome quest -->
+    <DistanceTrigger name="getHomeEnd" position="0,0,0" distance=4000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="attack" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -149,10 +201,21 @@ include("templates/pickupRepresentationTemplates.oxt")
             </effects>
             <events>
                 <execute>
-                    <EventListener event=attack />
+                    <EventListener event=getHomeEnd />
                 </execute>
             </events>
         </QuestEffectBeacon>
+
+<!--helper trigger to end the defence quest -->
+    <DistanceTrigger name="defenceEnd" position="0,0,0" distance=4000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="attacktrigger6" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -160,7 +223,7 @@ include("templates/pickupRepresentationTemplates.oxt")
             </effects>
             <events>
                 <execute>
-                    <EventListener event=attacktrigger6 />
+                    <EventListener event=defenceEnd />
                 </execute>
             </events>
         </QuestEffectBeacon>
