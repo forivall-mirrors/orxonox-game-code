@@ -47,7 +47,7 @@ function P.createLevelList()
             if imageName ~= "" then
                 CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, imageName)
             else
-                CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, "noScreenshot.png")
+                CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, "noscreenshot.png")
             end
             table.insert(P.levelList, level)
         end
