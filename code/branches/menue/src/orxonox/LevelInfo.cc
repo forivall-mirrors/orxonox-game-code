@@ -188,6 +188,7 @@ namespace orxonox
         SUPER(LevelInfo, XMLPort, xmlelement, mode);
 
         XMLPortParam(LevelInfo, "description", setDescription, getDescription, xmlelement, mode);
+        XMLPortParam(LevelInfo, "screenshot", setScreenshot, getScreenshot, xmlelement, mode);
         XMLPortParam(LevelInfo, "tags", setTags, getTags, xmlelement, mode);
     }
 
@@ -202,6 +203,7 @@ namespace orxonox
     {
         LevelInfoItem* info = new LevelInfoItem(this->BaseObject::getName(), this->getXMLFilename());
         info->setDescription(this->getDescription());
+        info->setScreenshot(this->getScreenshot());
         info->setTags(this->getTags());
         return info;
     }
