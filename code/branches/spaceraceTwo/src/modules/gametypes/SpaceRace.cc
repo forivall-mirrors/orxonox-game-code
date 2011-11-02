@@ -134,13 +134,7 @@ namespace orxonox
     
     }
 
-	void SpaceRace::tick(float dt)
-	{SUPER(SpaceRace,tick,dt);
 	
-	
-		//if(const_cast<GametypeInfo*>(this->getGametypeInfo())->isStartCountdownRunning()){
-		//const_cast<GametypeInfo*>(this->getGametypeInfo())->start();}
-	}
 	
 
     void SpaceRace::newCheckpointReached()

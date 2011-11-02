@@ -54,15 +54,18 @@ namespace orxonox
 
         public:
             SpaceRaceManager(BaseObject* creator);
-            virtual ~SpaceRaceManager() {}
+            virtual ~SpaceRaceManager() ;
 
            void XMLPort(Element& xmlelement, XMLPort::Mode mode); 
 
-            
+            void addCheckpoint(RaceCheckPoint* checkpoint);
+            RaceCheckPoint* getCheckpoint(unsigned int index) const;
+
 	void tick(float dt);
         protected:
 		
         private:
+	std::vector<RaceCheckPoint*> checkpoints_;
  };
 }
 

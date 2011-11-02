@@ -54,6 +54,12 @@ namespace orxonox
 
     RaceCheckPoint::~RaceCheckPoint()
     {
+    	 //if (this->isInitialized())
+        {
+            //for (size_t i = 0; i < this->nextcheckpoints_.size(); ++i)
+              //  this->nextcheckpoints_[i]->destroy();
+        }
+        nextcheckpoints_.clear();
     }
 
     void RaceCheckPoint::tick(float dt)
@@ -75,6 +81,7 @@ namespace orxonox
         XMLPortParam(RaceCheckPoint, "checkpointindex", setCheckpointIndex, getCheckpointIndex, xmlelement, mode).defaultValues(0);
         XMLPortParam(RaceCheckPoint, "islast", setLast, getLast, xmlelement, mode).defaultValues(false);
         XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
+    //XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,std::vector<int>);
     }
 
     void RaceCheckPoint::triggered(bool bIsTriggered)

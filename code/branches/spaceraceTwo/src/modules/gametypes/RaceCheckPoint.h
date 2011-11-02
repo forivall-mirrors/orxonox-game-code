@@ -56,10 +56,16 @@ namespace orxonox
                 { this->bIsLast_ = isLast; }
             inline bool getLast()
                 { return this->bIsLast_; }
-            inline void setCheckpointIndex(int checkpointIndex)
+            
+	inline void setCheckpointIndex(int checkpointIndex)
                 { this->bCheckpointIndex_ = checkpointIndex; }
             inline int getCheckpointIndex()
                 { return this->bCheckpointIndex_; }
+
+	inline void setNextcheckpoint(std::vector<int> checkpoints)
+                { this->nextcheckpoints_ = checkpoints; }
+            inline std::vector<int> getNextcheckpoint()
+                { return this->nextcheckpoints_; }
             virtual void setTimelimit(float timeLimit);
             inline float getTimeLimit()
                 { return this->bTimeLimit_;}
@@ -70,6 +76,8 @@ namespace orxonox
             int bCheckpointIndex_; //The index of this check point. This value will be compared with the number of check points reached in the level. The check points must be indexed in ascending order beginning from zero and without any jumps between the indexes.
             bool bIsLast_; //True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
             float bTimeLimit_; //The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
+
+	std::vector<int> nextcheckpoints_; //the indexes of the next check points
       
     };
 }

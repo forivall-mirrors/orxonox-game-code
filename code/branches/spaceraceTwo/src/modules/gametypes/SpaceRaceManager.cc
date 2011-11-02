@@ -43,11 +43,31 @@ namespace orxonox
     SpaceRaceManager::SpaceRaceManager(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(SpaceRaceManager);
-        
-        
+                
     }
 
-   
+   SpaceRaceManager::~SpaceRaceManager()
+    {
+        if (this->isInitialized())
+        {
+            for (size_t i = 0; i < this->checkpoints_.size(); ++i)
+                this->checkpoints_[i]->destroy();
+        }
+    }
+    
+     void SpaceRaceManager::addCheckpoint(RaceCheckPoint* checkpoint)
+    {
+        this->checkpoints_.push_back(checkpoint);
+    }
+
+    RaceCheckPoint* SpaceRaceManager::getCheckpoint(unsigned int index) const
+    {
+        if (index < this->checkpoints_.size())
+            return this->checkpoints_[index];
+        else
+            return 0;
+    }
+    
      void SpaceRaceManager::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(SpaceRaceManager, XMLPort, xmlelement, mode);
