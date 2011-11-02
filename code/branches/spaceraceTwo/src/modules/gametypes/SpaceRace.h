@@ -33,7 +33,7 @@
 
 #include <set>
 #include <string>
-#include <vector>
+# include <vector>
 
 #include <util/Clock.h>
 
@@ -68,9 +68,10 @@ namespace orxonox
                 { this->bTimeIsUp_ = true;}
 	void tick(float dt);
         protected:
-
+		
         private:
-	std::vector<float> maxSpeedBack_; std::vector<float> maxSpeedFront_; std::vector<float> maxSpeedLeftRight_; std::vector<float> maxSpeedUpDown_;
+	float maxSpeedBack_; float maxSpeedFront_; float maxSpeedLeftRight_; float maxSpeedUpDown_; 
+	bool cantMove_;
             int checkpointsReached_; //The current number of check points reached by the player.
             std::set<float> scores_; //The times of the players are saved in a set.
             bool bTimeIsUp_; //True if one of the check points is reached too late.

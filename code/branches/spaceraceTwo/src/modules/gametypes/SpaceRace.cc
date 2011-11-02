@@ -28,6 +28,8 @@
 
 #include "SpaceRace.h"
 
+#include "items/Engine.h"
+
 #include "core/CoreIncludes.h"
 #include "chat/ChatManager.h"
 #include "util/Convert.h"
@@ -45,7 +47,7 @@ namespace orxonox
         this->checkpointsReached_ = 0;
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
-        
+        this->cantMove_=false;
     }
     
   // void SpaceRace::SetConfigValues(){
@@ -87,46 +89,49 @@ namespace orxonox
     }
 
     void SpaceRace::start()
-    {	int i=0;
-        for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
-        {this->maxSpeedBack_[i]=it->getMaxSpeedBack();
-        this->maxSpeedFront_[i]=it->getMaxSpeedFront();
-        this->maxSpeedLeftRight_[i]=it->getMaxSpeedLeftRight();
-        this->maxSpeedUpDown_[i]=(it->getMaxSpeedUpDown());
-        
-        it->setMaxSpeedBack(0);
-        it->setMaxSpeedFront(0);
-        it->setMaxSpeedLeftRight(0);
-        it->setMaxSpeedUpDown(0);
-        
-        i++;
-        }
-        //Gametype::start();
-        this->addBots(this->numberOfBots_);
-   this->spawnPlayersIfRequested();
-   
-   	
-       Gametype::checkStart();
-	
-	i=0;
-     for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
-        {
-        it->setMaxSpeedBack(this->maxSpeedBack_[i]);
-         it->setMaxSpeedFront(this->maxSpeedFront_[i]);
-         it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_[i]);
-         it->setMaxSpeedUpDown(this->maxSpeedUpDown_[i]);
-         i++;
-         
-      
-        }
-		delete &this->maxSpeedBack_;
-		delete &this->maxSpeedFront_;
-		delete &this->maxSpeedLeftRight_;
-		delete &this->maxSpeedUpDown_;
-        std::string message("The match has started! Reach the check points as quickly as possible!");
+    {
+  	  		   this->spawnPlayersIfRequested(); Gametype::checkStart(); 
+  	  		   this->cantMove_=true; 
+    	 
+    	         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
+	  		        {if(it->getMaxSpeedFront()>0){this->maxSpeedBack_=it->getMaxSpeedBack(); 
+  	  		        this->maxSpeedFront_=it->getMaxSpeedFront(); 
+  	  		        this->maxSpeedLeftRight_=it->getMaxSpeedLeftRight(); 
+  	  		        this->maxSpeedUpDown_=(it->getMaxSpeedUpDown()); 
+  	  		         }
+  	  		        it->setMaxSpeedBack(0); 
+  	  		        it->setMaxSpeedFront(0); 
+  	  	        it->setMaxSpeedLeftRight(0); 
+  	  		        it->setMaxSpeedUpDown(0); 
+  	  		         
+  	  		        
+  	  		        } 
+  	  		       
+  	  		       this->addBots(this->numberOfBots_); 
+       
+    }
+    
+    void SpaceRace::tick(float dt){
+    SUPER(SpaceRace,tick,dt);
+    
+    if(!this->isStartCountdownRunning() && this->cantMove_){
+    
+    	for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
+  	  		        { 
+  	  		        it->setMaxSpeedBack(this->maxSpeedBack_); 
+  	  		         it->setMaxSpeedFront(this->maxSpeedFront_); 
+  	  		         it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_); 
+  	  		         it->setMaxSpeedUpDown(this->maxSpeedUpDown_); 
+  	  	}
+  	  	this->cantMove_= false;
+  	  	
+  	  	std::string message("The match has started! Reach the check points as quickly as possible!");
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        ChatManager::message(message);
+        ChatManager::message(message);	        
       
+    }
+     
+    
     }
 
 	void SpaceRace::tick(float dt)
