@@ -1,10 +1,10 @@
 --[[ asteroid field generator
---[[ 
---[[ generates asteroid field
---[[ posX, posY, posZ - position in space
---[[ minSize, maxSize - size boundaries of each asteroid
---[[ radius - size of the cube around position in space
---[[ count - number of asteroids
+generates asteroid field
+	posX, posY, posZ - position in space
+	minSize, maxSize - size boundaries of each asteroid
+	radius - size of the cube around position in space
+	count - number of asteroids
+--]]
 function asteroidField(posX, posY, posZ, minSize, maxSize, radius, count)
 	for i = 1, count, 1
 	do

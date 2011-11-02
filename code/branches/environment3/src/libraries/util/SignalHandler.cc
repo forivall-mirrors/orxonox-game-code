@@ -69,7 +69,7 @@ namespace orxonox
       assert( sigRecList.size() == 0 );
 
       catchSignal( SIGSEGV );
-      catchSignal( SIGABRT );
+//      catchSignal( SIGABRT );
       catchSignal( SIGILL );
     }
 
@@ -126,7 +126,7 @@ namespace orxonox
       // if the signalhandler has already been destroyed then don't do anything
       if( SignalHandler::singletonPtr_s == 0 )
       {
-        orxout(user_error) << "Received signal " << sigName.c_str() << endl << "Can't write backtrace because SignalHandler is already destroyed" << endl;
+        orxout(user_error) << "Received signal(sigHandler already destroyed) " << sigName.c_str() << endl << "Can't write backtrace because SignalHandler is already destroyed" << endl;
         exit(EXIT_FAILURE);
       }
 
@@ -136,7 +136,7 @@ namespace orxonox
       }
 
 
-      orxout(user_error) << "Received signal " << sigName.c_str() << endl << "Try to write backtrace to file orxonox_crash.log" << endl;
+      orxout(user_error) << "Received signal(second error) " << sigName.c_str() << endl << "Try to write backtrace to file orxonox_crash.log" << endl;
 
       
       // First start GDB which will be attached to this process later on

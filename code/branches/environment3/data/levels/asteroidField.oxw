@@ -36,7 +36,7 @@
     <!-- Generate asteroid field with diameter 12000 containing 250 asteroids -->    
     <?lua
     	dofile("includes/asteroidField.lua")
-    	asteroidField(0, 0, 0, 150, 50,12000, 250)
+    	asteroidField(0, 0, 0, 150, 50, 12000, 250)
     ?>
     
   </Scene>
