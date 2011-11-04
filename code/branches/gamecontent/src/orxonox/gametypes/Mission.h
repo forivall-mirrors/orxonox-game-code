@@ -48,7 +48,7 @@ namespace orxonox
             virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
             inline void setLives(unsigned int amount)
                 {this->lives_ = amount;}
-	    inline unsigned int getLives()
+            inline unsigned int getLives()
                 {return this->lives_;}
 
         protected:

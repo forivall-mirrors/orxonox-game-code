@@ -43,6 +43,7 @@ namespace orxonox
         RegisterObject(TeamGametype);
 
         this->teams_ = 2;
+        this->allowFriendlyFire_ = false;
 
         this->setConfigValues();
     }
@@ -103,18 +104,18 @@ namespace orxonox
     }
 
     bool TeamGametype::allowPawnHit(Pawn* victim, Pawn* originator)
-    {
-        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
+    {// hit allowed: if victim & originator are foes or if originator doesnot exist or if friendlyfire is allowed 
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator || this->allowFriendlyFire_);
     }
 
     bool TeamGametype::allowPawnDamage(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator || this->allowFriendlyFire_);
     }
 
     bool TeamGametype::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
-        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator);
+        return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator || this->allowFriendlyFire_);
     }
 
     SpawnPoint* TeamGametype::getBestSpawnPoint(PlayerInfo* player) const

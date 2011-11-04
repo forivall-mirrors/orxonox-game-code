@@ -43,15 +43,16 @@ namespace orxonox
             AIController(BaseObject* creator);
             virtual ~AIController();
 
-            virtual void tick(float dt);
+            virtual void tick(float dt); //<! Carrying out the targets set in action().
 
         protected:
-            virtual void action();
+            virtual void action(); //<! action() is called in regular intervals managing the bot's behaviour ~ setting targets.
+            void defaultBehaviour(float maxrand); //<! Helper function for code reusage. Some concrete commands for a bot.
 
         private:
             static const float ACTION_INTERVAL;
 
-            Timer actionTimer_;
+            Timer actionTimer_; //<! Regularly calls action(). 
     };
 }
 

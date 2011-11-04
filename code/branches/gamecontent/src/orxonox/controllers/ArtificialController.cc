@@ -91,7 +91,7 @@ namespace orxonox
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
         this->bSetupWorked = false;
-        this->botlevel_ = 0.2f;
+        this->botlevel_ = 0.5f;
         this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
         this->timeout_ = 0;
         this->currentWaypoint_ = 0;

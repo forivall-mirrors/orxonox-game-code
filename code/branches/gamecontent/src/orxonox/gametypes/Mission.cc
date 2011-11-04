@@ -27,7 +27,8 @@
  */
 
 #include "Mission.h"
-//#inclued "TeamGametype.h"
+//#include "TeamGametype.h"
+#include "items/Engine.h"
 
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
@@ -69,7 +70,8 @@ namespace orxonox
     {
         Gametype::start();
 
-
+        /*for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it != ObjectList<Engine>::end(); ++it)
+            it->setActive(false); // works -> @sr :*/
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
     }
 

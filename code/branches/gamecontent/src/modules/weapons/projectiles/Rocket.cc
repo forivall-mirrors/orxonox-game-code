@@ -65,7 +65,6 @@ namespace orxonox
 
         this->localAngularVelocity_ = 0;
         this->lifetime_ = 100.0f;
-        this->bIsRocket_= true;
 
         if (GameMode::isMaster())
         {
@@ -134,7 +133,6 @@ namespace orxonox
     {
         if(this->isInitialized())
         {
-            this->bIsRocket_= false;
             if (GameMode::isMaster())
             {
                 this->destructionEffect();

@@ -73,7 +73,6 @@ namespace orxonox
         this->currentCameraPosition_ = 0;
         this->bMouseLook_ = false;
         this->mouseLookSpeed_ = 200;
-        this->bIsRocket_ = false;
 
         this->server_position_         = Vector3::ZERO;
         this->client_position_         = Vector3::ZERO;

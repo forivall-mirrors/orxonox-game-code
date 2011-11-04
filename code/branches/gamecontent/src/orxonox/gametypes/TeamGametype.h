@@ -64,6 +64,7 @@ namespace orxonox
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
             bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);
 
+            bool allowFriendlyFire_; //<! friendlyfire is per default switched off: friendlyFire_ = false;
             std::map<PlayerInfo*, int> teamnumbers_;
             std::vector<ColourValue> teamcolours_;
             unsigned int teams_;

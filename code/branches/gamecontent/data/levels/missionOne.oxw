@@ -163,7 +163,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </QuestEffectBeacon>
 
 <!--helper trigger to end the getHelp quest -->
-    <DistanceTrigger name="getHelpEnd" position="-48900,0,0" distance=2000 target="SpaceShip" stayActive="false" delay=0.1>
+    <DistanceTrigger name="getHelpEnd" position="-47000,-1000,1300" distance=1400 target="SpaceShip" stayActive="false" delay=0.1>
               <EventTrigger>
                 <events>
                   <trigger>
@@ -231,14 +231,14 @@ include("templates/pickupRepresentationTemplates.oxt")
 
     <LocalQuest id="missionOne.basicFlying">
         <QuestDescription title="Flying" description="Can you see the blinking light straight ahead? Your goal is to fly through it.
-Use 'W' to accelerate and steer with your mouse.
+Use (W) to accelerate and steer with your mouse.
 
 Further flying moves:
-S          : break
-Q and E : roll
-Space    : boost
+break (S)
+roll     (Q) and (E)
+boost (Space)
 
-P.S: Whenever a new quest is added you can view it by pressing F3. Quit via Esc." failmessage="" completeMessage="" />
+Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.navigation" />
         </complete-effects>
@@ -254,7 +254,13 @@ Alternative navigation: There's a the green circle in the left corner - the rada
     </LocalQuest>
 
             <LocalQuest id ="missionOne.weaponsystemI">
-                <QuestDescription title="Destroy the Boxes" description="Test your four different weapons on the four boxes. The four weapons are laser (left click), plasma (right click), self targeting rockets (middle click) and manual rockets (press 'T'). Attention if you use manual rockets: Press 'T' only once to start the rocket. If you miss your target you can get out of the rocket, by clicking or pressing 'T' once more." failmessage="" completeMessage="" />
+                <QuestDescription title="Destroy the Boxes" description="Test your four different weapons on the four boxes:
+1. laser (left click)
+2. plasma (right click)
+3. target seeking rockets (middle click)
+4. manual rockets (T)
+
+Attention if you use manual rockets: Press (T) only once to start the rocket. If you miss your target you can get out of the rocket, by clicking or pressing (T) once more." failmessage="" completeMessage="" />
                     <hints>
                         <QuestHint id="missionOne.weaponsystem.laser">
                             <QuestDescription title="Laser" description="The laser is a standard weapon. It is fast and precise but does not deal much damage." />
@@ -275,7 +281,8 @@ Alternative navigation: There's a the green circle in the left corner - the rada
             </LocalQuest>
 
             <LocalQuest id="missionOne.weaponsystemII">
-                <QuestDescription title="Kill the pirates" description="Get rid of the patrolling pirates." failmessage="" completeMessage="" />
+                <QuestDescription title="Kill the pirates" description="Get rid of the patrolling pirates.
+Find out which weapon is best to tackle moving targets. Get close enough." failmessage="" completeMessage="" />
                 <complete-effects>
                     <AddQuest questId="missionOne.DuballStation" />
                 </complete-effects>
@@ -290,8 +297,11 @@ Alternative navigation: There's a the green circle in the left corner - the rada
 
     <LocalQuest id="missionOne.getHelp">
         <QuestDescription title="Get Help" description="There are several enemies approaching. You can't handle it on your own. Fortunately there's a shortcut to the next friendly unit. Use the portal (grey dot) to get near the Hydrogen Farmer.
-        There you might get help - as far as we know there should be a stronger spaceship docked to the Hydrogen Farmer. In order to be able to use that stronger spaceship, you have to dock to the Hydrogen Farmer.
-        Simply fly to the center of the Hydrogen Farmer, which is between its three legs." failmessage="" completeMessage="" />
+The Hydrogen Farmer is a large spaceship with three legs.
+There you might get help - as far as we know there should be a strong spaceruiser docked to the Hydrogen Farmer. In order to be able to use that stronger spaceship, you have to dock to the Hydrogen Farmer.
+Simply fly to the center of the Hydrogen Farmer, which is between its three legs.
+
+How to dock: Accept the dialogue, take your hands off the keyboard and watch." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.getHome" />
         </complete-effects>
@@ -299,26 +309,23 @@ Alternative navigation: There's a the green circle in the left corner - the rada
 
     <LocalQuest id="missionOne.getHome">
         <QuestDescription title="Return ASAP" description="So you managed to get the spacecruiser. Use the portal to return to the DuBall Space Station.
-        Hurry! Your help is desperately needed." failmessage="" completeMessage="" />
+Hurry! Your help is desperately needed." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.defence" />
         </complete-effects>
     </LocalQuest>
 
     <LocalQuest id="missionOne.defence">
-        <QuestDescription title="Defence" description="Seven enemies were detected that seem to launch a coordinated attack. Do not hesitate to attack or you will be the target.
-        Always take care of the enemy that is the closest to you." failmessage="" completeMessage="Yeah! You did it." />
+        <QuestDescription title="Defence" description="Seven enemies were detected that seem to launch a coordinated attack.
+Do not hesitate to fight or you will be the target.
+
+Always take care of the enemy that is the closest to you." failmessage="" completeMessage="Yeah! You did it." />
     </LocalQuest>
+<!-- --------------------- END OF QUESTS -------------------------- -->
 
-
-<!-- TUTORIAL-TODO: -->
-<!-- 1. Flying & manoeuvring (basic flying, using pickups, forcefields, docks & portals) --> <!-- "W","S","SPACE"-->
-<!-- 2. Aiming & Weapons (static targets, moving targets, dangerous targets)--> <!-- 3 Mouse buttons + "T"-->
-<!-- 3. Game handling (quests, knowing when a game is over :-), pausing, chat, ... ) --> <!--"F3", "F2", "ESC" -->
-<!-- 4. Extras (other things to discover) --> <!-- "Q","E","A","D","C", "CTRL", "", ... -->
 
     <DistanceTrigger name="spawndelaytrigger0" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=2/>
-    <SimpleNotification message="Press 'F3' to see your mission briefing.">
+    <SimpleNotification message="Press (F3) to see your mission briefing.">
         <events>
             <trigger>
                 <EventListener event="spawndelaytrigger0" />
@@ -326,6 +333,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </events>
     </SimpleNotification>
 
+<!-- Blinking Billboard should be replaced with WAYPOINT -->
 <BlinkingBillboard position="-900,640,600" frequency=0.4 amplitude=2 material="Flares/lensflare" colour="1,1,0">
           <events>
             <visibility>
@@ -365,7 +373,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
     </SimpleNotification>
 
     <DistanceTrigger name="flying2" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=10/>
-    <SimpleNotification message="Use 'W' to accelerate and the mouse to steer.">
+    <SimpleNotification message="Use (W) to accelerate and the mouse to steer.">
         <events>
             <trigger>
                 <EventListener event="flying2" />
@@ -528,8 +536,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </events>
     </SimpleNotification>
 
-
-  <SimpleNotification message="Aim at the last target and press 'T'." broadcast="true">
+  <SimpleNotification message="Aim at the last target and press (T)." broadcast="true">
         <events>
             <trigger>
                 <EventListener event="boxtrigger3" />
@@ -893,7 +900,6 @@ Alternative navigation: There's a the green circle in the left corner - the rada
       </collisionShapes>
     </SpaceShip>
 
-    <Billboard position="-48900,0,0" material="Examples/Flare" colour="0.6,0,0" scale=3/>
     <Dock position="-48900,0,0" roll=90 yaw=180 >
         <animations>
             <MoveToDockingTarget target="destroyer" />
@@ -913,15 +919,13 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </attached>
     </Dock>
 
+<!--@Objects: SpaceCruiser as docking target -->
     <SpaceShip template="spaceshipspacecruiser" position="-48900,800,0" orientation="-0.14, 0.68, 0.68, 0.223" health="300" maxhealth="400" initialhealth="300" name="cruiser" >
       <attached>
         <DockingTarget name="spaceShip" />
       </attached>
     </SpaceShip>
 
-<!-- TESTBOX-->
-
-<!-- TESTBOX-->
 
           <Trigger name="cruiserKilled" mode="and" stayActive="true">
             <EventTrigger  stayActive="true">
@@ -985,14 +989,13 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Press 'Esc' and restart the mission." broadcast="true">
+    <SimpleNotification message="Press (Esc) and restart the mission." broadcast="true">
         <events>
             <trigger>
                 <EventListener event="earlyEnd" />
             </trigger>
         </events>
     </SimpleNotification>
-
 
 <!-- hydrogen farmer & docking END -->
 
@@ -1065,7 +1068,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </EventTrigger>
     </DistanceTrigger>
 
-    <SimpleNotification message="Return before it's too late. Boost with 'Space'." broadcast="true">
+    <SimpleNotification message="Return before it's too late. Boost with (Space)." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=ondock />
@@ -1337,7 +1340,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
       </events>
     </EventTrigger>
 
-    <SimpleNotification message="Either quit by pressing 'Esc' or ..." broadcast="true">
+    <SimpleNotification message="Either quit by pressing (Esc) or ..." broadcast="true">
       <events>
         <trigger>
           <EventListener event="postAttack1" />
@@ -1407,7 +1410,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
 
 
 
-    <SimpleNotification message="Rotate your ship. Press 'Q' or 'E'. "  broadcast="true">
+    <SimpleNotification message="Rotate your ship. Press (Q) or (E). "  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus1 />
@@ -1415,7 +1418,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Switch the camera's position. Press 'C'. "  broadcast="true">
+    <SimpleNotification message="Switch the camera's position. Press (C). "  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus2 />
@@ -1423,7 +1426,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="360° view: press 'Ctrl' + use the mouse "  broadcast="true">
+    <SimpleNotification message="360° view: press (Ctrl) + use the mouse "  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus3 />
@@ -1455,7 +1458,7 @@ Alternative navigation: There's a the green circle in the left corner - the rada
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Press 'Esc' and return to the main menu."  broadcast="true">
+    <SimpleNotification message="Press (Esc) and return to the main menu."  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=bonus7 />
@@ -1483,9 +1486,9 @@ Alternative navigation: There's a the green circle in the left corner - the rada
   </Scene>
 </Level>
 <!-- TODO:
-! Quest Interface
+- Story & more precise Questmessages; more quest hints;
+- Colouring: Show who is friend or foe via the colour
+- Waypoints: show the player the way
 - Foolproof text messages (e.g. verspätete Nachrichten unterdrücken)
-- Radar visibility & Hud Markers (done)
 - End Tutorial, if either the Hydrogen Farmer or the SpaceCruiser gets destroyed. (~done)
-
  -->
