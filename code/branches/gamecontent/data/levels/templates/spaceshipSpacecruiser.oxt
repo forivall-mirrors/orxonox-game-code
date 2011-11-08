@@ -44,7 +44,7 @@
       <MultiStateEngine position="-7.6, 20, 0" template=spaceshipcruiserengine />
     </engines>
     <attached>
-      <Model position="12,-30,-120" yaw=90 pitch=-90 roll=0 scale=6 mesh="spacecruiser.mesh" />
+      <Model position="12,-5,-10" yaw=90 pitch=-90 roll=0 scale=6 mesh="spacecruiser.mesh" />
       <!--Model mesh="cube.mesh" mass=10 position="0,-30,-108" scale3D="38,6,62" />
       <Model mesh="cube.mesh" mass=10 position="0,-20,-108" scale3D="20,6,40" />
       <Model mesh="cube.mesh" mass=10 position="-16,-35,-112" scale3D="15,5,57" roll=-14 pitch=3.5/>
@@ -56,13 +56,13 @@
 
     </attached>
     <collisionShapes>
-      <BoxCollisionShape position="0,-30,-108"     halfExtents="38,6,62" />
-      <BoxCollisionShape position="0,-20,-108"     halfExtents="20,6,40" />
-      <BoxCollisionShape position="-16,-35,-112"   halfExtents="15,5,57" roll=-14 pitch=3.5/>
-      <BoxCollisionShape position="16,-35,-112"    halfExtents="15,5,57" roll=14 pitch=3.5/>
-      <BoxCollisionShape position="19,-21.5,-108"  halfExtents="18,5,52" roll=-21 />
-      <BoxCollisionShape position="-19,-21.5,-108" halfExtents="18,5,52" roll=21 />
-      <BoxCollisionShape position="0,-21,-169"     halfExtents="18,1,16" pitch=-30 />
+      <BoxCollisionShape position="0,-5,2"     halfExtents="38,6,62" />
+      <BoxCollisionShape position="0,5,2"      halfExtents="20,6,40" />
+      <BoxCollisionShape position="-16,-10,-2" halfExtents="15,5,57" roll=-14 pitch=3.5/>
+      <BoxCollisionShape position="16,-10,-2"  halfExtents="15,5,57" roll=14  pitch=3.5/>
+      <BoxCollisionShape position="19,3.5,2"   halfExtents="18,5,52" roll=-21 />
+      <BoxCollisionShape position="-19,4.5,2"  halfExtents="18,5,52" roll=21  />
+      <BoxCollisionShape position="0,4,-59"    halfExtents="18,1,16" pitch=-30/>
 
     </collisionShapes>
 <?lua
@@ -74,9 +74,9 @@
 <Template name=spaceshipcruisercameras defaults=0>
   <SpaceShip>
     <camerapositions>
-      <CameraPosition position="0,15,  60" drag=true mouselook=true />
-      <CameraPosition position="0,30, 120" drag=true mouselook=true />
-      <CameraPosition position="0,40, 350" drag=true mouselook=true />
+      <CameraPosition position="0,40, 170" drag=true mouselook=true />
+      <CameraPosition position="0,55, 230" drag=true mouselook=true />
+      <CameraPosition position="0,65, 460" drag=true mouselook=true />
     </camerapositions>
   </SpaceShip>
 </Template>
@@ -103,25 +103,25 @@
       <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
     </EffectContainer>
     <EffectContainer condition="not idle">
-      <FadingBillboard mainstate=activity active=false scale=0.1 position="20, -25, -40" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
-      <FadingBillboard mainstate=activity active=false scale=0.1 position="-20, -25, -40" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.1 position="20,  0, 70" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.1 position="-20, 0, 70" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
     </EffectContainer>
     <EffectContainer condition="normal or brake">
 
     </EffectContainer>
     <EffectContainer condition="normal or boost">
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 20, -25, -40" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1300 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-20, -25, -40" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1300 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 20, 0, 70" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1300 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-20, 0, 70" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1300 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
     </EffectContainer>
     <EffectContainer condition="boost">
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 20, -25, -40" colour="0.6, 0.75, 0.8, 0.7" width=40 length=800 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-20, -25, -40" colour="0.6, 0.75, 0.8, 0.7" width=40 length=800 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 20, 0, 70" colour="0.6, 0.75, 0.8, 0.7" width=40 length=800 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-20, 0, 70" colour="0.6, 0.75, 0.8, 0.7" width=40 length=800 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
     </EffectContainer>
 <!--    <EffectContainer condition="brake">
-      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 20, -25, -40" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
-      <FadingBillboard mainstate=activity active=false scale=0.3 position="-20, -25, -40" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
-      <FadingBillboard mainstate=activity active=false scale=0.15 position="20, -25, -40" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
-      <FadingBillboard mainstate=activity active=false scale=0.15 position="-20, -25, -40" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 20,  0, 70" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-20,  0, 70" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="20,  0, 70" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="-20, 0, 70" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
     </EffectContainer>
 -->
   </MultiStateEngine>
