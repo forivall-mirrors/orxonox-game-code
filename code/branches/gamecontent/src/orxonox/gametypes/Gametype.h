@@ -154,6 +154,8 @@ namespace orxonox
 
             virtual void resetTimer();
             virtual void resetTimer(float t);
+            inline unsigned int getNumberOfPlayers()
+              { return this->gtinfo_->getNumberOfPlayers(); }
 
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
@@ -191,6 +193,7 @@ namespace orxonox
             ConsoleCommand* dedicatedAddBots_;
             ConsoleCommand* dedicatedKillBots_;
             /* HACK HACK HACK */
+
     };
 }
 

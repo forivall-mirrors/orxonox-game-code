@@ -30,6 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "infos/PlayerInfo.h"
 #include "interfaces/TeamColourable.h"
 #include "worldentities/TeamSpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
@@ -44,7 +45,8 @@ namespace orxonox
 
         this->teams_ = 2;
         this->allowFriendlyFire_ = false;
-
+        //this->playersPerTeam_ = 0;
+        this->maxPlayers_ = 0;
         this->setConfigValues();
     }
 
@@ -102,6 +104,20 @@ namespace orxonox
 
         return valid_player;
     }
+
+    void TeamGametype::spawnDeadPlayersIfRequested()
+    {
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end();
+++it)
+        if (it->second.state_ == PlayerState::Dead)
+        {
+         if ((it->first->isReadyToSpawn() || this->bForceSpawn_))
+            {
+               this->spawnPlayer(it->first);
+            }
+        }
+    }
+
 
     bool TeamGametype::allowPawnHit(Pawn* victim, Pawn* originator)
     {// hit allowed: if victim & originator are foes or if originator doesnot exist or if friendlyfire is allowed 

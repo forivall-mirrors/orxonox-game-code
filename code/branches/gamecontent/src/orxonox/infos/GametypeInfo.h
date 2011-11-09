@@ -118,6 +118,9 @@ namespace orxonox
 
             inline const std::string& getHUDTemplate() const
                 { return this->hudtemplate_; }
+            
+            inline unsigned int getNumberOfPlayers() const
+                {  return this->spawnedPlayers_.size(); }
 
             void sendAnnounceMessage(const std::string& message);
             void sendAnnounceMessage(const std::string& message, unsigned int clientID);

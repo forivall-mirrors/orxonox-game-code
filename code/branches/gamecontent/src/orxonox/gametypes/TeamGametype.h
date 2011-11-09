@@ -48,12 +48,14 @@ namespace orxonox
             virtual void playerEntered(PlayerInfo* player);
             virtual void findAndSetTeam(PlayerInfo* player);
             virtual bool playerLeft(PlayerInfo* player);
+            virtual void spawnDeadPlayersIfRequested(); //!< Prevents players to respawn.
 
             virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
 
             virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);
+
 
             int getTeam(PlayerInfo* player);
 
@@ -67,7 +69,9 @@ namespace orxonox
             bool allowFriendlyFire_; //<! friendlyfire is per default switched off: friendlyFire_ = false;
             std::map<PlayerInfo*, int> teamnumbers_;
             std::vector<ColourValue> teamcolours_;
-            unsigned int teams_;
+            unsigned int teams_; //<! Number  of teams. Value 0 : no teams!
+            //unsigned int playersPerTeam_; //<! Defines Maximum for players per team. Value 0: no maximum!
+            unsigned int maxPlayers_;  //<! Defines Maximum for number of players. Value 0 : no maximum!
     };
 }
 
