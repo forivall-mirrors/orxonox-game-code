@@ -63,6 +63,7 @@ bool compareDistance ( std::pair<RadarViewable*, unsigned int > a, std::pair<Rad
 void HUDNavigation::setConfigValues()
 {
   SetConfigValue(markerLimit_, 3);
+  SetConfigValue(showDistance, false);
 }
 
 CreateFactory ( HUDNavigation );
@@ -77,7 +78,6 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     setFont ( "Monofur" );
     setTextSize ( 0.05f );
     setNavMarkerSize ( 0.05f );
-    this->showDistance = false;
 }
 
 HUDNavigation::~HUDNavigation()
