@@ -10,13 +10,15 @@ function P.onLoad()
     P.createLevelList()
     
     -- create tabs with desired tab as argument (nil for all)
-    P.createFilterTab("Tests", "test")
+    P.createFilterTab("Missions", "mission")
     P.createFilterTab("Tutorials", "tutorial")
     P.createFilterTab("Showcases", "showcase")
-    P.createFilterTab("SP?", "singleplayer")
     P.createFilterTab("Presentations", "presentation")
+    P.createFilterTab("Tests", "test")
     P.createFilterTab("Show All", nil)
-
+    
+    SingleplayerSelectionChanged()
+    
     --buttons are arranged in a 1x3 matrix
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
@@ -61,13 +63,11 @@ function P.createFilterTab(name, tag)
     if tag ~= nil then
         tabName = tabName..tag
     end
-    -- add new tab window with desired name
-    local tabControl = winMgr:getWindow("orxonox/SingleplayerTabControl")
+    -- create new tab window with desired name
     local listbox = CEGUI.toListbox(winMgr:createWindow("MenuWidgets/Listbox", tabName))
     listbox:setText(name)
     listbox:setProperty("UnifiedMaxSize", "{{1,0},{1,0}}")
-    listbox:setProperty("UnifiedAreaRect", "{{0.05,0},{0.1,0},{0.5,0},{0.7,0}}")
-    tabControl:addChildWindow(tabName)
+    listbox:setProperty("UnifiedAreaRect", "{{0.05,0},{0.1,0},{0.5,0},{0.675,0}}")
     -- fill listbox with items
     listbox:resetList()
     orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
@@ -88,8 +88,11 @@ function P.createFilterTab(name, tag)
     end
     table.insert(P.activeTabIndexes, tabIndexes)
     listbox:subscribeEvent("ItemSelectionChanged", "SingleplayerSelectionChanged")
+    local tabControl = winMgr:getWindow("orxonox/SingleplayerTabControl")
     tabControl:subscribeEvent("TabSelectionChanged", "SingleplayerSelectionChanged")
-    SingleplayerSelectionChanged()
+    if listbox:getItemCount() > 0 then
+        tabControl:addChildWindow(tabName)
+    end
 end
 
 function P.SingleplayerGetSelectedLevel()
@@ -107,17 +110,17 @@ function P.SingleplayerGetSelectedLevel()
 end
 
 function SingleplayerSelectionChanged(e)
+    local levelImage = winMgr:getWindow("orxonox/SingleplayerLevelImage")
+    local levelDescription = winMgr:getWindow("orxonox/SingleplayerLevelDescription")
     local level = P.SingleplayerGetSelectedLevel()
     if level ~= nil then
         local levelXMLFilename = level:getXMLFilename()
         local imageName = level:getScreenshot()
-        local levelImage = winMgr:getWindow("orxonox/SingleplayerLevelImage")
         levelImage:setProperty("Image", "set:"..levelXMLFilename..imageName.." image:full_image")
-        local levelDescription = winMgr:getWindow("orxonox/SingleplayerLevelDescription")
-        local height = getStaticTextWindowHeight(levelDescription)
---        local width = getStaticTextWindowWidth(levelDescription)
-        levelDescription:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -P.scrollbarWidth), CEGUI.UDim(0.0, height)))
         levelDescription:setText(level:getDescription())
+    else
+        levelImage:setProperty("Image", nil)
+        levelDescription:setText("")
     end
 end
 
@@ -130,7 +133,7 @@ function P.SingleplayerStartButton_clicked(e)
 end
 
 function P.SingleplayerConfigButton_clicked(e)
-    hideMenuSheet(P.name)
+    showMenuSheet("SingleplayerConfigMenu", true)
 end
 
 function P.SingleplayerBackButton_clicked(e)
@@ -138,4 +141,3 @@ function P.SingleplayerBackButton_clicked(e)
 end
 
 return P
-

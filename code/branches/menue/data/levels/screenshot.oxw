@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Screenshot"
  description = "Level to make awesome screenshots in."
- tags = "test"
+ tags = "test, showcase"
  screenshot = "screenshot.png"
 />
 

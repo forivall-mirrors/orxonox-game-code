@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Last Man Standing"
  description = "Be the sole survivor."
- tags = ""
+ tags = "mission"
  screenshot = "lastmanstanding.png"
 />
 

@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Transporter"
  description = "Level with a Transporter. Demonstrates the docking system."
- tags = ""
+ tags = "showcase"
  screenshot = "transporter.png"
 />
 

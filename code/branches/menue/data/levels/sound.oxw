@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Sound showcase"
  description = "Level to test and showcase sound."
- tags = "test"
+ tags = "test, showcase"
  screenshot = "soundshowcase.png"
 />
 

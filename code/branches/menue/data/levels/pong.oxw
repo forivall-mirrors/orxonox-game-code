@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Pong"
  description = "Pong in space!"
- tags = ""
+ tags = "showcase"
  screenshot = "pong.png"
 />
 

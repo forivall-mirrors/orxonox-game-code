@@ -2,7 +2,7 @@
 <LevelInfo
  name = "Portals"
  description = "Level for testing portals"
- tags = "tutorial"
+ tags = "test"
  screenshot = "portals.png"
 />
 

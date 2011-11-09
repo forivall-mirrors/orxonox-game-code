@@ -86,11 +86,10 @@ namespace orxonox
         if(!LevelInfoItem::initialized_s)
         {
             LevelInfoItem::possibleTags_s.insert("test");
-            LevelInfoItem::possibleTags_s.insert("singleplayer");
-            LevelInfoItem::possibleTags_s.insert("multiplayer");
             LevelInfoItem::possibleTags_s.insert("showcase");
             LevelInfoItem::possibleTags_s.insert("tutorial");
             LevelInfoItem::possibleTags_s.insert("presentation");
+            LevelInfoItem::possibleTags_s.insert("mission");
         }
     }
 

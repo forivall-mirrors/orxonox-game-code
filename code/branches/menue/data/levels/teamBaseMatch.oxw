@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Teambase Match"
  description = "Fight for the bases."
- tags = ""
+ tags = "mission"
  screenshot = "teambasematch.png"
 />
 

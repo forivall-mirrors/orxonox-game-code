@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Tetris"
  description = "Tetris in space!"
- tags = ""
+ tags = "showcase"
  screenshot = "tetris.png"
 />
 

@@ -1,7 +1,7 @@
 <LevelInfo
  name = "On the fly"
  description = "Survive as a team."
- tags = ""
+ tags = "mission"
  screenshot = "onthefly.png"
 />
 <?lua

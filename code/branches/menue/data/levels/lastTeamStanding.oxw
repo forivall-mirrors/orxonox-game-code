@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Last Team Standing"
  description = "Survive as a team."
- tags = "singleplayer"
+ tags = "mission"
  screenshot = "lastteamstanding.png"
 />
 <?lua

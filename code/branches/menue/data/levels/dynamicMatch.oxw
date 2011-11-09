@@ -1,6 +1,7 @@
 <LevelInfo
  name = "Dynamic Match"
- description = "In progress -level for dynamicmatch"
+ description = "In progress - Level for dynamicmatch"
+ tags = "test"
  screenshot = "dynamicMatch.png"
 />
 

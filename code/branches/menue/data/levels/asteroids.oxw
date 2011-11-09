@@ -1,6 +1,7 @@
 <LevelInfo
  name = "Asteroids Race"
- description = "testmap for gametype asteroid race"
+ description = "Testmap for gametype asteroid race"
+ tags = "test"
  screenshot = "asteroids.png"
 />
 

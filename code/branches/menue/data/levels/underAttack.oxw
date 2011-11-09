@@ -1,6 +1,7 @@
 <LevelInfo
  name = "UnderAttack testing"
  description = "A simple testlevel"
+ tags = "test"
  screenshot = "underattack.png"
 />
 
