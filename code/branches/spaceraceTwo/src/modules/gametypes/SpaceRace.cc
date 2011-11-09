@@ -44,10 +44,12 @@ namespace orxonox
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
-        this->checkpointsReached_ = 0;
+        //this->checkpointsReached_ = 0;
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
         this->cantMove_=false;
+        
+       
     }
     
   // void SpaceRace::SetConfigValues(){
@@ -64,8 +66,7 @@ namespace orxonox
             int s = this->clock_.getSeconds();
             int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
             const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
-                        + "You didn't reach the check point " + multi_cast<std::string>(this->checkpointsReached_+1)
-                        + " before the time limit. You lose!";
+                        + "You didn't reach the check point  before the time limit. You lose!";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
             ChatManager::message(message);
         }
@@ -137,17 +138,37 @@ namespace orxonox
 	
 	
 
-    void SpaceRace::newCheckpointReached()
+    void SpaceRace::newCheckpointReached(RaceCheckPoint* p)
     {
-        this->checkpointsReached_++;
+        this->checkpointReached_=p->getCheckpointIndex();
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(this->getCheckpointsReached())
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(p)
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
                         + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
+        
+       
     }
+    
+     int SpaceRace::getCheckpointReached(PlayerInfo* player){
+    	return this->currentCheckpoint_[player];
+}
 
+void SpaceRace::playerEntered(PlayerInfo* player){
+    	this->currentCheckpoint_[player]=1;
+    	this->playersAlive_++;
+    }
+    
+	bool SpaceRace::playerLeft(PlayerInfo* player){
+		 bool valid_player = true;
+        if (valid_player)
+        {
+            this->playersAlive_--;
+        }
+
+        return valid_player;
+	}
 }

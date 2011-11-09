@@ -60,12 +60,17 @@ namespace orxonox
 
             void addCheckpoint(RaceCheckPoint* checkpoint);
             RaceCheckPoint* getCheckpoint(unsigned int index) const;
+		
+		
 
 	void tick(float dt);
         protected:
 		
         private:
-	std::vector<RaceCheckPoint*> checkpoints_;
+		std::vector<RaceCheckPoint*> checkpoints_;
+ 		
+		
+		
  };
 }
 

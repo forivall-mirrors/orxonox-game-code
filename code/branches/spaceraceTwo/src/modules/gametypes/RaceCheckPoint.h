@@ -49,23 +49,27 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-
-            protected:
-            virtual void triggered(bool bIsTriggered);
-            inline void setLast(bool isLast)
-                { this->bIsLast_ = isLast; }
-            inline bool getLast()
-                { return this->bIsLast_; }
-            
 	inline void setCheckpointIndex(int checkpointIndex)
                 { this->bCheckpointIndex_ = checkpointIndex; }
             inline int getCheckpointIndex()
                 { return this->bCheckpointIndex_; }
 
-	inline void setNextcheckpoint(std::vector<int> checkpoints)
-                { this->nextcheckpoints_ = checkpoints; }
-            inline std::vector<int> getNextcheckpoint()
-                { return this->nextcheckpoints_; }
+	inline void setNextcheckpoint(const Vector3& checkpoints)
+		{this->nextcheckpoints_=checkpoints;}
+            inline void setNextcheckpoint(float x, float y, float z)
+                { this->setNextcheckpoint(Vector3(x, y, z)); }
+           inline const Vector3& getNextcheckpoint() const
+		{return this->nextcheckpoints_;}
+        protected:
+            virtual void triggered(bool bIsTriggered, PlayerInfo* player);
+            inline void setLast(bool isLast)
+                { this->bIsLast_ = isLast; }
+            inline bool getLast()
+                { return this->bIsLast_; }
+            
+	
+            	
+
             virtual void setTimelimit(float timeLimit);
             inline float getTimeLimit()
                 { return this->bTimeLimit_;}
@@ -77,7 +81,8 @@ namespace orxonox
             bool bIsLast_; //True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
             float bTimeLimit_; //The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
 
-	std::vector<int> nextcheckpoints_; //the indexes of the next check points
+	
+	Vector3 nextcheckpoints_; //the indexes of the next check points
       
     };
 }

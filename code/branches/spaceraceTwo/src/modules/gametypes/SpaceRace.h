@@ -58,24 +58,35 @@ namespace orxonox
             virtual void start();
             virtual void end();
 		
-            virtual void newCheckpointReached();
+            virtual void newCheckpointReached(RaceCheckPoint* p);
 
-            inline void setCheckpointsReached(int n)
-                { this->checkpointsReached_ = n;}
-            inline int getCheckpointsReached()
-                { return this->checkpointsReached_; }
+            inline void setCheckpointReached(int n)
+                { this->checkpointReached_ = n;}
+            inline int getCheckpointReached()
+                { return this->checkpointReached_; }
+		
             inline void timeIsUp()
                 { this->bTimeIsUp_ = true;}
 	void tick(float dt);
+
+	int getCheckpointReached(PlayerInfo* player);
+
+	 
         protected:
-		
+		virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
+		 virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
         private:
 	float maxSpeedBack_; float maxSpeedFront_; float maxSpeedLeftRight_; float maxSpeedUpDown_; 
 	bool cantMove_;
-            int checkpointsReached_; //The current number of check points reached by the player.
+            int checkpointReached_; //The number of the last check point reached by each player.
             std::set<float> scores_; //The times of the players are saved in a set.
             bool bTimeIsUp_; //True if one of the check points is reached too late.
             Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
+
+		std::map<PlayerInfo*, int> currentCheckpoint_;
+		int playersAlive_;
+
+	
     };
 }
 

@@ -35,6 +35,7 @@
 
 #include "SpaceRace.h"
 
+
 namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
@@ -59,7 +60,7 @@ namespace orxonox
             //for (size_t i = 0; i < this->nextcheckpoints_.size(); ++i)
               //  this->nextcheckpoints_[i]->destroy();
         }
-        nextcheckpoints_.clear();
+       //nextcheckpoints_.destroy;
     }
 
     void RaceCheckPoint::tick(float dt)
@@ -68,10 +69,19 @@ namespace orxonox
 
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
-        if (this->getCheckpointIndex() == gametype->getCheckpointsReached())
-            this->setRadarVisibility(true);
-        else
-            this->setRadarVisibility(false);
+        this->setRadarVisibility(false);
+        Vector3 v =Vector3(0,0,0);
+        int j=0;
+        for (std::map<PlayerInfo*, Player>::iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
+        {
+        	j=gametype->getCheckpointReached(it->first);
+        	RaceCheckPoint* r=SpaceRaceManager::getCheckpoint(j);
+        	v=r->getNextcheckpoint();
+        	for(int i=1;i<4;i++){
+        	if (this->getCheckpointIndex() == v[i])
+           	 this->setRadarVisibility(true);
+           	 }
+        }     
     }
 
     void RaceCheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -81,15 +91,17 @@ namespace orxonox
         XMLPortParam(RaceCheckPoint, "checkpointindex", setCheckpointIndex, getCheckpointIndex, xmlelement, mode).defaultValues(0);
         XMLPortParam(RaceCheckPoint, "islast", setLast, getLast, xmlelement, mode).defaultValues(false);
         XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
-    //XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const std::vector<int>&);
+    XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const Vector3&);
     }
 
-    void RaceCheckPoint::triggered(bool bIsTriggered)
+
+
+    void RaceCheckPoint::triggered(bool bIsTriggered, PlayerInfo* player)
     {
         DistanceTrigger::triggered(bIsTriggered);
 
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
-        if (gametype && this->getCheckpointIndex() == gametype->getCheckpointsReached() && bIsTriggered)
+        if (gametype && this->getCheckpointIndex() == gametype->getCheckpointReached(player) && bIsTriggered)
         {
             gametype->clock_.capture();
             float time = gametype->clock_.getSecondsPrecise();
@@ -102,7 +114,7 @@ namespace orxonox
                 gametype->end();
             else
             {
-                gametype->newCheckpointReached();
+                gametype->newCheckpointReached(this);
                 this->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
             }
         }
