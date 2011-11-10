@@ -90,6 +90,8 @@ namespace orxonox
             LevelInfoItem::possibleTags_s.insert("tutorial");
             LevelInfoItem::possibleTags_s.insert("presentation");
             LevelInfoItem::possibleTags_s.insert("mission");
+            LevelInfoItem::possibleTags_s.insert("gametype");
+            LevelInfoItem::possibleTags_s.insert("minigame");
         }
     }
 

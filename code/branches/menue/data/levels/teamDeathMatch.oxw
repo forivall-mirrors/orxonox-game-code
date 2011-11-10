@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Team Deathmatch"
  description = "Fight against each other in teams."
- tags = "mission"
+ tags = "gametype"
  screenshot = "teamdeathmatch.png"
 />
 
@@ -15,8 +15,8 @@
 ?>
 
 <Level
- name         = "Waypoints"
- description  = "Testing waypoings for AI controlled spaceships."
+ name         = "Team Deathmatch"
+ description  = "Fight against each other in teams."
  gametype     = TeamDeathmatch
 >
   <templates>

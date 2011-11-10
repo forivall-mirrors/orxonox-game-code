@@ -1,7 +1,7 @@
 <LevelInfo
- name = "UnderAttack testing"
- description = "A simple testlevel"
- tags = "test"
+ name = "Under Attack"
+ description = "Fight the transporter."
+ tags = "gametype"
  screenshot = "underattack.png"
 />
 
@@ -14,8 +14,8 @@
 ?>
 
 <Level
- name         = "UnderAttack testing"
- description  = "A simple testlevel"
+ name         = "Under Attack"
+ description  = "Fight against the transporter."
  gametype     = UnderAttack
 >
   <templates>

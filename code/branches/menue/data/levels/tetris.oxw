@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Tetris"
  description = "Tetris in space!"
- tags = "showcase"
+ tags = "minigame"
  screenshot = "tetris.png"
 />
 
@@ -30,8 +30,8 @@
 </Template>
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
+ name         = "Tetris"
+ description  = "Tetris in space!"
  gametype     = "Tetris"
 >
   <templates>

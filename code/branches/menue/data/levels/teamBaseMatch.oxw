@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Teambase Match"
- description = "Fight for the bases."
- tags = "mission"
+ description = "Fight for the bases. Capture bases by shooting at them and defend them against attackers."
+ tags = "gametype"
  screenshot = "teambasematch.png"
 />
 
@@ -15,8 +15,8 @@
 ?>
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
+ name         = "Teambase Match"
+ description  = "Fight for the bases."
  gametype     = TeamBaseMatch
 >
 

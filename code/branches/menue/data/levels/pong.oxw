@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Pong"
  description = "Pong in space!"
- tags = "showcase"
+ tags = "minigame"
  screenshot = "pong.png"
 />
 
@@ -49,8 +49,8 @@
 
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
+ name         = "Pong"
+ description  = "Pong in space!"
  gametype     = Pong
 >
   <templates>

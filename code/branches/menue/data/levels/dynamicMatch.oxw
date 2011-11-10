@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Dynamic Match"
- description = "In progress - Level for dynamicmatch"
- tags = "test"
+ description = "Dynamicmatch: Take care of what you're shooting at."
+ tags = "gametype"
  screenshot = "dynamicMatch.png"
 />
 
