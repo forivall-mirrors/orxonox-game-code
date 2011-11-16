@@ -49,6 +49,7 @@ namespace orxonox
     SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "toggleFormationFlight",  &HumanController::toggleFormationFlight).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", __CC_fire_name,           &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
     SetConsoleCommand("HumanController", __CC_boost_name,          &HumanController::keepBoost     ).addShortcut().keybindMode(KeybindMode::OnHold);
@@ -68,7 +69,7 @@ namespace orxonox
     HumanController* HumanController::localController_s = 0;
     /*static*/ const float HumanController::BOOSTING_TIME = 0.1f;
 
-    HumanController::HumanController(BaseObject* creator) : Controller(creator)
+    HumanController::HumanController(BaseObject* creator) : Masterable(creator)
     {
         RegisterObject(HumanController);
 
@@ -79,11 +80,14 @@ namespace orxonox
         HumanController::localController_s = this;
         this->boostingTimeout_.setTimer(HumanController::BOOSTING_TIME, false, createExecutor(createFunctor(&HumanController::terminateBoosting, this)));
         this->boostingTimeout_.stopTimer();
+        this->state_=MASTER;
     }
 
     HumanController::~HumanController()
     {
         HumanController::localController_s = 0;
+        if (this->state_==MASTER)
+            freeSlaves();
     }
 
     void HumanController::tick(float dt)
@@ -93,6 +97,12 @@ namespace orxonox
             Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
             if (!camera)
                 orxout(internal_warning) << "HumanController, Warning: Using a ControllableEntity without Camera" << endl;
+        }
+
+        // commandslaves when Master of a formation
+        if (this->state_==MASTER)
+        {
+            this->commandSlaves();
         }
     }
 
@@ -259,6 +269,23 @@ namespace orxonox
             orxout(message) << "position=\"" << position.x << ", " << position.y << ", " << position.z << "\" "
                             << "orientation=\"" << orientation.w << ", " << orientation.x << ", " << orientation.y << ", " << orientation.z << "\"" << endl;
         }
+    }
+
+    void HumanController::toggleFormationFlight()
+    {
+        if (HumanController::localController_s)
+        {
+            if (HumanController::localController_s->state_==MASTER)
+            {
+                HumanController::localController_s->freeSlaves();
+                HumanController::localController_s->state_=FREE;
+            } else //SLAVE or FREE
+            {
+                HumanController::localController_s->takeLeadOfFormation();
+                //HumanController::localController_s->state_=MASTER;
+            }
+        }
+
     }
 
     void HumanController::addBots(unsigned int amount)

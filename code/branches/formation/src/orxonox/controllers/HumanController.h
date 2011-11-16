@@ -33,14 +33,14 @@
 
 #include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
-#include "Controller.h"
+#include "Masterable.h"
 
 // tolua_begin
 namespace orxonox
 {
     class _OrxonoxExport HumanController
 // tolua_end
-        : public Controller, public Tickable
+        : public Masterable, public Tickable
     { // tolua_export
         public:
             HumanController(BaseObject* creator);
@@ -83,6 +83,8 @@ namespace orxonox
             static void suicide();
             static void toggleGodMode();
             static void myposition();
+
+            static void toggleFormationFlight();
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
