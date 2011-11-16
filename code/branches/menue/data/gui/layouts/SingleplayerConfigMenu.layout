@@ -8,7 +8,7 @@
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property Name="BackgroundEnabled" Value="False" />
         <Window Type="MenuWidgets/StaticText" Name="orxonox/SingleplayerConfigMenu/ConfigWindow" >
-            <Property Name="Text" Value="Miscellaneous" />
+            <Property Name="Text" Value="Config" />
             <Property Name="Alpha" Value="0.8" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="HorzFormatting" Value="HorzCentred" />

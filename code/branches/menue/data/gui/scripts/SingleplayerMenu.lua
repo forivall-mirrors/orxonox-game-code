@@ -134,7 +134,11 @@ function P.SingleplayerStartButton_clicked(e)
 end
 
 function P.SingleplayerConfigButton_clicked(e)
-    showMenuSheet("SingleplayerConfigMenu", true)
+    local level = P.SingleplayerGetSelectedLevel()
+    if level ~= nil then
+        local X = showMenuSheet("SingleplayerConfigMenu")
+        X:loadConfig(level)
+    end
 end
 
 function P.SingleplayerBackButton_clicked(e)
