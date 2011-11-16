@@ -34,6 +34,7 @@
 #include "interfaces/TeamColourable.h"
 #include "worldentities/TeamSpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
+#include "controllers/ArtificialController.h"
 
 namespace orxonox
 {
@@ -69,7 +70,12 @@ namespace orxonox
     void TeamGametype::playerEntered(PlayerInfo* player)
     {
         Gametype::playerEntered(player);
+        if(player == NULL) return;
         this->findAndSetTeam(player);
+        if( getNumberOfPlayers() < maxPlayers_ || maxPlayers_  ==  0)
+            this->allowedInGame_[player]= true;
+        else
+            this->allowedInGame_[player]= false;
     }
 
     void TeamGametype::findAndSetTeam(PlayerInfo* player)
@@ -107,13 +113,16 @@ namespace orxonox
 
     void TeamGametype::spawnDeadPlayersIfRequested()
     {
-        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end();
-++it)
-        if (it->second.state_ == PlayerState::Dead)
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)\
         {
-         if ((it->first->isReadyToSpawn() || this->bForceSpawn_))
+            if(true)//check if dead player is allowed to enter -> if maximum nr of players is exceeded & player was not in game before: disallow
+                continue;
+            if (it->second.state_ == PlayerState::Dead)
             {
-               this->spawnPlayer(it->first);
+                if ((it->first->isReadyToSpawn() || this->bForceSpawn_))
+                {
+                   this->spawnPlayer(it->first);
+                }
             }
         }
     }
@@ -208,25 +217,7 @@ namespace orxonox
         if (!player)
             return;
 
-        // Set the team colour
-        std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
-        if (it_player != this->teamnumbers_.end() && it_player->second >= 0 && it_player->second < static_cast<int>(this->teamcolours_.size()))
-        {
-            if (pawn)
-            {
-                pawn->setRadarObjectColour(this->teamcolours_[it_player->second]);
-
-                std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
-                for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
-                {
-                    if ((*it)->isA(Class(TeamColourable)))
-                    {
-                        TeamColourable* tc = orxonox_cast<TeamColourable*>(*it);
-                        tc->setTeamColour(this->teamcolours_[it_player->second]);
-                    }
-                }
-            }
-        }
+        this->setTeamColour(player,pawn);
     }
 
     bool TeamGametype::pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2)
@@ -250,4 +241,55 @@ namespace orxonox
         else
             return -1;
     }
+
+    void TeamGametype::setTeamColour(PlayerInfo* player, Pawn* pawn)
+    {
+        // Set the team colour
+        std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
+        if (it_player != this->teamnumbers_.end() && it_player->second >= 0 && it_player->second < static_cast<int>(this->teamcolours_.size()))
+        {
+            if (pawn)
+            {
+                pawn->setRadarObjectColour(this->teamcolours_[it_player->second]);
+
+                std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
+                for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
+                {
+                    if ((*it)->isA(Class(TeamColourable)))
+                    {
+                        TeamColourable* tc = orxonox_cast<TeamColourable*>(*it);
+                        tc->setTeamColour(this->teamcolours_[it_player->second]);
+                    }
+                }
+            }
+        }
+    }
+
+    void TeamGametype::setObjectColour(Pawn* pawn)
+    {
+        if(pawn == NULL)
+            return;
+        //get Pawn's controller
+        ArtificialController* controller = orxonox_cast<ArtificialController*>(pawn);
+        if(controller == NULL)
+            return;
+        //get Teamnumber - get the data
+        int teamnumber= controller->getTeam();
+        if(teamnumber < 0)
+            return;
+        //set ObjectColour
+        pawn->setRadarObjectColour(this->teamcolours_[teamnumber]);
+
+        std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
+        for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
+        {
+            if ((*it)->isA(Class(TeamColourable)))
+            {
+                TeamColourable* tc = orxonox_cast<TeamColourable*>(*it);
+                tc->setTeamColour(this->teamcolours_[teamnumber]);
+            }
+         }
+    }
+
+
 }

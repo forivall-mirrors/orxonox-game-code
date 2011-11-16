@@ -51,7 +51,7 @@ namespace orxonox
 
         this->reloadTime_ = 1.0f;
         this->damage_ = 0.0f;
-        this->speed_ = 250.0f;
+        this->speed_ = 700.0f;
 
         this->setMunitionName("LaserMunition");
         this->setDefaultSound("sounds/Weapon_LightningGun.ogg");

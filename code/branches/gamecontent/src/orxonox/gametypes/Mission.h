@@ -45,6 +45,7 @@ namespace orxonox
 
             virtual void start();
             virtual void end();
+            virtual void setTeams();
             virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
             inline void setLives(unsigned int amount)
                 {this->lives_ = amount;}

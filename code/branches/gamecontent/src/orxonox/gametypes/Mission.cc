@@ -29,6 +29,7 @@
 #include "Mission.h"
 //#include "TeamGametype.h"
 #include "items/Engine.h"
+#include "controllers/ArtificialController.h"
 
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
@@ -69,7 +70,7 @@ namespace orxonox
     void Mission::start()
     {
         Gametype::start();
-
+        this->setTeams();
         /*for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it != ObjectList<Engine>::end(); ++it)
             it->setActive(false); // works -> @sr :*/
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
@@ -86,4 +87,13 @@ namespace orxonox
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
 	 * */
     }
+
+    void Mission::setTeams()
+    {
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
+            this->setObjectColour(*it);
+    }
+
+
+
 }
