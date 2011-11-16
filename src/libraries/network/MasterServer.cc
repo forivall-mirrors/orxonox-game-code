@@ -28,11 +28,74 @@
 
 #include "MasterServer.h"
 #include "util/ScopedSingletonManager.h"
+#include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/CorePrereqs.h"
+#include "util/Output.h"
 
 namespace orxonox 
 {
+  /*** MACROS ***/
+  /* commands for the terminal interface */
+  SetConsoleCommand( "ms-listservers", &MasterServer::listServers );
+  SetConsoleCommand( "ms-delserver", &MasterServer::delServer );
+  //SetConsoleCommand( "ms-serverinfo", &MasterServer::serverInfo );
+
+  /* forward declaration so the linker doesn't complain */
+  MasterServer *MasterServer::instance = NULL;
+
+
+
+
+  /* command: list servers */
+  void 
+  MasterServer::listServers( void )
+  {
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
+
+    /* print list header */
+    orxout(user_info) << "List of connected servers" << std::endl;
+
+    /* loop through list elements */
+    for( i = MasterServer::getInstance()->mainlist.serverlist.begin(); 
+      i != MasterServer::getInstance()->mainlist.serverlist.end(); ++i ) 
+    {
+      orxout(user_info) << "  " << (*i).ServerInfo.getServerIP() << std::endl;
+    }
+
+    /* display end of list */
+    orxout(user_info) << MasterServer::getInstance()->mainlist.serverlist.size() <<
+      " servers connected." << std::endl;
+  }
+
+  void 
+  MasterServer::delServer( std::string todeladdr )
+  {
+    /* tell the user we're now removing the entry from the server list */
+    orxout(user_info) << "MS: Deleting server \"" << todeladdr << "\"..." 
+      << std::endl;
+
+    /* see if we actually have that server on our list */
+    ServerListSearchResult shandle = 
+      MasterServer::getInstance()->mainlist.findServerByAddress(todeladdr);
+
+    if( !shandle.success )
+    { orxout(user_info) << "MS: Server not found, not removing." << std::endl;
+      return;
+    }
+
+    /* force-disconnect the server */  
+    enet_peer_disconnect( shandle.result.peer, NULL );
+
+    /* actually remove the entry from the server list by address */
+    MasterServer::getInstance()->mainlist.delServerByAddress( todeladdr);
+
+    /* tell the user about our success */
+    orxout(user_info) << "MS: Server deletion successful." << std::endl;
+  }
+
+
   /* helpers */
   static void 
   helper_output_debug( ENetEvent *event, char *addrconv )
@@ -52,7 +115,7 @@ namespace orxonox
   MasterServer::helper_sendlist( ENetEvent *event )
   {
     /* get an iterator */
-    std::list<packet::ServerInformation>::iterator i;
+    std::list<ServerListElem>::iterator i;
 
     /* packet holder */
     ENetPacket *reply;
@@ -63,14 +126,14 @@ namespace orxonox
     {
       /* send this particular server */
       /* build reply string */
-      char *tosend = (char *)calloc( (*i).getServerIP().length() 
+      char *tosend = (char *)calloc( (*i).ServerInfo.getServerIP().length() 
           + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
       if( !tosend ) 
       { orxout(internal_warning, context::master_server) << "Masterserver.cc: Memory allocation failed." << endl;
         continue;
       } 
       sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, 
-          (*i).getServerIP().c_str() );
+          (*i).ServerInfo.getServerIP().c_str() );
 
       /* create packet from it */
       reply = enet_packet_create( tosend,
@@ -97,6 +160,42 @@ namespace orxonox
 
     /* One could just use enet_host_service() instead. */
     enet_host_flush( this->server );
+  }
+
+  /* maybe the two methods below can be merged into one and 
+   * made to use ENet's RTT functionality to check for disconnected 
+   * servers.
+   */
+  void 
+  MasterServer::helper_cleanupServers( void )
+  {
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
+     
+    if( mainlist.serverlist.size() == 0 )
+      return;
+
+    /* loop through list elements */
+    for( i = mainlist.serverlist.begin(); i 
+        != mainlist.serverlist.end(); ++i ) 
+    { /* see if we have a disconnected peer */
+      if( (*i).peer && 
+         ((*i).peer->state == ENET_PEER_STATE_DISCONNECTED ||
+          (*i).peer->state == ENET_PEER_STATE_ZOMBIE ))
+      { 
+        /* Remove it from the list */
+        orxout(internal_warning) << (char*)(*i).peer->data << " timed out.\n";
+        mainlist.delServerByName( (*i).ServerInfo.getServerName() );
+
+        /* stop iterating, we manipulated the list */
+        /* TODO note: this only removes one dead server per loop
+         * iteration. not beautiful, but one iteration is ~100ms, 
+         * so not really relevant for the moment.
+         */
+        break;
+      }
+    }
+ 
   }
 
 
@@ -179,7 +278,8 @@ namespace orxonox
         + MSPROTO_GAME_SERVER_LEN+1, 
         MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
       { /* register new server */
-        mainlist.addServer( packet::ServerInformation( event ) );
+        mainlist.addServer( packet::ServerInformation( event ),
+          event->peer );
         
         /* tell people we did so */
         orxout(internal_info, context::master_server) << "Added new server to list: " << 
@@ -234,8 +334,10 @@ namespace orxonox
       exit( EXIT_FAILURE );
     }
 
-    /* TODO schedule pings for servers somewhere here */
-    
+    /* check for timed out peers and remove those from * the server list */
+    helper_cleanupServers();
+
+
     /* create an iterator for the loop */
     enet_host_service( this->server, event, 100 );
 
@@ -290,8 +392,8 @@ namespace orxonox
       exit( EXIT_FAILURE );
     }
 
-    /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
-    this->peers = new PeerList();
+    /* set pointer to this instance */
+    MasterServer::setInstance( this );
 
     /* tell people we're now initialized */
     orxout(internal_status, context::master_server) << "MasterServer initialized, waiting for connections." << endl;
