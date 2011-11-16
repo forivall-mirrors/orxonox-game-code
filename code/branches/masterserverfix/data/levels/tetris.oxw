@@ -1,0 +1,62 @@
+<LevelInfo
+ name = "Tetris"
+ description = "Tetris in space!"
+ tags = ""
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<Template name=tetrisstonecameras defaults=0>
+  <TetrisStone>
+    <camerapositions>
+      <CameraPosition position="55,75,200" absolute=true />
+      <CameraPosition position="0,50,160" drag=true mouselook=true />
+      <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true />
+    </camerapositions>
+  </TetrisStone>
+</Template>
+
+<Template name=tetrisstone>
+  <TetrisStone camerapositiontemplate=tetrisstonecameras>
+    <attached>
+      <Model position="0,0,0" mesh="crate.mesh" scale=1 />
+    </attached>
+  </TetrisStone>
+</Template>
+
+<Level
+ name         = "Presentation"
+ description  = "A simple testlevel"
+ gametype     = "Tetris"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skypanoramagen1"
+  >
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <?lua
+      for i = 1, 10, 1 do
+    ?>
+      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" />
+    <?lua end ?>
+
+    <TetrisCenterpoint name=tetriscenter width=11 height=15 stoneSize=10 stoneTemplate=tetrisstone stoneSpeed=10 position="-55,-75,0">
+        <attached>
+            <Model position="55,-1,0" mesh="cube.mesh" scale3D="57,1,11" />
+            <Model position="-1,76,0" mesh="cube.mesh" scale3D="1,76,1" />
+            <Model position="111,76,0" mesh="cube.mesh" scale3D="1,76,1" />
+        </attached>
+    </TetrisCenterpoint>
+
+  </Scene>
+</Level>

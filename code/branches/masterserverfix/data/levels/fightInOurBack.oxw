@@ -1,0 +1,530 @@
+<LevelInfo
+  name = "Fight in our Back"
+  description = "Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
+  tags = "singleplayer" 
+/>
+
+<?lua
+    include("stats.oxo")
+    include("HUDTemplates3.oxo")
+    include("templates/lodInformation.oxt")
+    include("templates/spaceshipAssff.oxt")
+    include("templates/spaceshipPirate.oxt")
+    include("templates/spaceshipTransporter.oxt")
+?>
+
+<!--*****************************************************************************************************************************************************************************************-->
+<!--Including Template for triggering on player-->
+
+<Template name=spaceshipassffplayer>
+  <SpaceShip
+   hudtemplate            = spaceshiphud
+   camerapositiontemplate = spaceshipassffcameras
+   spawnparticlesource    = "Orxonox/fairytwirl"
+   spawnparticleduration  = 3
+   explosionchunks        = 6
+
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   primaryThrust     = 100;
+   auxilaryThrust    = 30;
+   rotationThrust    = 25;
+
+   collisionType     = "dynamic"
+   mass              = 100
+   linearDamping     = 0.7
+   angularDamping    = 0.9999999
+  >
+      <engines>
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipassffengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipassffengine />
+    </engines>
+    <attached>
+      <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
+      <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />
+      <BlinkingBillboard position="-17,-1.5,0" material="Examples/Flare" colour="0.5, 1.0, 0.3" amplitude=0.1 frequency=0.5 phase=180 quadratic=1 />
+      <DistanceTriggerBeacon name="PlayerDistanceTrigger" /> <!--added DistanceTrigger-->
+    </attached>
+    <collisionShapes>
+      <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />
+      <BoxCollisionShape position="13,-1.3,0"  halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="-13,-1.3,0" halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="0,0,7"      halfExtents="3, 2, 2" />
+      <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
+      <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
+    </collisionShapes>
+<?lua
+  include("includes/weaponSettingsAssff.oxi")
+?>
+  </SpaceShip>
+</Template>
+<Template name=spaceshipassffengine baseclass=MultiStateEngine>
+  <MultiStateEngine
+   boostfactor    = 2
+
+   speedfront     = 150
+   speedback      =  50
+   speedleftright =  50
+   speedupdown    =  50
+
+   defEngineSndNormal = "sounds/Engine_low.ogg"
+   defEngineSndBoost = "sounds/Engine_high.ogg"
+
+   accelerationfront     = 500
+   accelerationbrake     = 500
+   accelerationback      =  125
+   accelerationleftright =  125
+   accelerationupdown    =  125
+  >
+      <EffectContainer condition="idle">
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
+    </EffectContainer>
+    <EffectContainer condition="not idle">
+      <FadingBillboard mainstate=activity active=false scale=0.1 position="7.6, 0, 9" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.1 position="-7.6, 0, 9" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+    <EffectContainer condition="normal or brake">
+
+    </EffectContainer>
+    <EffectContainer condition="normal or boost">
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+    </EffectContainer>
+    <EffectContainer condition="boost">
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+    </EffectContainer>
+<!--    <EffectContainer condition="brake">
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position=" 8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="-8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+-->
+  </MultiStateEngine>
+</Template>
+<!--*****************************************************************************************************************************************************************************************-->
+<Level
+  name="Fight in our back"
+  description="Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
+  gametype=TeamDeathmatch
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+    <!-- Ausgang: Szene ===> ambientlight/skybox -->
+    <Scene
+     ambientlight="0.8,0.8,0.8"
+     skybox="Orxonox/skypanoramagen1"
+    >
+
+        <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
+
+        <!--Light: noch zu aendern -->
+        <Light type=directional position="0,0,0" direction="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 1.0, 0.9" />
+
+
+<!--*****************************************************************************************************************************************************************************************-->
+<!--Quests-->
+    <GlobalQuest id="FightInOurBack.DiscoveryMission_">
+        <QuestDescription title="Discovery mission" description="Your team has to scout out this sector." failMessage="You failed!" completeMessage="You won. You have reached the end of this level." />
+        <subquests>
+            <GlobalQuest id="FightInOurBack.FollowYourGroupLeader">
+                <QuestDescription title="Follow your group leader" description="Your task is to follow the team leader and to destroy all the enemy spaceships on your way!" failMessage="You failed!" completeMessage="Good job!" />
+            </GlobalQuest>
+            <GlobalQuest id="FightInOurBack.TransportersAhead">
+                <QuestDescription title="Transporters ahead" description="This is a lucky day for us. We have found supplies that the enemy is transporting in these Transporters. We have to destroy them." failMessage="You failed!" completeMessage="Good job!" />
+            </GlobalQuest>
+            <GlobalQuest id="FightInOurBack.TheySentUsAssistance">
+                <QuestDescription title="They sent us assistance" description="The transporters will surely be heavily protected but our base sent us assistance. It should now be easier to destroy them." failMessage="You failed" completeMessage="Good job!" />
+            </GlobalQuest>
+        </subquests>
+    </GlobalQuest>
+
+
+<!--Quests____END-->
+<!--*****************************************************************************************************************************************************************************************-->
+
+
+<!--Player's Spawnpoints -->
+        <!--Spieler Spawnpoint ===> position/direction--> <!-- funktioniert noch nicht ab naechtem Mal wahrscheinlich-->
+        <SpawnPoint position="0,50,25" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="true" >
+            <events>
+                <activity>
+                    <EventListener event="activateFirstSpawnpoint" />
+                </activity>
+            </events>
+        </SpawnPoint>
+
+        <SpawnPoint position="10000,0,3000" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="false" >
+            <events>
+                <activity>
+                    <EventListener event="activateSecondSpawnpoint" />
+                </activity>
+            </events>
+        </SpawnPoint>
+
+<!--Player's Spawnpoint END-->
+
+<!--Launching Quests -->
+        <QuestEffectBeacon position="0,50,25" times="1">
+            <effects>
+                <AddQuest questId="FightInOurBack.DiscoveryMission_" />
+                <AddQuest questId="FightInOurBack.FollowYourGroupLeader" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="FightInOurBack_MainStart_FollowStart"/>
+                </execute>
+            </events>
+            <attached>
+                <DistanceTrigger name="FightInOurBack_MainStart_FollowStart" position="0,0,0" distance="50" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" />
+                <!--<Billboard position="0,0,0" colour="1.0,1.0,1.0" material="Examples/Flare" />-->
+            </attached>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon position="8000,0,3100" times=1 >
+            <effects>
+                <AddQuest questID="FightInOurBack.TransportersAhead" />
+                <AddQuest questID="FightInOurBack.TheySentUsAssistance" />
+                <CompleteQuest questID="FightInOurBack.FollowYourGroupLeader" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="FightInOurBack_FollowEnd_DTranspStart_AssisStart" />
+                </execute>
+            </events>
+            <attached>
+                <!--<Billboard position="0,0,0" colour="1,1,1" material="Examples/Flare" />-->
+                <DistanceTrigger name="FightInOurBack_FollowEnd_DTranspStart_AssisStart" position="0,0,0" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" stayactive=1 activations=1 />
+            </attached>
+        </QuestEffectBeacon>
+
+<!---->
+
+<!--Launching Quests END -->
+
+<!--Creating Transporters OK-->
+
+
+<?lua for i=0,0,1 do
+x=800
+health=2050
+?>
+    <!--Transporter 1-->
+    <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
+    <events>
+    <trigger>
+        <SpaceShip position="<?lua print(3800-i*x) ?>,0,3000" lookat="<?lua print(4800-i*x) ?>,0,4000" health="<?lua print(health) ?>" maxhealth="<?lua print(health) ?>" initialhealth="<?lua print(health) ?>" >
+            <templates>
+                   <Template link=spaceshipTransporter />
+             </templates>
+             <controller>
+                <WaypointPatrolController alertnessradius=1000 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(14800-i*x) ?>,0,3000"/>
+                    </waypoints>
+                </WaypointPatrolController>
+             </controller>
+        </SpaceShip><!---->
+    </trigger>
+    </events>
+    </EventTrigger>
+<?lua end ?>
+
+
+<?lua for j=0,1,1 do
+health=1600
+x=800
+z=j*300
+?>
+    <!--Transporter 2,3-->
+    <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
+    <events>
+    <trigger>
+        <SpaceShip position="<?lua print(2600+x) ?>,0,<?lua print(3150-z) ?>" lookat="<?lua print(3500+x) ?>,0,<?lua print(4150-z) ?>" health="<?lua print(health) ?>" maxhealth="<?lua print(health) ?>" initialhealth="<?lua print(health) ?>" >
+            <templates>
+                   <Template link=spaceshipTransporter />
+             </templates>
+             <controller>
+                <WaypointPatrolController alertnessradius=1000 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(13500+x) ?>,0,<?lua print(3150-z) ?>"/>
+                    </waypoints>
+                </WaypointPatrolController>
+             </controller>
+        </SpaceShip><!---->
+    </trigger>
+    </events>
+    </EventTrigger>
+<?lua end ?>
+
+
+<!--Creating Transporters END _-->
+
+<!--Creating player's team OK-->
+        <!--Spaceships team 0 (player:team=0)-->
+        <SpaceShip position="50,0,0" lookat="2050,0,-1000" health="500" maxhealth="500" initialhealth="500" >
+             <templates>
+                  <Template link=spaceshipassff />
+            </templates>
+             <controller>
+                <WaypointPatrolController alertnessradius=2000 team=0 >
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="2050,0,-1000" />
+                        <Model mesh="cube.mesh" scale=0 position="6050,0,0" />
+                        <Model mesh="cube.mesh" scale=0 position="10050,0,3000" />
+                        <Model mesh="cube.mesh" scale=0 position="3050,0,3000" />
+                        <Model mesh="cube.mesh" scale=0 position="-4050,0,3000" />
+                    </waypoints>
+                </WaypointPatrolController>
+             </controller>
+        </SpaceShip>
+        <!--Second Spaceship team 0 (player: team 0)-->
+        <SpaceShip position="0,0,100" lookat="2000,0,-950" health="500" maxhealth="400" initialhealth="400" >
+             <templates>
+                  <Template link=spaceshipassff />
+            </templates>
+             <controller>
+                <WaypointPatrolController alertnessradius=2000 team=0 >
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="2000,0,-900" />
+                        <Model mesh="cube.mesh" scale=0 position="6000,0,0" />
+                        <Model mesh="cube.mesh" scale=0 position="10000,0,3100" />
+                        <Model mesh="cube.mesh" scale=0 position="3000,0,3100" />
+                        <Model mesh="cube.mesh" scale=0 position="-4000,0,3100"/>
+                    </waypoints>
+                </WaypointPatrolController>
+             </controller>
+        </SpaceShip>
+        <!--third Spaceship team 0 (player: team 0)-->
+        <SpaceShip position="0,0,-100" lookat="2000,0,-1050" health="500" maxhealth="400" initialhealth="400" >
+             <templates>
+                  <Template link=spaceshipassff />
+            </templates>
+             <controller>
+                <WaypointPatrolController alertnessradius=2000 team=0 >
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="2000,0,-1100" />
+                        <Model mesh="cube.mesh" scale=0 position="6000,0,-100" />
+                        <Model mesh="cube.mesh" scale=0 position="10000,0,2900" />
+                        <Model mesh="cube.mesh" scale=0 position="3000,0,2900" />
+                        <Model mesh="cube.mesh" scale=0 position="-4000,0,2900" />
+                    </waypoints>
+                </WaypointPatrolController>
+             </controller>
+        </SpaceShip>
+<!--Creating player's team END  -->
+
+
+<!--Asteroids (field OK -->
+
+<?lua for i=0,100,1 do
+x=math.random(250,4000)
+y=math.random(-500,500)
+z=math.random(1000,2000)
+scale=math.random(20,70)
+?>
+<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>">
+    <attached>
+        <Model scale="<?lua print(scale) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+    </attached>
+    <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+    </collisionShapes>
+</MovableEntity>
+<?lua end ?>
+
+<!--Asteroids (field) END -->
+
+<!--Asteroids (random) END OK-->
+
+<?lua for i=0,150,1 do
+x=math.random(-8000,8000)
+y=math.random(-8000,8000)
+z=math.random(-8000,8000)
+?>
+<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>" >
+    <attached>
+        <Model scale="<?lua print(math.random(20,70)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+    </attached>
+    <collisionShapes>
+            <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+        </collisionShapes>
+</MovableEntity>
+<?lua end ?>
+
+<!--Asteroids (random) END -->
+
+<!--Creating spaceships (player's team) OK-->
+<!---->
+<!--Trigger to activate this Team (TEAM NO 1)-->
+    <DistanceTrigger name="activateTeam0No1" position="8000,0,3100" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
+
+<!--TEAM NO 1 (activationType : distance || killing a spaceship what belongs to TEAM 0 NO 0)-->
+<?lua for i=0,14,1 do
+x=math.random(-500,500)
+y=math.random(-300,300)
+z=math.random(-300,300)
+?>
+    <EventTrigger name="activateTeam0No1" activations=1 stayactive="true">
+        <events>
+            <trigger>
+                <SpaceShip position="<?lua print(x+4500) ?>,<?lua print(y) ?>,<?lua print(z+6000) ?>" lookat="<?lua print(4000+x) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>">
+                    <templates>
+                        <Template link=spaceshipassff />
+                    </templates>
+                    <controller>
+                        <WaypointPatrolController alertnessradius=2100 team=0 active=false>
+                            <waypoints>
+                                <Model mesh="cube.mesh" scale=0 position="<?lua print(4500+x) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>" />
+                                <Model mesh="cube.mesh" scale=0 position="<?lua print(x-4000) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>" />
+                            </waypoints>
+                            <events>
+                                <activity>
+                                    <EventListener event="activateTeam0No1" />
+                                </activity>
+                            </events>
+                        </WaypointPatrolController>
+                    </controller>
+                </SpaceShip>
+            </trigger>
+        </events>
+    </EventTrigger>
+
+
+<?lua end ?>
+
+<!---->
+<!--Creating spaceships (player's team) END -->
+
+<!--Creating spaceships (enemy) OK-->
+<!---->
+<!--TEAM 1 NO 1 (activationType : killing a Transporter || killing a spaceship what belongs to TEAM 1 NO 1)-->
+<?lua for i=0,11,1 do
+x=math.random(-500,500)
+y=math.random(-300,300)
+z=math.random(-300,300)
+?>
+    <EventTrigger name="activateTeam1No1" activations=1 stayactive="true" >
+        <events>
+            <trigger>
+                <SpaceShip position="<?lua print(x+3800) ?>,<?lua print(y+3000) ?>,<?lua print(z+3000) ?>" lookat="<?lua print(4000+x) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>">
+                    <templates>
+                        <Template link=spaceshippirate />
+                    </templates>
+                    <controller>
+                        <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+                            <waypoints>
+                                <Model mesh="cube.mesh" scale=0 position="<?lua print(4000+x) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>" />
+                            </waypoints>
+                            <events>
+                                <activity>
+                                    <EventListener event="activateTeam1No1" />
+                                </activity>
+                            </events>
+                        </WaypointPatrolController>
+                    </controller>
+                </SpaceShip>
+            </trigger>
+        </events>
+    </EventTrigger>
+
+<?lua end ?>
+<!---->
+<!--Creating spaceships (enemy) END -->
+
+<!--Enemies on the way to the transporters -->
+
+<?lua for i=0,1,1 do
+z=math.random(-300,300)
+?>
+<!--NO 1-->
+        <SpaceShip position="<?lua print(5900+i*100) ?>,0,-3000" lookat="2500,0,-1000">
+            <templates>
+                <Template link=spaceshippirate/>
+            </templates>
+            <controller>
+                <WaypointPatrolController alertnessRadius=1500 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(2500+100*i) ?>,0,-1000" />
+                    </waypoints>
+                </WaypointPatrolController>
+            </controller>
+        </SpaceShip>
+
+<!--NO 4-->
+        <SpaceShip position="<?lua print(9000) ?>,13000,<?lua print(z*i+3000) ?>" lookat="1000,0,3000">
+            <templates>
+                <Template link=spaceshippirate/>
+            </templates>
+            <controller>
+                <WaypointPatrolController alertnessRadius=1500 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(10000) ?>,0,<?lua print(3000+z*i) ?>" />
+                    </waypoints>
+                </WaypointPatrolController>
+            </controller>
+        </SpaceShip>
+<?lua end ?>
+
+
+<!--NO 3-->
+        <SpaceShip position="<?lua print(200+13000) ?>,0,10000" lookat="8000,0,1000">
+            <templates>
+                <Template link=spaceshippirate/>
+            </templates>
+            <controller>
+                <WaypointPatrolController alertnessRadius=1500 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(200+8000) ?>,0,1000" />
+                    </waypoints>
+                </WaypointPatrolController>
+            </controller>
+        </SpaceShip>
+<?lua for i=0,1,1 do ?>
+        <SpaceShip position="<?lua print(i*400+13000) ?>,100,10000" lookat="8000,0,1000">
+            <templates>
+                <Template link=spaceshippirate/>
+            </templates>
+            <controller>
+                <WaypointPatrolController alertnessRadius=1500 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(i*400+8000) ?>,0,1000" />
+                    </waypoints>
+                </WaypointPatrolController>
+            </controller>
+        </SpaceShip>
+<?lua end ?>
+
+
+<!--NO 2-->
+<?lua for i=0,3,1 do ?>
+        <SpaceShip position="<?lua print(math.random(5500,6500)+2000) ?>,0,1000" lookat="2500,0,-1000">
+            <templates>
+                <Template link=spaceshippirate/>
+            </templates>
+            <controller>
+                <WaypointPatrolController alertnessRadius=1500 team=1>
+                    <waypoints>
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(math.random(5750,6250)+2000) ?>,0,1250" />
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(math.random(5750,6250)+2000) ?>,250,1000" />
+                        <Model mesh="cube.mesh" scale=0 position="<?lua print(math.random(5750,6250)+2000) ?>,0,1000" />
+                    </waypoints>
+                </WaypointPatrolController>
+            </controller>
+        </SpaceShip>
+<?lua end ?>
+
+<!--Creating spaceships (enemy) END -->
+
+<Trigger invert=true name="activateFirstSpawnpoint">
+    <DistanceTrigger name="activateSecondSpawnpoint" position="10000,0,3000" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
+</Trigger>
+
+    </Scene>
+</Level>
