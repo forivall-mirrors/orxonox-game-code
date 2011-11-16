@@ -35,7 +35,6 @@
 
 #include "SpaceRace.h"
 
-
 namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
@@ -47,6 +46,7 @@ namespace orxonox
         this->bCheckpointIndex_ = 0;
         this->bIsLast_ = false;
         this->bTimeLimit_ = 0;
+        this->isVisible_=false;
 
         this->setRadarObjectColour(ColourValue::Blue);
         this->setRadarObjectShape(RadarViewable::Triangle);
@@ -69,7 +69,9 @@ namespace orxonox
 
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
-        this->setRadarVisibility(false);
+        if(this->isVisible_){this->setRadarVisibility(true);}
+        else{this->setRadarVisibility(false);}
+        /*this->setRadarVisibility(false);
         Vector3 v =Vector3(0,0,0);
         int j=0;
         for (std::map<PlayerInfo*, Player>::iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
@@ -80,8 +82,8 @@ namespace orxonox
         	for(int i=1;i<4;i++){
         	if (this->getCheckpointIndex() == v[i])
            	 this->setRadarVisibility(true);
-           	 }
-        }     
+           	 }*/
+        //}     
     }
 
     void RaceCheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -94,9 +96,7 @@ namespace orxonox
     XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const Vector3&);
     }
 
-
-
-    void RaceCheckPoint::triggered(bool bIsTriggered, PlayerInfo* player)
+	void RaceCheckPoint::triggered(bool bIsTriggered, PlayerInfo* player)
     {
         DistanceTrigger::triggered(bIsTriggered);
 

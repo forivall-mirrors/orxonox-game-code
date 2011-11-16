@@ -39,7 +39,9 @@
 
 #include "gametypes/Gametype.h"
 
-#include "RaceCheckPoint.h"
+
+
+#include "SpaceRaceManager.h"
 
 namespace orxonox
 {
@@ -50,6 +52,7 @@ namespace orxonox
     class _GametypesExport SpaceRace : public Gametype
     {
         friend class RaceCheckPoint;
+	friend class SpaceRaceManager;
 
         public:
             SpaceRace(BaseObject* creator);
@@ -58,7 +61,8 @@ namespace orxonox
             virtual void start();
             virtual void end();
 		
-            virtual void newCheckpointReached(RaceCheckPoint* p);
+            virtual void newCheckpointReached(SpaceRaceManager* p, int index);
+		virtual void newCheckpointReached(RaceCheckPoint* p);
 
             inline void setCheckpointReached(int n)
                 { this->checkpointReached_ = n;}

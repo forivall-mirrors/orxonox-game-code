@@ -44,7 +44,7 @@ namespace orxonox
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
-        //this->checkpointsReached_ = 0;
+        this->checkpointReached_ = 0;
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
         this->cantMove_=false;
@@ -138,13 +138,28 @@ namespace orxonox
 	
 	
 
-    void SpaceRace::newCheckpointReached(RaceCheckPoint* p)
+    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index)
     {
-        this->checkpointReached_=p->getCheckpointIndex();
+        this->checkpointReached_=index;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(p)
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+                        + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
+                        + " seconds.";
+        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        ChatManager::message(message);
+        
+       
+    }
+    
+     void SpaceRace::newCheckpointReached(RaceCheckPoint* p)
+    {	int index = p->getCheckpointIndex();
+        this->checkpointReached_=index;
+        this->clock_.capture();
+        int s = this->clock_.getSeconds();
+        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
                         + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);

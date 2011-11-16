@@ -60,6 +60,9 @@ namespace orxonox
                 { this->setNextcheckpoint(Vector3(x, y, z)); }
            inline const Vector3& getNextcheckpoint() const
 		{return this->nextcheckpoints_;}
+
+	inline void setVisibility(bool b)
+		{this->isVisible_ = b;}
         protected:
             virtual void triggered(bool bIsTriggered, PlayerInfo* player);
             inline void setLast(bool isLast)
@@ -83,6 +86,8 @@ namespace orxonox
 
 	
 	Vector3 nextcheckpoints_; //the indexes of the next check points
+
+	bool isVisible_;
       
     };
 }
