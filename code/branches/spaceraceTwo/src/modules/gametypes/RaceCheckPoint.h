@@ -61,7 +61,7 @@ namespace orxonox
            inline const Vector3& getNextcheckpoint() const
 		{return this->nextcheckpoints_;}
 
-	inline void setVisibility(bool b)
+	inline void setV(bool b)
 		{this->isVisible_ = b;}
         protected:
             virtual void triggered(bool bIsTriggered, PlayerInfo* player);

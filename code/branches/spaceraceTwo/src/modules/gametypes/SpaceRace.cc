@@ -44,12 +44,13 @@ namespace orxonox
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
-        this->checkpointReached_ = 0;
+        
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
         this->cantMove_=false;
         
-       
+       for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {this->checkpointReached_[it->first]=0;}
     }
     
   // void SpaceRace::SetConfigValues(){
@@ -135,12 +136,24 @@ namespace orxonox
     
     }
 
-	
-	
+	void SpaceRace::setV(SpaceRaceManager* m){
+		Vector3 v =Vector3(0,0,0);
+        int j=0;
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+        	j=this->getCheckpointReached(it->first);
+        	RaceCheckPoint* r=m->getCheckpoint(j);
+        	v=r->getNextcheckpoint();
+        	for(int i=1;i<4;i++){
+        	 RaceCheckPoint* n=m->getCheckpoint(i);
+           	 n->setV(true);
+           	 }
+	}
+	}
 
-    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index)
+    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
     {
-        this->checkpointReached_=index;
+        this->checkpointReached_[pl]=index;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
@@ -153,9 +166,9 @@ namespace orxonox
        
     }
     
-     void SpaceRace::newCheckpointReached(RaceCheckPoint* p)
+     void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
     {	int index = p->getCheckpointIndex();
-        this->checkpointReached_=index;
+        this->checkpointReached_[pl]=index;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
@@ -168,12 +181,10 @@ namespace orxonox
        
     }
     
-     int SpaceRace::getCheckpointReached(PlayerInfo* player){
-    	return this->currentCheckpoint_[player];
-}
+    
 
 void SpaceRace::playerEntered(PlayerInfo* player){
-    	this->currentCheckpoint_[player]=1;
+    	this->checkpointReached_[player]=0;
     	this->playersAlive_++;
     }
     

@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(RaceCheckPoint);
 
         this->bCheckpointIndex_ = 0;
-        this->bIsLast_ = false;
+        //this->bIsLast_ = false;
         this->bTimeLimit_ = 0;
         this->isVisible_=false;
 
@@ -89,11 +89,11 @@ namespace orxonox
     void RaceCheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(RaceCheckPoint, XMLPort, xmlelement, mode);
-
+	Vector3 v= Vector3(0,0,0);
         XMLPortParam(RaceCheckPoint, "checkpointindex", setCheckpointIndex, getCheckpointIndex, xmlelement, mode).defaultValues(0);
         XMLPortParam(RaceCheckPoint, "islast", setLast, getLast, xmlelement, mode).defaultValues(false);
         XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
-    XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const Vector3&);
+    XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const Vector3&).defaultValues(v);
     }
 
 	void RaceCheckPoint::triggered(bool bIsTriggered, PlayerInfo* player)
@@ -101,6 +101,7 @@ namespace orxonox
         DistanceTrigger::triggered(bIsTriggered);
 
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+        assert(gametype);
         if (gametype && this->getCheckpointIndex() == gametype->getCheckpointReached(player) && bIsTriggered)
         {
             gametype->clock_.capture();
@@ -114,7 +115,7 @@ namespace orxonox
                 gametype->end();
             else
             {
-                gametype->newCheckpointReached(this);
+                gametype->newCheckpointReached(this,player);
                 this->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
             }
         }
@@ -126,6 +127,7 @@ namespace orxonox
         if (this->bTimeLimit_ != 0)
         {
             SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+            assert(gametype);
             if (gametype)
             {
                 const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)

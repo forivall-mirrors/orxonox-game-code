@@ -33,7 +33,7 @@
 
 #include <set>
 #include <string>
-# include <vector>
+#include <vector>
 
 #include <util/Clock.h>
 

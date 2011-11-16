@@ -28,6 +28,7 @@
 
 #include "SpaceRaceManager.h"
 #include "SpaceRace.h"
+#include "infos/PlayerInfo.h"
 
 #include "core/XMLPort.h"
 
@@ -38,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(SpaceRaceManager);
+    CreateFactory(SpaceRaceManager);
 
     SpaceRaceManager::SpaceRaceManager(BaseObject* creator) : BaseObject(creator)
     {
@@ -73,25 +74,16 @@ namespace orxonox
         SUPER(SpaceRaceManager, XMLPort, xmlelement, mode);
 
         //XMLPortParam(WaypointController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
-        //XMLPortObject(WaypointController, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
+        XMLPortObject(SpaceRaceManager, RaceCheckPoint, "checkpoints", addCheckpoint, getCheckpoint,  xmlelement, mode);
     }
     
     void SpaceRaceManager::tick(float dt)
     {
     SUPER(SpaceRaceManager,tick,dt);
      SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
-           Vector3 v =Vector3(0,0,0);
-        int j=0;
-        for (std::map<PlayerInfo*, Player>::iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
-        {
-        	j=gametype->getCheckpointReached(it->first);
-        	RaceCheckPoint* r=this->getCheckpoint(j);
-        	v=r->getNextcheckpoint();
-        	for(int i=1;i<4;i++){
-        	 RaceCheckPoint* n=this->getCheckpoint(i);
-           	 n->setVisibility(true);
-           	 }
-    	}
+     gametype->setV(this);
+         
+    	
      
     }
 }
