@@ -74,7 +74,8 @@ namespace orxonox
             unsigned int maxPlayers_;  //<! Defines Maximum for number of players. Value 0 : no maximum!
             std::map<PlayerInfo*, bool> allowedInGame_; //!< Only those players are allowed to spawn which are listed here as 'true'.
             void setTeamColour(PlayerInfo* player, Pawn* pawn);
-            void setObjectColour(Pawn* pawn);
+            void setDefaultObjectColour(Pawn* pawn);
+            void colourPawn(Pawn* pawn, int teamNr);
     };
 }
 

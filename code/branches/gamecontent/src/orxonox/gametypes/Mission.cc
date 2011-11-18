@@ -89,9 +89,13 @@ namespace orxonox
     }
 
     void Mission::setTeams()
-    {
+    {//Set pawn-colours
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
-            this->setObjectColour(*it);
+        {
+            Pawn* pawn = static_cast<Pawn*>(*it);
+            if(!pawn) continue;
+                this->setDefaultObjectColour(pawn);
+        }
     }
 
 

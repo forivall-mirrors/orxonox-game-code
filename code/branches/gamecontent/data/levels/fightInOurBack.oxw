@@ -109,7 +109,7 @@
 <Level
   name="Fight in our back"
   description="Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
-  gametype=TeamDeathmatch
+  gametype=Mission
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -213,7 +213,7 @@
 
 <?lua for i=0,0,1 do
 x=800
-health=2050
+health=1500
 ?>
     <!--Transporter 1-->
     <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
@@ -238,7 +238,7 @@ health=2050
 
 
 <?lua for j=0,1,1 do
-health=1600
+health=1300
 x=800
 z=j*300
 ?>

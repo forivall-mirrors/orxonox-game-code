@@ -56,7 +56,15 @@ include("templates/pickupRepresentationTemplates.oxt")
     <EventMultiTrigger name=spawntrigger>
         <events>
             <trigger>
-                <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+                <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event="attack" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </TeamSpawnPoint>
             </trigger>
         </events>
     </EventMultiTrigger>
@@ -162,6 +170,17 @@ include("templates/pickupRepresentationTemplates.oxt")
             </events>
         </QuestEffectBeacon>
 
+        <QuestEffectBeacon times=1> <!--  alternative quest end  -->
+            <effects>
+                <CompleteQuest questId="missionOne.DuballStation" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=toHydroFarmer />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
 <!--helper trigger to end the getHelp quest -->
     <DistanceTrigger name="getHelpEnd" position="-47000,-1000,1300" distance=1400 target="SpaceShip" stayActive="false" delay=0.1>
               <EventTrigger>
@@ -227,6 +246,31 @@ include("templates/pickupRepresentationTemplates.oxt")
                 </execute>
             </events>
         </QuestEffectBeacon>
+
+<!-- End the quest after own destruction of spacecruiser -->
+        <QuestEffectBeacon position="-100,0,0" times=1>
+            <effects>
+                <FailQuest questId="missionOne.getHelp" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="failQuest" />
+                </execute>
+            </events>
+            <attached>
+                <DistanceTrigger name="failQuest" position="-47000,-1000,1300" distance=2300 target="SpaceShip">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event="gameEnd" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </DistanceTrigger>
+            </attached>
+        </QuestEffectBeacon>
+
+
 
 
     <LocalQuest id="missionOne.basicFlying">
@@ -334,7 +378,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 <!-- Blinking Billboard should be replaced with WAYPOINT -->
-<BlinkingBillboard position="-900,640,600" frequency=0.4 amplitude=2 material="Flares/lensflare" colour="1,1,0">
+<BlinkingBillboard position="-900,640,600" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
               <EventTrigger invert=true>
@@ -465,7 +509,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 <!-- @Objects: 4 boxes (uncontrolled pawns) -->
-                <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
                     <events>
                       <visibility>
                         <EventListener event="flying4" />
@@ -479,7 +523,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
                     </collisionShapes>
                 </Pawn>
 
-                <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box visible="true">
+                <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box visible="true">
                     <events>
                       <visibility>
                         <EventListener event="flying4" />
@@ -492,7 +536,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
                         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
                     </collisionShapes>
                 </Pawn>
-                <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1>
                     <events>
                       <visibility>
                         <EventListener event="flying4" />
@@ -505,7 +549,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
                         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
                     </collisionShapes>
                 </Pawn>
-                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
+                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1>
                     <events>
                       <visibility>
                         <EventListener event="flying4" />
@@ -888,7 +932,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 <!-------------------------------------- PART FOUR : Get Help --------------------------------------->
-<!-- TODO: cruiserKilled -->
+
     <Trigger name="famer1" mode="and" stayActive="true">
         <DistanceTrigger position="-48200,100,0" target="Pawn" distance=650 stayActive="true" delay=0 />
         <EventTrigger name="notGameEnd" activations="1" invert="true">
@@ -931,6 +975,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
     <SpaceShip
+        team=0
         position="-48900,100,0"
         roll=90 yaw=0 pitch=20
         mass=10000
@@ -1005,6 +1050,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 <!--@Objects: SpaceCruiser as docking target -->
     <SpaceShip
         template            = "spaceshipspacecruiser"
+        team                = "0"
         position            = "-48900,800,0"
         orientation         = "-0.14, 0.68, 0.68, 0.223"
         health              = "400"
@@ -1149,11 +1195,19 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 
 
 <!-------------------------------------- The attack --------------------------------------->
-
 <!-- TODO:
      - update spaceshipTransporter
      - bots do friendly fire (is drone function reusable?)
 -->
+
+<!-- Fallback Spawnpoint: on cruiserdeath caused by pirates. Unfortunately unstable behaviour concerning activity. -->
+    <TeamSpawnPoint team=0 position="2000,1500,-1500" direction="-1,-1,1" spawnclass=SpaceShip pawndesign=spaceshipspacecruiser>
+        <events>
+            <activity>
+                <EventListener event="attack" />
+            </activity>
+        </events>
+    </TeamSpawnPoint>
 
 <!-- @Triggers: toHydroFamer <-> first  portal usage
                 ondock       <-> successfull docking
@@ -1606,6 +1660,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     <!-- Script code="artificialcontroller setbotlevel 0.1" /-->
   </Scene>
 </Level>
+
 <!-- TODO:
 - Story & more precise Questmessages; more quest hints; fail-quest;
 - Colouring: Show who is friend or foe via the colour

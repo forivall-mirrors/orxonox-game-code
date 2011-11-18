@@ -51,7 +51,7 @@ namespace orxonox
     {
         public:
             PartyMember();
-            virtual ~PartyMember() {}
+            virtual ~PartyMember();
 
             /**
             @brief

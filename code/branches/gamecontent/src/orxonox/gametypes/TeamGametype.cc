@@ -34,6 +34,7 @@
 #include "interfaces/TeamColourable.h"
 #include "worldentities/TeamSpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/ControllableEntity.h"
 #include "controllers/ArtificialController.h"
 
 namespace orxonox
@@ -116,7 +117,7 @@ namespace orxonox
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)\
         {
             if(true)//check if dead player is allowed to enter -> if maximum nr of players is exceeded & player was not in game before: disallow
-                continue;
+                //continue;
             if (it->second.state_ == PlayerState::Dead)
             {
                 if ((it->first->isReadyToSpawn() || this->bForceSpawn_))
@@ -248,37 +249,46 @@ namespace orxonox
         std::map<PlayerInfo*, int>::const_iterator it_player = this->teamnumbers_.find(player);
         if (it_player != this->teamnumbers_.end() && it_player->second >= 0 && it_player->second < static_cast<int>(this->teamcolours_.size()))
         {
-            if (pawn)
-            {
-                pawn->setRadarObjectColour(this->teamcolours_[it_player->second]);
-
-                std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
-                for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
-                {
-                    if ((*it)->isA(Class(TeamColourable)))
-                    {
-                        TeamColourable* tc = orxonox_cast<TeamColourable*>(*it);
-                        tc->setTeamColour(this->teamcolours_[it_player->second]);
-                    }
-                }
-            }
+            this->colourPawn(pawn, it_player->second);
         }
     }
 
-    void TeamGametype::setObjectColour(Pawn* pawn)
+    void TeamGametype::setDefaultObjectColour(Pawn* pawn)
     {
         if(pawn == NULL)
             return;
+        
+        int teamnumber = pawn->getTeam();
+
+        if(teamnumber >= 0)
+        {
+            this->colourPawn(pawn, teamnumber); return;
+        }
         //get Pawn's controller
-        ArtificialController* controller = orxonox_cast<ArtificialController*>(pawn);
-        if(controller == NULL)
+        ControllableEntity* entity = orxonox_cast<ControllableEntity*>(pawn);
+
+        Controller* controller = 0;
+        if (entity->getController())
+            controller = entity->getController();
+        else if (entity->getXMLController())
+            controller = entity->getXMLController();
+        else
             return;
+
+        ArtificialController* artificial =  orxonox_cast<ArtificialController*>(controller);
         //get Teamnumber - get the data
-        int teamnumber= controller->getTeam();
-        if(teamnumber < 0)
+        if(artificial == NULL)
             return;
+        teamnumber= artificial->getTeam();
+
         //set ObjectColour
-        pawn->setRadarObjectColour(this->teamcolours_[teamnumber]);
+        this->colourPawn(pawn, teamnumber);
+    }
+
+    void TeamGametype::colourPawn(Pawn* pawn, int teamNr)
+    {// catch no-colouring-case and wrong input
+        if(teamNr < 0 || pawn == NULL) return; 
+        pawn->setRadarObjectColour(this->teamcolours_[teamNr]);
 
         std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
         for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
@@ -286,10 +296,9 @@ namespace orxonox
             if ((*it)->isA(Class(TeamColourable)))
             {
                 TeamColourable* tc = orxonox_cast<TeamColourable*>(*it);
-                tc->setTeamColour(this->teamcolours_[teamnumber]);
+                tc->setTeamColour(this->teamcolours_[teamNr]);
             }
          }
     }
-
 
 }

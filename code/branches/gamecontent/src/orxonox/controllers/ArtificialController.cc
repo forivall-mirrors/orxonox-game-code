@@ -41,6 +41,7 @@
 #include "worldentities/pawns/SpaceShip.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "gametypes/Dynamicmatch.h"
+#include "gametypes/Mission.h"
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
 #include "controllers/DroneController.h"
@@ -995,6 +996,16 @@ orxout() << "~follow distance: " << distance << "SpeedCounter: " << this->speedC
 
             if (entity2->getPlayer())
                 team2 = tdm->getTeam(entity2->getPlayer());
+        }
+
+        Mission* miss = orxonox_cast<Mission*>(gametype);
+        if (miss)
+        {
+            if (entity1->getPlayer())
+                team1 = miss->getTeam(entity1->getPlayer());
+
+            if (entity2->getPlayer())
+                team2 = miss->getTeam(entity2->getPlayer());
         }
 
         TeamBaseMatchBase* base = 0;

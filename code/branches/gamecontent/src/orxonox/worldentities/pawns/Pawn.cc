@@ -59,6 +59,7 @@ namespace orxonox
         this->bAlive_ = true;
         this->bReload_ = false;
 
+        this->team_ = -1;
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
@@ -109,6 +110,8 @@ namespace orxonox
     {
         SUPER(Pawn, XMLPort, xmlelement, mode);
 
+        XMLPortParam(Pawn, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
+
         XMLPortParam(Pawn, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
@@ -128,6 +131,8 @@ namespace orxonox
 
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
+
+
     }
 
     void Pawn::registerVariables()
