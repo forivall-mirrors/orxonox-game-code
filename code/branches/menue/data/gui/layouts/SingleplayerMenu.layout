@@ -44,6 +44,7 @@
             <Property Name="Text" Value="Configure" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.425,0},{0.725,0},{0.575,0},{0.775,0}}" />
+            <Property Name="Disabled" Value="True" />
             <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerConfigButton_clicked"/>
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/SingleplayerBackButton" >

@@ -38,15 +38,37 @@ function P.loadConfig(level)
     table.insert(P.commandList, "Gametype initialStartCountdown_")
     table.insert(P.commandList, "Gametype bAutoStart_")
     table.insert(P.commandList, "Gametype numberOfBots_")
-    table.insert(P.commandList, "UnderAttack gameTime_")
+    table.insert(P.commandList, "Dynamicmatch gameTime_")
+    table.insert(P.commandList, "Dynamicmatch friendlyfire")
+    table.insert(P.commandList, "Dynamicmatch tutorial")
+    table.insert(P.commandList, "LastManStanding lives")
+    table.insert(P.commandList, "LastManStanding respawnDelay")
+    table.insert(P.commandList, "LastManStanding bNoPunishment")
+    table.insert(P.commandList, "LastManStanding bHardPunishment")
+    table.insert(P.commandList, "LastTeamStanding lives")
+    table.insert(P.commandList, "LastTeamStanding respawnDelay")
+    table.insert(P.commandList, "LastTeamStanding bNoPunishment")
+    table.insert(P.commandList, "LastTeamStanding bHardPunishment")
     table.insert(P.commandList, "TeamDeathmatch teams_")
+    table.insert(P.commandList, "UnderAttack gameTime_")
 
     P.nameList = {}
     table.insert(P.nameList, "Start countdown")
     table.insert(P.nameList, "Autostart")
     table.insert(P.nameList, "Number of Bots")
-    table.insert(P.nameList, "UnderAttack: game time")
+    table.insert(P.nameList, "Dynamicmatch: game time")
+    table.insert(P.nameList, "Dynamicmatch: friendly fire")
+    table.insert(P.nameList, "Dynamicmatch: tutorial")
+    table.insert(P.nameList, "LastManStanding: lives")
+    table.insert(P.nameList, "LastManStanding: respawn delay")
+    table.insert(P.nameList, "LastManStanding: no punishment")
+    table.insert(P.nameList, "LastManStanding: hard punishment")
+    table.insert(P.nameList, "LastTeamStanding: lives")
+    table.insert(P.nameList, "LastTeamStanding: respawn delay")
+    table.insert(P.nameList, "LastTeamStanding: no punishment")
+    table.insert(P.nameList, "LastTeamStanding: hard punishment")
     table.insert(P.nameList, "TeamDeathmatch: Number of teams")
+    table.insert(P.nameList, "UnderAttack: game time")
 
     P.linesList = {}
     
@@ -78,6 +100,9 @@ end
 
 function P.createLine(k)
     local offset = 0
+    if winMgr:isWindowPresent("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k) then
+        winMgr:destroyWindow("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k)
+    end
     local line = winMgr:createWindow("DefaultWindow", "orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k)
     line:setHeight(CEGUI.UDim(0, P.lineHeight))
     line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, P.lineHeight*(k-1))))

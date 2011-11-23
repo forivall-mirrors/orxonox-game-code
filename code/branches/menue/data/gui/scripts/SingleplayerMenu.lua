@@ -113,15 +113,22 @@ end
 function SingleplayerSelectionChanged(e)
     local levelImage = winMgr:getWindow("orxonox/SingleplayerLevelImage")
     local levelDescription = winMgr:getWindow("orxonox/SingleplayerLevelDescription")
+    local configButton = winMgr:getWindow("orxonox/SingleplayerConfigButton")
     local level = P.SingleplayerGetSelectedLevel()
     if level ~= nil then
         local levelXMLFilename = level:getXMLFilename()
         local imageName = level:getScreenshot()
         levelImage:setProperty("Image", "set:"..levelXMLFilename..imageName.." image:full_image")
         levelDescription:setText(level:getDescription())
+        if level:hasTag("gametype") then
+            configButton:setProperty("Disabled", "False")
+        else
+            configButton:setProperty("Disabled", "True")
+        end
     else
         levelImage:setProperty("Image", nil)
         levelDescription:setText("")
+        configButton:setProperty("Disabled", "True")
     end
 end
 
