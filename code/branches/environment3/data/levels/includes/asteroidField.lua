@@ -17,14 +17,23 @@ function asteroidField(posX, posY, posZ, minSize, maxSize, radius, count)
 		print("position = \"") 
 		print(pX) print(",") 
 		print(pY) print(",") 
-		print(pZ) print("\"")
+		print(pZ) print("\" ")
 		
-		print("scale = \"") print(size) print("\"")
+		print("scale = \"") print(size) print("\" ")
 		
-		print("collisionType = static linearDamping = 0.8 angularDamping = 1 collisiondamage = 1000 enablecollisiondamage = true>")
-		print("<attached> <Model mass=\"") print(size * 10) print("\" mesh=\"ast") print(math.mod(i,6) + 1) print(".mesh\" /> </attached>")
-		print("<attached> <ForceField position=\"0,0,0\" mode=\"newtonianGravity\" diameter=\"") print(size * 2.7) print("\" massDiameter=\"") print(size * 2) print("\" mass=\"") print(size * 1000) print("\" /> </attached>")
-		print("<collisionShapes> <SphereCollisionShape radius=\"") print(size*2.5) print("\" /> </collisionShapes>")
+		print("collisionType = static linearDamping = 0.8 angularDamping = 1 ") 
+		print("collisiondamage = 1000 enablecollisiondamage = true>")
+		
+		print("<attached>")
+			print("<Model mass=\"") print(size * 10) print("\" ")
+			print("mesh=\"ast") print(math.mod(i,6) + 1) print(".mesh\" />")
+		print("</attached>")
+		
+		print("<collisionShapes> ")
+			print("<SphereCollisionShape radius=\"") 
+			print(size * 2.5) print("\" />")
+		print("</collisionShapes>")
+		
 		print("</StaticEntity>")
 	end
 end
@@ -44,15 +53,15 @@ function asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, 
 	radius = (radius1 + radius0) / 2
 	segmentCount = count / segments
 	
-	print("<StaticEntity collisionType=static yaw=")
-	print(yaw)
-	print(" pitch=")
-	print(pitch)
+	print("<StaticEntity collisionType=static yaw=") print(yaw) 
+	print(" pitch=") print(pitch)
+	
 	print(" position = \"") 
 		print(centerX) print(",") 
 		print(centerY) print(",") 
 		print(centerZ) print("\"") 
 	print(">")
+	
 	print("<attached>")
 	
 	for i = 0, segments - 1, 1
