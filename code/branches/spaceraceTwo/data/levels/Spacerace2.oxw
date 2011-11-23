@@ -1,0 +1,66 @@
+<LevelInfo
+ name = "Spacerace2"
+ description = "Just a few tests"
+ tags = "test"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+
+  include("templates/spaceshipAssff.oxt")
+ 
+?>
+
+<?lua
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+<Level
+ name         = "Spacerace2"
+ description  = "Just a few tests"
+gametype = SpaceRace
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+	
+	<SpaceRaceManager>
+<checkpoints>	
+	<RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="true">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+            <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
+    </RaceCheckPoint>
+</checkpoints>
+</SpaceRaceManager>
+
+
+
+
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
+
+
+   
+
+    
+  </Scene>
+</Level>
+

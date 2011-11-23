@@ -45,12 +45,17 @@ namespace orxonox
     {
         RegisterObject(SpaceRace);
         
+         const std::string& message = "SpaceRace constructed";
+         orxout()<< message << endl;
+    
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
         this->cantMove_=false;
         
        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {this->checkpointReached_[it->first]=0;}
+        
+        
     }
     
   // void SpaceRace::SetConfigValues(){
@@ -91,8 +96,9 @@ namespace orxonox
     }
 
     void SpaceRace::start()
-    {
-  	  		   this->spawnPlayersIfRequested(); Gametype::checkStart(); 
+    { 
+    		Gametype::start();
+  	  		   this->spawnPlayersIfRequested(); //Gametype::checkStart(); 
   	  		   this->cantMove_=true; 
     	 
     	         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 

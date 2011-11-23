@@ -133,8 +133,13 @@ namespace orxonox
                    
                 
             }
-                 
-           	this->checkStart();
+            
+             const std::string& message = "Gametype should start";
+         orxout()<< message << endl;    
+           	this->start();
+           	const std::string& message2 = "Gametype should have started";
+         orxout()<< message2 << endl;
+         
         }
         else if (!this->gtinfo_->hasEnded())
             this->spawnDeadPlayersIfRequested();
@@ -143,12 +148,16 @@ namespace orxonox
     }
 
     void Gametype::start()
-    {
+    { const std::string& message = "Gametype starts";
+         orxout()<< message << endl;
+         
         this->addBots(this->numberOfBots_);
 
         this->gtinfo_->start();
 
         this->spawnPlayersIfRequested();
+        
+         
     }
 
     void Gametype::end()
