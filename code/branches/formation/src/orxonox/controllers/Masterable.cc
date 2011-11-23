@@ -58,7 +58,7 @@ namespace orxonox
 
   static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
   static const int RADIUS_TO_SEARCH_FOR_MASTERS = 20000;
-  static const int FORMATION_LENGTH =  130;
+  static const int FORMATION_LENGTH =  110;
   static const int FORMATION_WIDTH =  110;
   static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
   static const float SPEED_MASTER = 0.6f;
@@ -85,7 +85,7 @@ namespace orxonox
 	this->bHasTargetOrientation_=false;
         this->speedCounter_ = 0.2f;
         this->targetPosition_ = Vector3::ZERO;
-
+        //this->team_=-1;
         this->target_.setCallback(createFunctor(&Masterable::targetDied, this));
   }
 
@@ -318,7 +318,7 @@ namespace orxonox
 		    }
                 if (distance < 40)
                 {
-                    this->getControllableEntity()->moveFrontBack(0.8f*SPEED_MASTER);
+                    this->getControllableEntity()->moveFrontBack(0.2f*SPEED_MASTER);
 		   
                 } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
 
@@ -443,6 +443,7 @@ namespace orxonox
         {
             this->state_ = MASTER;
             this->myMaster_ = 0;
+            orxout(debug_output) << "search new master: no master found, but teammates"<< endl;
         }
     }
  /**
@@ -587,7 +588,8 @@ void Masterable::commandSlaves()
         //search new Master, then take lead
         if (this->state_==FREE)
         {
-            float minDistance=RADIUS_TO_SEARCH_FOR_MASTERS;
+          /*
+            float minDistance=(float)RADIUS_TO_SEARCH_FOR_MASTERS;
             Masterable* bestMaster=NULL;
 
             //search nearest Master, store in bestMaster
@@ -638,12 +640,15 @@ void Masterable::commandSlaves()
               this->state_=MASTER;
               this->slaves_.clear();
               this->myMaster_=0;
+              orxout(debug_output) << this << "no formation found!, empty formation"<< endl;
               return;
             }
+         */
+          searchNewMaster();
         }
 
-        if (this->state_==SLAVE)
-        {
+        if (this->state_==SLAVE)  //become master of this formation
+        {   
             this->slaves_=myMaster_->slaves_;
             this->myMaster_->slaves_.clear();
             this->myMaster_->state_=SLAVE;

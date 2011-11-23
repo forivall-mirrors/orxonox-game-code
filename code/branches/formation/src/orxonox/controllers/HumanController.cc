@@ -76,18 +76,20 @@ namespace orxonox
         this->controlPaused_ = false;
         this->boosting_ = false;
         this->boosting_ = false;
-
+        this->tempMaster=NULL;
         HumanController::localController_s = this;
         this->boostingTimeout_.setTimer(HumanController::BOOSTING_TIME, false, createExecutor(createFunctor(&HumanController::terminateBoosting, this)));
         this->boostingTimeout_.stopTimer();
-        this->state_=MASTER;
+        this->state_=FREE;
     }
 
     HumanController::~HumanController()
     {
+        if (HumanController::localController_s) 
+        {
+            HumanController::localController_s->removeFromFormation();
+        }
         HumanController::localController_s = 0;
-        if (this->state_==MASTER)
-            removeFromFormation();
     }
 
     void HumanController::tick(float dt)
@@ -100,9 +102,9 @@ namespace orxonox
         }
 
         // commandslaves when Master of a formation
-        if (this->state_==MASTER)
+        if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
         {
-            this->commandSlaves();
+            HumanController::localController_s->commandSlaves();
         }
     }
 
@@ -273,16 +275,20 @@ namespace orxonox
 
     void HumanController::toggleFormationFlight()
     {
+        
         if (HumanController::localController_s)
         {
             if (HumanController::localController_s->state_==MASTER)
             {
                 HumanController::localController_s->freeSlaves();
                 HumanController::localController_s->state_=FREE;
+                orxout(message) <<"FormationFlight disabled "<< endl;
             } else //SLAVE or FREE
             {
                 HumanController::localController_s->takeLeadOfFormation();
+                orxout(message) <<"FormationFlight enabled "<< endl;
             }
+            
         }
 
     }
