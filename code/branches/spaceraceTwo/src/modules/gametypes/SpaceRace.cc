@@ -45,12 +45,12 @@ namespace orxonox
     {
         RegisterObject(SpaceRace);
         
-         const std::string& message = "SpaceRace constructed";
-         orxout()<< message << endl;
+        
     
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
         this->cantMove_=false;
+        
         
        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {this->checkpointReached_[it->first]=0;}
@@ -96,9 +96,9 @@ namespace orxonox
     }
 
     void SpaceRace::start()
-    { 
-    		Gametype::start();
-  	  		   this->spawnPlayersIfRequested(); //Gametype::checkStart(); 
+    {
+    		//Gametype::start();
+  	  		   this->spawnPlayersIfRequested(); Gametype::checkStart(); 
   	  		   this->cantMove_=true; 
     	 
     	         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
@@ -116,7 +116,7 @@ namespace orxonox
   	  		        } 
   	  		       
   	  		       this->addBots(this->numberOfBots_); 
-       
+      
     }
     
     void SpaceRace::tick(float dt){
@@ -143,7 +143,7 @@ namespace orxonox
     }
 
 	void SpaceRace::setV(SpaceRaceManager* m){
-		Vector3 v =Vector3(0,0,0);
+		/*Vector3 v =Vector3(0,0,0);
         int j=0;
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -151,10 +151,11 @@ namespace orxonox
         	RaceCheckPoint* r=m->getCheckpoint(j);
         	v=r->getNextcheckpoint();
         	for(int i=1;i<4;i++){
-        	 RaceCheckPoint* n=m->getCheckpoint(i);
+        	if(v[i]==0){
+        	 RaceCheckPoint* n=m->getCheckpoint(v[i]);
            	 n->setV(true);
-           	 }
-	}
+           	 }}
+	}*/
 	}
 
     void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
@@ -190,17 +191,19 @@ namespace orxonox
     
 
 void SpaceRace::playerEntered(PlayerInfo* player){
-    	this->checkpointReached_[player]=0;
-    	this->playersAlive_++;
+	Gametype::playerEntered(player);
+    	//this->checkpointReached_[player]=0;
+    	//this->playersAlive_++;
     }
     
 	bool SpaceRace::playerLeft(PlayerInfo* player){
-		 bool valid_player = true;
-        if (valid_player)
-        {
-            this->playersAlive_--;
-        }
+	return Gametype::playerLeft(player);
+		// bool valid_player = true;
+        //if (valid_player)
+       // {
+        //    this->playersAlive_--;
+        //}
 
-        return valid_player;
+       // return valid_player;
 	}
 }

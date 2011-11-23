@@ -38,27 +38,31 @@
 namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
+    
+      
 
     RaceCheckPoint::RaceCheckPoint(BaseObject* creator): DistanceTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(RaceCheckPoint);
-
+        
+	
+           
         this->bCheckpointIndex_ = 0;
         //this->bIsLast_ = false;
         this->bTimeLimit_ = 0;
-        this->isVisible_=false;
+        this->isVisible_=true;
 
         this->setRadarObjectColour(ColourValue::Blue);
         this->setRadarObjectShape(RadarViewable::Triangle);
-        this->setRadarVisibility(false);
+        this->setRadarVisibility(true);
     }
 
     RaceCheckPoint::~RaceCheckPoint()
     {
     	 //if (this->isInitialized())
         {
-            //for (size_t i = 0; i < this->nextcheckpoints_.size(); ++i)
-              //  this->nextcheckpoints_[i]->destroy();
+            //for (size_t i = 0; i < 3; ++i)
+            //   this->nextcheckpoints_[i]->destroy();
         }
        //nextcheckpoints_.destroy;
     }
@@ -71,6 +75,8 @@ namespace orxonox
         assert(gametype);
         if(this->isVisible_){this->setRadarVisibility(true);}
         else{this->setRadarVisibility(false);}
+       
+       
         /*this->setRadarVisibility(false);
         Vector3 v =Vector3(0,0,0);
         int j=0;

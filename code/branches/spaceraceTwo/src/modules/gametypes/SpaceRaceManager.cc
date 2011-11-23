@@ -45,8 +45,7 @@ namespace orxonox
     {
         RegisterObject(SpaceRaceManager);
          
-          const std::string& message = "SpaceRaceManager constructed";
-         orxout()<< message << endl;      
+          
     }
 
    SpaceRaceManager::~SpaceRaceManager()

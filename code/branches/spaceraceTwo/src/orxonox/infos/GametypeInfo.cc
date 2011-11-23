@@ -163,14 +163,12 @@ namespace orxonox
     void GametypeInfo::start(void)
     {
         if(this->bStarted_)
-           {const std::string& message = "bStarted true";
-         orxout()<< message << endl; return;}
+           { return;}
         
         this->bStarted_ = true;
         this->changedStarted();
         
-        const std::string& message = "bStarted true";
-         orxout()<< message << endl;
+       
     }
 
     /**

@@ -133,12 +133,9 @@ namespace orxonox
                    
                 
             }
-            
-             const std::string& message = "Gametype should start";
-         orxout()<< message << endl;    
-           	this->start();
-           	const std::string& message2 = "Gametype should have started";
-         orxout()<< message2 << endl;
+              
+           	this->checkStart();
+           
          
         }
         else if (!this->gtinfo_->hasEnded())
@@ -148,8 +145,7 @@ namespace orxonox
     }
 
     void Gametype::start()
-    { const std::string& message = "Gametype starts";
-         orxout()<< message << endl;
+    {
          
         this->addBots(this->numberOfBots_);
 
@@ -157,7 +153,7 @@ namespace orxonox
 
         this->spawnPlayersIfRequested();
         
-         
+        
     }
 
     void Gametype::end()
@@ -386,7 +382,7 @@ namespace orxonox
                 if (this->gtinfo_->getStartCountdown() <= 0.0f)
                 {
                     this->gtinfo_->stopStartCountdown();
-                    this->gtinfo_->setStartCountdown(0.0f);;
+                    this->gtinfo_->setStartCountdown(0.0f);
                     this->start();
                 }
             }
@@ -407,6 +403,7 @@ namespace orxonox
                         if (it->first->isHumanPlayer())
                             hashumanplayers = true;
                     }
+                         
                     if (allplayersready && hashumanplayers)
                     {
                         // If in developer's mode, there is no start countdown.
@@ -418,6 +415,7 @@ namespace orxonox
                     }
                 }
             }
+            
         }
     }
 
