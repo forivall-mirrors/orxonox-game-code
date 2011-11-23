@@ -49,7 +49,7 @@ namespace orxonox
     SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
-    SetConsoleCommand("HumanController", "toggleFormationFlight",  &HumanController::toggleFormationFlight).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "toggleFormationFlight",  &HumanController::toggleFormationFlight).addShortcut().keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("HumanController", __CC_fire_name,           &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
     SetConsoleCommand("HumanController", __CC_boost_name,          &HumanController::keepBoost     ).addShortcut().keybindMode(KeybindMode::OnHold);
@@ -87,7 +87,7 @@ namespace orxonox
     {
         HumanController::localController_s = 0;
         if (this->state_==MASTER)
-            freeSlaves();
+            removeFromFormation();
     }
 
     void HumanController::tick(float dt)
@@ -282,7 +282,6 @@ namespace orxonox
             } else //SLAVE or FREE
             {
                 HumanController::localController_s->takeLeadOfFormation();
-                //HumanController::localController_s->state_=MASTER;
             }
         }
 

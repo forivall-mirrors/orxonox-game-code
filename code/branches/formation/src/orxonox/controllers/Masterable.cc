@@ -580,6 +580,9 @@ void Masterable::commandSlaves()
     */
     void Masterable::takeLeadOfFormation()
     {
+        if (!this->getControllableEntity())
+            return;
+
 	if (this->state_==MASTER) return;
         //search new Master, then take lead
         if (this->state_==FREE)
@@ -663,11 +666,11 @@ void Masterable::commandSlaves()
         }
         //debug
         if (this->state_==SLAVE)
-              {orxout(debug_output) << this << " is slave "<< endl;}
-           else if (this->state_==MASTER)
-              {orxout(debug_output) << this << " is now a master of "<<this->slaves_.size()<<" slaves."<< endl;}
-           if (this->state_==FREE)
-              {orxout(debug_output) << this << " is free "<< endl;}
+           {orxout(debug_output) << this << " is slave "<< endl;}
+        else if (this->state_==MASTER)
+           {orxout(debug_output) << this << " is now a master of "<<this->slaves_.size()<<" slaves."<< endl;}
+        if (this->state_==FREE)
+           {orxout(debug_output) << this << " is free "<< endl;}
     }
 
 
