@@ -53,18 +53,20 @@ namespace orxonox
             PartyMember();
             virtual ~PartyMember();
 
+
+
             /**
             @brief
-                Method to transcribe a PartyMember object to the player.
-                Must be implemented by every class inheriting from PartyMember.
-            @param team
-                
-            @return
-                
-            */
+                Method to set the objects teamnumber.
+                Must be implemented by every class inheriting from PartyMember. It is virtual in order to allow to implement a hirarchy.
+                Hirarchy: PlayerInfo > Controller > Pawn. When the level is set in the controller it should be also set in the controlled pawn.
+            @param team The teamnumber to which a PartyMember belongs to. Value '-1' means no team is set. 0,1,2, ... are legal team numbers.
 
-            inline void setTeam(int team)
-                { this->team_ = team; }
+            @return
+
+            */
+            virtual inline void setTeam(int team) =0;
+
             inline int getTeam() const
                 { return this->team_; }
 
