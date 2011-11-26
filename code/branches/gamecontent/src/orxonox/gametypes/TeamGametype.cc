@@ -58,10 +58,14 @@ namespace orxonox
 
         static ColourValue colours[] =
         {
-            ColourValue(1.0f, 0.3f, 0.3f),
-            ColourValue(0.3f, 0.3f, 1.0f),
+            ColourValue(0.2f, 0.2f, 1.0f),
+            ColourValue(1.0f, 0.1f, 0.1f),
             ColourValue(0.3f, 1.0f, 0.3f),
-            ColourValue(1.0f, 1.0f, 0.0f)
+            ColourValue(1.0f, 1.0f, 0.0f),
+            ColourValue(0.0f, 1.0f, 1.0f),
+            ColourValue(1.0f, 0.0f, 1.0f),
+            ColourValue(7.0f, 7.0f, 7.0f),
+            ColourValue(2.0f, 2.0f, 2.0f)
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 

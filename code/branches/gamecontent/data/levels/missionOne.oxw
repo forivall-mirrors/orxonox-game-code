@@ -431,7 +431,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </DistanceTrigger>
 
 
-    <SimpleNotification message="Three red arrows just appeared.">
+    <SimpleNotification message="Three arrows just appeared.">
         <events>
             <trigger>
                 <EventListener event="flying4" />
@@ -440,7 +440,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
     <DistanceTrigger name="flying5" position="-900,640,600" target="Pawn" distance=60 stayActive="true" delay=5/>
-    <SimpleNotification message="Follow those red arrows.">
+    <SimpleNotification message="Follow those arrows.">
         <events>
             <trigger>
                 <EventListener event="flying5" />
@@ -509,59 +509,61 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 <!-- @Objects: 4 boxes (uncontrolled pawns) -->
-                <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box >
-                    <events>
-                      <visibility>
-                        <EventListener event="flying4" />
-                      </visibility>
-                    </events>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
+    <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 1" >
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
 
-                <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box visible="true">
-                    <events>
-                      <visibility>
-                        <EventListener event="flying4" />
-                      </visibility>
-                    </events>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
-                <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1>
-                    <events>
-                      <visibility>
-                        <EventListener event="flying4" />
-                      </visibility>
-                    </events>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
-                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1>
-                    <events>
-                      <visibility>
-                        <EventListener event="flying4" />
-                      </visibility>
-                    </events>
-                    <attached>
-                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-                    </attached>
-                    <collisionShapes>
-                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-                    </collisionShapes>
-                </Pawn>
+    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 2">
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+           <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+
+    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 3">
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+           <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+
+    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 4">
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+           <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
 
 <!-- @Triggers: boxtrigger1 <-> one   box   destroyed
                 boxtrigger2 <-> two   boxes destroyed
@@ -633,7 +635,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 <!--------------------------------------PART TWO: Moving targets --------------------------------------->
 
 <!-- @Objects: 2 pirates moving in squares, nonlethal -->
-                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" >
+                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" RVName="Pirate">
                             <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
@@ -654,7 +656,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
                   </controller>
                 </SpaceShip>
 
-                <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget">
+                <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget" RVName="Pirate">
                             <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
@@ -923,7 +925,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 <!-- PORTALS END-->
 
 
-    <SimpleNotification message="Dock to the Hydrogen Farmer.">
+    <SimpleNotification message="Dock to the Hydrogen Farmer." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=toHydroFarmer />
@@ -955,7 +957,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         </EventTrigger>
     </Trigger>
 
-    <SimpleNotification message="We just received a message from DuBall.">
+    <SimpleNotification message="We just received a message from DuBall." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=famer1 />
@@ -964,7 +966,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 
-    <SimpleNotification message="We will lend you our strongest ship.">
+    <SimpleNotification message="We will lend you our strongest ship." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=famer2 />
@@ -975,12 +977,13 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
     <SpaceShip
-        team=0
-        position="-48900,100,0"
-        roll=90 yaw=0 pitch=20
-        mass=10000
-        health=100000 initialhealth=100000 maxhealth="100000"
-        name="HydroFarmer">
+        team     = 0
+        position = "-48900,100,0"
+        roll     = 90   yaw=0  pitch=20
+        mass     = 10000
+        health   = 100000 initialhealth=100000 maxhealth="100000"
+        name     = "HydroFarmer"
+        RVName   = "Hydrogen Farmer" >
       <attached>
         <!-- Docking -->
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -1062,7 +1065,8 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         shieldabsorption    = "0.8"
         reloadrate          = "1"
         reloadwaittime      = "1"
-        name                = "cruiser" >
+        name                = "cruiser"
+        RVName              = "Spacecruiser" >
       <attached>
         <DockingTarget name="spaceShip" />
       </attached>

@@ -34,13 +34,12 @@
 #include <string>
 #include "interfaces/PickupCarrier.h"
 #include "interfaces/RadarViewable.h"
-#include "interfaces/PartyMember.h"
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
     class _OrxonoxExport Pawn // tolua_export
-        : public ControllableEntity, public RadarViewable, public PickupCarrier//, public PartyMember
+        : public ControllableEntity, public RadarViewable, public PickupCarrier
     { // tolua_export
         friend class WeaponSystem;
 
@@ -54,10 +53,6 @@ namespace orxonox // tolua_export
             inline bool isAlive() const
                 { return this->bAlive_; }
 
-            inline void setTeam(int team)
-                { this->team_ = team; }
-            inline float getTeam() const
-                { return this->team_; }
 
             virtual void setHealth(float health);
             inline void addHealth(float health)
@@ -199,7 +194,6 @@ namespace orxonox // tolua_export
             virtual PickupCarrier* getCarrierParent(void) const
                 { return NULL; }
 
-            int team_;
 
             float health_;
             float maxHealth_;

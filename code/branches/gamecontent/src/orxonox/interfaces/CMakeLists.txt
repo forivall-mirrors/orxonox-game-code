@@ -5,5 +5,4 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   PickupCarrier.cc
   PickupListener.cc
   RadarViewable.cc
-  PartyMember.cc
 )

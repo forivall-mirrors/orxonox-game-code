@@ -50,7 +50,7 @@ namespace orxonox
 
             void abandonTarget(Pawn* target);
 
-            inline void setTeam(int team)
+            inline void setTeam(int team) //TODO: write through to controllable entity.
                 { this->team_ = team; }
             inline int getTeam() const
                 { return this->team_; }

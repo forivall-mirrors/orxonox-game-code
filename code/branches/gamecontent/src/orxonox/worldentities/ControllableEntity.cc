@@ -86,6 +86,7 @@ namespace orxonox
         this->setConfigValues();
         this->setPriority( Priority::VeryHigh );
         this->registerVariables();
+	this->team_ = -1;
     }
 
     ControllableEntity::~ControllableEntity()
@@ -118,6 +119,7 @@ namespace orxonox
     {
         SUPER(ControllableEntity, XMLPort, xmlelement, mode);
 
+        XMLPortParam(ControllableEntity, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
         XMLPortParam(ControllableEntity, "hudtemplate", setHudTemplate, getHudTemplate, xmlelement, mode);
         XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemplate, xmlelement, mode);
 
