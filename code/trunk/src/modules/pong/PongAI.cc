@@ -163,7 +163,7 @@ namespace orxonox
             // If the ball is close enough, calculate another random offset to accelerate the ball
             if (!this->bChangedRandomOffset_)
             {
-                float timetohit = (-this->ball_->getPosition().x + this->ball_->getFieldDimension().x / 2 * sgn(this->ball_->getVelocity().x)) / this->ball_->getVelocity().x;
+                float timetohit = (-ballpos.x + this->ball_->getFieldDimension().x / 2 * sgn(ballvel.x)) / ballvel.x;
                 if (timetohit < 0.05)
                 {
                     this->bChangedRandomOffset_ = true;
