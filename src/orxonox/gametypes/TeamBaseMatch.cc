@@ -100,7 +100,6 @@ namespace orxonox
     {
         if (pawn1 && base)
         {
-            std::map<PlayerInfo*, int>::const_iterator it1 = this->teamnumbers_.find(pawn1->getPlayer());
             int teamnrbase = -1;
             int teamnrplayer = this->getTeam(pawn1->getPlayer());
 

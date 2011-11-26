@@ -531,7 +531,6 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
     assert(ClassByID(origHeader.getClassID()));
     assert(origHeader.getDataSize() < 500);
     
-    bool diffedObject = false;
     if( findObject(baseDataPtr, baseDataEnd, origHeader) )
     {
       SynchronisableHeader baseHeader(baseDataPtr);
@@ -542,7 +541,6 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
       {
 //         orxout(verbose, context::packets) << "diffing object in order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
         diffObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
-        diffedObject = true;
       }
       else
       {
@@ -566,7 +564,6 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
         {
 //           orxout(verbose, context::packets) << "diffing object out of order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
           diffObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
-          diffedObject = true;
         }
         else
         {

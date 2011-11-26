@@ -96,7 +96,7 @@ namespace orxonox
     {
         if(quest == NULL)
         {
-            COUT(1) << "Quest pointer is NULL." << endl;
+            orxout(internal_error, context::quests) << "Quest pointer is NULL." << endl;
             return false;
         }
 
@@ -138,7 +138,7 @@ namespace orxonox
     {
         if(hint == NULL)
         {
-            COUT(1) << "Hint pointer is NULL." << endl;
+            orxout(internal_error, context::quests) << "Quest pointer is NULL." << endl;
             return false;
         }
 

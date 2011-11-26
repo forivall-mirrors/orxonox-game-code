@@ -86,7 +86,7 @@ namespace orxonox
     }
 
     /* force-disconnect the server */  
-    enet_peer_disconnect( shandle.result.peer, NULL );
+    enet_peer_disconnect( shandle.result.peer, 0 );
 
     /* actually remove the entry from the server list by address */
     MasterServer::getInstance()->mainlist.delServerByAddress( todeladdr);
