@@ -87,15 +87,14 @@ namespace orxonox {
                Attack-leave formation, attack every target
       */ 
       enum Mode {NORMAL,DEFEND,ATTACK};
-      /**
-        @brief set a mode in formation
-      */ 
-      void setMode(Mode mode);
-       /**
-        @brief get the current mode
-      */
-      Mode getMode();
       
+      /**
+        @brief Sets the new mode. If master, set it for all slaves.
+      */
+      void setMode(Mode val);
+      inline Mode getMode() const
+           { return this->mode_; }
+
     protected:
       bool formationFlight_;
       bool passive_;
@@ -103,9 +102,12 @@ namespace orxonox {
       unsigned int maxFormationSize_;
       int freedomCount_;
       enum State {SLAVE, MASTER, FREE};
+      
       State state_;
       std::vector<Masterable*> slaves_;
       Masterable* myMaster_;
+
+      Mode mode_;
 
       enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180, FOLLOW};
       SpecificMasterAction specificMasterAction_;

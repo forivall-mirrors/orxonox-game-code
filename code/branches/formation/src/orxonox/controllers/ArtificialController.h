@@ -30,12 +30,6 @@
 #define _ArtificialController_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <vector>
-
-#include "util/Math.h"
-#include "Controller.h"
-#include "controllers/NewHumanController.h"
 #include "controllers/Masterable.h"
 
 namespace orxonox

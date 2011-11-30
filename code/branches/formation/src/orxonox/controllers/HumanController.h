@@ -73,7 +73,8 @@ namespace orxonox
                 { return this->boosting_; }
             void keepBoosting(void);
             void terminateBoosting(void);
-            
+                  
+
             static void greet();
             static void switchCamera();
             static void mouseLook();
@@ -85,6 +86,8 @@ namespace orxonox
             static void myposition();
 
             static void toggleFormationFlight();
+            static void FFChangeMode();
+            static void changedMode();
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);

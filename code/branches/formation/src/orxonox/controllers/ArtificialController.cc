@@ -27,19 +27,8 @@
  */
 
 #include "ArtificialController.h"
-
-#include <vector>
-
-
-#include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "core/command/ConsoleCommand.h"
-#include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
-#include "worldentities/pawns/TeamBaseMatchBase.h"
-#include "gametypes/TeamDeathmatch.h"
-#include "gametypes/Dynamicmatch.h"
 
 
 namespace orxonox

@@ -56,8 +56,8 @@ namespace orxonox
 
 
 
-  static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
-  static const int RADIUS_TO_SEARCH_FOR_MASTERS = 20000;
+  static const unsigned int STANDARD_MAX_FORMATION_SIZE = 9;
+  static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
   static const int FORMATION_LENGTH =  110;
   static const int FORMATION_WIDTH =  110;
   static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
@@ -78,6 +78,7 @@ namespace orxonox
         this->freedomCount_ = 0;
 
         this->state_ = FREE;
+        this->mode_ = NORMAL;
         this->specificMasterAction_ = NONE;
         this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
@@ -443,8 +444,9 @@ namespace orxonox
         {
             this->state_ = MASTER;
             this->myMaster_ = 0;
-            orxout(debug_output) << "search new master: no master found, but teammates"<< endl;
-        }
+            orxout(debug_output) << "search new master: no master found, but "<<teamSize<<" teammates"<< endl;
+        } else if (this->state_ != SLAVE)
+            orxout(debug_output) << "search new master: no master found, no teammates..."<< endl;
     }
  /**
         @brief Commands the slaves of a master into a formation. Sufficiently fast not to be called within tick. Initiated by a master.
@@ -588,62 +590,6 @@ void Masterable::commandSlaves()
         //search new Master, then take lead
         if (this->state_==FREE)
         {
-          /*
-            float minDistance=(float)RADIUS_TO_SEARCH_FOR_MASTERS;
-            Masterable* bestMaster=NULL;
-
-            //search nearest Master, store in bestMaster
-            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
-            {
-           
-                //same team?  (doesnt work with a HumanPlayer??!?) TODO
-                if (!Masterable::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
-                    continue;
-
-                //get Controller
-                Controller* controller = 0;
-
-                if (it->getController())
-                    controller = it->getController();
-                else if (it->getXMLController())
-                    controller = it->getXMLController();
-
-                if (!controller)
-                    continue;
-
-                //myself?
-                if (orxonox_cast<ControllableEntity*>(*it) == this->getControllableEntity())
-                    continue;
-
-                Masterable *newMaster = orxonox_cast<Masterable*>(controller);
-                if (!newMaster || newMaster->state_!=MASTER) continue;
-                
-                float distance= (it->getPosition() - this->getControllableEntity()->getPosition()).length();
-                
-                if (distance<minDistance)
-                {
-                    minDistance=distance;
-                    bestMaster=newMaster;
-                }
-            }
-
-            if (bestMaster!=NULL)
-            {
-                //becom slave of formation
-                bestMaster->slaves_.push_back(this);
-                this->state_=SLAVE;
-                this->myMaster_=bestMaster;
-            }
-            else
-            {
-              //no formation found to lead, become master of empty formation
-              this->state_=MASTER;
-              this->slaves_.clear();
-              this->myMaster_=0;
-              orxout(debug_output) << this << "no formation found!, empty formation"<< endl;
-              return;
-            }
-         */
           searchNewMaster();
         }
 
@@ -678,6 +624,23 @@ void Masterable::commandSlaves()
            {orxout(debug_output) << this << " is free "<< endl;}
     }
 
+
+    /**
+      @brief Sets the new mode. If master, set it for all slaves.
+    */
+    void Masterable::setMode(Mode val)
+    {
+        this->mode_=val;
+        if (this->state_==MASTER)
+        {
+            for(std::vector<Masterable*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
+            {
+                 (*it)->mode_=val;
+                 if (val==ATTACK)
+                     (*it)->forgetTarget();
+            }
+        }
+    }
 
     /**
         @brief Used to continue a "specific master action" for a certain time and resuming normal behaviour after.
@@ -934,24 +897,6 @@ void Masterable::commandSlaves()
         this->searchRandomTargetPosition();
     }
 
-
-
-
-
-  void Masterable::setMode(Mode mode)
-  {
-     for (std::vector<Masterable*>::iterator it=slaves_.begin(); it != slaves_.end(); it++)
-     {
-	//(*it)->myMode_=mode;
-     }
-  }
-
-  Masterable::Mode Masterable::getMode()
-  {
-    return Masterable::NORMAL;
-  }
-
-
   bool Masterable::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
     {
         if (entity1 == entity2)
@@ -991,6 +936,7 @@ void Masterable::commandSlaves()
 
             if (entity2->getPlayer())
                 team2 = tdm->getTeam(entity2->getPlayer());
+            return (team1 == team2 && team1 != -1); //temp solution
         }
 
         TeamBaseMatchBase* base = 0;

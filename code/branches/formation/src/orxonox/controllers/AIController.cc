@@ -115,8 +115,22 @@ namespace orxonox
 
         }
 
-        if (this->state_ == SLAVE)
+        if (this->state_ == SLAVE && this->mode_==ATTACK)
         {
+            if (!this->target_)
+            {
+               this->searchNewTarget();
+            }
+
+            // shoot
+            random = rnd(maxrand);
+            if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
+                this->bShooting_ = true;
+
+            // stop shooting
+            random = rnd(maxrand);
+            if (random < 25 && (this->bShooting_))
+                this->bShooting_ = false;
 
         }
 
@@ -141,11 +155,11 @@ namespace orxonox
                 if (random < 5)
                    this->spinInit();
 
-                // follow a randomly chosen human - a specific Master Action
+                /*// follow a randomly chosen human - a specific Master Action
                 random = rnd(1000.0f);
                 if (random < 1)
                    this->followRandomHumanInit();
-
+*/
                  // lose master status (only if less than 4 slaves in formation)
                 random = rnd(maxrand);
                 if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 4 )
@@ -232,7 +246,7 @@ namespace orxonox
                     this->follow();
         }
 
-        if (this->state_ == SLAVE)
+        if (this->state_ == SLAVE && this->mode_!=ATTACK)
         {
 
             if (this->bHasTargetPosition_)
@@ -240,7 +254,7 @@ namespace orxonox
 
         }
 
-         if (this->state_ == FREE)
+         if (this->state_ == FREE || (this->state_==SLAVE && this->mode_==ATTACK) )
         {
             if (this->target_)
             {
