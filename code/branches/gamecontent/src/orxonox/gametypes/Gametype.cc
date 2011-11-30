@@ -132,7 +132,7 @@ namespace orxonox
                 if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
                     this->gtinfo_->playerReadyToSpawn(it->first);
             }
-                    
+
             this->checkStart();
         }
         else if (!this->gtinfo_->hasEnded())
@@ -439,7 +439,7 @@ namespace orxonox
 
             if(player->isHumanPlayer())
                 this->gtinfo_->playerSpawned(player);
-            
+
             this->playerPostSpawn(player);
         }
         else

@@ -45,10 +45,10 @@ namespace orxonox
     {
         RegisterObject(TeamGametype);
 
-        this->teams_ = 2;
+        this->teams_ = 2; //most team gametypes use two different teams
         this->allowFriendlyFire_ = false;
         //this->playersPerTeam_ = 0;
-        this->maxPlayers_ = 0;
+        this->maxPlayers_ = 2; //TEST
         this->setConfigValues();
     }
 
@@ -77,10 +77,15 @@ namespace orxonox
         Gametype::playerEntered(player);
         if(player == NULL) return;
         this->findAndSetTeam(player);
-        if( getNumberOfPlayers() < maxPlayers_ || maxPlayers_  ==  0)
+        if( this->players_.size() <= maxPlayers_ || maxPlayers_  ==  0)
+        {
             this->allowedInGame_[player]= true;
+        }
         else
+        {
             this->allowedInGame_[player]= false;
+            orxout() << "not allowed in game: players = " << this->players_.size() << " > maximum: " << maxPlayers_ << endl;
+        }
     }
 
     void TeamGametype::findAndSetTeam(PlayerInfo* player)
@@ -109,9 +114,21 @@ namespace orxonox
     bool TeamGametype::playerLeft(PlayerInfo* player)
     {
         bool valid_player = Gametype::playerLeft(player);
+        if( (this->players_.size() >= maxPlayers_) && (allowedInGame_[player] == true) ) // if there's a "waiting list"
+        {
+            for (std::map<PlayerInfo*, bool>::iterator it = this->allowedInGame_.begin(); it != this->allowedInGame_.end(); ++it)
+            {
+                 if(it->second == false) // waiting player found
+                 {it->second = true; break;} // allow player to enter
+			}
+		}
 
         if (valid_player)
+        {   // clean up the maps
             this->teamnumbers_.erase(player);
+            this->allowedInGame_.erase(player);
+        }
+
 
         return valid_player;
     }
@@ -120,8 +137,10 @@ namespace orxonox
     {
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)\
         {
-            if(true)//check if dead player is allowed to enter -> if maximum nr of players is exceeded & player was not in game before: disallow
-                //continue;
+            if(allowedInGame_[it->first] == false)//check if dead player is allowed to enter
+            {
+				continue;
+            }
             if (it->second.state_ == PlayerState::Dead)
             {
                 if ((it->first->isReadyToSpawn() || this->bForceSpawn_))
@@ -134,7 +153,7 @@ namespace orxonox
 
 
     bool TeamGametype::allowPawnHit(Pawn* victim, Pawn* originator)
-    {// hit allowed: if victim & originator are foes or if originator doesnot exist or if friendlyfire is allowed 
+    {// hit allowed: if victim & originator are foes or if originator doesnot exist or if friendlyfire is allowed
         return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator || this->allowFriendlyFire_);
     }
 
@@ -261,7 +280,7 @@ namespace orxonox
     {
         if(pawn == NULL)
             return;
-        
+
         int teamnumber = pawn->getTeam();
 
         if(teamnumber >= 0)
@@ -291,7 +310,7 @@ namespace orxonox
 
     void TeamGametype::colourPawn(Pawn* pawn, int teamNr)
     {// catch no-colouring-case and wrong input
-        if(teamNr < 0 || pawn == NULL) return; 
+        if(teamNr < 0 || pawn == NULL) return;
         pawn->setRadarObjectColour(this->teamcolours_[teamNr]);
 
         std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();

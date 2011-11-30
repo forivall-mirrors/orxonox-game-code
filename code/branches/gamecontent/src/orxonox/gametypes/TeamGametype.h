@@ -66,12 +66,12 @@ namespace orxonox
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
             bool pawnsAreInTheSameTeam(Pawn* pawn1, Pawn* pawn2);
 
-            bool allowFriendlyFire_; //<! friendlyfire is per default switched off: friendlyFire_ = false;
+            bool allowFriendlyFire_; //!< friendlyfire is per default switched off: friendlyFire_ = false;
             std::map<PlayerInfo*, int> teamnumbers_;
             std::vector<ColourValue> teamcolours_;
-            unsigned int teams_; //<! Number  of teams. Value 0 : no teams!
-            //unsigned int playersPerTeam_; //<! Defines Maximum for players per team. Value 0: no maximum!
-            unsigned int maxPlayers_;  //<! Defines Maximum for number of players. Value 0 : no maximum!
+            unsigned int teams_; //!< Number  of teams. Value 0 : no teams!
+            //unsigned int playersPerTeam_; //!< Defines Maximum for players per team. Value 0: no maximum!
+            unsigned int maxPlayers_; //!< Defines Maximum for number of players. Value 0 : no maximum!
             std::map<PlayerInfo*, bool> allowedInGame_; //!< Only those players are allowed to spawn which are listed here as 'true'.
             void setTeamColour(PlayerInfo* player, Pawn* pawn);
             void setDefaultObjectColour(Pawn* pawn);
