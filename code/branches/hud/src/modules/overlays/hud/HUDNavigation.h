@@ -67,6 +67,8 @@ public:
     inline float getRadarSensitivity() const
     { return 1.0f; }
 
+    unsigned int getMarkerLimit() { return this->markerLimit_; }
+
 private:
     struct ObjectInfo
     {
@@ -84,6 +86,7 @@ private:
     { navMarkerSize_ = size; this->sizeChanged(); }
     float getNavMarkerSize() const
     { return navMarkerSize_; }
+
 
     void setTextSize ( float size );
     float getTextSize() const;
@@ -105,7 +108,7 @@ private:
     float textSize_;
     bool showDistance;
 
-    unsigned int markerLimit_;; //TODO: is it possible to set this over the console and/or the IG-Setting
+    unsigned int markerLimit_;;
 
 
 };
