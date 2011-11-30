@@ -39,12 +39,15 @@ namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
     
-      
+     
 
-    RaceCheckPoint::RaceCheckPoint(BaseObject* creator): DistanceTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
+    RaceCheckPoint::RaceCheckPoint(BaseObject* creator): DistanceMultiTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(RaceCheckPoint);
-        
+        this->setDistance(100);
+        this->setBeaconMode("off");
+        this->setBroadcast(false);
+        this->setSimultaneousTriggerers(100);
 	
            
         this->bCheckpointIndex_ = 0;
@@ -55,11 +58,17 @@ namespace orxonox
         this->setRadarObjectColour(ColourValue::Blue);
         this->setRadarObjectShape(RadarViewable::Triangle);
         this->setRadarVisibility(true);
+    
+    //this->addTarget("WorldEntity");
+    
+    
     }
+    
 
-    RaceCheckPoint::~RaceCheckPoint()
+   RaceCheckPoint::~RaceCheckPoint()
     {
-    	 //if (this->isInitialized())
+    
+    	 if (this->isInitialized())
         {
             //for (size_t i = 0; i < 3; ++i)
             //   this->nextcheckpoints_[i]->destroy();
@@ -75,7 +84,9 @@ namespace orxonox
         assert(gametype);
         if(this->isVisible_){this->setRadarVisibility(true);}
         else{this->setRadarVisibility(false);}
-       
+        
+      
+      
        
         /*this->setRadarVisibility(false);
         Vector3 v =Vector3(0,0,0);
@@ -102,13 +113,28 @@ namespace orxonox
     XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const Vector3&).defaultValues(v);
     }
 
-	void RaceCheckPoint::triggered(bool bIsTriggered, PlayerInfo* player)
+	void RaceCheckPoint::fire(bool bIsTriggered,BaseObject* player)
     {
-        DistanceTrigger::triggered(bIsTriggered);
+    	
+    	//bool b= bIsTriggered;
+    	//PlayerInfo* pl= player;
+    	DistanceMultiTrigger::fire((bool)bIsTriggered,player);
+        
+   //SUPER(RaceCheckPoint,fire,bIsTriggered,player);
+		
 
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
-        if (gametype && this->getCheckpointIndex() == gametype->getCheckpointReached(player) && bIsTriggered)
+        
+        	 PlayerInfo* player2 = (PlayerInfo*)player;
+        assert(player2);
+        	//DistanceMultiTrigger::fire(bIsTriggered,player);
+        	
+        	
+        	
+       
+        	
+        if (gametype && this->getCheckpointIndex() == gametype->getCheckpointReached(player2) && bIsTriggered)
         {
             gametype->clock_.capture();
             float time = gametype->clock_.getSecondsPrecise();
@@ -121,7 +147,7 @@ namespace orxonox
                 gametype->end();
             else
             {
-                gametype->newCheckpointReached(this,player);
+                gametype->newCheckpointReached(this,player2);
                 this->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
             }
         }

@@ -116,6 +116,7 @@ namespace orxonox
   	  		        } 
   	  		       
   	  		       this->addBots(this->numberOfBots_); 
+  	  		       
       
     }
     

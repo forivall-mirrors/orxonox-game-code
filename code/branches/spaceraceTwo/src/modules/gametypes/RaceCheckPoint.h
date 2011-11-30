@@ -31,7 +31,7 @@
 
 #include "gametypes/GametypesPrereqs.h"
 
-#include "objects/triggers/DistanceTrigger.h"
+#include "objects/triggers/DistanceMultiTrigger.h"
 #include "interfaces/RadarViewable.h"
 
 namespace orxonox
@@ -41,7 +41,7 @@ namespace orxonox
         The RaceCheckPoint class enables the creation of a check point to use in a SpaceRace level.
         !!! Don't forget to control the indexes of your check points and to set one last check point!!!
     */
-    class _GametypesExport RaceCheckPoint : public DistanceTrigger, public RadarViewable
+    class _GametypesExport RaceCheckPoint : public DistanceMultiTrigger, public RadarViewable
     {
         public:
             RaceCheckPoint(BaseObject* creator);
@@ -64,7 +64,7 @@ namespace orxonox
 	inline void setV(bool b)
 		{this->isVisible_ = b;}
         protected:
-            virtual void triggered(bool bIsTriggered, PlayerInfo* player);
+            virtual void fire(bool bIsTriggered,BaseObject* player);
             inline void setLast(bool isLast)
                 { this->bIsLast_ = isLast; }
             inline bool getLast()
