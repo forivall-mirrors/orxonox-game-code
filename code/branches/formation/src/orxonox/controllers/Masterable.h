@@ -77,7 +77,7 @@ namespace orxonox {
 
       inline void setTeam(int team)
            { this->team_ = team; 
-             orxout(debug_output) << "Set team to: "<<team<<" in "<<this<< endl;}
+             orxout(debug_output) << "Set team to: "<<team<<" in "<<this<< endl;} 
       inline int getTeam() const
            { return this->team_; }
 
@@ -133,6 +133,7 @@ namespace orxonox {
       bool forcedFree();
 
       void takeLeadOfFormation();
+      void masterAttacked(Pawn* originator);      
 
       void specificMasterActionHold();
       void turn180Init();

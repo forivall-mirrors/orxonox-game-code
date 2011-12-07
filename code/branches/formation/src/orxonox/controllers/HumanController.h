@@ -87,7 +87,8 @@ namespace orxonox
 
             static void toggleFormationFlight();
             static void FFChangeMode();
-            static void changedMode();
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
+
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);

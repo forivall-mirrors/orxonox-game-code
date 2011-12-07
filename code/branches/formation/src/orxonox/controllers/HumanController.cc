@@ -173,7 +173,14 @@ namespace orxonox
     void HumanController::doFire(unsigned int firemode)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        {
             HumanController::localController_s->controllableEntity_->fire(firemode);
+            //if human fires, set slaves free. See Masterable::forceFreeSlaves()
+            if (HumanController::localController_s->state_==MASTER && HumanController::localController_s->mode_==NORMAL)
+            {
+                HumanController::localController_s->forceFreeSlaves();
+            }
+        }
     }
 
     void HumanController::reload()
@@ -323,15 +330,17 @@ namespace orxonox
                 orxout(message) <<"Mode: NORMAL "<< endl;
                 break;
             }
-            changedMode();
         }
     }
 
-    void HumanController::changedMode()
-    {
 
+    //used, when slaves are in DEFEND mode.
+    void HumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+    {
+        if (!this->formationFlight_ || this->state_!=MASTER || this->mode_!=DEFEND) return;
+            this->masterAttacked(originator);
     }
-    
+
     void HumanController::addBots(unsigned int amount)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())

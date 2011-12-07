@@ -318,9 +318,9 @@ namespace orxonox
 		    {
 			copyTargetOrientation();
 		    }
-                if (distance < 40)
-                {
-                    this->getControllableEntity()->moveFrontBack(0.2f*SPEED_MASTER);
+                if (distance < 100)
+                {   //linear speed reduction
+                    this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
 		   
                 } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
 
@@ -450,9 +450,7 @@ namespace orxonox
         {
             this->state_ = MASTER;
             this->myMaster_ = 0;
-            orxout(debug_output) << "search new master: no master found, but "<<teamSize<<" teammates"<< endl;
-        } else if (this->state_ != SLAVE)
-            orxout(debug_output) << "search new master: no master found, no teammates..."<< endl;
+        }
     }
  /**
         @brief Commands the slaves of a master into a formation. Sufficiently fast not to be called within tick. Initiated by a master.
@@ -619,16 +617,22 @@ void Masterable::commandSlaves()
             {
                  (*it)->myMaster_=this;
             }
+            this->myMaster_=0;
             this->state_=MASTER;
         }
-        //debug
+        /*/debug
         if (this->state_==SLAVE)
            {orxout(debug_output) << this << " is slave "<< endl;}
         else if (this->state_==MASTER)
            {orxout(debug_output) << this << " is now a master of "<<this->slaves_.size()<<" slaves."<< endl;}
         if (this->state_==FREE)
-           {orxout(debug_output) << this << " is free "<< endl;}
+           {orxout(debug_output) << this << " is free "<< endl;}*/
     }
+
+    void Masterable::masterAttacked(Pawn* originator)
+    {
+       orxout(debug_output)<<"slaves, attack!"<<endl;
+    }     
 
 
     /**
@@ -903,109 +907,6 @@ void Masterable::commandSlaves()
         this->searchRandomTargetPosition();
     }
 
-/*
-    bool Masterable::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
-    {
-        if (!entity1 || !entity2) return false;
-        if (entity1 == entity2) return true;
-
-        if (!gametype)
-            orxout(debug_output) << "gametype NULL"<< endl;
-
-        int team1 = -1;
-        int team2 = -1;
-
-        TeamDeathmatch* tdm = orxonox_cast<TeamDeathmatch*>(gametype);
-        if (tdm)
-        {
-            if (entity1->getPlayer())
-                team1 = tdm->getTeam(entity1->getPlayer());
-
-            if (entity2->getPlayer())
-                team2 = tdm->getTeam(entity2->getPlayer());
-             orxout(debug_output) << "teamdeath okay"<< endl;
-        }
-
-        if (team1!=-1 && team2!=-1)
-        {
-            orxout(debug_output) << "Sameteam: decided in TeamDeathmatch. return "<<(team1 == team2 && team1 != -1)<< endl;
-            return (team1 == team2 && team1 != -1); 
-        }
-        team1=team2=-1;
-        orxout(debug_output) << "Sameteam: not in teamdeathmatch."<< endl;
-        TeamBaseMatchBase* base = 0;
-        base = orxonox_cast<TeamBaseMatchBase*>(entity1);
-        if (base)
-        {
-            switch (base->getState())
-            {
-                case BaseState::ControlTeam1:
-                    team1 = 0;
-                    break;
-                case BaseState::ControlTeam2:
-                    team1 = 1;
-                    break;
-                case BaseState::Uncontrolled:
-                default:
-                    team1 = -1;
-            }
-        }
-        base = orxonox_cast<TeamBaseMatchBase*>(entity2);
-        if (base)
-        {
-            switch (base->getState())
-            {
-                case BaseState::ControlTeam1:
-                    team2 = 0;
-                    break;
-                case BaseState::ControlTeam2:
-                    team2 = 1;
-                    break;
-                case BaseState::Uncontrolled:
-                default:
-                    team2 = -1;
-            }
-        }
-
-        if (team1!=-1 && team2!=-1)
-            return (team1 == team2 && team1 != -1); 
-        team1=team2=-1;
-
-
-        DroneController* droneController = 0;
-        droneController = orxonox_cast<DroneController*>(entity1->getController());
-        if (droneController && static_cast<ControllableEntity*>(droneController->getOwner()) == entity2)
-            return true;
-        droneController = orxonox_cast<DroneController*>(entity2->getController());
-        if (droneController && static_cast<ControllableEntity*>(droneController->getOwner()) == entity1)
-            return true;
-        DroneController* droneController1 = orxonox_cast<DroneController*>(entity1->getController());
-        DroneController* droneController2 = orxonox_cast<DroneController*>(entity2->getController());
-        if (droneController1 && droneController2 && droneController1->getOwner() == droneController2->getOwner())
-            return true;
-
-        Dynamicmatch* dynamic = orxonox_cast<Dynamicmatch*>(gametype);
-        if (dynamic)
-        {
-            if (dynamic->notEnoughPigs||dynamic->notEnoughKillers||dynamic->notEnoughChasers) {return false;}
-
-            if (entity1->getPlayer())
-                team1 = dynamic->getParty(entity1->getPlayer());
-
-            if (entity2->getPlayer())
-                team2 = dynamic->getParty(entity2->getPlayer());
-
-            if (team1 ==-1 ||team2 ==-1 ) {return false;}
-            else if (team1 == dynamic->chaser && team2 != dynamic->chaser) {return false;}
-            else if (team1 == dynamic->piggy && team2 == dynamic->chaser) {return false;}
-            else if (team1 == dynamic->killer && team2 == dynamic->chaser) {return false;}
-            else return true;
-        }
-
-        return (team1 == team2 && team1 != -1);
-
-    }*/
-
   bool Masterable::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
     {
         if (entity1 == entity2)
@@ -1045,7 +946,6 @@ void Masterable::commandSlaves()
 
             if (entity2->getPlayer())
                 team2 = tdm->getTeam(entity2->getPlayer());
-            return (team1 == team2 && team1 != -1); //temp solution
         }
 
         TeamBaseMatchBase* base = 0;

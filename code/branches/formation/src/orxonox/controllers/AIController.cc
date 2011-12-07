@@ -122,6 +122,11 @@ namespace orxonox
                this->searchNewTarget();
             }
 
+            // next enemy
+            random = rnd(maxrand);
+            if (random < 10 && (this->target_))
+                this->searchNewTarget();
+
             // shoot
             random = rnd(maxrand);
             if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
