@@ -139,8 +139,9 @@ namespace orxonox
        for (std::map<PlayerInfo*, Player>::iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
         {
           unsigned int clientid1=0, clientid2=0,clientid3=0;
-          if(it->first !=NULL)clientid1 = it->first->getClientID();
-          
+          if(it->second.info_ !=NULL)clientid1 = it->second.info_->getClientID();else orxout()<<"second NULL"<<endl;
+           if(it->first !=NULL)clientid1 = it->first->getClientID();else orxout()<<"first NULL"<<endl;
+           clientid1 = it->first->getClientID();
           if(player3 != NULL && player3->info_ != NULL)clientid2 =         player3->info_->getClientID();
           if(player2 != NULL )clientid3 =         player2->getClientID();
           orxout()<<clientid1<<endl;orxout()<<clientid2<<endl;orxout()<<clientid3<<endl;
