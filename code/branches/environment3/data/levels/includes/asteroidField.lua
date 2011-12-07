@@ -1,11 +1,33 @@
+--[[ fog generator
+generates fog
+	posX, posY, posZ - position in space
+	size - size of billboard
+	brightness - [0,1] fog brightness
+--]]
+function generateFog(posX, posY, posZ, size, brightness)
+		print("<Billboard ")
+			print("position = \"") 
+				print(posX) print(",") 
+				print(posY) print(",") 
+				print(posZ) print("\" ") 
+			print("colour=\"")
+				print(brightness) print(",") 
+				print(brightness) print(",") 
+				print(brightness) print("\" ") 
+			print("material=\"Smoke/Smoke\" scale=")
+			print(size)
+			print(" />")
+end
+
 --[[ asteroid field generator
 generates asteroid field
 	posX, posY, posZ - position in space
 	minSize, maxSize - size boundaries of each asteroid
 	radius - size of the cube around position in space
 	count - number of asteroids
+	fog - enable fog 0/1
 --]]
-function asteroidField(posX, posY, posZ, minSize, maxSize, radius, count)
+function asteroidField(posX, posY, posZ, minSize, maxSize, radius, count, fog)
 	for i = 1, count, 1
 	do
 		size = (math.random() * (maxSize - minSize)) + minSize
@@ -35,6 +57,10 @@ function asteroidField(posX, posY, posZ, minSize, maxSize, radius, count)
 		print("</collisionShapes>")
 		
 		print("</StaticEntity>")
+		
+		if fog == 1 and i % 5 == 0 then
+			generateFog(pX, pY, pZ, size*0.7, 0.2)
+		end
 	end
 end
 
@@ -46,8 +72,9 @@ generates asteroid belt
 	minSize, maxSize - size boundaries of each asteroid
 	radius0, radius1 - inner/outer radius
 	count - number of asteroids
+	fog - enable fog 0/1
 --]]
-function asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, maxSize, radius0, radius1, count)
+function asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, maxSize, radius0, radius1, count, fog)
 	dPhi = (2 * math.pi) / segments
 	width = math.abs(radius1 - radius0)
 	radius = (radius1 + radius0) / 2
@@ -68,7 +95,7 @@ function asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, 
 	do
 		asteroidField((radius * math.cos(i * dPhi)),
 					(radius * math.sin(i * dPhi)),
-					0, minSize, maxSize, width,segmentCount)
+					0, minSize, maxSize, width, segmentCount, fog)
 	end
 	
 	print("</attached>")

@@ -33,11 +33,11 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
 
-    <!-- Generate asteroid field with diameter 12000 containing 250 asteroids -->    
+    <!-- Generate asteroid field and asteroid belt -->    
     <?lua
     	dofile("includes/asteroidField.lua")
-    	asteroidField(0, 0, 5000, 100, 150, 2000, 50);
-    	asteroidBelt(0, 0, 0, -48, -34, 30, 100, 200, 17000, 21000, 900)
+    	asteroidField(0, 0, 5000, 100, 150, 2000, 50, 1);
+    	asteroidBelt(0, 0, 0, -48, -34, 30, 100, 200, 17000, 21000, 900, 1)
     ?>
     
   </Scene>
