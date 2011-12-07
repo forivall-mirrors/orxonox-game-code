@@ -76,7 +76,8 @@ namespace orxonox {
            { return this->passive_; }
 
       inline void setTeam(int team)
-           { this->team_ = team; }
+           { this->team_ = team; 
+             orxout(debug_output) << "Set team to: "<<team<<" in "<<this<< endl;}
       inline int getTeam() const
            { return this->team_; }
 
