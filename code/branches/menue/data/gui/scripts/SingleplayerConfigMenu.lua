@@ -29,10 +29,6 @@ function P.onLoad()
     })
 end
 
-function P.onHide()
-    
-end
-
 function P.loadConfig(level)
     P.commandList = {}
     table.insert(P.commandList, "Gametype initialStartCountdown_")
@@ -100,13 +96,16 @@ end
 
 function P.createLine(k)
     local offset = 0
+    -- destroy config line, if it already exists (otherwise would cause an error)
     if winMgr:isWindowPresent("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k) then
         winMgr:destroyWindow("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k)
     end
+    -- content window for the entire line
     local line = winMgr:createWindow("DefaultWindow", "orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k)
     line:setHeight(CEGUI.UDim(0, P.lineHeight))
     line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, P.lineHeight*(k-1))))
 
+    -- config name
     local command = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Command")
     command:setText(P.nameList[k])
     command:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.commandWidth), CEGUI.UDim(1, 0)))
@@ -114,16 +113,19 @@ function P.createLine(k)
     line:addChildWindow(command)
     offset = offset + P.commandWidth + P.spaceWidth
 
+    -- config value (editable)
     local configvalue = winMgr:createWindow("MenuWidgets/Editbox", "orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Configvalue")
     configvalue:setProperty("ReadOnly", "set:False")
     local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[k])
     configvalue:setText(value)
     configvalue:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.editboxWidth), CEGUI.UDim(0.9, 0)))
     configvalue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.05, 0)))
+    -- enable the reset button if the value changed
     orxonox.GUIManager:subscribeEventHelper(configvalue, "TextAccepted", P.name .. ".SingleplayerConfigEditbox_textAccepted")
     line:addChildWindow(configvalue)
     offset = offset + P.editboxWidth + P.spaceWidth
 
+    -- reset button (only available when value changed)
     local reset = winMgr:createWindow("MenuWidgets/Button", "orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Reset")
     reset:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.resetWidth), CEGUI.UDim(0.9, 0)))
     reset:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.05, 0)))
@@ -153,6 +155,7 @@ end
 
 function P.SingleplayerConfigOKButton_clicked(e)
     for k,v in pairs(P.commandList) do
+        -- save the changes
         local editbox = winMgr:getWindow("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Configvalue")
         orxonox.CommandExecutor:execute("config " .. P.commandList[k] .. " " .. editbox:getText())
         local resetButton = winMgr:getWindow("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Reset")
@@ -184,6 +187,7 @@ function P.SingleplayerConfigResetButton_clicked(e)
     local match = string.gmatch(name, "%d+")
     local commandNr = tonumber(match())
 
+    -- reload the old value
     local editbox = winMgr:getWindow("orxonox/SingleplayerConfigMenu/MiscConfigPane/ConfigCommand" .. commandNr .. "/Configvalue")
     local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[commandNr])
     editbox:setText(value)

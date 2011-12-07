@@ -18,7 +18,8 @@ function P.onLoad()
     P.createFilterTab("Tests", "test")
     P.createFilterTab("Show All", nil)
     
-    SingleplayerSelectionChanged()
+    -- update description and screenshot boxes
+    P.SingleplayerSelectionChanged()
     
     --buttons are arranged in a 1x3 matrix
     P:setButton(1, 1, {
@@ -46,6 +47,7 @@ function P.createLevelList()
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if level ~= nil then
             local levelXMLFilename = level:getXMLFilename()
+            -- create an imageset for each screenshot
             local imageName = level:getScreenshot()
             if imageName ~= "" then
                 CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, imageName)
@@ -88,9 +90,10 @@ function P.createFilterTab(name, tag)
         end
     end
     table.insert(P.activeTabIndexes, tabIndexes)
-    listbox:subscribeEvent("ItemSelectionChanged", "SingleplayerSelectionChanged")
+    -- listen to selection changes
+    orxonox.GUIManager:subscribeEventHelper(listbox, "ItemSelectionChanged", P.name..".SingleplayerSelectionChanged")
     local tabControl = winMgr:getWindow("orxonox/SingleplayerTabControl")
-    tabControl:subscribeEvent("TabSelectionChanged", "SingleplayerSelectionChanged")
+    orxonox.GUIManager:subscribeEventHelper(tabControl, "TabSelectionChanged", P.name..".SingleplayerSelectionChanged")
     if listbox:getItemCount() > 0 then
         tabControl:addChildWindow(tabName)
     end
@@ -102,6 +105,7 @@ function P.SingleplayerGetSelectedLevel()
     local listbox = CEGUI.toListbox(tabControl:getTabContentsAtIndex(tabControl:getSelectedTabIndex()))
     local choice = listbox:getFirstSelectedItem()
     if choice ~= nil then
+        -- get the right tab and the right index
         local tabIndexes = P.activeTabIndexes[tabControl:getSelectedTabIndex()+1]
         local index = tabIndexes[listbox:getItemIndex(choice)+1]
         return P.levelList[index]
@@ -110,7 +114,7 @@ function P.SingleplayerGetSelectedLevel()
     end
 end
 
-function SingleplayerSelectionChanged(e)
+function P.SingleplayerSelectionChanged(e)
     local levelImage = winMgr:getWindow("orxonox/SingleplayerLevelImage")
     local levelDescription = winMgr:getWindow("orxonox/SingleplayerLevelDescription")
     local configButton = winMgr:getWindow("orxonox/SingleplayerConfigButton")
@@ -118,14 +122,17 @@ function SingleplayerSelectionChanged(e)
     if level ~= nil then
         local levelXMLFilename = level:getXMLFilename()
         local imageName = level:getScreenshot()
+        -- set the screenshot and the description for the selected level
         levelImage:setProperty("Image", "set:"..levelXMLFilename..imageName.." image:full_image")
         levelDescription:setText(level:getDescription())
+        -- only enable config button for "gametype" levels
         if level:hasTag("gametype") then
             configButton:setProperty("Disabled", "False")
         else
             configButton:setProperty("Disabled", "True")
         end
     else
+        -- also take care of "no level selected"
         levelImage:setProperty("Image", nil)
         levelDescription:setText("")
         configButton:setProperty("Disabled", "True")
@@ -143,8 +150,8 @@ end
 function P.SingleplayerConfigButton_clicked(e)
     local level = P.SingleplayerGetSelectedLevel()
     if level ~= nil then
-        local X = showMenuSheet("SingleplayerConfigMenu")
-        X:loadConfig(level)
+        local configMenu = showMenuSheet("SingleplayerConfigMenu")
+        configMenu:loadConfig(level)
     end
 end
 
