@@ -81,8 +81,8 @@
      name              = "EnemyHealthBar"
      background        = "Orxonox/HealthBarBackground"
      size              = "0.35, 0.0875"
-     position          = "0.5 , 0.1 "
-     pickpoint         = "0, 1"
+     position          = "1.0 , 0.1 "
+     pickpoint         = "1, 1"
      bartexture        = "healthbar_bar.png"
      textfont          = "VeraMono"
      textusebarcolour  = true
@@ -96,7 +96,7 @@
       <BarColour position = 0.0 colour = "0.7,0.2,0.2" />
       <BarColour position = 0.5 colour = "0.7,0.7,0.2" />
       <BarColour position = 1.0 colour = "0.2,0.7,0.2" />
-    </HUDHealthBar>
+    </HUDEnemyHealthBar>
 
     <HUDNavigation
      name          = "Navigation"
