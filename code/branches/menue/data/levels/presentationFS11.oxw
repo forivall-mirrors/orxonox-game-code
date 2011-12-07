@@ -21,10 +21,7 @@
 include("templates/pickupRepresentationTemplates.oxt")
 ?>
 
-<Level
- name         = "Sample"
- description  = "Just a few tests"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

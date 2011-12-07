@@ -12,10 +12,7 @@
   include("templates/spaceshipHXY.oxt")
 ?>
 
-<Level
- name         = "Planet Earth"
- description  = "1:100 Scale Model of Earth with Gravity"
->
+<Level>
   <templates>
     <Template link="lodtemplate_default" />
   </templates>

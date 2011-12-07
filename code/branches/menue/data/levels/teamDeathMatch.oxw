@@ -15,9 +15,7 @@
 ?>
 
 <Level
- name         = "Team Deathmatch"
- description  = "Fight against each other in teams."
- gametype     = TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

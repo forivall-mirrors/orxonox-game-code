@@ -16,9 +16,7 @@
 ?>
 
 <Level
- name         = "Presentation09"
- description  = "presentation level for Orxonox Convention X"
- gametype     = TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

@@ -12,10 +12,7 @@
   include("templates/spaceshipHXY.oxt")
 ?>
 
-<Level
- name         = "Planet"
- description  = "Demonstration of Planets"
->
+<Level>
   <templates>
     <Template link="lodtemplate_default" />
   </templates>

@@ -17,9 +17,7 @@
 ?>
 
 <Level
- name         = "Space Race"
- description  = "Test level for the gametype Space Race."
- gametype     = SpaceRace
+ gametype = "SpaceRace"
 >
   <templates>
     <Template link=lodtemplate_default />

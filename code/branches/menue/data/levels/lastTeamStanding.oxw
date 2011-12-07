@@ -15,9 +15,7 @@
 ?>
 
 <Level
- name         = "Last Team Standing"
- description  = "testmap for gametype last team standing"
- gametype     =  "LastTeamStanding"
+ gametype = "LastTeamStanding"
 >
   <templates>
     <Template link=lodtemplate_default />

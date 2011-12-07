@@ -14,9 +14,7 @@
 ?>
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
- gametype     = Deathmatch
+ gametype = "Deathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

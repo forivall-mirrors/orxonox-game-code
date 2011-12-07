@@ -15,9 +15,7 @@
 ?>
 
 <Level
- name         = "Teambase Match"
- description  = "Fight for the bases."
- gametype     = TeamBaseMatch
+ gametype = "TeamBaseMatch"
 >
 
   <templates>

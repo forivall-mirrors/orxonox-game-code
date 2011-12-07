@@ -14,10 +14,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Waypoints"
- description  = "Testing waypoings for AI controlled spaceships."
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

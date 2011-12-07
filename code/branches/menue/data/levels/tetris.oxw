@@ -30,9 +30,7 @@
 </Template>
 
 <Level
- name         = "Tetris"
- description  = "Tetris in space!"
- gametype     = "Tetris"
+ gametype = "Tetris"
 >
   <templates>
     <Template link=lodtemplate_default />

@@ -13,10 +13,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Event testing"
- description  = "A simple level to test the event-system (with comments)"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

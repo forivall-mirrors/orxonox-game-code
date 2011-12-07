@@ -12,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "shieldTL"
- description  = "LEVEL-DESCRIPTION"
->
+<Level>
 
 <templates>
   <Template link=lodtemplate_default />

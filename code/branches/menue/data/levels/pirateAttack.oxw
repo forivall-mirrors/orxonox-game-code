@@ -26,9 +26,7 @@
 ?>
     
 <Level
-name="Dani's Testlevel"
-description="Erste Versuche mit den Quests"
-gametype=TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
 
   <templates>

@@ -14,9 +14,7 @@
 ?>
 
 <Level
- name         = "Under Attack"
- description  = "Fight against the transporter."
- gametype     = UnderAttack
+ gametype = "UnderAttack"
 >
   <templates>
     <Template link=lodtemplate_default />

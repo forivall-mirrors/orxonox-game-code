@@ -15,9 +15,7 @@
 ?>
 
 <Level
- name         = "Waypoints"
- description  = "Testing waypoings for AI controlled spaceships."
- gametype     = TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

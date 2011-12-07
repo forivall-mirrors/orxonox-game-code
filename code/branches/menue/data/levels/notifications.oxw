@@ -12,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Presentation"
- description  = "A simple testlevel"
->
+<Level>
     <templates>
         <Template link=lodtemplate_default />
     </templates>

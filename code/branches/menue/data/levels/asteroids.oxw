@@ -13,9 +13,7 @@
 ?>
 
 <Level
- name         = "Asteroids Race"
- description  = "Reach the checkpoints and avoid asteroids."
- gametype     =  Asteroids
+ gametype = "Asteroids"
 >
   <templates>
     <Template link=lodtemplate_default />

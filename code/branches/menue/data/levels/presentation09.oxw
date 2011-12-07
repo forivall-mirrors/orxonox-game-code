@@ -13,11 +13,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Presentation09"
- description  = "presentation level for Orxonox Convention X"
-
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

@@ -108,9 +108,7 @@
 </Template>
 <!--*****************************************************************************************************************************************************************************************-->
 <Level
-  name="Fight in our back"
-  description="Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
-  gametype=TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

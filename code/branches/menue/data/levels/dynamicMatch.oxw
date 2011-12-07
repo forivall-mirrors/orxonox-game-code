@@ -15,9 +15,7 @@
 ?>
 
 <Level
- name         = "Dynamic Match"
- description  = "In progress -level for dynamicmatch"
- gametype     = "Dynamicmatch"
+ gametype = "Dynamicmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

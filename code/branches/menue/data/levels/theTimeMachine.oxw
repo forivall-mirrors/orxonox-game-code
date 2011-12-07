@@ -61,9 +61,7 @@
 <!--*****************************************************************************************************************************************************************************************-->
 
 <Level
-    name="The Time Machine"
-    description="A simple level. The only goal is to defeat as much enemies as you can."
-    gametype=TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
     <templates>
         <Template link=lodtemplate_default />

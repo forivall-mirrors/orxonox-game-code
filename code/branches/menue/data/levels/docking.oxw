@@ -12,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Transporter"
- description  = "Docking example level"
->
+<Level>
   <templates>
     <Template link="lodtemplate_default" />
   </templates>
