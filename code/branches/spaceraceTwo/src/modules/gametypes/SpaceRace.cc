@@ -28,6 +28,8 @@
 
 #include "SpaceRace.h"
 
+//#include "SpaceRaceManager.h"
+
 #include "items/Engine.h"
 
 #include "core/CoreIncludes.h"
@@ -53,7 +55,7 @@ namespace orxonox
         
         
        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-        {this->checkpointReached_[it->first]=0;}
+        {this->checkpointReached_[it->first]=-1;}
         
         
     }
@@ -139,12 +141,13 @@ namespace orxonox
         ChatManager::message(message);	        
       
     }
-     
-    
+    // for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+      //  {if(this->getCheckpointReached(it->first)==-1) orxout()<<"index -1"<<endl;}
+   
     }
 
-	void SpaceRace::setV(SpaceRaceManager* m){
-		/*Vector3 v =Vector3(0,0,0);
+	void SpaceRace::setV(SpaceRaceManager* m){/*
+		Vector3 v =Vector3(0,0,0);
         int j=0;
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -160,7 +163,7 @@ namespace orxonox
 	}
 
     void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
-    {
+    {/*
         this->checkpointReached_[pl]=index;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
@@ -170,7 +173,7 @@ namespace orxonox
                         + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
-        
+       */ 
        
     }
     
@@ -193,7 +196,8 @@ namespace orxonox
 
 void SpaceRace::playerEntered(PlayerInfo* player){
 	Gametype::playerEntered(player);
-    	//this->checkpointReached_[player]=0;
+	
+    	this->checkpointReached_[player]=-1;
     	//this->playersAlive_++;
     }
     

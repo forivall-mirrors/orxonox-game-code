@@ -57,11 +57,13 @@ namespace orxonox
             virtual ~SpaceRaceManager() ;
 
            void XMLPort(Element& xmlelement, XMLPort::Mode mode); 
-
+		int getIndex(RaceCheckPoint* r);
             void addCheckpoint(RaceCheckPoint* checkpoint);
             RaceCheckPoint* getCheckpoint(unsigned int index) const;
 		
+	void checkpointReached(RaceCheckPoint* check, PlayerInfo* player);
 		
+	void setNext(RaceCheckPoint* check);
 
 	void tick(float dt);
         protected:

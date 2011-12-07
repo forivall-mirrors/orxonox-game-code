@@ -33,6 +33,8 @@
 #include "core/XMLPort.h"
 #include "chat/ChatManager.h"
 
+#include <infos/PlayerInfo.h>
+
 #include "SpaceRace.h"
 
 namespace orxonox
@@ -50,8 +52,8 @@ namespace orxonox
         this->setSimultaneousTriggerers(100);
 	
            
-        this->bCheckpointIndex_ = 0;
-        //this->bIsLast_ = false;
+       
+        
         this->bTimeLimit_ = 0;
         this->isVisible_=true;
 
@@ -59,6 +61,7 @@ namespace orxonox
         this->setRadarObjectShape(RadarViewable::Triangle);
         this->setRadarVisibility(true);
     
+    	this->reached_=NULL;
     //this->addTarget("WorldEntity");
     
     
@@ -70,8 +73,8 @@ namespace orxonox
     
     	 if (this->isInitialized())
         {
-            //for (size_t i = 0; i < 3; ++i)
-            //   this->nextcheckpoints_[i]->destroy();
+           for (size_t i = 0; i < this->next_.size(); ++i)
+                this->next_[i]->destroy();
         }
        //nextcheckpoints_.destroy;
     }
@@ -120,21 +123,51 @@ namespace orxonox
     	//PlayerInfo* pl= player;
     	DistanceMultiTrigger::fire((bool)bIsTriggered,player);
         
-   //SUPER(RaceCheckPoint,fire,bIsTriggered,player);
-		
-
-        SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+       SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
         
-        	 PlayerInfo* player2 = (PlayerInfo*)player;
-        assert(player2);
-        	//DistanceMultiTrigger::fire(bIsTriggered,player);
+       
+        
+       // BaseObject b=*player;
+       //  PlayerInfo* p = orxonox_cast<PlayerInfo*,Player>(player);
+        //assert(player);
+       //PlayerInfo* player3=((PlayerInfo*) player);
+       Player* player3=((Player*) player);
+      
+      PlayerInfo* player2=( PlayerInfo*) player;
+       
+       for (std::map<PlayerInfo*, Player>::iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
+        {
+          unsigned int clientid1=0, clientid2=0,clientid3=0;
+          if(it->first !=NULL)clientid1 = it->first->getClientID();
+          
+          if(player3 != NULL && player3->info_ != NULL)clientid2 =         player3->info_->getClientID();
+          if(player2 != NULL )clientid3 =         player2->getClientID();
+          orxout()<<clientid1<<endl;orxout()<<clientid2<<endl;orxout()<<clientid3<<endl;
+        orxout()<<"for"<<endl;if(clientid1==clientid2) {orxout()<<"player"<<endl; player2=it->first;}if((it->first)==player2) {orxout()<<"player2"<<endl; }}
+        
+        // PlayerInfo* player2 = orxonox_cast<PlayerInfo*>(player);
+       // assert(player);
+        //gametype->newCheckpointReached(this,player);
+        //if(bIsTriggered)this->reached_=player2;
+        
+        /* for (std::map<PlayerInfo*, Player>::iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
+        {if(gametype->getCheckpointReached(it->first)==-1) orxout()<<"index -1"<<endl;if(player2==it->first)orxout()<<"e"<<endl;}
+        if(gametype->getCheckpointReached(player2)==-1) orxout()<<"my index -1"<<endl;
+   orxout()<<gametype->getCheckpointReached(player2)<<endl;
+         
         	
+        	RaceCheckPoint* check=gametype->getCheckpointReached(player2);
         	
-        	
+        bool b =false;	
+        for(int i=0;i<3;i++){
+        
+        if (check->getNext[i]==this){
+        	b=true;}
+        }	
        
         	
-        if (gametype && this->getCheckpointIndex() == gametype->getCheckpointReached(player2) && bIsTriggered)
+        if (gametype && b && bIsTriggered)
         {
             gametype->clock_.capture();
             float time = gametype->clock_.getSecondsPrecise();
@@ -146,11 +179,16 @@ namespace orxonox
             else if (this->getLast())
                 gametype->end();
             else
+            	gametype->newCheckpointReached(this,player2)
             {
-                gametype->newCheckpointReached(this,player2);
+                
                 this->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
             }
-        }
+        }*/
+  
+		
+
+      
     }
 
     void RaceCheckPoint::setTimelimit(float timeLimit)

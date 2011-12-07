@@ -38,7 +38,43 @@ gametype = SpaceRace
 	
 	<SpaceRaceManager>
 <checkpoints>	
-	<RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="true">
+	<RaceCheckPoint name="checkpoint1" position="0,-200,100" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false" nextcheckpoints=(1,2,0)>
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+            <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint2" position="0,-200,300" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false" nextcheckpoints=(3,0,0)>
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+            <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint3" position="0,-400,200" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false" nextcheckpoints=(3,0,0)>
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+            <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint4" position="0,-400,300" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="true">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -52,18 +88,7 @@ gametype = SpaceRace
 </checkpoints>
 </SpaceRaceManager>
 
- <SpaceShip position="0,2000,2000" lookat="0,0,0" team=1 >
-      <templates>
-        <Template link=spaceshipassff />
-      </templates>
-      <controller>
-         <WaypointPatrolController alertnessradius=1500 team=0 >
-            <waypoints>
-                <Model scale=0 position="0,2000,2000" />
-            </waypoints>
-         </WaypointPatrolController>
-      </controller>
-    </SpaceShip>
+ 
 
 
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />

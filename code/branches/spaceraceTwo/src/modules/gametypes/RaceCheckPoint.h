@@ -31,6 +31,8 @@
 
 #include "gametypes/GametypesPrereqs.h"
 
+
+
 #include "objects/triggers/DistanceMultiTrigger.h"
 #include "interfaces/RadarViewable.h"
 
@@ -61,17 +63,22 @@ namespace orxonox
            inline const Vector3& getNextcheckpoint() const
 		{return this->nextcheckpoints_;}
 
+	inline void setNext(int index,RaceCheckPoint* p)
+		{this->next_[index]=p;}
+ inline void setLast(bool isLast)
+                { this->bIsLast_ = isLast; }
+            inline bool getLast()
+                { return this->bIsLast_; }
+            bool bIsLast_; //True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
+            float bTimeLimit_; //The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
+	PlayerInfo* reached_;
+            	
 	inline void setV(bool b)
 		{this->isVisible_ = b;}
         protected:
             virtual void fire(bool bIsTriggered,BaseObject* player);
-            inline void setLast(bool isLast)
-                { this->bIsLast_ = isLast; }
-            inline bool getLast()
-                { return this->bIsLast_; }
-            
+           
 	
-            	
 
             virtual void setTimelimit(float timeLimit);
             inline float getTimeLimit()
@@ -81,14 +88,14 @@ namespace orxonox
 
         private:
             int bCheckpointIndex_; //The index of this check point. This value will be compared with the number of check points reached in the level. The check points must be indexed in ascending order beginning from zero and without any jumps between the indexes.
-            bool bIsLast_; //True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
-            float bTimeLimit_; //The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
-
+            
 	
 	Vector3 nextcheckpoints_; //the indexes of the next check points
 
 	bool isVisible_;
-      
+
+	
+      std::vector<RaceCheckPoint*> next_;
     };
 }
 

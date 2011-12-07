@@ -72,6 +72,7 @@ namespace orxonox
             inline void timeIsUp()
                 { this->bTimeIsUp_ = true;}
 	void tick(float dt);
+Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
 
 
 	 void setV(SpaceRaceManager* m);
@@ -84,8 +85,7 @@ namespace orxonox
             std::map<PlayerInfo*, int>checkpointReached_; //The number of the last check point reached by each player.
             std::set<float> scores_; //The times of the players are saved in a set.
             bool bTimeIsUp_; //True if one of the check points is reached too late.
-            Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
-
+            
 		
 		int playersAlive_;
 

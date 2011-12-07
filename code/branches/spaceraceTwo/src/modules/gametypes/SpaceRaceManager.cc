@@ -45,6 +45,8 @@ namespace orxonox
     {
         RegisterObject(SpaceRaceManager);
          
+         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
+                this->setNext(this->checkpoints_[i]);
           
     }
 
@@ -70,6 +72,17 @@ namespace orxonox
             return 0;
     }
     
+    int SpaceRaceManager::getIndex(RaceCheckPoint* r) 
+    {
+        
+        	 for (size_t i = 0; i < this->checkpoints_.size(); ++i)
+                if (this->checkpoints_[i]==r){return i;}
+           
+          
+        
+            return -1;
+    }
+    
      void SpaceRaceManager::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(SpaceRaceManager, XMLPort, xmlelement, mode);
@@ -84,9 +97,73 @@ namespace orxonox
      SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
      gametype->setV(this);
          
-    	
-     
+         
+    	 for (size_t i = 0; i < this->checkpoints_.size(); ++i){
+                if(this->checkpoints_[i]->reached_!=NULL)
+                this->checkpointReached(this->checkpoints_[i],this->checkpoints_[i]->reached_);
+          
+     }
     }
-}
+    
+    
+    void SpaceRaceManager::checkpointReached(RaceCheckPoint* check, PlayerInfo* player){
+    	 SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+        assert(gametype);
+        
+        //if(gametype->getCheckpointReached(player)==-1) {orxout()<<"index -1"<<endl;}
+   
+        	 bool b =false;	
+        	//DistanceMultiTrigger::fire(bIsTriggered,player);
+        	int index=gametype->getCheckpointReached(player);
+        	if (index>-1){
+        	RaceCheckPoint* tmp= this->getCheckpoint(index);
+        	Vector3 v= tmp->getNextcheckpoint();
+       
+       // orxout()<<"index not -1"<<endl;
+        if (this->getCheckpoint(v.x)==check){
+        	b=true;
+        }	
+       
+       if (this->getCheckpoint(v.y)==check){
+        	b=true;
+        }	
+       if (this->getCheckpoint(v.z)==check){
+        	b=true;
+        }	}
+        else{b=(this->getIndex(check)==0);}
+        	
+        if (gametype && b)
+        {
+            gametype->clock_.capture();
+            float time = gametype->clock_.getSecondsPrecise();
+            if (check->bTimeLimit_!=0 && time > check->bTimeLimit_)
+            {
+                gametype->timeIsUp();
+                gametype->end();
+            }
+            else if (check->getLast())
+                gametype->end();
+            else
+            {
+                gametype->newCheckpointReached(check,player);
+                check->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
+            }
+        }
+    	check->reached_=NULL;
+    }
+    
+    
+    
+    void SpaceRaceManager::setNext(RaceCheckPoint* check){
+    	
+    	Vector3 v=check->getNextcheckpoint();
+    		check->setNext(0,this->getCheckpoint(v.x));
+    	check->setNext(1,this->getCheckpoint(v.y));
+    	check->setNext(2,this->getCheckpoint(v.z));
+    	}
+    
+    
+    }
+
 
 
