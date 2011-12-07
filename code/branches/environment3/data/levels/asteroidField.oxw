@@ -1,7 +1,7 @@
 <LevelInfo
  name = "asteroidFieldTest"
  description = "Test of the asteroidField generator."
- tags = "asteroidField"
+ tags = ""
 />
 
 <?lua
