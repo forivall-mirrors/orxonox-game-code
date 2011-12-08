@@ -38,7 +38,7 @@ gametype = SpaceRace
 	
 	<SpaceRaceManager>
 <checkpoints>	
-	<RaceCheckPoint name="checkpoint1" position="0,-200,100" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false" nextcheckpoints=(1,2,0)>
+	<RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false" nextcheckpoints="1,2,0">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -50,7 +50,7 @@ gametype = SpaceRace
         </collisionShapes>
     </RaceCheckPoint>
 
-<RaceCheckPoint name="checkpoint2" position="0,-200,300" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false" nextcheckpoints=(3,0,0)>
+<RaceCheckPoint name="checkpoint2" position="0,2100,2300" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false" nextcheckpoints="3,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -62,7 +62,7 @@ gametype = SpaceRace
         </collisionShapes>
     </RaceCheckPoint>
 
-<RaceCheckPoint name="checkpoint3" position="0,-400,200" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false" nextcheckpoints=(3,0,0)>
+<RaceCheckPoint name="checkpoint3" position="0,700,2700" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false" nextcheckpoints="3,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -89,7 +89,20 @@ gametype = SpaceRace
 </SpaceRaceManager>
 
  
-
+<SpaceShip position="0,0,200" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshipassff />
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=1000 team=10>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=8 position="0,-2000,1000" />
+            <Model mesh="cube.mesh" scale=8 position="0,2100,2300" />
+            <Model mesh="cube.mesh" scale=8 position="0,-400,300" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
 
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
 

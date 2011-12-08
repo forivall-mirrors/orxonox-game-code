@@ -63,8 +63,7 @@ namespace orxonox
            inline const Vector3& getNextcheckpoint() const
 		{return this->nextcheckpoints_;}
 
-	inline void setNext(int index,RaceCheckPoint* p)
-		{this->next_[index]=p;}
+	
  inline void setLast(bool isLast)
                 { this->bIsLast_ = isLast; }
             inline bool getLast()
@@ -73,16 +72,15 @@ namespace orxonox
             float bTimeLimit_; //The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
 	PlayerInfo* reached_;
             	
-	inline void setV(bool b)
-		{this->isVisible_ = b;}
+	inline float getTimeLimit()
+                { return this->bTimeLimit_;}
         protected:
             virtual void fire(bool bIsTriggered,BaseObject* player);
            
 	
 
             virtual void setTimelimit(float timeLimit);
-            inline float getTimeLimit()
-                { return this->bTimeLimit_;}
+            
             inline const WorldEntity* getWorldEntity() const
                 { return this; }
 
@@ -92,8 +90,7 @@ namespace orxonox
 	
 	Vector3 nextcheckpoints_; //the indexes of the next check points
 
-	bool isVisible_;
-
+	
 	
       std::vector<RaceCheckPoint*> next_;
     };

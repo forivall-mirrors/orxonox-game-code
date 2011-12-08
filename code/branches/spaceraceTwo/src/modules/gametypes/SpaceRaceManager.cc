@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *     Mauro Salomon
+ *     Celine Eggenberger
  *   Co-authors:
  *      ...
  *
@@ -37,6 +37,8 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 
+
+
 namespace orxonox
 {
     CreateFactory(SpaceRaceManager);
@@ -45,9 +47,8 @@ namespace orxonox
     {
         RegisterObject(SpaceRaceManager);
          
-         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
-                this->setNext(this->checkpoints_[i]);
-          
+        this->firstcheckpointvisible_=false;
+         
     }
 
    SpaceRaceManager::~SpaceRaceManager()
@@ -94,9 +95,9 @@ namespace orxonox
     void SpaceRaceManager::tick(float dt)
     {
     SUPER(SpaceRaceManager,tick,dt);
-     SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
-     gametype->setV(this);
-         
+     
+     if(this->checkpoints_[0] != NULL && !this->firstcheckpointvisible_)
+         {this->checkpoints_[0]->setRadarVisibility(true);this->firstcheckpointvisible_=false;}
          
     	 for (size_t i = 0; i < this->checkpoints_.size(); ++i){
                 if(this->checkpoints_[i]->reached_!=NULL)
@@ -110,16 +111,17 @@ namespace orxonox
     	 SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
         
-        //if(gametype->getCheckpointReached(player)==-1) {orxout()<<"index -1"<<endl;}
+       
    
         	 bool b =false;	
-        	//DistanceMultiTrigger::fire(bIsTriggered,player);
+        	
         	int index=gametype->getCheckpointReached(player);
+        	Vector3 v=Vector3 (-1,-1,-1);
         	if (index>-1){
         	RaceCheckPoint* tmp= this->getCheckpoint(index);
-        	Vector3 v= tmp->getNextcheckpoint();
+        	v= tmp->getNextcheckpoint();
        
-       // orxout()<<"index not -1"<<endl;
+       
         if (this->getCheckpoint(v.x)==check){
         	b=true;
         }	
@@ -136,7 +138,7 @@ namespace orxonox
         {
             gametype->clock_.capture();
             float time = gametype->clock_.getSecondsPrecise();
-            if (check->bTimeLimit_!=0 && time > check->bTimeLimit_)
+            if (check->getTimeLimit()!=0 && time > check->getTimeLimit())
             {
                 gametype->timeIsUp();
                 gametype->end();
@@ -145,22 +147,38 @@ namespace orxonox
                 gametype->end();
             else
             {
+            	if (index > -1)this->setRadVis(player,false);
                 gametype->newCheckpointReached(check,player);
                 check->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
+                
+                
+                
+                this->setRadVis(player, true);
+               
             }
         }
     	check->reached_=NULL;
     }
     
+    void SpaceRaceManager::setRadVis(PlayerInfo* player, bool b){
+    	SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+        assert(gametype);
+    	int index=gametype->getCheckpointReached(player);
+    	Vector3 v=Vector3(-1,-1,-1);
+    	RaceCheckPoint* tmp= this->getCheckpoint(index);
+        	v= tmp->getNextcheckpoint();
     
     
-    void SpaceRaceManager::setNext(RaceCheckPoint* check){
-    	
-    	Vector3 v=check->getNextcheckpoint();
-    		check->setNext(0,this->getCheckpoint(v.x));
-    	check->setNext(1,this->getCheckpoint(v.y));
-    	check->setNext(2,this->getCheckpoint(v.z));
-    	}
+    	 if(v.x > -1){this->getCheckpoint(v.x)->setRadarVisibility(b);
+                this->getCheckpoint(v.x)->settingsChanged();}
+                if(v.y > -1){this->getCheckpoint(v.y)->setRadarVisibility(b);
+                this->getCheckpoint(v.y)->settingsChanged();}
+                if(v.z > -1){this->getCheckpoint(v.z)->setRadarVisibility(b);
+                this->getCheckpoint(v.z)->settingsChanged();}
+    
+    }
+    
+    
     
     
     }

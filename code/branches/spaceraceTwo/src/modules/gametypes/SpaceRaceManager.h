@@ -41,6 +41,8 @@
 #include "tools/interfaces/Tickable.h"
 #include "RaceCheckPoint.h"
 
+
+
 namespace orxonox
 {
   /**
@@ -63,14 +65,14 @@ namespace orxonox
 		
 	void checkpointReached(RaceCheckPoint* check, PlayerInfo* player);
 		
-	void setNext(RaceCheckPoint* check);
+	
 
 	void tick(float dt);
         protected:
-		
+		 void setRadVis(PlayerInfo* player, bool b);
         private:
 		std::vector<RaceCheckPoint*> checkpoints_;
- 		
+ 		bool firstcheckpointvisible_;
 		
 		
  };

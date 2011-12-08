@@ -77,7 +77,7 @@ namespace orxonox
     }
 
     void WaypointPatrolController::searchEnemy()
-    {
+    {/*
         this->patrolTimer_.setInterval(rnd());
 
         if (!this->getControllableEntity())
@@ -100,6 +100,6 @@ namespace orxonox
         }
 
         if (shortestsqdistance > (this->alertnessradius_ * this->alertnessradius_))
-            this->target_ = 0;
+            this->target_ = 0;*/
     }
 }

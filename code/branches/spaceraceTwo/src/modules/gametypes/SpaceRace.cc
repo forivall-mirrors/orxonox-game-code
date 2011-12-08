@@ -28,7 +28,6 @@
 
 #include "SpaceRace.h"
 
-//#include "SpaceRaceManager.h"
 
 #include "items/Engine.h"
 
@@ -99,8 +98,10 @@ namespace orxonox
 
     void SpaceRace::start()
     {
-    		//Gametype::start();
-  	  		   this->spawnPlayersIfRequested(); Gametype::checkStart(); 
+    		
+  	  		   this->spawnPlayersIfRequested();
+  	  		   
+  	  		    Gametype::checkStart(); 
   	  		   this->cantMove_=true; 
     	 
     	         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
@@ -141,56 +142,41 @@ namespace orxonox
         ChatManager::message(message);	        
       
     }
-    // for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-      //  {if(this->getCheckpointReached(it->first)==-1) orxout()<<"index -1"<<endl;}
+    
    
     }
 
-	void SpaceRace::setV(SpaceRaceManager* m){/*
-		Vector3 v =Vector3(0,0,0);
-        int j=0;
-        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-        {
-        	j=this->getCheckpointReached(it->first);
-        	RaceCheckPoint* r=m->getCheckpoint(j);
-        	v=r->getNextcheckpoint();
-        	for(int i=1;i<4;i++){
-        	if(v[i]==0){
-        	 RaceCheckPoint* n=m->getCheckpoint(v[i]);
-           	 n->setV(true);
-           	 }}
-	}*/
-	}
-
-    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
-    {/*
-        this->checkpointReached_[pl]=index;
-        this->clock_.capture();
-        int s = this->clock_.getSeconds();
-        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
-                        + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-                        + " seconds.";
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        ChatManager::message(message);
-       */ 
-       
-    }
+	
     
-     void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
-    {	int index = p->getCheckpointIndex();
-        this->checkpointReached_[pl]=index;
+    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
+	    {
+	        this->checkpointReached_[pl]=index;
         this->clock_.capture();
-        int s = this->clock_.getSeconds();
+	        int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+	        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-                        + " seconds.";
+	                        + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
-        
-       
-    }
+        	       
+	    }
+   
+     void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
+     	    {   int index = p->getCheckpointIndex();
+	        this->checkpointReached_[pl]=index;
+	        this->clock_.capture();
+	        int s = this->clock_.getSeconds();
+	        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+	                        + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
+                        + " seconds.";
+	        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+	        ChatManager::message(message);
+	       
+	       
+	    }
+	    
     
     
 
@@ -211,4 +197,19 @@ void SpaceRace::playerEntered(PlayerInfo* player){
 
        // return valid_player;
 	}
+	
+	 bool SpaceRace::allowPawnHit(Pawn* victim, Pawn* originator)
+    {
+        return false;
+    }
+
+    bool SpaceRace::allowPawnDamage(Pawn* victim, Pawn* originator)
+    {
+        return false;
+    }
+
+    bool SpaceRace::allowPawnDeath(Pawn* victim, Pawn* originator)
+    {
+        return false;
+    }
 }

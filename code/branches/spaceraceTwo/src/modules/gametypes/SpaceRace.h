@@ -75,7 +75,11 @@ namespace orxonox
 Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
 
 
-	 void setV(SpaceRaceManager* m);
+	  bool allowPawnHit(Pawn* victim, Pawn* originator);
+
+    bool allowPawnDamage(Pawn* victim, Pawn* originator);
+
+    bool allowPawnDeath(Pawn* victim, Pawn* originator);
         protected:
 		virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
 		 virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
