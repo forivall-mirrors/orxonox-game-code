@@ -343,23 +343,22 @@ namespace orxonox
         this->moveToPosition(this->targetPosition_);
     }
 
-    void Masterable::copyOrientation(const Quaternion& orient)
+  //copy the Roll orientation of given Quaternion.
+  void Masterable::copyOrientation(const Quaternion& orient)
     {
-	//roll angle in radian, difference between master and slave
-	float diff=orient.getRoll().valueRadians()-(this->getControllableEntity()->getOrientation().getRoll().valueRadians());
-	if ((diff<math::twoPi && diff>math::pi) || diff>(math::pi)*3)
-	{
-		diff=diff-math::twoPi;
-	}
-	this->getControllableEntity()->rotateRoll(1.0f*ROTATEFACTOR_MASTER*diff);
+        //roll angle difference in radian
+        float diff=orient.getRoll(false).valueRadians()-(this->getControllableEntity()->getOrientation().getRoll(false).valueRadians());
+        while(diff>math::twoPi) diff-=math::twoPi;
+        while(diff<-math::twoPi) diff+=math::twoPi;
+        this->getControllableEntity()->rotateRoll(diff*ROTATEFACTOR_MASTER);
     }
 
     void Masterable::copyTargetOrientation()
     {
-	if (bHasTargetOrientation_)
-  	{
-		copyOrientation(targetOrientation_);
-	}
+        if (bHasTargetOrientation_)
+        {
+            copyOrientation(targetOrientation_);
+        }
     }
 
 
@@ -474,24 +473,23 @@ void Masterable::commandSlaves()
         {
             dest += 1.0f*orient*WorldEntity::BACK;
             Vector3 pos = Vector3::ZERO;
-	    bool left=true;
+	         bool left=true;
             int i = 1;
 	    
             for(std::vector<Masterable*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
                 pos = Vector3::ZERO;
-		if (left)
-		{
+                if (left)
+                {
                     pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::LEFT);
-		} else
-		{
-		    pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
-		    i++;
-		    dest+=FORMATION_LENGTH*(orient*WorldEntity::BACK);
-		}		
-		(*it)->setTargetOrientation(orient);
+                } else{
+                    pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
+                    i++;
+                    dest+=FORMATION_LENGTH*(orient*WorldEntity::BACK);
+                }		
+                (*it)->setTargetOrientation(orient);
                 (*it)->setTargetPosition(pos);
-		left=!left;
+                left=!left;
             }
         }
     }
@@ -632,6 +630,18 @@ void Masterable::commandSlaves()
     void Masterable::masterAttacked(Pawn* originator)
     {
        orxout(debug_output)<<"slaves, attack!"<<endl;
+       unsigned int i=0;
+       for(std::vector<Masterable*>::reverse_iterator it = slaves_.rbegin(); it != slaves_.rend(); it++)
+       {
+           if ((*it)->state_!=FREE)
+           {
+               (*it)->state_=FREE;
+               (*it)->forceFreedom();
+               (*it)->target_=originator;
+           }
+           i++;
+           if (i==slaves_.size()/2) break; //half the formation should attack.
+       }
     }     
 
 
@@ -845,14 +855,14 @@ void Masterable::commandSlaves()
 
     void Masterable::setTargetOrientation(const Quaternion& orient)
     {
-	this->targetOrientation_=orient;	
-	this->bHasTargetOrientation_=true;
+        this->targetOrientation_=orient;	
+        this->bHasTargetOrientation_=true;
     }
 
     void Masterable::setTargetOrientation(Pawn* target)
     {
-	if (target)
-	    setTargetOrientation(target->getOrientation());
+        if (target)
+            setTargetOrientation(target->getOrientation());
     }
 
     void Masterable::setTarget(Pawn* target)
