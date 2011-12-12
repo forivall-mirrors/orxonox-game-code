@@ -54,6 +54,7 @@ public:
     virtual void XMLPort ( Element& xmlelement, XMLPort::Mode mode );
     virtual void tick ( float dt );
 
+    // RadarListener interface
     virtual void addObject ( RadarViewable* object );
     virtual void removeObject ( RadarViewable* viewable );
     virtual void objectChanged ( RadarViewable* viewable );
