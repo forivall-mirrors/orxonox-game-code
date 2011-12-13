@@ -101,7 +101,8 @@ namespace orxonox
         //TODO: switch the engine off/on via a short function  
         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
         {
-            if(it->getMaxSpeedFront()>0)
+            it->setActive(false);
+            /*if(it->getMaxSpeedFront()>0)
             {
                 this->maxSpeedBack_=it->getMaxSpeedBack(); 
                 this->maxSpeedFront_=it->getMaxSpeedFront(); 
@@ -111,7 +112,7 @@ namespace orxonox
             it->setMaxSpeedBack(0); 
             it->setMaxSpeedFront(0); 
             it->setMaxSpeedLeftRight(0); 
-            it->setMaxSpeedUpDown(0); 
+            it->setMaxSpeedUpDown(0);*/ 
         } 
         this->addBots(this->numberOfBots_); 
     }
@@ -124,10 +125,11 @@ namespace orxonox
         {
             for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
             { 
-                it->setMaxSpeedBack(this->maxSpeedBack_); 
+                it->setActive(true);
+                /*it->setMaxSpeedBack(this->maxSpeedBack_); 
                 it->setMaxSpeedFront(this->maxSpeedFront_); 
                 it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_); 
-                it->setMaxSpeedUpDown(this->maxSpeedUpDown_); 
+                it->setMaxSpeedUpDown(this->maxSpeedUpDown_);*/ 
             }
             this->cantMove_= false;
             
