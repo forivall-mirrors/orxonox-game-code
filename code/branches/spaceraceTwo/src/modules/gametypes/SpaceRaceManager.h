@@ -52,30 +52,28 @@ namespace orxonox
     class _GametypesExport SpaceRaceManager : public BaseObject, public Tickable
     {
         friend class RaceCheckPoint;
-	
-
+    
         public:
             SpaceRaceManager(BaseObject* creator);
             virtual ~SpaceRaceManager() ;
 
-           void XMLPort(Element& xmlelement, XMLPort::Mode mode); 
-		int getIndex(RaceCheckPoint* r);
+            void XMLPort(Element& xmlelement, XMLPort::Mode mode); 
+            int getIndex(RaceCheckPoint* r);
             void addCheckpoint(RaceCheckPoint* checkpoint);
             RaceCheckPoint* getCheckpoint(unsigned int index) const;
-		
-	void checkpointReached(RaceCheckPoint* check, PlayerInfo* player);
-		
-	
-
-	void tick(float dt);
+        
+            void checkpointReached(RaceCheckPoint* check, PlayerInfo* player);
+        
+            void tick(float dt);
+    
         protected:
-		 void setRadVis(PlayerInfo* player, bool b);
+            void setRadVis(PlayerInfo* player, bool b);
+    
         private:
-		std::vector<RaceCheckPoint*> checkpoints_;
- 		bool firstcheckpointvisible_;
-		
-		
- };
+            std::vector<RaceCheckPoint*> checkpoints_;
+            bool firstcheckpointvisible_;
+        
+    };
 }
 
 #endif /* _SpaceRaceManager_H__ */

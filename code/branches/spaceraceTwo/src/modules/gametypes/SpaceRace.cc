@@ -46,16 +46,12 @@ namespace orxonox
     {
         RegisterObject(SpaceRace);
         
-        
-    
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
         this->cantMove_=false;
         
-        
        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-        {this->checkpointReached_[it->first]=-1;}
-        
+        {this->checkpointReached_[it->first]=-1;} //TODO: should be removed; no functionallity
         
     }
     
@@ -98,107 +94,101 @@ namespace orxonox
 
     void SpaceRace::start()
     {
-    		
-  	  		   this->spawnPlayersIfRequested();
-  	  		   
-  	  		    Gametype::checkStart(); 
-  	  		   this->cantMove_=true; 
-    	 
-    	         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
-	  		        {if(it->getMaxSpeedFront()>0){this->maxSpeedBack_=it->getMaxSpeedBack(); 
-  	  		        this->maxSpeedFront_=it->getMaxSpeedFront(); 
-  	  		        this->maxSpeedLeftRight_=it->getMaxSpeedLeftRight(); 
-  	  		        this->maxSpeedUpDown_=(it->getMaxSpeedUpDown()); 
-  	  		         }
-  	  		        it->setMaxSpeedBack(0); 
-  	  		        it->setMaxSpeedFront(0); 
-  	  	        it->setMaxSpeedLeftRight(0); 
-  	  		        it->setMaxSpeedUpDown(0); 
-  	  		         
-  	  		        
-  	  		        } 
-  	  		       
-  	  		       this->addBots(this->numberOfBots_); 
-  	  		       
-      
+
+        this->spawnPlayersIfRequested();
+        Gametype::checkStart(); 
+        this->cantMove_=true; 
+        //TODO: switch the engine off/on via a short function  
+        for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
+        {
+            if(it->getMaxSpeedFront()>0)
+            {
+                this->maxSpeedBack_=it->getMaxSpeedBack(); 
+                this->maxSpeedFront_=it->getMaxSpeedFront(); 
+                this->maxSpeedLeftRight_=it->getMaxSpeedLeftRight(); 
+                this->maxSpeedUpDown_=(it->getMaxSpeedUpDown()); 
+            }
+            it->setMaxSpeedBack(0); 
+            it->setMaxSpeedFront(0); 
+            it->setMaxSpeedLeftRight(0); 
+            it->setMaxSpeedUpDown(0); 
+        } 
+        this->addBots(this->numberOfBots_); 
     }
     
-    void SpaceRace::tick(float dt){
-    SUPER(SpaceRace,tick,dt);
+    void SpaceRace::tick(float dt)
+    {
+        SUPER(SpaceRace,tick,dt);
     
-    if(!this->isStartCountdownRunning() && this->cantMove_){
-    
-    	for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
-  	  		        { 
-  	  		        it->setMaxSpeedBack(this->maxSpeedBack_); 
-  	  		         it->setMaxSpeedFront(this->maxSpeedFront_); 
-  	  		         it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_); 
-  	  		         it->setMaxSpeedUpDown(this->maxSpeedUpDown_); 
-  	  	}
-  	  	this->cantMove_= false;
-  	  	
-  	  	std::string message("The match has started! Reach the check points as quickly as possible!");
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        ChatManager::message(message);	        
-      
-    }
-    
+        if(!this->isStartCountdownRunning() && this->cantMove_)
+        {
+            for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
+            { 
+                it->setMaxSpeedBack(this->maxSpeedBack_); 
+                it->setMaxSpeedFront(this->maxSpeedFront_); 
+                it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_); 
+                it->setMaxSpeedUpDown(this->maxSpeedUpDown_); 
+            }
+            this->cantMove_= false;
+            
+            std::string message("The match has started! Reach the check points as quickly as possible!");
+            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+            ChatManager::message(message);            
+        }
    
     }
 
-	
+    
     
     void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
-	    {
-	        this->checkpointReached_[pl]=index;
+    {
+        this->checkpointReached_[pl]=index;
         this->clock_.capture();
-	        int s = this->clock_.getSeconds();
+        int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-	        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
-                        + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-	                        + " seconds.";
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
+            + " seconds.";// Message is too long for a normal screen.
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
-        	       
-	    }
+    }
    
-     void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
-     	    {   int index = p->getCheckpointIndex();
-	        this->checkpointReached_[pl]=index;
-	        this->clock_.capture();
-	        int s = this->clock_.getSeconds();
-	        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
+    void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
+    {   
+        int index = p->getCheckpointIndex();
+        this->checkpointReached_[pl]=index;
+        this->clock_.capture();
+        int s = this->clock_.getSeconds();
+        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
         const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
-	                        + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-                        + " seconds.";
-	        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-	        ChatManager::message(message);
-	       
-	       
-	    }
-	    
+            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
+            + " seconds.";
+        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        ChatManager::message(message);
+    }
+        
     
+    void SpaceRace::playerEntered(PlayerInfo* player)
+    {
+        Gametype::playerEntered(player);
     
-
-void SpaceRace::playerEntered(PlayerInfo* player){
-	Gametype::playerEntered(player);
-	
-    	this->checkpointReached_[player]=-1;
-    	//this->playersAlive_++;
+        this->checkpointReached_[player]=-1;
+        //this->playersAlive_++;
     }
     
-	bool SpaceRace::playerLeft(PlayerInfo* player){
-	return Gametype::playerLeft(player);
-		// bool valid_player = true;
+    bool SpaceRace::playerLeft(PlayerInfo* player)
+    {
+        return Gametype::playerLeft(player);
+        // bool valid_player = true;
         //if (valid_player)
        // {
         //    this->playersAlive_--;
         //}
 
        // return valid_player;
-	}
-	
-	 bool SpaceRace::allowPawnHit(Pawn* victim, Pawn* originator)
+    }
+    
+    bool SpaceRace::allowPawnHit(Pawn* victim, Pawn* originator)
     {
         return false;
     }
