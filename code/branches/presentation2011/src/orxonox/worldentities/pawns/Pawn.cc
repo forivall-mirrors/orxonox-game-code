@@ -128,8 +128,8 @@ namespace orxonox
 
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
-
-
+   
+        XMLPortParam ( RadarViewable, "RVName", setRVName, getRVName, xmlelement, mode );
     }
 
     void Pawn::registerVariables()

@@ -24,6 +24,7 @@
  *   Co-authors:
  *      Reto Grieder
  *      Oliver Scheuss
+ *      Matthias Spalinger
  *
  */
 
@@ -62,7 +63,7 @@ bool compareDistance ( std::pair<RadarViewable*, unsigned int > a, std::pair<Rad
 void HUDNavigation::setConfigValues()
 {
   SetConfigValue(markerLimit_, 3);
-
+  SetConfigValue(showDistance, false);
 }
 
 CreateFactory ( HUDNavigation );
@@ -77,7 +78,6 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     setFont ( "Monofur" );
     setTextSize ( 0.05f );
     setNavMarkerSize ( 0.05f );
-    setDetectionLimit( 10000.0f );
 }
 
 HUDNavigation::~HUDNavigation()
@@ -96,10 +96,9 @@ void HUDNavigation::XMLPort ( Element& xmlelement, XMLPort::Mode mode )
 {
     SUPER ( HUDNavigation, XMLPort, xmlelement, mode );
 
-    XMLPortParam ( HUDNavigation, "font",           setFont,           getFont,           xmlelement, mode );
-    XMLPortParam ( HUDNavigation, "textSize",       setTextSize,       getTextSize,       xmlelement, mode );
-    XMLPortParam ( HUDNavigation, "navMarkerSize",  setNavMarkerSize,  getNavMarkerSize,  xmlelement, mode );
-    XMLPortParam ( HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "font",          setFont,          getFont,          xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "textSize",      setTextSize,      getTextSize,      xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode );
 }
 
 void HUDNavigation::setFont ( const std::string& font )
@@ -143,7 +142,19 @@ float HUDNavigation::getTextSize() const
     return textSize_;
 }
 
+float HUDNavigation::getArrowSizeX(int dist)
+{    
+    if (dist < 600) 
+        dist = 600;
+    return this->getActualSize().x * 900 * navMarkerSize_ / dist;
+}
 
+float HUDNavigation::getArrowSizeY(int dist)
+{    
+    if (dist < 600)
+        dist = 600;   
+    return this->getActualSize().y * 900 * navMarkerSize_ / dist;
+}
 
 void HUDNavigation::tick ( float dt )
 {
@@ -163,20 +174,31 @@ void HUDNavigation::tick ( float dt )
     sortedObjectList_.sort ( compareDistance );
 
     unsigned int markerCount_ = 0;
-    bool closeEnough_ = false; //only display objects that are close enough to be relevant for the player
+
 //         for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++markerCount_, ++listIt )
     {
         ObjectMap::iterator it = activeObjectList_.find ( listIt->first );
-        closeEnough_ = listIt->second < detectionLimit_ ;
-        if ( markerCount_ < markerLimit_ && (closeEnough_ ||  detectionLimit_ < 0) ) // display on HUD if the statement is true
+
+        if ( markerCount_ < markerLimit_ )
         {
 
 
             // Get Distance to HumanController and save it in the TextAreaOverlayElement.
             int dist = listIt->second;
+            float textLength = 0.0f;
+
+            //display distance next to cursor
+            if (showDistance){
             it->second.text_->setCaption ( multi_cast<std::string> ( dist ) );
-            float textLength = multi_cast<std::string> ( dist ).size() * it->second.text_->getCharHeight() * 0.3f;
+            textLength = multi_cast<std::string> ( dist ).size() * it->second.text_->getCharHeight() * 0.3f;
+            }
+
+            //display name next to cursor
+            else{
+            it->second.text_->setCaption(it->first->getRVName()); 
+            textLength = it->first->getRVName().size() * it->second.text_->getCharHeight() * 0.3f;
+            }
 
             // Transform to screen coordinates
             Vector3 pos = camTransform * it->first->getRVWorldPosition();
@@ -193,8 +215,6 @@ void HUDNavigation::tick ( float dt )
             }
             else
                 outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
-            // Get Distance to HumanController and save it in the TextAreaOverlayElement.
-            it->second.text_->setCaption ( multi_cast<std::string> ( dist ) );
 
             if ( outOfView )
             {
@@ -206,6 +226,12 @@ void HUDNavigation::tick ( float dt )
                     it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "arrows.png", it->first->getRadarObjectColour()) );
                     it->second.wasOutOfView_ = true;
                 }
+
+                //float xDistScale = this->getActualSize().x * 1000.0f * navMarkerSize_ / dist;
+                //float yDistScale = this->getActualSize().y * 1000.0f * navMarkerSize_ / dist;
+
+                // Adjust Arrowsize according to distance
+                it->second.panel_->setDimensions(getArrowSizeX(dist),getArrowSizeY(dist));
 
                 // Switch between top, bottom, left and right position of the arrow at the screen border
                 if ( pos.x < pos.y )
@@ -262,6 +288,7 @@ void HUDNavigation::tick ( float dt )
                 {
                   //it->second.panel_->setMaterialName ( "Orxonox/NavTDC" );
                     it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "tdc.png", it->first->getRadarObjectColour()) );
+                    it->second.panel_->setDimensions ( navMarkerSize_ * this->getActualSize().x, navMarkerSize_ * this->getActualSize().y );
                     it->second.wasOutOfView_ = false;
                 }
 
@@ -279,7 +306,7 @@ void HUDNavigation::tick ( float dt )
             it->second.panel_->show();
             it->second.text_->show();
         }
-        else // do not display on HUD
+        else
         {
             it->second.panel_->hide();
             it->second.text_->hide();
@@ -311,7 +338,7 @@ void HUDNavigation::sizeChanged()
 
 void HUDNavigation::addObject ( RadarViewable* object )
 {
-    if( showObject(object) == false )
+    if( showObject(object)==false )
         return;
 
     if ( activeObjectList_.size() >= markerLimit_ )
@@ -398,7 +425,7 @@ bool HUDNavigation::showObject(RadarViewable* rv)
     if ( rv == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
         return false;
     assert( rv->getWorldEntity() );
-    if ( rv->getWorldEntity()->isVisible() == false || rv->getRadarVisibility() == false )
+    if ( rv->getWorldEntity()->isVisible()==false || rv->getRadarVisibility()==false )
         return false;
     return true;
 }
