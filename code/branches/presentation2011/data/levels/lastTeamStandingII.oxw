@@ -94,6 +94,7 @@
        </collisionShapes>
    </StaticEntity>
 <!-- END of CUBE-->
+
 <!-------------- Centered Thin Gate -------------->
 
    <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 >
@@ -411,7 +412,7 @@ do
     <TeamSpawnPoint team=3 position="835,-300,845" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <TeamSpawnPoint team=3 position="845,350,835" direction="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <TeamSpawnPoint team=3 position="845,-300,835" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-<Bot />
+<Bot /><!-- at least one bot is needed to stat the game properly. Else the game finishes. This could be avoided, if the menue allows a preselection of the number of players. --> 
 
   </Scene>
 </Level>

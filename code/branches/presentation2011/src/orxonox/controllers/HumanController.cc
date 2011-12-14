@@ -194,8 +194,8 @@ namespace orxonox
         {
             this->boosting_ = true;
             this->boostingTimeout_.startTimer();
-            
-            this->controllableEntity_->boost(this->boosting_);
+            if(this->controllableEntity_)
+                this->controllableEntity_->boost(this->boosting_);
 //            orxout() << "Start boosting" << endl;
         }
     }
@@ -208,8 +208,8 @@ namespace orxonox
     {
         this->boosting_ = false;
         this->boostingTimeout_.stopTimer();
-
-        this->controllableEntity_->boost(this->boosting_);
+        if(this->controllableEntity_)
+            this->controllableEntity_->boost(this->boosting_);
 //        orxout() << "Stop boosting" << endl;
     }
 

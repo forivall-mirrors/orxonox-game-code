@@ -26,7 +26,9 @@
 ?>
     
 <Level
- gametype = "TeamDeathmatch"
+name="Dani's Testlevel"
+description="Erste Versuche mit den Quests"
+gametype=Mission
 >
 
   <templates>
@@ -250,7 +252,7 @@
                         </execute>
                     </events>
                 </QuestEffectBeacon>
-        <!--Stick found-->
+        <!--Stick found-->zz
         <QuestEffectBeacon position="4800,5785,-10725" times=1>
                     <attached>
                         <DistanceTrigger name=questbeacon7  position="0,0,0" distance=30 target="Pawn" beaconMode="identify" targetname=Me />

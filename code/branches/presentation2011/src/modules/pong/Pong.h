@@ -80,8 +80,9 @@ namespace orxonox
             */
             void setCenterpoint(PongCenterpoint* center)
                 { this->center_ = center; }
-
-            PlayerInfo* getLeftPlayer() const; //!< Get the left player.
+            void setConfigValues(); //!< Makes scoreLimit configurable.
+            
+	    PlayerInfo* getLeftPlayer() const; //!< Get the left player.
             PlayerInfo* getRightPlayer() const; //!< Get the right player.
 
         protected:
@@ -93,7 +94,8 @@ namespace orxonox
             WeakPtr<PongCenterpoint> center_; //!< The playing field.
             WeakPtr<PongBall> ball_; //!< The Pong ball.
             WeakPtr<PongBat> bat_[2]; //!< The two bats.
-            Timer starttimer_; //!< A timer to delay the start of the game.
+	    Timer starttimer_; //!< A timer to delay the start of the game.
+            int scoreLimit_; //!< If a player scored that much points, the game is ended.
     };
 }
 

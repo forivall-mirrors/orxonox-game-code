@@ -79,7 +79,7 @@ namespace orxonox
             void move(char direction, bool bUseDelay); //!< Determine the movement the AI will undertake.
             void delayedMove(); //!< Is called, when a delayed move takes effect.
 
-            PongBall* ball_; //!< A pointer to the ball.
+            WeakPtr<PongBall> ball_; //!< A weak pointer to the ball.
             Vector2 ballDirection_; //!< Vector to store the (x,z) direction in which the ball is flying.
             float ballEndPosition_; //!< The calculated end position of the ball.
             float randomOffset_; //!< A random offset to introduce random errors (weighted by the strength of the AI) into the AI's behavior.

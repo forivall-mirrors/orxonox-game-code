@@ -8,4 +8,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Dynamicmatch.cc
   LastManStanding.cc
   LastTeamStanding.cc
+  TeamGametype.cc
+  Mission.cc
 )

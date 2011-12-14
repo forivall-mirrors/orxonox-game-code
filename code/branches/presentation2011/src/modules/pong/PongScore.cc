@@ -59,6 +59,8 @@ namespace orxonox
         this->bShowScore_ = false;
         this->bShowLeftPlayer_ = false;
         this->bShowRightPlayer_ = false;
+        this->player1_ = NULL;
+	this->player2_ = NULL;
     }
 
     /**
@@ -97,44 +99,51 @@ namespace orxonox
         // If the owner is set. The owner being a Pong game.
         if (this->owner_ != NULL)
         {
-            // Get the two players.
-            PlayerInfo* player1 = this->owner_->getLeftPlayer();
-            PlayerInfo* player2 = this->owner_->getRightPlayer();
-
-            std::string name1;
-            std::string name2;
-
-            std::string score1("0");
-            std::string score2("0");
-
-            // Save the name and score of each player as a string.
-            if (player1 != NULL)
+	    if(!this->owner_->hasEnded())
             {
-                name1 = player1->getName();
-                score1 = multi_cast<std::string>(this->owner_->getScore(player1));
-            }
-            if (player2 != NULL)
-            {
-                name2 = player2->getName();
-                score2 = multi_cast<std::string>(this->owner_->getScore(player2));
+                //get the two players
+                player1_ = this->owner_->getLeftPlayer();
+                player2_ = this->owner_->getRightPlayer();
             }
 
-            // Assemble the strings, depending on what should all be displayed.
-            std::string output1;
-            if (this->bShowLeftPlayer_)
+            if(this->owner_->hasStarted())
             {
-                if (this->bShowName_ && this->bShowScore_ && player1 != NULL)
-                    output1 = name1 + " - " + score1;
-                else if (this->bShowScore_)
-                    output1 = score1;
-                else if (this->bShowName_)
-                    output1 = name1;
-            }
+                // Get the two players.
 
-            std::string output2;
-            if (this->bShowRightPlayer_)
-            {
-                if (this->bShowName_ && this->bShowScore_ && player2 != NULL)
+                std::string name1;
+                std::string name2;
+
+                std::string score1("0");
+                std::string score2("0");
+
+                // Save the name and score of each player as a string.
+                if (player1_ != NULL)
+                {
+                    name1 = player1_->getName();
+                    score1 = multi_cast<std::string>(this->owner_->getScore(player1_));
+                }
+                if (player2_ != NULL)
+                {
+                    name2 = player2_->getName();
+                    score2 = multi_cast<std::string>(this->owner_->getScore(player2_));
+                }
+
+                // Assemble the strings, depending on what should all be displayed.
+                std::string output1;
+                if (this->bShowLeftPlayer_)
+                {
+                    if (this->bShowName_ && this->bShowScore_ && player1_ != NULL)
+                         output1 = name1 + " - " + score1;
+                    else if (this->bShowScore_)
+                         output1 = score1;
+                    else if (this->bShowName_)
+                         output1 = name1;
+                }
+
+                std::string output2;
+                if (this->bShowRightPlayer_)
+                {
+                if (this->bShowName_ && this->bShowScore_ && player2_ != NULL)
                     output2 = score2 + " - " + name2;
                 else if (this->bShowScore_)
                     output2 = score2;
@@ -142,16 +151,16 @@ namespace orxonox
                     output2 = name2;
             }
 
-            std::string output("PONG");
-            if (this->bShowName_ || this->bShowScore_)
-            {
-                if (this->bShowLeftPlayer_ && this->bShowRightPlayer_)
-                    output = output1 + ':' + output2;
-                else if (this->bShowLeftPlayer_ || this->bShowRightPlayer_)
-                    output = output1 + output2;
+                std::string output("PONG");
+                if (this->bShowName_ || this->bShowScore_)
+                {
+                    if (this->bShowLeftPlayer_ && this->bShowRightPlayer_)
+                        output = output1 + ':' + output2;
+                    else if (this->bShowLeftPlayer_ || this->bShowRightPlayer_)
+                        output = output1 + output2;
+                }
+                this->setCaption(output);
             }
-
-            this->setCaption(output);
         }
     }
 

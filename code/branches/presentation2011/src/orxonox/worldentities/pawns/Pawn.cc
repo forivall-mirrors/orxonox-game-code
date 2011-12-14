@@ -128,6 +128,8 @@ namespace orxonox
 
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
+
+
     }
 
     void Pawn::registerVariables()
@@ -454,7 +456,7 @@ namespace orxonox
     {
         SUPER(Pawn, changedActivity);
 
-        this->setRadarVisibility(this->isActive());
+        this->setRadarVisibility(this->isVisible());
     }
 
     void Pawn::changedVisibility(void)

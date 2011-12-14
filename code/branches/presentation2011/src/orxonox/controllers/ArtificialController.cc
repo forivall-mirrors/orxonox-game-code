@@ -41,6 +41,7 @@
 #include "worldentities/pawns/SpaceShip.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "gametypes/Dynamicmatch.h"
+#include "gametypes/Mission.h"
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
 #include "controllers/DroneController.h"
@@ -91,7 +92,7 @@ namespace orxonox
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
         this->bSetupWorked = false;
-        this->botlevel_ = 0.2f;
+        this->botlevel_ = 0.5f;
         this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
         this->timeout_ = 0;
         this->currentWaypoint_ = 0;
@@ -997,6 +998,16 @@ orxout() << "~follow distance: " << distance << "SpeedCounter: " << this->speedC
                 team2 = tdm->getTeam(entity2->getPlayer());
         }
 
+        Mission* miss = orxonox_cast<Mission*>(gametype);
+        if (miss)
+        {
+            if (entity1->getPlayer())
+                team1 = miss->getTeam(entity1->getPlayer());
+
+            if (entity2->getPlayer())
+                team2 = miss->getTeam(entity2->getPlayer());
+        }
+
         TeamBaseMatchBase* base = 0;
         base = orxonox_cast<TeamBaseMatchBase*>(entity1);
         if (base)
@@ -1109,7 +1120,7 @@ orxout() << "~follow distance: " << distance << "SpeedCounter: " << this->speedC
         if(this->getControllableEntity())
         {
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
-            if(pawn)
+            if(pawn && pawn->isA(Class(SpaceShip))) //fix for First Person Mode: check for SpaceShip
             {
                 this->weaponModes_.clear(); // reset previous weapon information
                 WeaponSlot* wSlot = 0;

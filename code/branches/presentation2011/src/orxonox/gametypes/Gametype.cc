@@ -84,6 +84,7 @@ namespace orxonox
         this->dedicatedAddBots_ = createConsoleCommand( "dedicatedAddBots", createExecutor( createFunctor(&Gametype::addBots, this) ) );
         this->dedicatedKillBots_ = createConsoleCommand( "dedicatedKillBots", createExecutor( createFunctor(&Gametype::killBots, this) ) );
         /* HACK HACK HACK */
+        //this->numberOfPlayers_ = 0;
     }
 
     Gametype::~Gametype()
@@ -131,7 +132,7 @@ namespace orxonox
                 if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
                     this->gtinfo_->playerReadyToSpawn(it->first);
             }
-                    
+
             this->checkStart();
         }
         else if (!this->gtinfo_->hasEnded())
@@ -438,7 +439,7 @@ namespace orxonox
 
             if(player->isHumanPlayer())
                 this->gtinfo_->playerSpawned(player);
-            
+
             this->playerPostSpawn(player);
         }
         else

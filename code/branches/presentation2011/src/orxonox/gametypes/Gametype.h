@@ -122,11 +122,8 @@ namespace orxonox
             inline const std::string& getHUDTemplate() const
                 { return this->gtinfo_->getHUDTemplate(); }
 
-            void addBots(unsigned int amount);
+            virtual void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
-
-            inline unsigned int getNumberOfPlayers() const
-                { return this->players_.size(); }
 
             virtual void addTime(float t);
             virtual void removeTime(float t);
@@ -150,10 +147,12 @@ namespace orxonox
               { this->timeLimit_ = t; }
 
             //inline bool getForceSpawn()
-            //  { return this->bForceSpawn_; }       
+            //  { return this->bForceSpawn_; }
 
             virtual void resetTimer();
             virtual void resetTimer(float t);
+            inline unsigned int getNumberOfPlayers()
+              { return this->gtinfo_->getNumberOfPlayers(); }
 
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
@@ -191,6 +190,7 @@ namespace orxonox
             ConsoleCommand* dedicatedAddBots_;
             ConsoleCommand* dedicatedKillBots_;
             /* HACK HACK HACK */
+
     };
 }
 

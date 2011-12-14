@@ -20,40 +20,45 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Johannes Ritz
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _AIController_H__
-#define _AIController_H__
+#ifndef _Mission_H__
+#define _Mission_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "tools/Timer.h"
-#include "tools/interfaces/Tickable.h"
-#include "ArtificialController.h"
+//#include "Gametype.h"
+#include "TeamGametype.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport AIController : public ArtificialController, public Tickable
+    class _OrxonoxExport Mission : public TeamGametype
     {
         public:
-            AIController(BaseObject* creator);
-            virtual ~AIController();
+            Mission(BaseObject* creator);
+            virtual ~Mission() {}
 
-            virtual void tick(float dt); //<! Carrying out the targets set in action().
+            virtual void tick(float dt);
+
+            virtual void start();
+            virtual void end();
+            virtual void setTeams();
+            virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
+            inline void setLives(unsigned int amount)
+                {this->lives_ = amount;}
+            inline unsigned int getLives()
+                {return this->lives_;}
 
         protected:
-            virtual void action(); //<! action() is called in regular intervals managing the bot's behaviour ~ setting targets.
-            void defaultBehaviour(float maxrand); //<! Helper function for code reusage. Some concrete commands for a bot.
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+            bool missionAccomplished_; //<! indicates if player successfully finsihed the mission;
+            int lives_; //<! amount of player's lives <-> nr. of retries
 
-        private:
-            static const float ACTION_INTERVAL;
-
-            Timer actionTimer_; //<! Regularly calls action(). 
     };
 }
 
-#endif /* _AIController_H__ */
+#endif /* _Mission_H__ */
+

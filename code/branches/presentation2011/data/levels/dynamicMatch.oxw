@@ -37,6 +37,7 @@
     </StaticEntity>
 
 <!-- -----------12-Spawnpoints around the planet------------- -->
+<!-- inner Spawnpoints -->
 <TeamSpawnPoint team=0 position="1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
 <TeamSpawnPoint team=0 position="-1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
 <TeamSpawnPoint team=0 position="0,1000,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
