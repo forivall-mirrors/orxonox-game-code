@@ -1,0 +1,459 @@
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ name         = "Asteroids Race"
+ description  = "testmap for gametype asteroid race"
+ gametype     =  Asteroids
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.5, 0.5, 0.5"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <SpawnPoint position="-300,300,0" name="playerstart" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+    <?lua
+      for i = 1, 250, 1
+      do
+      j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(math.random()* 15000 - 1000) ?>,<?lua print(math.random() * 12000 - 4000) ?>,<?lua print(math.random() * 12000 - 4000) ?>"
+      collisionType = dynamic
+      linearDamping = 0.8
+      angularDamping = 0
+      scale = "<?lua print(j * 150)?>"
+      collisiondamage = 1
+      enablecollisiondamage = true
+    >
+      <attached>
+        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+
+    <?lua
+      end
+    ?>
+
+<!--
+    <MovableEntity position="0,0,0" collisionType=dynamic scale=5 linearDamping=0.8 angularDamping=0  collisiondamage=0.005 enablecollisiondamage=true>
+      <attached>
+        <Model mass=100 mesh="ast1.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius=11.75 />
+      </collisionShapes>
+    </MovableEntity>
+
+
+    <MovableEntity position="0,300,0" scale=10 collisionType=dynamic linearDamping=0.8 angularDamping=0  collisiondamage=0.005 enablecollisiondamage=true>
+      <attached>
+        <Model mass=100 mesh="ast1.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius=22.5 />
+      </collisionShapes>
+    </MovableEntity>
+
+
+    <MovableEntity position="0,600,0"  scale=34  collisionType=dynamic linearDamping=0.8 angularDamping=0 collisiondamage=0.005 enablecollisiondamage=true>
+      <attached>
+        <Model mass=100 mesh="ast1.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius=76.5 />
+      </collisionShapes>
+    </MovableEntity>
+
+    <MovableEntity position="0,1200,0" scale=80 collisionType=dynamic linearDamping=0.8 angularDamping=0  collisiondamage=0.005 enablecollisiondamage=true>
+      <attached>
+        <Model mass=100 mesh="ast1.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius=200 />
+      </collisionShapes>
+    </MovableEntity>
+-->
+
+    <SpaceShip position="2000,200,0" lookat="0,0,0" >
+      <templates>
+        <Template link=spaceshipassff />
+      </templates>
+      <controller>
+        <AIController />
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="8000,300,700" lookat="0,0,0" >
+      <templates>
+        <Template link=spaceshipassff />
+      </templates>
+      <controller>
+        <AIController />
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="10200,400,-600" lookat="0,0,0" >
+      <templates>
+        <Template link=spaceshipassff />
+      </templates>
+      <controller>
+        <AIController />
+      </controller>
+    </SpaceShip>
+
+    <ForceField position="200,300,-500" direction="0,0,1" diameter=500 velocity=120>
+      <attached>
+        <ParticleEmitter source="Orxonox/ForceFieldPurpleSmall" startdelay=0 />
+      </attached>
+    </ForceField>
+
+    <ForceField position="2200,-300,1200" direction="1,0.3,-0.7" diameter=800 velocity=200>
+      <attached>
+        <ParticleEmitter source="Orxonox/ForceFieldBlueBig" startdelay=0 />
+      </attached>
+    </ForceField>
+
+    <ForceField position="8600,1400,500" direction="-1,-1,-1" diameter=500 velocity=400>
+      <attached>
+        <ParticleEmitter source="Orxonox/ForceFieldGreenSmall" startdelay=0 />
+      </attached>
+    </ForceField>
+
+    <ForceField position="11800,500,-2600" direction="-1,0,1" diameter=900 velocity=300>
+      <attached>
+        <ParticleEmitter source="Orxonox/ForceFieldPurpleBig" startdelay=0 />
+      </attached>
+    </ForceField>
+
+
+    <CheckPoint name=trigger1 position="-300,300,0" scale=1 isdestination=false isfirst=true stayactive=true distance=10 addtime=30 />
+
+
+    <CheckPoint name=trigger2 position="2200,600,0" scale=3 isdestination=false stayactive=true distance=100 addtime=17>
+      <events>
+        <activity>
+          <EventListener event=trigger1 />
+        </activity>
+      </events>
+      <attached>
+        <Billboard material="Flares/lensflare" colour="1,0,0">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger1 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </Billboard>
+        <BlinkingBillboard frequency=0.2 amplitude=1 material="Flares/lensflare" colour="1,1,0">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger1 />
+                  </trigger>
+                </events>
+                <EventTrigger invert=true>
+                  <events>
+                    <trigger>
+                      <EventListener event=trigger2 />
+                    </trigger>
+                  </events>
+                </EventTrigger>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </BlinkingBillboard>
+        <Billboard material="Flares/lensflare" colour="0,1,0">
+          <events>
+            <visibility>
+              <EventListener event=trigger2 />
+            </visibility>
+          </events>
+        </Billboard>
+      </attached>
+    </CheckPoint>
+
+
+    <CheckPoint name=trigger3 position="4100,0,400" scale=3 isdestination=false stayactive=true distance=100 addtime=16>
+      <events>
+        <activity>
+          <EventListener event=trigger2 />
+        </activity>
+      </events>
+      <attached>
+        <Billboard material="Flares/lensflare" colour="1,0,0">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger2 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </Billboard>
+        <BlinkingBillboard frequency=0.2 amplitude=1 material="Flares/lensflare" colour="1,1,0">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger2 />
+                  </trigger>
+                </events>
+                <EventTrigger invert=true>
+                  <events>
+                    <trigger>
+                      <EventListener event=trigger3 />
+                    </trigger>
+                  </events>
+                </EventTrigger>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </BlinkingBillboard>
+        <Billboard material="Flares/lensflare" colour="0,1,0">
+          <events>
+            <visibility>
+              <EventListener event=trigger3 />
+            </visibility>
+          </events>
+        </Billboard>
+      </attached>
+    </CheckPoint>
+
+
+    <CheckPoint name=trigger4 position="5600,400,0" scale=3 isdestination=false stayactive=true distance=100 addtime=17>
+      <events>
+        <activity>
+          <EventListener event=trigger3 />
+        </activity>
+      </events>
+      <attached>
+        <Billboard material="Flares/lensflare" colour="1,0,0">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger3 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </Billboard>
+        <BlinkingBillboard frequency=0.2 amplitude=1 material="Flares/lensflare" colour="1,1,0">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger3 />
+                  </trigger>
+                </events>
+                <EventTrigger invert=true>
+                  <events>
+                    <trigger>
+                      <EventListener event=trigger4 />
+                    </trigger>
+                  </events>
+                </EventTrigger>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </BlinkingBillboard>
+        <Billboard material="Flares/lensflare" colour="0,1,0">
+          <events>
+            <visibility>
+              <EventListener event=trigger4 />
+            </visibility>
+          </events>
+        </Billboard>
+      </attached>
+    </CheckPoint>
+
+
+    <CheckPoint name=trigger5 position="7200,600,-200" scale=3 isdestination=false stayactive=true distance=100 addtime=16>
+      <events>
+        <activity>
+          <EventListener event=trigger4 />
+        </activity>
+      </events>
+      <attached>
+        <Billboard material="Flares/lensflare" colour="1,0,0">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger4 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </Billboard>
+        <BlinkingBillboard frequency=0.2 amplitude=1 material="Flares/lensflare" colour="1,1,0">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger4 />
+                  </trigger>
+                </events>
+                <EventTrigger invert=true>
+                  <events>
+                    <trigger>
+                      <EventListener event=trigger5 />
+                    </trigger>
+                  </events>
+                </EventTrigger>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </BlinkingBillboard>
+        <Billboard material="Flares/lensflare" colour="0,1,0">
+          <events>
+            <visibility>
+              <EventListener event=trigger5 />
+            </visibility>
+          </events>
+        </Billboard>
+      </attached>
+    </CheckPoint>
+
+
+    <CheckPoint name=trigger6 position="9200, 800,-800" scale=3 isdestination=false stayactive=true distance=100 addtime=22>
+      <events>
+        <activity>
+          <EventListener event=trigger5 />
+        </activity>
+      </events>
+      <attached>
+        <Billboard material="Flares/lensflare" colour="1,0,0">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger5 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </Billboard>
+        <BlinkingBillboard frequency=0.2 amplitude=1 material="Flares/lensflare" colour="1,1,0">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=trigger5 />
+                  </trigger>
+                </events>
+                <EventTrigger invert=true>
+                  <events>
+                    <trigger>
+                      <EventListener event=trigger6 />
+                    </trigger>
+                  </events>
+                </EventTrigger>
+              </EventTrigger>
+            </visibility>
+          </events>
+        </BlinkingBillboard>
+        <Billboard material="Flares/lensflare" colour="0,1,0">
+          <events>
+            <visibility>
+              <EventListener event=trigger6 />
+            </visibility>
+          </events>
+        </Billboard>
+      </attached>
+    </CheckPoint>
+
+
+    <Model position="11200,400,-1800" scale=10 pitch=-90  mesh="Carrier.mesh">
+      <attached>
+        <CheckPoint position="-10,0,0" name=trigger7 scale=0.6 isdestination=true stayactive=true distance=100>
+          <events>
+            <activity>
+              <EventListener event=trigger6 />
+            </activity>
+          </events>
+          <attached>
+            <Billboard material="Flares/lensflare" colour="1,0,0">
+              <events>
+                <visibility>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event=trigger6 />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </visibility>
+              </events>
+            </Billboard>
+            <BlinkingBillboard frequency=0.2 amplitude=1 material="Flares/lensflare" colour="1,1,0">
+              <events>
+                <visibility>
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event=trigger6 />
+                      </trigger>
+                    </events>
+                    <EventTrigger invert=true>
+                      <events>
+                        <trigger>
+                          <EventListener event=trigger7 />
+                        </trigger>
+                      </events>
+                    </EventTrigger>
+                  </EventTrigger>
+                </visibility>
+              </events>
+            </BlinkingBillboard>
+            <Billboard material="Flares/lensflare" colour="0,1,0">
+              <events>
+                <visibility>
+                  <EventListener event=trigger7 />
+                </visibility>
+              </events>
+            </Billboard>
+          </attached>
+        </CheckPoint>
+      </attached>
+    </Model>
+
+  </Scene>
+</Level>

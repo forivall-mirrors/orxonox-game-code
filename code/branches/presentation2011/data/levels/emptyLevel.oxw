@@ -1,0 +1,37 @@
+<LevelInfo
+ name = "Empty level"
+ description = "A level with absolutely nothing in it."
+ tags = "test"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
+    
+  </Scene>
+</Level>
+

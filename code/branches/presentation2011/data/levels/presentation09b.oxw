@@ -1,0 +1,388 @@
+<LevelInfo
+ name = "Presentation X2"
+ description = "2nd Presentation level for Orxonox Convention X"
+ tags = "presentation"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipH2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ name         = "Presentation09"
+ description  = "presentation level for Orxonox Convention X"
+ gametype     = TeamDeathmatch
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skypanoramagen2"
+  >
+
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+    
+    <Light type=directional position="0,0,0" direction="0.683, 0.289, 0.670" diffuse="1.0, 1.0, 1.0, 1.0" specular="1.0, 1.0, 1.0, 1.0" />
+
+    <SpawnPoint position="-3800, 2500, 1500" direction="-0.683, -0.289, -0.670"  spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+    <SpaceShip position="-3900,3000,1000">
+      <templates>
+        <Template link=spaceshipHtwo/>
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=100 team=0>
+          <waypoints>
+            <StaticEntity position="-3850,2800,1450" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="-4100,2600,1600">
+      <templates>
+        <Template link=spaceshipHtwo/>
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=100 team=0>
+          <waypoints>
+            <StaticEntity position="-3850,2800,1450" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="-4000,2500,1500">
+      <templates>
+        <Template link=spaceshipHtwo/>
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=100 team=0>
+          <waypoints>
+            <StaticEntity position="-3850,2800,1450" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="-4100,2700,1500">
+      <templates>
+        <Template link=spaceshipHtwo/>
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=100 team=0 />
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="-4150,2750,1550">
+      <templates>
+        <Template link=spaceshipHtwo/>
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=100 team=0 />
+      </controller>
+    </SpaceShip>
+
+    <PickupSpawner position="-3800, 2500, 1500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+      <pickup>
+        <SpeedPickup template=smalljumppickup />
+      </pickup>
+    </PickupSpawner>
+
+    <!-- PickupRepresentation for the pickup below, since it is not a standard pickup provided by pickups.oxi -->
+    <PickupRepresentation
+      pickupName = "Medium Health Pack"
+      pickupDescription = "Once used adds a medium amout of health to the ship."
+      spawnerTemplate = "mediumhealthpickupRepresentation"
+      inventoryRepresentation = "MediumHealth"
+    >
+      <pickup>
+        <HealthPickup health=100 activationType="onUse" durationType="once" />
+      </pickup>
+    </PickupRepresentation>
+
+    <PickupSpawner position="-4150,2750,1550" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+      <pickup>
+        <HealthPickup health=100 activationType=onUse durationType=once />
+      </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="2300, 4300, 2400" respawnTime="5" triggerDistance="20">
+      <pickup>
+        <HealthPickup template=mediumhealthpickup />
+      </pickup>
+    </PickupSpawner>
+
+    <Billboard position="-2500, 2400, 1500" material="Examples/Flare" />
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=pirates />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="-2500, 2400, 1500" distance=250 target="SpaceShip" stayactive=true />
+        </activity>
+      </events>
+    </EventDispatcher>
+
+    <?lua
+      for i = 1, 10, 1 do
+    ?>
+      <SpaceShip position="<?lua print(5000 + math.random() * 4000 - 2000) ?>,<?lua print(0 + math.random() * 2000 - 1000) ?>,<?lua print(math.random() * 2000 - 1000) ?>">
+        <templates>
+          <Template link=spaceshippirate />
+        </templates>
+        <controller>
+          <WaypointPatrolController name=pirates alertnessradius=1000 team=1 active=false>
+            <waypoints>
+              <StaticEntity position="3100, 2000, 1500" />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <?lua
+      for i = 1, 12, 1 do
+    ?>
+      <SpaceShip position="<?lua print(2800 + math.random() * 2000 - 1000) ?>,<?lua print(2500+ math.random() * 1000 - 500) ?>,<?lua print(2500 + math.random() * 1000 - 500) ?>" >
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <WaypointPatrolController alertnessradius=1000 team=0>
+            <waypoints>
+              <StaticEntity position="<?lua print(2800 + math.random() * 1000 - 500) ?>,<?lua print(2500 + math.random() * 1000 - 500) ?>,<?lua print(1500 + math.random() * 1000 - 500) ?>" />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <Billboard position="2300, 4400, 2500" material="Examples/Flare" />
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=attacker />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="2300, 4400, 2500" distance=50 target="SpaceShip" stayactive=true />
+        </activity>
+      </events>
+    </EventDispatcher>
+
+    <?lua
+      for i = 1, 12, 1 do
+    ?>
+      <SpaceShip position="<?lua print(2500 + math.random() * 500 - 250) ?>,<?lua print(4800 + math.random() * 500 - 250) ?>,<?lua print(2500 + math.random() * 500 - 250) ?>" >
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <WaypointPatrolController name=attacker alertnessradius=1000 team=0 active=false>
+            <waypoints>
+              <StaticEntity position="<?lua print(2800 + math.random() * 500 - 250) ?>,<?lua print(2500 + math.random() * 500 - 250) ?>,<?lua print(1500 + math.random() * 500 - 250) ?>" />
+              <StaticEntity position="<?lua print(5000 + math.random() * 500 - 250) ?>,<?lua print(0 + math.random() * 500 - 250) ?>,<?lua print(0 + math.random() * 500 - 250) ?>" />
+              <StaticEntity position="<?lua print(7500 + math.random() * 500 - 250) ?>,<?lua print(-2500 + math.random() * 500 - 250) ?>,<?lua print(-1500 + math.random() * 500 - 250) ?>" />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <StaticEntity position="2800, 2500, 2500">
+      <attached>
+        <CheckPoint />
+        <Model position="400, 0, 0" scale="40" mesh="DuBall2.mesh"/>
+        <Model position="-400, 0, 0" scale="40" mesh="DuBall1.mesh"/>
+      </attached>
+    </StaticEntity>
+
+<!--
+    <Destroyer position="6500, -2000, -1000" collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=500>
+      <attached>
+        <CheckPoint />
+        <Model position="0,0,0" scale="5" mesh="Carrier.mesh"/>
+        <Backlight
+          mainstate=activity
+          active=false
+          scale=0.4
+          name=bltest
+          position=" 7.6, 0, 6"
+          colour="0.2, 0.65, 1.0, 1.0"
+          width=15
+          length=1500
+          lifetime=2
+          elements=50
+          trailmaterial="Trail/backlighttrail"
+          turnontime=1
+          turnofftime=1
+          material="Flares/ThrusterFlare1"
+        />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </Destroyer>
+-->
+
+    <Destroyer
+      position          = "6500,-2000,-1000"
+      collisionType     = dynamic
+      mass              = 100000
+      angularDamping    = 0.9999999
+      health            = 1000
+      maxhealth         = 1000
+      initialhealth     = 1000
+    >
+      <controller>
+        <WaypointPatrolController team=1 />
+      </controller>
+      <attached>
+        <Model mesh="Carrier.mesh" scale="5" />
+        <Backlight
+          mainstate=activity
+          active=false
+          scale=0.4
+          name=bltest
+          position=" 7.6, 0, 6"
+          colour="0.2, 0.65, 1.0, 1.0"
+          width=15
+          length=1500
+          lifetime=2
+          elements=50
+          trailmaterial="Trail/backlighttrail"
+          turnontime=1
+          turnofftime=1
+          material="Flares/ThrusterFlare1"
+        />
+
+        <?lua
+          for i=0,8,1 do
+        ?>
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?> ,15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?>,-15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+        <?lua end ?>
+
+        <Backlight
+          scale=1
+          position=" 169, 75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare"
+        />
+        <Backlight
+          scale=1
+          position=" 169, -75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </Destroyer>
+
+    <?lua
+      for i = 1, 10, 1 do
+    ?>
+      <SpaceShip position="<?lua print(6200 + math.random() * 2000 - 1000) ?>,<?lua print(-1500 + math.random() * 1000 - 500) ?>,<?lua print(-700 + math.random() * 1000 - 500) ?>" >
+        <templates>
+          <Template link=spaceshippirate />
+        </templates>
+        <controller>
+          <WaypointPatrolController alertnessradius=1000 team=1>
+            <waypoints>
+              <StaticEntity position="<?lua print(6000 + math.random() * 1000 - 500) ?>,<?lua print(-2000 + math.random() * 1000 - 500) ?>,<?lua print(-1000 + math.random() * 1000 - 500) ?>" />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <?lua
+      for i = 1, 200, 1 do
+        x = math.random() * 100  + (i-70) * 100
+        y = math.random() * 3000 - 1500
+        z = math.random() * 3000 - 1500 + (i-100) * 10
+        s = math.random() * 60 + 30
+    ?>
+      <MovableEntity position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 - 15) ?>">
+        <attached>
+          <Model position="0,0,0" scale="<?lua print(s) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+        </attached>
+      </MovableEntity>
+    <?lua end ?>
+
+    <?lua
+      elements = {"BodyDebris1.mesh", "CockpitDebris.mesh", "LightningGun.mesh", "WingDebris1.mesh", "WingDebris2.mesh", "satellitedish.mesh", "Thruster.mesh"}
+      sizes = {4, 4, 4, 4, 4, 10, 20}
+      
+      elements.length = function()
+        return table.getn(elements)
+      end
+      
+      for i = 1, 150, 1 do
+        x = math.random() * 750 - 4500
+        y = math.random() * 1000 + 2000
+        z = math.random() * 500 + 1000
+        e = math.floor(math.random()*elements.length()+1)
+    ?>
+
+      <MovableEntity position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 - 15) ?>">
+        <attached>
+          <Model position="0,0,0" scale="<?lua print(sizes[e]) ?>" mesh="<?lua print( elements[e]) ?>" />
+        </attached>
+      </MovableEntity>
+    <?lua end ?>
+
+  </Scene>
+</Level>
