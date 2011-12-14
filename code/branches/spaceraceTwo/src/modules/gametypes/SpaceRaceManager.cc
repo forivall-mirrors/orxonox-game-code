@@ -85,7 +85,7 @@ namespace orxonox
     {
         SUPER(SpaceRaceManager, XMLPort, xmlelement, mode);
 
-        //XMLPortParam(WaypointController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
+        
         XMLPortObject(SpaceRaceManager, RaceCheckPoint, "checkpoints", addCheckpoint, getCheckpoint,  xmlelement, mode);
     }
     
@@ -154,6 +154,7 @@ namespace orxonox
             else
             {
                 if (index > -1)this->setRadVis(player,false);
+                	else this->getCheckpoint(0)->setRadarVisibility(false);
                 gametype->newCheckpointReached(check,player);
                 check->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
                 

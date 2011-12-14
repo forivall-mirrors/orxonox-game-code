@@ -41,7 +41,7 @@ namespace orxonox
     /**
     @brief
         The RaceCheckPoint class enables the creation of a check point to use in a SpaceRace level.
-        !!! Don't forget to control the indexes of your check points and to set one last check point!!!
+         Don't forget to control the indexes of your check points and to set one last check point
     */
     class _GametypesExport RaceCheckPoint : public DistanceMultiTrigger, public RadarViewable
     {
@@ -82,10 +82,9 @@ namespace orxonox
                 { return this; }
 
         private:
-            int bCheckpointIndex_; //The index of this check point. This value will be compared with the number of check points reached in the level. The check points must be indexed in ascending order beginning from zero and without any jumps between the indexes.
-            
+            int bCheckpointIndex_; //The index of this check point.
             Vector3 nextcheckpoints_; //the indexes of the next check points
-            std::vector<RaceCheckPoint*> next_;
+            
     };
 }
 

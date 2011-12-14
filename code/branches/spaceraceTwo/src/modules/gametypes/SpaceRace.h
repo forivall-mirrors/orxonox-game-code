@@ -39,8 +39,6 @@
 
 #include "gametypes/Gametype.h"
 
-
-
 #include "SpaceRaceManager.h"
 
 namespace orxonox
@@ -52,7 +50,7 @@ namespace orxonox
     class _GametypesExport SpaceRace : public Gametype
     {
         friend class RaceCheckPoint;
-        //friend class SpaceRaceManager;
+       
 
         public:
             SpaceRace(BaseObject* creator);
@@ -84,7 +82,6 @@ namespace orxonox
             virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
             virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
         private:
-            float maxSpeedBack_; float maxSpeedFront_; float maxSpeedLeftRight_; float maxSpeedUpDown_; 
             bool cantMove_;
             std::map<PlayerInfo*, int>checkpointReached_; //The number of the last check point reached by each player.
             std::set<float> scores_; //The times of the players are saved in a set.

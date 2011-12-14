@@ -96,9 +96,9 @@ gametype = SpaceRace
       <controller>
         <WaypointPatrolController alertnessradius=1000 team=10>
           <waypoints>
-            <Model mesh="cube.mesh" scale=8 position="0,-2000,1000" />
-            <Model mesh="cube.mesh" scale=8 position="0,2100,2300" />
-            <Model mesh="cube.mesh" scale=8 position="0,-400,300" />
+            <Model mesh="cube.mesh" scale=0 position="0,-2000,1000" />
+            <Model mesh="cube.mesh" scale=0 position="0,2100,2300" />
+            <Model mesh="cube.mesh" scale=0 position="0,-400,300" />
           </waypoints>
         </WaypointPatrolController>
       </controller>
@@ -107,7 +107,98 @@ gametype = SpaceRace
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
 
-   
+    <!-- ------------------Planet----------------- -->
+    <Planet position="0,0,0" scale=300 pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
+    <StaticEntity position="0,0,0" collisionType=static>
+        <collisionShapes>
+            <SphereCollisionShape radius="399" />
+        </collisionShapes>
+    </StaticEntity>
+
+    <!-- ---------------asteroid ellipse----------------- -->
+    <?lua
+    max = 20
+    for i = 0, max, 1
+    do
+    y = math.sin(i/max*6)*2000
+    z = math.cos(i/max*6)*2500
+    x = 0
+    ?>
+    <?lua
+    for k = 1, 15, 1
+    do
+    j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(x + math.random() * 500) ?>,<?lua print(y + math.random() * 500) ?>,<?lua print(z + math.random() * 1000) ?>"
+      collisionType = "dynamic"
+      linearDamping = "0.5"
+      angularDamping = "0.01"
+      collisiondamage = "0.01"
+      enablecollisiondamage = "true"
+      scale="<?lua print(j * 5) ?>" >
+      <attached>
+        <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
+      <?lua if k == 5 then ?><attached><!-- ---------asteroid fog----- -->
+            <ParticleEmitter position="0,0,0" source="Orxonox/Steam" />
+          </attached> <?lua end ?>
+        </Model>
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 80) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+    <?lua
+    end
+    ?>
+    <?lua end ?>
+
+    <!-- ---------------ForceFields----------------- -->
+    <ForceField position="0,-700,2700" direction="0,1,0" diameter=500 velocity=2000 length=600 />
+        <MovableEntity position="0,-400,2700">
+            <attached>
+                <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=2/>
+                <?lua for i=0,15,1 do ?>
+                    <Billboard position="-200,<?lua print(i*40) ?>,0" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                    <Billboard position="200,<?lua print(i*40) ?>,0" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                <?lua end ?>
+                </attached>
+        </MovableEntity>
+
+     <ForceField position="0,2500,2000" direction="0,0,-1" diameter=250 velocity=2000 length=600 />
+        <MovableEntity position="0,2500,2000">
+            <attached>
+                <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=2/>
+                <?lua for i=0,15,1 do ?>
+                    <Billboard position="-100,0,-<?lua print(i*40) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                    <Billboard position="100,0,-<?lua print(i*40) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                <?lua end ?>
+                </attached>
+        </MovableEntity>
+
+    <ForceField position="0,1300,-800" direction="0,-1,-1" diameter=250 velocity=2000 length=800 />
+        <MovableEntity position="0,1300,-800">
+            <attached>
+                <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=2/>
+                <?lua for i=0,20,1 do ?>
+                    <Billboard position="-100,<?lua print(-i*40*0.7071) ?>,<?lua print(-i*40*0.7071) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                    <Billboard position="100,<?lua print(-i*40*0.7071) ?>,<?lua print(-i*40*0.7071) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                <?lua end ?>
+                </attached>
+        </MovableEntity>
+
+    <ForceField position="0,-1400,-700" direction="0,-1,1" diameter=250 velocity=2000 length=600 />
+        <MovableEntity position="0,-1400,-700">
+            <attached>
+                <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=2/>
+                <?lua for i=0,15,1 do ?>
+                    <Billboard position="-100,<?lua print(-i*40*0.7071) ?>,<?lua print(i*40*0.7071) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                    <Billboard position="100,<?lua print(-i*40*0.7071) ?>,<?lua print(i*40*0.7071) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+                <?lua end ?>
+                </attached>
+        </MovableEntity>
+
 
     
   </Scene>

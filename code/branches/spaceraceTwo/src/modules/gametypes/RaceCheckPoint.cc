@@ -58,7 +58,7 @@ namespace orxonox
         this->setRadarVisibility(false);
         this->settingsChanged();
         this->reached_=NULL;
-        //this->addTarget("WorldEntity");
+      
     }
     
 

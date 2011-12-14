@@ -50,10 +50,8 @@ namespace orxonox
         this->numberOfBots_ = 0;
         this->cantMove_=false;
         
-       for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-        {this->checkpointReached_[it->first]=-1;} //TODO: should be removed; no functionallity
-        
     }
+       
     
   // void SpaceRace::SetConfigValues(){
     //SUPER(Gametype,setConfigValues);
@@ -82,13 +80,12 @@ namespace orxonox
                         + "." + multi_cast<std::string>(ms) + " seconds.";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
             ChatManager::message(message);
-/*
+
             float time = this->clock_.getSecondsPrecise();
             this->scores_.insert(time);
             std::set<float>::iterator it;
-            for (it=this->scores_.begin(); it!=this->scores_.end(); it++)
-                orxout(level::message) << multi_cast<std::string>(*it) << endl;
-*/
+            
+
         }
     }
 
@@ -98,21 +95,11 @@ namespace orxonox
         this->spawnPlayersIfRequested();
         Gametype::checkStart(); 
         this->cantMove_=true; 
-        //TODO: switch the engine off/on via a short function  
+        
         for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
         {
             it->setActive(false);
-            /*if(it->getMaxSpeedFront()>0)
-            {
-                this->maxSpeedBack_=it->getMaxSpeedBack(); 
-                this->maxSpeedFront_=it->getMaxSpeedFront(); 
-                this->maxSpeedLeftRight_=it->getMaxSpeedLeftRight(); 
-                this->maxSpeedUpDown_=(it->getMaxSpeedUpDown()); 
-            }
-            it->setMaxSpeedBack(0); 
-            it->setMaxSpeedFront(0); 
-            it->setMaxSpeedLeftRight(0); 
-            it->setMaxSpeedUpDown(0);*/ 
+            
         } 
         this->addBots(this->numberOfBots_); 
     }
@@ -126,10 +113,7 @@ namespace orxonox
             for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
             { 
                 it->setActive(true);
-                /*it->setMaxSpeedBack(this->maxSpeedBack_); 
-                it->setMaxSpeedFront(this->maxSpeedFront_); 
-                it->setMaxSpeedLeftRight(this->maxSpeedLeftRight_); 
-                it->setMaxSpeedUpDown(this->maxSpeedUpDown_);*/ 
+                
             }
             this->cantMove_= false;
             
