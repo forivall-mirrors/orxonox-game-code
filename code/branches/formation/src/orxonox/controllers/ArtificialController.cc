@@ -23,7 +23,7 @@
  *      Fabian 'x3n' Landau
  *   Co-authors:
  *      Dominik Solenicki
- *
+ *      
  */
 
 #include "ArtificialController.h"
@@ -93,6 +93,169 @@ namespace orxonox
     {
         if (target == this->target_)
             this->targetDied();
+    }
+
+//****************************************************************************************** NEW
+    /**
+        @brief DoFire is called when a bot should shoot and decides which weapon is used and whether the bot shoots at all.
+    */
+    void ArtificialController::doFire()
+    {
+        if(!this->bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
+        {
+            this->setupWeapons();
+        }
+        else if(this->getControllableEntity() && weaponModes_.size()&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
+        {
+            int firemode;
+            float random = rnd(1);//
+            if (this->isCloseAtTarget(130) && (firemode = getFiremode("LightningGun")) > -1 )
+            {//LENSFLARE: short range weapon
+                this->getControllableEntity()->fire(firemode); //ai uses lens flare if they're close enough to the target
+            }
+            else if( this->isCloseAtTarget(400) && (random < this->botlevel_) && (firemode = getFiremode("RocketFire")) > -1 )
+            {//ROCKET: mid range weapon
+                this->mode_ = ROCKET; //Vector-implementation: mode_.push_back(ROCKET);
+                this->getControllableEntity()->fire(firemode); //launch rocket
+                if(this->getControllableEntity() && this->target_) //after fire(3) is called, getControllableEntity() refers to the rocket!
+                {
+                    float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
+                    if(!speed) speed = 0.1f;
+                    float distance = target_->getPosition().length() - this->getControllableEntity()->getPosition().length();
+                    this->timeout_= distance/speed*sgn(speed*distance) + 1.8f; //predicted time of target hit (+ tolerance)
+                }
+                else
+                    this->timeout_ = 4.0f; //TODO: find better default value
+            }
+            else if ((firemode = getFiremode("HsW01")) > -1 ) //LASER: default weapon
+                this->getControllableEntity()->fire(firemode);
+        }
+    }
+
+    /**
+        @brief Information gathering: Which weapons are ready to use?
+    */
+    void ArtificialController::setupWeapons() //TODO: Make this function generic!! (at the moment is is based on conventions)
+    {
+        this->bSetupWorked = false;
+        if(this->getControllableEntity())
+        {
+            Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
+            if(pawn && pawn->isA(Class(SpaceShip))) //fix for First Person Mode: check for SpaceShip
+            {
+                this->weaponModes_.clear(); // reset previous weapon information
+                WeaponSlot* wSlot = 0;
+                for(int l=0; (wSlot = pawn->getWeaponSlot(l)) ; l++)
+                {
+                    WeaponMode* wMode = 0;
+                    for(int i=0; (wMode = wSlot->getWeapon()->getWeaponmode(i)) ; i++)
+                    {
+                        std::string wName = wMode->getIdentifier()->getName();
+                        if(this->getFiremode(wName) == -1) //only add a weapon, if it is "new"
+                            weaponModes_[wName] = wMode->getMode();
+                    }
+                }
+                if(weaponModes_.size())//at least one weapon detected
+                    this->bSetupWorked = true;
+            }//pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
+        }
+    }
+
+
+    void ArtificialController::setBotLevel(float level)
+    {
+        if (level < 0.0f)
+            this->botlevel_ = 0.0f;
+        else if (level > 1.0f)
+            this->botlevel_ = 1.0f;
+        else
+            this->botlevel_ = level;
+    }
+
+    void ArtificialController::setAllBotLevel(float level)
+    {
+        for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it != ObjectList<ArtificialController>::end(); ++it)
+            it->setBotLevel(level);
+    }
+
+    void ArtificialController::setPreviousMode()
+    {
+        this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
+    }
+
+    /**
+        @brief Manages boost. Switches between boost usage and boost safe mode.
+    */
+    void ArtificialController::boostControl()
+    {
+        SpaceShip* ship = orxonox_cast<SpaceShip*>(this->getControllableEntity());
+        if(ship == NULL) return;
+        if(ship->getBoostPower()*1.5f > ship->getInitialBoostPower() ) //upper limit ->boost
+            this->getControllableEntity()->boost(true);
+        else if(ship->getBoostPower()*4.0f < ship->getInitialBoostPower()) //lower limit ->do not boost
+            this->getControllableEntity()->boost(false);
+    }
+
+    int ArtificialController::getFiremode(std::string name)
+    {
+        for (std::map< std::string, int >::iterator it = this->weaponModes_.begin(); it != this->weaponModes_.end(); ++it)
+        {
+            if (it->first == name)
+                return it->second;
+        }
+        return -1;
+    }
+
+    void ArtificialController::addWaypoint(WorldEntity* waypoint)
+    {
+        this->waypoints_.push_back(waypoint);
+    }
+
+    WorldEntity* ArtificialController::getWaypoint(unsigned int index) const
+    {
+        if (index < this->waypoints_.size())
+            return this->waypoints_[index];
+        else
+            return 0;
+    }
+
+    /**
+        @brief Adds first waypoint of type name to the waypoint stack, which is within the searchDistance
+        @param name object-name of a point of interest (e.g. "PickupSpawner", "ForceField")
+    */
+    void ArtificialController::updatePointsOfInterest(std::string name, float searchDistance)
+    {
+        WorldEntity* waypoint = NULL;
+        for (ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it != ObjectList<WorldEntity>::end(); ++it)
+        {
+            if((*it)->getIdentifier() == ClassByString(name))
+            {
+                ControllableEntity* controllable = this->getControllableEntity();
+                if(!controllable) continue;
+                float actualDistance = ( (*it)->getPosition() - controllable->getPosition() ).length();
+                if(actualDistance > searchDistance || actualDistance < 5.0f) continue;
+                    // TODO: PickupSpawner: adjust waypoint accuracy to PickupSpawner's triggerdistance
+                    // TODO: ForceField: analyze is angle between forcefield boost and own flying direction is acceptable
+                else
+                {
+                    waypoint = *it;
+                    break;
+                }
+            }
+        }
+        if(waypoint)
+            this->waypoints_.push_back(waypoint);
+    }
+
+    /**
+        @brief Adds point of interest depending on context. Further Possibilites: "ForceField", "PortalEndPoint", "MovableEntity", "Dock"
+    */
+    void ArtificialController::manageWaypoints()
+    {
+        if(!defaultWaypoint_)
+            this->updatePointsOfInterest("PickupSpawner", 200.0f); // long search radius if there is no default goal
+        else
+            this->updatePointsOfInterest("PickupSpawner", 20.0f); // take pickup en passant if there is a default waypoint
     }
  
 }

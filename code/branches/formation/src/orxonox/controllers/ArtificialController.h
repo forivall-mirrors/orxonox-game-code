@@ -43,6 +43,23 @@ namespace orxonox
             void abandonTarget(Pawn* target);
 
             virtual void changedControllableEntity();
+//************************************************************************* NEW 
+            virtual void doFire();
+            void setBotLevel(float level=1.0f);
+            inline float getBotLevel() const
+                { return this->botlevel_; }
+            static void setAllBotLevel(float level);
+            //WAYPOINT FUNCTIONS
+            void addWaypoint(WorldEntity* waypoint);
+            WorldEntity* getWaypoint(unsigned int index) const;
+
+            inline void setAccuracy(float accuracy)
+                { this->squaredaccuracy_ = accuracy*accuracy; }
+            inline float getAccuracy() const
+                { return sqrt(this->squaredaccuracy_); }
+            void updatePointsOfInterest(std::string name, float distance);
+            void manageWaypoints();
+
             
 
         protected:
@@ -51,6 +68,27 @@ namespace orxonox
 
             bool isCloseAtTarget(float distance) const;
             bool isLookingAtTarget(float angle) const;
+//************************************************************************* NEW 
+            float botlevel_; //<! Makes the level of a bot configurable.
+            void setPreviousMode();
+
+
+            //WEAPONSYSTEM DATA
+            std::map<std::string, int> weaponModes_; //<! Links each "weapon" to it's weaponmode - managed by setupWeapons()
+            //std::vector<int> projectiles_; //<! Displays amount of projectiles of each weapon. - managed by setupWeapons()
+            float timeout_; //<! Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
+            void setupWeapons(); //<! Defines which weapons are available for a bot. Is recalled whenever a bot was killed.
+            bool bSetupWorked; //<! If false, setupWeapons() is called.
+            int getFiremode(std::string name);
+
+
+            //WAYPOINT DATA
+            std::vector<WeakPtr<WorldEntity> > waypoints_;
+            size_t currentWaypoint_;
+            float squaredaccuracy_;
+            WorldEntity* defaultWaypoint_;
+
+            void boostControl(); //<! Sets and resets the boost parameter of the spaceship. Bots alternate between boosting and saving boost.
 
         private:
     };

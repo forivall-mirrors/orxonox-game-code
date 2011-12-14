@@ -960,6 +960,16 @@ void FormationController::commandSlaves()
                 team2 = tdm->getTeam(entity2->getPlayer());
         }
 
+        Mission* miss = orxonox_cast<Mission*>(gametype); //NEW
+        if (miss)
+        {
+            if (entity1->getPlayer())
+                team1 = miss->getTeam(entity1->getPlayer());
+
+            if (entity2->getPlayer())
+                team2 = miss->getTeam(entity2->getPlayer());
+        }
+
         TeamBaseMatchBase* base = 0;
         base = orxonox_cast<TeamBaseMatchBase*>(entity1);
         if (base)
