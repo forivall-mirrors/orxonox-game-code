@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Pirate Attack"
  description = "Dani's Testlevel"
- tags = "test"
+ tags = "mission"
  screenshot = "pirateattack.png"
 />
 
@@ -252,7 +252,7 @@ gametype=Mission
                         </execute>
                     </events>
                 </QuestEffectBeacon>
-        <!--Stick found-->zz
+        <!--Stick found-->
         <QuestEffectBeacon position="4800,5785,-10725" times=1>
                     <attached>
                         <DistanceTrigger name=questbeacon7  position="0,0,0" distance=30 target="Pawn" beaconMode="identify" targetname=Me />
