@@ -2,6 +2,7 @@
  name = "Presentation DM"
  description = "Presentation Level"
  tags = "presentation"
+ screenshot = "presentationdm.png"
 />
 
 <?lua
@@ -13,9 +14,7 @@
 ?>
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
- gametype     = Deathmatch
+ gametype = "Deathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

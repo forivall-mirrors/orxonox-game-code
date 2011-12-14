@@ -2,7 +2,8 @@
 <LevelInfo
  name = "Portals"
  description = "Level for testing portals"
- tags = "tutorial"
+ tags = "test"
+ screenshot = "portals.png"
 />
 
 <?lua
@@ -13,10 +14,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Presentation"
- description  = "A simple testlevel"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

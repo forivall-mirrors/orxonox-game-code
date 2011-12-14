@@ -1,7 +1,8 @@
 <LevelInfo
  name = "The Tale of Princess Aeryn"
  description = "The Tale of the elusive but beautiful Princess Aeryn"
- tags = ""
+ tags = "mission"
+ screenshot = "thetaleofprincessaeryn.png"
 />
 
 <?lua
@@ -15,10 +16,7 @@
   dofile("includes/CuboidSpaceStation.lua")
 ?>
 
-<Level
- name     = "The Tale of Princess Aeryn"
- description  = "The Tale of Princess Aeryn"
->
+<Level>
 
   <templates>
     <Template link=lodtemplate_default />

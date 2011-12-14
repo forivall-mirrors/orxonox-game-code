@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Last Man Standing"
  description = "Be the sole survivor."
- tags = ""
+ tags = "gametype"
+ screenshot = "lastmanstanding.png"
 />
 
 <?lua
@@ -15,9 +16,7 @@
 ?>
 
 <Level
- name         = "Last Man Standing"
- description  = "testmap for gametype last man standing"
- gametype     =  "LastManStanding"
+ gametype = "LastManStanding"
 >
   <templates>
     <Template link=lodtemplate_default />

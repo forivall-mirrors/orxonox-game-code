@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Space Race"
- description = "Test level for the gametype Space Race."
- tags = "test"
+ description = "Have a furious Race in Space: Reach the checkpoints as fast as possible."
+ tags = "gametype"
+ screenshot = "spacerace.png"
 />
 
 <?lua
@@ -16,9 +17,7 @@
 ?>
 
 <Level
- name         = "Space Race"
- description  = "Test level for the gametype Space Race."
- gametype     = SpaceRace
+ gametype = "SpaceRace"
 >
   <templates>
     <Template link=lodtemplate_default />

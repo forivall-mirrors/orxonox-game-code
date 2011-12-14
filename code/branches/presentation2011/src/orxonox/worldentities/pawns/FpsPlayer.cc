@@ -269,7 +269,7 @@ namespace orxonox
     {
     }
 
-    void FpsPlayer::boost() //acctually jump
+    void FpsPlayer::boost(bool bBoost) //acctually jump
     {
         if (this->isFloor_)
         {

@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Pong"
  description = "Pong in space!"
- tags = ""
+ tags = "minigame"
+ screenshot = "pong.png"
 />
 
 <?lua
@@ -48,9 +49,7 @@
 
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
- gametype     = Pong
+ gametype = "Pong"
 >
   <templates>
     <Template link=lodtemplate_default />

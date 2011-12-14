@@ -1,3 +1,10 @@
+<LevelInfo
+ name = "Under Attack"
+ description = "Fight the transporter."
+ tags = "gametype"
+ screenshot = "underattack.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
@@ -7,9 +14,7 @@
 ?>
 
 <Level
- name         = "UnderAttack testing"
- description  = "A simple testlevel"
- gametype     = UnderAttack
+ gametype = "UnderAttack"
 >
   <templates>
     <Template link=lodtemplate_default />

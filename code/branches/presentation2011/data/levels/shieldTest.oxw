@@ -2,6 +2,7 @@
  name = "Shield Testlevel"
  description = "A simple Level with one shielded drone to shoot at"
  tags = "test"
+ screenshot = "shieldtestlevel.png"
 />
 
 <?lua
@@ -11,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "shieldTL"
- description  = "LEVEL-DESCRIPTION"
->
+<Level>
 
 <templates>
   <Template link=lodtemplate_default />

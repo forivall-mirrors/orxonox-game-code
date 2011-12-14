@@ -76,6 +76,17 @@ namespace orxonox // tolua_export
             @return Returns the name of the Level.
             */
             inline const std::string& getName(void) const { return this->name_; } // tolua_export
+        
+            /**
+            @brief Set the screenshot of the Level.
+            @param screenshot The screenshot to be set.
+            */
+            inline void setScreenshot(const std::string& screenshot) { this->screenshot_ = std::string(screenshot); }
+            /**
+            @brief Get the screenshot of the Level.
+            @return Returns the screenshot of the Level.
+            */
+            inline const std::string& getScreenshot() const { return this->screenshot_; } // tolua_export
 
             /**
             @brief Set the description of the Level.
@@ -137,6 +148,7 @@ namespace orxonox // tolua_export
 
             std::string name_; //!< The name of the Level.
             std::string description_; //!< The description of the Level.
+            std::string screenshot_; //!< The screenshot of the Level.
             std::set<std::string> tags_; //!< The set of tags the Level is tagged with.
             std::string tagsString_; //!< The comma-seperated string of all the tags the Level is tagged with.
     }; // tolua_export
@@ -147,6 +159,7 @@ namespace orxonox // tolua_export
         The following parameters can be specified:
         - @b name The name of the level.
         - @b description The description of the level.
+        - @b screenshot The screenshot of the level.
         - @b tags A comma-seperated string of tags. Allowed tags are: <em>test</em>, <em>singleplayer</em>, <em>multiplayer</em>, <em>showcase</em>, <em>tutorial</em>, <em>presentation</em>.
 
         An example would be:
@@ -154,6 +167,7 @@ namespace orxonox // tolua_export
         <LevelInfo
             name = "Levelname"lhs->compare(rhs) < 0
             description = "This is just some awesome level."
+            screenshot = "Screenshot.png"
             tags = "test, awesome"
         />
         @endcode
@@ -171,6 +185,17 @@ namespace orxonox // tolua_export
             virtual ~LevelInfo();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a LevelInfo object through XML.
+        
+            /**
+            @brief Set the screenshot of the Level.
+            @param screenshot The screenshot to be set.
+            */
+            inline void setScreenshot(const std::string& screenshot) { this->LevelInfoItem::setScreenshot(screenshot); }
+            /**
+            @brief Get the screenshot of the Level.
+            @return Returns the screenshot of the Level.
+            */
+            inline const std::string& getScreenshot() const { return this->LevelInfoItem::getScreenshot(); }
 
             /**
             @brief Set the description of the Level.

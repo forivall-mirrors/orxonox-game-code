@@ -2,6 +2,7 @@
  name = "Swallow Testlevel"
  description = "Level to test the swallow spaceship."
  tags = "test"
+ screenshot = "swallowtestlevel.png"
 />
 
 <?lua
@@ -12,11 +13,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Presentation_swallow"
- description  = "presentation level for Orxonox Convention X"
-
->
+<Level>
 
   <templates>
     <Template link=lodtemplate_default />

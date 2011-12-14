@@ -2,6 +2,7 @@
  name = "Presentation X 2nd"
  description = "2nd Presentation level for Orxonox Convention X"
  tags = "presentation"
+ screenshot = "presentationx2nd.png"
 />
 
 <?lua
@@ -21,9 +22,7 @@
 ?>
 
 <Level
- name         = "Sample"
- description  = "Just a few tests"
- gametype     = TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

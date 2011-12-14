@@ -1,3 +1,10 @@
+<LevelInfo
+ name = "Dynamic Match"
+ description = "Dynamicmatch: Take care of what you're shooting at."
+ tags = "gametype"
+ screenshot = "dynamicMatch.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
@@ -8,9 +15,7 @@
 ?>
 
 <Level
- name         = "Dynamic Match"
- description  = "In progress -level for dynamicmatch"
- gametype     = "Dynamicmatch"
+ gametype = "Dynamicmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

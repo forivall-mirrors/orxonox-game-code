@@ -2,6 +2,7 @@
  name = "Notifications showcase"
  description = "Level to test and showcase notifications."
  tags = "test, showcase"
+ screenshot = "notificationsshowcase.png"
 />
 
 <?lua
@@ -11,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Presentation"
- description  = "A simple testlevel"
->
+<Level>
     <templates>
         <Template link=lodtemplate_default />
     </templates>

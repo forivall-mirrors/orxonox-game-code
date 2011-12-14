@@ -2,6 +2,7 @@
  name = "Planet Demonstration"
  description = "Demonstration of Planets"
  tags = "showcase"
+ screenshot = "planetdemonstration.png"
 />
 
 <?lua
@@ -11,10 +12,7 @@
   include("templates/spaceshipHXY.oxt")
 ?>
 
-<Level
- name         = "Planet"
- description  = "Demonstration of Planets"
->
+<Level>
   <templates>
     <Template link="lodtemplate_default" />
   </templates>
