@@ -68,6 +68,9 @@ namespace orxonox
             virtual void doPauseControl();
             virtual void doResumeControl();
 
+            float getCurrentYaw(){ return this->currentYaw_; }
+            float getCurrentPitch(){ return this->currentPitch_; }
+
 
         protected:
             void updateTarget();
