@@ -1,6 +1,7 @@
 <LevelInfo
  name = "asteroidFieldTest"
  description = "Test of the asteroidField generator."
+  screenshot = "asteroidFieldTest.png"
  tags = ""
 />
 
