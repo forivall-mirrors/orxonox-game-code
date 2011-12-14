@@ -117,10 +117,10 @@ namespace orxonox
 
         if (this->state_ == SLAVE && this->mode_==ATTACK)
         {
-            if (!this->target_)
-            {
-               this->searchNewTarget();
-            }
+            // search enemy
+            random = rnd(maxrand);
+            if (random < 75 && (!this->target_))
+                this->searchNewTarget();
 
             // next enemy
             random = rnd(maxrand);

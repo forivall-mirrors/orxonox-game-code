@@ -70,7 +70,7 @@ namespace orxonox
     HumanController* HumanController::localController_s = 0;
     /*static*/ const float HumanController::BOOSTING_TIME = 0.1f;
 
-    HumanController::HumanController(BaseObject* creator) : Masterable(creator)
+    HumanController::HumanController(BaseObject* creator) : FormationController(creator)
     {
         RegisterObject(HumanController);
 
@@ -175,7 +175,7 @@ namespace orxonox
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
         {
             HumanController::localController_s->controllableEntity_->fire(firemode);
-            //if human fires, set slaves free. See Masterable::forceFreeSlaves()
+            //if human fires, set slaves free. See FormationController::forceFreeSlaves()
             if (HumanController::localController_s->state_==MASTER && HumanController::localController_s->mode_==NORMAL)
             {
                 HumanController::localController_s->forceFreeSlaves();

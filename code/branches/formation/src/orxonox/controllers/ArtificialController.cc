@@ -34,7 +34,7 @@
 namespace orxonox
 {
 
-    ArtificialController::ArtificialController(BaseObject* creator) : Masterable(creator)
+    ArtificialController::ArtificialController(BaseObject* creator) : FormationController(creator)
     {
           
     }

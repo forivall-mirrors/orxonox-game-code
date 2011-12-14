@@ -30,11 +30,11 @@
 #define _ArtificialController_H__
 
 #include "OrxonoxPrereqs.h"
-#include "controllers/Masterable.h"
+#include "controllers/FormationController.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ArtificialController : public Masterable
+    class _OrxonoxExport ArtificialController : public FormationController
     {
         public:
             ArtificialController(BaseObject* creator);
