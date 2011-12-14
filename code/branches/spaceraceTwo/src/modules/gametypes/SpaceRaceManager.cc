@@ -96,7 +96,7 @@ namespace orxonox
         if(this->checkpoints_[0] != NULL && !this->firstcheckpointvisible_)
         {
             this->checkpoints_[0]->setRadarVisibility(true);
-            this->firstcheckpointvisible_=false;
+            this->firstcheckpointvisible_=true;
         }
          
         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
@@ -152,11 +152,11 @@ namespace orxonox
             else if (check->getLast())
                 gametype->end();
             else
-            {
+				{
                 if (index > -1)this->setRadVis(player,false);
                 	else this->getCheckpoint(0)->setRadarVisibility(false);
                 gametype->newCheckpointReached(check,player);
-                check->setRadarObjectColour(ColourValue::Green); //sets the radar colour of the checkpoint to green if it is reached, else it is red.
+               
                 
                 this->setRadVis(player, true);
             }
@@ -186,8 +186,10 @@ namespace orxonox
         if(v.z > -1)
         {
             this->getCheckpoint(v.z)->setRadarVisibility(b);
-            this->getCheckpoint(v.z)->settingsChanged();
+           this->getCheckpoint(v.z)->settingsChanged();
         }
+        
+        
     }
     
 }

@@ -38,7 +38,7 @@ gametype = SpaceRace
 	
 	<SpaceRaceManager>
 <checkpoints>	
-	<RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false" nextcheckpoints="1,2,0">
+	<RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false" nextcheckpoints="1,2,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -94,7 +94,7 @@ gametype = SpaceRace
         <Template link=spaceshipassff />
       </templates>
       <controller>
-        <WaypointPatrolController alertnessradius=1000 team=10>
+        <WaypointPatrolController alertnessradius=0 team=10>
           <waypoints>
             <Model mesh="cube.mesh" scale=0 position="0,-2000,1000" />
             <Model mesh="cube.mesh" scale=0 position="0,2100,2300" />

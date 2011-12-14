@@ -82,7 +82,7 @@ namespace orxonox
                 { return this; }
 
         private:
-            int bCheckpointIndex_; //The index of this check point.
+            int bCheckpointIndex_; //The index of this check point. The race starts with the check point with the index 0
             Vector3 nextcheckpoints_; //the indexes of the next check points
             
     };

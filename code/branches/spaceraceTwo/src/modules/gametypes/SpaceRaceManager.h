@@ -67,11 +67,11 @@ namespace orxonox
             void tick(float dt);
     
         protected:
-            void setRadVis(PlayerInfo* player, bool b);
+            void setRadVis(PlayerInfo* player, bool b);//sets RadarVisibility of the checkpoints the player can reach.
     
         private:
             std::vector<RaceCheckPoint*> checkpoints_;
-            bool firstcheckpointvisible_;
+            bool firstcheckpointvisible_;//true if the first check point is visible.
         
     };
 }
