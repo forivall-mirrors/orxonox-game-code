@@ -36,8 +36,7 @@
     <!-- Generate asteroid field and asteroid belt -->    
     <?lua
     	dofile("includes/asteroidField.lua")
-    	asteroidField(0, 0, 5000, 100, 150, 2000, 50, 1);
-    	asteroidBelt(0, 0, 0, -48, -34, 30, 100, 200, 17000, 21000, 900, 1)
+    	asteroidBelt(0, 0, 0, -48, -34, 70, 100, 200, 219900, 210000, 900, 1)
     ?>
     
   </Scene>

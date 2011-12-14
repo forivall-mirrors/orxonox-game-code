@@ -59,7 +59,7 @@ function asteroidField(posX, posY, posZ, minSize, maxSize, radius, count, fog)
 		print("</StaticEntity>")
 		
 		if fog == 1 and i % 5 == 0 then
-			generateFog(pX, pY, pZ, size*0.7, 0.2)
+			generateFog(pX, pY, pZ, radius*0.04, 0.2)
 		end
 	end
 end
