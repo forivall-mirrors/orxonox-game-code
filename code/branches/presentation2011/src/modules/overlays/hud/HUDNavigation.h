@@ -84,10 +84,13 @@ private:
 
     // XMLPort accessors
     void setNavMarkerSize ( float size )
-    { navMarkerSize_ = size; this->sizeChanged(); }
+        { navMarkerSize_ = size; this->sizeChanged(); }
     float getNavMarkerSize() const
-    { return navMarkerSize_; }
-
+        { return navMarkerSize_; }
+    void setDetectionLimit( float limit ) 
+        { this->detectionLimit_ = limit; } 
+    float getDetectionLimit() const 
+        { return this->detectionLimit_; }
 
     void setTextSize ( float size );
     float getTextSize() const;
@@ -109,8 +112,8 @@ private:
     float textSize_;
     bool showDistance;
 
-    unsigned int markerLimit_;;
-
+    unsigned int markerLimit_;
+    float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value. 
 
 };
 }
