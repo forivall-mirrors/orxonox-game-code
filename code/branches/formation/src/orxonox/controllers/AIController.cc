@@ -77,7 +77,7 @@ namespace orxonox
 
         }
 
-        if (this->state_ == SLAVE && this->mode_ == ATTACK) //TODO: add botlevel parameter
+        if (this->state_ == SLAVE && this->formationMode_ == ATTACK) //TODO: add botlevel parameter
         {
             // search enemy
             random = rnd(maxrand);
@@ -150,8 +150,8 @@ namespace orxonox
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
         ControllableEntity* controllable = this->getControllableEntity();
-
-        if (controllable && this->mode_ == NORMAL)// bot is ready to move to a target // mode was DEFAULT in original implementation!
+        //DOES: Either move to the waypoint or search for a Point of interest
+        if (controllable && this->mode_ == DEFAULT)// bot is ready to move to a target
         {
             if (this->waypoints_.size() > 0 ) //Waypoint functionality.
             {
@@ -173,7 +173,7 @@ namespace orxonox
             }
         }
 
-        if (this->mode_ != ROCKET)
+        if (this->mode_ == DEFAULT)
         {
             if (this->state_ == MASTER)
             {
@@ -206,13 +206,13 @@ namespace orxonox
                     this->follow();
             }
 
-            if (this->state_ == SLAVE && this->mode_!=ATTACK)
+            if (this->state_ == SLAVE && this->formationMode_ != ATTACK)
             {
                 if (this->bHasTargetPosition_)
                     this->moveToTargetPosition();
             }
 
-            if (this->state_ == FREE || (this->state_==SLAVE && this->mode_==ATTACK) )
+            if (this->state_ == FREE || (this->state_==SLAVE && this->formationMode_ == ATTACK) )
             {
                 if (this->target_)
                 {

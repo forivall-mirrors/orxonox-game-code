@@ -87,14 +87,14 @@ namespace orxonox {
                Defend-just defend the master
                Attack-leave formation, attack every target
       */ 
-      enum Mode {NORMAL,DEFEND,ATTACK,ROCKET};
+      enum FormationMode {NORMAL,DEFEND,ATTACK};
       
       /**
         @brief Sets the new mode. If master, set it for all slaves.
       */
-      void setMode(Mode val);
-      inline Mode getMode() const
-           { return this->mode_; }
+      void setFormationMode(FormationMode val);
+      inline FormationMode getFormationMode() const
+           { return this->formationMode_; }
 
     protected:
       bool formationFlight_;
@@ -108,7 +108,7 @@ namespace orxonox {
       std::vector<FormationController*> slaves_;
       FormationController* myMaster_;
 
-      Mode mode_;
+      FormationMode formationMode_;
 
       enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180, FOLLOW};
       SpecificMasterAction specificMasterAction_;

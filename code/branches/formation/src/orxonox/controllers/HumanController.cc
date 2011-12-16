@@ -105,7 +105,7 @@ namespace orxonox
         // commandslaves when Master of a formation
         if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
         {
-            if (HumanController::localController_s->mode_!=ATTACK)
+            if (HumanController::localController_s->formationMode_ != ATTACK)
                 HumanController::localController_s->commandSlaves();
         }
     }
@@ -176,7 +176,7 @@ namespace orxonox
         {
             HumanController::localController_s->controllableEntity_->fire(firemode);
             //if human fires, set slaves free. See FormationController::forceFreeSlaves()
-            if (HumanController::localController_s->state_==MASTER && HumanController::localController_s->mode_==NORMAL)
+            if (HumanController::localController_s->state_==MASTER && HumanController::localController_s->formationMode_ == NORMAL)
             {
                 HumanController::localController_s->forceFreeSlaves();
             }
@@ -316,20 +316,18 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
         {
-            switch (HumanController::localController_s->getMode()) {
+            switch (HumanController::localController_s->getFormationMode()) {
                 case NORMAL:
-                    HumanController::localController_s->setMode(DEFEND);
+                    HumanController::localController_s->setFormationMode(DEFEND);
                     orxout(message) <<"Mode: DEFEND "<< endl;
                     break;
                 case DEFEND:
-                    HumanController::localController_s->setMode(ATTACK);
+                    HumanController::localController_s->setFormationMode(ATTACK);
                     orxout(message) <<"Mode: ATTACK "<< endl;
                     break;
                 case ATTACK:
-                    HumanController::localController_s->setMode(NORMAL);
+                    HumanController::localController_s->setFormationMode(NORMAL);
                     orxout(message) <<"Mode: NORMAL "<< endl;
-                    break;
-                default: //catch all non-formation related states
                     break;
             }
         }
@@ -339,7 +337,7 @@ namespace orxonox
     //used, when slaves are in DEFEND mode.
     void HumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
     {
-        if (!this->formationFlight_ || this->state_!=MASTER || this->mode_!=DEFEND) return;
+        if (!this->formationFlight_ || this->state_!=MASTER || this->formationMode_!=DEFEND) return;
             this->masterAttacked(originator);
     }
 

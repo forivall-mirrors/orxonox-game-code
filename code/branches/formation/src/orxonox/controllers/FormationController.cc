@@ -80,7 +80,7 @@ namespace orxonox
         this->freedomCount_ = 0;
 
         this->state_ = FREE;
-        this->mode_ = NORMAL;
+        this->formationMode_ = NORMAL;
         this->specificMasterAction_ = NONE;
         this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
@@ -651,15 +651,15 @@ void FormationController::commandSlaves()
     /**
       @brief Sets the new mode. If master, set it for all slaves.
     */
-    void FormationController::setMode(Mode val)
+    void FormationController::setFormationMode(FormationMode val)
     {
-        this->mode_=val;
-        if (this->state_==MASTER)
+        this->formationMode_ = val;
+        if (this->state_ == MASTER)
         {
             for(std::vector<FormationController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
-                 (*it)->mode_=val;
-                 if (val==ATTACK)
+                 (*it)->formationMode_ = val;
+                 if (val == ATTACK)
                      (*it)->forgetTarget();
             }
         }

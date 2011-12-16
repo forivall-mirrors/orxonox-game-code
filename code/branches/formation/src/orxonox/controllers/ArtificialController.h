@@ -70,6 +70,8 @@ namespace orxonox
             bool isLookingAtTarget(float angle) const;
 //************************************************************************* NEW 
             float botlevel_; //<! Makes the level of a bot configurable.
+            enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
+            Mode mode_; //TODO: replace single value with stack-like implementation: std::vector<Mode> mode_;
             void setPreviousMode();
 
 

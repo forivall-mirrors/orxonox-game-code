@@ -49,6 +49,7 @@ namespace orxonox
         this->currentWaypoint_ = 0;
         this->setAccuracy(5);
         this->defaultWaypoint_ = NULL;
+        this->mode_ = DEFAULT;//Vector-implementation: mode_.push_back(DEFAULT);
     }
 
     ArtificialController::~ArtificialController()
@@ -196,7 +197,7 @@ namespace orxonox
 
     void ArtificialController::setPreviousMode()
     {
-        this->mode_ = NORMAL; //Vector-implementation: mode_.pop_back();
+        this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
     }
 
     /**
