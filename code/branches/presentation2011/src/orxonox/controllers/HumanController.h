@@ -33,14 +33,14 @@
 
 #include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
-#include "Controller.h"
+#include "FormationController.h"
 
 // tolua_begin
 namespace orxonox
 {
     class _OrxonoxExport HumanController
 // tolua_end
-        : public Controller, public Tickable
+        : public FormationController, public Tickable
     { // tolua_export
         public:
             HumanController(BaseObject* creator);
@@ -73,7 +73,8 @@ namespace orxonox
                 { return this->boosting_; }
             void keepBoosting(void);
             void terminateBoosting(void);
-            
+                  
+
             static void greet();
             static void switchCamera();
             static void mouseLook();
@@ -83,6 +84,11 @@ namespace orxonox
             static void suicide();
             static void toggleGodMode();
             static void myposition();
+
+            static void toggleFormationFlight();
+            static void FFChangeMode();
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
+
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
@@ -106,6 +112,7 @@ namespace orxonox
             bool boosting_; // Whether the HumanController is in boosting mode or not.
             Timer boostingTimeout_; // A timer to check whether the player is no longer boosting.
             static const float BOOSTING_TIME; // The time after it is checked, whether the player is no longer boosting.
+            FormationController* tempMaster;
 
     }; // tolua_export
 } // tolua_export

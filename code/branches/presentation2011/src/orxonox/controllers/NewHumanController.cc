@@ -276,7 +276,7 @@ namespace orxonox
         HumanController::tick(dt);
     }
 
-    void NewHumanController::doFire(unsigned int firemode)
+    void NewHumanController::doFire(unsigned int firemode)//TODO??
     {
         if (!this->controllableEntity_)
             return;
@@ -296,6 +296,9 @@ namespace orxonox
 
     void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
     {
+        //Used in HumanController for formationFlight
+        HumanController::hit(originator,contactpoint,damage);
+        
         if (this->showDamageOverlay_ && !this->controlPaused_ && this->controllableEntity_ && !this->controllableEntity_->isInMouseLook())
         {
             Vector3 posA;

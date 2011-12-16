@@ -52,7 +52,7 @@ namespace orxonox
         private:
             static const float ACTION_INTERVAL;
 
-            Timer actionTimer_; //<! Regularly calls action(). 
+            Timer actionTimer_; //<! Regularly calls action().
     };
 }
 
