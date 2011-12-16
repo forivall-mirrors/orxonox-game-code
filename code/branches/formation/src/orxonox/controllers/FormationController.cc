@@ -39,6 +39,7 @@
 #include "worldentities/pawns/TeamBaseMatchBase.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "gametypes/Dynamicmatch.h"
+//#include "gametypes/Mission.h" TODO: include mission after merging
 #include "gametypes/Gametype.h"
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
@@ -960,7 +961,7 @@ void FormationController::commandSlaves()
                 team2 = tdm->getTeam(entity2->getPlayer());
         }
 
-        Mission* miss = orxonox_cast<Mission*>(gametype); //NEW
+        /*Mission* miss = orxonox_cast<Mission*>(gametype); //NEW
         if (miss)
         {
             if (entity1->getPlayer())
@@ -968,7 +969,7 @@ void FormationController::commandSlaves()
 
             if (entity2->getPlayer())
                 team2 = miss->getTeam(entity2->getPlayer());
-        }
+        }*/
 
         TeamBaseMatchBase* base = 0;
         base = orxonox_cast<TeamBaseMatchBase*>(entity1);

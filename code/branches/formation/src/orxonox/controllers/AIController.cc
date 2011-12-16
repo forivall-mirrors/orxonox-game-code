@@ -64,8 +64,8 @@ namespace orxonox
                 // return to Master after being forced free
                 if (this->freedomCount_ == 1)
                 {
-                this->state_ = SLAVE;
-                this->freedomCount_ = 0;
+                    this->state_ = SLAVE;
+                    this->freedomCount_ = 0;
                 }
 
                 random = rnd(maxrand);
@@ -73,49 +73,11 @@ namespace orxonox
                     this->searchNewMaster();
             }
 
-            // search enemy
-            random = rnd(maxrand);
-            if (random < 15 && (!this->target_))
-                this->searchNewTarget();
-
-            // forget enemy
-            random = rnd(maxrand);
-            if (random < 5 && (this->target_))
-                this->forgetTarget();
-
-            // next enemy
-            random = rnd(maxrand);
-            if (random < 10 && (this->target_))
-                this->searchNewTarget();
-
-            // fly somewhere
-            random = rnd(maxrand);
-            if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
-                this->searchRandomTargetPosition();
-
-            // stop flying
-            random = rnd(maxrand);
-            if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
-                this->bHasTargetPosition_ = false;
-
-            // fly somewhere else
-            random = rnd(maxrand);
-            if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-                this->searchRandomTargetPosition();
-
-            // shoot
-            random = rnd(maxrand);
-            if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
-                this->bShooting_ = true;
-
-            // stop shooting
-            random = rnd(maxrand);
-            if (random < 25 && (this->bShooting_))
-                this->bShooting_ = false;
+            this->defaultBehaviour(maxrand);
 
         }
 
-        if (this->state_ == SLAVE && this->mode_==ATTACK)
+        if (this->state_ == SLAVE && this->mode_ == ATTACK) //TODO: add botlevel parameter
         {
             // search enemy
             random = rnd(maxrand);
@@ -141,8 +103,6 @@ namespace orxonox
 
         if (this->state_ == MASTER)
         {
-
-
             this->commandSlaves();
 
             if  (this->specificMasterAction_ != NONE)
@@ -175,44 +135,7 @@ namespace orxonox
                 if(this->slaves_.size() < 3 && random < 20)
                     this->searchNewMaster();
 
-                // search enemy
-                random = rnd(maxrand);
-                if (random < 15 && (!this->target_))
-                    this->searchNewTarget();
-
-                // forget enemy
-                random = rnd(maxrand);
-                if (random < 5 && (this->target_))
-                    this->forgetTarget();
-
-                // next enemy
-                random = rnd(maxrand);
-                if (random < 10 && (this->target_))
-                    this->searchNewTarget();
-
-                // fly somewhere
-                random = rnd(maxrand);
-                if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
-                    this->searchRandomTargetPosition();
-
-
-                // fly somewhere else
-                random = rnd(maxrand);
-                if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-                    this->searchRandomTargetPosition();
-
-                // shoot
-                random = rnd(maxrand);
-                if (!(this->passive_) && random < 9 && (this->target_ && !this->bShooting_))
-                {
-                this->bShooting_ = true;
-                this->forceFreeSlaves();
-                }
-
-                // stop shooting
-                random = rnd(maxrand);
-                if (random < 25 && (this->bShooting_))
-                    this->bShooting_ = false;
+                this->defaultBehaviour(maxrand);
 
             }
         }
@@ -224,9 +147,72 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->state_ == MASTER)
+        float random;
+        float maxrand = 100.0f / ACTION_INTERVAL;
+        ControllableEntity* controllable = this->getControllableEntity();
+
+        if (controllable && this->mode_ == NORMAL)// bot is ready to move to a target // mode was DEFAULT in original implementation!
         {
-            if (this->specificMasterAction_ ==  NONE)
+            if (this->waypoints_.size() > 0 ) //Waypoint functionality.
+            {
+                WorldEntity* wPoint = this->waypoints_[this->waypoints_.size()-1];
+                if(wPoint)
+                {
+                    this->moveToPosition(wPoint->getWorldPosition()); //BUG ?? sometime wPoint->getWorldPosition() causes crash
+                    if (wPoint->getWorldPosition().squaredDistance(controllable->getPosition()) <= this->squaredaccuracy_)
+                        this->waypoints_.pop_back(); // if goal is reached, remove it from the list
+                }
+                else
+                    this->waypoints_.pop_back(); // remove invalid waypoints
+
+            }
+            else if(this->defaultWaypoint_ && ((this->defaultWaypoint_->getPosition()-controllable->getPosition()).length()  > 200.0f))
+            {
+                this->moveToPosition(this->defaultWaypoint_->getPosition()); // stay within a certain range of the defaultWaypoint_
+                random = rnd(maxrand);
+            }
+        }
+
+        if (this->mode_ != ROCKET)
+        {
+            if (this->state_ == MASTER)
+            {
+                if (this->specificMasterAction_ ==  NONE)
+                {
+                    if (this->target_)
+                    {
+                        if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                            this->forgetTarget();
+                        else
+                        {
+                            this->aimAtTarget();
+                            random = rnd(maxrand);
+                            if(this->botlevel_*70 > random && !this->isCloseAtTarget(100))
+                                this->follow();  //If a bot is shooting a player, it shouldn't let him go away easily.
+                        }
+                    }
+
+                    if (this->bHasTargetPosition_)
+                        this->moveToTargetPosition();
+                    this->doFire();
+                }
+
+                if (this->specificMasterAction_  == TURN180)
+                    this->turn180();
+
+                if (this->specificMasterAction_ == SPIN)
+                    this->spin();
+                if (this->specificMasterAction_ == FOLLOW)
+                    this->follow();
+            }
+
+            if (this->state_ == SLAVE && this->mode_!=ATTACK)
+            {
+                if (this->bHasTargetPosition_)
+                    this->moveToTargetPosition();
+            }
+
+            if (this->state_ == FREE || (this->state_==SLAVE && this->mode_==ATTACK) )
             {
                 if (this->target_)
                 {
@@ -238,44 +224,100 @@ namespace orxonox
                 if (this->bHasTargetPosition_)
                     this->moveToTargetPosition();
 
-                if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                    this->getControllableEntity()->fire(0);
+                    this->doFire();
             }
+        }
+        else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
+        {   //Vector-implementation: mode_.back() == ROCKET;
+            if(controllable)
+            {//Check wether the bot is controlling the rocket and if the timeout is over.
+                if(controllable->getIdentifier() == ClassByString("Rocket"))
 
-            if (this->specificMasterAction_  == TURN180)
-                    this->turn180();
-
-            if (this->specificMasterAction_ == SPIN)
-                    this->spin();
-            if (this->specificMasterAction_ == FOLLOW)
+                {
                     this->follow();
-        }
-
-        if (this->state_ == SLAVE && this->mode_!=ATTACK)
-        {
-
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
-
-        }
-
-         if (this->state_ == FREE || (this->state_==SLAVE && this->mode_==ATTACK) )
-        {
-            if (this->target_)
-            {
-                if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
-                    this->forgetTarget();
-                else this->aimAtTarget();
+                    this->timeout_ -= dt;
+                    if((timeout_< 0)||(!target_))//Check if the timeout is over or target died.
+                    {
+                       controllable->fire(0);//kill the rocket
+                       this->setPreviousMode();//get out of rocket mode
+                    }
+                }
+                else
+                    this->setPreviousMode();//no rocket entity -> get out of rocket mode
             }
-
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
-
-            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                this->getControllableEntity()->fire(0);
-        }
+            else
+                this->setPreviousMode();//If bot dies -> getControllableEntity == NULL -> get out of ROCKET mode
+        }//END_OF ROCKET MODE
 
         SUPER(AIController, tick, dt);
+    }
+//**********************************************NEW
+    void AIController::defaultBehaviour(float maxrand)
+    {       float random;
+            // search enemy
+            random = rnd(maxrand);
+            if (random < (botlevel_* 100) && (!this->target_))
+                this->searchNewTarget();
+
+            // forget enemy
+            random = rnd(maxrand);
+            if (random < ((1-botlevel_)*20) && (this->target_))
+                this->forgetTarget();
+
+            // next enemy
+            random = rnd(maxrand);
+            if (random < (botlevel_*30) && (this->target_))
+                this->searchNewTarget();
+
+            // fly somewhere
+            random = rnd(maxrand);
+            if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+            // stop flying
+            random = rnd(maxrand);
+            if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
+                this->bHasTargetPosition_ = false;
+
+            // fly somewhere else
+            random = rnd(maxrand);
+            if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+            if (this->state_ == MASTER) // master: shoot
+            {
+                random = rnd(maxrand);
+                if (!(this->passive_) && random < (100*botlevel_) && (this->target_ && !this->bShooting_))
+                {
+                    this->bShooting_ = true;
+                    this->forceFreeSlaves();
+                }
+            }
+            else
+            {
+                // shoot
+                random = rnd(maxrand);
+                if (!(this->passive_) && random < (botlevel_*100) && (this->target_ && !this->bShooting_))
+                    this->bShooting_ = true;
+            }
+
+            // stop shooting
+            random = rnd(maxrand);
+            if (random < ((1 - botlevel_)*50) && (this->bShooting_))
+                this->bShooting_ = false;
+
+            // boost
+            random = rnd(maxrand);
+            if (random < botlevel_*50 )
+                this->boostControl();
+
+            // update Checkpoints
+            /*random = rnd(maxrand);
+            if (this->defaultWaypoint_ && random > (maxrand-10))
+                this->manageWaypoints();
+            else //if(random > maxrand-10) //CHECK USABILITY!!*/
+            if (this->waypoints_.size() == 0 )
+                this->manageWaypoints();
     }
 
 }

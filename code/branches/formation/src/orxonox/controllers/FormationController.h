@@ -87,7 +87,7 @@ namespace orxonox {
                Defend-just defend the master
                Attack-leave formation, attack every target
       */ 
-      enum Mode {NORMAL,DEFEND,ATTACK};
+      enum Mode {NORMAL,DEFEND,ATTACK,ROCKET};
       
       /**
         @brief Sets the new mode. If master, set it for all slaves.

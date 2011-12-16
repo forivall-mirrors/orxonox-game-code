@@ -317,18 +317,20 @@ namespace orxonox
         if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
         {
             switch (HumanController::localController_s->getMode()) {
-              case NORMAL:
-                HumanController::localController_s->setMode(DEFEND);
-                orxout(message) <<"Mode: DEFEND "<< endl;
-                break;
-              case DEFEND:
-                HumanController::localController_s->setMode(ATTACK);
-                orxout(message) <<"Mode: ATTACK "<< endl;
-                break;
-              case ATTACK:
-                HumanController::localController_s->setMode(NORMAL);
-                orxout(message) <<"Mode: NORMAL "<< endl;
-                break;
+                case NORMAL:
+                    HumanController::localController_s->setMode(DEFEND);
+                    orxout(message) <<"Mode: DEFEND "<< endl;
+                    break;
+                case DEFEND:
+                    HumanController::localController_s->setMode(ATTACK);
+                    orxout(message) <<"Mode: ATTACK "<< endl;
+                    break;
+                case ATTACK:
+                    HumanController::localController_s->setMode(NORMAL);
+                    orxout(message) <<"Mode: NORMAL "<< endl;
+                    break;
+                default: //catch all non-formation related states
+                    break;
             }
         }
     }

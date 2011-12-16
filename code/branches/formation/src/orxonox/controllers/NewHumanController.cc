@@ -276,7 +276,7 @@ namespace orxonox
         HumanController::tick(dt);
     }
 
-    void NewHumanController::doFire(unsigned int firemode)
+    void NewHumanController::doFire(unsigned int firemode)//TODO??
     {
         if (!this->controllableEntity_)
             return;

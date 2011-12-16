@@ -29,6 +29,13 @@
 #include "ArtificialController.h"
 #include "core/CoreIncludes.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/SpaceShip.h"
+
+#include "weaponsystem/WeaponMode.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/Weapon.h"
+#include "weaponsystem/WeaponSlot.h"
+#include "weaponsystem/WeaponSlot.h"
 
 
 namespace orxonox
@@ -36,12 +43,21 @@ namespace orxonox
 
     ArtificialController::ArtificialController(BaseObject* creator) : FormationController(creator)
     {
-          
+        this->bSetupWorked = false;
+        this->botlevel_ = 0.5f;
+        this->timeout_ = 0;
+        this->currentWaypoint_ = 0;
+        this->setAccuracy(5);
+        this->defaultWaypoint_ = NULL;
     }
 
     ArtificialController::~ArtificialController()
     {
-        
+        if (this->isInitialized())
+        {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
+            this->waypoints_.clear();
+            this->weaponModes_.clear();
+        }
     }
 
 
@@ -180,7 +196,7 @@ namespace orxonox
 
     void ArtificialController::setPreviousMode()
     {
-        this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
+        this->mode_ = NORMAL; //Vector-implementation: mode_.pop_back();
     }
 
     /**
@@ -248,7 +264,7 @@ namespace orxonox
     }
 
     /**
-        @brief Adds point of interest depending on context. Further Possibilites: "ForceField", "PortalEndPoint", "MovableEntity", "Dock"
+        @brief Adds point of interest depending on context.  TODO: Further Possibilites: "ForceField", "PortalEndPoint", "MovableEntity", "Dock"
     */
     void ArtificialController::manageWaypoints()
     {
