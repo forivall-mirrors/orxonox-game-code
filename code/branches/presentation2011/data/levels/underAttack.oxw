@@ -8,10 +8,10 @@
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("underAttackHUD.oxo")
   include("templates/spaceshipAssff.oxt")
   include("templates/lodInformation.oxt")
 ?>
+<!--OUTDATED: include("underAttackHUD.oxo") -->
 
 <Level
  gametype = "UnderAttack"

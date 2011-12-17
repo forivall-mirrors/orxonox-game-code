@@ -1,6 +1,6 @@
 <LevelInfo
  name = "Mission One"
- description = "First guided steps in the orxonoxian universe."
+ description = "First Guided Steps in the Orxonoxian Universe."
  screenshot = "missionOne.png"
  tags = "mission"
 />
