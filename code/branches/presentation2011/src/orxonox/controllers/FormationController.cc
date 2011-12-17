@@ -39,7 +39,7 @@
 #include "worldentities/pawns/TeamBaseMatchBase.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "gametypes/Dynamicmatch.h"
-#include "gametypes/Mission.h" TODO: include mission after merging
+#include "gametypes/Mission.h"
 #include "gametypes/Gametype.h"
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
@@ -88,7 +88,7 @@ namespace orxonox
 	this->bHasTargetOrientation_=false;
         this->speedCounter_ = 0.2f;
         this->targetPosition_ = Vector3::ZERO;
-        //this->team_=-1;
+        this->team_=-1;
         this->target_.setCallback(createFunctor(&FormationController::targetDied, this));
   }
 

@@ -310,7 +310,7 @@ namespace orxonox
 
     void TeamGametype::colourPawn(Pawn* pawn, int teamNr)
     {// catch no-colouring-case and wrong input
-        if(teamNr < 0 || pawn == NULL) return;
+        if(teamNr < 0 || teamNr+1 > this->teamcolours_.size() ||pawn == NULL) return;
         pawn->setRadarObjectColour(this->teamcolours_[teamNr]);
 
         std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();

@@ -118,9 +118,11 @@ namespace orxonox
                 pos.x = -pos.x;                
 
                 // get mouse position
-                currentYaw = dynamic_cast<NewHumanController*>(dynamic_cast<ControllableEntity*>(this->getOwner())->getController())->getCurrentYaw();
-                currentPitch = dynamic_cast<NewHumanController*>(dynamic_cast<ControllableEntity*>(this->getOwner())->getController())->getCurrentPitch();
-
+                if(this->getOwner() && dynamic_cast<ControllableEntity*>(this->getOwner())->getController() && dynamic_cast<NewHumanController*>(dynamic_cast<ControllableEntity*>(this->getOwner())->getController()))
+                {
+                    currentYaw = dynamic_cast<NewHumanController*>(dynamic_cast<ControllableEntity*>(this->getOwner())->getController())->getCurrentYaw();
+                    currentPitch = dynamic_cast<NewHumanController*>(dynamic_cast<ControllableEntity*>(this->getOwner())->getController())->getCurrentPitch();
+                }
                 // Compare cursor position to object position
                 if ( fabs(pos.x - currentYaw) < sens_ && fabs(pos.y - currentPitch) < sens_ )
                 {
