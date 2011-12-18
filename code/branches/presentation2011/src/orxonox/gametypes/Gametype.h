@@ -154,6 +154,8 @@ namespace orxonox
             inline unsigned int getNumberOfPlayers()
               { return this->gtinfo_->getNumberOfPlayers(); }
 
+	
+
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 

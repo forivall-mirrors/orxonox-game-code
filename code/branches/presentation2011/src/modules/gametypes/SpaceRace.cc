@@ -28,10 +28,15 @@
 
 #include "SpaceRace.h"
 
+
+#include "items/Engine.h"
+
 #include "core/CoreIncludes.h"
 #include "chat/ChatManager.h"
 #include "util/Convert.h"
 #include "util/Math.h"
+
+#include "items/Engine.h"
 
 namespace orxonox
 {
@@ -40,10 +45,17 @@ namespace orxonox
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
-        this->checkpointsReached_ = 0;
+        
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
+        this->cantMove_=false;
+        
     }
+       
+    
+  // void SpaceRace::SetConfigValues(){
+    //SUPER(Gametype,setConfigValues);
+    //this->Gametype::SetConfigValue(initialStartCountdown_, 3.0f);}
 
     void SpaceRace::end()
     {
@@ -55,8 +67,7 @@ namespace orxonox
             int s = this->clock_.getSeconds();
             int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
             const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
-                        + "You didn't reach the check point " + multi_cast<std::string>(this->checkpointsReached_+1)
-                        + " before the time limit. You lose!";
+                        + "You didn't reach the check point  before the time limit. You lose!";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
             ChatManager::message(message);
         }
@@ -69,36 +80,112 @@ namespace orxonox
                         + "." + multi_cast<std::string>(ms) + " seconds.";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
             ChatManager::message(message);
-/*
+
             float time = this->clock_.getSecondsPrecise();
             this->scores_.insert(time);
             std::set<float>::iterator it;
-            for (it=this->scores_.begin(); it!=this->scores_.end(); it++)
-                orxout(level::message) << multi_cast<std::string>(*it) << endl;
-*/
+            
+
         }
     }
 
     void SpaceRace::start()
     {
-        Gametype::start();
 
-        std::string message("The match has started! Reach the check points as quickly as possible!");
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        ChatManager::message(message);
+        this->spawnPlayersIfRequested();
+        Gametype::checkStart(); 
+        this->cantMove_=true; 
+        
+        for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
+        {
+            it->setActive(false);
+            
+        } 
+        this->addBots(this->numberOfBots_); 
+    }
+    
+    void SpaceRace::tick(float dt)
+    {
+        SUPER(SpaceRace,tick,dt);
+    
+        if(!this->isStartCountdownRunning() && this->cantMove_)
+        {
+            for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
+            { 
+                it->setActive(true);
+                
+            }
+            this->cantMove_= false;
+            
+            std::string message("The match has started! Reach the check points as quickly as possible!");
+            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+            ChatManager::message(message);            
+        }
+   
     }
 
-    void SpaceRace::newCheckpointReached()
+    
+    
+    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
     {
-        this->checkpointsReached_++;
+        this->checkpointReached_[pl]=index;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(this->getCheckpointsReached())
-                        + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-                        + " seconds.";
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
+            + " seconds.";// Message is too long for a normal screen.
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
     }
+   
+    void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
+    {   
+        int index = p->getCheckpointIndex();
+        this->checkpointReached_[pl]=index;
+        this->clock_.capture();
+        int s = this->clock_.getSeconds();
+        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
+            + " seconds.";
+        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        ChatManager::message(message);
+    }
+        
+    
+    void SpaceRace::playerEntered(PlayerInfo* player)
+    {
+        Gametype::playerEntered(player);
+    
+        this->checkpointReached_[player]=-1;
+        //this->playersAlive_++;
+    }
+    
+    bool SpaceRace::playerLeft(PlayerInfo* player)
+    {
+        return Gametype::playerLeft(player);
+        // bool valid_player = true;
+        //if (valid_player)
+       // {
+        //    this->playersAlive_--;
+        //}
 
+       // return valid_player;
+    }
+    
+    bool SpaceRace::allowPawnHit(Pawn* victim, Pawn* originator)
+    {
+        return false;
+    }
+
+    bool SpaceRace::allowPawnDamage(Pawn* victim, Pawn* originator)
+    {
+        return false;
+    }
+
+    bool SpaceRace::allowPawnDeath(Pawn* victim, Pawn* originator)
+    {
+        return false;
+    }
 }

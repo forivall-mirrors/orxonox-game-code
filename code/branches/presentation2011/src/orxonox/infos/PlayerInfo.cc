@@ -57,6 +57,7 @@ namespace orxonox
         this->updateGametypeInfo();
 
         this->registerVariables();
+        
     }
 
     PlayerInfo::~PlayerInfo()
