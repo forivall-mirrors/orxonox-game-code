@@ -27,7 +27,6 @@
  */
 
 #include "Mission.h"
-//#include "TeamGametype.h"
 #include "items/Engine.h"
 #include "controllers/ArtificialController.h"
 
@@ -71,12 +70,9 @@ namespace orxonox
     {
         Gametype::start();
         this->setTeams();
-        /*for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it != ObjectList<Engine>::end(); ++it)
-            it->setActive(false); // works -> @sr :*/
+
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
     }
-
-    //void Mission::addBots(unsigned int amount)
 
     void Mission::end()
     {

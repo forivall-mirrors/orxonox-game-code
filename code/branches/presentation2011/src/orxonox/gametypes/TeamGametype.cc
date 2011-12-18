@@ -277,6 +277,12 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Colours a pawn depending on the team values set in XML.
+        A pawn is coloured depending on it's team set via XML.
+        If there is a controller the pawn is coloured depending on its team which also can be set via XML.
+    */
     void TeamGametype::setDefaultObjectColour(Pawn* pawn)
     {
         if(pawn == NULL)
@@ -310,7 +316,7 @@ namespace orxonox
     }
 
     void TeamGametype::colourPawn(Pawn* pawn, int teamNr)
-    {// catch no-colouring-case and wrong input
+    {// catch: no-colouring-case and wrong input
         if(teamNr < 0 || teamNr+1 > this->teamcolours_.size() ||pawn == NULL) return;
         pawn->setRadarObjectColour(this->teamcolours_[teamNr]);
 
