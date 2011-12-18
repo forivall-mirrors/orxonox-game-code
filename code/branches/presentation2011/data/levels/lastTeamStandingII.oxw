@@ -1,6 +1,6 @@
 <LevelInfo
- name = "On the fly"
- description = "Survive as a team."
+ name = "Last Team Standing II"
+ description = "Last Team Standing in an abstract level."
  screenshot = "onthefly.png"
  tags = "gametype"
 />
@@ -15,8 +15,6 @@
 ?>
 
 <Level
- name         = "On the fly"
- description  = "testmap for gametype last team standing"
  gametype     = "LastTeamStanding"
 >
   <templates>

@@ -20,8 +20,6 @@ include("templates/pickupRepresentationTemplates.oxt")
 ?>
 
 <Level
- name         = "Mission One"
- description  = "How to steer a spaceship."
  gametype     = "Mission"
 >
   <templates>

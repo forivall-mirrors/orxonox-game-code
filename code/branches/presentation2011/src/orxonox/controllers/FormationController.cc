@@ -128,6 +128,7 @@ namespace orxonox
     {
         SUPER(FormationController, XMLPort, xmlelement, mode);
 
+        XMLPortParam(FormationController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
         XMLPortParam(FormationController, "formationFlight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(false);
         XMLPortParam(FormationController, "formationSize", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
         XMLPortParam(FormationController, "passive", setPassive, getPassive, xmlelement, mode).defaultValues(false);

@@ -222,7 +222,7 @@ namespace orxonox
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
     GUIManager* GUIManager::singletonPtr_s = 0;
-    /*static*/ const std::string GUIManager::defaultScheme_ = "Orxonox"; //TaharezGreen
+    /*static*/ const std::string GUIManager::defaultScheme_ = "TaharezGreen"; //Alternative: Orxonox (not fully complete yet, see the graphics menu)
 
     SetConsoleCommand("showGUI", &GUIManager::showGUI).defaultValue(1, false).defaultValue(2, false);
     SetConsoleCommand("hideGUI", &GUIManager::hideGUI);

@@ -48,7 +48,7 @@ namespace orxonox
         this->teams_ = 2; //most team gametypes use two different teams
         this->allowFriendlyFire_ = false;
         //this->playersPerTeam_ = 0;
-        this->maxPlayers_ = 2; //TEST
+        this->maxPlayers_ = 0; //Value "0": no limit is set.
         this->setConfigValues();
     }
 
@@ -74,8 +74,8 @@ namespace orxonox
 
     void TeamGametype::playerEntered(PlayerInfo* player)
     {
+        if(player == NULL) return; // catch null pointers
         Gametype::playerEntered(player);
-        if(player == NULL) return;
         this->findAndSetTeam(player);
         if( this->players_.size() <= maxPlayers_ || maxPlayers_  ==  0)
         {
@@ -90,7 +90,8 @@ namespace orxonox
 
     void TeamGametype::findAndSetTeam(PlayerInfo* player)
     {
-         std::vector<unsigned int> playersperteam(this->teams_, 0);
+        if(player == NULL) return; // catch null pointers
+        std::vector<unsigned int> playersperteam(this->teams_, 0);
 
         for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
             if (it->second < static_cast<int>(this->teams_) && it->second >= 0)
@@ -120,8 +121,8 @@ namespace orxonox
             {
                  if(it->second == false) // waiting player found
                  {it->second = true; break;} // allow player to enter
-			}
-		}
+            }
+        }
 
         if (valid_player)
         {   // clean up the maps
@@ -139,7 +140,7 @@ namespace orxonox
         {
             if(allowedInGame_[it->first] == false)//check if dead player is allowed to enter
             {
-				continue;
+                continue;
             }
             if (it->second.state_ == PlayerState::Dead)
             {
