@@ -1,7 +1,8 @@
 <LevelInfo
- name = "Spacerace2"
- description = "Just a few tests"
- tags = "test"
+ name = "Spacerace 2"
+ description = "New Spacerace with Multiple Paths."
+ tags = "gametype"
+ screenshot = "spacerace2.png"
 />
 
 <?lua
