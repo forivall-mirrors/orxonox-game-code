@@ -65,6 +65,7 @@
 namespace orxonox
 {
     class SpaceRace;
+    class OldSpaceRace;
 }
 
 #endif /* _GametypesPrereqs_H__ */

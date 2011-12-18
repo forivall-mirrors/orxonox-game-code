@@ -1,5 +1,5 @@
 <LevelInfo
- name = "Space Race"
+ name = "Old Space Race"
  description = "Have a furious Race in Space: Reach the checkpoints as fast as possible."
  tags = "gametype"
  screenshot = "spacerace.png"
@@ -17,7 +17,7 @@
 ?>
 
 <Level
- gametype = "SpaceRace"
+ gametype = "OldSpaceRace"
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -51,7 +51,7 @@
     </SpawnPoint>
     
     <!-- ------------------CheckPoints----------------- -->
-    <RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false">
+    <OldRaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -61,9 +61,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint2" position="0,-900,2300" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
+    <OldRaceCheckPoint name="checkpoint2" position="0,-900,2300" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
             <SpawnPoint position="0,0,0" lookat="0,1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
@@ -95,9 +95,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint3" position="0,700,2700" stayActive="true" direction="0,0,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false">
+    <OldRaceCheckPoint name="checkpoint3" position="0,700,2700" stayActive="true" direction="0,0,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
             <SpawnPoint position="0,0,0" lookat="0,1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
@@ -129,9 +129,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint4" position="0,2100,2300" stayActive="true" direction="0,1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="false">
+    <OldRaceCheckPoint name="checkpoint4" position="0,2100,2300" stayActive="true" direction="0,1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
             <DistanceTrigger name="trigger3" position="0,0,0" distance=40 stayActive="true" />
@@ -164,9 +164,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint5" position="0,2200,500" stayActive="true" direction="0,1,0" collisionType="static" scale="1" distance="40" checkpointindex="4" islast="false">
+    <OldRaceCheckPoint name="checkpoint5" position="0,2200,500" stayActive="true" direction="0,1,0" collisionType="static" scale="1" distance="40" checkpointindex="4" islast="false">
         <attached>
         <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         <DistanceTrigger name="trigger4" position="0,0,0" distance=40 stayActive="true" />
@@ -199,9 +199,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint6" position="0,1500,-800" stayActive="true" direction="0,1,-1" collisionType="static" scale="1" distance="40" checkpointindex="5" islast="false">
+    <OldRaceCheckPoint name="checkpoint6" position="0,1500,-800" stayActive="true" direction="0,1,-1" collisionType="static" scale="1" distance="40" checkpointindex="5" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
             <DistanceTrigger name="trigger5" position="0,0,0" distance=40 stayActive="true" />
@@ -234,9 +234,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint7" position="0,200,-1900" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="6" islast="false">
+    <OldRaceCheckPoint name="checkpoint7" position="0,200,-1900" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="6" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
             <DistanceTrigger name="trigger6" position="0,0,0" distance=40 stayActive="true" />
@@ -269,9 +269,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint8" position="0,-700,-1400" stayActive="true" direction="0,-1,-1" collisionType="static" scale="1" distance="40" checkpointindex="7" islast="false">
+    <OldRaceCheckPoint name="checkpoint8" position="0,-700,-1400" stayActive="true" direction="0,-1,-1" collisionType="static" scale="1" distance="40" checkpointindex="7" islast="false">
         <attached>
         <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         <DistanceTrigger name="trigger7" position="0,0,0" distance=40 stayActive="true" />
@@ -304,9 +304,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint9" position="0,-1300,-800" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="8" islast="false">
+    <OldRaceCheckPoint name="checkpoint9" position="0,-1300,-800" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="8" islast="false">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
             <DistanceTrigger name="trigger8" position="0,0,0" distance=40 stayActive="true" />
@@ -330,9 +330,9 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint10" position="0,-2100,0" collisionType="static" scale="1" distance="40" checkpointindex="9" islast="true" timelimit="150">
+    <OldRaceCheckPoint name="checkpoint10" position="0,-2100,0" collisionType="static" scale="1" distance="40" checkpointindex="9" islast="true" timelimit="150">
         <attached>
         <   Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -342,7 +342,7 @@
             <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
             <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
         </collisionShapes>
-    </RaceCheckPoint>
+    </OldRaceCheckPoint>
 
     <!-- ------------------Planet----------------- -->
     <Planet position="0,0,0" scale=300 pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />

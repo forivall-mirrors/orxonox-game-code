@@ -76,8 +76,7 @@ namespace orxonox {
            { return this->passive_; }
 
       inline void setTeam(int team)
-           { this->team_ = team; 
-             orxout(debug_output) << "Set team to: "<<team<<" in "<<this<< endl;} 
+           { this->team_ = team; }
       inline int getTeam() const
            { return this->team_; }
 
@@ -86,9 +85,9 @@ namespace orxonox {
                Normal-normal behaviour
                Defend-just defend the master
                Attack-leave formation, attack every target
-      */ 
+      */
       enum FormationMode {NORMAL,DEFEND,ATTACK};
-      
+
       /**
         @brief Sets the new mode. If master, set it for all slaves.
       */
@@ -103,7 +102,7 @@ namespace orxonox {
       unsigned int maxFormationSize_;
       int freedomCount_;
       enum State {SLAVE, MASTER, FREE};
-      
+
       State state_;
       std::vector<FormationController*> slaves_;
       FormationController* myMaster_;
@@ -134,7 +133,7 @@ namespace orxonox {
       bool forcedFree();
 
       void takeLeadOfFormation();
-      void masterAttacked(Pawn* originator);      
+      void masterAttacked(Pawn* originator);
 
       void specificMasterActionHold();
       void turn180Init();
@@ -154,14 +153,14 @@ namespace orxonox {
       virtual void positionReached() {}
 
       static bool sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype); // hack
-      
+
 
       void setTarget(Pawn* target);
       void searchNewTarget();
       void forgetTarget();
 
       void targetDied();
-      
+
       bool bHasTargetPosition_;
       Vector3 targetPosition_;
       bool bHasTargetOrientation_;
