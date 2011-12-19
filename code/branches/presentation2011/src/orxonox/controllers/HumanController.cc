@@ -77,11 +77,9 @@ namespace orxonox
         this->controlPaused_ = false;
         this->boosting_ = false;
         this->boosting_ = false;
-        this->tempMaster=NULL;
         HumanController::localController_s = this;
         this->boostingTimeout_.setTimer(HumanController::BOOSTING_TIME, false, createExecutor(createFunctor(&HumanController::terminateBoosting, this)));
         this->boostingTimeout_.stopTimer();
-        this->state_=FREE;
     }
 
     HumanController::~HumanController()

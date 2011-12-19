@@ -112,7 +112,6 @@ namespace orxonox
             bool boosting_; // Whether the HumanController is in boosting mode or not.
             Timer boostingTimeout_; // A timer to check whether the player is no longer boosting.
             static const float BOOSTING_TIME; // The time after it is checked, whether the player is no longer boosting.
-            FormationController* tempMaster;
 
     }; // tolua_export
 } // tolua_export

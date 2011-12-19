@@ -276,7 +276,7 @@ namespace orxonox
         HumanController::tick(dt);
     }
 
-    void NewHumanController::doFire(unsigned int firemode)//TODO??
+    void NewHumanController::doFire(unsigned int firemode)
     {
         if (!this->controllableEntity_)
             return;
@@ -290,8 +290,7 @@ namespace orxonox
             HumanController::pitch(Vector2(this->currentPitch_, 0));
         }
         else
-            HumanController::localController_s->getControllableEntity()->fire(firemode);
-
+            HumanController::doFire(firemode); //call for formationflight
     }
 
     void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)

@@ -382,7 +382,8 @@ namespace orxonox
 
     void FormationController::searchNewMaster()
     {
-
+        if (this->state_==SLAVE) 
+           return;
         if (!this->getControllableEntity())
             return;
 
@@ -587,12 +588,11 @@ void FormationController::commandSlaves()
     */
     void FormationController::takeLeadOfFormation()
     {
-        if (!this->getControllableEntity())
+        if (!this->getControllableEntity() || this->state_==MASTER)
             return;
 
-	if (this->state_==MASTER) return;
         //search new Master, then take lead
-        if (this->state_==FREE)
+        if (this->state_==FREE && this->myMaster_==0)
         {
           searchNewMaster();
         }

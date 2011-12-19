@@ -58,45 +58,47 @@ namespace orxonox
 
         if (this->state_ == FREE)
         {
-
+            
             if (this->formationFlight_)
             {
+
+                //changed order -> searchNewMaster MUSTN'T be called in SLAVE-state (bugfix for internal-error messages at quit)
+                random = rnd(maxrand);
+                if (random < 90 && (((!this->target_) || (random < 50 && this->target_)) && !this->forcedFree()))
+                       this->searchNewMaster();
+
                 // return to Master after being forced free
                 if (this->freedomCount_ == 1)
                 {
                     this->state_ = SLAVE;
                     this->freedomCount_ = 0;
                 }
-
-                random = rnd(maxrand);
-                if (random < 90 && (((!this->target_) || (random < 50 && this->target_)) && !this->forcedFree()))
-                    this->searchNewMaster();
             }
 
             this->defaultBehaviour(maxrand);
 
         }
 
-        if (this->state_ == SLAVE && this->formationMode_ == ATTACK) //TODO: add botlevel parameter
+        if (this->state_ == SLAVE && this->formationMode_ == ATTACK) 
         {
             // search enemy
             random = rnd(maxrand);
-            if (random < 75 && (!this->target_))
+            if (random < (botlevel_*100) && (!this->target_))
                 this->searchNewTarget();
 
             // next enemy
             random = rnd(maxrand);
-            if (random < 10 && (this->target_))
+            if (random < (botlevel_*30) && (this->target_))
                 this->searchNewTarget();
 
             // shoot
             random = rnd(maxrand);
-            if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
+            if (!(this->passive_) && random < (botlevel_*100) && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
 
             // stop shooting
             random = rnd(maxrand);
-            if (random < 25 && (this->bShooting_))
+            if (random < (1-botlevel_)*50 && (this->bShooting_))
                 this->bShooting_ = false;
 
         }
