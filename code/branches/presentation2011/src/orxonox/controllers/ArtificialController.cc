@@ -28,6 +28,7 @@
 
 #include "ArtificialController.h"
 #include "core/CoreIncludes.h"
+#include "core/command/ConsoleCommand.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
 
@@ -40,6 +41,7 @@
 
 namespace orxonox
 {
+    SetConsoleCommand("ArtificialController", "setbotlevel",      &ArtificialController::setAllBotLevel);
 
     ArtificialController::ArtificialController(BaseObject* creator) : FormationController(creator)
     {
@@ -112,7 +114,6 @@ namespace orxonox
             this->targetDied();
     }
 
-//****************************************************************************************** NEW
     /**
         @brief DoFire is called when a bot should shoot and decides which weapon is used and whether the bot shoots at all.
     */

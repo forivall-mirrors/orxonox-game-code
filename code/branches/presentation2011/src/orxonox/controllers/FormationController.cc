@@ -85,7 +85,7 @@ namespace orxonox
         this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
-	this->bHasTargetOrientation_=false;
+        this->bHasTargetOrientation_=false;
         this->speedCounter_ = 0.2f;
         this->targetPosition_ = Vector3::ZERO;
         this->team_=-1;

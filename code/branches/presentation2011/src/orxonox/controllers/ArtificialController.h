@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 #include "controllers/FormationController.h"
 
+
 namespace orxonox
 {
     class _OrxonoxExport ArtificialController : public FormationController
@@ -43,7 +44,7 @@ namespace orxonox
             void abandonTarget(Pawn* target);
 
             virtual void changedControllableEntity();
-//************************************************************************* NEW 
+
             virtual void doFire();
             void setBotLevel(float level=1.0f);
             inline float getBotLevel() const
@@ -68,7 +69,7 @@ namespace orxonox
 
             bool isCloseAtTarget(float distance) const;
             bool isLookingAtTarget(float angle) const;
-//************************************************************************* NEW 
+
             float botlevel_; //<! Makes the level of a bot configurable.
             enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
             Mode mode_; //TODO: replace single value with stack-like implementation: std::vector<Mode> mode_;
