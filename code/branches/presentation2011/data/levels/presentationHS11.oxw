@@ -14,15 +14,28 @@
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipSwallow.oxt")
+  include("templates/spaceshipTransporter.oxt")
 ?>
 
 <Level
  gametype = "Mission"
->
+>                      <!--ALTERNATIVE: TeamGametype-->
   <templates>
     <Template link=lodtemplate_default />
   </templates>
   <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
@@ -35,7 +48,11 @@
 
   <!-- TRIGGERS -->
     <DistanceTrigger name="FormationInit" position="800,700,600"  target="Pawn" distance=60 stayActive="true" delay=0.1 />
-    <DistanceTrigger name="LetsGo"        position="800,700,1000" target="Pawn" distance=60 stayActive="true" delay=0.1 />
+    <DistanceTrigger name="LetsGo"        position="200,-200,1000" target="Pawn" distance=180 stayActive="true" delay=0.1 />
+      <BlinkingBillboard colour="1,1,0.05"position="200,-200,1000" frequency=0.6 amplitude=3 material="Flares/lensflare" >
+      </BlinkingBillboard>
+
+
 
 
     <Script code="formationcontroller formationflight true" onLoad="false">
@@ -54,7 +71,16 @@
         </events>
     </Script> <!-- make bots "friendly", doesn't work yet :-( -->
 
-<!-- ADDING FORMATION -->
+    <SimpleNotification message="Let's go!">
+        <events>
+            <trigger>
+                <EventListener event="LetsGo" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+<!-- ADDING FORMATION: 5 Swallows -->
 <?lua for i=0,4,1 do
 ?>
     <SpaceShip position="<?lua print(400+i*200) ?>,-200,1000" lookat="-1300,-600,900" visible="true">
@@ -79,12 +105,30 @@
 <?lua end ?>
 
 
+    <SpaceShip position="-400,3000,-2000" lookat="-1300,-600,900" visible="true">
+        <!--events>
+            <visibility>
+                <EventListener event="ondock" />
+            </visibility>
+        </events-->
+        <templates>
+            <Template link=spaceshipTransporter />
+        </templates>
+        <controller>
+            <AIController team=1>
+                <events>
+                    <activity>
+                        <EventListener event="LetsGo" />
+                     </activity>
+                </events>
+            </AIController>
+        </controller>
+    </SpaceShip>
+
 
 <!-- ACTUAL LEVEL -->
 
-<BlinkingBillboard position="800,700,1000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
 
-</BlinkingBillboard>
 
 <!-- Generate asteroid field and asteroid belt -->
 <!-- asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, maxSize, radius0, radius1, count, fog) --> 
