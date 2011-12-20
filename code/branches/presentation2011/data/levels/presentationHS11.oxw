@@ -13,10 +13,11 @@
 <?lua
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipSwallow.oxt")
 ?>
 
 <Level
- gametype = "TeamGametype"
+ gametype = "Mission"
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -28,39 +29,62 @@
     skybox       = "Orxonox/skyBoxMoreNebula"
   >
 
-    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+  <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
-    <Script code="formationcontroller formationflight true" onLoad="true">
-    </Script> <!-- activate formation behaviour-->
+  <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow/>
 
-    <Script code="artificialcontroller setbotlevel 0.1" onLoad="true">
+  <!-- TRIGGERS -->
+    <DistanceTrigger name="FormationInit" position="800,700,600"  target="Pawn" distance=60 stayActive="true" delay=0.1 />
+    <DistanceTrigger name="LetsGo"        position="800,700,1000" target="Pawn" distance=60 stayActive="true" delay=0.1 />
+
+
+    <Script code="formationcontroller formationflight true" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=FormationInit />
+            </trigger>
+        </events>
+    </Script> <!-- !!! activates formation behaviour !!! -->
+
+    <Script code="artificialcontroller setbotlevel 0.1" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=FormationInit />
+            </trigger>
+        </events>
     </Script> <!-- make bots "friendly", doesn't work yet :-( -->
 
-    <SpaceShip position="1000,-500,2000" lookat="-1300,-600,900" name="attacker" visible="true">
+<!-- ADDING FORMATION -->
+<?lua for i=0,4,1 do
+?>
+    <SpaceShip position="<?lua print(400+i*200) ?>,-200,1000" lookat="-1300,-600,900" visible="true">
         <!--events>
             <visibility>
                 <EventListener event="ondock" />
             </visibility>
         </events-->
         <templates>
-            <Template link=spaceshipassff /> <!--spaceshipTransporter spaceshippirate-->
+            <Template link=spaceshipswallow /> <!--spaceshipTransporter spaceshippirate-->
         </templates>
         <controller>
             <AIController team=0>
-                <!--events>
+                <events>
                     <activity>
-                        <EventListener event="attack" />
+                        <EventListener event="LetsGo" />
                      </activity>
-                </events-->
+                </events>
             </AIController>
         </controller>
     </SpaceShip>
-
+<?lua end ?>
 
 
 
 <!-- ACTUAL LEVEL -->
+
+<BlinkingBillboard position="800,700,1000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+
+</BlinkingBillboard>
 
 <!-- Generate asteroid field and asteroid belt -->
 <!-- asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, maxSize, radius0, radius1, count, fog) --> 
@@ -73,7 +97,6 @@
 
 
 
-<!--    	asteroidBelt(0, 0, 0, 0, 0, 70, 100, 200, 22000, 20000, 500, 1) -->
   </Scene>
 </Level>
 
