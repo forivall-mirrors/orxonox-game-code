@@ -37,36 +37,36 @@
 
 
 
-    <!-- Belt that's far away -->
+    <!-- Belt that's far away  *** TURNED OFF FOR PERFORMANCE REASONS *** -->
     <!-- Generate asteroid field and asteroid belt -->    
+    <!--
     <?lua
     	dofile("includes/asteroidField.lua")
     	asteroidBelt(0, 0, 0, -48, -34, 70, 100, 200, 219900, 210000, 900, 1)
     ?>
+    -->
 
 
-
-
-    <!-- Belts around the planet -->
+    <!-- triple large belt around the planet  -->
     <?lua
     	dofile("includes/asteroidField.lua")
-    	asteroidBelt(3000, 0, 0, -100, -134, 80, 10, 20, 2190, 1800, 100, 1)
+    	asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
     ?>
     <?lua
     	dofile("includes/asteroidField.lua")
-    	asteroidBelt(3000, 0, 0, -190, -134, 80, 10, 20, 2190, 1800, 100, 1)
+    	asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
     ?>
     <?lua
     	dofile("includes/asteroidField.lua")
-    	asteroidBelt(3000, 0, 0, -270, -134, 80, 10, 20, 2190, 1800, 100, 1)
+    	asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
     ?>
 
 
 
     <!-- Planet close to spawn point -->
     <Planet
-      position="3000,0,0"
-      scale="1000"
+      position="15000,0,0"
+      scale="5000"
       collisionType="dynamic"
       linearDamping="0.8"
       angularDamping="0"
