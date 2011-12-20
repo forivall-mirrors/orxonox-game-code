@@ -15,7 +15,9 @@
   include("templates/spaceshipPirate.oxt")
 ?>
 
-<Level>
+<Level
+ gametype = "TeamGametype"
+>
   <templates>
     <Template link=lodtemplate_default />
   </templates>
@@ -27,7 +29,7 @@
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <TeamSpawnPoint team=0 position="800,700,600" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
 
     <Script code="formationcontroller formationflight true" onLoad="true">
     </Script> <!-- activate formation behaviour-->
@@ -35,7 +37,7 @@
     <Script code="artificialcontroller setbotlevel 0.1" onLoad="true">
     </Script> <!-- make bots "friendly", doesn't work yet :-( -->
 
-    <SpaceShip position="3000,0,5000" lookat="-1300,-600,900" name="attacker" visible="true">
+    <SpaceShip position="1000,-500,2000" lookat="-1300,-600,900" name="attacker" visible="true">
         <!--events>
             <visibility>
                 <EventListener event="ondock" />
