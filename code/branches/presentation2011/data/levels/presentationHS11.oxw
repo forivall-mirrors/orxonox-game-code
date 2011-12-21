@@ -104,11 +104,15 @@
     </SpaceShip>
 <?lua end ?>
 
+<?lua for i=0,2,1 do
+?>
 
-    <SpaceShip position="-400,3000,-2000" lookat="-1300,-600,900" visible="true">
+
+<!-- ENEMY TRANSPORTER -->
+    <SpaceShip position="<?lua print(-400+i*200) ?>,3000,-2000" lookat="-1300,-600,900" visible="true">
         <!--events>
             <visibility>
-                <EventListener event="ondock" />
+                <EventListener event="LetsGo" />
             </visibility>
         </events-->
         <templates>
@@ -124,9 +128,11 @@
             </AIController>
         </controller>
     </SpaceShip>
+<?lua end ?>
 
 
-<!-- ACTUAL LEVEL -->
+
+
 
 
 
