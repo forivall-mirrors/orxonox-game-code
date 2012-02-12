@@ -1,0 +1,99 @@
+<LevelInfo
+ name = "Planet Demonstration"
+ description = "Demonstration of Planets"
+ tags = "showcase"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipHXY.oxt")
+?>
+
+<Level
+ name         = "Planet"
+ description  = "Demonstration of Planets"
+>
+  <templates>
+    <Template link="lodtemplate_default" />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/skypanoramagen1"
+  >
+
+    <WorldAmbientSound
+      ambientSource="AlphaCentauri.ogg"
+      looping="true"
+      playOnLoad="true"
+    />
+    
+    <Light
+      type="directional"
+      position="-10000,-10000,0"
+      direction="0.253, 0.593, -0.765"
+      diffuse="1.0, 0.9, 0.9, 1.0"
+      specular="1.0, 0.9, 0.9, 1.0"
+    />
+
+    <SpawnPoint
+      position="1500,0,0"
+      lookat="0,0,0"
+      spawnclass="SpaceShip"
+      pawndesign="spaceshipHXY"
+    />
+
+    <Planet
+      position="0,0,0"
+      scale="1000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="10000000"
+      pitch="0"
+      mesh="planets/muunilinst.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="1,0,0"
+      rotationrate="1.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="1000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
+    <Planet
+      position="10000,0,0"
+      scale="100"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5000000"
+      pitch="0"
+      mesh="planets/muunilinst.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="1,0,0"
+      rotationrate="1.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="sphere" diameter="1000" velocity="-500" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="100" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+  </Scene>
+</Level>
