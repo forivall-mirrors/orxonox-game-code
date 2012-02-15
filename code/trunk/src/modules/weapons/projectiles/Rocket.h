@@ -121,6 +121,7 @@ namespace orxonox
             Vector3 localAngularVelocity_; //!< Variable to temporarily store accumulated steering command input.
 
             WeakPtr<PlayerInfo> player_; //!< The player that controls the Rocket.
+            //WeakPtr<Pawn> pawn_; //!< The pawn that controls the Rocket. TODO
             Timer destroyTimer_; //!< Timer to destroy the projectile after its lifetime has run out.
             float lifetime_; //!< The time the projectile exists.
 

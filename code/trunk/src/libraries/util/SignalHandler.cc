@@ -69,7 +69,7 @@ namespace orxonox
       assert( sigRecList.size() == 0 );
 
       catchSignal( SIGSEGV );
-      catchSignal( SIGABRT );
+      catchSignal( SIGABRT );  
       catchSignal( SIGILL );
     }
 
@@ -674,7 +674,7 @@ namespace orxonox
     }
 
     /// Returns a description of the given exception.
-    // Based on code from Dr. Mingw by José Fonseca
+    // Based on code from Dr. Mingw by Jos\E9 Fonseca
     /* static */ std::string SignalHandler::getExceptionType(PEXCEPTION_POINTERS pExceptionInfo)
     {
         PEXCEPTION_RECORD pExceptionRecord = pExceptionInfo->ExceptionRecord;
@@ -744,7 +744,7 @@ namespace orxonox
     }
 
     /// Retrieves the base address of the module that contains the specified address.
-    // Code from Dr. Mingw by José Fonseca
+    // Code from Dr. Mingw by Jos\E9 Fonseca
     /* static */ DWORD SignalHandler::getModuleBase(DWORD dwAddress)
     {
         MEMORY_BASIC_INFORMATION Buffer;

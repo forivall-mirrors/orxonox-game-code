@@ -86,11 +86,12 @@ namespace orxonox
         if(!LevelInfoItem::initialized_s)
         {
             LevelInfoItem::possibleTags_s.insert("test");
-            LevelInfoItem::possibleTags_s.insert("singleplayer");
-            LevelInfoItem::possibleTags_s.insert("multiplayer");
             LevelInfoItem::possibleTags_s.insert("showcase");
             LevelInfoItem::possibleTags_s.insert("tutorial");
             LevelInfoItem::possibleTags_s.insert("presentation");
+            LevelInfoItem::possibleTags_s.insert("mission");
+            LevelInfoItem::possibleTags_s.insert("gametype");
+            LevelInfoItem::possibleTags_s.insert("minigame");
         }
     }
 
@@ -188,6 +189,7 @@ namespace orxonox
         SUPER(LevelInfo, XMLPort, xmlelement, mode);
 
         XMLPortParam(LevelInfo, "description", setDescription, getDescription, xmlelement, mode);
+        XMLPortParam(LevelInfo, "screenshot", setScreenshot, getScreenshot, xmlelement, mode);
         XMLPortParam(LevelInfo, "tags", setTags, getTags, xmlelement, mode);
     }
 
@@ -202,6 +204,7 @@ namespace orxonox
     {
         LevelInfoItem* info = new LevelInfoItem(this->BaseObject::getName(), this->getXMLFilename());
         info->setDescription(this->getDescription());
+        info->setScreenshot(this->getScreenshot());
         info->setTags(this->getTags());
         return info;
     }

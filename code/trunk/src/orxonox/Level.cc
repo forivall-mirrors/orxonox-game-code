@@ -70,7 +70,6 @@ namespace orxonox
     {
         SUPER(Level, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
 
         XMLPortObject(Level, MeshLodInformation, "lodinformation", addLodInfo, getLodInfo, xmlelement, mode);
@@ -81,7 +80,6 @@ namespace orxonox
     {
         registerVariable(this->xmlfilename_,            VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
         registerVariable(this->name_,                   VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::changedName));
-        registerVariable(this->description_,            VariableDirection::ToClient);
         registerVariable(this->networkTemplateNames_,   VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkCallbackTemplatesChanged));
     }
 

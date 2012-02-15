@@ -1,3 +1,10 @@
+<LevelInfo
+ name = "Asteroids Race"
+ description = "Reach the checkpoints and avoid asteroids."
+ tags = "gametype"
+ screenshot = "asteroids.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
@@ -6,9 +13,7 @@
 ?>
 
 <Level
- name         = "Asteroids Race"
- description  = "testmap for gametype asteroid race"
- gametype     =  Asteroids
+ gametype = "Asteroids"
 >
   <templates>
     <Template link=lodtemplate_default />

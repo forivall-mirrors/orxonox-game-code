@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Last Team Standing"
  description = "Survive as a team."
- tags = "singleplayer"
+ tags = "gametype"
+ screenshot = "lastteamstanding.png"
 />
 <?lua
   include("stats.oxo")
@@ -16,7 +17,7 @@
 <Level
  name         = "Last Team Standing"
  description  = "testmap for gametype last team standing"
- gametype     =  "LastTeamStanding"
+ gametype     =  "TeamGametype"
 >
   <templates>
     <Template link=lodtemplate_default />

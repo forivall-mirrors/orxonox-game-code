@@ -45,11 +45,6 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
-           /* inline void setTeam(int team)
-                { this->team_ = team; }
-            inline int getTeam() const
-                { return this->team_; } */
-
             inline void setAlertnessRadius(float radius)
                 { this->alertnessradius_ = radius; }
             inline float getAlertnessRadius() const
@@ -58,7 +53,6 @@ namespace orxonox
         protected:
             void searchEnemy();
 
-            //int team_;
             float alertnessradius_;
             Timer patrolTimer_;
     };

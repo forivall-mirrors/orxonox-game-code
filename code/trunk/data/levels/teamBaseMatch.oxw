@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Teambase Match"
- description = "Fight for the bases."
- tags = ""
+ description = "Fight for the bases. Capture bases by shooting at them and defend them against attackers."
+ tags = "gametype"
+ screenshot = "teambasematch.png"
 />
 
 <?lua
@@ -14,9 +15,7 @@
 ?>
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
- gametype     = TeamBaseMatch
+ gametype = "TeamBaseMatch"
 >
 
   <templates>

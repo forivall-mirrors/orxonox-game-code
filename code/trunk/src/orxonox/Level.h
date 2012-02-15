@@ -48,11 +48,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setDescription(const std::string& description)
-                { this->description_ = description; }
-            inline const std::string& getDescription() const
-                { return this->description_; }
-
             void playerEntered(PlayerInfo* player);
             void playerLeft(PlayerInfo* player);
 
@@ -75,7 +70,6 @@ namespace orxonox
 
             void networkcallback_applyXMLFile();
 
-            std::string                    description_;
             std::string                    gametype_;
             std::string                    xmlfilename_;
             XMLFile*                       xmlfile_;

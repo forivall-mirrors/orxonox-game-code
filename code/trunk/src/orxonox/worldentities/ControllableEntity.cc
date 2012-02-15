@@ -73,7 +73,6 @@ namespace orxonox
         this->currentCameraPosition_ = 0;
         this->bMouseLook_ = false;
         this->mouseLookSpeed_ = 200;
-        this->bIsRocket_ = false;
 
         this->server_position_         = Vector3::ZERO;
         this->client_position_         = Vector3::ZERO;
@@ -87,6 +86,7 @@ namespace orxonox
         this->setConfigValues();
         this->setPriority( Priority::VeryHigh );
         this->registerVariables();
+	this->team_ = -1;
     }
 
     ControllableEntity::~ControllableEntity()
@@ -119,6 +119,7 @@ namespace orxonox
     {
         SUPER(ControllableEntity, XMLPort, xmlelement, mode);
 
+        XMLPortParam(ControllableEntity, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
         XMLPortParam(ControllableEntity, "hudtemplate", setHudTemplate, getHudTemplate, xmlelement, mode);
         XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemplate, xmlelement, mode);
 

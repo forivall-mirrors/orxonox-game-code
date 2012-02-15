@@ -35,6 +35,7 @@
 #include "gametypes/Gametype.h"
 #include "worldentities/ControllableEntity.h"
 #include "controllers/Controller.h"
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
@@ -56,6 +57,7 @@ namespace orxonox
         this->updateGametypeInfo();
 
         this->registerVariables();
+        
     }
 
     PlayerInfo::~PlayerInfo()
@@ -169,6 +171,11 @@ namespace orxonox
         }
 
         this->changedControllableEntity();
+		SpaceShip* spaceship = dynamic_cast<SpaceShip*>(entity);
+        if (spaceship != NULL)
+        {
+            spaceship->setRVName(this->getName());
+        }
     }
 
     void PlayerInfo::startTemporaryControl(ControllableEntity* entity)

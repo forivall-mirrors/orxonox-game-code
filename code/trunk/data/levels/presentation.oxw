@@ -2,6 +2,7 @@
  name = "Presentation"
  description = "Presentation Level"
  tags = "presentation"
+ screenshot = "presentation.png"
 />
 
 <?lua
@@ -11,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Sample"
- description  = "Just a few tests"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

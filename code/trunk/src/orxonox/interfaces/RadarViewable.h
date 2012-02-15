@@ -60,6 +60,17 @@ namespace orxonox
         RadarViewable(BaseObject* creator, const WorldEntity* wePtr);
         virtual ~RadarViewable();
 
+		virtual void setRVName(std::string name)
+			{
+				if (this->RVName != name)
+				{
+					this->RVName = name;
+					this->settingsChanged();
+				}
+			}
+		std::string getRVName() const
+			{ return this->RVName; }
+
         inline void setRadarObjectCamouflage(float camouflage)
             {
                 if( this->radarObjectCamouflage_ != camouflage )
@@ -151,6 +162,7 @@ namespace orxonox
         std::string radarObjectDescription_;
         ColourValue radarObjectColour_;
         float scale_;
+		std::string RVName;
     };
 }
 

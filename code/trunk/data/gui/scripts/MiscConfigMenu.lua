@@ -10,7 +10,7 @@ P.sampleWindow = nil
 
 P.lineHeight = 0
 P.commandWidth = 0
-P.configWidth = 0
+P.editboxWidth = 0
 P.resetWidth = 0
 P.spaceWidth = 0
 
@@ -35,6 +35,8 @@ function P.onLoad()
     table.insert(P.commandList, "HumanPlayer nick_")
     table.insert(P.commandList, "ChatOverlay displayTime_")
     table.insert(P.commandList, "Core bDevMode_")
+    table.insert(P.commandList, "HUDNavigation MarkerLimit_")
+    table.insert(P.commandList, "HUDNavigation showDistance")
 
     P.nameList = {}
     table.insert(P.nameList, "Mouse sensitivity")
@@ -55,6 +57,8 @@ function P.onLoad()
     table.insert(P.nameList, "Playername")
     table.insert(P.nameList, "Chat: display time")
     table.insert(P.nameList, "Developer's Mode")
+    table.insert(P.nameList, "Marker Limit")
+    table.insert(P.nameList, "Show Distance next to cursor")
 
     P.linesList = {}
 
@@ -74,30 +78,37 @@ function P.onLoad()
         end
     end
 
-    P.sampleWindow:setText("configure")
-    size = getMinTextSize(P.sampleWindow)
-    P.configWidth = size[2]+20
-
     P.sampleWindow:setText("reset")
     size = getMinTextSize(P.sampleWindow)
     P.resetWidth = size[2]+20
 
-    P.spaceWidth = math.floor(1/8*P.configWidth)
+    P.spaceWidth = 10
+    
+    local pane = tolua.cast(winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane"), "CEGUI::ScrollablePane")
+    size = pane:getViewableArea()
+    P.editboxWidth = size:getWidth() - P.commandWidth - P.resetWidth - 5*P.spaceWidth
 
     P.createLines()
 
     P:setButton(1, 1, {
-            ["button"] = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigBackButton"),
-            ["callback"]  = P.MiscConfigBackButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/MiscConfigMenu/CancelButton"),
+            ["callback"]  = P.MiscConfigCancelButton_clicked
+    })
+    
+    P:setButton(1, 2, {
+            ["button"] = winMgr:getWindow("orxonox/MiscConfigMenu/OKButton"),
+            ["callback"]  = P.MiscConfigOKButton_clicked
     })
 end
 
 function P.createLine(k)
     local offset = 0
+    -- content window for the entire line
     local line = winMgr:createWindow("DefaultWindow", "orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k)
     line:setHeight(CEGUI.UDim(0, P.lineHeight))
     line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, P.lineHeight*(k-1))))
 
+    -- config name
     local command = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Command")
     command:setText(P.nameList[k])
     command:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.commandWidth), CEGUI.UDim(1, 0)))
@@ -105,31 +116,24 @@ function P.createLine(k)
     line:addChildWindow(command)
     offset = offset + P.commandWidth + P.spaceWidth
 
+    -- config value (editable)
     local configvalue = winMgr:createWindow("MenuWidgets/Editbox", "orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Configvalue")
     configvalue:setProperty("ReadOnly", "set:False")
     local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[k])
     configvalue:setText(value)
-    P.sampleWindow:setText(value)
-    local size = getMinTextSize(P.sampleWindow)
-    local configvalueWidth = 2*size[2]
-    configvalue:setSize(CEGUI.UVector2(CEGUI.UDim(0, configvalueWidth), CEGUI.UDim(0.9, 0)))
+    configvalue:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.editboxWidth), CEGUI.UDim(0.9, 0)))
     configvalue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.05, 0)))
+    -- enable the reset button if the value changed
+    orxonox.GUIManager:subscribeEventHelper(configvalue, "TextAccepted", P.name .. ".MiscConfigEditbox_textAccepted")
     line:addChildWindow(configvalue)
-    offset = offset + configvalueWidth + P.spaceWidth
+    offset = offset + P.editboxWidth + P.spaceWidth
 
-    local config = winMgr:createWindow("MenuWidgets/Button", "orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Config")
-    config:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.configWidth), CEGUI.UDim(0.9, 0)))
-    config:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.05, 0)))
-    config:setText("configure")
-    orxonox.GUIManager:subscribeEventHelper(config, "Clicked", P.name .. ".MiscConfigConfigure_clicked")
-    line:addChildWindow(config)
-    offset = offset + P.configWidth + P.spaceWidth
-
+    -- reset button (only available when value changed)
     local reset = winMgr:createWindow("MenuWidgets/Button", "orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Reset")
     reset:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.resetWidth), CEGUI.UDim(0.9, 0)))
     reset:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.05, 0)))
     reset:setText("reset")
-    orxonox.GUIManager:subscribeEventHelper(reset, "Clicked", P.name .. ".MiscConfigReset_clicked")
+    orxonox.GUIManager:subscribeEventHelper(reset, "Clicked", P.name .. ".MiscConfigResetButton_clicked")
     line:addChildWindow(reset)
     reset:setEnabled(false)
     offset = offset + P.resetWidth + P.spaceWidth
@@ -152,32 +156,46 @@ function P.createLines()
     pane:setVerticalStepSize(getScrollingStepSize(window))
 end
 
-function P.MiscConfigReset_clicked(e)
-    local we = CEGUI.toWindowEventArgs(e)
-    local name = we.window:getName()
-
-    local match = string.gmatch(name, "%d+")
-    local commandNr = tonumber(match())
-
-    -- TODO: Implement reset.
-end
-
-function P.MiscConfigConfigure_clicked(e)
-    local we = CEGUI.toWindowEventArgs(e)
-    local name = we.window:getName()
-
-    local match = string.gmatch(name, "%d+")
-    local commandNr = tonumber(match())
-
-    local window = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. commandNr .. "/Configvalue")
-
-    orxonox.CommandExecutor:execute("config " .. P.commandList[commandNr] .. " " .. window:getText())
-    local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[commandNr])
-    window:setText(value)
-end
-
-function P.MiscConfigBackButton_clicked(e)
+function P.MiscConfigOKButton_clicked(e)
+    for k,v in pairs(P.commandList) do
+        -- save the changes
+        local editbox = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Configvalue")
+        orxonox.CommandExecutor:execute("config " .. P.commandList[k] .. " " .. editbox:getText())
+        local resetButton = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Reset")
+        resetButton:setEnabled(false)
+    end
+    
     hideMenuSheet("MiscConfigMenu")
+end
+
+function P.MiscConfigCancelButton_clicked(e)
+    hideMenuSheet("MiscConfigMenu")
+end
+
+function P.MiscConfigEditbox_textAccepted(e)
+    local we = CEGUI.toWindowEventArgs(e)
+    local name = we.window:getName()
+
+    local match = string.gmatch(name, "%d+")
+    local commandNr = tonumber(match())
+
+    local resetButton = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. commandNr .. "/Reset")
+    resetButton:setEnabled(true)
+end
+
+function P.MiscConfigResetButton_clicked(e)
+    local we = CEGUI.toWindowEventArgs(e)
+    local name = we.window:getName()
+
+    local match = string.gmatch(name, "%d+")
+    local commandNr = tonumber(match())
+
+    -- reload the old value
+    local editbox = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. commandNr .. "/Configvalue")
+    local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[commandNr])
+    editbox:setText(value)
+    
+    we.window:setEnabled(false)
 end
 
 return P
