@@ -23,6 +23,7 @@
  *      Felix Schulthess
  *   Co-authors:
  *      Reto Grieder
+ *      Matthias Spalinger
  *
  */
 
@@ -53,6 +54,7 @@ public:
     virtual void XMLPort ( Element& xmlelement, XMLPort::Mode mode );
     virtual void tick ( float dt );
 
+    // RadarListener interface
     virtual void addObject ( RadarViewable* object );
     virtual void removeObject ( RadarViewable* viewable );
     virtual void objectChanged ( RadarViewable* viewable );
@@ -65,6 +67,8 @@ public:
 
     inline float getRadarSensitivity() const
     { return 1.0f; }
+
+    unsigned int getMarkerLimit() { return this->markerLimit_; }
 
 private:
     struct ObjectInfo
@@ -80,14 +84,13 @@ private:
 
     // XMLPort accessors
     void setNavMarkerSize ( float size )
-    { navMarkerSize_ = size; this->sizeChanged(); }
+        { navMarkerSize_ = size; this->sizeChanged(); }
     float getNavMarkerSize() const
-    { return navMarkerSize_; }
-
-    void setDetectionLimit( float limit )
-    { this->detectionLimit_ = limit; }
-    float getDetectionLimit() const
-    { return this->detectionLimit_; }
+        { return navMarkerSize_; }
+    void setDetectionLimit( float limit ) 
+        { this->detectionLimit_ = limit; } 
+    float getDetectionLimit() const 
+        { return this->detectionLimit_; }
 
     void setTextSize ( float size );
     float getTextSize() const;
@@ -101,14 +104,17 @@ private:
     typedef std::list < std::pair<RadarViewable*, unsigned int > > sortedList;
     sortedList sortedObjectList_;
 
+    float getArrowSizeX(int dist);    
+    float getArrowSizeY(int dist);
 
     float navMarkerSize_;
     std::string fontName_;
     float textSize_;
+    bool showDistance;
 
-    unsigned int markerLimit_; //TODO: is it possible to set this over the console and/or the IG-Setting
-    float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value.
-                           //!< In order to bypass this behaviour, set a negative detectionLimit_. Then the detection range is "infinite".
+    unsigned int markerLimit_;
+    float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value. 
+
 };
 }
 

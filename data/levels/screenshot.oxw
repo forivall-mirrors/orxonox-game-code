@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Screenshot"
  description = "Level to make awesome screenshots in."
- tags = "test"
+ tags = "test, showcase"
+ screenshot = "screenshot.png"
 />
 
 <?lua
@@ -14,9 +15,7 @@
 ?>
 
 <Level
- name         = "Waypoints"
- description  = "Testing waypoings for AI controlled spaceships."
- gametype     = TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

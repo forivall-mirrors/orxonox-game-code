@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <GUILayout >
-    <Window Type="DefaultWindow" Name="orxonox/MiscConfigMenu/Background" >
+    <Window Type="MenuWidgets/StaticImage" Name="orxonox/MiscConfigMenu/Background" >
+        <Property Name="FrameEnabled" Value="False" />
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="BackgroundEnabled" Value="False" />
         <Window Type="MenuWidgets/StaticText" Name="orxonox/MicsConfigMenu/ConfigWindow" >
             <Property Name="Text" Value="Miscellaneous" />
             <Property Name="Alpha" Value="0.8" />
@@ -33,11 +35,17 @@
                 </Window>
             </Window>
         </Window>
-        <Window Type="MenuWidgets/Button" Name="orxonox/MiscConfigMenu/MiscConfigBackButton" >
-            <Property Name="Text" Value="Back" />
+        <Window Type="MenuWidgets/Button" Name="orxonox/MiscConfigMenu/CancelButton" >
+            <Property Name="Text" Value="Cancel" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
-            <Event Name="Clicked" Function="MiscConfigMenu.MiscConfigBackButton_clicked"/>
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.725,0},{0.4,0},{0.775,0}}" />
+            <Event Name="Clicked" Function="MiscConfigMenu.MiscConfigCancelButton_clicked"/>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/MiscConfigMenu/OKButton" >
+            <Property Name="Text" Value="OK" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.6,0},{0.725,0},{0.75,0},{0.775,0}}" />
+            <Event Name="Clicked" Function="MiscConfigMenu.MiscConfigOKButton_clicked"/>
         </Window>
     </Window>
 </GUILayout>

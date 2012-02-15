@@ -1,6 +1,6 @@
-<Template name="UnderAttackHUD">
+< Template name="UnderAttackHUD">
   <OverlayGroup name="UnderAttackHUD" scale = "1, 1">
-    <UnderAttackHealthBar
+    <OUTDATED-- UnderAttackHealthBar
      name                 = "HealthBar"
      background           = "Orxonox/HealthBarBackground"
      size                 = "0.45, 0.0875"

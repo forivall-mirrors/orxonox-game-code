@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Presentation FS11"
  description = "Presentation level spring semester '11"
- tags = "test"
+ tags = "presentation"
+ screenshot = "presentationfs11.png"
 />
 
 <?lua
@@ -20,10 +21,7 @@
 include("templates/pickupRepresentationTemplates.oxt")
 ?>
 
-<Level
- name         = "Sample"
- description  = "Just a few tests"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

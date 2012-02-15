@@ -49,6 +49,8 @@ namespace orxonox
     SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "toggleFormationFlight",  &HumanController::toggleFormationFlight).addShortcut().keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("HumanController", "FFChangeMode",  &HumanController::FFChangeMode).addShortcut().keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("HumanController", __CC_fire_name,           &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
     SetConsoleCommand("HumanController", __CC_boost_name,          &HumanController::keepBoost     ).addShortcut().keybindMode(KeybindMode::OnHold);
@@ -68,14 +70,13 @@ namespace orxonox
     HumanController* HumanController::localController_s = 0;
     /*static*/ const float HumanController::BOOSTING_TIME = 0.1f;
 
-    HumanController::HumanController(BaseObject* creator) : Controller(creator)
+    HumanController::HumanController(BaseObject* creator) : FormationController(creator)
     {
         RegisterObject(HumanController);
 
         this->controlPaused_ = false;
         this->boosting_ = false;
         this->boosting_ = false;
-
         HumanController::localController_s = this;
         this->boostingTimeout_.setTimer(HumanController::BOOSTING_TIME, false, createExecutor(createFunctor(&HumanController::terminateBoosting, this)));
         this->boostingTimeout_.stopTimer();
@@ -83,6 +84,10 @@ namespace orxonox
 
     HumanController::~HumanController()
     {
+        if (HumanController::localController_s) 
+        {
+            HumanController::localController_s->removeFromFormation();
+        }
         HumanController::localController_s = 0;
     }
 
@@ -93,6 +98,13 @@ namespace orxonox
             Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
             if (!camera)
                 orxout(internal_warning) << "HumanController, Warning: Using a ControllableEntity without Camera" << endl;
+        }
+
+        // commandslaves when Master of a formation
+        if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
+        {
+            if (HumanController::localController_s->formationMode_ != ATTACK)
+                HumanController::localController_s->commandSlaves();
         }
     }
 
@@ -159,7 +171,14 @@ namespace orxonox
     void HumanController::doFire(unsigned int firemode)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        {
             HumanController::localController_s->controllableEntity_->fire(firemode);
+            //if human fires, set slaves free. See FormationController::forceFreeSlaves()
+            if (HumanController::localController_s->state_==MASTER && HumanController::localController_s->formationMode_ == NORMAL)
+            {
+                HumanController::localController_s->forceFreeSlaves();
+            }
+        }
     }
 
     void HumanController::reload()
@@ -194,8 +213,8 @@ namespace orxonox
         {
             this->boosting_ = true;
             this->boostingTimeout_.startTimer();
-            
-            this->controllableEntity_->boost(this->boosting_);
+            if(this->controllableEntity_)
+                this->controllableEntity_->boost(this->boosting_);
 //            orxout() << "Start boosting" << endl;
         }
     }
@@ -208,8 +227,8 @@ namespace orxonox
     {
         this->boosting_ = false;
         this->boostingTimeout_.stopTimer();
-
-        this->controllableEntity_->boost(this->boosting_);
+        if(this->controllableEntity_)
+            this->controllableEntity_->boost(this->boosting_);
 //        orxout() << "Stop boosting" << endl;
     }
 
@@ -259,6 +278,65 @@ namespace orxonox
             orxout(message) << "position=\"" << position.x << ", " << position.y << ", " << position.z << "\" "
                             << "orientation=\"" << orientation.w << ", " << orientation.x << ", " << orientation.y << ", " << orientation.z << "\"" << endl;
         }
+    }
+
+    /**
+    @brief
+       toggle the formation. Not usable, if formationflight is disabled generally (formationFlight_)
+    */
+    void HumanController::toggleFormationFlight()
+    {
+        if (HumanController::localController_s)
+        {
+            if (!HumanController::localController_s->formationFlight_)
+            {
+                return; //dont use when formationFlight is disabled
+            }
+            if (HumanController::localController_s->state_==MASTER)
+            {
+                HumanController::localController_s->loseMasterState();
+                orxout(message) <<"FormationFlight disabled "<< endl;
+            } else //SLAVE or FREE
+            {
+                HumanController::localController_s->takeLeadOfFormation();
+                orxout(message) <<"FormationFlight enabled "<< endl;
+            }
+            
+        }
+
+    }
+
+    /**
+    @brief
+       Switch through the different Modes of formationflight. You must be a master of a formation to use.
+    */
+    void HumanController::FFChangeMode()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
+        {
+            switch (HumanController::localController_s->getFormationMode()) {
+                case NORMAL:
+                    HumanController::localController_s->setFormationMode(DEFEND);
+                    orxout(message) <<"Mode: DEFEND "<< endl;
+                    break;
+                case DEFEND:
+                    HumanController::localController_s->setFormationMode(ATTACK);
+                    orxout(message) <<"Mode: ATTACK "<< endl;
+                    break;
+                case ATTACK:
+                    HumanController::localController_s->setFormationMode(NORMAL);
+                    orxout(message) <<"Mode: NORMAL "<< endl;
+                    break;
+            }
+        }
+    }
+
+
+    //used, when slaves are in DEFEND mode.
+    void HumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+    {
+        if (!this->formationFlight_ || this->state_!=MASTER || this->formationMode_!=DEFEND) return;
+            this->masterAttacked(originator);
     }
 
     void HumanController::addBots(unsigned int amount)

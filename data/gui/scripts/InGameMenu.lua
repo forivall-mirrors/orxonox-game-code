@@ -42,12 +42,11 @@ end
 
 -- events for ingamemenu
 function P.button_quit_clicked(e)
-    openDecisionPopup( "Do you really want to quit the game?", InGameMenu.callback )
+    openDecisionPopup( "Do you really want to quit the game?", InGameMenu.exitCallback )
 end
 
 function P.button_mainmenu_clicked(e)
-    orxonox.execute("startMainMenu")
-    hideMenuSheet("InGameMenu")
+    openDecisionPopup( "Do you really want to return to the main menu?", InGameMenu.mainMenuCallback )
 end
 
 function P.button_settings_clicked(e)
@@ -58,7 +57,16 @@ function P.button_return_clicked(e)
     hideMenuSheet("InGameMenu")
 end
 
-function P.callback(doExit)
+function P.mainMenuCallback(doExit)
+    if doExit then
+        orxonox.execute("startMainMenu")
+        hideMenuSheet("InGameMenu")
+    else
+        P.onShow()
+    end
+end
+
+function P.exitCallback(doExit)
     if doExit then
         hideMenuSheet("InGameMenu")
         orxonox.execute("exit")

@@ -64,7 +64,7 @@ namespace orxonox
             inline const std::string& getMeshSource() const
                 { return this->meshSrc_; }
 
-            void boost(); //acctually jump
+            void boost(bool bBoost); //acctually jump
 
             virtual void fire();
 

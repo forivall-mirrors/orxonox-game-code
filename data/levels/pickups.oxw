@@ -2,6 +2,7 @@
  name = "Pickups showcase"
  description = "Level to test and showcase pickups."
  tags = "test, showcase"
+ screenshot = "pickupsshowcase.png"
 />
 
 <?lua
@@ -15,10 +16,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Sample"
- description  = "Just a few tests"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>

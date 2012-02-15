@@ -53,6 +53,7 @@ namespace orxonox // tolua_export
             inline bool isAlive() const
                 { return this->bAlive_; }
 
+
             virtual void setHealth(float health);
             inline void addHealth(float health)
                 { this->setHealth(this->health_ + health); }
@@ -192,6 +193,7 @@ namespace orxonox // tolua_export
                 { return new std::vector<PickupCarrier*>(); }
             virtual PickupCarrier* getCarrierParent(void) const
                 { return NULL; }
+
 
             float health_;
             float maxHealth_;

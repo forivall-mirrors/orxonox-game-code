@@ -41,7 +41,6 @@ namespace orxonox
     {
         RegisterObject(WaypointPatrolController);
 
-        //this->team_ = 0;
         this->alertnessradius_ = 500;
 
         this->patrolTimer_.setTimer(rnd(), true, createExecutor(createFunctor(&WaypointPatrolController::searchEnemy, this)));
@@ -52,7 +51,6 @@ namespace orxonox
         SUPER(WaypointPatrolController, XMLPort, xmlelement, mode);
 
         XMLPortParam(WaypointPatrolController, "alertnessradius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues(500.0f);
-//        XMLPortParam(WaypointPatrolController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(0);
     }
 
     void WaypointPatrolController::tick(float dt)

@@ -1,15 +1,20 @@
+<LevelInfo
+ name = "Under Attack"
+ description = "Fight the transporter."
+ tags = "gametype"
+ screenshot = "underattack.png"
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("underAttackHUD.oxo")
   include("templates/spaceshipAssff.oxt")
   include("templates/lodInformation.oxt")
 ?>
+<!--OUTDATED: include("underAttackHUD.oxo") -->
 
 <Level
- name         = "UnderAttack testing"
- description  = "A simple testlevel"
- gametype     = UnderAttack
+ gametype = "UnderAttack"
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -50,6 +55,7 @@
       health            = 10000
       maxhealth         = 10000
       initialhealth     = 10000
+      RVName            = "Transporter"
     >
 
       <attached>

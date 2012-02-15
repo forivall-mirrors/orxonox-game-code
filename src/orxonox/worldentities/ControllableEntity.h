@@ -162,8 +162,11 @@ namespace orxonox
             virtual WorldEntity* getTarget()
                 { return this->target_.get(); }
             void setTargetInternal( uint32_t targetID );
-            inline bool getRocket() const
-                { return this-> bIsRocket_; }
+
+	    inline void setTeam(int team)
+	        { this->team_ = team; }
+	    inline float getTeam() const
+	        { return this->team_; }
 
         protected:
             virtual void preDestroy();
@@ -182,7 +185,6 @@ namespace orxonox
             void destroyHud(void);
 
             Ogre::SceneNode* cameraPositionRootNode_;
-            bool bIsRocket_; //Workaround to see, if the controllable entity is a Rocket.
 
         private:
             void registerVariables();
@@ -239,6 +241,8 @@ namespace orxonox
             WeakPtr<Controller> controller_;
             CameraPosition* reverseCamera_;
             WeakPtr<WorldEntity> target_;
+
+	    int team_ ; //<! teamnumber
     };
 }
 

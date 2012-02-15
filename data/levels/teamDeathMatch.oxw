@@ -1,7 +1,8 @@
 <LevelInfo
  name = "Team Deathmatch"
  description = "Fight against each other in teams."
- tags = ""
+ tags = "gametype"
+ screenshot = "teamdeathmatch.png"
 />
 
 <?lua
@@ -14,9 +15,7 @@
 ?>
 
 <Level
- name         = "Waypoints"
- description  = "Testing waypoings for AI controlled spaceships."
- gametype     = TeamDeathmatch
+ gametype = "TeamDeathmatch"
 >
   <templates>
     <Template link=lodtemplate_default />

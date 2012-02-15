@@ -90,7 +90,7 @@ namespace orxonox
 
     @ingroup MultiTrigger
     */
-    class _ObjectsExport DistanceMultiTrigger : public MultiTrigger
+    class _ObjectsExport DistanceMultiTrigger : public MultiTrigger 
     {
 
         public:

@@ -156,7 +156,7 @@ namespace orxonox
             bool isModeTriggered(BaseObject* triggerer = NULL); //!< Checks whether the MultiTrigger is triggered concerning it's children.
             bool isTriggered(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is triggered for a given object.
 
-            void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an Event for the given status and originator and fires it.
+            virtual void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an Event for the given status and originator and fires it.
             void broadcast(bool status); //!< Helper method. Broadcasts an Event for every object that is a target.
 
             void removeTarget(const std::string& target); //!< Remove some target from the MultiTrigger.

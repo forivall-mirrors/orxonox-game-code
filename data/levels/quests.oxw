@@ -2,6 +2,7 @@
  name = "Quests showcase"
  description = "Level to test and showcase quests."
  tags = "test, showcase"
+ screenshot = "questsshowcase.png"
 />
 
 <?lua
@@ -11,10 +12,7 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Level
- name         = "Questsystem"
- description  = "Just a few tests"
->
+<Level>
     <templates>
         <Template link=lodtemplate_default />
     </templates>

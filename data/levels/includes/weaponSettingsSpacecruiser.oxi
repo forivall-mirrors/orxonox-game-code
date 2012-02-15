@@ -1,12 +1,11 @@
     <weaponslots>
-      <WeaponSlot position="-20,-15,-108" />
-      <WeaponSlot position=" 20,-15,-108" />
-      <WeaponSlot position="  0, -7,-110" />
-      <WeaponSlot position="-14,-31,-184" />
-      <WeaponSlot position=" 14,-31,-184" />
-      <WeaponSlot position="-34,-30,-169" />
-      <WeaponSlot position=" 34,-30,-169" />
-
+      <WeaponSlot position="-20,10,2" />
+      <WeaponSlot position=" 20,10,2" />
+      <WeaponSlot position="  0,18,0" />
+      <WeaponSlot position="-14,-6,-74" />
+      <WeaponSlot position=" 14,-6,-74" />
+      <WeaponSlot position="-34,-5,-59" />
+      <WeaponSlot position=" 34,-5,-59" />
     </weaponslots>
     <weaponsets>
       <WeaponSet firemode=0 />

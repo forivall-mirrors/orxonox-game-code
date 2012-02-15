@@ -33,12 +33,13 @@
 
 #include <set>
 #include <string>
+# include <vector>
 
 #include <util/Clock.h>
 
 #include "gametypes/Gametype.h"
 
-#include "RaceCheckPoint.h"
+#include "SpaceRaceManager.h"
 
 namespace orxonox
 {
@@ -49,6 +50,7 @@ namespace orxonox
     class _GametypesExport SpaceRace : public Gametype
     {
         friend class RaceCheckPoint;
+       
 
         public:
             SpaceRace(BaseObject* creator);
@@ -57,22 +59,35 @@ namespace orxonox
             virtual void start();
             virtual void end();
 
-            virtual void newCheckpointReached();
+            virtual void newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl);
+            virtual void newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl);
 
-            inline void setCheckpointsReached(int n)
-                { this->checkpointsReached_ = n;}
-            inline int getCheckpointsReached()
-                { return this->checkpointsReached_; }
+            inline void setCheckpointReached(int n, PlayerInfo* p)
+                { this->checkpointReached_[p] = n;}
+            inline int getCheckpointReached(PlayerInfo* p)
+                { return this->checkpointReached_[p]; }
+
             inline void timeIsUp()
                 { this->bTimeIsUp_ = true;}
+            void tick(float dt);
+            Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
 
+
+            bool allowPawnHit(Pawn* victim, Pawn* originator);
+
+            bool allowPawnDamage(Pawn* victim, Pawn* originator);
+
+            bool allowPawnDeath(Pawn* victim, Pawn* originator);
         protected:
-
+            virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
+            virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
         private:
-            int checkpointsReached_; //The current number of check points reached by the player.
+            bool cantMove_;
+            std::map<PlayerInfo*, int>checkpointReached_; //The number of the last check point reached by each player.
             std::set<float> scores_; //The times of the players are saved in a set.
             bool bTimeIsUp_; //True if one of the check points is reached too late.
-            Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
+            
+            int playersAlive_;
     };
 }
 

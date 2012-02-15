@@ -2,6 +2,7 @@
  name = "Stars Testlevel"
  description = "Level to test stars"
  tags = "test"
+ screenshot = "starstestlevel.png"
 />
 
 <?lua
@@ -15,10 +16,7 @@
   include("templates/spaceshipPirate.oxt")
 ?>
 
-<Level
- name         = "Sample"
- description  = "Just a few tests"
->
+<Level>
   <templates>
     <Template link=lodtemplate_default />
   </templates>
