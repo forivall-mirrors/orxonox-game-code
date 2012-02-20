@@ -160,6 +160,9 @@ ADD_SUBDIRECTORY(data)
 # Create the actual project
 ADD_SUBDIRECTORY(src)
 
+# Create the test suites
+ADD_SUBDIRECTORY(test)
+
 # Configure the binary output directory. Do this after src!
 ADD_SUBDIRECTORY(bin)
 
