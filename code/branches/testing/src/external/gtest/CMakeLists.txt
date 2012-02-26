@@ -17,17 +17,20 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################ Sub Directories ################
+SET_SOURCE_FILES(GTEST_FILES
+    src/gtest-all.cc
+    include/gtest/gtest.h
+)
 
-ADD_SUBDIRECTORY(tolua)
-ADD_SUBDIRECTORY(bullet)
-ADD_SUBDIRECTORY(cpptcl)
-ADD_SUBDIRECTORY(enet)
-ADD_SUBDIRECTORY(gmock)
-ADD_SUBDIRECTORY(gtest)
-ADD_SUBDIRECTORY(loki)
-IF(CEGUI_OGRE_RENDERER_BUILD_REQUIRED)
-  ADD_SUBDIRECTORY(ogreceguirenderer)
-ENDIF()
-ADD_SUBDIRECTORY(ois)
-ADD_SUBDIRECTORY(tinyxml)
+INCLUDE_DIRECTORIES(
+    .
+    include
+)
+
+ORXONOX_ADD_LIBRARY(gtest_orxonox
+    ORXONOX_EXTERNAL
+    VERSION         1.6.0
+    SOURCE_FILES    ${GTEST_FILES}
+)
+
+SET(GTEST_MAIN "${CMAKE_CURRENT_SOURCE_DIR}/src/gtest_main.cc" CACHE INTERNAL "gtest main() function")

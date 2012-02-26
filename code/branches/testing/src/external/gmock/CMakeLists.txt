@@ -17,17 +17,22 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################ Sub Directories ################
+SET_SOURCE_FILES(GMOCK_FILES
+    src/gmock-all.cc
+    include/gmock/gmock.h
+)
 
-ADD_SUBDIRECTORY(tolua)
-ADD_SUBDIRECTORY(bullet)
-ADD_SUBDIRECTORY(cpptcl)
-ADD_SUBDIRECTORY(enet)
-ADD_SUBDIRECTORY(gmock)
-ADD_SUBDIRECTORY(gtest)
-ADD_SUBDIRECTORY(loki)
-IF(CEGUI_OGRE_RENDERER_BUILD_REQUIRED)
-  ADD_SUBDIRECTORY(ogreceguirenderer)
-ENDIF()
-ADD_SUBDIRECTORY(ois)
-ADD_SUBDIRECTORY(tinyxml)
+INCLUDE_DIRECTORIES(
+    .
+    include
+    ../gtest/include
+)
+
+ORXONOX_ADD_LIBRARY(gmock_orxonox
+    ORXONOX_EXTERNAL
+    VERSION         1.6.0
+    LINK_LIBRARIES  gtest_orxonox
+    SOURCE_FILES    ${GMOCK_FILES}
+)
+
+SET(GMOCK_MAIN "${CMAKE_CURRENT_SOURCE_DIR}/src/gmock_main.cc" CACHE INTERNAL "gmock main() function")
