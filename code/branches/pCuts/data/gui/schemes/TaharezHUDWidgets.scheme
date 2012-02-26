@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="TaharezHUDWidgets">
+    <WindowAlias Alias="HUDWidgets/StaticImage"              Target="TaharezLook/StaticImage" />
+    <WindowAlias Alias="HUDWidgets/StaticText"               Target="TaharezLook/StaticText" />
+    <WindowAlias Alias="HUDWidgets/TabButtonPane"            Target="TaharezLook/TabButtonPane" />
+    <WindowAlias Alias="HUDWidgets/TabContentPane"           Target="TaharezLook/TabContentPane" />
+    <WindowAlias Alias="HUDWidgets/Checkbox"                 Target="TaharezLook/Checkbox" />
+    <WindowAlias Alias="HUDWidgets/Combobox"                 Target="TaharezLook/Combobox" />
+    <WindowAlias Alias="HUDWidgets/ComboDropList"            Target="TaharezLook/ComboDropList" />
+    <WindowAlias Alias="HUDWidgets/ComboEditbox"             Target="TaharezLook/ComboEditbox" />
+    <WindowAlias Alias="HUDWidgets/Editbox"                  Target="TaharezLook/Editbox" />
+    <WindowAlias Alias="HUDWidgets/FrameWindow"              Target="TaharezLook/FrameWindow" />
+    <WindowAlias Alias="HUDWidgets/GroupBox"                 Target="TaharezLook/GroupBox" />
+    <WindowAlias Alias="HUDWidgets/ItemListbox"              Target="TaharezLook/ItemListbox" />
+    <WindowAlias Alias="HUDWidgets/ListboxItem"              Target="TaharezLook/ListboxItem" />
+    <WindowAlias Alias="HUDWidgets/Listbox"                  Target="TaharezLook/Listbox" />
+    <WindowAlias Alias="HUDWidgets/ListHeader"               Target="TaharezLook/ListHeader" />
+    <WindowAlias Alias="HUDWidgets/ListHeaderSegment"        Target="TaharezLook/ListHeaderSegment" />
+    <WindowAlias Alias="HUDWidgets/MultiLineEditbox"         Target="TaharezLook/MultiLineEditbox" />
+    <WindowAlias Alias="HUDWidgets/Menubar"                  Target="TaharezLook/Menubar" />
+    <WindowAlias Alias="HUDWidgets/MenuItem"                 Target="TaharezLook/MenuItem" />
+    <WindowAlias Alias="HUDWidgets/MultiColumnList"          Target="TaharezLook/MultiColumnList" />
+    <WindowAlias Alias="HUDWidgets/PopupMenu"                Target="TaharezLook/PopupMenu" />
+    <WindowAlias Alias="HUDWidgets/ProgressBar"              Target="TaharezLook/ProgressBar" />
+    <WindowAlias Alias="HUDWidgets/Button"                   Target="TaharezLook/Button" />
+    <WindowAlias Alias="HUDWidgets/ImageButton"              Target="TaharezLook/ImageButton" />
+    <WindowAlias Alias="HUDWidgets/RadioButton"              Target="TaharezLook/RadioButton" />
+    <WindowAlias Alias="HUDWidgets/SystemButton"             Target="TaharezLook/SystemButton" />
+    <WindowAlias Alias="HUDWidgets/ScrollablePane"           Target="TaharezLook/ScrollablePane" />
+    <WindowAlias Alias="HUDWidgets/HorizontalScrollbar"      Target="TaharezLook/HorizontalScrollbar" />
+    <WindowAlias Alias="HUDWidgets/VerticalScrollbar"        Target="TaharezLook/VerticalScrollbar" />
+    <WindowAlias Alias="HUDWidgets/Slider"                   Target="TaharezLook/Slider" />
+    <WindowAlias Alias="HUDWidgets/Spinner"                  Target="TaharezLook/Spinner" />
+    <WindowAlias Alias="HUDWidgets/TabButton"                Target="TaharezLook/TabButton" />
+    <WindowAlias Alias="HUDWidgets/TabControl"               Target="TaharezLook/TabControl" />
+    <WindowAlias Alias="HUDWidgets/HorizontalScrollbarThumb" Target="TaharezLook/HorizontalScrollbarThumb" />
+    <WindowAlias Alias="HUDWidgets/SliderThumb"              Target="TaharezLook/SliderThumb" />
+    <WindowAlias Alias="HUDWidgets/VerticalScrollbarThumb"   Target="TaharezLook/VerticalScrollbarThumb" />
+    <WindowAlias Alias="HUDWidgets/Titlebar"                 Target="TaharezLook/Titlebar" />
+    <WindowAlias Alias="HUDWidgets/Tooltip"                  Target="TaharezLook/Tooltip" />
+    <WindowAlias Alias="HUDWidgets/Tree"                     Target="TaharezLook/Tree" />
+</GUIScheme>
