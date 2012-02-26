@@ -108,6 +108,7 @@ namespace orxonox
     class TeamBaseMatch;
     class TeamDeathmatch;
     class UnderAttack;
+    class TeamGametype;
 
     // graphics
     class Backlight;
