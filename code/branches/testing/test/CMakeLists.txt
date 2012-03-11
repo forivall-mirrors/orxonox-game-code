@@ -1,6 +1,6 @@
 ENABLE_TESTING()
 
-ADD_CUSTOM_TARGET(test COMMAND ${CMAKE_CTEST_COMMAND})
+ADD_CUSTOM_TARGET(test COMMAND ${CMAKE_CTEST_COMMAND} "$(ARGS)" COMMENT "Running tests")
 
 ADD_EXECUTABLE(sample_test EXCLUDE_FROM_ALL SampleTest.cc)
 ADD_DEPENDENCIES(test sample_test)
@@ -40,3 +40,18 @@ TARGET_LINK_LIBRARIES(gtest_sample gtest_orxonox)
 ADD_DEPENDENCIES(test gtest_sample)
 
 ADD_TEST(gtest_sample ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gtest_sample)
+
+#-----------------
+
+CONFIGURE_FILE("CTestCustom.cmake" "CTestCustom.cmake" @ONLY)
+
+INCLUDE_DIRECTORIES(
+  ../src/libraries
+  ../src/orxonox
+  ../src/modules
+  ${CMAKE_BINARY_DIR}/src
+  ${OGRE_INCLUDE_DIR}
+  ${POCO_INCLUDE_DIR}
+)
+
+ADD_SUBDIRECTORY(util)
