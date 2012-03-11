@@ -141,15 +141,6 @@ namespace orxonox
     }
 
     /**
-        @brief Rounds the value to the nearest integer.
-    */
-    template <typename T>
-    inline int round(T x)
-    {
-        return static_cast<int>(x + 0.5);
-    }
-
-    /**
         @brief The modulo operation, enhanced to work properly with negative values.
         @param x The value
         @param max The operand

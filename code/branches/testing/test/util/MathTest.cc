@@ -149,44 +149,6 @@ namespace orxonox
         EXPECT_DOUBLE_EQ( -8.000, cube(-2.0));
     }
 
-    /////////////
-    // round() //
-    /////////////
-    TEST(round, Positive)
-    {
-        // int
-        EXPECT_EQ( 5, round(5));
-        EXPECT_EQ(10, round(10));
-
-        // double
-        EXPECT_EQ(4, round(4.499));
-        EXPECT_EQ(5, round(4.500));
-        EXPECT_EQ(5, round(4.999));
-        EXPECT_EQ(5, round(5.000));
-        EXPECT_EQ(5, round(5.001));
-        EXPECT_EQ(5, round(5.499));
-        EXPECT_EQ(6, round(5.500));
-    }
-
-    /////////////
-    // round() //
-    /////////////
-    TEST(round, Negative)
-    {
-        // int
-        EXPECT_EQ( -5, round(-5));
-        EXPECT_EQ(-10, round(-10));
-
-        // double
-        EXPECT_EQ(-4, round(-4.499));
-        EXPECT_EQ(-5, round(-4.500));
-        EXPECT_EQ(-5, round(-4.999));
-        EXPECT_EQ(-5, round(-5.000));
-        EXPECT_EQ(-5, round(-5.001));
-        EXPECT_EQ(-5, round(-5.499));
-        EXPECT_EQ(-6, round(-5.500));
-    }
-
     ///////////
     // mod() //
     ///////////
@@ -239,7 +201,7 @@ namespace orxonox
         EXPECT_EQ((unsigned int)0, zeroise<unsigned int>());
         EXPECT_DOUBLE_EQ(0.0, zeroise<double>());
         EXPECT_EQ("", zeroise<std::string>());
-//        EXPECT_EQ(Vector3::ZERO, zeroise<Vector3>());
+        EXPECT_EQ(Vector3::ZERO, zeroise<Vector3>());
     }
 
     ///////////////////
