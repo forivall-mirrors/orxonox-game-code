@@ -29,11 +29,8 @@
 #include "TeamDeathmatch.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "chat/ChatManager.h"
-#include "interfaces/TeamColourable.h"
 #include "infos/PlayerInfo.h"
-#include "worldentities/TeamSpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox

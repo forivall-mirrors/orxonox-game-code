@@ -88,6 +88,11 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Function that determines the player's team number when entering the game for the first time.
+        Override this function for other team structures.
+    */
     void TeamGametype::findAndSetTeam(PlayerInfo* player)
     {
         if(player == NULL) return; // catch null pointers
@@ -129,7 +134,6 @@ namespace orxonox
             this->teamnumbers_.erase(player);
             this->allowedInGame_.erase(player);
         }
-
 
         return valid_player;
     }
