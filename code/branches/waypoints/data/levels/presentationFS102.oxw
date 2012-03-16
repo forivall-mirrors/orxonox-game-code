@@ -1,0 +1,106 @@
+<LevelInfo
+ name = "Presentation XI FPS 1st"
+ description = "2nd Presentation level for Orxonox Convention XI, FPS"
+ tags = "presentation"
+ screenshot = "presentationxifps1st.png"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipH2.oxt")
+  include("templates/FPS.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.1, 0.1, 0.1"
+   skybox       = "Orxonox/skypanoramagen1"
+   gravity      = "0,-1000,0"
+   negativeWorldRange = "-100000, -100000, -100000"
+   positiveWorldRange = " 100000,  100000,  100000"
+   hasPhysics   = true
+  >
+    <Light type=directional position="0,-100000,0" direction="0.02, -1, 0.05" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+  <Pawn health=100 position="600,35,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+      <attached>
+        <Model position="0,0,0" mesh="fish.mesh" scale3D="5,5,5" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
+      </collisionShapes>
+  </Pawn>
+  
+  <Pawn health=100 position="0,-35,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
+      </collisionShapes>
+  </Pawn>
+  
+  <StaticEntity position="0,-50,0" direction="0,-1,0" collisionType=static mass=100000 >
+      <attached>
+        <Model position="0,0,0" mesh="cube.mesh" scale3D="100,100,10" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+
+   <StaticEntity position="210,-30,0" direction="0,-1,0" collisionType=static mass=100000 >
+      <attached>
+        <Model position="0,0,0" mesh="cube_orange.mesh" scale3D="100,100,10" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+  
+   <StaticEntity position="600,-20,0" direction="0,-1,0" collisionType=static mass=100000 >
+      <attached>
+        <Model position="0,0,0" mesh="cube_green.mesh" scale3D="100,100,10" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+
+<StaticEntity position="600,10,120" direction="0,-1,1" collisionType=static mass=100000 >
+      <attached>
+        <Model position="0,0,0" mesh="cube_red.mesh" scale3D="100,100,10" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+  
+  <StaticEntity position="600,40,250" direction="0,-1,0" collisionType=static mass=100000 >
+      <attached>
+        <Model position="0,0,0" mesh="cube.mesh" scale3D="100,100,10" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+  
+<?lua
+for i = 1, 10, 1
+do ?>
+    <SpawnPoint position="0,300,0" direction="0, 0, 0" lookat="0,0,100000000" spawnclass=FpsPlayer pawndesign=fps />
+<?lua
+end
+?>
+
+
+  </Scene>
+</Level>

@@ -1,0 +1,112 @@
+<?lua
+	include("HUDTemplates3.oxo")
+?>
+
+<?lua
+	include("templates/spaceshipAssff.oxt")
+?>
+
+<Level
+	name = "SpaceStation test Space!"
+	description = "All the new SpaceStations are created here!"
+>
+	<Scene
+		ambientlight = "0.5, 0.5, 0.5"
+		skybox = "Orxonox/Starbox"
+	>
+
+
+
+<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+<?lua
+	dofile("includes/CuboidSpaceStation.lua")
+?>
+
+<!-- The following examples insert some space station in various ways, so I guess you will understand how to use my .lua file and the functions of it.
+--->
+
+<!-- Here I add a space station at position 0,0,0 without velocity and no rotation.
+--->
+<?lua
+	createSpaceStation()
+?>
+
+
+
+<!-- Here I add a space station at position 0,0,-5000 without velocity and no rotation.
+--->
+<PositionableEntity scale=1 position="0,0,-5000">
+	<attached>
+		<?lua
+			createSpaceStation()
+		?>
+	</attached>
+</PositionableEntity>
+
+
+
+<!-- Here I add a space station at position 5000,0,0 with velocity 50,0,0 and a rotation so that the space station faces into the positive x-axis.
+--->
+<MovableEntity scale=1 position="5000,0,0" velocity="50,0,0" yaw=-90>
+	<attached>
+		<?lua
+			createSpaceStation()
+		?>
+	</attached>
+</MovableEntity>
+
+
+
+<!-- Here I add a space station at position -5000,0,0 without velocity but rotation around his own y-axis.
+--->
+<MovableEntity scale=1 position="-5000,0,0" rotationaxis="0,1,0" rotationrate=5>
+	<attached>
+		<?lua
+			createSpaceStation()
+		?>
+	</attached>
+</MovableEntity>
+
+
+
+<!-- Here I add a space station at position 10000,0,0 which will rotate around the position 0,0,0 and around his own axis in flight direction.
+---- To do so, I create a MovableEntity at position 0,0,0 and attach another MovableEntity with relative coordinates to the first MovableEntity 10000,0,0.
+---- I rotate the first MovableEntity, so the second Entity rotates around 0,0,0 in the x-,z-area with a radius 10000, and so does the space station,
+---- because the space station is attached to the second MovableEntity with relative coordinates 0,0,0 (this is defined in the .lua file).
+---- Then I rotate also the second MovableEntity around his own z-axis, so the space station rotates also around its own axis.
+--->
+<MovableEntity scale=1 position="0,0,0" rotationaxis="0,1,0" rotationrate=3>
+	<attached>
+		<MovableEntity scale=1 position="10000,0,0" rotationaxis="0,0,1" rotationrate=2>
+			<attached>
+				<?lua
+					-- Here I use the createSpaceStationPar(...) function, which has 8 arguments, see the .lua file at the top to understand them.
+					createSpaceStationPar(0,2,1,2,1,2,1,50)
+				?>
+			</attached>
+		</MovableEntity>
+	</attached>
+</MovableEntity>
+
+
+
+<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+
+	<ParticleSpawner position="0,0,0" source="Orxonox/BigExplosion1part3" lifetime=2.0 loop=0 autostart=0>
+      <events>
+        <spawn>
+          <EventTrigger delay=1>
+            <events>
+              <trigger>
+                <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </spawn>
+      </events>
+    </ParticleSpawner>
+
+  </Scene>
+</Level>
