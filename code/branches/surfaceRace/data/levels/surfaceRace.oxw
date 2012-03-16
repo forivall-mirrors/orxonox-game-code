@@ -23,7 +23,7 @@
   <?lua include("includes/notifications.oxi") ?>
 
   <Scene
-    ambientlight = "0.8, 0.8, 0.8"
+    ambientlight = "2.0, 2.0, 2.0"
     skybox       = "Orxonox/Starbox"
   >
 
