@@ -1,13 +1,12 @@
--- SingleplayerMenu.lua
+-- ShipSelectionMenu.lua
 
-local P = createMenuSheet("SingleplayerMenu")
-P.loadAlong = {"ShipSelectionMenu"}
+local P = createMenuSheet("ShipSelectionMenu")
 P.levelList = {}
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
 
 function P.onLoad()
-    P.createLevelList()
+--[[    P.createLevelList()
     
     -- create tabs with desired tab as argument (nil for all)
     P.createFilterTab("Gametypes", "gametype")
@@ -19,25 +18,25 @@ function P.onLoad()
     P.createFilterTab("Show All", nil)
     
     -- update description and screenshot boxes
-    P.SingleplayerSelectionChanged()
+    P.ShipSelectionSelectionChanged()
     
     --buttons are arranged in a 1x3 matrix
     P:setButton(1, 1, {
-            ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
-            ["callback"]  = P.SingleplayerStartButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/ShipSelectionStartButton"),
+            ["callback"]  = P.ShipSelectionStartButton_clicked
     })
 
     P:setButton(1, 2, {
-            ["button"] = winMgr:getWindow("orxonox/SingleplayerConfigButton"),
-            ["callback"]  = P.SingleplayerConfigButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/ShipSelectionConfigButton"),
+            ["callback"]  = P.ShipSelectionConfigButton_clicked
     })
 
     P:setButton(1, 3, {
-            ["button"] = winMgr:getWindow("orxonox/SingleplayerBackButton"),
-            ["callback"]  = P.SingleplayerBackButton_clicked
-    })
+            ["button"] = winMgr:getWindow("orxonox/ShipSelectionBackButton"),
+            ["callback"]  = P.ShipSelectionBackButton_clicked
+    })--]]
 end
-
+--[[
 function P.createLevelList()
     P.levelList = {}
     local size = orxonox.LevelManager:getInstance():getNumberOfLevels()
@@ -62,7 +61,7 @@ end
 
 function P.createFilterTab(name, tag)
     -- create unique tab window name
-    local tabName = "orxonox/SingleplayerLevelTab"
+    local tabName = "orxonox/ShipSelectionLevelTab"
     if tag ~= nil then
         tabName = tabName..tag
     end
@@ -91,17 +90,17 @@ function P.createFilterTab(name, tag)
     end
     table.insert(P.activeTabIndexes, tabIndexes)
     -- listen to selection changes
-    orxonox.GUIManager:subscribeEventHelper(listbox, "ItemSelectionChanged", P.name..".SingleplayerSelectionChanged")
-    local tabControl = winMgr:getWindow("orxonox/SingleplayerTabControl")
-    orxonox.GUIManager:subscribeEventHelper(tabControl, "TabSelectionChanged", P.name..".SingleplayerSelectionChanged")
+    orxonox.GUIManager:subscribeEventHelper(listbox, "ItemSelectionChanged", P.name..".ShipSelectionSelectionChanged")
+    local tabControl = winMgr:getWindow("orxonox/ShipSelectionTabControl")
+    orxonox.GUIManager:subscribeEventHelper(tabControl, "TabSelectionChanged", P.name..".ShipSelectionSelectionChanged")
     if listbox:getItemCount() > 0 then
         tabControl:addChildWindow(tabName)
     end
 end
 
-function P.SingleplayerGetSelectedLevel()
+function P.ShipSelectionGetSelectedLevel()
     -- choose the active listbox
-    local tabControl = CEGUI.toTabControl(winMgr:getWindow("orxonox/SingleplayerTabControl"))
+    local tabControl = CEGUI.toTabControl(winMgr:getWindow("orxonox/ShipSelectionTabControl"))
     local listbox = CEGUI.toListbox(tabControl:getTabContentsAtIndex(tabControl:getSelectedTabIndex()))
     local choice = listbox:getFirstSelectedItem()
     if choice ~= nil then
@@ -114,11 +113,11 @@ function P.SingleplayerGetSelectedLevel()
     end
 end
 
-function P.SingleplayerSelectionChanged(e)
-    local levelImage = winMgr:getWindow("orxonox/SingleplayerLevelImage")
-    local levelDescription = winMgr:getWindow("orxonox/SingleplayerLevelDescription")
-    local configButton = winMgr:getWindow("orxonox/SingleplayerConfigButton")
-    local level = P.SingleplayerGetSelectedLevel()
+function P.ShipSelectionSelectionChanged(e)
+    local levelImage = winMgr:getWindow("orxonox/ShipSelectionLevelImage")
+    local levelDescription = winMgr:getWindow("orxonox/ShipSelectionLevelDescription")
+    local configButton = winMgr:getWindow("orxonox/ShipSelectionConfigButton")
+    local level = P.ShipSelectionGetSelectedLevel()
     if level ~= nil then
         local levelXMLFilename = level:getXMLFilename()
         local imageName = level:getScreenshot()
@@ -138,30 +137,35 @@ function P.SingleplayerSelectionChanged(e)
         configButton:setProperty("Disabled", "True")
     end
 end
-
-function P.SingleplayerStartButton_clicked(e)
-    local level = P.SingleplayerGetSelectedLevel()
+--]]
+function P.ShipSelectionStartButton_clicked(e)
+--[[
+    local level = P.ShipSelectionGetSelectedLevel()
     if level ~= nil then
 
         if level:hasTag("shipselection") then
+            orxout("working!")
             showMenuSheet("ShipSelectionMenu", true)
         else
             orxonox.execute("startGame " .. level:getXMLFilename())
             hideAllMenuSheets()
 	end
     end
+--]]
 end
 
-function P.SingleplayerConfigButton_clicked(e)
-    local level = P.SingleplayerGetSelectedLevel()
+function P.ShipSelectionConfigButton_clicked(e)
+--[[
+    local level = P.ShipSelectionGetSelectedLevel()
     if level ~= nil then
-        local configMenu = showMenuSheet("SingleplayerConfigMenu")
+        local configMenu = showMenuSheet("ShipSelectionConfigMenu")
         configMenu:loadConfig(level)
     end
+--]]
 end
 
-function P.SingleplayerBackButton_clicked(e)
-    hideMenuSheet(P.name)
-end
+function P.ShipSelectionBackButton_clicked(e)
+    --hideMenuSheet(P.name)
+end 
 
 return P
