@@ -1,6 +1,6 @@
 <LevelInfo
- name = "Empty level"
- description = "A level with absolutely nothing in it."
+ name = "Surface Race"
+ description = "Bum Bum Bum"
  tags = "test"
  screenshot = "emptylevel.png"
 />
