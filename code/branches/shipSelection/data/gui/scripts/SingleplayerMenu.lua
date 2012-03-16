@@ -1,7 +1,7 @@
 -- SingleplayerMenu.lua
 
 local P = createMenuSheet("SingleplayerMenu")
-
+P.loadAlong = { "ShipSelectionMenu"}
 P.levelList = {}
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
@@ -142,6 +142,9 @@ end
 function P.SingleplayerStartButton_clicked(e)
     local level = P.SingleplayerGetSelectedLevel()
     if level ~= nil then
+	if level:hasTag("shipselection") then
+	    showMenuSheet("ShipSelectionMenu", true)
+	end
         orxonox.execute("startGame " .. level:getXMLFilename())
         hideAllMenuSheets()
     end

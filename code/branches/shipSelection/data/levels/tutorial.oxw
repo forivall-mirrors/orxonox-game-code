@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Coding Tutorial"
  description = "Level for the coding tutorial."
- tags = "tutorial"
+ tags = "tutorial, shipselection"
  screenshot = "codingtutorial.png"
 />
 
