@@ -52,7 +52,7 @@
     <?lua
       for i = 1, 10, 1 do
     ?>
-      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=shipselection />
     <?lua end ?>
 
     <GlobalShader compositor="Bloom" visible=false>

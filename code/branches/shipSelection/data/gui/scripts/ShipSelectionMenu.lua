@@ -1,10 +1,13 @@
 -- ShipSelectionMenu.lua
 
 local P = createMenuSheet("ShipSelectionMenu")
-P.levelList = {}
+level = nil
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
-
+function P.loadShips(levelname)
+    --orxonox.execute("echo " .. levelname)
+    --level = levelname
+end
 function P.onLoad()
 --[[    P.createLevelList()
     
@@ -139,19 +142,13 @@ function P.ShipSelectionSelectionChanged(e)
 end
 --]]
 function P.ShipSelectionStartButton_clicked(e)
---[[
-    local level = P.ShipSelectionGetSelectedLevel()
-    if level ~= nil then
 
-        if level:hasTag("shipselection") then
-            orxout("working!")
-            showMenuSheet("ShipSelectionMenu", true)
-        else
-            orxonox.execute("startGame " .. level:getXMLFilename())
-            hideAllMenuSheets()
-	end
+    if P.level ~= nil then
+        orxonox.execute("startGame " .. level:getXMLFilename())
+        hideAllMenuSheets()
+    else
+        orxonox.execute("keyESC")
     end
---]]
 end
 
 function P.ShipSelectionConfigButton_clicked(e)
@@ -165,7 +162,7 @@ function P.ShipSelectionConfigButton_clicked(e)
 end
 
 function P.ShipSelectionBackButton_clicked(e)
-    --hideMenuSheet(P.name)
+    orxonox.execute("keyESC")
 end 
 
 return P

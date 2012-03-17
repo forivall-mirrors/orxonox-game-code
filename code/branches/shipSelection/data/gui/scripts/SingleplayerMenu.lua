@@ -144,7 +144,8 @@ function P.SingleplayerStartButton_clicked(e)
     if level ~= nil then
 
         if level:hasTag("shipselection") then
-            showMenuSheet("ShipSelectionMenu", true)
+            local shipSelectionMenu = showMenuSheet("ShipSelectionMenu", true)
+            shipSelectionMenu:loadShips(level:getXMLFilename())
         else
             orxonox.execute("startGame " .. level:getXMLFilename())
             hideAllMenuSheets()
