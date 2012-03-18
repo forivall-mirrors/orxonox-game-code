@@ -221,8 +221,6 @@
 
 #include <stack>
 #include <vector>
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/facilities/expand.hpp>
 
 #include "util/VA_NARGS.h"
 #include "ArgumentCompletionFunctions.h"

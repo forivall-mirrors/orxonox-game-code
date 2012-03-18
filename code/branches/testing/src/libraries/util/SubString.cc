@@ -86,34 +86,19 @@ namespace orxonox
         @brief creates a new SubString based on a subset of an other SubString.
         @param other The other SubString
         @param begin The beginning of the subset
+        @param length The length of the subset
 
-        The subset ranges from the token with index @a begin to the end of the tokens.
-        If @a begin is greater than the greatest index, the new SubString will be empty.
+        The subset ranges from the token with index @a begin and contains @a length elements.
     */
-    SubString::SubString(const SubString& other, unsigned int begin)
+    SubString::SubString(const SubString& other, size_t begin, size_t length)
     {
-        for (unsigned int i = begin; i < other.size(); ++i)
+        for (size_t i = 0; i < length; ++i)
         {
-            this->tokens_.push_back(other[i]);
-            this->bTokenInSafemode_.push_back(other.isInSafemode(i));
-        }
-    }
+            if (begin + i >= other.size())
+                break;
 
-    /**
-        @brief creates a new SubString based on a subset of an other SubString.
-        @param other The other SubString
-        @param begin The beginning of the subset
-        @param end The end of the subset
-
-        The subset ranges from the token with index @a begin until (but not including) the token with index @a end.
-        If @a begin or @a end are beyond the allowed index, the resulting SubString will be empty.
-    */
-    SubString::SubString(const SubString& other, unsigned int begin, unsigned int end)
-    {
-        for (unsigned int i = begin; i < std::min(other.size(), end); ++i)
-        {
-            this->tokens_.push_back(other[i]);
-            this->bTokenInSafemode_.push_back(other.isInSafemode(i));
+            this->tokens_.push_back(other[begin + i]);
+            this->bTokenInSafemode_.push_back(other.isInSafemode(begin + i));
         }
     }
 
@@ -122,9 +107,9 @@ namespace orxonox
         @param argc The number of arguments
         @param argv An array of pointers to the arguments
     */
-    SubString::SubString(unsigned int argc, const char** argv)
+    SubString::SubString(size_t argc, const char** argv)
     {
-        for(unsigned int i = 0; i < argc; ++i)
+        for (size_t i = 0; i < argc; ++i)
         {
             this->tokens_.push_back(std::string(argv[i]));
             this->bTokenInSafemode_.push_back(false);
@@ -157,26 +142,19 @@ namespace orxonox
     }
 
     /**
-        @copydoc operator==
-    */
-    bool SubString::compare(const SubString& other) const
-    {
-        return (*this == other);
-    }
-
-    /**
         @brief Compares this SubString to another SubString and returns true if the first @a length values match.
         @param other The other SubString
         @param length How many tokens to compare
     */
-    bool SubString::compare(const SubString& other, unsigned int length) const
+    bool SubString::compare(const SubString& other, size_t length) const
     {
-        if (length > this->size() || length > other.size())
+        if (std::min(length, this->size()) != std::min(length, other.size()))
             return false;
 
-        for (unsigned int i = 0; i < length; ++i)
+        for (size_t i = 0; i < std::min(length, this->size()); ++i)
             if ((this->tokens_[i] != other.tokens_[i]) || (this->bTokenInSafemode_[i] != other.bTokenInSafemode_[i]))
                 return false;
+
         return true;
     }
 
@@ -195,7 +173,7 @@ namespace orxonox
     */
     SubString& SubString::operator+=(const SubString& other)
     {
-        for (unsigned int i = 0; i < other.size(); ++i)
+        for (size_t i = 0; i < other.size(); ++i)
         {
             this->tokens_.push_back(other[i]);
             this->bTokenInSafemode_.push_back(other.isInSafemode(i));
@@ -206,10 +184,10 @@ namespace orxonox
     /**
         @copydoc SubString(const std::string&,const std::string&,const std::string&,bool,char,bool,char,bool,char,char,bool,char)
     */
-    unsigned int SubString::split(const std::string& line,
-                                  const std::string& delimiters, const std::string& delimiterNeighbours, bool bAllowEmptyEntries,
-                                  char escapeChar, bool bRemoveEscapeChar, char safemodeChar, bool bRemoveSafemodeChar,
-                                  char openparenthesisChar, char closeparenthesisChar, bool bRemoveParenthesisChars, char commentChar)
+    size_t SubString::split(const std::string& line,
+                            const std::string& delimiters, const std::string& delimiterNeighbours, bool bAllowEmptyEntries,
+                            char escapeChar, bool bRemoveEscapeChar, char safemodeChar, bool bRemoveSafemodeChar,
+                            char openparenthesisChar, char closeparenthesisChar, bool bRemoveParenthesisChars, char commentChar)
     {
         this->tokens_.clear();
         this->bTokenInSafemode_.clear();
@@ -227,7 +205,7 @@ namespace orxonox
         if (!this->tokens_.empty())
         {
             std::string retVal = this->tokens_[0];
-            for (unsigned int i = 1; i < this->tokens_.size(); ++i)
+            for (size_t i = 1; i < this->tokens_.size(); ++i)
                 retVal += delimiter + this->tokens_[i];
             return retVal;
         }
@@ -238,34 +216,17 @@ namespace orxonox
     /**
         @brief Creates a subset of this SubString.
         @param begin The beginning of the subset
+        @param length The length of the subset
         @return A new SubString containing the defined subset.
 
-        The subset ranges from the token with index @a begin to the end of the tokens.
-        If @a begin is greater than the greatest index, the new SubString will be empty.
+        The subset ranges from the token with index @a begin and contains @a length elements.
 
         This function is added for your convenience, and does the same as
-        SubString::SubString(const SubString& other, unsigned int begin)
+        SubString::SubString(const SubString& other, size_t begin, size_t length)
     */
-    SubString SubString::subSet(unsigned int begin) const
+    SubString SubString::subSet(size_t begin, size_t length) const
     {
-        return SubString(*this, begin);
-    }
-
-    /**
-        @brief Creates a subset of this SubString.
-        @param begin The beginning of the subset
-        @param end The ending of the subset
-        @return A new SubString containing the defined subset.
-
-        The subset ranges from the token with index @a begin until (but not including) the token with index @a end.
-        If @a begin or @a end are beyond the allowed index, the resulting SubString will be empty.
-
-        This function is added for your convenience, and does the same as
-        SubString::SubString(const SubString& other, unsigned int begin, unsigned int end)
-    */
-    SubString SubString::subSet(unsigned int begin, unsigned int end) const
-    {
-        return SubString(*this, begin, end);
+        return SubString(*this, begin, length);
     }
 
     /**
@@ -297,8 +258,8 @@ namespace orxonox
                          SPLIT_LINE_STATE start_state)
     {
         SPLIT_LINE_STATE state = start_state;
-        unsigned int i = 0;
-        unsigned int fallBackNeighbours = 0;
+        size_t i = 0;
+        size_t fallBackNeighbours = 0;
 
         std::string token;
         bool inSafemode = false;
@@ -513,7 +474,7 @@ namespace orxonox
     void SubString::debug() const
     {
         orxout(debug_output) << "Substring-information::count=" << this->tokens_.size() << " ::";
-        for (unsigned int i = 0; i < this->tokens_.size(); ++i)
+        for (size_t i = 0; i < this->tokens_.size(); ++i)
             orxout(debug_output) << "s" << i << "='" << this->tokens_[i].c_str() << "'::";
         orxout(debug_output) << endl;
     }
