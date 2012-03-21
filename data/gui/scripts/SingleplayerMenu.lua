@@ -50,9 +50,17 @@ function P.createLevelList()
             -- create an imageset for each screenshot
             local imageName = level:getScreenshot()
             if imageName ~= "" then
-                CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, imageName)
+                if guiMgr:usingOldCEGUI() then
+                    CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, imageName)
+                else
+                    CEGUI.ImagesetManager:getSingleton():createFromImageFile(levelXMLFilename..imageName, imageName)
+                end
             else
-                CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, "noscreenshot.png")
+                if guiMgr:usingOldCEGUI() then
+                    CEGUI.ImagesetManager:getSingleton():createImagesetFromImageFile(levelXMLFilename..imageName, "noscreenshot.png")
+                else
+                    CEGUI.ImagesetManager:getSingleton():createFromImageFile(levelXMLFilename..imageName, "noscreenshot.png")
+                end
             end
             table.insert(P.levelList, level)
         end
