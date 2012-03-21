@@ -33,8 +33,8 @@ function P:onLoad()
     -----------------
 
     -- resolution combobox
-    local resolutionCombobox = winMgr:getWindow("orxonox/Display/Resolution/Combobox")
-    CEGUI.toCombobox(resolutionCombobox):setReadOnly(true)
+    local resolutionCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/Resolution/Combobox"))
+    resolutionCombobox:setReadOnly(true)
 
     for k,v in pairs(P.resolutionList) do
         local item = CEGUI.createListboxTextItem(v)
@@ -43,8 +43,8 @@ function P:onLoad()
     end
 
     -- themes combobox
-    local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
-    CEGUI.toCombobox(themeCombobox):setReadOnly(true)
+    local themeCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/Theme/Combobox"))
+    themeCombobox:setReadOnly(true)
 
     for k,v in pairs(P.schemeList) do
         local item = CEGUI.createListboxTextItem(v)
@@ -53,8 +53,8 @@ function P:onLoad()
     end
 
     -- fsaa combobox
-    local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
-    CEGUI.toCombobox(fsaaCombobox):setReadOnly(true)
+    local fsaaCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/More/FSAA"))
+    fsaaCombobox:setReadOnly(true)
 
     for k,v in pairs(P.fsaaList) do
         local item = CEGUI.createListboxTextItem(v)
@@ -63,8 +63,8 @@ function P:onLoad()
     end
 
     -- particle lod combobox
-    local particleLodCombobox = winMgr:getWindow("orxonox/Settings/ParticleLodCombobox")
-    CEGUI.toCombobox(particleLodCombobox):setReadOnly(true)
+    local particleLodCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Settings/ParticleLodCombobox"))
+    particleLodCombobox:setReadOnly(true)
 
     for k,v in pairs(P.particleLodList) do
         local item = CEGUI.createListboxTextItem(v)
@@ -90,7 +90,7 @@ function P:onShow()
     aspectRatioEditbox:setText(currentAspectRatio)
 
     -- themes combobox
-    local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
+    local themeCombobox =  CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/Theme/Combobox"))
     local currentTheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
 
     for i = 0, themeCombobox:getDropList():getItemCount() - 1 do
@@ -104,7 +104,7 @@ function P:onShow()
     CEGUI.toCheckbox(vsyncCheckbox):setSelected(hasVSync)
 
     -- fsaa combobox
-    local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
+    local fsaaCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/More/FSAA"))
     local currentFSAAMode = orxonox.GraphicsManager:getInstance():getFSAAMode()
 
     for i = 0, fsaaCombobox:getDropList():getItemCount() - 1 do
@@ -130,7 +130,7 @@ function P:onShow()
     fpsEditbox:setText(currentFpsLimit)
 
     -- particle lod combobox
-    local particleLodCombobox = winMgr:getWindow("orxonox/Settings/ParticleLodCombobox")
+    local particleLodCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Settings/ParticleLodCombobox"))
     local currentParticleLod = orxonox.CommandExecutor:query("getConfig GraphicsSettings particlesDetailLevel")
 
     if currentParticleLod == "" then
@@ -172,7 +172,7 @@ function P:onWindowResized()
     CEGUI.toCheckbox(fullscreenCheckbox):setSelected(isFullscreen)
 
     -- resolution combobox
-    local resolutionCombobox = winMgr:getWindow("orxonox/Display/Resolution/Combobox")
+    local resolutionCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/Resolution/Combobox"))
 
     local currentWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
     local currentHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
@@ -201,7 +201,7 @@ end
 -- updates the text of the resolution checkboxes and checks if they should be enabled (only if the "custom" resolution was selected)
 function P.updateResolutionEditboxes()
     -- resolution combobox
-    local resolutionCombobox = winMgr:getWindow("orxonox/Display/Resolution/Combobox")
+    local resolutionCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Display/Resolution/Combobox"))
 
     local currentWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
     local currentHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
@@ -396,7 +396,7 @@ function P.callback_Ok_Clicked(e)
     orxonox.CommandExecutor:execute("config GraphicsSettings fpsLimit " .. fpsEditbox:getText())
 
     -- particle lod
-    local particleLodCombobox = winMgr:getWindow("orxonox/Settings/ParticleLodCombobox")
+    local particleLodCombobox = CEGUI.toCombobox(winMgr:getWindow("orxonox/Settings/ParticleLodCombobox"))
     local item = particleLodCombobox:getSelectedItem()
     if item then
         orxonox.CommandExecutor:execute("config GraphicsSettings particlesDetailLevel " .. particleLodCombobox:getItemIndex(item))
