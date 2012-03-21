@@ -312,6 +312,7 @@ namespace orxonox
         // Add functions that have been renamed in newer versions
         luaState_->doString("CEGUI.SchemeManager.create = CEGUI.SchemeManager.loadScheme");
         luaState_->doString("CEGUI.Window.getUnclippedOuterRect = CEGUI.Window.getUnclippedPixelRect");
+        luaState_->doString("CEGUI.ImagesetManager.createFromImageFile= CEGUI.ImagesetManager.createImagesetFromImageFile");
 #else
         guiSystem_ = &System::create(*guiRenderer_, resourceProvider_, 0, imageCodec_, scriptModule_);
 #endif
