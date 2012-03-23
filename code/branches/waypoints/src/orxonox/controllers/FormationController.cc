@@ -273,10 +273,14 @@ namespace orxonox
 
         Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
-		if(coord.x < 0.01 && coord.y < 0.01)
+		if(coord.x < 0.0001 && coord.y < 0.0001)
 		{
-			// I AM HERE 
-			//this->getControllableEntity()->setOrientation()  
+			// I AM HERE
+			Vector3 v_temp = this->getControllableEntity()->getPosition() * target;
+			Quaternion quat = v_temp.getRotationTo(target);
+			this->getControllableEntity()->rotate(quat);
+			
+			//this->getControllableEntity()->setOrientation(this->getControllableEntity()->getPosition().getRotationTo(target) * this->getControllableEntity()->getOrientation());
 		}
 
         if(this->state_ == FREE)
@@ -284,8 +288,8 @@ namespace orxonox
             if (this->target_ || distance > 10)
             {
                 // Multiply with ROTATEFACTOR_FREE to make them a bit slower
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * coord.x * 2);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * coord.y * 2);
             }
 
             if (this->target_ && distance <  200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
@@ -300,8 +304,8 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * coord.x * 2);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * coord.y * 2);
             }
 
             if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
@@ -315,8 +319,8 @@ namespace orxonox
         if(this->state_ == SLAVE)
         {
 
-           this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-           this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+           this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * coord.x * 2);
+           this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * coord.y * 2);
 
             if (distance < 300)
             {
