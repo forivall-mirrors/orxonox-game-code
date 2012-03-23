@@ -1,19 +1,17 @@
 <LevelInfo
  name = "Surface Race"
- description = "Bum Bum Bum"
- tags = "test"
+ description = "Race on a surface of a planet"
+ tags = "Race"
  screenshot = "emptylevel.png"
 />
 
 <?lua
-  include("stats.oxo")
   include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipRace.oxt")
   include("templates/lodInformation.oxt")
-?>
 
-<?lua
-  include("templates/spaceshipAssff2.oxt")
-  include("templates/spaceshipPirate.oxt")
+
 ?>
 
 <Level>
@@ -25,10 +23,24 @@
   <Scene
     ambientlight = "2.0, 2.0, 2.0"
     skybox       = "Orxonox/skyBoxClouds"
+    gravity      = "0,-150,0"
+    negativeWorldRange = "-100000, -100000, -100000"
+    positiveWorldRange = " 100000,  100000,  100000"
+    hasPhysics   = true
   >
 
-    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
+  <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+  <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="testcube.mesh" scale3D="5000,5000,5000" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,50,0" halfExtents="5000,5000,5000" />
+      </collisionShapes>
+  </StaticEntity>
+
+    <SpawnPoint team=0 position="0,5050,0" lookat="0,5070,5070" spawnclass=SpaceShip pawndesign=spaceshipRace />
     
   </Scene>
 </Level>
