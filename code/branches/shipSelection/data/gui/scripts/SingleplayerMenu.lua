@@ -5,6 +5,7 @@ P.loadAlong = {"ShipSelectionMenu"}
 P.levelList = {}
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
+selectedlevel = {} -- level for ship selection
 
 function P.onLoad()
     P.createLevelList()
@@ -140,14 +141,12 @@ function P.SingleplayerSelectionChanged(e)
 end
 
 function P.SingleplayerStartButton_clicked(e)
-    local level = P.SingleplayerGetSelectedLevel()
-    if level ~= nil then
-
-        if level:hasTag("shipselection") then
+    selectedlevel = P.SingleplayerGetSelectedLevel()
+    if selectedlevel ~= nil then
+        if selectedlevel:hasTag("shipselection") then
             local shipSelectionMenu = showMenuSheet("ShipSelectionMenu", true)
-            shipSelectionMenu:loadShips(level:getXMLFilename())
         else
-            orxonox.execute("startGame " .. level:getXMLFilename())
+            orxonox.execute("startGame " .. selectedlevel:getXMLFilename())
             hideAllMenuSheets()
 	end
     end

@@ -111,6 +111,21 @@ namespace orxonox
 
         this->tagsUpdated();
     }
+    /**
+    @brief
+        Set the starting ship models of the level
+    @param tags
+        A comma-seperated string of all the allowed ship models for the shipselection.
+    */
+    void LevelInfoItem::setShips(const std::string& ships)
+    {
+        SubString substr = SubString(ships, ",", " "); // Split the string into tags.
+        const std::vector<std::string>& strings = substr.getAllStrings();
+        for(std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); it++)
+            this->addShip(*it, false);
+
+        this->shipsUpdated();
+    }
 
     /**
     @brief
@@ -137,6 +152,25 @@ namespace orxonox
 
     /**
     @brief
+        Add a ship model to allowed models for the shipselection
+    @param ship
+        The ship model to be added.
+    @param update
+        Whether the comma-seperated string of all ship models should be updated. Default is true.
+    @return
+        Returns true if the ship was successfully added, if the ship was already present it returns false.
+    */
+    bool LevelInfoItem::addShip(const std::string& ship, bool update)
+    {
+        bool success = this->tags_.insert(ship).second;
+        if(update && success)
+            this->tagsUpdated();
+        return success;
+    }
+
+
+    /**
+    @brief
         Updates the comma-seperated string of all tags, if the set of tags has changed.
     */
     void LevelInfoItem::tagsUpdated(void)
@@ -155,6 +189,25 @@ namespace orxonox
         this->tagsString_ = std::string(stream.str());
     }
 
+    /**
+    @brief
+        Updates the comma-seperated string of all ships, if the set of tags has changed.
+    */
+    void LevelInfoItem::shipsUpdated(void)
+    {
+        std::stringstream stream;
+        std::set<std::string>::iterator temp;
+        for(std::set<std::string>::iterator it = this->ships_.begin(); it != this->ships_.end(); )
+        {
+            temp = it;
+            if(++it == this->ships_.end()) // If this is the last ship we don't add a comma.
+                stream << *temp;
+            else
+                stream << *temp << ", ";
+        }
+
+        this->startingShipsString_ = std::string(stream.str());
+    }
     // LevelInfo
 
     CreateFactory(LevelInfo);
@@ -192,6 +245,7 @@ namespace orxonox
         XMLPortParam(LevelInfo, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(LevelInfo, "screenshot", setScreenshot, getScreenshot, xmlelement, mode);
         XMLPortParam(LevelInfo, "tags", setTags, getTags, xmlelement, mode);
+        XMLPortParam(LevelInfo, "startingships", setShips, getShips, xmlelement, mode);
     }
 
     /**
@@ -207,6 +261,7 @@ namespace orxonox
         info->setDescription(this->getDescription());
         info->setScreenshot(this->getScreenshot());
         info->setTags(this->getTags());
+        info->setShips(this->getShips());
         return info;
     }
 

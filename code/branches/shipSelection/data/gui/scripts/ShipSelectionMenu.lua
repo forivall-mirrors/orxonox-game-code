@@ -1,16 +1,13 @@
 -- ShipSelectionMenu.lua
 
 local P = createMenuSheet("ShipSelectionMenu")
-level = nil
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
-function P.loadShips(levelname)
-    --orxonox.execute("echo " .. levelname)
-    --level = levelname
-end
+
 function P.onLoad()
---[[    P.createLevelList()
-    
+   orxonox.execute("orxout internal_warning Ships= " .. selectedlevel.getShips())
+   P.createLevelList(selectedlevel)
+--[[     
     -- create tabs with desired tab as argument (nil for all)
     P.createFilterTab("Gametypes", "gametype")
     P.createFilterTab("Missions", "mission")
@@ -39,9 +36,14 @@ function P.onLoad()
             ["callback"]  = P.ShipSelectionBackButton_clicked
     })--]]
 end
---[[
-function P.createLevelList()
-    P.levelList = {}
+
+function P.createShipList(level)
+
+    orxonox.execute("orxout internal_warning Ships= " .. selectedlevel:getShips())
+    --local stream = selectedlevel:getShips()
+    --local substr = stream
+    --while substr.find(",")
+    --[[
     local size = orxonox.LevelManager:getInstance():getNumberOfLevels()
     local index = 0
     local level = nil
@@ -59,8 +61,10 @@ function P.createLevelList()
             table.insert(P.levelList, level)
         end
         index = index + 1
-    end
+    end--]]
 end
+
+
 
 function P.createFilterTab(name, tag)
     -- create unique tab window name

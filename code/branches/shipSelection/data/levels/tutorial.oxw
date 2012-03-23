@@ -3,6 +3,7 @@
  description = "Level for the coding tutorial."
  tags = "tutorial, shipselection"
  screenshot = "codingtutorial.png"
+ startingships = "spaceshipGhost, spaceshipPirate, spaceshipSpacecruiser"
 />
 
 <?lua
