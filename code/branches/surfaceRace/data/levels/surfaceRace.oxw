@@ -32,19 +32,28 @@
   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
   <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
-      <attached>
+     <attached>
         <Model position="0,0,0" mesh="testcube.mesh" scale3D="5000,5000,5000" />
       </attached>
 
 	<!-- ------------------Boden----------------- -->
       <collisionShapes>
         <BoxCollisionShape position="0,50,0" halfExtents="5000,5000,5000" />
-      </collisionShapes>
+      </collisionShapes> -->
+
 	
 	<!-- ------------------obere Begrenzung----------------- -->
        <collisionShapes>
         <BoxCollisionShape position="0,70,0" halfExtents="5000,10,5000" />
       </collisionShapes>
+  </StaticEntity>
+
+<!-- -----------------------Zylinder---------------------------- -->
+<StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+	<Model position="1000,5100,1000" mesh="cylinder.mesh" scale3D="1000,1000,1000" />
+      </attached>
+
   </StaticEntity>
 
 
