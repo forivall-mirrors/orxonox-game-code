@@ -14,7 +14,12 @@
 
 ?>
 
-<Level>
+
+
+<Level
+ gametype = "OldSpaceRace"
+>
+
   <templates>
     <Template link=lodtemplate_default />
   </templates>
@@ -30,8 +35,71 @@
   >
 
   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+    <!-- ------------------SpawnPoint----------------- -->
+    <SpawnPoint team=0 position="0,5050,0" lookat="0,5070,5070" spawnclass=SpaceShip pawndesign=spaceshipRace active="true" >
+      <events>
+        <activity>
+          <EventTrigger invert="true">
+            <events>
+                <trigger>
+                    <EventListener event="checkpoint2" />
+                </trigger>
+            </events>
+          </EventTrigger>
+        </activity>
+      </events>
+    </SpawnPoint>
 
-  <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
+<!-- ------------------CheckPoints----------------- -->
+    <OldRaceCheckPoint name="checkpoint1" position="100,5100,0" direction="0,0,0" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+            <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
+    </OldRaceCheckPoint>
+
+<OldRaceCheckPoint name="checkpoint2" position="500,5100,0" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+            <SpawnPoint position="0,0,0" lookat="0,1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+                <events>
+                <activity>
+                    <Trigger mode="xor" invert="true" >
+                        <EventTrigger>
+                            <events>
+                                <trigger>
+                                    <EventListener event="checkpoint2" />
+                                </trigger>
+                            </events>
+                        </EventTrigger>
+                        <EventTrigger invert="true">
+                            <events>
+                                <trigger>
+                                    <EventListener event="checkpoint3" />
+                                </trigger>
+                            </events>
+                        </EventTrigger>
+                    </Trigger>
+                </activity>
+                </events>
+            </SpawnPoint>
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+            <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+            <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
+    </OldRaceCheckPoint>
+
+
+
+  <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
      <attached>
         <Model position="0,0,0" mesh="testcube.mesh" scale3D="5000,5000,5000" />
       </attached>
@@ -39,26 +107,17 @@
 	<!-- ------------------Boden----------------- -->
       <collisionShapes>
         <BoxCollisionShape position="0,50,0" halfExtents="5000,5000,5000" />
-      </collisionShapes> -->
+      </collisionShapes> 
 
-	
-	<!-- ------------------obere Begrenzung----------------- -->
-       <collisionShapes>
-        <BoxCollisionShape position="0,70,0" halfExtents="5000,10,5000" />
-      </collisionShapes>
+
   </StaticEntity>
-
 <!-- -----------------------Zylinder---------------------------- -->
 <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
       <attached>
 	<Model position="1000,5100,1000" mesh="cylinder.mesh" scale3D="1000,1000,1000" />
       </attached>
-
   </StaticEntity>
 
-
-    <SpawnPoint team=0 position="0,5050,0" lookat="0,5070,5070" spawnclass=SpaceShip pawndesign=spaceshipRace />
-    
   </Scene>
 </Level>
 
