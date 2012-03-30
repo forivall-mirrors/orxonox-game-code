@@ -40,6 +40,7 @@
       </collisionShapes>
   </StaticEntity>
 
+
     <SpawnPoint team=0 position="0,5050,0" lookat="0,5070,5070" spawnclass=SpaceShip pawndesign=spaceshipRace />
     
   </Scene>
