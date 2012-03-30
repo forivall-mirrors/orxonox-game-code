@@ -23,7 +23,7 @@
   <Scene
     ambientlight = "2.0, 2.0, 2.0"
     skybox       = "Orxonox/skyBoxClouds"
-    gravity      = "0,-150,0"
+    gravity      = "0,-70,0"
     negativeWorldRange = "-100000, -100000, -100000"
     positiveWorldRange = " 100000,  100000,  100000"
     hasPhysics   = true
@@ -35,8 +35,15 @@
       <attached>
         <Model position="0,0,0" mesh="testcube.mesh" scale3D="5000,5000,5000" />
       </attached>
+
+	<!-- ------------------Boden----------------- -->
       <collisionShapes>
         <BoxCollisionShape position="0,50,0" halfExtents="5000,5000,5000" />
+      </collisionShapes>
+	
+	<!-- ------------------obere Begrenzung----------------- -->
+       <collisionShapes>
+        <BoxCollisionShape position="0,70,0" halfExtents="5000,10,5000" />
       </collisionShapes>
   </StaticEntity>
 

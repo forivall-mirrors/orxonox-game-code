@@ -48,8 +48,13 @@
     </attached>
     <collisionShapes>
 
-      	<ConeCollisionShape position="0,0,0"     hight="15" radius="15" />
-	
+      <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />
+      <BoxCollisionShape position="13,-1.3,0"  halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="-13,-1.3,0" halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="0,0,7"      halfExtents="3, 2, 2" />
+      <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
+      <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
+
     </collisionShapes>
 <?lua
   include("../includes/weaponSettingsAssff.oxi")
