@@ -237,7 +237,7 @@ namespace orxonox
     template <typename T>
     inline T interpolate(float time, const T& start, const T& end)
     {
-        return time * (end - start) + start;
+        return static_cast<T>(time * (end - start) + start);
     }
 
     /**
@@ -250,7 +250,7 @@ namespace orxonox
     template <typename T>
     inline T interpolateSmooth(float time, const T& start, const T& end)
     {
-        return (-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start;
+        return static_cast<T>((-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start);
     }
 
     /**

@@ -46,10 +46,12 @@ ADD_TEST(gtest_sample ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gtest_sample)
 CONFIGURE_FILE("CTestCustom.cmake" "CTestCustom.cmake" @ONLY)
 
 INCLUDE_DIRECTORIES(
+  ../src/external
   ../src/libraries
   ../src/orxonox
   ../src/modules
   ${CMAKE_BINARY_DIR}/src
+  ${Boost_INCLUDE_DIRS}
   ${OGRE_INCLUDE_DIR}
   ${POCO_INCLUDE_DIR}
 )
