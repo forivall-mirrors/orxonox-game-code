@@ -37,7 +37,7 @@
 
 #include "tetris/TetrisPrereqs.h"
 
-#include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/Pawn.h"
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -50,7 +50,7 @@ namespace orxonox
 
     @ingroup Tetris
     */
-    class _TetrisExport TetrisStone : public ControllableEntity
+    class _TetrisExport TetrisStone : public Pawn
     {
         public:
             TetrisStone(BaseObject* creator); //!< Constructor. Registers and initializes the object.
@@ -80,10 +80,14 @@ namespace orxonox
         private:
             void enableMovement(void)
                 { this->delay_ = false; }
-            
+            void unlockRotation(void)
+                { this->lockRotation_ = false; }
+
             float size_; //!< The dimensions a stone has in the game world.
             bool delay_;
+            bool lockRotation_;
             Timer delayTimer_;
+            Timer rotationTimer_;
 
             Tetris* tetris_;
     };

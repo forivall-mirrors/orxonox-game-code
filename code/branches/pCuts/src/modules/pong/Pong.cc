@@ -283,7 +283,7 @@ namespace orxonox
         }
 
         // If a palyer gets 21 points, he won the game -> end of game
-        
+
         PlayerInfo* player1 = this->getLeftPlayer();
         PlayerInfo* player2 = this->getRightPlayer();
         if(player1==NULL||player2==NULL) return; //safety
