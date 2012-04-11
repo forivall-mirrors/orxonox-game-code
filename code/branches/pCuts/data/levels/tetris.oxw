@@ -11,23 +11,29 @@
   include("templates/lodInformation.oxt")
 ?>
 
-<Template name=tetrisstonecameras defaults=0>
-  <TetrisStone>
+<Template name=tetrisbrickcameras defaults=0>
+  <TetrisBrick>
     <camerapositions>
       <CameraPosition position="55,75,200" absolute=true />
       <CameraPosition position="0,50,160" drag=true mouselook=true />
       <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true />
     </camerapositions>
-  </TetrisStone>
+  </TetrisBrick>
 </Template>
 
 <Template name=tetrisstone>
-  <TetrisStone camerapositiontemplate=tetrisstonecameras>
+  <TetrisStone>
     <attached>
       <Model position="0,0,0" mesh="crate.mesh" scale=1 />
     </attached>
   </TetrisStone>
 </Template>
+
+<Template name=tetrisbrick>
+  <TetrisBrick camerapositiontemplate=tetrisbrickcameras>
+  </TetrisBrick>
+</Template>
+
 
 <Level
  gametype = "Tetris"
@@ -49,7 +55,7 @@
       <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" />
     <?lua end ?>
 
-    <TetrisCenterpoint name=tetriscenter width=11 height=15 stoneSize=10 stoneTemplate=tetrisstone stoneSpeed=10 position="-55,-75,0">
+    <TetrisCenterpoint name=tetriscenter width=11 height=15 stoneSize=10 stoneTemplate=tetrisstone brickTemplate=tetrisbrick stoneSpeed=10 position="-55,-75,0">
         <attached>
             <Model position="55,-1,0" mesh="cube.mesh" scale3D="57,1,11" />
             <Model position="-1,76,0" mesh="cube.mesh" scale3D="1,76,1" />

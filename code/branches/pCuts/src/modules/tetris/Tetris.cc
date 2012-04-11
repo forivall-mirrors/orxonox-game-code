@@ -41,6 +41,7 @@
 
 #include "TetrisCenterpoint.h"
 #include "TetrisStone.h"
+#include "TetrisBrick.h"
 #include "infos/PlayerInfo.h"
 
 namespace orxonox
@@ -56,10 +57,10 @@ namespace orxonox
     {
         RegisterObject(Tetris);
 
-        this->activeStone_ = NULL;
+        this->activeBrick_ = NULL;
 
         // Pre-set the timer, but don't start it yet.
-        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Tetris::startStone, this)));
+        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Tetris::startBrick, this)));
         this->starttimer_.stopTimer();
 
         this->player_ = NULL;
@@ -81,6 +82,10 @@ namespace orxonox
     */
     void Tetris::cleanup()
     {
+        /*for(int i = 0;i < this->stones_.size(); i++) //TODO: Why isn't there any code like this
+        {                                              // compensating the 'new' statement?
+            delete this->stones_[i];
+        }//*/
 
     }
 
@@ -88,13 +93,13 @@ namespace orxonox
     {
         SUPER(Tetris, tick, dt);
 
-        if(this->activeStone_ != NULL)
+        if(this->activeBrick_ != NULL)
         {
-            if(!this->isValidStonePosition(this->activeStone_, this->activeStone_->getPosition()))
+            if(!this->isValidBrickPosition(this->activeBrick_, this->activeBrick_->getPosition()))
             {
-                this->activeStone_->setVelocity(Vector3::ZERO);
-                this->createStone();
-                this->startStone();
+                this->activeBrick_->setVelocity(Vector3::ZERO);
+                this->createBrick();
+                this->startBrick();
             }
         }
     }
@@ -122,6 +127,28 @@ namespace orxonox
         return true;
     }
 
+    /**
+    @brief
+        Check for each stone in a brick wether it is moved the right way.
+    */
+    bool Tetris::isValidMove(TetrisBrick* brick, const Vector3& position)
+    {
+        assert(brick);
+
+        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
+        {
+            TetrisStone* stone = brick->getStone(i);
+            if(! this->isValidMove(stone, position + stone->getPosition())) // wrong position??
+                return false;
+            orxout()<< "stoneRelativePoistion: " << stone->getPosition() << endl;
+            orxout()<< "stoneTotalPoistion: " << position + stone->getPosition() << endl;
+        }
+        return true;
+
+    }
+
+
+
     bool Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
     {
         assert(stone);
@@ -129,26 +156,40 @@ namespace orxonox
         // we use a reverse iterator because we have to check for collisions with the topmost stones first
         for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
         {
-            if(stone == *it)
+            if(this->activeBrick_->contains(*it))
                 continue;
 
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
 
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
-                this->activeStone_->setPosition(Vector3(this->activeStone_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeStone_->getPosition().z));
+                this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeBrick_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
         }
 
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
-        {
-            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0f, stone->getPosition().z));
+        {//TODO: correct positioning !!
+        	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, this->center_->getStoneSize()/2.0f, this->activeBrick_->getPosition().z));
             return false;
         }
 
         return true;
+    }
+
+    bool Tetris::isValidBrickPosition(TetrisBrick* brick, const Vector3& position)
+    {
+        assert(brick);
+
+        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
+        {
+            TetrisStone* stone = brick->getStone(i);
+            if(! this->isValidStonePosition(stone, position + stone->getPosition()) ) // wrong position??
+                return false;
+        }
+        return true;
+
     }
 
     /**
@@ -160,7 +201,7 @@ namespace orxonox
         if (this->center_ != NULL) // There needs to be a TetrisCenterpoint, i.e. the area the game takes place.
         {
             // Create the first stone.
-            this->createStone();
+            this->createBrick();
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
@@ -224,51 +265,52 @@ namespace orxonox
         }
     }
 
-    /**
-    @brief
-        Starts the first stone.
-    */
-    void Tetris::startStone(void)
+
+
+    void Tetris::startBrick(void)
     {
         if(this->player_ == NULL)
             return;
 
         unsigned int cameraIndex = 0;
-        if(this->activeStone_ != NULL)
+        if(this->activeBrick_ != NULL)
         {
             // Get camera settings
-            cameraIndex = this->activeStone_->getCurrentCameraIndex();
+            cameraIndex = this->activeBrick_->getCurrentCameraIndex();
+            orxout() << "cameraIndex: " << this->activeBrick_->getCurrentCameraIndex() << endl;
             this->player_->stopControl();
         }
-        
-        // Make the last stone to be created the active stone.
-        this->activeStone_ = this->stones_.back();
-        
-        this->player_->startControl(this->activeStone_);
-        this->activeStone_->setVelocity(0.0f, -this->center_->getStoneSpeed(), 0.0f);
-        this->activeStone_->setCameraPosition(cameraIndex);
+
+        // Make the last brick to be created the active brick.
+        this->activeBrick_ = this->bricks_.back();
+
+        this->player_->startControl(this->activeBrick_);
+        this->activeBrick_->setVelocity(0.0f, -this->center_->getStoneSpeed(), 0.0f);
+        orxout() << "velocity: " << this->center_->getStoneSpeed() << endl;
+        this->activeBrick_->setCameraPosition(cameraIndex);
     }
 
-    /**
-    @brief
-        Creates a new stone.
-    */
-    void Tetris::createStone(void)
+    void Tetris::createBrick(void)             //TODO: random rotation offset between 0 and 3 (times 90°)
     {
-        // Create a new stone and add it to the list of stones.
-        TetrisStone* stone = new TetrisStone(this->center_);
-        this->stones_.push_back(stone);
-        
+        // Create a new brick and add it to the list of bricks && to the list of stones.
+        TetrisBrick* brick = new TetrisBrick(this->center_);
+        this->bricks_.push_back(brick);
+        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++)
+        {
+            this->stones_.push_back(brick->getStone(i));
+        }
+
         // Apply the stone template to the stone.
-        stone->addTemplate(this->center_->getStoneTemplate());
-        
-        // Attach the stone to the Centerpoint and set the position of the stone to be at the top middle.
-        this->center_->attach(stone);
+        brick->addTemplate(this->center_->getStoneTemplate()); // TODO: find error concerning the cameras
+
+        // Attach the brick to the Centerpoint and set the position of the brick to be at the top middle.
+        this->center_->attach(brick);
         float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
         float yPos = (this->center_->getHeight()-0.5f)*this->center_->getStoneSize();
-        stone->setPosition(xPos, yPos, 0.0f);
-        stone->setGame(this);
+        brick->setPosition(xPos, yPos, 0.0f);
+        brick->setGame(this);
     }
+
 
     /**
     @brief
@@ -280,6 +322,11 @@ namespace orxonox
     {
         return this->player_;
     }
+
+    /*TetrisCenterpoint* Tetris::getCenterpoint(void) const
+    {
+        return this->center_;
+    }*/
 
     /**
     @brief Set the TetrisCenterpoint (the playing field).

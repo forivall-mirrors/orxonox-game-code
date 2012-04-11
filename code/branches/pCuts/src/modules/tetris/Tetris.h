@@ -67,24 +67,29 @@ namespace orxonox
             void setCenterpoint(TetrisCenterpoint* center);
 
             PlayerInfo* getPlayer(void) const; //!< Get the player.
+            WeakPtr<TetrisCenterpoint> getCenterpoint(void)
+                { return this->center_; }
 
             bool isValidMove(TetrisStone* stone, const Vector3& position);
+            bool isValidMove(TetrisBrick* brick, const Vector3& position);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.
 
         private:
-            void startStone(void); //!< Starts with the first stone.
-            void createStone(void);
+            void startBrick(void);
+            void createBrick(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
             bool isValidStonePosition(TetrisStone* stone, const Vector3& position);
+            bool isValidBrickPosition(TetrisBrick* brick, const Vector3& position);
             
             PlayerInfo* player_;
 
             WeakPtr<TetrisCenterpoint> center_; //!< The playing field.
+            std::vector<TetrisBrick*> bricks_; //!< A list of all bricks in play.
             std::vector<TetrisStone*> stones_; //!< A list of all stones in play.
             std::vector< std::vector<bool> > grid_;
-            TetrisStone* activeStone_;
+            TetrisBrick* activeBrick_;
             
             Timer starttimer_; //!< A timer to delay the start of the game.
     };

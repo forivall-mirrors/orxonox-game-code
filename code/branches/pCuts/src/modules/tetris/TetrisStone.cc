@@ -36,8 +36,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include <OgreSceneNode.h>
-
 #include "Tetris.h"
 
 namespace orxonox
