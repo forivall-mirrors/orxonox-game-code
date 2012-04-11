@@ -52,7 +52,7 @@ namespace orxonox
     {
         RegisterObject(TetrisBrick);
 
-        this->shapeIndex_ = 6; //<! TODO: random number between 0 and 7
+        this->shapeIndex_ = 3; //<! TODO: random number between 0 and 7
         this->stonesPerBrick_ = 4; //<! most tetris bricks is formed by 4 stones
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisBrick::enableMovement, this)));

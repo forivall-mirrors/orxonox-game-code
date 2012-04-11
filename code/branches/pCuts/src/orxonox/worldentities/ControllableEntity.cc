@@ -176,7 +176,7 @@ namespace orxonox
     unsigned int ControllableEntity::getCurrentCameraIndex() const
     {
         if (this->cameraPositions_.size() <= 0)
-            return 0;
+            {orxout()<< "camareapositions_size == 0"<<endl ; return 0;}
 
         unsigned int counter = 0;
         for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
@@ -195,6 +195,7 @@ namespace orxonox
     {
         if(this->camera_ != NULL && this->cameraPositions_.size() > 0)
         {
+        orxout()<< "Cameraposition is set."<<endl;
             if(index >= this->cameraPositions_.size())
                 index = 0;
 
