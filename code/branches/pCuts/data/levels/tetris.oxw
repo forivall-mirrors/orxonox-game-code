@@ -26,6 +26,9 @@
     <attached>
       <Model position="0,0,0" mesh="crate.mesh" scale=1 />
     </attached>
+    <!--collisionShapes>
+      <BoxCollisionShape position="0,0,0" halfExtents="5,5,5" />
+    </collisionShapes-->
   </TetrisStone>
 </Template>
 
@@ -76,6 +79,11 @@
             <Model position="-1,76,0" mesh="cube.mesh" scale3D="1,76,1" />
             <Model position="111,76,0" mesh="cube.mesh" scale3D="1,76,1" />
         </attached>
+        <!--collisionShapes>
+            <BoxCollisionShape position="55,-1,0"  halfExtents="57,1,11" />
+            <BoxCollisionShape position="-1,76,0"  halfExtents="1,76,1" />
+            <BoxCollisionShape position="111,76,0" halfExtents="1,76,1" />
+        </collisionShapes-->
     </TetrisCenterpoint>
 
   </Scene>

@@ -52,15 +52,14 @@ namespace orxonox
     {
         RegisterObject(TetrisBrick);
 
-        this->shapeIndex_ = 3; //<! TODO: random number between 0 and 7
+        this->shapeIndex_ = 1; //<! TODO: random number between 0 and 7
         this->stonesPerBrick_ = 4; //<! most tetris bricks is formed by 4 stones
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisBrick::enableMovement, this)));
         this->lockRotation_ = false;
         this->tetris_ = this->getTetris();
         this->size_ = 10.0f; //TODO: fix this via this->tetris_->center_->getStoneSize();
-
-
+        this->rotationCount_ = 0;
         this->createBrick(); //<! create a whole new Brick;
     }
 
@@ -78,7 +77,7 @@ namespace orxonox
         {
             // Create a new stone and add it to the brick.
             TetrisStone* stone = new TetrisStone(this);
-            stone->setHealth(1.0f); //TODO: is this value low enough ?
+            stone->setHealth(1.0f);
             this->brickStones_.push_back(stone);
             this->attach(stone);
             this->formBrick(stone, i);
@@ -155,17 +154,9 @@ namespace orxonox
         }
     }
 
-    bool TetrisBrick::isValidMove(Vector3& position)
+    bool TetrisBrick::isValidMove(const Vector3& position, bool isRotation = false)
     {
-
-        for(unsigned int i = 0; i < this->stonesPerBrick_ ; i++)
-        {//TODO: check if isValidMove works with this function,
-            if(this->tetris_->isValidMove(this->brickStones_[i], position))
-            	continue;
-            else
-            	return false;
-        }
-        return true;
+    	return this->tetris_->isValidMove(this,position, isRotation);
     }
 
     TetrisStone* TetrisBrick::getStone(unsigned int i)
@@ -210,12 +201,13 @@ namespace orxonox
         }
         else if(!this->lockRotation_) //rotate when key up is pressed
         {
-            orxout() << "The object should be rolled soon." << endl;
+        	if(!isValidMove(this->getPosition(), true)) //catch illegal rotations
+        	    return;
             this->lockRotation_ = true; // multiple calls of this function have to be filtered out.
             this->rotationTimer_.setTimer(0.1f, false, createExecutor(createFunctor(&TetrisBrick::unlockRotation, this)));
             Quaternion q(Degree(90), Vector3::UNIT_Z);
             this->setOrientation(this->getOrientation()*q); //rotation: roll 90°
-
+            this->rotationCount_ = (this->rotationCount_ + 1) % 4;
         }
     }
 

@@ -60,7 +60,7 @@ namespace orxonox
             virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
             virtual void changedPlayer(); //!< Is called when the player changed.
 
-            bool isValidMove(Vector3& position);
+            bool isValidMove(const Vector3& position, bool isRotation);
             unsigned int getNumberOfStones(void) const
                 { return this->brickStones_.size(); }
             TetrisStone* getStone(unsigned int i);
@@ -68,6 +68,8 @@ namespace orxonox
 
             void setGame(Tetris* tetris)
                 { assert(tetris); tetris_ = tetris; }
+            unsigned int getRotationCount(void)
+                { return this->rotationCount_;}
 
         protected:
             void createBrick(void); //!< Create a cluster of TetrisStones
@@ -92,6 +94,7 @@ namespace orxonox
             bool delay_;
             bool lockRotation_;
 
+            unsigned int rotationCount_; //!< Stores the bricks orientation
             Timer delayTimer_;
             Timer rotationTimer_; ///!< This timer is used to filter out multiple rotation inputs.
             Tetris* tetris_; //<! The Tetris class is responsible to initialize this value.

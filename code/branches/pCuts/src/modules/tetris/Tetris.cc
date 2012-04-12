@@ -129,19 +129,28 @@ namespace orxonox
 
     /**
     @brief
-        Check for each stone in a brick wether it is moved the right way.
+        Check for each stone in a brick if it is moved the right way.
     */
-    bool Tetris::isValidMove(TetrisBrick* brick, const Vector3& position)
+    bool Tetris::isValidMove(TetrisBrick* brick, const Vector3& position, bool isRotation = false)
     {
         assert(brick);
 
         for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
         {
             TetrisStone* stone = brick->getStone(i);
-            if(! this->isValidMove(stone, position + stone->getPosition())) // wrong position??
+            Vector3 stonePosition;
+            if(isRotation)
+            	stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount()+1);
+            else
+                stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
+
+            /*orxout()<< "stoneRelativePoistion: " << stonePosition << endl;
+            orxout()<< "stoneTotalPoistion   : " << position + stonePosition << endl;*/
+
+            if(! this->isValidMove(stone, position + stonePosition )) // wrong position??
+            {
                 return false;
-            orxout()<< "stoneRelativePoistion: " << stone->getPosition() << endl;
-            orxout()<< "stoneTotalPoistion: " << position + stone->getPosition() << endl;
+            }
         }
         return true;
 
@@ -158,11 +167,13 @@ namespace orxonox
         {
             if(this->activeBrick_->contains(*it))
                 continue;
-
-            const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
+//TODO: is this rotation correct ??
+            Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
+            //!< Saves the position of the currentStone
 
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
-            {
+            {//TODO: Why are such events not detected ??
+                orxout()<< "YEAY !!"<<endl;
                 this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeBrick_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
@@ -170,8 +181,9 @@ namespace orxonox
 
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
-        {//TODO: correct positioning !!
-        	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, this->center_->getStoneSize()/2.0f, this->activeBrick_->getPosition().z));
+        {
+        	int yOffset = stone->getPosition().y;//calculate offset
+        	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, this->center_->getStoneSize()/2.0f+yOffset, this->activeBrick_->getPosition().z));
             return false;
         }
 
@@ -185,11 +197,28 @@ namespace orxonox
         for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
         {
             TetrisStone* stone = brick->getStone(i);
-            if(! this->isValidStonePosition(stone, position + stone->getPosition()) ) // wrong position??
+            Vector3 stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
+            if(! this->isValidStonePosition(stone, position + stonePosition) )
                 return false;
         }
         return true;
+    }
 
+    /**
+    @brief
+        Nasty function that allocates memory!! it rolls a vector 90° * amount
+    */
+    Vector3 Tetris::rotateVector(Vector3 position, unsigned int amount)
+    {
+
+    	int temp = 0;
+        for(unsigned int i = 0; i < amount; i++)
+        {
+            temp = position.x;
+            position.x = -position.y;
+            position.y = temp;
+        }
+        return position;
     }
 
     /**
