@@ -98,6 +98,8 @@ namespace orxonox
             if(!this->isValidBrickPosition(this->activeBrick_, this->activeBrick_->getPosition()))
             {
                 this->activeBrick_->setVelocity(Vector3::ZERO);
+                this->activeBrick_->releaseStones(this->center_);
+                //delete this->activeBrick_; //releasing the memory
                 this->createBrick();
                 this->startBrick();
             }
@@ -119,6 +121,10 @@ namespace orxonox
                 continue;
 
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
+            orxout()<< "position.x: " << position.x << endl;
+            orxout()<< "currentStonePosition.x: " << currentStonePosition.x << endl;
+            if(position.x == currentStonePosition.x)
+            	orxout()<< "NON Valid Move Candidate" <<endl;
 
             if((position.x == currentStonePosition.x) && abs(position.y-currentStonePosition.y) < this->center_->getStoneSize())
                 return false;
@@ -144,9 +150,6 @@ namespace orxonox
             else
                 stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
 
-            /*orxout()<< "stoneRelativePoistion: " << stonePosition << endl;
-            orxout()<< "stoneTotalPoistion   : " << position + stonePosition << endl;*/
-
             if(! this->isValidMove(stone, position + stonePosition )) // wrong position??
             {
                 return false;
@@ -167,12 +170,19 @@ namespace orxonox
         {
             if(this->activeBrick_->contains(*it))
                 continue;
-//TODO: is this rotation correct ??
-            Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
+            //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
+            const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
             //!< Saves the position of the currentStone
+            if(position.x == currentStonePosition.x)
+            {
+                orxout()<< "candidate found" << endl;
+                orxout()<< "position.y: "<< position.y << endl;
+                orxout()<< "urrentStonePosition.y: " << currentStonePosition.y << endl;
+            }
 
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {//TODO: Why are such events not detected ??
+             // Because currentStonePosition.x isn't calculated globally, but locally
                 orxout()<< "YEAY !!"<<endl;
                 this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeBrick_->getPosition().z));
                 return false;
@@ -206,11 +216,10 @@ namespace orxonox
 
     /**
     @brief
-        Nasty function that allocates memory!! it rolls a vector 90° * amount
+        A Vector3 is rolled 90 * degrees * amount (anticlockwise rotation)
     */
     Vector3 Tetris::rotateVector(Vector3 position, unsigned int amount)
     {
-
     	int temp = 0;
         for(unsigned int i = 0; i < amount; i++)
         {
@@ -229,7 +238,7 @@ namespace orxonox
     {
         if (this->center_ != NULL) // There needs to be a TetrisCenterpoint, i.e. the area the game takes place.
         {
-            // Create the first stone.
+            // Create the first brick.
             this->createBrick();
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.

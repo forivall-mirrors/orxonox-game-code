@@ -71,6 +71,8 @@ namespace orxonox
             unsigned int getRotationCount(void)
                 { return this->rotationCount_;}
 
+            void releaseStones(TetrisCenterpoint* center);
+
         protected:
             void createBrick(void); //!< Create a cluster of TetrisStones
             void formBrick(TetrisStone* stone, unsigned int i);

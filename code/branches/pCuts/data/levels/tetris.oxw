@@ -46,9 +46,6 @@
 
 <Template name=tetrisbrick>
   <TetrisBrick camerapositiontemplate=tetrisbrickcameras>
-    <attached>
-      <Model position="0,0,0" mesh="crate.mesh" scale=1 />
-    </attached>
   </TetrisBrick>
 </Template>
 

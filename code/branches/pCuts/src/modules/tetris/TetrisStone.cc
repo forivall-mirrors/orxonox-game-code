@@ -71,7 +71,6 @@ namespace orxonox
         }
         else if(!this->lockRotation_) //rotate when key up is pressed
         {
-            orxout() << "The object should be rolled soon." << endl;
             this->lockRotation_ = true; // multiple calls of this function have to be filtered out.
             this->rotationTimer_.setTimer(0.1f, false, createExecutor(createFunctor(&TetrisStone::unlockRotation, this)));
             Quaternion q(Degree(90), Vector3::UNIT_Z);

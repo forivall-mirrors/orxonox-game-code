@@ -52,7 +52,7 @@ namespace orxonox
     {
         RegisterObject(TetrisBrick);
 
-        this->shapeIndex_ = 1; //<! TODO: random number between 0 and 7
+        this->shapeIndex_ = 4; //<! TODO: random number between 0 and 7
         this->stonesPerBrick_ = 4; //<! most tetris bricks is formed by 4 stones
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisBrick::enableMovement, this)));
@@ -239,6 +239,21 @@ namespace orxonox
     void TetrisBrick::changedPlayer()
     {
         this->setVelocity(0.0f, 0.0f, 0.0f);
+    }
+    /**
+    @brief
+        Attaches stones to the Centerpoint.
+    */
+    void TetrisBrick::releaseStones(TetrisCenterpoint* center)
+    {
+        for(unsigned int i = 0; i < brickStones_.size(); i++)
+        {
+            //this->brickStones_[i]->detachFromParent();
+
+            //this->brickStones_[i]->detach(this);
+            //this->brickStones_[i]->attach(center);
+        }
+
     }
 
 }
