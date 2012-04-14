@@ -121,10 +121,6 @@ namespace orxonox
                 continue;
 
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
-            orxout()<< "position.x: " << position.x << endl;
-            orxout()<< "currentStonePosition.x: " << currentStonePosition.x << endl;
-            if(position.x == currentStonePosition.x)
-            	orxout()<< "NON Valid Move Candidate" <<endl;
 
             if((position.x == currentStonePosition.x) && abs(position.y-currentStonePosition.y) < this->center_->getStoneSize())
                 return false;
@@ -173,17 +169,9 @@ namespace orxonox
             //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
             //!< Saves the position of the currentStone
-            if(position.x == currentStonePosition.x)
-            {
-                orxout()<< "candidate found" << endl;
-                orxout()<< "position.y: "<< position.y << endl;
-                orxout()<< "urrentStonePosition.y: " << currentStonePosition.y << endl;
-            }
 
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
-            {//TODO: Why are such events not detected ??
-             // Because currentStonePosition.x isn't calculated globally, but locally
-                orxout()<< "YEAY !!"<<endl;
+            {
                 this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeBrick_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
@@ -315,7 +303,6 @@ namespace orxonox
         {
             // Get camera settings
             cameraIndex = this->activeBrick_->getCurrentCameraIndex();
-            orxout() << "cameraIndex: " << this->activeBrick_->getCurrentCameraIndex() << endl;
             this->player_->stopControl();
         }
 
@@ -324,7 +311,6 @@ namespace orxonox
 
         this->player_->startControl(this->activeBrick_);
         this->activeBrick_->setVelocity(0.0f, -this->center_->getStoneSpeed(), 0.0f);
-        orxout() << "velocity: " << this->center_->getStoneSpeed() << endl;
         this->activeBrick_->setCameraPosition(cameraIndex);
     }
 
@@ -373,6 +359,27 @@ namespace orxonox
     void Tetris::setCenterpoint(TetrisCenterpoint* center)
     {
         this->center_ = center;
+    }
+
+    /**
+    @brief Check each row if it is full. Remove all full rows. Let all stones above the deleted row sink down.
+    @brief Manage score.
+    */
+    void Tetris::clearFullRow()
+    {
+    	unsigned int stonesPerRow = 0;
+    	for (unsigned int row = 0; row < this->center_->getHeight()/this->center_->getStoneSize(); row++)
+    	{
+    	    stonesPerRow = 0;
+            for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
+            {
+                if((*it)->getPosition().y == row)
+                	stonesPerRow++;
+                if(stonesPerRow == this->center_->getWidth()/this->center_->getStoneSize())
+                    orxout()<< "CANDIDATE FOUND in row " << row <<endl;
+            }
+
+        }
     }
 
 }

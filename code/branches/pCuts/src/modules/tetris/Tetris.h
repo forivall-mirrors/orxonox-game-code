@@ -72,6 +72,7 @@ namespace orxonox
 
             bool isValidMove(TetrisStone* stone, const Vector3& position);
             bool isValidMove(TetrisBrick* brick, const Vector3& position, bool isRotation);
+            Vector3 rotateVector(Vector3 position, unsigned int amount);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.
@@ -83,7 +84,8 @@ namespace orxonox
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
             bool isValidStonePosition(TetrisStone* stone, const Vector3& position);
             bool isValidBrickPosition(TetrisBrick* brick, const Vector3& position);
-            Vector3 rotateVector(Vector3 position, unsigned int amount);
+            void clearFullRow(void);
+
             
             PlayerInfo* player_;
 

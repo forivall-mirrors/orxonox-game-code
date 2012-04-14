@@ -176,7 +176,7 @@ namespace orxonox
         }
         return NULL;
     }
-
+//TODO: refactor this function; is not needed if brickstones are added to Tetris::stones_ after collision.
     bool TetrisBrick::contains(TetrisStone* stone)
     {
         for(unsigned int i = 0; i < brickStones_.size(); i++)
@@ -240,18 +240,19 @@ namespace orxonox
     {
         this->setVelocity(0.0f, 0.0f, 0.0f);
     }
+
     /**
     @brief
         Attaches stones to the Centerpoint.
     */
     void TetrisBrick::releaseStones(TetrisCenterpoint* center)
     {
+        assert(this->tetris_);
         for(unsigned int i = 0; i < brickStones_.size(); i++)
         {
-            //this->brickStones_[i]->detachFromParent();
-
-            //this->brickStones_[i]->detach(this);
-            //this->brickStones_[i]->attach(center);
+            this->brickStones_[i]->detachFromParent();
+            this->brickStones_[i]->attachToParent(center);
+            this->brickStones_[i]->setPosition(this->getPosition()+this->tetris_->rotateVector(this->brickStones_[i]->getPosition(),this->rotationCount_ ));
         }
 
     }
