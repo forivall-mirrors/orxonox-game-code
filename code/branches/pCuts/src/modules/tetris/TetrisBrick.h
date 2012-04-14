@@ -100,7 +100,6 @@ namespace orxonox
             Timer delayTimer_;
             Timer rotationTimer_; ///!< This timer is used to filter out multiple rotation inputs.
             Tetris* tetris_; //<! The Tetris class is responsible to initialize this value.
-           // TetrisCenterpoint* center_;
 
     };
 }

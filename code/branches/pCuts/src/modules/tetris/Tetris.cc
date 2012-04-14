@@ -24,16 +24,18 @@
  *   Co-authors:
  *      Johannes Ritz
  *
- *BUG a) double stone model (@ brick's location the stone's model is duplicated. Why does the brick have a model attached to it.)
- *BUG b) the brick is set the wrong way after a (brick-brick) collision, if the brick was turned
+ *
+ *BUG b) the falling brick is set the wrong way after a (brick-brick) collision, if the falling brick was turned
  *BUG c) destroying the old stones causes segfault -> WeakPointer as solution ?
- *BUG
+ *BUG d) wrong collision detection: sometimes stones "bounce off"
+ *BUG e) multiple rows are not cleared in one round
  *
  *TASK a) give points for winning
  *TASK b) write a hud (show points gained; new brick)
  *TASK c) end the game in a nicer way
  *TASK d) save the highscore
  *TASK e) eye candy
+ *TASK f) increasing speed
  */
 
 /**
@@ -180,12 +182,15 @@ namespace orxonox
         // we use a reverse iterator because we have to check for collisions with the topmost stones first
         for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
         {
-            if(this->activeBrick_->contains(*it))
+            if(this->activeBrick_->contains(*it))//skip the moving brick' stones
                 continue;
             //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
             //!< Saves the position of the currentStone
 
+            //filter out cases where the falling stone is already below a steady stone
+            if(position.y < currentStonePosition.y - this->center_->getStoneSize()/2.0f)
+                continue;
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
                 this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeBrick_->getPosition().z));
@@ -273,6 +278,11 @@ namespace orxonox
     void Tetris::end()
     {
         this->activeBrick_->setVelocity(Vector3::ZERO);
+        if(this->activeBrick_ != NULL)
+        {
+            this->player_->stopControl();
+        }
+
         this->cleanup();
 
         // Call end for the parent class.
@@ -342,7 +352,7 @@ namespace orxonox
         }
 
         // Apply the stone template to the stone.
-        brick->addTemplate(this->center_->getStoneTemplate()); // TODO: find error concerning the cameras
+        brick->addTemplate(this->center_->getBrickTemplate());
 
         // Attach the brick to the Centerpoint and set the position of the brick to be at the top middle.
         this->center_->attach(brick);
@@ -385,7 +395,6 @@ namespace orxonox
     void Tetris::findFullRows()
     {
     	unsigned int correctPosition = 0;
-		orxout()<< "clear full rows ************ " <<endl;
     	unsigned int stonesPerRow = 0;
     	for (unsigned int row = 0; row < this->center_->getHeight(); row++)
     	{
@@ -394,26 +403,33 @@ namespace orxonox
             {
             	correctPosition = static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize());
                 if(correctPosition == row)
-                	stonesPerRow++;
-                if(stonesPerRow == this->center_->getWidth())
-                    {orxout()<< "CANDIDATE FOUND in row " << row <<endl; clearRow(row);}
+                {
+                    stonesPerRow++;
+                    if(stonesPerRow == this->center_->getWidth())
+                    {
+                        clearRow(row);
+                        this->playerScored(this->player_);
+                    }
+                }
+
             }
 
         }
     }
 
     void Tetris::clearRow(unsigned int row)
-    {//std::vector<int>::iterator it = v.begin()
+    {// clear the full row
         for(std::vector<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
             if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) == row)
-            	(*it)->setPosition(Vector3(-10,-10,0));
+            	(*it)->setPosition(Vector3(-50,-50,100));
             	//{(*it)->destroy(); this->stones_.erase(it); orxout()<< "destroy row "<<endl;}//experimental
         }
-        for(std::vector<TetrisStone*>::const_reverse_iterator it2 = this->stones_.rbegin(); it2 != this->stones_.rend(); ++it2)
+      // adjust height of stones above the deleted row //TODO: check if this could be a source of a bug.
+        for(std::vector<TetrisStone*>::iterator it2 = this->stones_.begin(); it2 != this->stones_.end(); ++it2)
         {
-            /*if(static_cast<unsigned int>(((*it2)->getPosition().y - 5)/this->center_->getStoneSize()) > row)
-                (*it2)->setPosition((*it2)->getPosition()-Vector3(0,1,0));//*/
+            if(static_cast<unsigned int>(((*it2)->getPosition().y - 5)/this->center_->getStoneSize()) > row)
+                (*it2)->setPosition((*it2)->getPosition()-Vector3(0,10,0));
         }
 
     }

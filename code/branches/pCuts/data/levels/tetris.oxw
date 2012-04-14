@@ -15,8 +15,6 @@
   <TetrisStone>
     <camerapositions>
       <CameraPosition position="55,75,200" absolute=true />
-      <CameraPosition position="0,50,160" drag=true mouselook=true />
-      <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true />
     </camerapositions>
   </TetrisStone>
 </Template>
@@ -24,7 +22,7 @@
 <Template name=tetrisstone>
   <TetrisStone camerapositiontemplate=tetrisstonecameras>
     <attached>
-      <Model position="0,0,0" mesh="cube_red.mesh" scale=1 />
+      <Model position="0,0,0" mesh="crate.mesh" scale=1 />
     </attached>
   </TetrisStone>
 </Template>
@@ -35,8 +33,8 @@
   <TetrisBrick>
     <camerapositions>
       <CameraPosition position="55,75,200" absolute=true />
-      <!--CameraPosition position="0,50,160" drag=true mouselook=true /-->
-      <!--CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true /-->
+      <CameraPosition position="0,50,160" drag=true mouselook=true />
+      <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true />
     </camerapositions>
   </TetrisBrick>
 </Template>
