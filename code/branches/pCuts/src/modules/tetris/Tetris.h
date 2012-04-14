@@ -84,7 +84,8 @@ namespace orxonox
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
             bool isValidStonePosition(TetrisStone* stone, const Vector3& position);
             bool isValidBrickPosition(TetrisBrick* brick, const Vector3& position);
-            void clearFullRow(void);
+            void findFullRows(void);
+            void clearRow(unsigned int row);
 
             
             PlayerInfo* player_;
@@ -96,6 +97,7 @@ namespace orxonox
             TetrisBrick* activeBrick_;
             
             Timer starttimer_; //!< A timer to delay the start of the game.
+            float endGameCriteria_; //<! Works as a timer which is resetted, whenever a brick is created.
     };
 }
 

@@ -22,8 +22,18 @@
  *   Author:
  *      ...
  *   Co-authors:
- *      ...
+ *      Johannes Ritz
  *
+ *BUG a) double stone model (@ brick's location the stone's model is duplicated. Why does the brick have a model attached to it.)
+ *BUG b) the brick is set the wrong way after a (brick-brick) collision, if the brick was turned
+ *BUG c) destroying the old stones causes segfault -> WeakPointer as solution ?
+ *BUG
+ *
+ *TASK a) give points for winning
+ *TASK b) write a hud (show points gained; new brick)
+ *TASK c) end the game in a nicer way
+ *TASK d) save the highscore
+ *TASK e) eye candy
  */
 
 /**
@@ -64,6 +74,7 @@ namespace orxonox
         this->starttimer_.stopTimer();
 
         this->player_ = NULL;
+        this->endGameCriteria_ = 0.0f;
     }
 
     /**
@@ -93,15 +104,20 @@ namespace orxonox
     {
         SUPER(Tetris, tick, dt);
 
-        if(this->activeBrick_ != NULL)
+        if((this->activeBrick_ != NULL)&&(!this->hasEnded()))
         {
+        	this->endGameCriteria_ += dt;
             if(!this->isValidBrickPosition(this->activeBrick_, this->activeBrick_->getPosition()))
             {
                 this->activeBrick_->setVelocity(Vector3::ZERO);
                 this->activeBrick_->releaseStones(this->center_);
                 //delete this->activeBrick_; //releasing the memory
+                this->findFullRows();
+                if(this->endGameCriteria_ < 0.1f) //end game if two bricks are created within a 0.1s interval.
+                    this->end();
                 this->createBrick();
                 this->startBrick();
+                this->endGameCriteria_ = 0.0f;
             }
         }
     }
@@ -256,6 +272,7 @@ namespace orxonox
     */
     void Tetris::end()
     {
+        this->activeBrick_->setVelocity(Vector3::ZERO);
         this->cleanup();
 
         // Call end for the parent class.
@@ -365,21 +382,41 @@ namespace orxonox
     @brief Check each row if it is full. Remove all full rows. Let all stones above the deleted row sink down.
     @brief Manage score.
     */
-    void Tetris::clearFullRow()
+    void Tetris::findFullRows()
     {
+    	unsigned int correctPosition = 0;
+		orxout()<< "clear full rows ************ " <<endl;
     	unsigned int stonesPerRow = 0;
-    	for (unsigned int row = 0; row < this->center_->getHeight()/this->center_->getStoneSize(); row++)
+    	for (unsigned int row = 0; row < this->center_->getHeight(); row++)
     	{
     	    stonesPerRow = 0;
             for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
             {
-                if((*it)->getPosition().y == row)
+            	correctPosition = static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize());
+                if(correctPosition == row)
                 	stonesPerRow++;
-                if(stonesPerRow == this->center_->getWidth()/this->center_->getStoneSize())
-                    orxout()<< "CANDIDATE FOUND in row " << row <<endl;
+                if(stonesPerRow == this->center_->getWidth())
+                    {orxout()<< "CANDIDATE FOUND in row " << row <<endl; clearRow(row);}
             }
 
         }
     }
+
+    void Tetris::clearRow(unsigned int row)
+    {//std::vector<int>::iterator it = v.begin()
+        for(std::vector<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        {
+            if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) == row)
+            	(*it)->setPosition(Vector3(-10,-10,0));
+            	//{(*it)->destroy(); this->stones_.erase(it); orxout()<< "destroy row "<<endl;}//experimental
+        }
+        for(std::vector<TetrisStone*>::const_reverse_iterator it2 = this->stones_.rbegin(); it2 != this->stones_.rend(); ++it2)
+        {
+            /*if(static_cast<unsigned int>(((*it2)->getPosition().y - 5)/this->center_->getStoneSize()) > row)
+                (*it2)->setPosition((*it2)->getPosition()-Vector3(0,1,0));//*/
+        }
+
+    }
+
 
 }

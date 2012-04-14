@@ -39,6 +39,7 @@
 #include "TetrisCenterpoint.h"
 #include "TetrisStone.h"
 #include "Tetris.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -51,8 +52,7 @@ namespace orxonox
     TetrisBrick::TetrisBrick(BaseObject* creator): ControllableEntity(creator)
     {
         RegisterObject(TetrisBrick);
-
-        this->shapeIndex_ = 4; //<! TODO: random number between 0 and 7
+        this->shapeIndex_ = static_cast<unsigned int>(rnd(7.0f)); //<! random number between 0 and 7
         this->stonesPerBrick_ = 4; //<! most tetris bricks is formed by 4 stones
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisBrick::enableMovement, this)));
@@ -104,8 +104,6 @@ namespace orxonox
     */
     void TetrisBrick::formBrick(TetrisStone* stone, unsigned int i)
     {
-    	if(i != 0 && this->shapeIndex_ == 0)
-    	    orxout() << "So it has come to this in TetrisBrick.cc"<< endl;
         if(i == 0) //setting the first stone as
         {
             stone->setPosition(0.0f, 0.0f, 0.0f);

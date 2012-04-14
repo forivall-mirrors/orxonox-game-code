@@ -26,9 +26,6 @@
     <attached>
       <Model position="0,0,0" mesh="crate.mesh" scale=1 />
     </attached>
-    <!--collisionShapes>
-      <BoxCollisionShape position="0,0,0" halfExtents="5,5,5" />
-    </collisionShapes-->
   </TetrisStone>
 </Template>
 
@@ -38,8 +35,8 @@
   <TetrisBrick>
     <camerapositions>
       <CameraPosition position="55,75,200" absolute=true />
-      <CameraPosition position="0,50,160" drag=true mouselook=true />
-      <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true />
+      <!--CameraPosition position="0,50,160" drag=true mouselook=true /-->
+      <!--CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true /-->
     </camerapositions>
   </TetrisBrick>
 </Template>
