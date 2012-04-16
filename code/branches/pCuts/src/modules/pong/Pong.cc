@@ -75,8 +75,8 @@ namespace orxonox
 
         // Set the type of Bots for this particular Gametype.
         this->botclass_ = Class(PongBot);
-	this->scoreLimit_ = 10;
-	this->setConfigValues();
+        this->scoreLimit_ = 10;
+        this->setConfigValues();
     }
 
     /**

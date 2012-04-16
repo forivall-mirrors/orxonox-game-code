@@ -60,7 +60,7 @@ namespace orxonox
         this->bShowLeftPlayer_ = false;
         this->bShowRightPlayer_ = false;
         this->player1_ = NULL;
-	this->player2_ = NULL;
+        this->player2_ = NULL;
     }
 
     /**

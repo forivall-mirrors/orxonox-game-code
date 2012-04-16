@@ -30,12 +30,11 @@
  *BUG d) wrong collision detection: sometimes stones "bounce off"
  *BUG e) multiple rows are not cleared in one round
  *
- *TASK a) give points for winning
+ *
  *TASK b) write a hud (show points gained; new brick)
  *TASK c) end the game in a nicer way
  *TASK d) save the highscore
  *TASK e) eye candy
- *TASK f) increasing speed
  */
 
 /**
@@ -408,7 +407,9 @@ namespace orxonox
                     if(stonesPerRow == this->center_->getWidth())
                     {
                         clearRow(row);
-                        this->playerScored(this->player_);
+                        this->playerScored(this->player_);// add points
+                        //increase the stone's speed
+                        this->center_->setStoneSpeed(this->center_->getStoneSpeed()+1.0f);
                     }
                 }
 

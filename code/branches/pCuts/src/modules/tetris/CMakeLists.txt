@@ -3,6 +3,7 @@ SET_SOURCE_FILES(TETRIS_SRC_FILES
   TetrisCenterpoint.cc
   TetrisStone.cc
   TetrisBrick.cc
+  TetrisScore.cc
 )
 
 ORXONOX_ADD_LIBRARY(tetris

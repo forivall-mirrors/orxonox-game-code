@@ -68,6 +68,7 @@ namespace orxonox
     class TetrisCenterpoint;
     class TetrisStone;
     class TetrisBrick;
+    class TetrisScore;
 }
 
 #endif /* _TetrisPrereqs_H__ */

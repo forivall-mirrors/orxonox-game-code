@@ -8,6 +8,7 @@
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
+  include("pongHUD.oxo")
   include("templates/lodInformation.oxt")
 ?>
 
