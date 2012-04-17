@@ -25,13 +25,10 @@
  *      Johannes Ritz
  *
  *
- *BUG b) the falling brick is set the wrong way after a (brick-brick) collision, if the falling brick was turned
  *BUG c) destroying the old stones causes segfault -> WeakPointer as solution ?
  *BUG d) wrong collision detection: sometimes stones "bounce off"
- *BUG e) multiple rows are not cleared in one round
  *
  *
- *TASK b) write a hud (show points gained; new brick)
  *TASK c) end the game in a nicer way
  *TASK d) save the highscore
  *TASK e) eye candy
@@ -63,6 +60,7 @@ namespace orxonox
     /**
     @brief
         Constructor. Registers and initializes the object.
+    @ingroup Tetris
     */
     Tetris::Tetris(BaseObject* creator) : Deathmatch(creator)
     {
@@ -76,6 +74,8 @@ namespace orxonox
 
         this->player_ = NULL;
         this->endGameCriteria_ = 0.0f;
+        this->setHUDTemplate("TetrisHUD");
+        this->futureBrick_ = NULL;
     }
 
     /**
@@ -157,15 +157,24 @@ namespace orxonox
         for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
         {
             TetrisStone* stone = brick->getStone(i);
-            Vector3 stonePosition;
+            Vector3 stonePosition; //the current stone's offset to position
             if(isRotation)
             	stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount()+1);
             else
                 stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
 
-            if(! this->isValidMove(stone, position + stonePosition )) // wrong position??
+            if(! this->isValidMove(stone, position + stonePosition ))
             {
                 return false;
+            }
+
+            //catch illegal rotation (such that collisions with ground are not permitted)
+            if(isRotation)
+            {
+                if((position + stonePosition).y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
+                {
+                    return false;
+                }
             }
         }
         return true;
@@ -192,7 +201,10 @@ namespace orxonox
                 continue;
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
-                this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeBrick_->getPosition().z));
+                int y_offset = static_cast<int>((this->activeBrick_->getPosition().y-currentStonePosition.y+10)/10)*10 + currentStonePosition.y;
+                if(y_offset < 0) //filter out extreme cases (very rare bug)
+                	y_offset = 0;
+                this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, y_offset, this->activeBrick_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
         }
@@ -200,14 +212,19 @@ namespace orxonox
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
-        	int yOffset = stone->getPosition().y;//calculate offset
-        	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, this->center_->getStoneSize()/2.0f+yOffset, this->activeBrick_->getPosition().z));
+        	int yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
+        	if(yOffset < 0) //catch brake-throughs
+        	    yOffset = 0;
+        	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
             return false;
         }
 
         return true;
     }
-
+    /**
+     * @brief This function determines wether a brick touches another brick or the ground.
+     *
+     */
     bool Tetris::isValidBrickPosition(TetrisBrick* brick, const Vector3& position)
     {
         assert(brick);
@@ -246,6 +263,8 @@ namespace orxonox
     {
         if (this->center_ != NULL) // There needs to be a TetrisCenterpoint, i.e. the area the game takes place.
         {
+            // Create the futureBrick_
+            this->createBrick();
             // Create the first brick.
             this->createBrick();
         }
@@ -342,23 +361,31 @@ namespace orxonox
 
     void Tetris::createBrick(void)             //TODO: random rotation offset between 0 and 3 (times 90°)
     {
-        // Create a new brick and add it to the list of bricks && to the list of stones.
-        TetrisBrick* brick = new TetrisBrick(this->center_);
-        this->bricks_.push_back(brick);
-        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++)
+        // Use the futureBrick_ as new currentBrick by setting its position and storing it in this->bricks
+        if(this->futureBrick_ != NULL)
         {
-            this->stones_.push_back(brick->getStone(i));
+            for (unsigned int i = 0; i < this->futureBrick_->getNumberOfStones(); i++)
+            {
+                this->stones_.push_back(this->futureBrick_->getStone(i));
+            }
+            float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
+            float yPos = (this->center_->getHeight()-0.5f)*this->center_->getStoneSize();
+            this->futureBrick_->setPosition(xPos, yPos, 0.0f);
+            this->bricks_.push_back(this->futureBrick_);
         }
+        // create new futureBrick_
+        this->futureBrick_ = new TetrisBrick(this->center_);
+
 
         // Apply the stone template to the stone.
-        brick->addTemplate(this->center_->getBrickTemplate());
+        this->futureBrick_->addTemplate(this->center_->getBrickTemplate());
 
-        // Attach the brick to the Centerpoint and set the position of the brick to be at the top middle.
-        this->center_->attach(brick);
-        float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
-        float yPos = (this->center_->getHeight()-0.5f)*this->center_->getStoneSize();
-        brick->setPosition(xPos, yPos, 0.0f);
-        brick->setGame(this);
+        // Attach the brick to the Centerpoint and set the position of the brick to be at the left side.
+        this->center_->attach(this->futureBrick_);
+        float xPos = (this->center_->getWidth()*1.6 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
+        float yPos = (this->center_->getHeight()-5.1f)*this->center_->getStoneSize();
+        this->futureBrick_->setPosition(xPos, yPos, 0.0f);
+        this->futureBrick_->setGame(this);
     }
 
 
@@ -388,8 +415,8 @@ namespace orxonox
     }
 
     /**
-    @brief Check each row if it is full. Remove all full rows. Let all stones above the deleted row sink down.
-    @brief Manage score.
+    @brief Check each row if it is full. Removes all full rows. Update
+    @brief Manages score.
     */
     void Tetris::findFullRows()
     {
@@ -398,7 +425,7 @@ namespace orxonox
     	for (unsigned int row = 0; row < this->center_->getHeight(); row++)
     	{
     	    stonesPerRow = 0;
-            for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
+            for(std::vector<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
             {
             	correctPosition = static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize());
                 if(correctPosition == row)
@@ -407,14 +434,13 @@ namespace orxonox
                     if(stonesPerRow == this->center_->getWidth())
                     {
                         clearRow(row);
+                        row--; //the row counter has to be decreased in order to detect multiple rows!
                         this->playerScored(this->player_);// add points
                         //increase the stone's speed
                         this->center_->setStoneSpeed(this->center_->getStoneSpeed()+1.0f);
                     }
                 }
-
             }
-
         }
     }
 

@@ -29,6 +29,7 @@
 /**
     @file TetrisCenterpoint.cc
     @brief Implementation of the TetrisCenterpoint class.
+    @ingroup Tetris
 */
 
 #include "TetrisCenterpoint.h"

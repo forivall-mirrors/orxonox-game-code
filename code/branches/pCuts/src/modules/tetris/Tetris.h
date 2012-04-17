@@ -95,6 +95,7 @@ namespace orxonox
             std::vector<TetrisStone*> stones_; //!< A list of all stones in play.
             std::vector< std::vector<bool> > grid_;
             TetrisBrick* activeBrick_;
+            TetrisBrick* futureBrick_;
             
             Timer starttimer_; //!< A timer to delay the start of the game.
             float endGameCriteria_; //<! Works as a timer which is resetted, whenever a brick is created.

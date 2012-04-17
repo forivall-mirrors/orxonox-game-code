@@ -66,7 +66,6 @@ namespace orxonox
         private:
             Tetris* owner_; //!< The Tetris game that owns this TetrisScore.
             PlayerInfo* player_; //!< Store information about the player permanently.
-            bool lock_;
     };
 }
 #endif /* _TetrisScore_H__ */

@@ -29,6 +29,7 @@
 /**
     @file TetrisStone.cc
     @brief Implementation of the TetrisStone class.
+    @ingroup Tetris
 */
 
 #include "TetrisStone.h"

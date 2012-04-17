@@ -29,6 +29,7 @@
 /**
     @file TetrisScore.cc
     @brief Implementation of the TetrisScore class.
+    @ingroup Tetris
 */
 
 #include "TetrisScore.h"
@@ -48,6 +49,7 @@ namespace orxonox
     /**
     @brief
         Constructor. Registers and initializes the object.
+    @ingroup Tetris
     */
     TetrisScore::TetrisScore(BaseObject* creator) : OverlayText(creator)
     {
@@ -55,7 +57,6 @@ namespace orxonox
 
         this->owner_ = 0;
         this->player_ = NULL;
-        this->lock_ = true;
     }
 
     /**
@@ -90,11 +91,10 @@ namespace orxonox
         if (this->owner_ != NULL)
         {
             std::string score("0");
-	        if(!this->owner_->hasEnded() && this->lock_)
+	        if(!this->owner_->hasEnded())
             {
                 //get the player
                 player_ = this->owner_->getPlayer();
-                this->lock_ = false;
             }
 
             if(this->owner_->hasStarted())

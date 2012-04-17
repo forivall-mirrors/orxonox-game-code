@@ -48,6 +48,7 @@ namespace orxonox
     /**
     @brief
         Constructor. Registers and initializes the object.
+    @ingroup Tetris
     */
     TetrisBrick::TetrisBrick(BaseObject* creator): ControllableEntity(creator)
     {
@@ -70,7 +71,6 @@ namespace orxonox
     void TetrisBrick::createBrick(void)
     { //Index 0 : single stone, 1 : 4 in a row; 2: 4-Block right shifted; 3: 'T' 4: 4-Block left shifted;
       //Index 5 : 4-Block; 6 : 'L'; 7 : mirrored 'L';
-        orxout()<< "TetrisBrick::createBrick" << endl;
         if(this->shapeIndex_ == 0)
             this->stonesPerBrick_ = 1;
         for (unsigned int i = 0; i < this->stonesPerBrick_; i++)
