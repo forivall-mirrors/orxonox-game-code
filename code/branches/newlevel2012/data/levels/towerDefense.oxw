@@ -13,20 +13,20 @@
 
 <!-- Specify the position of the camera -->
 <Template name=playfieldcameras defaults=0>
-  <MovableEntity>
+  <ControllableEntity>
     <camerapositions>
       <CameraPosition position="0,30,0" pitch=-90 absolute=true />
     </camerapositions>
-  </MovableEntity>
+  </ControllableEntity>
 </Template>
 
 <!-- Loads the playfield mesh -->
 <Template name=playfield>
-  <MovableEntity camerapositiontemplate=playfieldcameras>
+  <ControllableEntity camerapositiontemplate=playfieldcameras>
     <attached>
       <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
     </attached>
-  </MovableEntity>
+  </ControllableEntity>
 </Template>
 
 <Level gametype = "Deathmatch">
