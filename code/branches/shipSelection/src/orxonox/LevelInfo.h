@@ -42,6 +42,8 @@
 #include "util/StringUtils.h"
 
 #include "core/BaseObject.h"
+#include <iostream>
+#include <fstream>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox // tolua_export
@@ -135,6 +137,8 @@ namespace orxonox // tolua_export
             */
 
             inline const std::string& getXMLFilename(void) const { return this->xmlfilename_; } // tolua_export
+	    inline void selectShip (const std::string& ship) { this->changeShip(ship); } // tolua_export
+
 
         protected:
             /**
@@ -147,6 +151,21 @@ namespace orxonox // tolua_export
             std::string xmlfilename_; //!< The XML-filename of the Level.
 
         private:
+	    inline void changeShip (const std::string& model) {
+                //HACK: Read Level XML File, find "shipselection", replace with ship model
+                std::string text;
+ 		std::ifstream myLevel ("test.txt");
+		std::ofstream tempLevel ("test2.txt");
+		while(!myLevel.eof())
+		{
+			std::string buff;
+			std::getline(myLevel, buff);
+			tempLevel.write(buff.c_str(), buff.length());
+		}
+		myLevel.close();
+		tempLevel.close();
+		orxout(user_status) << "done" << endl;
+	    } 
             void tagsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
             void shipsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
             static void initializeTags(void); //!< Initialize the set of allowed tags.

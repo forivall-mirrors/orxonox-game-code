@@ -120,7 +120,7 @@ function P.ShipSelectionGetSelectedLevel()
         -- get the right tab and the right index
         local tabIndexes = P.activeTabIndexes[tabControl:getSelectedTabIndex()+1]
         local index = tabIndexes[listbox:getItemIndex(choice)+1]
-        return P.levelList[index]
+        --return P.levelList[index]
     else
         return nil
     end
@@ -154,7 +154,8 @@ end
 function P.ShipSelectionStartButton_clicked(e)
 
     if selectedlevel ~= nil then
-        orxonox.execute("startGame " .. selectedlevel:getXMLFilename())
+	selectedlevel:selectShip("meinModell")
+        --orxonox.execute("startGame " .. selectedlevel:getXMLFilename())
         hideAllMenuSheets()
     else
         orxonox.execute("keyESC")
