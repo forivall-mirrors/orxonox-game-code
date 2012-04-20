@@ -13,20 +13,20 @@
 
 <!-- Specify the position of the camera -->
 <Template name=playfieldcameras defaults=0>
-  <PongBat>
+  <MovableEntity>
     <camerapositions>
       <CameraPosition position="0,30,0" pitch=-90 absolute=true />
     </camerapositions>
-  </PongBat>
+  </MovableEntity>
 </Template>
 
 <!-- Loads the playfield mesh -->
 <Template name=playfield>
-  <PongBat camerapositiontemplate=playfieldcameras>
+  <MovableEntity camerapositiontemplate=playfieldcameras>
     <attached>
       <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
     </attached>
-  </PongBat>
+  </MovableEntity>
 </Template>
 
 <Level gametype = "Deathmatch">
