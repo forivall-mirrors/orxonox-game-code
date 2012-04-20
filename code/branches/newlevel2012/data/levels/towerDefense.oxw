@@ -43,7 +43,7 @@
     
 	<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
-    <SpawnPoint spawnclass="PongBat" pawndesign="playfield" position="0, 10, 0" orientation="0, 0, 0" />
+    <SpawnPoint spawnclass=SpaceShip pawndesign=playfield position="0, 10, 0" orientation="0, 0, 0" />
 <!--
     <MovableEntity rotationrate=5 rotationaxis="0,0,1">
       <attached>
