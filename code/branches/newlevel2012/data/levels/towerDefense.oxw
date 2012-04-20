@@ -11,12 +11,65 @@
   include("templates/lodInformation.oxt")
 ?>
 
+<!-- Specify the position of the camera -->
+<Template name=playfieldcameras defaults=0>
+  <PongBat>
+    <camerapositions>
+      <CameraPosition position="0,30,0" pitch=-90 absolute=true />
+    </camerapositions>
+  </PongBat>
+</Template>
+
+<!-- Loads the playfield mesh -->
+<Template name=playfield>
+  <PongBat camerapositiontemplate=playfieldcameras>
+    <attached>
+      <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
+    </attached>
+  </PongBat>
+</Template>
+
+<Level gametype = "TowerDefense">
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skypanoramagen1"
+  >
+    
+	<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <SpawnPoint spawnclass="PongBat" pawndesign="playfield" position="0, 10, 0" orientation="0, 0, 0" />
+<!--
+    <MovableEntity rotationrate=5 rotationaxis="0,0,1">
+      <attached>
+		  <!-- template wird im centerpoint verwendet (glaub?) -->
+<!--
+        <TowerDefenseCenterpoint 
+			name=towerdefensecenter 
+			dimension="200,120" 
+			>
+			
+			<!--
+			hier fehlt noch was:
+			balltemplate=pongball 
+			-->
+<!--			
+        </PongCenterpoint>
+      </attached>
+    </MovableEntity>
+	-->
+	
+  </Scene>
+</Level>
 
 
-<Level 
-	gametype = "Deathmatch"
-	>
-
+<!--
+<Level gametype = "TowerDefense">
   <templates>
     <Template link=lodtemplate_default />
   </templates>
@@ -40,4 +93,7 @@
 
   </Scene>
 </Level>
+
+-->
+
 

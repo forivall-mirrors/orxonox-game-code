@@ -10,7 +10,7 @@
 
 #include <Gametype.h>
 
-class TowerDefense: public orxonox::Gametype {
+class TowerDefense: public orxonox::Deathmatch {
 public:
 	TowerDefense();
 	virtual ~TowerDefense();
