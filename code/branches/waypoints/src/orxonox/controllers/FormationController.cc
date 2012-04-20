@@ -276,8 +276,8 @@ namespace orxonox
 		if(coord.x < 0.0001 && coord.y < 0.0001)
 		{
 			// I AM HERE
-			Vector3 v_temp = this->getControllableEntity()->getPosition() * target;
-			Quaternion quat = v_temp.getRotationTo(target);
+			Vector3 v_temp = this->getControllableEntity()->getOrientation();
+			Quaternion quat = v_temp.getRotationTo(target) * v_temp;
 			this->getControllableEntity()->rotate(quat);
 			
 			//this->getControllableEntity()->setOrientation(this->getControllableEntity()->getPosition().getRotationTo(target) * this->getControllableEntity()->getOrientation());
