@@ -74,6 +74,9 @@ namespace orxonox
 
         this->lastHitOriginator_ = 0;
 
+        // set damage multiplier to default value 1, meaning nominal damage
+        this->damageMultiplier_ = 1;
+
         this->spawnparticleduration_ = 3.0f;
 
         this->aimPosition_ = Vector3::ZERO;
@@ -227,7 +230,10 @@ namespace orxonox
 
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
-        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
+        // apply multiplier
+    	damage *= originator->getDamageMultiplier();
+
+    	if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {
             if (shielddamage >= this->getShieldHealth())
             {

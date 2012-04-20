@@ -161,6 +161,13 @@ namespace orxonox // tolua_export
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
 
+            // not that beautiful yet
+            inline void setDamageMultiplier(float multiplier)
+                { this->damageMultiplier_ = multiplier; }
+            inline float getDamageMultiplier()
+                { return this->damageMultiplier_; }
+
+
             virtual void startLocalHumanControl();
 
             void setAimPosition( Vector3 position )
@@ -206,6 +213,9 @@ namespace orxonox // tolua_export
             float reloadRate_;
             float reloadWaitTime_;
             float reloadWaitCountdown_;
+
+            // modifiers
+            float damageMultiplier_;
 
             WeakPtr<Pawn> lastHitOriginator_;
 

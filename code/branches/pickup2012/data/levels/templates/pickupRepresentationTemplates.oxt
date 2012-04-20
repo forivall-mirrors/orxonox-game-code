@@ -215,6 +215,33 @@
     </PickupRepresentation>
 </Template>
 
+<!-- DamageBoost pickups -->
+
+<Template name=normaldamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.99,0.96,0.52" material="Sphere2" scale=0.5>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.98,0.94,0.22" material="asterisk" scale=0.5 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smallspeedpickup>
+  <SpeedPickup
+    duration = 10.0
+    damageBoost = damageBoost*2
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
 <!-- Speed pickups -->
 
 <Template name=smallspeedpickupRepresentation>
