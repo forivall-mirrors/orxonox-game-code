@@ -29,7 +29,7 @@
   </PongBat>
 </Template>
 
-<Level gametype = "TowerDefense">
+<Level gametype = "Deathmatch">
   <templates>
     <Template link=lodtemplate_default />
   </templates>
