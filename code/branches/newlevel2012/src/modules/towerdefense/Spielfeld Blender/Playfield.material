@@ -11,7 +11,7 @@ material PlayField
 			emissive 0.000000 0.000000 0.000000 1.000000
 			texture_unit
 			{
-				texture plazfield_top.png
+				texture playfield_top.png
 				tex_address_mode wrap
 				filtering trilinear
 			}
