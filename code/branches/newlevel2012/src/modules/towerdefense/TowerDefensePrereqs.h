@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(TowerDefense_STATIC_BUILD)
-#  ifdef TowerDefense_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(TOWERDEFENSE_STATIC_BUILD)
+#  ifdef TOWERDEFENSE_SHARED_BUILD
 #    define _TowerDefenseExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
@@ -65,7 +65,7 @@
 namespace orxonox
 {
     class TowerDefense;
-    class TowerDefenseCenterpoint;
+    //class TowerDefenseCenterpoint;
 }
 
 #endif /* _TowerDefensePrereqs_H__ */
