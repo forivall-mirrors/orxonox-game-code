@@ -52,7 +52,7 @@ namespace orxonox
 
         this->width_ = 10;
         this->height_ = 11;
-        this->stoneTemplate_ = "";
+        this->towerTemplate_ = "";
         
         this->checkGametype();
     }
@@ -67,7 +67,7 @@ namespace orxonox
 
         XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode); // die Breite
         XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, setWidth, xmlelement, mode); // die Grösse
-        XMLPortParam(TowerDefenseCenterpoint, "stoneTemplate", setStoneTemplate, getStoneTemplate, xmlelement, mode);
+        XMLPortParam(TowerDefenseCenterpoint, "towerTemplate", setTowerTemplate, getTowerTemplate, xmlelement, mode);
     }
 
     /**
@@ -90,8 +90,8 @@ namespace orxonox
     {
         if (this->getGametype() != NULL && this->getGametype()->isA(Class(TowerDefense)))
         {
-            TowerDefense* TowerDefenseGametype = orxonox_cast<TowerDefense*>(this->getGametype().get());
-            TowerDefenseGametype->setCenterpoint(this);
+            //TowerDefense* TowerDefenseGametype = orxonox_cast<TowerDefense*>(this->getGametype().get());
+            //TowerDefenseGametype->setCenterpoint(this);
         }
     }
 }

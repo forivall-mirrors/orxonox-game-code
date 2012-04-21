@@ -1,7 +1,8 @@
+<!-- TODO: Update the level's image-->
 <LevelInfo
  name = "Tower Defense"
- description = "A level with not much in it."
- tags = "test"
+ description = "Defend your Spacestation from incoming waves."
+ tags = "gametype"
  screenshot = "emptylevel.png"
 />
 
@@ -11,64 +12,43 @@
   include("templates/lodInformation.oxt")
 ?>
 
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+<!--  Hallo erstmal.
+Ich habe das Grundgerüst des Levels mal zum Laufen gebracht.
+Bei mir hat es das Playfield_ME.mesh allerdings nicht angezeigt; deswegen habe ich mit dem crate.mesh als testobjekt gearbeitet.
+Das Level macht genau das was ihr vermutlich erreichen wolltet. Wahrscheinlich wird die Funktionalität der "statischen Kamera" aber
+bloß in einer abgewandelten Art umgesetzt: In Pong und Tetris sind die Kameras nicht an das Spielfeld, sondern an ein ControllableEntity,
+das vom Spieler gesteuert wird gekoppelt.
+-->
+
 <!-- Specify the position of the camera -->
 <Template name=playfieldcameras defaults=0>
-  <ControllableEntity>
+  <Pawn>
     <camerapositions>
-      <CameraPosition position="0,30,0" pitch=-90 absolute=true />
+      <CameraPosition position="-200,0,600" absolute=true />
     </camerapositions>
-  </ControllableEntity>
+  </Pawn>
 </Template>
 
 <!-- Loads the playfield mesh -->
+<!-- TODO: why don't you add Playfield_ME.mesh to the data repository ? : /orxonox/data_extern/models -->
+
 <Template name=playfield>
-  <ControllableEntity camerapositiontemplate=playfieldcameras>
+  <Pawn camerapositiontemplate=playfieldcameras>
     <attached>
-      <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
+      <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" /> <!-- crate.mesh -->
     </attached>
-  </ControllableEntity>
+  </Pawn>
 </Template>
 
-<Level gametype = "Deathmatch">
-  <templates>
-    <Template link=lodtemplate_default />
-  </templates>
-  
-  <?lua include("includes/notifications.oxi") ?>
-
-  <Scene
-   ambientlight = "0.5, 0.5, 0.5"
-   skybox       = "Orxonox/skypanoramagen1"
-  >
-    
-	<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
-
-    <SpawnPoint spawnclass=SpaceShip pawndesign=playfield position="0, 10, 0" orientation="0, 0, 0" />
-<!--
-    <MovableEntity rotationrate=5 rotationaxis="0,0,1">
-      <attached>
-		  <!-- template wird im centerpoint verwendet (glaub?) -->
-<!--
-        <TowerDefenseCenterpoint 
-			name=towerdefensecenter 
-			dimension="200,120" 
-			>
-			
-			<!--
-			hier fehlt noch was:
-			balltemplate=pongball 
-			-->
-<!--			
-        </PongCenterpoint>
-      </attached>
-    </MovableEntity>
-	-->
-	
-  </Scene>
-</Level>
 
 
-<!--
+
+
 <Level gametype = "TowerDefense">
   <templates>
     <Template link=lodtemplate_default />
@@ -82,18 +62,16 @@
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-   
-    
-	<StaticEntity position="0,0,0" direction="0,0,0" collistionType=static mass=100000>
-		<attached>
-			<Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
-		</attached>
-	</StaticEntity>
+    <!--SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
+ 
 
+    <!--StaticEntity position="0,0,0" direction="0,0,0" collistionType=static mass=100000>
+        <attached>
+            <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
+        </attached>
+    </StaticEntity-->
 
   </Scene>
 </Level>
-
--->
-
 

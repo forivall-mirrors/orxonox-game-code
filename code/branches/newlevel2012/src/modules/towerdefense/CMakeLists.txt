@@ -1,6 +1,6 @@
 SET_SOURCE_FILES(TOWERDEFENSE_SRC_FILES
-  TowerDefenseCenterpoint.cc
   TowerDefense.cc
+  TowerDefenseCenterpoint.cc
 )
 
 ORXONOX_ADD_LIBRARY(TowerDefense

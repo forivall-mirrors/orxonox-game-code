@@ -35,7 +35,7 @@
 #ifndef _TowerDefenseCenterpoint_H__
 #define _TowerDefenseCenterpoint_H__
 
-#include "TowerDefense/TowerDefensePrereqs.h"
+#include "towerdefense/TowerDefensePrereqs.h"
 
 #include <string>
 
@@ -91,21 +91,17 @@ namespace orxonox
                 { return this->height_; }
                 
             /**
-
-                
-            /**
-             * TODO; Replace stone with tower
-            @brief Set the template for the stones.
-            @param template The template name to be applied to each stone.
+            @brief Set the template for the towers.
+            @param template The template name to be applied to each tower.
             */
-            //void setStoneTemplate(const std::string& templateName)
-            //    { this->stoneTemplate_ = templateName; }
+            void setTowerTemplate(const std::string& templateName)
+                { this->towerTemplate_ = templateName; }
             /**
-            @brief Get the template for the stones.
-            @return Returns the template name to be applied to each stone.
+            @brief Get the template for the towers.
+            @return Returns the template name to be applied to each tower.
             */
-            //const std::string& getStoneTemplate(void) const
-            //    { return this->stoneTemplate_; }
+            const std::string& getTowerTemplate(void) const
+                { return this->towerTemplate_; }
             
 
         private:
@@ -113,7 +109,7 @@ namespace orxonox
             
             unsigned int width_;
             unsigned int height_;
-            //std::string stoneTemplate_;
+            std::string towerTemplate_;
 
     };
 }
