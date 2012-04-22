@@ -323,7 +323,7 @@ namespace orxonox
     ///////////////////////
     TEST(getUniqueNumber, Test)
     {
-        std::set<float> numbers;
+        std::set<unsigned long> numbers;
 
         const size_t iterations = 1000;
 
