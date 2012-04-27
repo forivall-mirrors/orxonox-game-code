@@ -231,7 +231,9 @@ namespace orxonox
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         // apply multiplier
-    	damage *= originator->getDamageMultiplier();
+    	Pawn *test = dynamic_cast<Pawn *>(originator);
+    	if( test != NULL )
+    	  damage *= originator->getDamageMultiplier();
 
     	if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {

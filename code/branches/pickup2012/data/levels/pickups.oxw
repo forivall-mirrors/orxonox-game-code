@@ -168,6 +168,15 @@
       </pickup>
     </PickupSpawner>
     
+    <!-- DamageBoost pickup -->
+    
+    <PickupSpawner position="-100,300,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+      <pickup>
+        <DamageBoostPickup template=normaldamageboostpickup />
+      </pickup>
+    </PickupSpawner>
+    
+    
     <!-- Other pickups -->
 
     <!-- PickupRepresentation for the pickup below, since it is not a standard pickup provided by pickups.oxi -->
@@ -205,6 +214,63 @@
         <ShrinkPickup template ="hugeshrinkpickup"/>
       </pickup>
     </PickupSpawner>
+    
+    <!-- @Objects: 4 boxes (uncontrolled pawns) -->
+    <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 4" >
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+
+    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 3">
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+           <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+
+    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 2">
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+           <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+
+    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 1">
+        <events>
+          <visibility>
+            <EventListener event="flying4" />
+          </visibility>
+        </events>
+        <attached>
+            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+           <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
 
     <!--StaticEntity position="0,-200,0" direction="0,-1,0" collisionType=static mass=500 friction=0.01 >
       <attached>
