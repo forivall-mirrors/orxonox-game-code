@@ -81,7 +81,24 @@ namespace orxonox
         std::string message("The match has ended.");
         ChatManager::message(message);
     }
+    */
 
+
+    void TowerDefense::tick(float dt)
+        {
+            SUPER(TowerDefense, tick, dt);
+
+            static bool test = false;
+            if (!test)
+            {
+            	orxout()<< "First tick." <<endl;
+            }
+            test = true;
+        }
+
+
+
+/*
     void TowerDefense::playerEntered(PlayerInfo* player)
     {
         Deathmatch::playerEntered(player);

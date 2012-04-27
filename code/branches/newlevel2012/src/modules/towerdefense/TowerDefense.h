@@ -41,12 +41,13 @@ namespace orxonox
             virtual ~TowerDefense() {}
 
             virtual void start(); //<! The function is called when the gametype starts
-            /*virtual void end();
-            virtual void playerEntered(PlayerInfo* player);
-            virtual bool playerLeft(PlayerInfo* player);
+            //virtual void end();
+            virtual void tick(float dt);
+         //   virtual void playerEntered(PlayerInfo* player);
+            //virtual bool playerLeft(PlayerInfo* player);
 
-            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
-            virtual void playerScored(PlayerInfo* player);*/
+            //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+            //virtual void playerScored(PlayerInfo* player);
     };
 }
 

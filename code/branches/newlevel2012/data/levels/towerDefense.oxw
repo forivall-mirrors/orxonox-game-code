@@ -29,7 +29,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfieldcameras defaults=0>
   <Pawn>
     <camerapositions>
-      <CameraPosition position="-200,0,600" absolute=true />
+      <CameraPosition position="-200,0,250" absolute=true />
     </camerapositions>
   </Pawn>
 </Template>
@@ -40,7 +40,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfield>
   <Pawn camerapositiontemplate=playfieldcameras>
     <attached>
-      <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" /> <!-- crate.mesh -->
+      <Model position="0,0,0" orientation="1,1,1,1" mesh="Playfield_ME.mesh" scale3D="10,10,10" /> <!-- crate.mesh -->
     </attached>
   </Pawn>
 </Template>
