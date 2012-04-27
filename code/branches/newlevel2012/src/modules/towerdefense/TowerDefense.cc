@@ -55,6 +55,8 @@
  */
 
 #include "TowerDefense.h"
+#include "worldentities/SpawnPoint.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -92,6 +94,7 @@ namespace orxonox
             if (!test)
             {
             	orxout()<< "First tick." <<endl;
+            	spawnEnemy();
             }
             test = true;
         }
