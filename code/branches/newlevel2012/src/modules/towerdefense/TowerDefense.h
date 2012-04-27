@@ -48,6 +48,8 @@ namespace orxonox
 
             //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             //virtual void playerScored(PlayerInfo* player);
+		private:
+				void TowerDefense::spawnEnemy();
     };
 }
 

@@ -96,7 +96,11 @@ namespace orxonox
             test = true;
         }
 
-
+	void TowerDefense::spawnEnemy()
+	{
+		SpawnPoint *sp = *this->spawnpoints_.begin();
+		Pawn* p = sp->spawn();
+	}
 
 /*
     void TowerDefense::playerEntered(PlayerInfo* player)
