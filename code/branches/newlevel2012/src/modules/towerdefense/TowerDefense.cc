@@ -57,6 +57,7 @@
 #include "TowerDefense.h"
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
@@ -92,6 +93,7 @@ namespace orxonox
 
         static bool test = false;
         if (!test)
+        {
 			orxout()<< "First tick." <<endl;
             spawnEnemy();
         }
@@ -100,8 +102,9 @@ namespace orxonox
 
 	void TowerDefense::spawnEnemy()
 	{
-	//	SpawnPoint *sp = *this->spawnpoints_.begin();
-		//Pawn* p = sp->spawn();
+		SpawnPoint *sp = *this->spawnpoints_.begin();
+
+		Pawn* p = sp->spawn();
 	}
 
 /*
