@@ -15,6 +15,11 @@ function P.onLoad()
    end]]	
 
    P.shipList = {}
+
+  --for line in io.lines("../levels/templates/.shipmodels") do  orxonox.execute("orxout user_warning " .. line) end
+  for line in io.lines("../levels/templates/.shipmodels") do  
+	P.shipList[#P.shipList+1] = string.lower(line)
+  end 
    --[[for f in io.lines("../levels/templates/.shipmodels") do
         if selectedlevel:hasShip(f) then
             P.shipList[#P.shipList+1] = f
@@ -150,12 +155,12 @@ function P.ShipSelectionSelectionChanged(e)
         configButton:setProperty("Disabled", "True")
     end
 end
---]]
+
 function P.ShipSelectionStartButton_clicked(e)
 
     if selectedlevel ~= nil then
-	selectedlevel:selectShip("meinModell")
-        --orxonox.execute("startGame " .. selectedlevel:getXMLFilename())
+	selectedlevel:selectShip(P.ShipSelectionGetSelectedLevel())
+        orxonox.execute("startGame " .. "_temp.oxw")
         hideAllMenuSheets()
     else
         orxonox.execute("keyESC")

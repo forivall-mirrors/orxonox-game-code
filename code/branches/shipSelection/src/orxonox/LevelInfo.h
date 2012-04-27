@@ -151,20 +151,32 @@ namespace orxonox // tolua_export
             std::string xmlfilename_; //!< The XML-filename of the Level.
 
         private:
+
 	    inline void changeShip (const std::string& model) {
-                //HACK: Read Level XML File, find "shipselection", replace with ship model
-                std::string text;
- 		std::ifstream myLevel ("test.txt");
-		std::ofstream tempLevel ("test2.txt");
-		while(!myLevel.eof())
-		{
-			std::string buff;
-			std::getline(myLevel, buff);
-			tempLevel.write(buff.c_str(), buff.length());
-		}
-		myLevel.close();
-		tempLevel.close();
-		orxout(user_status) << "done" << endl;
+	        static std::string shipSelectionTag = "shipselection";
+        	//HACK: Read Level XML File, find "shipselection", replace with ship model
+        	std::string levelPath = "../levels/";
+        	levelPath.append(this->getXMLFilename());
+        	std::string tempPath = "../levels/";
+        	tempPath.append("_temp.oxw");
+        	orxout(user_status) << levelPath << endl;
+        	orxout(user_status) << tempPath << endl;
+        	std::ifstream myLevel (levelPath.c_str());
+			std::ofstream tempLevel (tempPath.c_str());
+			while(!myLevel.eof())
+			{
+				std::string buff;
+				std::getline(myLevel, buff);
+				std::string pawndesignString = "pawndesign=";
+				size_t found = buff.find(pawndesignString.append(shipSelectionTag)); 
+				if (found!= std::string::npos) 
+					buff = buff.substr(0, found + 11) + model + buff.substr(found+11+shipSelectionTag.length(), std::string::npos);
+				tempLevel.write(buff.c_str(), buff.length());
+				tempLevel << std::endl;
+			}
+			myLevel.close();
+			tempLevel.close();
+			orxout(user_status) << "done" << endl;
 	    } 
             void tagsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
             void shipsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.

@@ -3,13 +3,15 @@
  description = "Level for the coding tutorial."
  tags = "tutorial, shipselection"
  screenshot = "codingtutorial.png"
- startingships = "spaceshipGhost, spaceshipPirate, spaceshipSpacecruiser"
+ startingships = "spaceshipghost, spaceshippirate, spaceshipspacecruiser"
 />
 
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipGhost.oxt")
+  include("templates/spaceshipSpacecruiser.oxt")
   include("templates/lodInformation.oxt")
 ?>
 
