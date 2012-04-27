@@ -86,18 +86,17 @@ namespace orxonox
     */
 
 
-    void TowerDefense::tick(float dt)
-        {
-            SUPER(TowerDefense, tick, dt);
+	void TowerDefense::tick(float dt)
+    {
+        SUPER(TowerDefense, tick, dt);
 
-            static bool test = false;
-            if (!test)
-            {
-            	orxout()<< "First tick." <<endl;
-            	spawnEnemy();
-            }
-            test = true;
+        static bool test = false;
+        if (!test)
+			orxout()<< "First tick." <<endl;
+            spawnEnemy();
         }
+        test = true;
+    }
 
 	void TowerDefense::spawnEnemy()
 	{
