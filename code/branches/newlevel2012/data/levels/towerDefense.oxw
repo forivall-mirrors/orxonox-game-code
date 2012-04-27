@@ -29,7 +29,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfieldcameras defaults=0>
   <Pawn>
     <camerapositions>
-      <CameraPosition position="-100,0,250" absolute=true />
+      <CameraPosition position="200,0,250" absolute=true />
     </camerapositions>
   </Pawn>
 </Template>
@@ -63,8 +63,12 @@ das vom Spieler gesteuert wird gekoppelt.
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <!--SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
-    <SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
- 
+    
+    <SpawnPoint team=0 position="200,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
+    
+ 	<!--SpawnPoint team=1 position="0,0,30" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
+ 	
+ 	
 
     <!--StaticEntity position="0,0,0" direction="0,0,0" collistionType=static mass=100000>
         <attached>
