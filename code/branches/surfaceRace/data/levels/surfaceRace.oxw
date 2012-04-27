@@ -38,7 +38,7 @@ gametype = SpaceRace
 
 <SpaceRaceManager>
  <checkpoints>	
-	<RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="1" islast="false" nextcheckpoints="1,-1,-1">
+	<RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="0" islast="false" nextcheckpoints="1,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
 
@@ -68,7 +68,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint2" position="0,8050, -2000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="2" islast="false" nextcheckpoints="2,-1,-1">
+<RaceCheckPoint name="checkpoint2" position="0,8050, -2000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="1" islast="false" nextcheckpoints="2,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -84,74 +84,7 @@ gametype = SpaceRace
         </collisionShapes>
     </RaceCheckPoint>
 
-<RaceCheckPoint name="checkpoint3" position="0,8050,-3000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="3" islast="false" nextcheckpoints="3,-1,-1">
-        <attached>
-            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
-        </attached>
-        <collisionShapes>
-            <!--
-            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
-		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
-            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
-
-		--> 
-        </collisionShapes>
-    </RaceCheckPoint>
-
-
-
-<RaceCheckPoint name="checkpoint4" position="1000,8050,-4000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="100" checkpointindex="4" islast="false" nextcheckpoints="4,-1,-1">
-        <attached>
-            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
-        </attached>
-        <collisionShapes>
-            <!--
-            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
-		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
-            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
-
-		--> 
-        </collisionShapes>
-    </RaceCheckPoint>
-
-
-<RaceCheckPoint name="checkpoint5" position="2000,8050, -5000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="5" islast="false" nextcheckpoints="5,-1,-1">
-        <attached>
-            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
-        </attached>
-        <collisionShapes>
-            <!--
-            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
-		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
-            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
-
-		--> 
-        </collisionShapes>
-    </RaceCheckPoint>
-
-<RaceCheckPoint name="checkpoint6" position="3000,8050,-4000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="100" checkpointindex="6" islast="false" nextcheckpoints="6,-1,-1">
-        <attached>
-            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
-        </attached>
-        <collisionShapes>
-            <!--
-            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
-		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
-            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
-
-		--> 
-        </collisionShapes>
-    </RaceCheckPoint>
-
-<RaceCheckPoint name="checkpoint7" position="4000,8050,-3000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="7" islast="false" nextcheckpoints="7,-1,-1">
+<RaceCheckPoint name="checkpoint3" position="0,8050,-3000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="2" islast="false" nextcheckpoints="3,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -169,8 +102,75 @@ gametype = SpaceRace
 
 
 
+<RaceCheckPoint name="checkpoint4" position="1000,8050,-4000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="100" checkpointindex="3" islast="false" nextcheckpoints="4,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
 
-<RaceCheckPoint name="checkpoint8" position="4000,8050,-2000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="8" islast="false" nextcheckpoints="8,-1,-1">
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+
+<RaceCheckPoint name="checkpoint5" position="2000,8050, -5000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="4" islast="false" nextcheckpoints="5,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint6" position="3000,8050,-4000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="100" checkpointindex="5" islast="false" nextcheckpoints="6,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint7" position="4000,8050,-3000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="6" islast="false" nextcheckpoints="7,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+
+
+
+<RaceCheckPoint name="checkpoint8" position="4000,8050,-2000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="7" islast="false" nextcheckpoints="8,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -187,7 +187,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint9" position="4000,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="9" islast="false" nextcheckpoints="9,-1,-1">
+<RaceCheckPoint name="checkpoint9" position="4000,8050,-1000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="8" islast="false" nextcheckpoints="9,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -204,7 +204,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint10" position="4000,8050,0" direction="0,1,0" collisionType="static" scale="4" distance="100" islast="false" checkpointindex="10" nextcheckpoints="11,-1,-1">
+<RaceCheckPoint name="checkpoint10" position="4000,8050,0" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="9" islast="false" nextcheckpoints="10,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -221,7 +221,137 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint11" position="3000,8050,1000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="100" checkpointindex="11" islast="false" nextcheckpoints=",-1,-1">
+<RaceCheckPoint name="checkpoint11" position="3000,8050,1000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="100" checkpointindex="10" islast="false" nextcheckpoints="11,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+
+<RaceCheckPoint name="checkpoint12" position="2000,8050,2000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="11" islast="false" nextcheckpoints="12,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint13" position="1000,8050,2000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="12" islast="false" nextcheckpoints="13,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint14" position="0,8050,2000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="13" islast="false" nextcheckpoints="14,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint15" position="-3000,8050,2000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="14" islast="false" nextcheckpoints="15,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint16" position="-4000,8050,3000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="100" checkpointindex="15" islast="false" nextcheckpoints="16,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint17" position="-5000,8050,4000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="100" checkpointindex="16" islast="false" nextcheckpoints="17,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint18" position="-4000,8050,5000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="100" checkpointindex="17" islast="false" nextcheckpoints="18,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+        <collisionShapes>
+            <!--
+            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
+		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
+            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
+
+		--> 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+
+<RaceCheckPoint name="checkpoint19" position="-3000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="18" islast="false" nextcheckpoints="19,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -239,9 +369,7 @@ gametype = SpaceRace
 
 
 
-<!-- last -->
-
-<RaceCheckPoint name="checkpoint11" position="X,X,X" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="X" islast="true">
+<RaceCheckPoint name="checkpoint20" position="6000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="100" checkpointindex="19" islast="true">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -275,7 +403,7 @@ gametype = SpaceRace
 	<!-- ------------------Boden----------------- -->
   <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
      <attached>
-        <Model position="0,0,0" mesh="testcube.mesh" scale3D="8000,8000,8000" />
+        <Model position="0,0,0" mesh="CubeGround.mesh" scale3D="8000,8000,8000" />
       </attached>
       <collisionShapes>
         <BoxCollisionShape position="0,50,0" halfExtents="8000,8000,8000" />
