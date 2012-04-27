@@ -76,7 +76,7 @@
   <MultiStateEngine
    boostfactor    = 2
 
-   speedfront     = 150
+   speedfront     = 2500
    speedback      =  50
    speedleftright =  50
    speedupdown    =  50
