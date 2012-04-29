@@ -82,6 +82,7 @@ namespace orxonox
 	
     TowerDefense::~TowerDefense()
     {
+		/* Part of a temporary hack to allow the player to add towers */
         if (this->isInitialized())
         {
             if( this->dedicatedAddTower_ )
@@ -91,8 +92,7 @@ namespace orxonox
 	
 	void TowerDefense::setCenterpoint(TowerDefenseCenterpoint *centerpoint)
 	{
-		orxout() << "got a centerpoint..." << endl;
-		
+		orxout() << "Centerpoint now set..." << endl;
 		this->center_ = centerpoint;
 	}
 	
@@ -100,30 +100,27 @@ namespace orxonox
     {
         Deathmatch::start();
 		
-        orxout()<< "Adding towers for debug..." <<endl;
+        orxout() << "Adding towers for debug..." << endl;
 		
-		addTower(0,15);
-		addTower(15,0);
+		// Mark corners
+		addTower(0,15); addTower(15,0);
 		
+		// Mark diagonal line
 		for (int i = 0 ; i <= 15; i++)
-		{
 			addTower(i,i);
-		}
 		
-		orxout()<< "Done" <<endl;
+		orxout() << "Done" << endl;
 		
 		ChatManager::message("Use the console command addTower x y to add towers");
-    }
+	}
 	
-	/*
-	 void TowerDefense::end()
-	 {
-	 Deathmatch::end();
+	void TowerDefense::end()
+	{
+		Deathmatch::end();
 	 
-	 std::string message("The match has ended.");
-	 ChatManager::message(message);
-	 }
-	 */
+		ChatManager::message("Match is over");
+	}
+	
 	
 	void TowerDefense::addTower(int x, int y)
 	{

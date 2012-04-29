@@ -26,7 +26,7 @@ das vom Spieler gesteuert wird gekoppelt.
 -->
 
 <!-- Specify the position of the camera -->
-<Template name=playfieldcameras defaults=0>
+<Template name=centerpointmarkcamera defaults=0>
   <Pawn>
     <camerapositions>
       <CameraPosition position="0,0,20"/>
@@ -34,9 +34,9 @@ das vom Spieler gesteuert wird gekoppelt.
   </Pawn>
 </Template>
 
-<!-- Loads the playfield mesh -->
-<Template name=playfield>
-  <Pawn camerapositiontemplate=playfieldcameras>
+<!-- Loads a mesh to mark the center-->
+<Template name=centerpointmark>
+  <Pawn camerapositiontemplate=centerpointmarkcamera>
     <attached>
       <Model position="0,0,0" mesh="cylinder.mesh" scale3D="1,1,1" /> <!-- the camera is attached to this -->
     </attached>
@@ -57,26 +57,23 @@ das vom Spieler gesteuert wird gekoppelt.
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  
   <?lua include("includes/notifications.oxi") ?>
-
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
-
-    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    
+  
+  	<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     
 	<!-- Spawns the camera, attached to a crate -->
-	<SpawnPoint team=0 position="0,0,0" spawnclass=Pawn pawndesign=playfield />
-
+	<SpawnPoint team=0 position="0,0,0" spawnclass=Pawn pawndesign=centerpointmark />
 	
  	<!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
  	<!--SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
  	
- 	
- 	 <!--SpaceShip position="-10,0,20" lookat="0,0,0">
+	<!--SpaceShip position="-10,0,20" lookat="0,0,0">
       <templates>
         <Template link=spaceshipassff />
       </templates>
@@ -108,12 +105,11 @@ das vom Spieler gesteuert wird gekoppelt.
 		
 			<Model position="-0.5,-0.5,0" mesh="Playfield_ME.mesh" scale=0.8 />
 			
+			<!-- This was used to mark the playfield, let's let it be here for now -->
 			<!--Model position="-8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
 			<!--Model position="-8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
 			<!--Model position="8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
 			<!--Model position="8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
-			
-			<!--Model position="0,0,50" direction="0,0,0"  mesh="rocket.mesh"  scale3D="0.3,0.3,0.3" /-->
 			
         </attached>
     </TowerDefenseCenterpoint>

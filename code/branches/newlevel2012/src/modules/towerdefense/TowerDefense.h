@@ -49,10 +49,15 @@ namespace orxonox
 		//virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 		//virtual void playerScored(PlayerInfo* player);
 		
+		/*	Called by TowerDefenseCenterpoint upon game start 
+			The centerpoint is used to create towers
+		*/
 		void setCenterpoint(TowerDefenseCenterpoint *centerpoint);
 		
-		/* Part of a temporary hack to allow the player to add towers */
+		/* Adds a tower at x, y in the playfield */
 		void addTower(int x, int y);
+		
+		/* Part of a temporary hack to allow the player to add towers */
 		ConsoleCommand* dedicatedAddTower_;
 		
 	private:
