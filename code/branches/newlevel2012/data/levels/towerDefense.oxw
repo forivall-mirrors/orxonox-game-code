@@ -47,7 +47,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=towertemplate>
   <Tower>
     <attached>
-      <Model position="15,0,0" mesh="crate.mesh" scale=1 />
+      <Model position="15,0,0" mesh="cube_green.mesh" scale=1 />
     </attached>
   </Tower>
 </Template>

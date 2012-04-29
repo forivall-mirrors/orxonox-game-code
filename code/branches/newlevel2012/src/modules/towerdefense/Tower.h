@@ -23,8 +23,10 @@ namespace orxonox
 		virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
 		virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
 		
-		
-		
+		void setGame(TowerDefense* towerdefense)
+		{ assert(towerdefense); game_ = towerdefense; }
+	private:
+		TowerDefense* game_;
     };
 }
 

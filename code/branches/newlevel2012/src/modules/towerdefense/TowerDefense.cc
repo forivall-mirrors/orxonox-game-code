@@ -55,6 +55,9 @@
  */
 
 #include "TowerDefense.h"
+#include "Tower.h"
+#include "TowerDefenseCenterpoint.h"
+
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
@@ -109,14 +112,21 @@ namespace orxonox
 	
 	void TowerDefense::addTower(int x, int y)
 	{
-		orxout()<< "Should add tower at (" << x << "," << y << ")" << endl;
-		
 		if (x > 16 || y > 16)
 		{
 			orxout() << "x and y should be between 1 and 16" << endl;
 			return;
 		}
 		
+		orxout()<< "Should add tower at (" << x << "," << y << ")" << endl;
+		
+		Tower* newTower = new Tower(this->center_);
+		newTower->addTemplate(this->center_->getTowerTemplate());
+		
+		this->center_->attach(newTower);
+		
+		newTower->setPosition(0,0,0);
+		newTower->setGame(this);
 		
 		
 		// TODO: create Tower mesh
