@@ -64,21 +64,22 @@
     
 	<!-- Spawns the camera, attached to a crate -->
 	<SpawnPoint team=0 position="0,0,0" spawnclass=Pawn pawndesign=centerpointmark />
+	<!--TeamSpawnPoint team=1 position="-7,7,4" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
 	
  	<!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
  	<!--SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
  	
-	<!--SpaceShip position="-10,0,20" lookat="0,0,0">
+	<!--SpaceShip position="-10,0,20" lookat="0,0,0" scale=0.3>
       <templates>
         <Template link=spaceshipassff />
       </templates>
       <controller>
         <WaypointController accuracy=3>
           <waypoints>
-            <Model mesh="cube.mesh" scale=1 position="110,90,20" />
-            <Model mesh="cube.mesh" scale=2 position="290,90,20" />
-            <Model mesh="cube.mesh" scale=3 position="290,-90,20" />
-            <Model mesh="cube.mesh" scale=4 position="110,-90,20" />
+            <Model mesh="cube.mesh" scale=0.2 position="-8,-8,3" />
+            <Model mesh="cube.mesh" scale=0.2 position="8,8,3" />
+            <Model mesh="cube.mesh" scale=0.2 position="8,-8,3" />
+            <Model mesh="cube.mesh" scale=0.2 position="-8,8,3" />
           </waypoints>
         </WaypointController>
       </controller>

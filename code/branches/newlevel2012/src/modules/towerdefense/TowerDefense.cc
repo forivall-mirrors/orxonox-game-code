@@ -61,7 +61,11 @@
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
-
+#include "controllers/WaypointController.h"
+	 
+#include "graphics/Model.h"
+#include "infos/PlayerInfo.h"
+	 
 #include "chat/ChatManager.h"
 
 /* Part of a temporary hack to allow the player to add towers */
@@ -77,7 +81,9 @@ namespace orxonox
 		
 		/* Temporary hack to allow the player to add towers */
 		this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
-		
+	
+		// Quick hack to test waypoints
+		createConsoleCommand( "aw", createExecutor( createFunctor(&TowerDefense::addWaypointsAndFirstEnemy, this) ) );
     }
 	
     TowerDefense::~TowerDefense()
@@ -148,13 +154,58 @@ namespace orxonox
     {
         SUPER(TowerDefense, tick, dt);
 		
-        static bool test = false;
-        if (!test)
+        static int test = 0;
+        if (++test == 10)
         {
-			orxout()<< "First tick." <<endl;
+			orxout()<< "10th tick." <<endl;
+			/*
+			for (std::set<SpawnPoint*>::iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); it++)
+			{
+				orxout() << "checking spawnpoint with name " << (*it)->getSpawnClass()->getName() << endl;
+			}
+			*/
+			
+			//addWaypointsAndFirstEnemy();
+			
         }
-        test = true;
     }
+	
+	// Function to test if we can add waypoints using code only. Doesn't work yet
+	
+	// THE PROBLEM: WaypointController's getControllableEntity() returns null, so it won't track. How do we get the controlableEntity to NOT BE NULL???
+	
+	void TowerDefense::addWaypointsAndFirstEnemy()
+	{
+		SpaceShip *newShip = new SpaceShip(this->center_);
+		newShip->addTemplate("spaceshipassff");
+		
+		WaypointController *newController = new WaypointController(newShip);
+		newController->setAccuracy(3);
+		
+		Model *wayPoint1 = new Model(newController);
+		wayPoint1->setMeshSource("crate.mesh");	
+		wayPoint1->setPosition(7,-7,5);
+		wayPoint1->setScale(0.2);
+			
+		Model *wayPoint2 = new Model(newController);
+		wayPoint2->setMeshSource("crate.mesh");
+		wayPoint2->setPosition(7,7,5);
+		wayPoint2->setScale(0.2);
+			
+		newController->addWaypoint(wayPoint1);
+		newController->addWaypoint(wayPoint2);
+			
+		// The following line causes the game to crash
+//		newController -> getPlayer() -> startControl(newShip);
+		newShip->setController(newController);
+		newShip->setPosition(-7,-7,5);
+		newShip->setScale(0.1);
+		newShip->addSpeed(1);
+		
+		
+		
+//		this->center_->attach(newShip);
+	}
 	
 	/*
 	 void TowerDefense::playerEntered(PlayerInfo* player)

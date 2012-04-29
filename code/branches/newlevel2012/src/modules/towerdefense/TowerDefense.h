@@ -57,6 +57,7 @@ namespace orxonox
 		//virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 		//virtual void playerScored(PlayerInfo* player);
 		
+		
 		/*	Called by TowerDefenseCenterpoint upon game start 
 			The centerpoint is used to create towers
 		*/
@@ -71,6 +72,8 @@ namespace orxonox
 	private:
 //		WeakPtr<TowerDefenseCenterpoint> center_;
 		TowerDefenseCenterpoint *center_;
+		
+		void addWaypointsAndFirstEnemy();
     };
 }
 
