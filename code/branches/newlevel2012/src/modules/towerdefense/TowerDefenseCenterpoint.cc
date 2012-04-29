@@ -50,6 +50,8 @@ namespace orxonox
     {
         RegisterObject(TowerDefenseCenterpoint);
 
+		
+		
         this->width_ = 10;
         this->height_ = 11;
         this->towerTemplate_ = "";
@@ -88,10 +90,11 @@ namespace orxonox
     */
     void TowerDefenseCenterpoint::checkGametype()
     {
-        if (this->getGametype() != NULL && this->getGametype()->isA(Class(TowerDefense)))
+		if (this->getGametype() != NULL && this->getGametype()->isA(Class(TowerDefense)))
         {
-            //TowerDefense* TowerDefenseGametype = orxonox_cast<TowerDefense*>(this->getGametype().get());
-            //TowerDefenseGametype->setCenterpoint(this);
+			// Sets the centerpoint of the gametype. The gametype uses this to later spawn in towers, he needs the tower template stored in the center point
+            TowerDefense* towerDefenseGametype = orxonox_cast<TowerDefense*>(this->getGametype().get());
+            towerDefenseGametype->setCenterpoint(this);
         }
     }
 }

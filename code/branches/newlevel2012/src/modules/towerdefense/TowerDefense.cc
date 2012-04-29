@@ -59,101 +59,129 @@
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
 
+/* Part of a temporary hack to allow the player to add towers */
+#include "core/command/ConsoleCommand.h"
+
 namespace orxonox
 {
     CreateUnloadableFactory(TowerDefense);
-
-    TowerDefense::TowerDefense(BaseObject* creator) : Deathmatch(creator)
+	
+	TowerDefense::TowerDefense(BaseObject* creator) : Deathmatch(creator)
     {
         RegisterObject(TowerDefense);
-
+		
+		/* Temporary hack to allow the player to add towers */
+		this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
+		
     }
-
+	
+    TowerDefense::~TowerDefense()
+    {
+        if (this->isInitialized())
+        {
+            if( this->dedicatedAddTower_ )
+                delete this->dedicatedAddTower_;
+        }
+    }
+	
+	void TowerDefense::setCenterpoint(TowerDefenseCenterpoint *centerpoint)
+	{
+		orxout() << "got a centerpoint..." << endl;
+		
+		this->center_ = centerpoint;
+	}
+	
     void TowerDefense::start()
     {
         Deathmatch::start();
         orxout()<< "This is a way to display output on the terminal." <<endl;
-        //Tipp: Fenster-Modus über die Grafikeinstellungen einstellen.
-        //(dazu den Bulletpoint 'Fullscreen' entfernen, eine kleine Auflösung auswählen und auf 'Apply' klicken.)
     }
-    /*
-    void TowerDefense::end()
-    {
-        Deathmatch::end();
-
-        std::string message("The match has ended.");
-        ChatManager::message(message);
-    }
-    */
-
-
+	
+	/*
+	 void TowerDefense::end()
+	 {
+	 Deathmatch::end();
+	 
+	 std::string message("The match has ended.");
+	 ChatManager::message(message);
+	 }
+	 */
+	
+	void TowerDefense::addTower(int x, int y)
+	{
+		orxout()<< "Should add tower at (" << x << "," << y << ")" << endl;
+		
+		if (x > 16 || y > 16)
+		{
+			orxout() << "x and y should be between 1 and 16" << endl;
+			return;
+		}
+		
+		
+		
+		// TODO: create Tower mesh
+		// TODO: load Tower mesh
+	}
+	
 	void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
-
+		
         static bool test = false;
         if (!test)
         {
 			orxout()<< "First tick." <<endl;
-            spawnEnemy();
         }
         test = true;
     }
-
-	void TowerDefense::spawnEnemy()
-	{
-		//SpawnPoint *sp = *this->spawnpoints_.begin();
-
-		//Pawn* p = sp->spawn();
-	}
-
-/*
-    void TowerDefense::playerEntered(PlayerInfo* player)
-    {
-        Deathmatch::playerEntered(player);
-
-        const std::string& message = player->getName() + " entered the game";
-        ChatManager::message(message);
-    }
-
-    bool TowerDefense::playerLeft(PlayerInfo* player)
-    {
-        bool valid_player = Deathmatch::playerLeft(player);
-
-        if (valid_player)
-        {
-            const std::string& message = player->getName() + " left the game";
-            ChatManager::message(message);
-        }
-
-        return valid_player;
-    }
-
-
-    void TowerDefense::pawnKilled(Pawn* victim, Pawn* killer)
-    {
-        if (victim && victim->getPlayer())
-        {
-            std::string message;
-            if (killer)
-            {
-                if (killer->getPlayer())
-                    message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
-                else
-                    message = victim->getPlayer()->getName() + " was killed";
-            }
-            else
-                message = victim->getPlayer()->getName() + " died";
-
-            ChatManager::message(message);
-        }
-
-        Deathmatch::pawnKilled(victim, killer);
-    }
-
-    void TowerDefense::playerScored(PlayerInfo* player)
-    {
-        Gametype::playerScored(player);
-
-    }*/
+	
+	/*
+	 void TowerDefense::playerEntered(PlayerInfo* player)
+	 {
+	 Deathmatch::playerEntered(player);
+	 
+	 const std::string& message = player->getName() + " entered the game";
+	 ChatManager::message(message);
+	 }
+	 
+	 bool TowerDefense::playerLeft(PlayerInfo* player)
+	 {
+	 bool valid_player = Deathmatch::playerLeft(player);
+	 
+	 if (valid_player)
+	 {
+	 const std::string& message = player->getName() + " left the game";
+	 ChatManager::message(message);
+	 }
+	 
+	 return valid_player;
+	 }
+	 
+	 
+	 void TowerDefense::pawnKilled(Pawn* victim, Pawn* killer)
+	 {
+	 if (victim && victim->getPlayer())
+	 {
+	 std::string message;
+	 if (killer)
+	 {
+	 if (killer->getPlayer())
+	 message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
+	 else
+	 message = victim->getPlayer()->getName() + " was killed";
+	 }
+	 else
+	 message = victim->getPlayer()->getName() + " died";
+	 
+	 ChatManager::message(message);
+	 }
+	 
+	 Deathmatch::pawnKilled(victim, killer);
+	 }
+	 
+	 void TowerDefense::playerScored(PlayerInfo* player)
+	 {
+	 Gametype::playerScored(player);
+	 
+	 }*/
 }

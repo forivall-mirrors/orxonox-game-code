@@ -36,20 +36,28 @@ namespace orxonox
 {
     class _OrxonoxExport TowerDefense : public Deathmatch
     {
-        public:
-            TowerDefense(BaseObject* creator);
-            virtual ~TowerDefense() {}
-
-            virtual void start(); //<! The function is called when the gametype starts
-            //virtual void end();
-            virtual void tick(float dt);
-            //virtual void playerEntered(PlayerInfo* player);
-            //virtual bool playerLeft(PlayerInfo* player);
-
-            //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
-            //virtual void playerScored(PlayerInfo* player);
-		private:
-				void spawnEnemy();
+	public:
+		TowerDefense(BaseObject* creator);
+		virtual ~TowerDefense();
+		
+		virtual void start(); //<! The function is called when the gametype starts
+		//virtual void end();
+		virtual void tick(float dt);
+		//virtual void playerEntered(PlayerInfo* player);
+		//virtual bool playerLeft(PlayerInfo* player);
+		
+		//virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+		//virtual void playerScored(PlayerInfo* player);
+		
+		void setCenterpoint(TowerDefenseCenterpoint *centerpoint);
+		
+		/* Part of a temporary hack to allow the player to add towers */
+		void addTower(int x, int y);
+		ConsoleCommand* dedicatedAddTower_;
+		
+	private:
+//		WeakPtr<TowerDefenseCenterpoint> center_;
+		TowerDefenseCenterpoint *center_;
     };
 }
 
