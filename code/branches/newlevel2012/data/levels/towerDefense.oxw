@@ -35,8 +35,6 @@ das vom Spieler gesteuert wird gekoppelt.
 </Template>
 
 <!-- Loads the playfield mesh -->
-<!-- TODO: why don't you add Playfield_ME.mesh to the data repository ? : /orxonox/data_extern/models -->
-
 <Template name=playfield>
   <Pawn camerapositiontemplate=playfieldcameras>
     <attached>
@@ -45,9 +43,14 @@ das vom Spieler gesteuert wird gekoppelt.
   </Pawn>
 </Template>
 
-
-
-
+<!-- Template for a tower -->
+<Template name=towertemplate>
+  <Tower>
+    <attached>
+      <Model position="15,0,0" mesh="crate.mesh" scale=1 />
+    </attached>
+  </Tower>
+</Template>
 
 <Level gametype = "TowerDefense">
   <templates>
@@ -67,7 +70,7 @@ das vom Spieler gesteuert wird gekoppelt.
 	<!-- Spawns the camera, attached to a crate -->
     <SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
     
- 	<!--SpawnPoint team=1 position="0,0,30" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
+ 	<!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
  	
  	
  	
@@ -88,11 +91,20 @@ das vom Spieler gesteuert wird gekoppelt.
     </SpaceShip-->
     
 
-    <StaticEntity position="0,0,0" direction="1,0,0" collistionType=static mass=100000>
+	<!-- PlayField -->
+	<TowerDefenseCenterpoint 
+	name=towerdefensecenter 
+	width=16 
+	height=16 
+	towerTemplate=towertemplate 
+	position="0,0,0" 
+	direction="1,0,0" 
+	collistionType=static 
+	mass=100000>
         <attached>
             <Model position="0,0,0" orientation="1,1,1,1" mesh="Playfield_ME.mesh" scale3D="1,1,1" />
         </attached>
-    </StaticEntity>
+    </TowerDefenseCenterpoint>
 
   </Scene>
 </Level>
