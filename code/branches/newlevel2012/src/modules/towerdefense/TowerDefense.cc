@@ -62,6 +62,8 @@
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
 
+#include "chat/ChatManager.h"
+
 /* Part of a temporary hack to allow the player to add towers */
 #include "core/command/ConsoleCommand.h"
 
@@ -97,7 +99,20 @@ namespace orxonox
     void TowerDefense::start()
     {
         Deathmatch::start();
-        orxout()<< "This is a way to display output on the terminal." <<endl;
+		
+        orxout()<< "Adding towers for debug..." <<endl;
+		
+		addTower(0,15);
+		addTower(15,0);
+		
+		for (int i = 0 ; i <= 15; i++)
+		{
+			addTower(i,i);
+		}
+		
+		orxout()<< "Done" <<endl;
+		
+		ChatManager::message("Use the console command addTower x y to add towers");
     }
 	
 	/*
@@ -112,22 +127,21 @@ namespace orxonox
 	
 	void TowerDefense::addTower(int x, int y)
 	{
-		if (x > 16 || y > 16)
+		if (x > 15 || y > 15 || x < 0 || y < 0)
 		{
-			orxout() << "x and y should be between 1 and 16" << endl;
+			orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
 			return;
 		}
 		
-		orxout()<< "Should add tower at (" << x << "," << y << ")" << endl;
+		orxout()<< "Will add tower at (" << x << "," << y << ")" << endl;
 		
 		Tower* newTower = new Tower(this->center_);
 		newTower->addTemplate(this->center_->getTowerTemplate());
 		
 		this->center_->attach(newTower);
 		
-		newTower->setPosition(0,0,0);
+		newTower->setPosition(x-8,y-8,0);
 		newTower->setGame(this);
-		
 		
 		// TODO: create Tower mesh
 		// TODO: load Tower mesh

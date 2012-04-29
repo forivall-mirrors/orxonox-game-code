@@ -29,7 +29,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfieldcameras defaults=0>
   <Pawn>
     <camerapositions>
-      <CameraPosition position="0,0,20" absolute=true />
+      <CameraPosition position="0,0,20"/>
     </camerapositions>
   </Pawn>
 </Template>
@@ -38,16 +38,17 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfield>
   <Pawn camerapositiontemplate=playfieldcameras>
     <attached>
-      <Model position="0,0,0" orientation="1,1,1,1" mesh="crate.mesh" scale3D="1,1,1" /> <!-- the camera is attached to this -->
+      <Model position="0,0,0" mesh="cylinder.mesh" scale3D="1,1,1" /> <!-- the camera is attached to this -->
     </attached>
   </Pawn>
 </Template>
+
 
 <!-- Template for a tower -->
 <Template name=towertemplate>
   <Tower>
     <attached>
-      <Model position="15,0,0" mesh="cube_green.mesh" scale=1 />
+      <Model position="0,0,0" scale3D="0.5,0.5,2" mesh="cube_green.mesh" />
     </attached>
   </Tower>
 </Template>
@@ -65,13 +66,14 @@ das vom Spieler gesteuert wird gekoppelt.
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <!--SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+    
     
 	<!-- Spawns the camera, attached to a crate -->
-    <SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
-    
+	<SpawnPoint team=0 position="0,0,0" spawnclass=Pawn pawndesign=playfield />
+
+	
  	<!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
- 	
+ 	<!--SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
  	
  	
  	 <!--SpaceShip position="-10,0,20" lookat="0,0,0">
@@ -98,11 +100,21 @@ das vom Spieler gesteuert wird gekoppelt.
 	height=16 
 	towerTemplate=towertemplate 
 	position="0,0,0" 
-	direction="1,0,0" 
+	direction="0,0,0" 
 	collistionType=static 
 	mass=100000>
-        <attached>
-            <Model position="0,0,0" orientation="1,1,1,1" mesh="Playfield_ME.mesh" scale3D="1,1,1" />
+		 
+		 <attached>
+		
+			<Model position="-0.5,-0.5,0" mesh="Playfield_ME.mesh" scale=0.8 />
+			
+			<!--Model position="-8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
+			<!--Model position="-8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
+			<!--Model position="8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
+			<!--Model position="8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
+			
+			<!--Model position="0,0,50" direction="0,0,0"  mesh="rocket.mesh"  scale3D="0.3,0.3,0.3" /-->
+			
         </attached>
     </TowerDefenseCenterpoint>
 
