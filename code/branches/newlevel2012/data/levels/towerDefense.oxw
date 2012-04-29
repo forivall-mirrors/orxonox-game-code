@@ -29,7 +29,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfieldcameras defaults=0>
   <Pawn>
     <camerapositions>
-      <CameraPosition position="200,0,350" absolute=true />
+      <CameraPosition position="0,0,20" absolute=true />
     </camerapositions>
   </Pawn>
 </Template>
@@ -40,7 +40,7 @@ das vom Spieler gesteuert wird gekoppelt.
 <Template name=playfield>
   <Pawn camerapositiontemplate=playfieldcameras>
     <attached>
-      <Model position="0,0,0" orientation="1,1,1,1" mesh="Playfield_ME.mesh" scale3D="10,10,10" /> <!-- crate.mesh -->
+      <Model position="0,0,0" orientation="1,1,1,1" mesh="crate.mesh" scale3D="1,1,1" /> <!-- the camera is attached to this -->
     </attached>
   </Pawn>
 </Template>
@@ -64,13 +64,14 @@ das vom Spieler gesteuert wird gekoppelt.
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <!--SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
     
-    <SpawnPoint team=0 position="200,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
+	<!-- Spawns the camera, attached to a crate -->
+    <SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=Pawn pawndesign=playfield />
     
  	<!--SpawnPoint team=1 position="0,0,30" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
  	
  	
  	
- 	 <SpaceShip position="-10,0,20" lookat="0,0,0">
+ 	 <!--SpaceShip position="-10,0,20" lookat="0,0,0">
       <templates>
         <Template link=spaceshipassff />
       </templates>
@@ -84,14 +85,14 @@ das vom Spieler gesteuert wird gekoppelt.
           </waypoints>
         </WaypointController>
       </controller>
-    </SpaceShip>
+    </SpaceShip-->
     
 
-    <!--StaticEntity position="0,0,0" direction="0,0,0" collistionType=static mass=100000>
+    <StaticEntity position="0,0,0" direction="1,0,0" collistionType=static mass=100000>
         <attached>
-            <Model position="0,0,0" mesh="Playfield_ME.mesh" scale3D="10,10,10" />
+            <Model position="0,0,0" orientation="1,1,1,1" mesh="Playfield_ME.mesh" scale3D="1,1,1" />
         </attached>
-    </StaticEntity-->
+    </StaticEntity>
 
   </Scene>
 </Level>

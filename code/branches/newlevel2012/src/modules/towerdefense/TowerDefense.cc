@@ -102,9 +102,9 @@ namespace orxonox
 
 	void TowerDefense::spawnEnemy()
 	{
-		SpawnPoint *sp = *this->spawnpoints_.begin();
+		//SpawnPoint *sp = *this->spawnpoints_.begin();
 
-		Pawn* p = sp->spawn();
+		//Pawn* p = sp->spawn();
 	}
 
 /*
