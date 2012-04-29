@@ -65,7 +65,8 @@
 namespace orxonox
 {
     class TowerDefense;
-    //class TowerDefenseCenterpoint;
+	class Tower;
+    class TowerDefenseCenterpoint;
 }
 
 #endif /* _TowerDefensePrereqs_H__ */

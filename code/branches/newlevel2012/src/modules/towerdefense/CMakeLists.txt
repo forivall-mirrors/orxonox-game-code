@@ -1,5 +1,6 @@
 SET_SOURCE_FILES(TOWERDEFENSE_SRC_FILES
   TowerDefense.cc
+  Tower.cc
   TowerDefenseCenterpoint.cc
 )
 
