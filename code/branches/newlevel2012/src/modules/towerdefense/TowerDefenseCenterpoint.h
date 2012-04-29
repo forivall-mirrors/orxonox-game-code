@@ -27,10 +27,11 @@
  */
 
 /**
-    @file TowerDefenseCenterpoint.h
-    @brief Declaration of the TowerDefenseCenterpoint class.
-    @ingroup TowerDefense
-*/
+ @brief
+ See TowerDefenseReadme.txt for Information.
+ @ingroup TowerDefense
+ */
+
 
 #ifndef _TowerDefenseCenterpoint_H__
 #define _TowerDefenseCenterpoint_H__
@@ -38,56 +39,34 @@
 #include "towerdefense/TowerDefensePrereqs.h"
 
 #include <string>
-
 #include <util/Math.h>
 
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    
-    /**
-    @brief
-        
-    
-    @author
-        
-    @ingroup TowerDefense
-    */
     class _TowerDefenseExport TowerDefenseCenterpoint : public StaticEntity
     {
         public:
-            TowerDefenseCenterpoint(BaseObject* creator); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually TowerDefense.
+            TowerDefenseCenterpoint(BaseObject* creator);
             virtual ~TowerDefenseCenterpoint() {}
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method to create a TowerDefenseCenterpoint through XML.
-
-            virtual void changedGametype(); //!< Is called when the gametype has changed.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedGametype();
             
             /**
-            @brief Set the width of the playing field.
-            @param width The width in number of tiles.
+            @brief The width and hight in number of tiles. Default is 15 for both.
             */
             void setWidth(unsigned int width)
                 { this->width_ = width; }
-            /**
-            @brief Get the width of the playing field.
-            @return Returns the width in number of tiles.
-            */
-            unsigned int getWidth(void) const
+            
+			unsigned int getWidth(void) const
                 { return this->width_; }
                 
-            /**
-            @brief Set the height of the playing field.
-            @param height The height in number of tiles.
-            */
             void setHeight(unsigned int height)
                 { this->height_ = height; }
-            /**
-            @brief Get the height of the playing field.
-            @return Returns the height in number of tiles.
-            */
-            unsigned int getHeight(void) const
+            
+			unsigned int getHeight(void) const
                 { return this->height_; }
                 
             /**
@@ -96,21 +75,16 @@ namespace orxonox
             */
             void setTowerTemplate(const std::string& templateName)
                 { this->towerTemplate_ = templateName; }
-            /**
-            @brief Get the template for the towers.
-            @return Returns the template name to be applied to each tower.
-            */
-            const std::string& getTowerTemplate(void) const
-                { return this->towerTemplate_; }
             
+			const std::string& getTowerTemplate(void) const
+                { return this->towerTemplate_; }
 
         private:
-            void checkGametype(); //!< Checks whether the gametype is TowerDefense and if it is, sets its centerpoint.
+            void checkGametype();
             
             unsigned int width_;
             unsigned int height_;
             std::string towerTemplate_;
-
     };
 }
 

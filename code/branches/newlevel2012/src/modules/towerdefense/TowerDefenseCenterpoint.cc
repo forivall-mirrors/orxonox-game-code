@@ -49,14 +49,12 @@ namespace orxonox
     TowerDefenseCenterpoint::TowerDefenseCenterpoint(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(TowerDefenseCenterpoint);
-
-		
-		
-        this->width_ = 10;
-        this->height_ = 11;
+ 
+ 	   	this->width_ = 15;
+        this->height_ = 15;
         this->towerTemplate_ = "";
         
-        this->checkGametype();
+		this->checkGametype();
     }
 
     /**
@@ -67,8 +65,8 @@ namespace orxonox
     {
         SUPER(TowerDefenseCenterpoint, XMLPort, xmlelement, mode);
 
-        XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode); // die Breite
-        XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, setWidth, xmlelement, mode); // die Grösse
+        XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode);
+        XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, setWidth, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "towerTemplate", setTowerTemplate, getTowerTemplate, xmlelement, mode);
     }
 

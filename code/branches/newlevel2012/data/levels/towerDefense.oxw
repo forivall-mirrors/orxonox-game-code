@@ -1,4 +1,7 @@
 <!-- TODO: Update the level's image-->
+
+<!-- See TowerDefenseReadme.txt for Information on this file -->
+
 <LevelInfo
  name = "Tower Defense"
  description = "Defend your Spacestation from incoming waves."
@@ -16,14 +19,6 @@
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
 ?>
-
-<!--  Hallo erstmal.
-Ich habe das Grundgerüst des Levels mal zum Laufen gebracht.
-Bei mir hat es das Playfield_ME.mesh allerdings nicht angezeigt; deswegen habe ich mit dem crate.mesh als testobjekt gearbeitet.
-Das Level macht genau das was ihr vermutlich erreichen wolltet. Wahrscheinlich wird die Funktionalität der "statischen Kamera" aber
-bloß in einer abgewandelten Art umgesetzt: In Pong und Tetris sind die Kameras nicht an das Spielfeld, sondern an ein ControllableEntity,
-das vom Spieler gesteuert wird gekoppelt.
--->
 
 <!-- Specify the position of the camera -->
 <Template name=centerpointmarkcamera defaults=0>

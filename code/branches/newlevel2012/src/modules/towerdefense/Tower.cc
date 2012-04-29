@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+/* Not implemented fully */
+
 #include "Tower.h"
 
 #include "core/CoreIncludes.h"

@@ -25,6 +25,14 @@
  *      ...
  *
  */
+	 
+ /**
+	 @brief
+	 GameType class for TowerDefense. See TowerDefenseReadme.txt for Information.
+	 
+	 @ingroup TowerDefense
+ */
+	 
 
 #ifndef _TowerDefense_H__
 #define _TowerDefense_H__

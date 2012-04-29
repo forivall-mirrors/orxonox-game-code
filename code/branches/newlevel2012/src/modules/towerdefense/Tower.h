@@ -6,6 +6,14 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+/**
+@brief
+See TowerDefenseReadme.txt for Information.
+    
+@ingroup TowerDefense
+*/
+
+
 #ifndef Orxonox_Tower_h
 #define Orxonox_Tower_h
 
@@ -20,8 +28,8 @@ namespace orxonox
 		Tower(BaseObject* creator);
 		virtual ~Tower() {};
 		
-		virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
-		virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
+		virtual void moveFrontBack(const Vector2& value);
+		virtual void moveRightLeft(const Vector2& value);
 		
 		void setGame(TowerDefense* towerdefense)
 		{ assert(towerdefense); game_ = towerdefense; }
