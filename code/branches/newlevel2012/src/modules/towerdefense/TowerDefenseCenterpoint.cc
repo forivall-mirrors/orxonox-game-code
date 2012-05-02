@@ -68,6 +68,12 @@ namespace orxonox
         XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, setWidth, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "towerTemplate", setTowerTemplate, getTowerTemplate, xmlelement, mode);
+        //TODO: add XMLPortObject(TowerDefenseCenterpoint, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
+        // This was copied and shightly modified from WaypointController.cc ; there are no getters and setters and no membervariable yet
+        // The centerpoint should have all waypoints for "attached" to it. By using this function you can seperately add waypoints
+        // When you spawn a new enemy you should let it be controlled by a WaypointController. And that controller should get the waypoints.
+
+        // Alternatively you can manage the waypoints directly in TowerDefense.cc
     }
 
     /**

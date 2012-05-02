@@ -69,6 +69,11 @@ namespace orxonox
 		/* Part of a temporary hack to allow the player to add towers */
 		ConsoleCommand* dedicatedAddTower_;
 		
+		//TODO: void spawnNewWave()
+	    //TODO: create a timer which regularly calls the spawnNewWave function  (time driven)
+		//      or spawn a new wave when the old wave has been killed           (event driven)
+
+
 	private:
 //		WeakPtr<TowerDefenseCenterpoint> center_;
 		TowerDefenseCenterpoint *center_;

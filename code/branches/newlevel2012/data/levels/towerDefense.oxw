@@ -98,16 +98,22 @@
 	mass=100000>
 		 
 		 <attached>
-		
 			<Model position="-0.5,-0.5,0" mesh="Playfield_ME.mesh" scale=0.8 />
-			
+            <!--Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" /--> <!-- Only temporary needed to help align the collisionshape -->
 			<!-- This was used to mark the playfield, let's let it be here for now -->
 			<!--Model position="-8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
 			<!--Model position="-8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
 			<!--Model position="8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
 			<!--Model position="8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
-			
         </attached>
+        <collisionShapes> <!-- The collisionshape forbids other worldentities that have a collisionShape to fly through it.
+        
+                               TODO: Find correct size for the collisionshape; since a collisionShape is invisible
+                               I added the crate wich currently has the same dimensions as the collisionshape.
+                               You have to adjust the crate's scale3D as well as the collisionshape's halfExtens to
+                               find the proper shape. -->
+           <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
     </TowerDefenseCenterpoint>
 
   </Scene>

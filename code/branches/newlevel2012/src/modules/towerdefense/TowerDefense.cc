@@ -25,10 +25,6 @@
  *      ...
  *
  *NACHRICHT:
- * Ich habe die Klasse Deathmatch einfach per Copy&Paste&Rename als Vorlage für euren Deathmatch genommen.
- * Ein Deathmatch erbt vom Gametype. Der einzige Unterschied zum Gametype ist, dass hier ein bisschen
- * Textausgabe stattfindet. Sollte das Später nicht erwünscht sein, könnt ihr einfach die Gametype-Klasse
- * an die Stelle von Deathmatch setzten.
  *
  * Hier empfehle ich euch die gesamte Spielogik unter zu bringen. Viele Funktionen werden automatisch
  * bei gewissen Ereignissen aufgerufen bzw. lösen Ereignisse aus
@@ -51,6 +47,29 @@
  * Ähnlich könnt ihr vorgehen, um einen Turm zu erzeugen. (Zusätzlich braucht ein Turm noch einen Controller)
  * z.B: WaypointPatrolController. Wenn kein Team zugewiesen wurde bekämpft ein WaypointPatrolController alles,
  * was in seiner Reichweite liegt.
+ *
+ *
+ *HUD:
+ * Ein Gametype kann ein HUD (Head up Display haben.) Z.B: hat Pong eine Anzeige welcher Spieler wieviele Punkte hat.
+ * Generell kann man a) Grafiken oder b) Zeichen in einer HUD anzeigen.
+ * Fuer den ersten Schritt reicht reiner Text.
+ *
+ * a)
+ * PongScore.cc uebernehmen und eigene Klasse draus machen.
+ * Wenn ihr bloss anzeigen wollt wieviele Punkte der Spieler bereits erspielt hat (Punkte = Kapital fuer neue Tuerme) dann orientiert ihr euch an
+ * TetrisScore.cc (im pCuts branch): http://www.orxonox.net/browser/code/branches/pCuts/src/modules/tetris/TetrisScore.cc
+ * Ich habe TetrisScore lediglich dazu gebraucht, um eine Variable auf dem HUD auszugeben. Ein Objekt fuer statischen Text gibt es bereits.
+ *
+ * b)
+ * Im naesten Schritt erstellt man die Vorlage fuer das HUD-Objekt: siehe /data/overlays/pongHUD
+ * OverlayText ist eine Vorlage fuer statischen text zb: "Points Scored:". Aus mir nicht erklaerlichen Gruenden sollte man die OverlayText
+ * Objekte immer erst nach dem PongScore anlegen.
+ *
+ * c) Im TowerDefense gamtype muss im Constructor noch das HUD-Template gesetzt werden.
+ *
+ * d) in CMakeLists.txt noch das Module includen das fuer die Overlays zustaendig ist. Siehe das gleiche File im Pong module.
+ *
+ *
  *
  */
 
@@ -118,6 +137,9 @@ namespace orxonox
 		orxout() << "Done" << endl;
 		
 		ChatManager::message("Use the console command addTower x y to add towers");
+
+		//TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
+
 	}
 	
 	void TowerDefense::end()
@@ -130,7 +152,7 @@ namespace orxonox
 	
 	void TowerDefense::addTower(int x, int y)
 	{
-		if (x > 15 || y > 15 || x < 0 || y < 0)
+		if (x > 15 || y > 15 || x < 0 || y < 0)//Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
 		{
 			orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
 			return;
@@ -145,6 +167,7 @@ namespace orxonox
 		
 		newTower->setPosition(x-8,y-8,0);
 		newTower->setGame(this);
+		//TODO: Save the Tower in a Vector. I would suggest std::vector< std::vector<Tower*> > towers_ as a protected member variable;
 		
 		// TODO: create Tower mesh
 		// TODO: load Tower mesh

@@ -30,7 +30,19 @@ namespace orxonox
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisStone::enableMovement, this)));
 		*/
     }
-	
+	// This function is called whenever a player presses the up or the down key.
+    // You have to implement what happens when the up or the down key is pressed.
+    // value.x < 0 means: down key is pressed.
+    // I suggest to create a new class which is a controllable entity I will refer to as "TowerMover". This is the controllable entity that the
+    // player controls in order to move the tower along the centerpoint and in order to place the tower at the appropriate position.
+    //
+
+    // The tower itsself is controlled by a WayPointPatroController at the instance you place it on the centerpoint.
+    //(don't forget to set the team_ parameter such that all tower are in the same team)
+
+    //How to move a tower: simply attach the tower to the TowerMover
+    //How to place a tower: detach the tower from the TowerMover
+
     /**
 	 @brief
 	 Overloaded the function to rotate the stone.
