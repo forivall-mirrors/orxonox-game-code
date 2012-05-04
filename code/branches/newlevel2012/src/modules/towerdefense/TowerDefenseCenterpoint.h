@@ -68,6 +68,15 @@ namespace orxonox
             
 			unsigned int getHeight(void) const
                 { return this->height_; }
+			
+			/**
+			@brief How to convert to world coordinates, e.g. that 0,15 is not at -8,-8 but at -80,-80 (if scale would be 10)
+			*/
+			void setTileScale(unsigned int tileScale)
+				{ this->tileScale_ = tileScale; }
+			
+			unsigned int getTileScale(void) const
+				{ return this->tileScale_; }
                 
             /**
             @brief Set the template for the towers.
@@ -84,6 +93,8 @@ namespace orxonox
             
             unsigned int width_;
             unsigned int height_;
+			unsigned int tileScale_;
+			
             std::string towerTemplate_;
     };
 }

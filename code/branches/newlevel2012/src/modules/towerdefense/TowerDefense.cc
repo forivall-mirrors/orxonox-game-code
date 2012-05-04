@@ -152,20 +152,27 @@ namespace orxonox
 	
 	void TowerDefense::addTower(int x, int y)
 	{
-		if (x > 15 || y > 15 || x < 0 || y < 0)//Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
+		unsigned int width = this->center_->getWidth();
+		unsigned int height = this->center_->getHeight();
+		int tileScale = (int) this->center_->getTileScale();
+		
+		orxout() << "tile scale = " << tileScale << endl;
+		
+		if (x > 15 || y > 15 || x < 0 || y < 0)
 		{
+			//Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
 			orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
 			return;
 		}
 		
-		orxout()<< "Will add tower at (" << x << "," << y << ")" << endl;
+		orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
 		
 		Tower* newTower = new Tower(this->center_);
 		newTower->addTemplate(this->center_->getTowerTemplate());
 		
 		this->center_->attach(newTower);
 		
-		newTower->setPosition(x-8,y-8,0);
+		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 0);
 		newTower->setGame(this);
 		//TODO: Save the Tower in a Vector. I would suggest std::vector< std::vector<Tower*> > towers_ as a protected member variable;
 		

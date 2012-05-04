@@ -66,8 +66,10 @@ namespace orxonox
         SUPER(TowerDefenseCenterpoint, XMLPort, xmlelement, mode);
 
         XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode);
-        XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, setWidth, xmlelement, mode);
+        XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, getHeight, xmlelement, mode);
+		XMLPortParam(TowerDefenseCenterpoint, "tileScale", setTileScale, getTileScale, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "towerTemplate", setTowerTemplate, getTowerTemplate, xmlelement, mode);
+		
         //TODO: add XMLPortObject(TowerDefenseCenterpoint, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
         // This was copied and shightly modified from WaypointController.cc ; there are no getters and setters and no membervariable yet
         // The centerpoint should have all waypoints for "attached" to it. By using this function you can seperately add waypoints
