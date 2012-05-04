@@ -66,7 +66,6 @@ namespace orxonox
 
 		orxout() << "(" << this->waypoints_.size() << ") entity: " << this->getControllableEntity() << endl;
 
-
         if (this->waypoints_.size() == 0 || !this->getControllableEntity())
             return;
 
