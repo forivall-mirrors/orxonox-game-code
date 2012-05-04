@@ -219,11 +219,12 @@ namespace orxonox
 		newController->addWaypoint(wayPoint2);
 			
 		// The following line causes the game to crash
-//		newController -> getPlayer() -> startControl(newShip);
+
 		newShip->setController(newController);
+//		newController -> getPlayer() -> startControl(newShip);
 		newShip->setPosition(-7,-7,5);
 		newShip->setScale(0.1);
-		newShip->addSpeed(1);
+		//newShip->addSpeed(1);
 		
 		
 		
