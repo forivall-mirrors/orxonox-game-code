@@ -149,14 +149,37 @@ namespace orxonox
 		ChatManager::message("Match is over");
 	}
 	
+	bool TowerDefense::hasTower(int x, int y)
+	{
+		for(std::vector<coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it) 
+		{
+			coordinate currentCoordinates = (coordinate) (*it);
+			if (currentCoordinates.x == x && currentCoordinates.y == y)
+				return true;
+		}
+		
+		return false;
+	}
 	
 	void TowerDefense::addTower(int x, int y)
 	{
+		if (this->hasTower(x,y))
+		{
+			orxout() << "tower exists!!" << endl;
+			return;
+		}
+		
+		coordinate newTowerCooridnates;
+		newTowerCooridnates.x = x; newTowerCooridnates.y = y;
+		addedTowersCoordinates_.push_back(newTowerCooridnates);
+		
 		unsigned int width = this->center_->getWidth();
 		unsigned int height = this->center_->getHeight();
 		int tileScale = (int) this->center_->getTileScale();
 		
 		orxout() << "tile scale = " << tileScale << endl;
+		
+		
 		
 		if (x > 15 || y > 15 || x < 0 || y < 0)
 		{
@@ -172,8 +195,9 @@ namespace orxonox
 		
 		this->center_->attach(newTower);
 		
-		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 0);
+		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 100);
 		newTower->setGame(this);
+		
 		//TODO: Save the Tower in a Vector. I would suggest std::vector< std::vector<Tower*> > towers_ as a protected member variable;
 		
 		// TODO: create Tower mesh

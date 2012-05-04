@@ -77,6 +77,19 @@ namespace orxonox
 	private:
 //		WeakPtr<TowerDefenseCenterpoint> center_;
 		TowerDefenseCenterpoint *center_;
+	
+	
+		bool hasTower(int x, int y);
+		
+		typedef struct {
+			int x;
+			int y;
+		} coordinate; 
+		
+	
+		
+		std::vector<coordinate> addedTowersCoordinates_;
+		std::vector<Tower*> towers_;
 		
 		void addWaypointsAndFirstEnemy();
     };
