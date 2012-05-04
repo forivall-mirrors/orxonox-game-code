@@ -43,7 +43,7 @@
 <Template name=towertemplate>
   <Tower>
     <attached>
-      <Model position="0,0,0" scale3D="0.5,0.5,4" mesh="cube_green.mesh" />
+      <Model position="0,0,0" scale=0.25 mesh="Tower_ME.mesh" />
     </attached>
   </Tower>
 </Template>
