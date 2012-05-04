@@ -233,7 +233,9 @@ namespace orxonox
         // apply multiplier
     	Pawn *test = dynamic_cast<Pawn *>(originator);
     	if( test != NULL )
+    	{ orxout() << "Test " << damage << endl;
     	  damage *= originator->getDamageMultiplier();
+    	}
 
     	if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {

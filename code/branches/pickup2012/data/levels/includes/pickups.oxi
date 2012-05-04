@@ -209,6 +209,18 @@
     </pickup>
 </PickupRepresentation>
 
+<!-- DamageBoost Pickup -->
+
+<PickupRepresentation
+    pickupName = "DamageBoost Pickup"
+    pickupDescription = "Multiplies the ship damage."
+    spawnerTemplate = "damageboostpickupRepresentation"
+>
+    <pickup>
+        <DamageBoostPickup template=damageboostpickup />
+    </pickup>
+</PickupRepresentation>
+
 <!-- Shrink Pickup -->
 
 <PickupRepresentation

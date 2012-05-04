@@ -217,14 +217,14 @@
 
 <!-- DamageBoost pickups -->
 
-<Template name=normaldamageboostpickupRepresentation>
+<Template name=damageboostpickupRepresentation>
     <PickupRepresentation>
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0.99,0.96,0.52" material="Sphere2" scale=0.5>
+                    <Billboard position="0,0,0" colour="0.10,0.20,0.30" material="Sphere2" scale=0.1 >
                         <attached>
-                            <Billboard position="0,0,0" colour="0.98,0.94,0.22" material="3arrowsup" scale=0.5 />
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damage" scale=0.7 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -233,9 +233,10 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=normaldamageboostpickup>
+<Template name=damageboostpickup>
   <DamageBoostPickup
     duration = 10.0
+    damageMultiplier = 20.0
     activationType = "immediate"
     durationType = "continuous"
   />

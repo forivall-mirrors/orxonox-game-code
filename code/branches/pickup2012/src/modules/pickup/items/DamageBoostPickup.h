@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Kevin Lengauer
  *   Co-authors:
  *      ...
  *
@@ -52,20 +52,9 @@ namespace orxonox {
             virtual ~DamageBoostPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a DamageBoostPickup object through XML.
-            // commented out cuz was not used
-            // virtual void tick(float dt); //!< Is called every tick.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
-
-            /**
-            @brief Get the damageboost that is transferred to the Pawn upon usage of this pickup.
-            @return Returns the damageboost.
-            */
-            // Commentend, may not be used
-            // inline float setDamageMultiplier(void) const
-            //    { ship->setMultiplier(); }
-
 
     	    /**
             @brief Get the time the DamagePickup lasts.
@@ -76,11 +65,12 @@ namespace orxonox {
             inline void setDuration( float duration );
 
 
-            // we need these methods to set the default damage multiplier from XML
-            // not that beautiful yet
-            inline void setDefaultDamageMultiplier(float multiplier)
-                { this->damageMultiplier_ = multiplier; }
-            inline float getDefaultDamageMultiplier()
+
+            /**
+             @brief set Damage multiplier
+             @param multiplier The default damage multiplier to set
+             */
+            inline float getDamageMultiplier()
                 { return this->damageMultiplier_; }
 
 
@@ -88,14 +78,13 @@ namespace orxonox {
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
+            void setDamageMultiplier(float damageMultiplier);
 
-            // void setDamageBoost(float damageBoost);//!< Sets the damage boost.
-            // void setDamageSave(float damageSave); //!< Saves the original damage.
 
         private:
             void initialize(void); //!< Initializes the member variables.
             Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
-            SpaceShip* carrierToSpaceShipHelper(void);
+            SpaceShip* carrierToSpaceShipHelper(void); //!< Helper to transform the PickupCarrier to a SpaceShip, and throw an error message if the conversion fails.
             void pickupTimerCallback(void);
 
 

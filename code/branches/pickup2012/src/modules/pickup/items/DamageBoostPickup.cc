@@ -20,15 +20,15 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Eric Beier
+ *      Kevin Lengauer
  *   Co-authors:
  *      ...
  *
  */
 
 /**
-    @file SpeedPickup.cc
-    @brief Implementation of the SpeedPickup class.
+    @file DamageBoostPickup.cc
+    @brief Implementation of the DamageBoostPickup class.
 */
 
 #include "DamageBoostPickup.h"
@@ -70,7 +70,7 @@ namespace orxonox
     void DamageBoostPickup::initialize(void)
     {
         this->duration_ = 0.0f;
-        this->damageMultiplier_ = 20.0f;
+        this->damageMultiplier_ = 1.0f; //The default damage multiplier.
         //Defines who is allowed to pick up the pickup.
         this->addTarget(ClassIdentifier<SpaceShip>::getIdentifier());
     }
@@ -104,10 +104,21 @@ namespace orxonox
         SUPER(DamageBoostPickup, XMLPort, xmlelement, mode);
 
         XMLPortParam(DamageBoostPickup, "duration", setDuration, getDuration, xmlelement, mode);
-        XMLPortParam(DamageBoostPickup, "damageMultiplier", setDefaultDamageMultiplier, getDefaultDamageMultiplier, xmlelement, mode);
+        XMLPortParam(DamageBoostPickup, "damageMultiplier", setDamageMultiplier, getDamageMultiplier, xmlelement, mode);
 
         this->initializeIdentifier();
     }
+
+    // Work in Progress setDamage Function
+    void DamageBoostPickup::setDamageMultiplier(float damageMultiplier)
+    {
+        if(damageMultiplier >= 1.0f)
+        {
+            this->damageMultiplier_ = damageMultiplier;
+            orxout() << "Set Damage " << damageMultiplier << endl;
+        }
+    }
+
 
     /**
     @brief
@@ -137,10 +148,10 @@ namespace orxonox
                     this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&DamageBoostPickup::pickupTimerCallback, this)));
                 }
             }
-            // NOTE: commented this since its use was not apparent
-            // ship->getCreator();
 
+            // Saves the old default Damage that is needed to restore the original damage
             this->olddamageMultiplier_ = ship->getDamageMultiplier();
+            // Sets the new Damage with the damage multiplier.
             ship->setDamageMultiplier( this->damageMultiplier_ );
         }
         else
@@ -213,21 +224,15 @@ namespace orxonox
         }
         else
         {
-            orxout(internal_error, context::pickups) << "Invalid duration in SpeedPickup." << endl;
+            orxout(internal_error, context::pickups) << "Invalid duration in DamagePickup." << endl;
             this->duration_ = 0.0f;
         }
     }
 
-   /* void DamageBoostPickup::setDamageBoost(float damageBoost)
-       {
-
-       }
-    void DamageBoostPickup::setDamageSave(float damageSave)
-    {
-
-    }
+    /**
+    @brief
+        Helper method. Is called by the Timer as soon as it expires.
     */
-
     void DamageBoostPickup::pickupTimerCallback(void)
     {
         this->setUsed(false);

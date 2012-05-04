@@ -170,9 +170,9 @@
     
     <!-- DamageBoost pickup -->
     
-    <PickupSpawner position="-100,300,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+    <PickupSpawner position="-50,75,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
       <pickup>
-        <DamageBoostPickup template=normaldamageboostpickup />
+        <DamageBoostPickup template=damageboostpickup />
       </pickup>
     </PickupSpawner>
     
