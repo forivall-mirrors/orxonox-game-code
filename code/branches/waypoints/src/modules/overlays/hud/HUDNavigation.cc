@@ -35,6 +35,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
+#include <OgreEntity.h>
 
 #include "util/Math.h"
 #include "util/Convert.h"
@@ -79,6 +80,10 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     this->setTextSize ( 0.05f );
     this->setNavMarkerSize ( 0.05f );
     this->setDetectionLimit( 10000.0f ); 
+
+    Ogre::Entity* ent = this->getScene()->getSceneManager()->createEntity("Arrow3D", "Arrow3D.mesh");
+    this->add3DMesh(ent);
+    this->overlay3d_->setPosition(0, 0, -10);
 }
 
 HUDNavigation::~HUDNavigation()

@@ -41,6 +41,7 @@
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
 #include <OgrePass.h>
+#include <OgreEntity.h>
 
 #include "util/Convert.h"
 #include "util/Exception.h"
@@ -82,6 +83,9 @@ namespace orxonox
             Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
             "OrxonoxOverlay_background_" + multi_cast<std::string>(hudOverlayCounter_s++)));
         this->overlay_->add2D(this->background_);
+
+        overlay3d_ = new Ogre::SceneNode(NULL);
+        this->overlay_->add3D(overlay3d_);
 
         // Get aspect ratio from the render window. Later on, we get informed automatically
         this->windowAspectRatio_ = static_cast<float>(this->getWindowWidth()) / this->getWindowHeight();
@@ -447,4 +451,9 @@ namespace orxonox
         Ogre::TextureUnitState* tempTx = ptr->getTechnique(0)->getPass(0)->getTextureUnitState(0);
         tempTx->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour);
     }
+    void OrxonoxOverlay::add3DMesh(Ogre::Entity* entity)
+    {
+    	this->overlay3d_->attachObject(entity);
+    }
+
 }
