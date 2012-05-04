@@ -41,28 +41,33 @@ gametype = SpaceRace
 	<RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="100" checkpointindex="0" islast="false" nextcheckpoints="1,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+	
+<!--
+		<Model position="0,0,55" mesh="testcube.mesh" scale3D="110,20,20" />
+		<Model position="0,0,-55" mesh="testcube.mesh" scale3D="110,20,20" />
+		<Model position="55,0,0" mesh="testcube.mesh" scale3D="20,20,110" />
+		<Model position="-55,0,0" mesh="testcube.mesh" scale3D="20,20,110" />
 
-	<!--
-		<Model position="27.5,0,-27.5" mesh="testcube.mesh" scale3D="10,10,10" />
-		<Model position="55,0,0" mesh="testcube.mesh" scale3D="10,10,10" />
-		<Model position="-27.5,0,-27.5" mesh="testcube.mesh" scale3D="10,10,10" />
-		<Model position="-55,0,0" mesh="testcube.mesh" scale3D="10,10,10" />
 
-		-->
+-->
+
 
         </attached>
 
+
+
 	<collisionShapes>
 
-	<!--
-            	<BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="27.5,0,-27.5"      halfExtents="55, 10, 10" />
-		<BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
-		<BoxCollisionShape position="-27.5,0,-27.5"      halfExtents="10, 10, 55" />
-            	<BoxCollisionShape position="-55,0,0"     halfExtents="55, 10, 10" />
 
-		--> 
+             <BoxCollisionShape position="0,0,220"     halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
+            <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
+
+	 
         </collisionShapes>
+
+
 
 	
     </RaceCheckPoint>
