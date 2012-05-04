@@ -18,6 +18,7 @@
 <?lua
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
+  include("templates/tower.oxt")
 ?>
 
 <!-- Specify the position of the camera -->
@@ -40,13 +41,13 @@
 
 
 <!-- Template for a tower -->
-<Template name=towertemplate>
+<!--Template name=towertemplate>
   <Tower>
     <attached>
-      <Model position="0,0,0" scale=2.5 mesh="Tower_ME.mesh" />
+      <Model position="0,0,0" scale=0.25 mesh="Tower_ME.mesh" />
     </attached>
   </Tower>
-</Template>
+</Template-->
 
 <Level gametype = "TowerDefense">
   <templates>
@@ -86,14 +87,13 @@
       </controller>
     </SpaceShip>
     
-
 	<!-- PlayField -->
 	<TowerDefenseCenterpoint 
 	name=towerdefensecenter 
 	width=16 
 	height=16
 	tileScale=100
-	towerTemplate=towertemplate 
+	towerTemplate=tower
 	position="0,0,0" 
 	direction="0,0,0" 
 	collistionType=static 

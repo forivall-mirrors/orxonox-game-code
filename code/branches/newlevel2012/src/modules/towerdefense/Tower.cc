@@ -51,7 +51,7 @@ namespace orxonox
 	 */
     void Tower::moveFrontBack(const Vector2& value)
     {
-        orxout() << "frontBack.x: " << value.x << endl;
+        //orxout() << "frontBack.x: " << value.x << endl;
     }
 	
     /**
@@ -62,7 +62,7 @@ namespace orxonox
 	 */
     void Tower::moveRightLeft(const Vector2& value)
     {
-		orxout() << "rightLeft.x: " << value.x << endl;
+		//orxout() << "rightLeft.x: " << value.x << endl;
 		/*
         if(!this->delay_)
         {

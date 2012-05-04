@@ -64,17 +64,14 @@ namespace orxonox
 		if (!this->isActive())
             return;
 
-//		orxout() << "(" << this->waypoints_.size() << ") entity: " << this->getControllableEntity() << endl;
 
         if (this->waypoints_.size() == 0 || !this->getControllableEntity())
             return;
 
-//		printf("3");
 
         if (this->waypoints_[this->currentWaypoint_]->getWorldPosition().squaredDistance(this->getControllableEntity()->getPosition()) <= this->squaredaccuracy_)
             this->currentWaypoint_ = (this->currentWaypoint_ + 1) % this->waypoints_.size();
 
-//		printf("4");
 
         this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
     }

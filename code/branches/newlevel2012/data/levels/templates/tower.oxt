@@ -1,0 +1,48 @@
+<Template name=tower>
+  <SpaceShip
+
+   spawnparticlesource    = "Orxonox/fairytwirl"
+   spawnparticleduration  = 3
+   explosionchunks        = 6
+
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   shieldhealth        = 30
+   initialshieldhealth = 30
+   maxshieldhealth     = 50
+   shieldabsorption    = 0.8
+   reloadrate          = 1
+   reloadwaittime      = 1
+
+   lift = 1;
+   stallSpeed = 220;
+
+   collisionType     = "dynamic"
+   mass              = 100
+   linearDamping     = 0.7
+   angularDamping    = 0.9999999
+  >
+
+     <controller>
+        <WaypointPatrolController alertnessradius=10000 team=5>
+       
+        </WaypointPatrolController>
+      </controller>
+
+
+    <!--attached>
+      <Model position="0,0,0" scale=25 mesh="Tower_ME.mesh" />
+    </attached-->
+
+    <!--collisionShapes>
+    
+    </collisionShapes-->
+
+<?lua
+  include("../includes/towerWeaponSettings.oxi")
+?>
+  </SpaceShip>
+</Template>
+
