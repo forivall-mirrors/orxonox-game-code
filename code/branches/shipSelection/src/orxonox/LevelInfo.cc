@@ -162,9 +162,10 @@ namespace orxonox
     */
     bool LevelInfoItem::addShip(const std::string& ship, bool update)
     {
-        bool success = this->tags_.insert(ship).second;
+        bool success = this->ships_.insert(ship).second;
         if(update && success)
-            this->tagsUpdated();
+            this->shipsUpdated();
+            
         return success;
     }
 
