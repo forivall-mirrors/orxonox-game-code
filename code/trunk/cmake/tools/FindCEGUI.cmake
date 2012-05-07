@@ -87,7 +87,7 @@ FIND_PATH(CEGUI_TOLUA_INCLUDE_DIR tolua++.h
 )
 # Find CEGUI Tolua++ libraries
 FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_OPTIMIZED
-  NAMES CEGUItoluapp tolua++ ceguitolua++
+  NAMES CEGUItoluapp tolua++ ceguitolua++ tolua++5.1
   PATHS $ENV{CEGUIDIR} ${CEGUITOLUADIR}
   PATH_SUFFIXES lib bin
 )
