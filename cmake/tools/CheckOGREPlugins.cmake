@@ -51,7 +51,7 @@ FUNCTION(CHECK_OGRE_PLUGINS _mandatory_plugins _optional_plugins)
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_OPTIMIZED
       NAMES ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}
-      PATH_SUFFIXES bin/Release bin/release Release release lib lib/OGRE bin Ogre.framework/Resources
+      PATH_SUFFIXES bin/Release bin/release Release release lib lib/OGRE bin Ogre.framework/Resources i386-linux-gnu/OGRE-1.7.4
     )
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_DEBUG
       NAMES ${_plugin}d ${_plugin}_d ${_plugin}
