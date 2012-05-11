@@ -331,6 +331,47 @@ gametype = SpaceRace
 
   </StaticEntity>
 
+<!-- ------------------Cube between gate 4 and 5----------------- -->
+<StaticEntity position="4465,8050,-500" direction="0,0,0"   scale="1" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+	<Model position="0,0,0" mesh="blackcube.mesh" scale3D="450,600,50" />
+<!--
+            	<Model position="0,0,0" mesh="testcube.mesh" scale3D="450,600,50" />
+		-->
+
+      </attached>
+
+
+ 	<collisionShapes>
+          
+            	
+		<BoxCollisionShape position="0,0,0"            halfExtents="450,600,50" />
+
+        </collisionShapes>
+
+  </StaticEntity>
+
+<StaticEntity position="3535,8050,-500" direction="0,0,0"   scale="1" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+	<Model position="0,0,0" mesh="blackcube.mesh" scale3D="450,600,50" />
+<!--
+            	<Model position="0,0,0" mesh="testcube.mesh" scale3D="450,600,50" />
+		 -->
+
+      </attached>
+
+
+ 	<collisionShapes>
+          
+            	
+		<BoxCollisionShape position="0,0,0"            halfExtents="450,600,50" />
+
+        </collisionShapes>
+
+  </StaticEntity>
+
+
+
 
 	<!-- ------------------Boden----------------- -->
   <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
