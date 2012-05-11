@@ -78,6 +78,7 @@ namespace orxonox
 //		WeakPtr<TowerDefenseCenterpoint> center_;
 		TowerDefenseCenterpoint *center_;
 	
+		TowerDefensePlayerStats *stats_;
 	
 		bool hasTower(int x, int y);
 		

@@ -178,9 +178,7 @@ namespace orxonox
 		int tileScale = (int) this->center_->getTileScale();
 		
 		orxout() << "tile scale = " << tileScale << endl;
-		
-		
-		
+			
 		if (x > 15 || y > 15 || x < 0 || y < 0)
 		{
 			//Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
