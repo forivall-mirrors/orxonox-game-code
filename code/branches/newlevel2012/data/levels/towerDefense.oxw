@@ -114,7 +114,7 @@
                                I added the crate wich currently has the same dimensions as the collisionshape.
                                You have to adjust the crate's scale3D as well as the collisionshape's halfExtens to
                                find the proper shape. -->
-           <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+           <BoxCollisionShape position="0,0,0" halfExtents="400,400,100" />
         </collisionShapes>
     </TowerDefenseCenterpoint>
 
