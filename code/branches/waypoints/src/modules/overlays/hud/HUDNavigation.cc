@@ -45,6 +45,8 @@
 #include "Scene.h"
 #include "Radar.h"
 #include "graphics/Camera.h"
+#include "graphics/Model.h"
+#include "worldentities/MovableEntity.h"
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
@@ -81,9 +83,20 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     this->setNavMarkerSize ( 0.05f );
     this->setDetectionLimit( 10000.0f ); 
 
-    Ogre::Entity* ent = this->getScene()->getSceneManager()->createEntity("Arrow3D", "Arrow3D.mesh");
-    this->add3DMesh(ent);
-    this->overlay3d_->setPosition(0, 0, -10);
+    //Ogre::Entity* ent = this->getScene()->getSceneManager()->createEntity("Arrow3D", "Arrow3D.mesh");
+
+    Model* arrow = new Model(this);
+    MovableEntity* arrowEntity = new MovableEntity(this);
+    arrow->setMeshSource("Arrow3D.mesh");
+    arrowEntity->attach(arrow);
+    arrowEntity->setVisible(true);
+    arrowEntity->scale(1);
+    arrowEntity->setPosition(0, 0, -200);
+    arrowEntity->attachToNode(this->overlay3d_);
+    //this->add3DMesh(arrowEntity);
+
+    this->overlay3d_->setPosition(0, 0, -200);
+    this->overlay3d_->setVisible(false, true);
 }
 
 HUDNavigation::~HUDNavigation()
@@ -182,6 +195,19 @@ void HUDNavigation::tick ( float dt )
 
     unsigned int markerCount_ = 0;
     bool closeEnough_ = false; //only display objects that are close enough to be relevant for the player
+
+    //for the first element of sortedObjectList_ / the closest waypoint show the Arrow3D
+    if(!sortedObjectList_.empty())
+    {
+    	showArrow3D();
+		sortedList::iterator firstIt = sortedObjectList_.begin();
+		Ogre::Vector3 pos1 = firstIt->first->getRVWorldPosition();
+		Ogre::Vector3 pos2 = cam->getPosition();
+		Ogre::Quaternion quat = pos2.getRotationTo(pos1);
+		this->overlay3d_->rotate(quat);
+		//this->overlay3d_->setDirection(pos1-pos2);
+    }
+
 
 //         for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++markerCount_, ++listIt )
@@ -449,5 +475,10 @@ void HUDNavigation::changedOwner()
             this->addObject ( *it );
     }
 }
+void HUDNavigation::showArrow3D()
+		{ this->overlay3d_->setVisible(true, true);}
+void HUDNavigation::hideArrow3D()
+		{ this->overlay3d_->setVisible(false, true);}
+
 
 }

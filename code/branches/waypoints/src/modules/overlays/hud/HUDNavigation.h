@@ -41,6 +41,7 @@
 #include "interfaces/RadarListener.h"
 #include "overlays/OrxonoxOverlay.h"
 
+
 namespace orxonox
 {
 class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
@@ -50,6 +51,8 @@ public:
     virtual ~HUDNavigation();
 
     void setConfigValues();
+
+
 
     virtual void XMLPort ( Element& xmlelement, XMLPort::Mode mode );
     virtual void tick ( float dt );
@@ -79,6 +82,9 @@ private:
         bool wasOutOfView_;
 
     };
+
+    void showArrow3D();
+    void hideArrow3D();
 
     bool showObject( RadarViewable* rv );
 
