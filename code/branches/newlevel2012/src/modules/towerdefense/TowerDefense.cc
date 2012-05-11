@@ -169,9 +169,9 @@ namespace orxonox
 			return;
 		}
 		
-		coordinate newTowerCooridnates;
-		newTowerCooridnates.x = x; newTowerCooridnates.y = y;
-		addedTowersCoordinates_.push_back(newTowerCooridnates);
+		coordinate newTowerCoordinates;
+		newTowerCoordinates.x = x; newTowerCoordinates.y = y;
+		addedTowersCoordinates_.push_back(newTowerCoordinates);
 		
 		unsigned int width = this->center_->getWidth();
 		unsigned int height = this->center_->getHeight();

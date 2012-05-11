@@ -40,7 +40,7 @@
 </Template>
 
 
-<!-- Template for a tower -->
+<!-- Template for a tower 	EDIT: new towertemplate is included with "templates/tower" -->
 <!--Template name=towertemplate>
   <Tower>
     <attached>
