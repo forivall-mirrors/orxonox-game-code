@@ -231,9 +231,24 @@ gametype = SpaceRace
 
     </RaceCheckPoint>
 
+<RaceCheckPoint name="checkpoint11" position="0,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="10" islast="false" nextcheckpoints="10,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+       <collisionShapes>
 
 
-<RaceCheckPoint name="checkpoint11" position="6000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="10" islast="true">
+            <BoxCollisionShape position="0,0,220"     halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
+            <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
+
+	 
+        </collisionShapes>
+
+    </RaceCheckPoint>
+
+<RaceCheckPoint name="checkpoint12" position="6000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="11" islast="true">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -257,13 +272,34 @@ gametype = SpaceRace
  <SpawnPoint team=0 position="0,8050,0" lookat="0,8000,-8000" spawnclass=SpaceShip pawndesign=spaceshipRace />
 
   
-	<!-- -----------------------Zylinder---------------------------- 
-<StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
+	<!-- -----------------------Zylinder---------------------------- -->
+<StaticEntity position="2750,8050,6000" direction="1,0,0" roll="90"  scale="4" collisionType=static mass=100000 friction=0.01 >
       <attached>
-	<Model position="0,5100,-1300" mesh="cylinder.mesh" scale3D="100,100,100" />
+	<Model position="0,0,0" mesh="cylinder.mesh" scale3D="100,100,400" />
+	<!--
+            	<Model position="0,80,600" mesh="testcube.mesh" scale3D="90,18,-600" />
+		<Model position="0,-80,600" mesh="testcube.mesh" scale3D="90,18,-600" />
+		<Model position="80,0,600" mesh="testcube.mesh" scale3D="18,90,-600" />
+		<Model position="-80,0,600" mesh="testcube.mesh" scale3D="18,09,-600" />
+	 -->
+
       </attached>
+
+
+ 	<collisionShapes>
+          
+            	
+		<BoxCollisionShape position="0,320,2400"            halfExtents="360,72,2400" />
+		<BoxCollisionShape position="0,-320,2400"      halfExtents="360,72,2400" />
+		<BoxCollisionShape position="320,0,2400"            halfExtents="72,360,2400" />
+		<BoxCollisionShape position="-320,0,2400"     halfExtents="72,360,2400" />
+            	
+
+	
+        </collisionShapes>
+
   </StaticEntity>
--->
+
 
 	<!-- ------------------Boden----------------- -->
   <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
@@ -271,7 +307,8 @@ gametype = SpaceRace
         <Model position="0,0,0" mesh="CubeGround.mesh" scale3D="8000,8000,8000" />
       </attached>
       <collisionShapes>
-        <BoxCollisionShape position="0,50,0" halfExtents="8000,8000,8000" />
+        <BoxCollisionShape position="0,50,0" halfExtents="8000,8000,8000" />um j?:P"{
+
       </collisionShapes> 
 </StaticEntity>
 
