@@ -27,7 +27,7 @@ gametype = SpaceRace
   <Scene
     ambientlight = "2.0, 2.0, 2.0"
     skybox       = "Orxonox/skyBoxClouds"
-    gravity      = "0,-90,0"
+    gravity      = "0,-75,0"
     negativeWorldRange = "-100000, -100000, -100000"
     positiveWorldRange = " 100000,  100000,  100000"
     hasPhysics   = true
@@ -39,7 +39,7 @@ gametype = SpaceRace
 
 <SpaceRaceManager>
  <checkpoints>	
-	<RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="120" checkpointindex="0" islast="false" nextcheckpoints="1,-1,-1">
+	<RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="150" checkpointindex="0" islast="false" nextcheckpoints="1,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
 	
@@ -72,7 +72,7 @@ gametype = SpaceRace
 	
     </RaceCheckPoint>
 
-<RaceCheckPoint name="checkpoint2" position="1000,8050,-4000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="120" checkpointindex="1" islast="false" nextcheckpoints="2,-1,-1">
+<RaceCheckPoint name="checkpoint2" position="1000,8050,-4000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="150" checkpointindex="1" islast="false" nextcheckpoints="2,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -90,7 +90,7 @@ gametype = SpaceRace
 
 
 
-<RaceCheckPoint name="checkpoint3" position="3000,8050,-4000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="120" checkpointindex="2" islast="false" nextcheckpoints="3,-1,-1">
+<RaceCheckPoint name="checkpoint3" position="3000,8050,-4000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="150" checkpointindex="2" islast="false" nextcheckpoints="3,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -108,7 +108,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint4" position="4000,8050,-1000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="120" checkpointindex="3" islast="false" nextcheckpoints="4,-1,-1">
+<RaceCheckPoint name="checkpoint4" position="4000,8050,-1000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="150" checkpointindex="3" islast="false" nextcheckpoints="4,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -126,7 +126,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint5" position="4000,8050,0" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="120" checkpointindex="4" islast="false" nextcheckpoints="5,-1,-1">
+<RaceCheckPoint name="checkpoint5" position="4000,8050,0" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="150" checkpointindex="4" islast="false" nextcheckpoints="5,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -144,7 +144,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint6" position="3000,8050,1000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="120" checkpointindex="5" islast="false" nextcheckpoints="6,-1,-1">
+<RaceCheckPoint name="checkpoint6" position="3000,8050,1000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="150" checkpointindex="5" islast="false" nextcheckpoints="6,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -162,7 +162,7 @@ gametype = SpaceRace
 
 
 
-<RaceCheckPoint name="checkpoint7" position="0,8050,2000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="6" islast="false" nextcheckpoints="7,-1,-1">
+<RaceCheckPoint name="checkpoint7" position="0,8050,2000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="150" checkpointindex="6" islast="false" nextcheckpoints="7,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -181,7 +181,7 @@ gametype = SpaceRace
 
 
 
-<RaceCheckPoint name="checkpoint8" position="-4000,8050,3000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="120" checkpointindex="7" islast="false" nextcheckpoints="8,-1,-1">
+<RaceCheckPoint name="checkpoint8" position="-4000,8050,3000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="150" checkpointindex="7" islast="false" nextcheckpoints="8,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -196,7 +196,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint9" position="-4000,8050,5000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="120" checkpointindex="8" islast="false" nextcheckpoints="9,-1,-1">
+<RaceCheckPoint name="checkpoint9" position="-4000,8050,5000" direction="0,1,0" roll="-45" collisionType="static" scale="4" distance="150" checkpointindex="8" islast="false" nextcheckpoints="9,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -214,7 +214,7 @@ gametype = SpaceRace
     </RaceCheckPoint>
 
 
-<RaceCheckPoint name="checkpoint10" position="-3000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="9" islast="false" nextcheckpoints="10,-1,-1">
+<RaceCheckPoint name="checkpoint10" position="-3000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="150" checkpointindex="9" islast="false" nextcheckpoints="10,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -231,7 +231,7 @@ gametype = SpaceRace
 
     </RaceCheckPoint>
 
-<RaceCheckPoint name="checkpoint11" position="0,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="10" islast="false" nextcheckpoints="10,-1,-1">
+<RaceCheckPoint name="checkpoint11" position="0,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="10" islast="false" nextcheckpoints="11,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -248,7 +248,7 @@ gametype = SpaceRace
 
     </RaceCheckPoint>
 
-<RaceCheckPoint name="checkpoint12" position="6000,8050,6000" direction="0,1,0" roll="90" collisionType="static" scale="4" distance="120" checkpointindex="11" islast="true">
+<RaceCheckPoint name="checkpoint12" position="6000,8050,6000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="150" checkpointindex="11" islast="false" nextcheckpoints="12,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
@@ -263,6 +263,37 @@ gametype = SpaceRace
 	 
         </collisionShapes>
 
+    </RaceCheckPoint>
+
+
+
+<RaceCheckPoint name="checkpoint13" position="5500,8050,3000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="150" checkpointindex="12" islast="false" nextcheckpoints="13,-1,-1">
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+       <collisionShapes>
+
+            <BoxCollisionShape position="0,0,220"     halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
+            <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
+	 
+        </collisionShapes>
+    </RaceCheckPoint>
+
+
+<RaceCheckPoint name="checkpoint14" position="6000,8050,-5000" direction="0,1,0" roll="0" collisionType="static" scale="4" distance="150" checkpointindex="13" islast="true" >
+        <attached>
+            <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
+        </attached>
+       <collisionShapes>
+
+            <BoxCollisionShape position="0,0,220"     halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
+            <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
+            <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
+	 
+        </collisionShapes>
     </RaceCheckPoint>
 
 
@@ -313,35 +344,38 @@ gametype = SpaceRace
 </StaticEntity>
 
 
+<!-- ---------------------PickUp---------------------- -->
 
- <PickupSpawner position="0,8050,-200" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+
+ <PickupSpawner position="4000,8100,-500" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8">
       <pickup>
         <SpeedPickup template=smallspeedpickup />
       </pickup>
     </PickupSpawner>
 
-    <PickupSpawner position="0,8050,-400" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+   <PickupSpawner position="5500,8100,2000" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8">
       <pickup>
         <SpeedPickup template=mediumspeedpickup />
       </pickup>
     </PickupSpawner>
 
-    <PickupSpawner position="0,8050,-600" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+    <PickupSpawner position="-4000,8100,4000" triggerDistance="40" respawnTime="60"  maxSpawnedItems="5" scale="8">
       <pickup>
-        <SpeedPickup template=hugespeedpickup />
+        <ShrinkPickup template ="mediumshrinkpickup"/>
       </pickup>
-    </PickupSpawner>
+    </PickupSpawner>>
+
 
 
 
  <!-- ---------------asteroid ellipse----------------- -->
 
  <?lua
-    max = 20
+    max = 15
     for i = 0, max, 1
     do
 	x=-12000
-	y=9000
+	y=10000
 	z=-12000
  
     ?>
@@ -356,7 +390,7 @@ gametype = SpaceRace
       collisionType = "dynamic"
       linearDamping = "0.5"
       angularDamping = "0.5"
-      collisiondamage = "1"
+      collisiondamage = "100"
       enablecollisiondamage = "true"
       scale="<?lua print(j * 5) ?>" >
       <attached>
