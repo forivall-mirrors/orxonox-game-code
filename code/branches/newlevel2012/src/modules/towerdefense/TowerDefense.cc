@@ -117,8 +117,9 @@ namespace orxonox
 	
 	void TowerDefense::setCenterpoint(TowerDefenseCenterpoint *centerpoint)
 	{
-		orxout() << "Centerpoint now set..." << endl;
+		orxout() << "Centerpoint now setting..." << endl;
 		this->center_ = centerpoint;
+		orxout() << "Centerpoint now set..." << endl;
 	}
 	
     void TowerDefense::start()
@@ -190,12 +191,11 @@ namespace orxonox
 		
 		Tower* newTower = new Tower(this->center_);
 		newTower->addTemplate(this->center_->getTowerTemplate());
-		
-		this->center_->attach(newTower);
-		
+
+		//this->center_->attach(newTower);
+
 		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 100);
 		newTower->setGame(this);
-		
 		//TODO: Save the Tower in a Vector. I would suggest std::vector< std::vector<Tower*> > towers_ as a protected member variable;
 		
 		// TODO: create Tower mesh

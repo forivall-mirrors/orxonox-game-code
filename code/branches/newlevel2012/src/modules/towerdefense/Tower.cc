@@ -21,9 +21,14 @@ namespace orxonox
 	 @brief
 	 Constructor. Registers and initializes the object.
 	 */
-    Tower::Tower(BaseObject* creator) : ControllableEntity(creator)
+    Tower::Tower(BaseObject* creator) : SpaceShip(creator)
     {
         RegisterObject(Tower);
+
+        this->setCollisionType(WorldEntity::Dynamic);
+
+
+
         /*
         this->size_ = 10.0f;
         this->delay_ = false;

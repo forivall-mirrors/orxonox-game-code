@@ -18,11 +18,11 @@ See TowerDefenseReadme.txt for Information.
 #define Orxonox_Tower_h
 
 #include "towerdefense/TowerDefensePrereqs.h"
-#include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Tower : public ControllableEntity
+    class _OrxonoxExport Tower : public SpaceShip
     {
 	public:
 		Tower(BaseObject* creator);

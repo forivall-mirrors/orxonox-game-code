@@ -41,11 +41,11 @@
 #include <string>
 #include <util/Math.h>
 
-#include "worldentities/StaticEntity.h"
+#include "worldentities/MobileEntity.h"
 
 namespace orxonox
 {
-    class _TowerDefenseExport TowerDefenseCenterpoint : public StaticEntity
+    class _TowerDefenseExport TowerDefenseCenterpoint : public MobileEntity
     {
         public:
             TowerDefenseCenterpoint(BaseObject* creator);

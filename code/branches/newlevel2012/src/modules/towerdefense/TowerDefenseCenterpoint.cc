@@ -46,7 +46,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object and checks whether the gametype is actually TowerDefense.
     */
-    TowerDefenseCenterpoint::TowerDefenseCenterpoint(BaseObject* creator) : StaticEntity(creator)
+    TowerDefenseCenterpoint::TowerDefenseCenterpoint(BaseObject* creator) : MobileEntity(creator)
     {
         RegisterObject(TowerDefenseCenterpoint);
  
@@ -54,7 +54,10 @@ namespace orxonox
         this->height_ = 15;
         this->towerTemplate_ = "";
         
+        //this->setCollisionType(Static);
+
 		this->checkGametype();
+
     }
 
     /**
