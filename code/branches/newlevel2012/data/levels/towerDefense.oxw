@@ -12,7 +12,7 @@
 <?lua
   include("stats.oxo")
   include("HUDTemplates3.oxo")
-  include("towedefenseHUD.oxo")
+  include("towerdefenseHUD.oxo")
   include("templates/lodInformation.oxt")
 ?>
 
