@@ -65,7 +65,7 @@
  * OverlayText ist eine Vorlage fuer statischen text zb: "Points Scored:". Aus mir nicht erklaerlichen Gruenden sollte man die OverlayText
  * Objekte immer erst nach dem PongScore anlegen.
  *
- * c) Im TowerDefense gamtype muss im Constructor noch das HUD-Template gesetzt werden.
+ * c)  Im TowerDefense gamtype muss im Constructor noch das HUD-Template gesetzt werden.
  *
  * d) in CMakeLists.txt noch das Module includen das fuer die Overlays zustaendig ist. Siehe das gleiche File im Pong module.
  *
@@ -98,6 +98,8 @@ namespace orxonox
     {
         RegisterObject(TowerDefense);
 		
+        this->setHUDTemplate("TowerDefenseHUD");
+
 		/* Temporary hack to allow the player to add towers */
 		this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
 	
