@@ -41,6 +41,10 @@
 
 namespace orxonox
 {
+	typedef enum _TowerCosts {
+		TDDefaultTowerCost = 200
+	} TowerCost;
+	
     class _TowerDefenseExport TowerDefensePlayerStats
     {
 	public:
@@ -51,6 +55,9 @@ namespace orxonox
 		
 		inline void setCredit(int credit)
 			{ credit_ = credit; }
+		
+		inline void buyTower(TowerCost cost)
+			{ credit_ -= cost;}
 		
 		inline int getWaveNumber()
 			{ return waveNumber_; }

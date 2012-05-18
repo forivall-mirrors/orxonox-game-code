@@ -40,6 +40,8 @@
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "gametypes/Deathmatch.h"
 		 
+ #include "TowerDefensePlayerStats.h"
+		 
 namespace orxonox
 {
 	class _OrxonoxExport TowerDefense : public Deathmatch
@@ -80,17 +82,18 @@ namespace orxonox
 		
 		/* handles stats */
 		TowerDefensePlayerStats *stats_;
+		bool hasEnoughCreditForTower(TowerCost towerCost);
 	
-		bool hasTower(int x, int y);
+		bool towerExists(int x, int y);
 		
 		typedef struct {
 			int x;
 			int y;
-		} coordinate; 
+		} Coordinate; 
 		
 	
 		
-		std::vector<coordinate> addedTowersCoordinates_;
+		std::vector<Coordinate> addedTowersCoordinates_;
 		std::vector<Tower*> towers_;
 		
 		void addWaypointsAndFirstEnemy();

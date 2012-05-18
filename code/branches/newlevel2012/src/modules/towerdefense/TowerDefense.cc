@@ -76,7 +76,6 @@
 #include "TowerDefense.h"
 #include "Tower.h"
 #include "TowerDefenseCenterpoint.h"
-#include "TowerDefensePlayerStats.h"
 
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
@@ -155,35 +154,28 @@ namespace orxonox
 		ChatManager::message("Match is over");
 	}
 	
-	bool TowerDefense::hasTower(int x, int y)
-	{
-		for(std::vector<coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it) 
-		{
-			coordinate currentCoordinates = (coordinate) (*it);
-			if (currentCoordinates.x == x && currentCoordinates.y == y)
-				return true;
-		}
-		
-		return false;
-	}
-	
 	void TowerDefense::addTower(int x, int y)
 	{
-		if (this->hasTower(x,y))
+		const TowerCost towerCost = TDDefaultTowerCost;
+		
+		if (!this->hasEnoughCreditForTower(towerCost))
 		{
-			orxout() << "tower exists!!" << endl;
+			orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
 			return;
 		}
 		
-		coordinate newTowerCoordinates;
-		newTowerCoordinates.x = x; newTowerCoordinates.y = y;
-		addedTowersCoordinates_.push_back(newTowerCoordinates);
+		if (this->towerExists(x,y))
+		{
+			orxout() << "tower exists!!" << endl;
+			return;
+		}		
 		
+		/*
 		unsigned int width = this->center_->getWidth();
 		unsigned int height = this->center_->getHeight();
-		int tileScale = (int) this->center_->getTileScale();
+		*/
 		
-		orxout() << "tile scale = " << tileScale << endl;
+		int tileScale = (int) this->center_->getTileScale();
 			
 		if (x > 15 || y > 15 || x < 0 || y < 0)
 		{
@@ -194,6 +186,14 @@ namespace orxonox
 		
 		orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
 		
+		// Add tower to coordinatesStack
+		Coordinate newTowerCoordinates = {x, y};
+		addedTowersCoordinates_.push_back(newTowerCoordinates);
+		
+		// Reduce credit
+		this->stats_->buyTower(towerCost);
+		
+		// Create tower
 		Tower* newTower = new Tower(this->center_);
 		newTower->addTemplate(this->center_->getTowerTemplate());
 
@@ -206,6 +206,24 @@ namespace orxonox
 		// TODO: create Tower mesh
 		// TODO: load Tower mesh
 	}
+	
+	bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
+	{
+		return ((this->stats_->getCredit()) >= towerCost);
+	}
+	
+	bool TowerDefense::towerExists(int x, int y)
+	{
+		for(std::vector<Coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it) 
+		{
+			Coordinate currentCoordinates = (Coordinate) (*it);
+			if (currentCoordinates.x == x && currentCoordinates.y == y)
+				return true;
+		}
+		
+		return false;
+	}
+	
 	
 	void TowerDefense::tick(float dt)
     {
