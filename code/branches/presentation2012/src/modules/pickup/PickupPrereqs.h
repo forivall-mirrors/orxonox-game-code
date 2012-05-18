@@ -85,7 +85,7 @@ namespace orxonox
     class SpeedPickup;
     class ShieldPickup;
     class ShrinkPickup;
-
+    class DamageBoostPickup;
 }
 
 #endif /* _PickupPrereqs_H__ */
