@@ -15,7 +15,7 @@
 ?>
 
 <Level
- gametype = "captureTheFlag"
+ gametype = "CaptureTheFlag"
 >
   <templates>
     <Template link=lodtemplate_default />

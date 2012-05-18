@@ -40,9 +40,11 @@
 #include <string>
 
 #include "pickup/Pickup.h"
+#include "tools/Timer.h"
+
 
 namespace orxonox {
-
+/*
     @ingroup PickupItems
     */
     namespace pickupFlagType
@@ -75,6 +77,7 @@ namespace orxonox {
 
 	    const std::string& getFlagType(void) const; //!< Get the flag type of this pickup.
 
+        int teamScore_;
 
 	    virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
 
@@ -96,7 +99,6 @@ namespace orxonox {
 
             pickupFlagType::Value flagType_; //!< The type of the FlagPickup.
 
-            int teamScore_;
 
             //! Strings for the flag types.
             static const std::string flagTypeBlue_s;
