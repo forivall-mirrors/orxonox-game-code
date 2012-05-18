@@ -500,6 +500,7 @@ namespace orxonox
     /// Puts the MultiType on a stream by using the native << operator of the current type.
     _UtilExport inline std::ostream& operator<<(std::ostream& outstream, const MultiType& mt) { if (mt.value_) { mt.value_->toString(outstream); } return outstream; }
 
+    template <> inline bool MultiType::isType<void>()                 const { return this->null();                                                       } ///< Returns true if the current type equals the given type.
     template <> inline bool MultiType::isType<char>()                 const { return (this->value_ && this->value_->type_ == MT_Type::Char);             } ///< Returns true if the current type equals the given type.
     template <> inline bool MultiType::isType<unsigned char>()        const { return (this->value_ && this->value_->type_ == MT_Type::UnsignedChar);     } ///< Returns true if the current type equals the given type.
     template <> inline bool MultiType::isType<short>()                const { return (this->value_ && this->value_->type_ == MT_Type::Short);            } ///< Returns true if the current type equals the given type.

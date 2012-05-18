@@ -5,6 +5,7 @@ ADD_EXECUTABLE(
     ConvertTest.cc
     MathTest.cc
     mboolTest.cc
+    MultiTypeTest.cc
     ScopeTest.cc
     SharedPtrTest.cc
     SingletonTest.cc
