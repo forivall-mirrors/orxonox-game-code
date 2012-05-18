@@ -86,6 +86,8 @@ private:
     void showArrow3D();
     void hideArrow3D();
 
+    orxonox::MovableEntity* arrowEntity;
+
     bool showObject( RadarViewable* rv );
 
     // XMLPort accessors
