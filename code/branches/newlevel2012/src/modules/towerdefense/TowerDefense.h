@@ -40,8 +40,6 @@
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "gametypes/Deathmatch.h"
 		 
-
-
 namespace orxonox
 {
 	class _OrxonoxExport TowerDefense : public Deathmatch
@@ -79,6 +77,9 @@ namespace orxonox
 	private:
 //		WeakPtr<TowerDefenseCenterpoint> center_;
 		TowerDefenseCenterpoint *center_;
+		
+		/* handles stats */
+		TowerDefensePlayerStats *stats_;
 	
 		bool hasTower(int x, int y);
 		

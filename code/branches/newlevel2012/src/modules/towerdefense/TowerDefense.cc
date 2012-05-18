@@ -76,6 +76,7 @@
 #include "TowerDefense.h"
 #include "Tower.h"
 #include "TowerDefenseCenterpoint.h"
+#include "TowerDefensePlayerStats.h"
 
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
@@ -99,6 +100,8 @@ namespace orxonox
         RegisterObject(TowerDefense);
 		
         this->setHUDTemplate("TowerDefenseHUD");
+
+		this->stats_ = new TowerDefensePlayerStats();
 
 		/* Temporary hack to allow the player to add towers */
 		this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );

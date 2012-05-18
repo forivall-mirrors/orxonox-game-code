@@ -28,33 +28,41 @@
 	 
  /**
 	 @brief
-	 This subclass of OverlayText is used to display the stats of the player in the HUD
-	 
+	 This manages the stats of the player. It is used by 'TowerDefense', the gametype
+	
 	 @ingroup TowerDefense
  */
 	 
 
-#ifndef _TowerDefenseHUDController_H__
-#define _TowerDefenseHUDController_H__
+#ifndef _TowerDefensePlayerStats_H__
+#define _TowerDefensePlayerStats_H__
 
 #include "towerdefense/TowerDefensePrereqs.h"
 
-#include "tools/interfaces/Tickable.h"
-#include "overlays/OverlayText.h"
-
-
 namespace orxonox
 {
-    class _TowerDefenseExport TowerDefenseHUDController : public OverlayText, public Tickable
+    class _TowerDefenseExport TowerDefensePlayerStats
     {
 	public:
-		TowerDefenseHUDController(BaseObject* creator);
-        virtual ~TowerDefenseHUDController();
-
-        virtual void tick(float dt);
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-		virtual void changedOwner();
+		TowerDefensePlayerStats();
+		
+		inline int getCredit()
+			{ return credit_; }
+		
+		inline void setCredit(int credit)
+			{ credit_ = credit; }
+		
+		inline int getWaveNumber()
+			{ return waveNumber_; }
+		
+		inline void didLoadNextWave()
+			{ waveNumber_++; }
+		
+	private:
+		int credit_;
+		int waveNumber_;
+		//int baseHealth_;
     };
 }
 
-#endif /* _TowerDefenseHUDController_H__ */
+#endif /* _TowerDefensePlayerStats_H__ */

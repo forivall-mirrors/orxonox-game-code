@@ -67,6 +67,7 @@ namespace orxonox
     class TowerDefense;
 	class Tower;
     class TowerDefenseCenterpoint;
+	class TowerDefenseHUDController;
 	class TowerDefensePlayerStats;
 }
 
