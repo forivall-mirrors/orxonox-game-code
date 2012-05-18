@@ -2,7 +2,7 @@ SET_SOURCE_FILES(TOWERDEFENSE_SRC_FILES
   TowerDefense.cc
   Tower.cc
   TowerDefenseCenterpoint.cc
-  TowerDefensePlayerStats.cc
+  TowerDefenseHUDController.cc
 )
 
 ORXONOX_ADD_LIBRARY(TowerDefense

@@ -25,7 +25,7 @@
  *      ...
  */
  
-#include "TowerDefensePlayerStats.h"
+#include "TowerDefenseHUDController.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -34,36 +34,38 @@
 
 namespace orxonox
 {
-	CreateFactory(TowerDefensePlayerStats);
+	CreateFactory(TowerDefenseHUDController);
 	
 	const int kDefaultCredit = 200;
 	
-    TowerDefensePlayerStats::TowerDefensePlayerStats(BaseObject* creator) : OverlayText(creator)
+    TowerDefenseHUDController::TowerDefenseHUDController(BaseObject* creator) : OverlayText(creator)
 	{
-		RegisterObject(TowerDefensePlayerStats);
+		RegisterObject(TowerDefenseHUDController);
 		
 		this->credit_ = 200;
 		this->waveNumber_ = 0;
 	}
 	
-	TowerDefensePlayerStats::~TowerDefensePlayerStats()
+	TowerDefenseHUDController::~TowerDefenseHUDController()
 	{
 		
 	}
 
-    void TowerDefensePlayerStats::tick(float dt)
+    void TowerDefenseHUDController::tick(float dt)
 	{
-		SUPER(TowerDefensePlayerStats, tick, dt);
+		SUPER(TowerDefenseHUDController, tick, dt);
+		
+		credit_;
 	}
 	
-    void TowerDefensePlayerStats::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void TowerDefenseHUDController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
 	{
-		SUPER(TowerDefensePlayerStats, XMLPort, xmlelement, mode);
+		SUPER(TowerDefenseHUDController, XMLPort, xmlelement, mode);
 	}
 	
-    void TowerDefensePlayerStats::changedOwner()
+    void TowerDefenseHUDController::changedOwner()
     {
-        SUPER(TowerDefensePlayerStats, changedOwner);
+        SUPER(TowerDefenseHUDController, changedOwner);
 		/*
         if (this->getOwner() != NULL && this->getOwner()->getGametype())
             this->owner_ = orxonox_cast<Pong*>(this->getOwner()->getGametype().get());

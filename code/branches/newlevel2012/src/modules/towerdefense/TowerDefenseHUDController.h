@@ -33,8 +33,8 @@
  */
 	 
 
-#ifndef _TowerDefensePlayerStats_H__
-#define _TowerDefensePlayerStats_H__
+#ifndef _TowerDefenseHUDController_H__
+#define _TowerDefenseHUDController_H__
 
 #include "towerdefense/TowerDefensePrereqs.h"
 
@@ -44,11 +44,11 @@
 
 namespace orxonox
 {
-    class _TowerDefenseExport TowerDefensePlayerStats : public OverlayText, public Tickable
+    class _TowerDefenseExport TowerDefenseHUDController : public OverlayText, public Tickable
     {
 	public:
-		TowerDefensePlayerStats(BaseObject* creator);
-        virtual ~TowerDefensePlayerStats();
+		TowerDefenseHUDController(BaseObject* creator);
+        virtual ~TowerDefenseHUDController();
 
         virtual void tick(float dt);
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -75,4 +75,4 @@ namespace orxonox
     };
 }
 
-#endif /* _TowerDefensePlayerStats_H__ */
+#endif /* _TowerDefenseHUDController_H__ */
