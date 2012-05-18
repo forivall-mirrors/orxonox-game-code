@@ -27,7 +27,7 @@ namespace orxonox
 
         this->setCollisionType(WorldEntity::Dynamic);
 
-
+        //this->removeAllEngines();
 
         /*
         this->size_ = 10.0f;
