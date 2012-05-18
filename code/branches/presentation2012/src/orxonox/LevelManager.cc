@@ -255,7 +255,7 @@ namespace orxonox
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
             // TODO: Replace with tag?
-            if (it->find("old/") != 0)
+            if (it->find("old/") != 0 )
             {
                 LevelInfoItem* info = NULL;
 

@@ -1,10 +1,11 @@
 -- SingleplayerMenu.lua
 
 local P = createMenuSheet("SingleplayerMenu")
-
+P.loadAlong = {"ShipSelectionMenu"}
 P.levelList = {}
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
+selectedlevel = {} -- level for ship selection
 
 function P.onLoad()
     P.createLevelList()
@@ -45,7 +46,8 @@ function P.createLevelList()
     local level = nil
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
-        if level ~= nil then
+        if (level ~= nil and level:getXMLFilename() ~= "_temp.oxw") then
+	    --os.execute("echo " .. level:getXMLFilename() .." >> ~/outputorx")
             local levelXMLFilename = level:getXMLFilename()
             -- create an imageset for each screenshot
             local imageName = level:getScreenshot()
@@ -140,10 +142,15 @@ function P.SingleplayerSelectionChanged(e)
 end
 
 function P.SingleplayerStartButton_clicked(e)
-    local level = P.SingleplayerGetSelectedLevel()
-    if level ~= nil then
-        orxonox.execute("startGame " .. level:getXMLFilename())
-        hideAllMenuSheets()
+    selectedlevel = P.SingleplayerGetSelectedLevel()
+    if selectedlevel ~= nil then
+        if selectedlevel:hasTag("shipselection") then
+            local shipSelectionMenu = showMenuSheet("ShipSelectionMenu", true)
+            shipSelectionMenu:update()
+        else
+            orxonox.execute("startGame " .. selectedlevel:getXMLFilename())
+            hideAllMenuSheets()
+	end
     end
 end
 

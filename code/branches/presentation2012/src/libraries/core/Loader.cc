@@ -221,7 +221,7 @@ namespace orxonox
                 orxout(verbose, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
 
             orxout(verbose, context::loader) << "Namespace-tree:" << '\n' << rootNamespace->toString("  ") << endl;
-
+			
             return true;
         }
         catch (ticpp::Exception& ex)
