@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Surface Race"
- description = "in progress..."
- screenshot = "emptylevel.png"
+ description = "just awesome"
+ screenshot = "surfaceRace.png"
  tags = "gametype"
 />
 
@@ -388,7 +388,7 @@ gametype = SpaceRace
 <!-- ---------------------PickUp---------------------- -->
 
 
- <PickupSpawner position="4000,8100,-500" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8">
+ <PickupSpawner position="4000,8050,0" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8">
       <pickup>
         <SpeedPickup template=smallspeedpickup />
       </pickup>
@@ -400,7 +400,7 @@ gametype = SpaceRace
       </pickup>
     </PickupSpawner>
 
-    <PickupSpawner position="-4000,8100,4000" triggerDistance="40" respawnTime="60"  maxSpawnedItems="5" scale="8">
+    <PickupSpawner position="3000,8050,-4000" triggerDistance="40" respawnTime="60"  maxSpawnedItems="5" scale="8">
       <pickup>
         <ShrinkPickup template ="mediumshrinkpickup"/>
       </pickup>
