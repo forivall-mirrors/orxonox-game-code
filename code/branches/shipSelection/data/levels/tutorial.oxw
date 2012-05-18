@@ -3,7 +3,7 @@
  description = "Level for the coding tutorial."
  tags = "tutorial, shipselection"
  screenshot = "codingtutorial.png"
- startingships = "spaceshipassff, spaceshipghost, spaceshipspacecruiser,spaceshippirate"
+ startingships = "spaceshipassff, spaceshipghost, spaceshipspacecruiser"
 />
 
 <?lua
@@ -13,7 +13,6 @@
   include("templates/spaceshipGhost.oxt")
   include("templates/spaceshipSpacecruiser.oxt")
   include("templates/lodInformation.oxt")
-  include("templates/spaceshipPirate.oxt")
 ?>
 
 <Level>
@@ -26,10 +25,6 @@
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"
   >
-
-
-
-
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
     <Model scale="1" mesh="drone.mesh"/>

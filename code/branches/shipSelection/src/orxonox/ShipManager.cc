@@ -20,15 +20,14 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
- *   Co-authors:
- *      Damian 'Mozork' Frick
- *
+ *      Matthias Hutter
+ *   
  */
 
 /**
-    @file LevelManager.cc
-    @brief Implementation of the LevelManager singleton.
+    @file ShipManager.cc
+    @brief Work-in Progress: Implementation of the ShipManager singleton.
+    	   Should make SpaceShip info available to lua handlers.
 */
 
 #include "LevelManager.h"

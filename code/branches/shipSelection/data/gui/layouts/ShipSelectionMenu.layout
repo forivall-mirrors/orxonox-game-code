@@ -16,14 +16,17 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.15,0},{0.8,0},{0.7,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.15,0},{0.8,0},{0.7,0}}" /> 
             <Window Type="MenuWidgets/TabControl" Name="orxonox/ShipSelectionTabControl" >
                 <Property Name="TabHeight" Value="{0,26.4388}" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="TabPanePosition" Value="Top" />
-                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.1,0},{0.95,0},{0.925,0}}" />
+		<Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.1,0},{0.95,0},{0.925,0}}" />
+		
             </Window>	
-            <Window Type="MenuWidgets/StaticImage" Name="orxonox/ShipSelectionLevelImage" >
+            
+	    <!-- TODO: Ship Description and Image
+	    <Window Type="MenuWidgets/StaticImage" Name="orxonox/ShipSelectionShipImage" >
                 <Property Name="AlwaysOnTop" Value="True" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.55,0},{0.25,0},{0.9,0},{0.675,0}}" />
@@ -34,7 +37,7 @@
                 <Property Name="VertScrollbar" Value="True" />
                 <Property Name="HorzScrollbar" Value="True" />
                 <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.725,0},{0.9,0},{0.875,0}}" />
-            </Window>
+            </Window>--> 
 		 
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/ShipSelectionStartButton" >
@@ -43,13 +46,14 @@
             <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.725,0},{0.4,0},{0.775,0}}" />
             <Event Name="Clicked" Function="ShipSelectionMenu.ShipSelectionStartButton_clicked"/>
         </Window>
-        <Window Type="MenuWidgets/Button" Name="orxonox/ShipSelectionConfigButton" >
+        <!-- TODO: set ship properties
+	<Window Type="MenuWidgets/Button" Name="orxonox/ShipSelectionConfigButton" >
             <Property Name="Text" Value="Configure" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.425,0},{0.725,0},{0.575,0},{0.775,0}}" />
             <Property Name="Disabled" Value="True" />
             <Event Name="Clicked" Function="ShipSelectionMenu.ShipSelectionConfigButton_clicked"/>
-        </Window>
+        </Window> --> 
         <Window Type="MenuWidgets/Button" Name="orxonox/ShipSelectionBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />

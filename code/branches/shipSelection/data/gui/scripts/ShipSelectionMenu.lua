@@ -5,59 +5,54 @@ P.activeTabIndexes = {}
 P.scrollbarWidth = 13
 P.shipList = {}
 function P.onLoad()
-   --orxonox.execute("orxout user_warning Ships= " .. selectedlevel:hasShip("abcdef"))
    local dircmd = "ls ../levels/templates/ -l | awk '{print $9}' | grep \"spaceship\" | sed -e 's/\\.[a-zA-Z]*$//'" -- go to spaceships folder and generate a list of installed shipmodels.
    os.execute(dircmd .. " > ../levels/templates/.shipmodels") --saves output in a textfile
-   --[[ Program a Windows Version here:
+   --[[TODO: program a Windows Version / platform independent version here:
    if string.sub(package.config,1,1) == '\\' then
            -- Windows
            dircmd = "dir /b/s"
    end]]	
+   P.createFilterTab("All Ships")   
+end
 
+function P.createShipList() --generates list with tagged shipmodels
    P.shipList = {}
-   for line in io.lines("../levels/templates/.shipmodels") do  
+   for line in io.lines("../levels/templates/.shipmodels") do  --checks if shipmodel is included in level file
 	if selectedlevel:hasShip(string.lower(line)) then
 		P.shipList[#P.shipList+1] = string.lower(line)
 	end
-   end 
-   P.createFilterTab("Show All")
-
+   end  
 end
 
-function P.createShipList()
-       
-
-end
-
-
-
-function P.createFilterTab(name)
-
-    local tabName = "orxonox/ShipSelectionLevelTab"
-    -- create new tab window with desired name
-    local listbox = CEGUI.toListbox(winMgr:createWindow("MenuWidgets/Listbox", tabName))
-    listbox:setText(name)
-    listbox:setProperty("UnifiedMaxSize", "{{1,0},{1,0}}")
-    listbox:setProperty("UnifiedAreaRect", "{{0.05,0},{0.1,0},{0.5,0},{0.675,0}}")
-    -- fill listbox with items
+function P.update() --updates listbox with found models
+    P.createShipList()
     listbox:resetList()
-    orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
-    local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
+    --orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
     local tabIndexes = {}
     for k,v in pairs(P.shipList) do
-        -- only add level if it has desired tag
+        --TODO: only add ship if is in the right filter tab
         --if tag == nil or v:hasShip(tag) then
             local item = CEGUI.createListboxTextItem(v)
             item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
             listbox:addItem(item)
             table.insert(tabIndexes, k)
-            --[[if v:getXMLFilename() == preselect then
-                listbox:setItemSelectState(item, true)
-            end--]]
             --orxonox.GUIManager:setTooltipTextHelper(item, v:getDescription())
         --end
     end
     table.insert(P.activeTabIndexes, tabIndexes)
+end
+
+function P.createFilterTab(name) -- generates filter tab and list box, sets handler for selection changes
+    tabName = "orxonox/ShipSelectionLevelTab"
+    -- create new tab window with desired name
+    listbox = CEGUI.toListbox(winMgr:createWindow("MenuWidgets/Listbox", tabName)) 
+    listbox:setText(name)
+    listbox:setProperty("UnifiedMaxSize", "{{1,0},{1,0}}")
+    --[[TODO: smaller list if image and description is implemented. 
+	listbox:setProperty("UnifiedAreaRect", "{{0.05,0},{0.1,0},{0.5,0},{0.675,0}}") --]]	 
+    listbox:setProperty("UnifiedAreaRect", "{{0,0},{0,0},{1,0},{1,0}}")
+    -- fill listbox with items
+    P.update()
     -- listen to selection changes
     orxonox.GUIManager:subscribeEventHelper(listbox, "ItemSelectionChanged", P.name..".ShipSelectionSelectionChanged")
     local tabControl = winMgr:getWindow("orxonox/ShipSelectionTabControl")
@@ -67,7 +62,7 @@ function P.createFilterTab(name)
     end
 end
 
-function P.ShipSelectionGetSelectedModel()
+function P.ShipSelectionGetSelectedModel() --returns selected model, if available.
     -- choose the active listbox
     local tabControl = CEGUI.toTabControl(winMgr:getWindow("orxonox/ShipSelectionTabControl"))
     local listbox = CEGUI.toListbox(tabControl:getTabContentsAtIndex(tabControl:getSelectedTabIndex()))
@@ -83,6 +78,7 @@ function P.ShipSelectionGetSelectedModel()
 end
 
 function P.ShipSelectionSelectionChanged(e)
+    --[[ TODO: Get image and description from template file
     local levelImage = winMgr:getWindow("orxonox/ShipSelectionLevelImage")
     local levelDescription = winMgr:getWindow("orxonox/ShipSelectionLevelDescription")
     local configButton = winMgr:getWindow("orxonox/ShipSelectionConfigButton")
@@ -103,33 +99,33 @@ function P.ShipSelectionSelectionChanged(e)
         -- also take care of "no level selected"
         levelImage:setProperty("Image", nil)
         levelDescription:setText("")
-        configButton:setProperty("Disabled", "True")
     end
+   --]]
 end
 
 function P.ShipSelectionStartButton_clicked(e)
 
-    if selectedlevel ~= nil then
+    if (selectedlevel ~= nil and P.ShipSelectionGetSelectedModel() ~= nil)  then
 	selectedlevel:selectShip(P.ShipSelectionGetSelectedModel())
         orxonox.execute("startGame " .. "_temp.oxw")
         hideAllMenuSheets()
     else
-        orxonox.execute("keyESC")
+	orxonox.execute("orxout user_warning no ship model selected or no tagged shipmodel installed")
     end
 end
 
-function P.ShipSelectionConfigButton_clicked(e)
---[[
+--[[ TODO: function P.ShipSelectionConfigButton_clicked(e)
+
     local level = P.ShipSelectionGetSelectedModel()
     if level ~= nil then
         local configMenu = showMenuSheet("ShipSelectionConfigMenu")
         configMenu:loadConfig(level)
     end
---]]
 end
+--]]
+
 
 function P.ShipSelectionBackButton_clicked(e)
-    --hideAllMenuSheets()
     orxonox.execute("keyESC")
 end 
 
