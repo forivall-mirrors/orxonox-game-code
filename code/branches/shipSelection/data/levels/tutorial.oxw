@@ -3,7 +3,7 @@
  description = "Level for the coding tutorial."
  tags = "tutorial, shipselection"
  screenshot = "codingtutorial.png"
- startingships = "spaceshipassff, spaceshipghost, spaceshipspacecruiser"
+ startingships = "spaceshipassff, spaceshipghost, spaceshipspacecruiser,spaceshippirate"
 />
 
 <?lua
@@ -13,6 +13,7 @@
   include("templates/spaceshipGhost.oxt")
   include("templates/spaceshipSpacecruiser.oxt")
   include("templates/lodInformation.oxt")
+  include("templates/spaceshipPirate.oxt")
 ?>
 
 <Level>
