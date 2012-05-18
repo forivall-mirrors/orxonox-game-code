@@ -244,3 +244,27 @@
     </pickup>
 </PickupRepresentation>
 
+<!--TODO: add Templates-->
+<PickupRepresentation
+    pickupName = "Blue Flag"
+    pickupDescription = "Flag of blue Team"
+    spawnerTemplate = "hugeshrinkpickupRepresentation"
+    inventoryRepresentation = "HugeShrink"
+>
+    <pickup>
+        <FlagPickup template=smallshieldpickup />
+    </pickup>
+</PickupRepresentation>
+
+<!--TODO: add Templates-->
+<PickupRepresentation
+    pickupName = "Red Flag"
+    pickupDescription = "Flag of red Team"
+    spawnerTemplate = "hugeshrinkpickupRepresentation"
+    inventoryRepresentation = "HugeShrink"
+>
+    <pickup>
+        <FlagPickup template=smallshieldpickup />
+    </pickup>
+</PickupRepresentation>
+
