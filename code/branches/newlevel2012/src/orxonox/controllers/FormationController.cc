@@ -271,20 +271,26 @@ namespace orxonox
 //             return;
         }
 
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
-
+		if(coord.x < 0.0001 && coord.y < 0.0001)
+		{
+			// if the ship reaches a direction very close to the direct one, set it to the direct one
+			Vector3 v_temp = this->getControllableEntity()->getPosition();
+			Quaternion quat = v_temp.getRotationTo(target);
+			this->getControllableEntity()->rotate(quat);
+		}
 
         if(this->state_ == FREE)
         {
             if (this->target_ || distance > 10)
             {
                 // Multiply with ROTATEFACTOR_FREE to make them a bit slower
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * coord.x * 2);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * coord.y * 2);
             }
 
-            if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            if (this->target_ && distance <  200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
             {
               this->getControllableEntity()->moveFrontBack(-0.05f); // They don't brake with full power to give the player a chance
             } else this->getControllableEntity()->moveFrontBack(SPEED_FREE);
@@ -296,8 +302,8 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * coord.x * 2);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * coord.y * 2);
             }
 
             if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
@@ -309,27 +315,27 @@ namespace orxonox
 
 
         if(this->state_ == SLAVE)
-        {
+		{
 
-           this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-           this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+			this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * coord.x * 2);
+			this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * coord.y * 2);
 
-            if (distance < 300)
-            {
-		 if (bHasTargetOrientation_)
-		    {
-			copyTargetOrientation();
-		    }
-                if (distance < 100)
-                {   //linear speed reduction
-                    this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
-		   
-                } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
+			if (distance < 300)
+			{
+				if (bHasTargetOrientation_)
+				{
+					copyTargetOrientation();
+				}
+				if (distance < 100)
+				{ //linear speed reduction
+					this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
 
-            } else {
-                this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
-            }
-        }
+				} else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
+
+			} else {
+				this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
+			}
+		}
 
         if (distance < 10)
         {
@@ -382,7 +388,7 @@ namespace orxonox
 
     void FormationController::searchNewMaster()
     {
-        if (this->state_==SLAVE) 
+        if (this->state_==SLAVE)
            return;
         if (!this->getControllableEntity())
             return;
@@ -393,7 +399,7 @@ namespace orxonox
         //go through all pawns
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-           
+
             //same team?
             Gametype* gt=this->getGametype();
             if (!gt)
@@ -478,7 +484,7 @@ void FormationController::commandSlaves()
             Vector3 pos = Vector3::ZERO;
 	         bool left=true;
             int i = 1;
-	    
+
             for(std::vector<FormationController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
                 pos = Vector3::ZERO;
@@ -489,7 +495,7 @@ void FormationController::commandSlaves()
                     pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
                     i++;
                     dest+=FORMATION_LENGTH*(orient*WorldEntity::BACK);
-                }		
+                }
                 (*it)->setTargetOrientation(orient);
                 (*it)->setTargetPosition(pos);
                 left=!left;
@@ -598,12 +604,12 @@ void FormationController::commandSlaves()
         }
 
         if (this->state_==SLAVE)  //become master of this formation
-        {   
+        {
             this->slaves_=this->myMaster_->slaves_;
             this->myMaster_->slaves_.clear();
             this->myMaster_->state_=SLAVE;
             this->myMaster_->myMaster_=this;
-            
+
             //delete myself in slavelist
             std::vector<FormationController*>::iterator it2 = std::find(this->slaves_.begin(), this->slaves_.end(), this);
             if (it2 != this->slaves_.end())
@@ -646,7 +652,7 @@ void FormationController::commandSlaves()
            i++;
            if (i>=slaves_.size()/2) break; //half the formation should attack.
        }
-    }     
+    }
 
 
     /**
@@ -859,7 +865,7 @@ void FormationController::commandSlaves()
 
     void FormationController::setTargetOrientation(const Quaternion& orient)
     {
-        this->targetOrientation_=orient;	
+        this->targetOrientation_=orient;
         this->bHasTargetOrientation_=true;
     }
 
