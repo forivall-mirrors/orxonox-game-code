@@ -69,8 +69,8 @@ namespace orxonox
     */
     void DamageBoostPickup::initialize(void)
     {
-        this->duration_ = 0.0f;
-        this->damageMultiplier_ = 1.0f; //The default damage multiplier.
+    	this->duration_ = 0.0f;
+    	this->damageMultiplier_ = 1.0f; //The default damage multiplier.
         //Defines who is allowed to pick up the pickup.
         this->addTarget(ClassIdentifier<SpaceShip>::getIdentifier());
     }
@@ -88,7 +88,7 @@ namespace orxonox
         this->pickupIdentifier_->addParameter(type1, val1);
 
         stream.clear();
-        stream << this->damageMultiplier_;
+        stream << this->getDamageMultiplier();
         std::string type2 = "damageMultiplier";
         std::string val2 = stream.str();
         this->pickupIdentifier_->addParameter(type2, val2);
@@ -115,14 +115,13 @@ namespace orxonox
         if(damageMultiplier >= 1.0f)
         {
             this->damageMultiplier_ = damageMultiplier;
-            orxout() << "Set Damage " << damageMultiplier << endl;
         }
     }
 
 
     /**
     @brief
-        Is called when the pickup has transited from used to unused or the other way around.
+        Is called when the pickup has transisted from used to unused or the other way around.
     */
     void DamageBoostPickup::changedUsed(void)
     {
@@ -150,9 +149,9 @@ namespace orxonox
             }
 
             // Saves the old default Damage that is needed to restore the original damage
-            this->olddamageMultiplier_ = ship->getDamageMultiplier();
-            // Sets the new Damage with the damage multiplier.
-            ship->setDamageMultiplier( this->damageMultiplier_ );
+            this->olddamageMultiplier_ = 1.0f;
+            // Sets the new Damage with the damage multiplier
+            ship->setDamageMultiplier(this->getDamageMultiplier());
         }
         else
         {
@@ -205,8 +204,7 @@ namespace orxonox
 
         DamageBoostPickup* pickup = dynamic_cast<DamageBoostPickup*>(item);
         pickup->setDuration(this->getDuration());
-        
-
+        pickup->setDamageMultiplier(this->getDamageMultiplier());
         pickup->initializeIdentifier();
     }
 

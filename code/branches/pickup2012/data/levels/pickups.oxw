@@ -172,7 +172,19 @@
     
     <PickupSpawner position="-50,75,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
       <pickup>
-        <DamageBoostPickup template=damageboostpickup />
+        <DamageBoostPickup template=smalldamageboostpickup />
+      </pickup>
+    </PickupSpawner>
+    
+      <PickupSpawner position="-50,100,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+      <pickup>
+        <DamageBoostPickup template=mediumdamageboostpickup />
+      </pickup>
+    </PickupSpawner>
+    
+      <PickupSpawner position="-50,125,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+      <pickup>
+        <DamageBoostPickup template=largedamageboostpickup />
       </pickup>
     </PickupSpawner>
     

@@ -230,10 +230,10 @@ namespace orxonox
 
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
-        // apply multiplier
+        //Applies multiplier given by the DamageBoost Pickup.
     	Pawn *test = dynamic_cast<Pawn *>(originator);
     	if( test != NULL )
-    	{ orxout() << "Test " << damage << endl;
+    	{
     	  damage *= originator->getDamageMultiplier();
     	}
 

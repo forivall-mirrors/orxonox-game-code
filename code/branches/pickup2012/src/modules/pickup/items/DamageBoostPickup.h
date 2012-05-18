@@ -62,6 +62,7 @@ namespace orxonox {
             */
             inline float getDuration(void) const
                 { return this->duration_; }
+
             inline void setDuration( float duration );
 
 
@@ -78,7 +79,7 @@ namespace orxonox {
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-            void setDamageMultiplier(float damageMultiplier);
+            void setDamageMultiplier(float damageMultiplier); //!< Sets the DamageMultiplier according to the XML.
 
 
         private:

@@ -161,7 +161,7 @@ namespace orxonox // tolua_export
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
 
-            // not that beautiful yet
+            // These are used with the Damage Boost Pickup to use the damage multiplier.
             inline void setDamageMultiplier(float multiplier)
                 { this->damageMultiplier_ = multiplier; }
             inline float getDamageMultiplier()
@@ -214,8 +214,8 @@ namespace orxonox // tolua_export
             float reloadWaitTime_;
             float reloadWaitCountdown_;
 
-            // modifiers
-            float damageMultiplier_;
+            // Modifier
+            float damageMultiplier_; // Used by the Damage Boost Pickup.
 
             WeakPtr<Pawn> lastHitOriginator_;
 
