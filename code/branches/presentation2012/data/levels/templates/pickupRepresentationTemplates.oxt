@@ -222,7 +222,7 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0.10,0.20,0.30" material="Sphere2" scale=0.1 >
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
                         <attached>
                             <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageSmall" scale=0.7 />
                         </attached>
@@ -247,7 +247,7 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0.10,0.20,0.30" material="Sphere2" scale=0.1 >
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
                         <attached>
                             <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageMedium" scale=0.7 />
                         </attached>
@@ -272,7 +272,7 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0.10,0.20,0.30" material="Sphere2" scale=0.1 >
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
                         <attached>
                             <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageLarge" scale=0.7 />
                         </attached>
