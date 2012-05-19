@@ -54,7 +54,7 @@ namespace orxonox
     {
     public:
         /// Constructor: Assigns the value and the type identifier.
-        MT_Value(const T& value, MT_Type::Value type) : MT_ValueBase(type), value_(value) {}
+        MT_Value(const T& value, MultiType::Type::Enum type) : MT_ValueBase(type), value_(value) {}
 
         /// Creates a copy of itself.
         inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_, this->type_); }

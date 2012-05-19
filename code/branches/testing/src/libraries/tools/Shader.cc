@@ -160,7 +160,7 @@ namespace orxonox
     */
     void Shader::setParameter(size_t technique, size_t pass, const std::string& parameter, int value)
     {
-        ParameterContainer container = {technique, pass, parameter, value, 0.0f, MT_Type::Int};
+        ParameterContainer container = {technique, pass, parameter, value};
         this->parameters_.push_back(container);
         this->addAsListener();
     }
@@ -170,7 +170,7 @@ namespace orxonox
     */
     void Shader::setParameter(size_t technique, size_t pass, const std::string& parameter, float value)
     {
-        ParameterContainer container = {technique, pass, parameter, 0, value, MT_Type::Float};
+        ParameterContainer container = {technique, pass, parameter, value};
         this->parameters_.push_back(container);
         this->addAsListener();
     }
@@ -203,17 +203,10 @@ namespace orxonox
                 if (passPtr)
                 {
                     // change the value of the parameter depending on its type
-                    switch (it->valueType_)
-                    {
-                        case MT_Type::Int:
-                            passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->valueInt_);
-                            break;
-                        case MT_Type::Float:
-                            passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->valueFloat_);
-                            break;
-                        default:
-                            break;
-                    }
+                    if (it->value_.isType<int>())
+                        passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->value_.getInt());
+                    else if (it->value_.isType<float>())
+                        passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->value_.getFloat());
                 }
                 else
                     orxout(internal_warning) << "No pass " << it->pass_ << " in technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or pass has no shader." << endl;

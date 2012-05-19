@@ -216,7 +216,7 @@ namespace orxonox
     {
         OrxAssert(!_getInstance().existsArgument(name),
             "Cannot add a command line argument with name '" + name + "' twice.");
-        OrxAssert(MultiType(defaultValue).getType() != MT_Type::Bool || MultiType(defaultValue).getBool() != true,
+        OrxAssert(!MultiType(defaultValue).isType<bool>() || MultiType(defaultValue).getBool() != true,
                "Boolean command line arguments with positive default values are not supported." << endl
             << "Please use SetCommandLineSwitch and adjust your argument: " << name);
 

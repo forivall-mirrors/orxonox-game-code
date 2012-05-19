@@ -110,40 +110,6 @@
 namespace orxonox
 {
     /**
-        @brief Enum of all possible types of a MultiType.
-    */
-    namespace MT_Type
-    {
-        enum Value
-        {
-            Null,
-            Char,
-            UnsignedChar,
-            Short,
-            UnsignedShort,
-            Int,
-            UnsignedInt,
-            Long,
-            UnsignedLong,
-            LongLong,
-            UnsignedLongLong,
-            Float,
-            Double,
-            LongDouble,
-            Bool,
-            VoidPointer,
-            String,
-            Vector2,
-            Vector3,
-            Vector4,
-            ColourValue,
-            Quaternion,
-            Radian,
-            Degree
-        };
-    }
-
-    /**
         @brief The MultiType can hold a value of many possible types and convert them to other types.
 
         The following types are supported by the MultiType:
@@ -164,6 +130,40 @@ namespace orxonox
         _UtilExport friend std::ostream& operator<<(std::ostream& outstream, const MultiType& mt);
         template <typename T> friend class MT_Value;
 
+        struct Type
+        {
+            /**
+                @brief Enum of all possible types of a MultiType.
+            */
+            enum Enum
+            {
+                Null,
+                Char,
+                UnsignedChar,
+                Short,
+                UnsignedShort,
+                Int,
+                UnsignedInt,
+                Long,
+                UnsignedLong,
+                LongLong,
+                UnsignedLongLong,
+                Float,
+                Double,
+                LongDouble,
+                Bool,
+                VoidPointer,
+                String,
+                Vector2,
+                Vector3,
+                Vector4,
+                ColourValue,
+                Quaternion,
+                Radian,
+                Degree
+            };
+        };
+
     public:
         /**
             @brief MT_ValueBase is an almost pure virtual baseclass of MT_Value<T>, which holds the value of the MultiType.
@@ -172,7 +172,7 @@ namespace orxonox
         class _UtilExport MT_ValueBase
         {
         public:
-            MT_ValueBase(MT_Type::Value type) : type_(type), bHasDefaultValue_(false) {}
+            MT_ValueBase(Type::Enum type) : type_(type), bHasDefaultValue_(false) {}
             virtual ~MT_ValueBase() {}
 
             virtual MT_ValueBase* clone() const = 0;
@@ -181,7 +181,7 @@ namespace orxonox
             virtual bool assimilate(const MultiType& other) = 0;
 
             /// Returns the type of the current value.
-            const MT_Type::Value& getType() const { return this->type_; }
+            const Type::Enum& getType() const { return this->type_; }
 
             /// Checks whether the value is a default one.
             bool hasDefaultValue()   const { return this->bHasDefaultValue_; }
@@ -264,11 +264,13 @@ namespace orxonox
             virtual void exportData( uint8_t*& mem ) const=0;
             virtual uint8_t getSize() const=0;
 
-            MT_Type::Value type_;   ///< The type of the current value
+            Type::Enum type_;       ///< The type of the current value
             bool bHasDefaultValue_; ///< True if the last conversion wasn't successful
         };
 
         public:
+            static const MultiType Null;
+
             inline MultiType()                                  : value_(0) {}                                      ///< Default constructor: Assigns no value and no type. The type will be determined by the first assignment of a value.
             inline MultiType(const char& value)                 : value_(0) { this->assignValue(value); }           ///< Constructor: Assigns the given value and sets the type.
             inline MultiType(const unsigned char& value)        : value_(0) { this->assignValue(value); }           ///< Constructor: Assigns the given value and sets the type.
@@ -296,7 +298,6 @@ namespace orxonox
             inline MultiType(const orxonox::mbool& value)       : value_(0) { this->assignValue((bool)value); }     ///< Constructor: Assigns the given mbool and converts it to bool.
             inline MultiType(const char* value)                 : value_(0) { this->setValue(std::string(value)); } ///< Constructor: Converts the char array to a std::string, assigns the value and sets the type.
             inline MultiType(const MultiType& other)            : value_(0) { this->setValue(other); }              ///< Copyconstructor: Assigns value and type of the other MultiType.
-            inline MultiType(MT_Type::Value type)               : value_(0) { this->setType(type); }                ///< Constructor: Sets the type, the next assignment will determine the value.
 
             /// Destructor: Deletes the MT_Value.
             inline ~MultiType() { if (this->value_) { delete this->value_; } }
@@ -304,7 +305,6 @@ namespace orxonox
             template <typename V> inline MultiType& operator=(const V& value)         { this->setValue(value); return (*this); } ///< Assigns a new value. The value will be converted to the current type of the MultiType.
             template <typename V> inline MultiType& operator=(V* value)               { this->setValue(value); return (*this); } ///< Assigns a pointer.
             inline                       MultiType& operator=(const MultiType& other) { this->setValue(other); return (*this); } ///< Assigns the value of the other MultiType and converts it to the current type of the MultiType.
-            inline                       MultiType& operator=(MT_Type::Value type)    { this->setType(type);   return (*this); } ///< Resets the value and changes the type.
 
             inline bool                                   setValue(const char& value);
             inline bool                                   setValue(const unsigned char& value);
@@ -345,38 +345,27 @@ namespace orxonox
 
 
             /// Copies the other MultiType by assigning value and type.
-            inline void                       copy(const MultiType& other)    { if (this == &other) { return; } if (this->value_) { delete this->value_; } this->value_ = (other.value_) ? other.value_->clone() : 0; }
+            inline void                       copy(const MultiType& other) { if (this == &other) { return; } if (this->value_) { delete this->value_; } this->value_ = (other.value_) ? other.value_->clone() : 0; }
 
             /// Converts the current value to type T.
-            template <typename T> inline bool convert()                       { return this->setValue<T>((typename Loki::TypeTraits<T>::UnqualifiedReferredType)(*this));  }
-            /// Converts the current value to the type of the other MultiType.
-            inline bool                       convert(const MultiType& other) { return this->convert(other.getType()); }
-            bool                              convert(MT_Type::Value type);
+            template <typename T> inline bool convert()                    { return this->setValue<T>((typename Loki::TypeTraits<T>::UnqualifiedReferredType)(*this));  }
 
-            /// Current content gets deleted. New type is MT_Type::Null
-            inline void                       reset()                         { if (this->value_) delete this->value_; this->value_ = 0; }
+            /// Resets value and type. Type will be void afterwards and null() returns true.
+            inline void                       reset()                      { if (this->value_) delete this->value_; this->value_ = 0; }
             /// Current content gets overridden with default zero value
-            inline void                       resetValue()                    { if (this->value_) this->value_->reset(); }
+            inline void                       resetValue()                 { if (this->value_) this->value_->reset(); }
 
             /// Resets the value and changes the internal type to T.
-            template <typename T> inline void setType()                       { this->assignValue(typename Loki::TypeTraits<T>::UnqualifiedReferredType()); }
-            /// Resets the value and changes the internal type to the type of the other MultiType.
-            inline void                       setType(const MultiType& other) { this->setType(other.getType());                                             }
-            /// Resets the value and changes the internal type to the given type.
-            inline void                       setType(MT_Type::Value type)    { this->reset(); this->convert(type); this->resetValue();                     }
+            template <typename T> inline void setType()                    { this->assignValue(typename Loki::TypeTraits<T>::UnqualifiedReferredType()); }
 
-            /// Returns the current type.
-            inline MT_Type::Value             getType()                   const { return (this->value_) ? this->value_->type_ : MT_Type::Null; }
-            /// Returns true if the current type equals the given type.
-            inline bool                       isType(MT_Type::Value type) const { return (this->value_) ? (this->value_->type_ == type) : (type == MT_Type::Null); }
             /// Returns true if the current type is T.
-            template <typename T> inline bool isType()                    const { return false; } // Only works for specialized values - see below
-            std::string                       getTypename()               const;
+            template <typename T> inline bool isType()               const { return false; } // Only works for specialized values - see below
+            std::string                       getTypename()          const;
 
             /// Saves the value of the MT to a bytestream (pointed at by mem) and increases mem pointer by size of MT
-            inline void                       exportData(uint8_t*& mem) const { assert(sizeof(MT_Type::Value)<=8); *static_cast<uint8_t*>(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
+            inline void                       exportData(uint8_t*& mem) const { assert(sizeof(Type::Enum)<=8); *static_cast<uint8_t*>(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
             /// Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT
-            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type::Value)<=8); this->setType(static_cast<MT_Type::Value>(*static_cast<uint8_t*>(mem))); mem+=sizeof(uint8_t); this->value_->importData(mem); }
+            inline void                       importData(uint8_t*& mem) { assert(sizeof(Type::Enum)<=8); this->setType(static_cast<Type::Enum>(*static_cast<uint8_t*>(mem))); mem+=sizeof(uint8_t); this->value_->importData(mem); }
             /// Saves the value of the MT to a bytestream and increases pointer to bytestream by size of MT
             inline uint8_t*&                  operator << (uint8_t*& mem) { importData(mem); return mem; }
             /// Loads the value of the MT to a bytestream and increases pointer to bytestream by size of MT
@@ -465,29 +454,36 @@ namespace orxonox
             template <typename T> inline T* getPointer()          const { return static_cast<T*>(this->getVoid());      } ///< Returns the current value, converted to a T* pointer.
 
         private:
-            inline bool assignValue(const char& value)                 { if (this->value_ && this->value_->type_ == MT_Type::Char)             { return this->value_->setValue(value); } else { this->changeValueContainer<char>(value);                 return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const unsigned char& value)        { if (this->value_ && this->value_->type_ == MT_Type::UnsignedChar)     { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned char>(value);        return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const short& value)                { if (this->value_ && this->value_->type_ == MT_Type::Short)            { return this->value_->setValue(value); } else { this->changeValueContainer<short>(value);                return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const unsigned short& value)       { if (this->value_ && this->value_->type_ == MT_Type::UnsignedShort)    { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned short>(value);       return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const int& value)                  { if (this->value_ && this->value_->type_ == MT_Type::Int)              { return this->value_->setValue(value); } else { this->changeValueContainer<int>(value);                  return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const unsigned int& value)         { if (this->value_ && this->value_->type_ == MT_Type::UnsignedInt)      { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned int>(value);         return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const long& value)                 { if (this->value_ && this->value_->type_ == MT_Type::Long)             { return this->value_->setValue(value); } else { this->changeValueContainer<long>(value);                 return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const unsigned long& value)        { if (this->value_ && this->value_->type_ == MT_Type::UnsignedLong)     { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned long>(value);        return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const long long& value)            { if (this->value_ && this->value_->type_ == MT_Type::LongLong)         { return this->value_->setValue(value); } else { this->changeValueContainer<long long>(value);            return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const unsigned long long& value)   { if (this->value_ && this->value_->type_ == MT_Type::UnsignedLongLong) { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned long long>(value);   return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const float& value)                { if (this->value_ && this->value_->type_ == MT_Type::Float)            { return this->value_->setValue(value); } else { this->changeValueContainer<float>(value);                return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const double& value)               { if (this->value_ && this->value_->type_ == MT_Type::Double)           { return this->value_->setValue(value); } else { this->changeValueContainer<double>(value);               return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const long double& value)          { if (this->value_ && this->value_->type_ == MT_Type::LongDouble)       { return this->value_->setValue(value); } else { this->changeValueContainer<long double>(value);          return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const bool& value)                 { if (this->value_ && this->value_->type_ == MT_Type::Bool)             { return this->value_->setValue(value); } else { this->changeValueContainer<bool>(value);                 return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(      void* const& value)          { if (this->value_ && this->value_->type_ == MT_Type::VoidPointer)      { return this->value_->setValue(value); } else { this->changeValueContainer<void*>(value);                return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const std::string& value)          { if (this->value_ && this->value_->type_ == MT_Type::String)           { return this->value_->setValue(value); } else { this->changeValueContainer<std::string>(value);          return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::Vector2& value)     { if (this->value_ && this->value_->type_ == MT_Type::Vector2)          { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector2>(value);     return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::Vector3& value)     { if (this->value_ && this->value_->type_ == MT_Type::Vector3)          { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector3>(value);     return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::Vector4& value)     { if (this->value_ && this->value_->type_ == MT_Type::Vector4)          { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector4>(value);     return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::ColourValue& value) { if (this->value_ && this->value_->type_ == MT_Type::ColourValue)      { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::ColourValue>(value); return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::Quaternion& value)  { if (this->value_ && this->value_->type_ == MT_Type::Quaternion)       { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Quaternion>(value);  return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::Radian& value)      { if (this->value_ && this->value_->type_ == MT_Type::Radian)           { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Radian>(value);      return true; } } ///< Assigns a new value by changing type and creating a new container.
-            inline bool assignValue(const orxonox::Degree& value)      { if (this->value_ && this->value_->type_ == MT_Type::Degree)           { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Degree>(value);      return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const char& value)                 { if (this->value_ && this->value_->type_ == Type::Char)             { return this->value_->setValue(value); } else { this->changeValueContainer<char>(value);                 return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const unsigned char& value)        { if (this->value_ && this->value_->type_ == Type::UnsignedChar)     { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned char>(value);        return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const short& value)                { if (this->value_ && this->value_->type_ == Type::Short)            { return this->value_->setValue(value); } else { this->changeValueContainer<short>(value);                return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const unsigned short& value)       { if (this->value_ && this->value_->type_ == Type::UnsignedShort)    { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned short>(value);       return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const int& value)                  { if (this->value_ && this->value_->type_ == Type::Int)              { return this->value_->setValue(value); } else { this->changeValueContainer<int>(value);                  return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const unsigned int& value)         { if (this->value_ && this->value_->type_ == Type::UnsignedInt)      { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned int>(value);         return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const long& value)                 { if (this->value_ && this->value_->type_ == Type::Long)             { return this->value_->setValue(value); } else { this->changeValueContainer<long>(value);                 return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const unsigned long& value)        { if (this->value_ && this->value_->type_ == Type::UnsignedLong)     { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned long>(value);        return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const long long& value)            { if (this->value_ && this->value_->type_ == Type::LongLong)         { return this->value_->setValue(value); } else { this->changeValueContainer<long long>(value);            return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const unsigned long long& value)   { if (this->value_ && this->value_->type_ == Type::UnsignedLongLong) { return this->value_->setValue(value); } else { this->changeValueContainer<unsigned long long>(value);   return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const float& value)                { if (this->value_ && this->value_->type_ == Type::Float)            { return this->value_->setValue(value); } else { this->changeValueContainer<float>(value);                return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const double& value)               { if (this->value_ && this->value_->type_ == Type::Double)           { return this->value_->setValue(value); } else { this->changeValueContainer<double>(value);               return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const long double& value)          { if (this->value_ && this->value_->type_ == Type::LongDouble)       { return this->value_->setValue(value); } else { this->changeValueContainer<long double>(value);          return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const bool& value)                 { if (this->value_ && this->value_->type_ == Type::Bool)             { return this->value_->setValue(value); } else { this->changeValueContainer<bool>(value);                 return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(      void* const& value)          { if (this->value_ && this->value_->type_ == Type::VoidPointer)      { return this->value_->setValue(value); } else { this->changeValueContainer<void*>(value);                return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const std::string& value)          { if (this->value_ && this->value_->type_ == Type::String)           { return this->value_->setValue(value); } else { this->changeValueContainer<std::string>(value);          return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::Vector2& value)     { if (this->value_ && this->value_->type_ == Type::Vector2)          { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector2>(value);     return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::Vector3& value)     { if (this->value_ && this->value_->type_ == Type::Vector3)          { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector3>(value);     return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::Vector4& value)     { if (this->value_ && this->value_->type_ == Type::Vector4)          { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Vector4>(value);     return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::ColourValue& value) { if (this->value_ && this->value_->type_ == Type::ColourValue)      { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::ColourValue>(value); return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::Quaternion& value)  { if (this->value_ && this->value_->type_ == Type::Quaternion)       { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Quaternion>(value);  return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::Radian& value)      { if (this->value_ && this->value_->type_ == Type::Radian)           { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Radian>(value);      return true; } } ///< Assigns a new value by changing type and creating a new container.
+            inline bool assignValue(const orxonox::Degree& value)      { if (this->value_ && this->value_->type_ == Type::Degree)           { return this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Degree>(value);      return true; } } ///< Assigns a new value by changing type and creating a new container.
+
+            /// Resets the value and changes the internal type to the given type.
+            inline void       setType(Type::Enum type) { this->reset(); this->convert(type); this->resetValue(); }
+            /// Returns the current type.
+            inline Type::Enum getType()          const { return (this->value_) ? this->value_->type_ : Type::Null; }
+            /// Converts the current value to the given type.
+            bool              convert(Type::Enum type);
 
             /// Changes the value container.
             template <typename T> inline void changeValueContainer(const T& value) { if (this->value_) { delete this->value_; } this->createNewValueContainer<T>(value); }
@@ -501,31 +497,31 @@ namespace orxonox
     _UtilExport inline std::ostream& operator<<(std::ostream& outstream, const MultiType& mt) { if (mt.value_) { mt.value_->toString(outstream); } return outstream; }
 
     template <> inline bool MultiType::isType<void>()                 const { return this->null();                                                       } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<char>()                 const { return (this->value_ && this->value_->type_ == MT_Type::Char);             } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<unsigned char>()        const { return (this->value_ && this->value_->type_ == MT_Type::UnsignedChar);     } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<short>()                const { return (this->value_ && this->value_->type_ == MT_Type::Short);            } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<unsigned short>()       const { return (this->value_ && this->value_->type_ == MT_Type::UnsignedShort);    } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<int>()                  const { return (this->value_ && this->value_->type_ == MT_Type::Int);              } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<unsigned int>()         const { return (this->value_ && this->value_->type_ == MT_Type::UnsignedInt);      } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<long>()                 const { return (this->value_ && this->value_->type_ == MT_Type::Long);             } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<unsigned long>()        const { return (this->value_ && this->value_->type_ == MT_Type::UnsignedLong);     } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<long long>()            const { return (this->value_ && this->value_->type_ == MT_Type::LongLong);         } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<unsigned long long>()   const { return (this->value_ && this->value_->type_ == MT_Type::UnsignedLongLong); } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<float>()                const { return (this->value_ && this->value_->type_ == MT_Type::Float);            } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<double>()               const { return (this->value_ && this->value_->type_ == MT_Type::Double);           } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<long double>()          const { return (this->value_ && this->value_->type_ == MT_Type::LongDouble);       } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<bool>()                 const { return (this->value_ && this->value_->type_ == MT_Type::Bool);             } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<void*>()                const { return (this->value_ && this->value_->type_ == MT_Type::VoidPointer);      } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<std::string>()          const { return (this->value_ && this->value_->type_ == MT_Type::String);           } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::Vector2>()     const { return (this->value_ && this->value_->type_ == MT_Type::Vector2);          } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::Vector3>()     const { return (this->value_ && this->value_->type_ == MT_Type::Vector3);          } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::Vector4>()     const { return (this->value_ && this->value_->type_ == MT_Type::Vector4);          } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::ColourValue>() const { return (this->value_ && this->value_->type_ == MT_Type::ColourValue);      } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::Quaternion>()  const { return (this->value_ && this->value_->type_ == MT_Type::Quaternion);       } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::Radian>()      const { return (this->value_ && this->value_->type_ == MT_Type::Radian);           } ///< Returns true if the current type equals the given type.
-    template <> inline bool MultiType::isType<orxonox::Degree>()      const { return (this->value_ && this->value_->type_ == MT_Type::Degree);           } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<char>()                 const { return (this->value_ && this->value_->type_ == Type::Char);             } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<unsigned char>()        const { return (this->value_ && this->value_->type_ == Type::UnsignedChar);     } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<short>()                const { return (this->value_ && this->value_->type_ == Type::Short);            } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<unsigned short>()       const { return (this->value_ && this->value_->type_ == Type::UnsignedShort);    } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<int>()                  const { return (this->value_ && this->value_->type_ == Type::Int);              } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<unsigned int>()         const { return (this->value_ && this->value_->type_ == Type::UnsignedInt);      } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<long>()                 const { return (this->value_ && this->value_->type_ == Type::Long);             } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<unsigned long>()        const { return (this->value_ && this->value_->type_ == Type::UnsignedLong);     } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<long long>()            const { return (this->value_ && this->value_->type_ == Type::LongLong);         } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<unsigned long long>()   const { return (this->value_ && this->value_->type_ == Type::UnsignedLongLong); } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<float>()                const { return (this->value_ && this->value_->type_ == Type::Float);            } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<double>()               const { return (this->value_ && this->value_->type_ == Type::Double);           } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<long double>()          const { return (this->value_ && this->value_->type_ == Type::LongDouble);       } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<bool>()                 const { return (this->value_ && this->value_->type_ == Type::Bool);             } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<void*>()                const { return (this->value_ && this->value_->type_ == Type::VoidPointer);      } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<std::string>()          const { return (this->value_ && this->value_->type_ == Type::String);           } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::Vector2>()     const { return (this->value_ && this->value_->type_ == Type::Vector2);          } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::Vector3>()     const { return (this->value_ && this->value_->type_ == Type::Vector3);          } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::Vector4>()     const { return (this->value_ && this->value_->type_ == Type::Vector4);          } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::ColourValue>() const { return (this->value_ && this->value_->type_ == Type::ColourValue);      } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::Quaternion>()  const { return (this->value_ && this->value_->type_ == Type::Quaternion);       } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::Radian>()      const { return (this->value_ && this->value_->type_ == Type::Radian);           } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<orxonox::Degree>()      const { return (this->value_ && this->value_->type_ == Type::Degree);           } ///< Returns true if the current type equals the given type.
 
-    /// Deletes the content, type becomes MT_Type::Null.
+    /// Deletes the content, type becomes void.
     template <> inline bool MultiType::convert<void>()                 { this->reset(); return true; }
 
     // Specialization to avoid ambiguities with the conversion operator

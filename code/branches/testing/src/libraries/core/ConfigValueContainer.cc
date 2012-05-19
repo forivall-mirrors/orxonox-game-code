@@ -82,7 +82,7 @@ namespace orxonox
 
         for (unsigned int i = 0; i < this->valueVector_.size(); i++)
         {
-            ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType(MT_Type::String));
+            ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType<std::string>());
             this->defvalueStringVector_.push_back(this->valueVector_[i]);
         }
 
@@ -117,7 +117,7 @@ namespace orxonox
         {
             if (this->tset(input))
             {
-                ConfigFileManager::getInstance().getConfigFile(this->type_)->setValue(this->sectionname_, this->varname_, input, this->value_.isType(MT_Type::String));
+                ConfigFileManager::getInstance().getConfigFile(this->type_)->setValue(this->sectionname_, this->varname_, input, this->value_.isType<std::string>());
                 return true;
             }
         }
@@ -136,7 +136,7 @@ namespace orxonox
         {
             if (this->tset(index, input))
             {
-                ConfigFileManager::getInstance().getConfigFile(this->type_)->setValue(this->sectionname_, this->varname_, index, input, this->value_.isType(MT_Type::String));
+                ConfigFileManager::getInstance().getConfigFile(this->type_)->setValue(this->sectionname_, this->varname_, index, input, this->value_.isType<std::string>());
                 return true;
             }
         }
@@ -235,7 +235,7 @@ namespace orxonox
                 // Erase the entry from the vector, change (shift) all entries beginning with index in the config file, remove the last entry from the file
                 this->valueVector_.erase(this->valueVector_.begin() + index);
                 for (unsigned int i = index; i < this->valueVector_.size(); i++)
-                    ConfigFileManager::getInstance().getConfigFile(this->type_)->setValue(this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType(MT_Type::String));
+                    ConfigFileManager::getInstance().getConfigFile(this->type_)->setValue(this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType<std::string>());
                 ConfigFileManager::getInstance().getConfigFile(this->type_)->deleteVectorEntries(this->sectionname_, this->varname_, this->valueVector_.size());
 
                 return true;
@@ -271,7 +271,7 @@ namespace orxonox
     void ConfigValueContainer::update()
     {
         if (!this->bIsVector_)
-            this->value_ = ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, this->defvalueString_, this->value_.isType(MT_Type::String));
+            this->value_ = ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, this->defvalueString_, this->value_.isType<std::string>());
         else
         {
             this->valueVector_.clear();
@@ -280,11 +280,11 @@ namespace orxonox
             {
                 if (i < this->defvalueStringVector_.size())
                 {
-                    this->value_ = ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isType(MT_Type::String));
+                    this->value_ = ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isType<std::string>());
                 }
                 else
                 {
-                    this->value_ = ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, i, MultiType(), this->value_.isType(MT_Type::String));
+                    this->value_ = ConfigFileManager::getInstance().getConfigFile(this->type_)->getOrCreateValue(this->sectionname_, this->varname_, i, MultiType(), this->value_.isType<std::string>());
                 }
 
                 this->valueVector_.push_back(this->value_);
