@@ -70,7 +70,7 @@ namespace orxonox
     {
         SUPER(ParticleEmitter, XMLPort, xmlelement, mode);
 
-        XMLPortParam(ParticleEmitter, "lod",    setLODxml, getLODxml, xmlelement, mode).defaultValues(LODParticle::Normal);
+        XMLPortParam(ParticleEmitter, "lod",    setLODxml, getLODxml, xmlelement, mode).defaultValues(static_cast<unsigned int>(LODParticle::Normal));
         XMLPortParam(ParticleEmitter, "source", setSource, getSource, xmlelement, mode);
     }
 

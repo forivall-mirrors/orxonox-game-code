@@ -13,7 +13,7 @@ namespace orxonox
 
     // x set(value)
     // ? set(pointer)
-    // x set<type>(value)
+    // x force<type>(value)
 
     // x convert<type>()
     // x reset
@@ -202,7 +202,7 @@ namespace orxonox
     }
 
     //////////////////////
-    // set<type>(value) //
+    // force<type>(value) //
     //////////////////////
     TEST(MultiType, SetValueWithTypeIntToString)
     {
@@ -211,7 +211,7 @@ namespace orxonox
         EXPECT_TRUE(mt.isType<std::string>());
         EXPECT_EQ("Hello", mt.get<std::string>());
 
-        mt.set<int>(1234);
+        mt.force<int>(1234);
 
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_EQ(1234, mt.get<int>());
@@ -224,7 +224,7 @@ namespace orxonox
         EXPECT_TRUE(mt.isType<std::string>());
         EXPECT_EQ("Hello", mt.get<std::string>());
 
-        mt.set<int>("1234");
+        mt.force<int>("1234");
 
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_EQ(1234, mt.get<int>());
@@ -237,7 +237,7 @@ namespace orxonox
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_EQ(4321, mt.get<int>());
 
-        mt.set<int>(1234);
+        mt.force<int>(1234);
 
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_EQ(1234, mt.get<int>());
