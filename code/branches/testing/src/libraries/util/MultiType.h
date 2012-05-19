@@ -57,7 +57,7 @@
 
     If you want to change the type, there are three possibilities:
      - @ref orxonox::MultiType::convert "convert<T>()" sets the type to T and converts the currently assigned value
-     - @ref orxonox::MultiType::setType "setType<T>()" sets the type to T and resets the value to zero using zeroise<T>()
+     - @ref orxonox::MultiType::reset "reset<T>()" sets the type to T and resets the value to zero using zeroise<T>()
      - setValue<T>(value) assigns a new value and changes the type to T.
 
     Examples:
@@ -338,11 +338,10 @@ namespace orxonox
                 else
                     return this->assignValue     (static_cast<void*>(const_cast<typename Loki::TypeTraits<V>::UnqualifiedType*>(value)));
             }
+            /// Changes the type to T and assigns the new value (which might be of another type than T - it gets converted).
+            template <typename T, typename V> inline bool setValue(const V& value) { this->reset<T>(); return this->setValue(value); }
             /// Assigns the value of the other MultiType and converts it to the current type.
             bool                                          setValue(const MultiType& other) { if (this->value_) { return this->value_->assimilate(other); } else { if (other.value_) { this->value_ = other.value_->clone(); } return true; } }
-            /// Changes the type to T and assigns the new value (which might be of another type than T - it gets converted).
-            template <typename T, typename V> inline bool setValue(const V& value) { this->setType<T>(); return this->setValue(value); }
-
 
             /// Copies the other MultiType by assigning value and type.
             inline void                       copy(const MultiType& other) { if (this == &other) { return; } if (this->value_) { delete this->value_; } this->value_ = (other.value_) ? other.value_->clone() : 0; }
@@ -352,11 +351,10 @@ namespace orxonox
 
             /// Resets value and type. Type will be void afterwards and null() returns true.
             inline void                       reset()                      { if (this->value_) delete this->value_; this->value_ = 0; }
-            /// Current content gets overridden with default zero value
-            inline void                       resetValue()                 { if (this->value_) this->value_->reset(); }
-
             /// Resets the value and changes the internal type to T.
-            template <typename T> inline void setType()                    { this->assignValue(typename Loki::TypeTraits<T>::UnqualifiedReferredType()); }
+            template <typename T> inline void reset()                      { this->assignValue(typename Loki::TypeTraits<T>::UnqualifiedReferredType()); }
+            /// Current value gets overridden with default zero value
+            inline void                       resetValue()                 { if (this->value_) this->value_->reset(); }
 
             /// Returns true if the current type is T.
             template <typename T> inline bool isType()               const { return false; } // Only works for specialized values - see below
@@ -376,7 +374,7 @@ namespace orxonox
             bool                              hasDefaultValue() const { return this->value_->hasDefaultValue(); }
 
             /// Checks if the MT contains no value.
-            bool                              null() const { return (!this->value_); }
+            bool                              null() const { return !this->value_; }
 
             operator char()                  const;
             operator unsigned char()         const;
@@ -496,7 +494,7 @@ namespace orxonox
     /// Puts the MultiType on a stream by using the native << operator of the current type.
     _UtilExport inline std::ostream& operator<<(std::ostream& outstream, const MultiType& mt) { if (mt.value_) { mt.value_->toString(outstream); } return outstream; }
 
-    template <> inline bool MultiType::isType<void>()                 const { return this->null();                                                       } ///< Returns true if the current type equals the given type.
+    template <> inline bool MultiType::isType<void>()                 const { return this->null();                                                    } ///< Returns true if the current type equals the given type.
     template <> inline bool MultiType::isType<char>()                 const { return (this->value_ && this->value_->type_ == Type::Char);             } ///< Returns true if the current type equals the given type.
     template <> inline bool MultiType::isType<unsigned char>()        const { return (this->value_ && this->value_->type_ == Type::UnsignedChar);     } ///< Returns true if the current type equals the given type.
     template <> inline bool MultiType::isType<short>()                const { return (this->value_ && this->value_->type_ == Type::Short);            } ///< Returns true if the current type equals the given type.

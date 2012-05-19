@@ -17,8 +17,8 @@ namespace orxonox
 
     // x convert<type>()
     // x reset
+    // x reset<type>()
     // x resetValue
-    // x setType<type>()
 
     // x isType<type>()
 
@@ -309,6 +309,24 @@ namespace orxonox
         EXPECT_EQ(0, mt.getInt());
     }
 
+    ///////////////////
+    // reset<type>() //
+    ///////////////////
+    TEST(MultiType, SetType)
+    {
+        MultiType mt(10);
+
+        EXPECT_TRUE(mt.isType<int>());
+        EXPECT_FALSE(mt.isType<float>());
+        EXPECT_EQ(10, mt.getInt());
+
+        mt.reset<float>();
+
+        EXPECT_FALSE(mt.isType<int>());
+        EXPECT_TRUE(mt.isType<float>());
+        EXPECT_EQ(0, mt.getInt());
+    }
+
     ////////////////
     // resetValue //
     ////////////////
@@ -322,24 +340,6 @@ namespace orxonox
         mt.resetValue();
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(0, mt.getInt());
-    }
-
-    /////////////////////
-    // setType<type>() //
-    /////////////////////
-    TEST(MultiType, SetType)
-    {
-        MultiType mt(10);
-
-        EXPECT_TRUE(mt.isType<int>());
-        EXPECT_FALSE(mt.isType<float>());
-        EXPECT_EQ(10, mt.getInt());
-
-        mt.setType<float>();
-
-        EXPECT_FALSE(mt.isType<int>());
-        EXPECT_TRUE(mt.isType<float>());
         EXPECT_EQ(0, mt.getInt());
     }
 
