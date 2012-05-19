@@ -173,20 +173,20 @@ namespace orxonox
         class _UtilExport MT_ValueBase
         {
         public:
-            MT_ValueBase(void* data, Type::Enum type) : type_(type), bHasDefaultValue_(false), data_(data) {}
-            virtual ~MT_ValueBase() {}
+            inline MT_ValueBase(void* data, Type::Enum type) : type_(type), bLastConversionSuccessful(true), data_(data) {}
+            inline virtual ~MT_ValueBase() {}
 
             virtual MT_ValueBase* clone() const = 0;
 
             virtual void reset() = 0;
 
             /// Returns the type of the current value.
-            const Type::Enum& getType() const { return this->type_; }
+            inline const Type::Enum& getType() const { return this->type_; }
             /// Returns true if the type of the stored value is T.
             template <typename T> inline bool isType() const { return false; }
 
             /// Checks whether the value is a default one.
-            bool hasDefaultValue()   const { return this->bHasDefaultValue_; }
+            inline bool lastConversionSuccessful()   const { return this->bLastConversionSuccessful; }
 
             virtual bool setValue(const char& value)                 = 0;
             virtual bool setValue(const unsigned char& value)        = 0;
@@ -252,13 +252,13 @@ namespace orxonox
 
             virtual void toString(std::ostream& outstream) const = 0;
 
-            virtual void importData( uint8_t*& mem )=0;
-            virtual void exportData( uint8_t*& mem ) const=0;
-            virtual uint8_t getSize() const=0;
+            virtual void importData(uint8_t*& mem) = 0;
+            virtual void exportData(uint8_t*& mem) const = 0;
+            virtual uint8_t getSize() const = 0;
 
-            Type::Enum type_;       ///< The type of the current value
-            bool bHasDefaultValue_; ///< True if the last conversion wasn't successful
-            void* data_;            ///< For direct access to the value if the type is known
+            Type::Enum type_;               ///< The type of the current value
+            bool bLastConversionSuccessful; ///< True if the last conversion was successful
+            void* data_;                    ///< For direct access to the value if the type is known
         };
 
         public:
@@ -328,7 +328,8 @@ namespace orxonox
             }
 
             /// Converts the current value to type T.
-            template <typename T> inline bool convert() { return this->force<T>(this->get<typename Loki::TypeTraits<T>::UnqualifiedReferredType>()); }
+            template <typename T> inline bool convert() { return this->force<T>(MultiType(*this)); }
+//            template <typename T> inline bool convert() { return this->force<T>(this->get<typename Loki::TypeTraits<T>::UnqualifiedReferredType>()); }
 
             /// Resets value and type. Type will be void afterwards and null() returns true.
             inline void reset() { if (this->value_) delete this->value_; this->value_ = 0; }
@@ -341,8 +342,8 @@ namespace orxonox
             template <typename T> inline bool isType() const { return (this->value_ ? this->value_->isType<T>() : false); }
             std::string getTypename() const;
 
-            /// Checks whether the value is a default one (assigned after a failed conversion)
-            inline bool hasDefaultValue() const { return this->value_->hasDefaultValue(); }
+            /// Checks whether the last conversion was successful
+            inline bool lastConversionSuccessful() const { return !this->value_ || this->value_->lastConversionSuccessful(); }
 
             /// Checks if the MT contains no value.
             inline bool null() const { return !this->value_; }

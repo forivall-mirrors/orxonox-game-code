@@ -60,7 +60,7 @@ namespace orxonox
         inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_, this->type_); }
 
         /// Resets the current value to the default.
-        inline void reset() { this->value_ = zeroise<T>(); bHasDefaultValue_ = true; }
+        inline void reset() { this->value_ = zeroise<T>(); bLastConversionSuccessful = true; }
 
         inline bool getValue(char*                 value) const { return convertValue<T, char                >(value, value_, 0); } ///< Assigns the value to the given pointer. The value gets converted if the types don't match.
         inline bool getValue(unsigned char*        value) const { return convertValue<T, unsigned char       >(value, value_, 0); } ///< Assigns the value to the given pointer. The value gets converted if the types don't match.
@@ -94,38 +94,38 @@ namespace orxonox
         {
             if (other.value_)
             {
-                return !(bHasDefaultValue_ = !other.value_->getValue(&value_));
+                return (this->bLastConversionSuccessful = other.value_->getValue(&value_));
             }
             else
             {
                 this->value_ = zeroise<T>();
-                return !(bHasDefaultValue_ = true);
+                return (bLastConversionSuccessful = false);
             }
         }
 
-        inline bool setValue(const char& value)                 { return !(bHasDefaultValue_ = !convertValue<char                , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const unsigned char& value)        { return !(bHasDefaultValue_ = !convertValue<unsigned char       , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const short& value)                { return !(bHasDefaultValue_ = !convertValue<short               , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const unsigned short& value)       { return !(bHasDefaultValue_ = !convertValue<unsigned short      , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const int& value)                  { return !(bHasDefaultValue_ = !convertValue<int                 , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const unsigned int& value)         { return !(bHasDefaultValue_ = !convertValue<unsigned int        , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const long& value)                 { return !(bHasDefaultValue_ = !convertValue<long                , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const unsigned long& value)        { return !(bHasDefaultValue_ = !convertValue<unsigned long       , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const long long& value)            { return !(bHasDefaultValue_ = !convertValue<long long           , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const unsigned long long& value)   { return !(bHasDefaultValue_ = !convertValue<unsigned long long  , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const float& value)                { return !(bHasDefaultValue_ = !convertValue<float               , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const double& value)               { return !(bHasDefaultValue_ = !convertValue<double              , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const long double& value)          { return !(bHasDefaultValue_ = !convertValue<long double         , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const bool& value)                 { return !(bHasDefaultValue_ = !convertValue<bool                , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(      void* const& value)          { return !(bHasDefaultValue_ = !convertValue<void*               , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const std::string& value)          { return !(bHasDefaultValue_ = !convertValue<std::string         , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::Vector2& value)     { return !(bHasDefaultValue_ = !convertValue<orxonox::Vector2    , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::Vector3& value)     { return !(bHasDefaultValue_ = !convertValue<orxonox::Vector3    , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::Vector4& value)     { return !(bHasDefaultValue_ = !convertValue<orxonox::Vector4    , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::ColourValue& value) { return !(bHasDefaultValue_ = !convertValue<orxonox::ColourValue, T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::Quaternion& value)  { return !(bHasDefaultValue_ = !convertValue<orxonox::Quaternion , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::Radian& value)      { return !(bHasDefaultValue_ = !convertValue<orxonox::Radian     , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
-        inline bool setValue(const orxonox::Degree& value)      { return !(bHasDefaultValue_ = !convertValue<orxonox::Degree     , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const char& value)                 { return (bLastConversionSuccessful = convertValue<char                , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const unsigned char& value)        { return (bLastConversionSuccessful = convertValue<unsigned char       , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const short& value)                { return (bLastConversionSuccessful = convertValue<short               , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const unsigned short& value)       { return (bLastConversionSuccessful = convertValue<unsigned short      , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const int& value)                  { return (bLastConversionSuccessful = convertValue<int                 , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const unsigned int& value)         { return (bLastConversionSuccessful = convertValue<unsigned int        , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const long& value)                 { return (bLastConversionSuccessful = convertValue<long                , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const unsigned long& value)        { return (bLastConversionSuccessful = convertValue<unsigned long       , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const long long& value)            { return (bLastConversionSuccessful = convertValue<long long           , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const unsigned long long& value)   { return (bLastConversionSuccessful = convertValue<unsigned long long  , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const float& value)                { return (bLastConversionSuccessful = convertValue<float               , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const double& value)               { return (bLastConversionSuccessful = convertValue<double              , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const long double& value)          { return (bLastConversionSuccessful = convertValue<long double         , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const bool& value)                 { return (bLastConversionSuccessful = convertValue<bool                , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(      void* const& value)          { return (bLastConversionSuccessful = convertValue<void*               , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const std::string& value)          { return (bLastConversionSuccessful = convertValue<std::string         , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::Vector2& value)     { return (bLastConversionSuccessful = convertValue<orxonox::Vector2    , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::Vector3& value)     { return (bLastConversionSuccessful = convertValue<orxonox::Vector3    , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::Vector4& value)     { return (bLastConversionSuccessful = convertValue<orxonox::Vector4    , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::ColourValue& value) { return (bLastConversionSuccessful = convertValue<orxonox::ColourValue, T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::Quaternion& value)  { return (bLastConversionSuccessful = convertValue<orxonox::Quaternion , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::Radian& value)      { return (bLastConversionSuccessful = convertValue<orxonox::Radian     , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
+        inline bool setValue(const orxonox::Degree& value)      { return (bLastConversionSuccessful = convertValue<orxonox::Degree     , T>(&value_, value, NilValue<T>())); } ///< Assigns the value by converting it to T.
 
         /// Puts the current value on the stream
         inline void toString(std::ostream& outstream) const { outstream << this->value_; }

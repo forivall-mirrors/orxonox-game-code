@@ -28,7 +28,7 @@ namespace orxonox
     // x get<type>()
     // ? getPointer()
 
-    // x hasDefaultValue()
+    // x lastConversionSuccessful()
     // x null()
 
     /////////////////////////
@@ -141,13 +141,13 @@ namespace orxonox
 
         EXPECT_TRUE(mt.isType<Vector3>());
         EXPECT_EQ(Vector3(1, 2, 3), mt.get<Vector3>());
-        EXPECT_FALSE(mt.hasDefaultValue());
+        EXPECT_TRUE(mt.lastConversionSuccessful());
 
         mt = 77.7f;
 
         EXPECT_TRUE(mt.isType<Vector3>());
         EXPECT_EQ(Vector3::ZERO, mt.get<Vector3>());
-        EXPECT_TRUE(mt.hasDefaultValue());
+        EXPECT_FALSE(mt.lastConversionSuccessful());
     }
 
     //////////////////////
@@ -253,8 +253,6 @@ namespace orxonox
 
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_EQ(0, mt.get<int>());
-
-//        EXPECT_TRUE(mt.hasDefaultValue());
     }
 
     TEST(MultiType, ConvertFloatToInt)
@@ -286,7 +284,7 @@ namespace orxonox
         EXPECT_EQ(0.0f, mt.get<float>());
         EXPECT_EQ(Vector3::ZERO, mt.get<Vector3>());
 
-//        EXPECT_TRUE(mt.hasDefaultValue());
+        EXPECT_FALSE(mt.lastConversionSuccessful());
     }
 
     ///////////
@@ -647,26 +645,30 @@ namespace orxonox
         EXPECT_TRUE(mt.isType<orxonox::Degree>());
     }
 
-    ///////////////////////
-    // hasDefaultValue() //
-    ///////////////////////
-    TEST(MultiType, HasDefaultValue)
+    ////////////////////////////////
+    // lastConversionSuccessful() //
+    ////////////////////////////////
+    TEST(MultiType, LastConversionSuccessful)
     {
         MultiType mt;
 
-//        EXPECT_FALSE(mt.hasDefaultValue());
+        EXPECT_TRUE(mt.lastConversionSuccessful());
 
         mt = 5.55;
 
-        EXPECT_FALSE(mt.hasDefaultValue());
+        EXPECT_TRUE(mt.lastConversionSuccessful());
 
         mt.convert<int>();
 
-        EXPECT_FALSE(mt.hasDefaultValue());
+        EXPECT_TRUE(mt.lastConversionSuccessful());
 
-        mt.convert<Quaternion>();
+        mt.convert<Vector3>();
 
-//        EXPECT_TRUE(mt.hasDefaultValue());
+        EXPECT_FALSE(mt.lastConversionSuccessful());
+
+        mt.convert<std::string>();
+
+        EXPECT_TRUE(mt.lastConversionSuccessful());
     }
 
     ////////////
