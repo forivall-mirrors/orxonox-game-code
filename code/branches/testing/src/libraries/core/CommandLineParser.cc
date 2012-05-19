@@ -68,9 +68,9 @@ namespace orxonox
         }
         else
         {
-            if (!value_.setValue(value))
+            if (!value_.set(value))
             {
-                value_.setValue(defaultValue_);
+                value_.set(defaultValue_);
                 ThrowException(Argument, "Could not read command line argument '" + getName() + "'.");
             }
             else

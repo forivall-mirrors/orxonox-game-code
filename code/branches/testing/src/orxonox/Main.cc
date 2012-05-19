@@ -67,7 +67,7 @@ namespace orxonox
         Game* game = new Game(strCmdLine);
         orxout(user_status) << "Finished initialization" << endl;
 
-        if (CommandLineParser::getValue("generateDoc").getString().empty())
+        if (CommandLineParser::getValue("generateDoc").get<std::string>().empty())
         {
             orxout(internal_info) << "preparing game states" << endl;
 
@@ -85,22 +85,22 @@ namespace orxonox
             game->requestState("root");
 
             // Some development hacks (not really, but in the future, these calls won't make sense anymore)
-            if (CommandLineParser::getValue("standalone").getBool())
+            if (CommandLineParser::getValue("standalone").get<bool>())
                 Game::getInstance().requestStates("graphics, standalone, level");
-            else if (CommandLineParser::getValue("server").getBool())
+            else if (CommandLineParser::getValue("server").get<bool>())
                 Game::getInstance().requestStates("graphics, server, level");
-            else if (CommandLineParser::getValue("client").getBool())
+            else if (CommandLineParser::getValue("client").get<bool>())
                 Game::getInstance().requestStates("graphics, client, level");
-            else if (CommandLineParser::getValue("dedicated").getBool())
+            else if (CommandLineParser::getValue("dedicated").get<bool>())
                 Game::getInstance().requestStates("server, level");
-            else if (CommandLineParser::getValue("dedicatedClient").getBool())
+            else if (CommandLineParser::getValue("dedicatedClient").get<bool>())
                 Game::getInstance().requestStates("client, level");
             /* ADD masterserver command */
-            else if (CommandLineParser::getValue("masterserver").getBool())
+            else if (CommandLineParser::getValue("masterserver").get<bool>())
                 Game::getInstance().requestStates("masterserver");
             else
             {
-                if (!CommandLineParser::getValue("console").getBool())
+                if (!CommandLineParser::getValue("console").get<bool>())
                     Game::getInstance().requestStates("graphics, mainMenu");
             }
 

@@ -166,7 +166,7 @@ namespace orxonox
         orxout(internal_info) << "Loading config:" << endl;
         this->configFileManager_ = new ConfigFileManager();
         this->configFileManager_->setFilename(ConfigFileType::Settings,
-            CommandLineParser::getValue("settingsFile").getString());
+            CommandLineParser::getValue("settingsFile").get<std::string>());
 
         // Required as well for the config values
         orxout(internal_info) << "Loading language:" << endl;
@@ -183,7 +183,7 @@ namespace orxonox
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
-        if (CommandLineParser::getValue("noIOConsole").getBool())
+        if (CommandLineParser::getValue("noIOConsole").get<bool>())
         {
             ModifyConfigValue(bStartIOConsole_, tset, false);
         }
@@ -336,7 +336,7 @@ namespace orxonox
     void Core::loadGraphics()
     {
         orxout(internal_info) << "loading graphics in Core" << endl;
-        
+
         // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
         Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 

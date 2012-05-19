@@ -67,7 +67,7 @@ namespace orxonox
       gameStateFailure_(false),
       timeSinceLastUpdate_(0)
   {
-    this->setDestination( CommandLineParser::getValue("dest").getString(), CommandLineParser::getValue("port") );
+    this->setDestination( CommandLineParser::getValue("dest").get<std::string>(), CommandLineParser::getValue("port") );
   }
 
   Client::~Client()

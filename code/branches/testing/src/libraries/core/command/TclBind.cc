@@ -182,7 +182,7 @@ namespace orxonox
         CommandEvaluation evaluation = CommandExecutor::evaluate(command);
 
         if (bQuery)
-            result = evaluation.query(&error).getString();
+            result = evaluation.query(&error).get<std::string>();
         else
             error = evaluation.execute();
 

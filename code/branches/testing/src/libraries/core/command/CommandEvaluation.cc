@@ -599,7 +599,7 @@ namespace orxonox
 
             // print the default value if available
             if (command->getExecutor()->defaultValueSet(i))
-                output += '=' + command->getExecutor()->getDefaultValue(i).getString() + ']';
+                output += '=' + command->getExecutor()->getDefaultValue(i).get<std::string>() + ']';
             else
                 output += '}';
         }

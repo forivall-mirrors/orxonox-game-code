@@ -11,9 +11,9 @@ namespace orxonox
     // ? assignment(pointer)
     // x assignment(other)
 
-    // x setValue(value)
-    // ? setValue(pointer)
-    // x setValue<type>(value)
+    // x set(value)
+    // ? set(pointer)
+    // x set<type>(value)
 
     // x convert<type>()
     // x reset
@@ -25,7 +25,7 @@ namespace orxonox
     // x (type) conversion
     // ? (pointer class) conversion
     // x getValue(pointer)
-    // x getXXX()
+    // x get<type>()
     // ? getPointer()
 
     // x hasDefaultValue()
@@ -44,31 +44,31 @@ namespace orxonox
     /////////////////
     // Constructor //
     /////////////////
-    TEST(MultiType, ValueChar)              { char value = -100;                                MultiType mt(value);    EXPECT_TRUE(mt.isType<char>());                 EXPECT_EQ(-100, mt.getChar()); }
-    TEST(MultiType, ValueUnsignedChar)      { unsigned char value = 255u;                       MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned char>());        EXPECT_EQ(255u, mt.getUnsignedChar()); }
-    TEST(MultiType, ValueShort)             { short value = -10000;                             MultiType mt(value);    EXPECT_TRUE(mt.isType<short>());                EXPECT_EQ(-10000, mt.getShort()); }
-    TEST(MultiType, ValueUnsignedShort)     { unsigned short value = 65535u;                    MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned short>());       EXPECT_EQ(65535u, mt.getUnsignedShort()); }
-    TEST(MultiType, ValueInt)               { int value = -1000000000;                          MultiType mt(value);    EXPECT_TRUE(mt.isType<int>());                  EXPECT_EQ(-1000000000, mt.getInt()); }
-    TEST(MultiType, ValueUnsignedInt)       { unsigned int value = 4000000000u;                 MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned int>());         EXPECT_EQ(4000000000u, mt.getUnsignedInt()); }
-    TEST(MultiType, ValueLong)              { long value = -1000000000;                         MultiType mt(value);    EXPECT_TRUE(mt.isType<long>());                 EXPECT_EQ(-1000000000, mt.getLong()); }
-    TEST(MultiType, ValueUnsignedLong)      { unsigned long value = 4000000000u;                MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned long>());        EXPECT_EQ(4000000000u, mt.getUnsignedLong()); }
-    TEST(MultiType, ValueLongLong)          { long long value = -1000000000000000000L;          MultiType mt(value);    EXPECT_TRUE(mt.isType<long long>());            EXPECT_EQ(-1000000000000000000L, mt.getLongLong()); }
-    TEST(MultiType, ValueUnsignedLongLong)  { unsigned long long value = 4000000000000000000UL; MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned long long>());   EXPECT_EQ(4000000000000000000UL, mt.getUnsignedLongLong()); }
-    TEST(MultiType, ValueFloat)             { float value = 0.123456f;                          MultiType mt(value);    EXPECT_TRUE(mt.isType<float>());                EXPECT_EQ(0.123456f, mt.getFloat()); }
-    TEST(MultiType, ValueDouble)            { double value = 0.123456789;                       MultiType mt(value);    EXPECT_TRUE(mt.isType<double>());               EXPECT_EQ(0.123456789, mt.getDouble()); }
-    TEST(MultiType, ValueLongDouble)        { long double value = 0.123456789123456789;         MultiType mt(value);    EXPECT_TRUE(mt.isType<long double>());          EXPECT_EQ(0.123456789123456789, mt.getLongDouble()); }
-    TEST(MultiType, ValueBool)              { bool value = true;                                MultiType mt(value);    EXPECT_TRUE(mt.isType<bool>());                 EXPECT_EQ(true, mt.getBool()); }
-    TEST(MultiType, ValueVoidpointer)       { int* pointer = new int; void* value = pointer;    MultiType mt(value);    EXPECT_TRUE(mt.isType<void*>());                EXPECT_EQ(value, mt.getPointer<void>()); delete pointer; }
-    TEST(MultiType, ValueString)            { std::string value = "Hello World";                MultiType mt(value);    EXPECT_TRUE(mt.isType<std::string>());          EXPECT_EQ("Hello World", mt.getString()); }
-    TEST(MultiType, ValueVector2)           { Vector2 value = Vector2(11, 22);                  MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector2>());              EXPECT_EQ(Vector2(11, 22), mt.getVector2()); }
-    TEST(MultiType, ValueVector3)           { Vector3 value = Vector3(11, 22, 33);              MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector3>());              EXPECT_EQ(Vector3(11, 22, 33), mt.getVector3()); }
-    TEST(MultiType, ValueVector4)           { Vector4 value = Vector4(11, 22, 33, 44);          MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector4>());              EXPECT_EQ(Vector4(11, 22, 33, 44), mt.getVector4()); }
-    TEST(MultiType, ValueColourValue)       { ColourValue value = ColourValue(11, 22, 33, 44);  MultiType mt(value);    EXPECT_TRUE(mt.isType<ColourValue>());          EXPECT_EQ(ColourValue(11, 22, 33, 44), mt.getColourValue()); }
-    TEST(MultiType, ValueQuaternion)        { Quaternion value = Quaternion(11, 22, 33, 44);    MultiType mt(value);    EXPECT_TRUE(mt.isType<Quaternion>());           EXPECT_EQ(Quaternion(11, 22, 33, 44), mt.getQuaternion()); }
-    TEST(MultiType, ValueRadian)            { Radian value = Radian(0.123);                     MultiType mt(value);    EXPECT_TRUE(mt.isType<Radian>());               EXPECT_EQ(Radian(0.123), mt.getRadian()); }
-    TEST(MultiType, ValueDegree)            { Degree value = Degree(123);                       MultiType mt(value);    EXPECT_TRUE(mt.isType<Degree>());               EXPECT_EQ(Degree(123), mt.getDegree()); }
-    TEST(MultiType, ValueMbool)             { mbool value = mbool(true);                        MultiType mt(value);    EXPECT_TRUE(mt.isType<bool>());                 EXPECT_EQ(mbool(true), mt.getBool()); }
-    TEST(MultiType, ValueCharPointer)       { const char* value = "Hello World";                MultiType mt(value);    EXPECT_TRUE(mt.isType<std::string>());          EXPECT_EQ("Hello World", mt.getString()); }
+    TEST(MultiType, ValueChar)              { char value = -100;                                MultiType mt(value);    EXPECT_TRUE(mt.isType<char>());                 EXPECT_EQ(-100, mt.get<char>()); }
+    TEST(MultiType, ValueUnsignedChar)      { unsigned char value = 255u;                       MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned char>());        EXPECT_EQ(255u, mt.get<unsigned char>()); }
+    TEST(MultiType, ValueShort)             { short value = -10000;                             MultiType mt(value);    EXPECT_TRUE(mt.isType<short>());                EXPECT_EQ(-10000, mt.get<short>()); }
+    TEST(MultiType, ValueUnsignedShort)     { unsigned short value = 65535u;                    MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned short>());       EXPECT_EQ(65535u, mt.get<unsigned short>()); }
+    TEST(MultiType, ValueInt)               { int value = -1000000000;                          MultiType mt(value);    EXPECT_TRUE(mt.isType<int>());                  EXPECT_EQ(-1000000000, mt.get<int>()); }
+    TEST(MultiType, ValueUnsignedInt)       { unsigned int value = 4000000000u;                 MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned int>());         EXPECT_EQ(4000000000u, mt.get<unsigned int>()); }
+    TEST(MultiType, ValueLong)              { long value = -1000000000;                         MultiType mt(value);    EXPECT_TRUE(mt.isType<long>());                 EXPECT_EQ(-1000000000, mt.get<long>()); }
+    TEST(MultiType, ValueUnsignedLong)      { unsigned long value = 4000000000u;                MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned long>());        EXPECT_EQ(4000000000u, mt.get<unsigned long>()); }
+    TEST(MultiType, ValueLongLong)          { long long value = -1000000000000000000L;          MultiType mt(value);    EXPECT_TRUE(mt.isType<long long>());            EXPECT_EQ(-1000000000000000000L, mt.get<long long>()); }
+    TEST(MultiType, ValueUnsignedLongLong)  { unsigned long long value = 4000000000000000000UL; MultiType mt(value);    EXPECT_TRUE(mt.isType<unsigned long long>());   EXPECT_EQ(4000000000000000000UL, mt.get<unsigned long long>()); }
+    TEST(MultiType, ValueFloat)             { float value = 0.123456f;                          MultiType mt(value);    EXPECT_TRUE(mt.isType<float>());                EXPECT_EQ(0.123456f, mt.get<float>()); }
+    TEST(MultiType, ValueDouble)            { double value = 0.123456789;                       MultiType mt(value);    EXPECT_TRUE(mt.isType<double>());               EXPECT_EQ(0.123456789, mt.get<double>()); }
+    TEST(MultiType, ValueLongDouble)        { long double value = 0.123456789123456789;         MultiType mt(value);    EXPECT_TRUE(mt.isType<long double>());          EXPECT_EQ(0.123456789123456789, mt.get<long double>()); }
+    TEST(MultiType, ValueBool)              { bool value = true;                                MultiType mt(value);    EXPECT_TRUE(mt.isType<bool>());                 EXPECT_EQ(true, mt.get<bool>()); }
+    TEST(MultiType, ValueVoidpointer)       { int* pointer = new int; void* value = pointer;    MultiType mt(value);    EXPECT_TRUE(mt.isType<void*>());                EXPECT_EQ(value, mt.get<void*>()); delete pointer; }
+    TEST(MultiType, ValueString)            { std::string value = "Hello World";                MultiType mt(value);    EXPECT_TRUE(mt.isType<std::string>());          EXPECT_EQ("Hello World", mt.get<std::string>()); }
+    TEST(MultiType, ValueVector2)           { Vector2 value = Vector2(11, 22);                  MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector2>());              EXPECT_EQ(Vector2(11, 22), mt.get<Vector2>()); }
+    TEST(MultiType, ValueVector3)           { Vector3 value = Vector3(11, 22, 33);              MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector3>());              EXPECT_EQ(Vector3(11, 22, 33), mt.get<Vector3>()); }
+    TEST(MultiType, ValueVector4)           { Vector4 value = Vector4(11, 22, 33, 44);          MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector4>());              EXPECT_EQ(Vector4(11, 22, 33, 44), mt.get<Vector4>()); }
+    TEST(MultiType, ValueColourValue)       { ColourValue value = ColourValue(11, 22, 33, 44);  MultiType mt(value);    EXPECT_TRUE(mt.isType<ColourValue>());          EXPECT_EQ(ColourValue(11, 22, 33, 44), mt.get<ColourValue>()); }
+    TEST(MultiType, ValueQuaternion)        { Quaternion value = Quaternion(11, 22, 33, 44);    MultiType mt(value);    EXPECT_TRUE(mt.isType<Quaternion>());           EXPECT_EQ(Quaternion(11, 22, 33, 44), mt.get<Quaternion>()); }
+    TEST(MultiType, ValueRadian)            { Radian value = Radian(0.123);                     MultiType mt(value);    EXPECT_TRUE(mt.isType<Radian>());               EXPECT_EQ(Radian(0.123), mt.get<Radian>()); }
+    TEST(MultiType, ValueDegree)            { Degree value = Degree(123);                       MultiType mt(value);    EXPECT_TRUE(mt.isType<Degree>());               EXPECT_EQ(Degree(123), mt.get<Degree>()); }
+    TEST(MultiType, ValueMbool)             { mbool value = mbool(true);                        MultiType mt(value);    EXPECT_TRUE(mt.isType<bool>());                 EXPECT_EQ(mbool(true), mt.get<bool>()); }
+    TEST(MultiType, ValueCharPointer)       { const char* value = "Hello World";                MultiType mt(value);    EXPECT_TRUE(mt.isType<std::string>());          EXPECT_EQ("Hello World", mt.get<std::string>()); }
 
     //////////////////////
     // Copy-Constructor //
@@ -87,7 +87,7 @@ namespace orxonox
         MultiType mt2(mt1);
 
         EXPECT_TRUE(mt2.isType<float>());
-        EXPECT_EQ(0.1234f, mt2.getFloat());
+        EXPECT_EQ(0.1234f, mt2.get<float>());
     }
 
     //////////////////////
@@ -103,7 +103,7 @@ namespace orxonox
 
         EXPECT_FALSE(mt.null());
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(55, mt.getInt());
+        EXPECT_EQ(55, mt.get<int>());
     }
 
     TEST(MultiType, AssignmentFloatToInt)
@@ -111,13 +111,13 @@ namespace orxonox
         MultiType mt(66);
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(66, mt.getInt());
+        EXPECT_EQ(66, mt.get<int>());
 
         mt = 77.7f; // will be converted to int
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(77, mt.getInt());
-        EXPECT_EQ(77.0f, mt.getFloat());
+        EXPECT_EQ(77, mt.get<int>());
+        EXPECT_EQ(77.0f, mt.get<float>());
     }
 
     TEST(MultiType, AssignmentFloatToFloat)
@@ -125,14 +125,14 @@ namespace orxonox
         MultiType mt(66.6f);
 
         EXPECT_TRUE(mt.isType<float>());
-        EXPECT_EQ(66, mt.getInt());
-        EXPECT_EQ(66.6f, mt.getFloat());
+        EXPECT_EQ(66, mt.get<int>());
+        EXPECT_EQ(66.6f, mt.get<float>());
 
         mt = 77.7f;
 
         EXPECT_TRUE(mt.isType<float>());
-        EXPECT_EQ(77, mt.getInt());
-        EXPECT_EQ(77.7f, mt.getFloat());
+        EXPECT_EQ(77, mt.get<int>());
+        EXPECT_EQ(77.7f, mt.get<float>());
     }
 
     TEST(MultiType, AssignmentFloatToVector3)
@@ -140,13 +140,13 @@ namespace orxonox
         MultiType mt(Vector3(1, 2, 3));
 
         EXPECT_TRUE(mt.isType<Vector3>());
-        EXPECT_EQ(Vector3(1, 2, 3), mt.getVector3());
+        EXPECT_EQ(Vector3(1, 2, 3), mt.get<Vector3>());
         EXPECT_FALSE(mt.hasDefaultValue());
 
         mt = 77.7f;
 
         EXPECT_TRUE(mt.isType<Vector3>());
-        EXPECT_EQ(Vector3::ZERO, mt.getVector3());
+        EXPECT_EQ(Vector3::ZERO, mt.get<Vector3>());
         EXPECT_TRUE(mt.hasDefaultValue());
     }
 
@@ -161,31 +161,31 @@ namespace orxonox
         EXPECT_TRUE(mt1.isType<int>());
         EXPECT_TRUE(mt2.isType<float>());
 
-        EXPECT_EQ(33, mt1.getInt());
-        EXPECT_EQ(33.0f, mt1.getFloat());
-        EXPECT_EQ(44.4f, mt2.getFloat());
+        EXPECT_EQ(33, mt1.get<int>());
+        EXPECT_EQ(33.0f, mt1.get<float>());
+        EXPECT_EQ(44.4f, mt2.get<float>());
 
         mt1 = mt2;
 
         EXPECT_TRUE(mt1.isType<int>());
         EXPECT_TRUE(mt2.isType<float>());
 
-        EXPECT_EQ(44, mt1.getInt());
-        EXPECT_EQ(44.0f, mt1.getFloat());
-        EXPECT_EQ(44.4f, mt2.getFloat());
+        EXPECT_EQ(44, mt1.get<int>());
+        EXPECT_EQ(44.0f, mt1.get<float>());
+        EXPECT_EQ(44.4f, mt2.get<float>());
     }
 
-    /////////////////////
-    // setValue(value) //
-    /////////////////////
+    ////////////////
+    // set(value) //
+    ////////////////
     TEST(MultiType, SetValueBoolToEmpty)
     {
         MultiType mt;
 
-        mt.setValue(true);
+        mt.set(true);
 
         EXPECT_TRUE(mt.isType<bool>());
-        EXPECT_EQ(true, mt.getBool());
+        EXPECT_EQ(true, mt.get<bool>());
     }
 
     TEST(MultiType, SetValueIntToString)
@@ -193,28 +193,28 @@ namespace orxonox
         MultiType mt("Hello");
 
         EXPECT_TRUE(mt.isType<std::string>());
-        EXPECT_EQ("Hello", mt.getString());
+        EXPECT_EQ("Hello", mt.get<std::string>());
 
-        mt.setValue(1234);
+        mt.set(1234);
 
         EXPECT_TRUE(mt.isType<std::string>());
-        EXPECT_EQ("1234", mt.getString());
+        EXPECT_EQ("1234", mt.get<std::string>());
     }
 
-    ///////////////////////////
-    // setValue<type>(value) //
-    ///////////////////////////
+    //////////////////////
+    // set<type>(value) //
+    //////////////////////
     TEST(MultiType, SetValueWithTypeIntToString)
     {
         MultiType mt("Hello");
 
         EXPECT_TRUE(mt.isType<std::string>());
-        EXPECT_EQ("Hello", mt.getString());
+        EXPECT_EQ("Hello", mt.get<std::string>());
 
-        mt.setValue<int>(1234);
+        mt.set<int>(1234);
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(1234, mt.getInt());
+        EXPECT_EQ(1234, mt.get<int>());
     }
 
     TEST(MultiType, SetValueWithTypeIntAsStringToString)
@@ -222,12 +222,12 @@ namespace orxonox
         MultiType mt("Hello");
 
         EXPECT_TRUE(mt.isType<std::string>());
-        EXPECT_EQ("Hello", mt.getString());
+        EXPECT_EQ("Hello", mt.get<std::string>());
 
-        mt.setValue<int>("1234");
+        mt.set<int>("1234");
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(1234, mt.getInt());
+        EXPECT_EQ(1234, mt.get<int>());
     }
 
     TEST(MultiType, SetValueWithTypeIntToInt)
@@ -235,12 +235,12 @@ namespace orxonox
         MultiType mt(4321);
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(4321, mt.getInt());
+        EXPECT_EQ(4321, mt.get<int>());
 
-        mt.setValue<int>(1234);
+        mt.set<int>(1234);
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(1234, mt.getInt());
+        EXPECT_EQ(1234, mt.get<int>());
     }
 
     /////////////////////
@@ -252,7 +252,7 @@ namespace orxonox
         mt.convert<int>();
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(0, mt.getInt());
+        EXPECT_EQ(0, mt.get<int>());
 
 //        EXPECT_TRUE(mt.hasDefaultValue());
     }
@@ -262,14 +262,14 @@ namespace orxonox
         MultiType mt(1.234f);
 
         EXPECT_TRUE(mt.isType<float>());
-        EXPECT_EQ(1.234f, mt.getFloat());
-        EXPECT_EQ(1, mt.getInt());
+        EXPECT_EQ(1.234f, mt.get<float>());
+        EXPECT_EQ(1, mt.get<int>());
 
         mt.convert<int>();
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(1.0f, mt.getFloat());
-        EXPECT_EQ(1, mt.getInt());
+        EXPECT_EQ(1.0f, mt.get<float>());
+        EXPECT_EQ(1, mt.get<int>());
     }
 
     TEST(MultiType, ConvertFloatToVector3)
@@ -277,14 +277,14 @@ namespace orxonox
         MultiType mt(1.234f);
 
         EXPECT_TRUE(mt.isType<float>());
-        EXPECT_EQ(1.234f, mt.getFloat());
-        EXPECT_EQ(Vector3::ZERO, mt.getVector3());
+        EXPECT_EQ(1.234f, mt.get<float>());
+        EXPECT_EQ(Vector3::ZERO, mt.get<Vector3>());
 
         mt.convert<Vector3>();
 
         EXPECT_TRUE(mt.isType<Vector3>());
-        EXPECT_EQ(0.0f, mt.getFloat());
-        EXPECT_EQ(Vector3::ZERO, mt.getVector3());
+        EXPECT_EQ(0.0f, mt.get<float>());
+        EXPECT_EQ(Vector3::ZERO, mt.get<Vector3>());
 
 //        EXPECT_TRUE(mt.hasDefaultValue());
     }
@@ -299,14 +299,14 @@ namespace orxonox
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_FALSE(mt.isType<void>());
         EXPECT_FALSE(mt.null());
-        EXPECT_EQ(10, mt.getInt());
+        EXPECT_EQ(10, mt.get<int>());
 
         mt.reset();
 
         EXPECT_FALSE(mt.isType<int>());
         EXPECT_TRUE(mt.isType<void>());
         EXPECT_TRUE(mt.null());
-        EXPECT_EQ(0, mt.getInt());
+        EXPECT_EQ(0, mt.get<int>());
     }
 
     ///////////////////
@@ -318,13 +318,13 @@ namespace orxonox
 
         EXPECT_TRUE(mt.isType<int>());
         EXPECT_FALSE(mt.isType<float>());
-        EXPECT_EQ(10, mt.getInt());
+        EXPECT_EQ(10, mt.get<int>());
 
         mt.reset<float>();
 
         EXPECT_FALSE(mt.isType<int>());
         EXPECT_TRUE(mt.isType<float>());
-        EXPECT_EQ(0, mt.getInt());
+        EXPECT_EQ(0, mt.get<int>());
     }
 
     ////////////////
@@ -335,12 +335,12 @@ namespace orxonox
         MultiType mt(10);
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(10, mt.getInt());
+        EXPECT_EQ(10, mt.get<int>());
 
         mt.resetValue();
 
         EXPECT_TRUE(mt.isType<int>());
-        EXPECT_EQ(0, mt.getInt());
+        EXPECT_EQ(0, mt.get<int>());
     }
 
     /////////////////////
@@ -429,69 +429,69 @@ namespace orxonox
     }
 
     //////////////
-    // getXXX() //
+    // get<type>() //
     //////////////
     TEST(MultiType, GetValueFromInt)
     {
         MultiType mt(256);
 
-        EXPECT_EQ(0, mt.getChar());
-        EXPECT_EQ(0u, mt.getUnsignedChar());
-        EXPECT_EQ(256, mt.getShort());
-        EXPECT_EQ(256u, mt.getUnsignedShort());
-        EXPECT_EQ(256, mt.getInt());
-        EXPECT_EQ(256u, mt.getUnsignedInt());
-        EXPECT_EQ(256, mt.getLong());
-        EXPECT_EQ(256u, mt.getUnsignedLong());
-        EXPECT_EQ(256, mt.getLongLong());
-        EXPECT_EQ(256u, mt.getUnsignedLongLong());
-        EXPECT_EQ(256.0f, mt.getFloat());
-        EXPECT_EQ(256.0, mt.getDouble());
-        EXPECT_EQ(256.0, mt.getLongDouble());
-        EXPECT_TRUE(mt.getBool());
-        EXPECT_EQ("256", mt.getString());
+        EXPECT_EQ(0, mt.get<char>());
+        EXPECT_EQ(0u, mt.get<unsigned char>());
+        EXPECT_EQ(256, mt.get<short>());
+        EXPECT_EQ(256u, mt.get<unsigned short>());
+        EXPECT_EQ(256, mt.get<int>());
+        EXPECT_EQ(256u, mt.get<unsigned int>());
+        EXPECT_EQ(256, mt.get<long>());
+        EXPECT_EQ(256u, mt.get<unsigned long>());
+        EXPECT_EQ(256, mt.get<long long>());
+        EXPECT_EQ(256u, mt.get<unsigned long long>());
+        EXPECT_EQ(256.0f, mt.get<float>());
+        EXPECT_EQ(256.0, mt.get<double>());
+        EXPECT_EQ(256.0, mt.get<long double>());
+        EXPECT_TRUE(mt.get<bool>());
+        EXPECT_EQ("256", mt.get<std::string>());
     }
 
     TEST(MultiType, GetValueFromFloat)
     {
         MultiType mt(128.821);
 
-        EXPECT_EQ(-128, mt.getChar());
-        EXPECT_EQ(128u, mt.getUnsignedChar());
-        EXPECT_EQ(128, mt.getShort());
-        EXPECT_EQ(128u, mt.getUnsignedShort());
-        EXPECT_EQ(128, mt.getInt());
-        EXPECT_EQ(128u, mt.getUnsignedInt());
-        EXPECT_EQ(128, mt.getLong());
-        EXPECT_EQ(128u, mt.getUnsignedLong());
-        EXPECT_EQ(128, mt.getLongLong());
-        EXPECT_EQ(128u, mt.getUnsignedLongLong());
-        EXPECT_EQ(128.821f, mt.getFloat());
-        EXPECT_EQ(128.821, mt.getDouble());
-        EXPECT_EQ(128.821, mt.getLongDouble());
-        EXPECT_TRUE(mt.getBool());
-        EXPECT_EQ("128.821", mt.getString());
+        EXPECT_EQ(-128, mt.get<char>());
+        EXPECT_EQ(128u, mt.get<unsigned char>());
+        EXPECT_EQ(128, mt.get<short>());
+        EXPECT_EQ(128u, mt.get<unsigned short>());
+        EXPECT_EQ(128, mt.get<int>());
+        EXPECT_EQ(128u, mt.get<unsigned int>());
+        EXPECT_EQ(128, mt.get<long>());
+        EXPECT_EQ(128u, mt.get<unsigned long>());
+        EXPECT_EQ(128, mt.get<long long>());
+        EXPECT_EQ(128u, mt.get<unsigned long long>());
+        EXPECT_EQ(128.821f, mt.get<float>());
+        EXPECT_EQ(128.821, mt.get<double>());
+        EXPECT_EQ(128.821, mt.get<long double>());
+        EXPECT_TRUE(mt.get<bool>());
+        EXPECT_EQ("128.821", mt.get<std::string>());
     }
 
     TEST(MultiType, GetValueFromString)
     {
         MultiType mt("0.123");
 
-        EXPECT_EQ('0', mt.getChar());
-        EXPECT_EQ('0', mt.getUnsignedChar());
-        EXPECT_EQ(0, mt.getShort());
-        EXPECT_EQ(0u, mt.getUnsignedShort());
-        EXPECT_EQ(0, mt.getInt());
-        EXPECT_EQ(0u, mt.getUnsignedInt());
-        EXPECT_EQ(0, mt.getLong());
-        EXPECT_EQ(0u, mt.getUnsignedLong());
-        EXPECT_EQ(0, mt.getLongLong());
-        EXPECT_EQ(0u, mt.getUnsignedLongLong());
-        EXPECT_EQ(0.123f, mt.getFloat());
-        EXPECT_EQ(0.123, mt.getDouble());
-        EXPECT_DOUBLE_EQ(0.123, mt.getLongDouble());
-        EXPECT_FALSE(mt.getBool());
-        EXPECT_EQ("0.123", mt.getString());
+        EXPECT_EQ('0', mt.get<char>());
+        EXPECT_EQ('0', mt.get<unsigned char>());
+        EXPECT_EQ(0, mt.get<short>());
+        EXPECT_EQ(0u, mt.get<unsigned short>());
+        EXPECT_EQ(0, mt.get<int>());
+        EXPECT_EQ(0u, mt.get<unsigned int>());
+        EXPECT_EQ(0, mt.get<long>());
+        EXPECT_EQ(0u, mt.get<unsigned long>());
+        EXPECT_EQ(0, mt.get<long long>());
+        EXPECT_EQ(0u, mt.get<unsigned long long>());
+        EXPECT_EQ(0.123f, mt.get<float>());
+        EXPECT_EQ(0.123, mt.get<double>());
+        EXPECT_DOUBLE_EQ(0.123, mt.get<long double>());
+        EXPECT_FALSE(mt.get<bool>());
+        EXPECT_EQ("0.123", mt.get<std::string>());
     }
 
     ////////////////////

@@ -204,9 +204,9 @@ namespace orxonox
                 {
                     // change the value of the parameter depending on its type
                     if (it->value_.isType<int>())
-                        passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->value_.getInt());
+                        passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->value_.get<int>());
                     else if (it->value_.isType<float>())
-                        passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->value_.getFloat());
+                        passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->value_.get<float>());
                 }
                 else
                     orxout(internal_warning) << "No pass " << it->pass_ << " in technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or pass has no shader." << endl;

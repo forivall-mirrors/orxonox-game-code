@@ -132,7 +132,7 @@ namespace orxonox
     */
     /* static */ std::string CommandExecutor::query(const std::string& command, int* error, bool useTcl)
     {
-        return CommandExecutor::queryMT(command, error, useTcl).getString();
+        return CommandExecutor::queryMT(command, error, useTcl).get<std::string>();
     }
 
     /**

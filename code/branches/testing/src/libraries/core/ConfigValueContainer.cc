@@ -69,7 +69,7 @@ namespace orxonox
         this->value_ = defvalue;
         this->bIsVector_ = false;
 
-        this->defvalueString_ = this->value_.getString();
+        this->defvalueString_ = this->value_.get<std::string>();
         this->update();
     }
 
