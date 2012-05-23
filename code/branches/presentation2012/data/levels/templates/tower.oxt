@@ -1,0 +1,40 @@
+<Template name=tower>
+  <Tower
+
+ 
+   explosionchunks        = 6
+
+   reloadrate          = 1
+   reloadwaittime      = 1
+
+   collisionType     = "dynamic"
+   team = 2
+
+
+  >
+
+   
+
+  <controller>
+        <WaypointPatrolController alertnessradius=10000 team=5>
+       		 <waypoints>
+            <Model mesh="cube.mesh" scale=20 position=" 700, 200, 100" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+
+
+    <attached>
+      <Model position="0,0,0" scale=45 mesh="Tower.mesh" />
+    </attached>
+
+    <!--collisionShapes>
+    
+    </collisionShapes-->
+
+<?lua
+  include("../includes/towerWeaponSettings.oxi")
+?>
+  </Tower>
+</Template>
+

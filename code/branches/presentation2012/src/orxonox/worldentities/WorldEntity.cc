@@ -378,7 +378,6 @@ namespace orxonox
 
         if (!object->notifyBeingAttached(this))
             return;
-
         this->attachNode(object->node_);
         this->children_.insert(object);
 

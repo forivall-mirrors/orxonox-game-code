@@ -61,14 +61,17 @@ namespace orxonox
 
     void WaypointController::tick(float dt)
     {
-        if (!this->isActive())
+		if (!this->isActive())
             return;
+
 
         if (this->waypoints_.size() == 0 || !this->getControllableEntity())
             return;
 
+
         if (this->waypoints_[this->currentWaypoint_]->getWorldPosition().squaredDistance(this->getControllableEntity()->getPosition()) <= this->squaredaccuracy_)
             this->currentWaypoint_ = (this->currentWaypoint_ + 1) % this->waypoints_.size();
+
 
         this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
     }

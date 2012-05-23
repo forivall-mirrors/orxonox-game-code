@@ -28,7 +28,7 @@
     <Template name=PortalDefault>
         <PortalEndPoint>
             <attached>
-                <Billboard material="Portals/Default" />
+                <Model mesh="Spacegate.mesh" yaw="90"/>
             </attached>
         </PortalEndPoint>
     </Template>
