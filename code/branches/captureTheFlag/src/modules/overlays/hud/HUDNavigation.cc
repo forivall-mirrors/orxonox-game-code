@@ -35,6 +35,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
+#include <OgreEntity.h>
 
 #include "util/Math.h"
 #include "util/Convert.h"
@@ -44,6 +45,8 @@
 #include "Scene.h"
 #include "Radar.h"
 #include "graphics/Camera.h"
+#include "graphics/Model.h"
+#include "worldentities/MovableEntity.h"
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
@@ -79,6 +82,26 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     this->setTextSize ( 0.05f );
     this->setNavMarkerSize ( 0.05f );
     this->setDetectionLimit( 10000.0f ); 
+
+    //Ogre::Entity* ent = this->getScene()->getSceneManager()->createEntity("Arrow3D", "Arrow3D.mesh");
+
+    Model* arrow = new Model(this);
+    this->arrowEntity = new MovableEntity(this);
+    arrow->setMeshSource("Arrow3D.mesh");
+    arrow->setSyncMode(0);
+    this->arrowEntity->attach(arrow);
+    this->arrowEntity->scale(1);
+    this->arrowEntity->setVisible(true);
+    this->arrowEntity->setPosition(0, +30, -100);
+    this->arrowEntity->setSyncMode(0);
+    this->arrowEntity->attachToNode(this->overlay3d_);
+    //this->add3DMesh(arrowEntity);
+
+    //this->overlay3d_->setPosition(0, 0, 0);
+    //this->overlay3d_->setVisible(false, true);
+    this->overlay_->setZOrder(0);
+    this->overlay_->show();
+    hideArrow3D();
 }
 
 HUDNavigation::~HUDNavigation()
@@ -177,6 +200,23 @@ void HUDNavigation::tick ( float dt )
 
     unsigned int markerCount_ = 0;
     bool closeEnough_ = false; //only display objects that are close enough to be relevant for the player
+
+    //for the first element of sortedObjectList_ / the closest waypoint show the Arrow3D
+    //set the direction of the arrow to the closest waypoint
+    if(!sortedObjectList_.empty())
+    {
+    	showArrow3D();
+		sortedList::iterator firstIt = sortedObjectList_.begin();
+
+		Ogre::Vector3 pos1 = camTransform * firstIt->first->getRVWorldPosition();
+		orxout(user_info, context::events()) << pos1 << endl;
+		this->arrowEntity->setDirection(1-pos1.x, 1 - pos1.y, 1 - pos1.z);
+
+		//this->arrowEntity->rotate(quat);
+		//this->overlay3d_->setDirection(pos1);
+    }
+    else{hideArrow3D();}
+
 
 //         for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++markerCount_, ++listIt )
@@ -381,7 +421,12 @@ void HUDNavigation::addObject ( RadarViewable* object )
     this->background_->addChild ( panel );
     this->background_->addChild ( text );
 
-    sortedObjectList_.push_front ( std::make_pair ( object, ( unsigned int ) 0 ) );
+    Ogre::Vector3 temp = object->getWorldEntity()->getPosition();
+    unsigned int distance = sqrt(temp.x*temp.x+temp.y*temp.y+temp.z*temp.z);
+
+
+
+    sortedObjectList_.push_front ( std::make_pair ( object, distance ) );
 
 
 }
@@ -444,5 +489,10 @@ void HUDNavigation::changedOwner()
             this->addObject ( *it );
     }
 }
+void HUDNavigation::showArrow3D()
+		{ this->overlay3d_->setVisible(true, true);}
+void HUDNavigation::hideArrow3D()
+		{ this->overlay3d_->setVisible(false, true);}
+
 
 }

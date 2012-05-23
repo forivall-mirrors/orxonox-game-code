@@ -160,6 +160,10 @@ namespace orxonox // tolua_export
                 { this->numexplosionchunks_ = chunks; }
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
+            inline bool hasFlag() const
+            	{ return this->hasFlag_; }
+            inline void setHasFlag(bool hasFlag)
+            	{ this->hasFlag_ = hasFlag; }
 
             virtual void startLocalHumanControl();
 
@@ -206,6 +210,7 @@ namespace orxonox // tolua_export
             float reloadRate_;
             float reloadWaitTime_;
             float reloadWaitCountdown_;
+            bool hasFlag_;
 
             WeakPtr<Pawn> lastHitOriginator_;
 

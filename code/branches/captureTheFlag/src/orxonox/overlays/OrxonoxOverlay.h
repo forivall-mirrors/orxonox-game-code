@@ -44,6 +44,7 @@
 #include "core/Super.h"
 #include "core/WindowEventListener.h"
 
+
 namespace orxonox
 {
     /**
@@ -185,6 +186,8 @@ namespace orxonox
             { return this->group_; }
         virtual void changedOverlayGroup()
             { this->changedVisibility(); }
+        void add3DMesh(Ogre::Entity* entity);
+
 
     protected:
         virtual void angleChanged();
@@ -194,6 +197,7 @@ namespace orxonox
 
         Ogre::Overlay* overlay_;                   //!< The overlay the entire class is about.
         Ogre::PanelOverlayElement* background_;    //!< Background image (blank per default).
+        Ogre::SceneNode* overlay3d_;				   //!< The scene where one can add 3D objects to the overlay
 
         float windowAspectRatio_;                  //!< Screen.width / screen.height
         bool bCorrectAspect_;                      //!< Whether or not to correct the size. @see setAspectCorrection()
@@ -214,6 +218,7 @@ namespace orxonox
         BaseObject* owner_;
         OverlayGroup* group_;
         Ogre::Pass* backgroundAlphaPass_;
+
   };
 
   SUPER_FUNCTION(6, OrxonoxOverlay, changedOwner, false);
