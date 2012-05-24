@@ -1,4 +1,4 @@
-<Template name=spaceshipRace>
+<Template name=spaceshiprace>
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipassffcameras
