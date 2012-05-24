@@ -36,20 +36,31 @@ gametype = SpaceRace
     hasPhysics   = true
   >
 
-  <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-
     <Template name=PortalDefault>
         <PortalEndPoint>
             <attached>
-                <Model mesh="Spacegate.mesh" yaw="90"/>
+                <Model mesh="Spacegate.mesh" scale="3"/>
             </attached>
         </PortalEndPoint>
     </Template>
 
-    <PortalEndPoint position="4000,7050,-1000" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-    <PortalEndPoint position="4000,7050,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="6000,8050,2500" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="6100,8050,-4500" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
+
+  <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+
+    <Model position="4200,8050,-1000" scale=10 mesh="debris-pile01.mesh" shadow=true />
+    <Model position="4200,8050,-1000" scale=10 mesh="debris-pile02.mesh" shadow=true />
+    <Model position="4200,8050,-1000" scale=10 mesh="debris-pile03.mesh" shadow=true />
+    
+	<MovableEntity position="-700,8090,-300" velocity="80,0,0" rotationaxis="1,0,1" rotationrate=200>
+      <attached>
+        <Model position="0,0,-20" scale=10 mesh="cokebottle.mesh" />
+      </attached>
+    </MovableEntity>
 
 
 <SpaceRaceManager>
