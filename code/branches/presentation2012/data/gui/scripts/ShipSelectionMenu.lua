@@ -5,7 +5,7 @@ P.activeTabIndexes = {}
 P.scrollbarWidth = 13
 P.shipList = {}
 function P.onLoad()
-   local dircmd = "ls ../levels/templates/ -l | awk '{print $9}' | grep \"spaceship\" | sed -e 's/\\.[a-zA-Z]*$//'" -- go to spaceships folder and generate a list of installed shipmodels.
+   local dircmd = "ls -l ../levels/templates/ | awk '{print $9}' | grep \"spaceship\" | sed -e 's/\\.[a-zA-Z]*$//'" -- go to spaceships folder and generate a list of installed shipmodels.
    os.execute(dircmd .. " > ../levels/templates/.shipmodels") --saves output in a textfile
    --[[TODO: program a Windows Version / platform independent version here:
    if string.sub(package.config,1,1) == '\\' then
