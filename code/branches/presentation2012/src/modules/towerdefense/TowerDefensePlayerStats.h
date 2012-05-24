@@ -42,7 +42,8 @@
 namespace orxonox
 {
 	typedef enum _TowerCosts {
-		TDDefaultTowerCost = 200
+		// Set to 0 for debug...
+		TDDefaultTowerCost = 0
 	} TowerCost;
 	
     class _TowerDefenseExport TowerDefensePlayerStats
