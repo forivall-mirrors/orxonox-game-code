@@ -80,7 +80,7 @@ namespace orxonox
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getWorldOrientation());
         rocket->setPosition(this->getMuzzlePosition());
-        rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
+        rocket->setVelocity(0.0f,0.0f,0.0f);
         rocket->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
 
         rocket->setDamage(this->damage_);

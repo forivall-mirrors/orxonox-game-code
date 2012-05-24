@@ -43,11 +43,16 @@
 #include "graphics/Model.h"
 #include "graphics/ParticleSpawner.h"
 #include "infos/PlayerInfo.h"
-#include "objects/collisionshapes/ConeCollisionShape.h"
+#include "objects/collisionshapes/SphereCollisionShape.h"
 #include "worldentities/pawns/Pawn.h"
 #include "sound/WorldSound.h"
 
 #include "weapons/RocketController.h"
+
+// NOTE this branch now has the spacebomb implementation in 
+// the simplerocket facilities since there is no time to implement 
+// a proper weapon for it now. DO NOT MERGE THIS INTO TRUNK.
+
 
 namespace orxonox
 {
@@ -63,7 +68,7 @@ namespace orxonox
         RegisterObject(SimpleRocket);// Register the SimpleRocket class to the core
 
         this->localAngularVelocity_ = 0;
-        this->lifetime_ = 10.f;
+        this->lifetime_ = 100.f;
 
         this->setMass(15.0);
 
@@ -74,26 +79,21 @@ namespace orxonox
 
             // Create rocket model.
             Model* model = new Model(this);
-            model->setMeshSource("rocket.mesh");
-            model->scale(0.7f);
+            model->setMeshSource("Spacebomb.mesh");
+            model->scale(0.3f);
             this->attach(model);
 
             // Add effects.
-            this->fire_ = new ParticleEmitter(this);
-            this->attach(this->fire_);
-
-            this->fire_->setOrientation(this->getOrientation());
-            this->fire_->setSource("Orxonox/simplerocketfire");
+           
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
             // Add collision shape.
             // TODO: fix the orientation and size of this collision shape to match the rocket
-            ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
+            SphereCollisionShape* collisionShape = new SphereCollisionShape(this);
             collisionShape->setOrientation(this->getOrientation());
-            collisionShape->setRadius(1.5f);
-            collisionShape->setHeight(5);
+            collisionShape->setRadius(50.00f);
             this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&BasicProjectile::destroyObject, this)));
@@ -101,7 +101,7 @@ namespace orxonox
 
         this->setRadarObjectColour(ColourValue(1.0, 1.0, 0.0)); // yellow
         this->setRadarObjectShape(RadarViewable::Triangle);
-        this->setRadarObjectScale(0.5f);
+        this->setRadarObjectScale(0.3f);
     }
 
 
@@ -140,7 +140,7 @@ namespace orxonox
     void SimpleRocket::disableFire()
     {
         this->setAcceleration(0,0,0);
-        this->fire_->detachFromParent();
+        
     }
 
     /**
