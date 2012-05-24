@@ -19,9 +19,9 @@
         </links>
         <Weapon>
           <attached>
-            <Model mesh="LightningGun.mesh" pitch="100" roll="90" yaw="90" position="0,-1.3,0" scale=20/>
-            <Model mesh="LightningGun-s.mesh" pitch="78" roll="90" yaw="90" position="0.2,-1.3,0" scale=20 />
-            <Model mesh="hs-w01_reduced.mesh" roll="45" pitch="-76" yaw="-45" position="-1.5,1,200" scale=20 />
+            <Model mesh="LightningGun.mesh" pitch="100" roll="90" yaw="90" position="0,-1.3,200" scale=1/>
+            <Model mesh="LightningGun-s.mesh" pitch="78" roll="90" yaw="90" position="0.2,-1.3,200" scale=1 />
+            <Model mesh="hs-w01_reduced.mesh" roll="45" pitch="-76" yaw="-45" position="-1.5,1,200" scale=10 />
           </attached>
           <HsW01 mode=0 munitionpershot=0 delay=0.005 damage=31.4159 material="Flares/point_lensflare" muzzleoffset=" 0.1, 1.6,-2" />
           <HsW01 mode=0 munitionpershot=0 delay=0     damage=314.159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" />

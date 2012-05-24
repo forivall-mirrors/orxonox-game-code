@@ -21,7 +21,7 @@ namespace orxonox
 	 @brief
 	 Constructor. Registers and initializes the object.
 	 */
-    Tower::Tower(BaseObject* creator) : SpaceShip(creator)
+    Tower::Tower(BaseObject* creator) : Pawn(creator)
     {
         RegisterObject(Tower);
 
@@ -35,6 +35,31 @@ namespace orxonox
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisStone::enableMovement, this)));
 		*/
     }
+	
+	void Tower::setOrientation(const Quaternion& orientation)
+	{
+		static int ori;
+		orxout() << "orientation " << ++ori << endl;
+	}
+	
+	void Tower::rotateYaw(const Vector2& value)
+	{
+		static int yaw;
+		orxout() << "rotateYaw " << ++yaw << endl;
+	}
+	
+	void Tower::rotatePitch(const Vector2& value)
+	{
+		static int pitch;
+		orxout() << "rotatePitch " << ++pitch << endl;
+	}
+	
+	void Tower::rotateRoll(const Vector2& value)
+	{
+		static int roll;
+		orxout() << "rotateRoll" << ++roll << endl;
+	}
+		
 	// This function is called whenever a player presses the up or the down key.
     // You have to implement what happens when the up or the down key is pressed.
     // value.x < 0 means: down key is pressed.
@@ -54,10 +79,12 @@ namespace orxonox
 	 @param value
 	 A vector whose first component is the angle by which to rotate.
 	 */
+		 /*
     void Tower::moveFrontBack(const Vector2& value)
     {
         //orxout() << "frontBack.x: " << value.x << endl;
     }
+	*/
 	
     /**
 	 @brief
@@ -65,10 +92,11 @@ namespace orxonox
 	 @param value
 	 A vector whose first component is the direction in which we want to steer the stone.
 	 */
+		 /*
     void Tower::moveRightLeft(const Vector2& value)
     {
 		//orxout() << "rightLeft.x: " << value.x << endl;
-		/*
+		
         if(!this->delay_)
         {
             const Vector3& position = this->getPosition();
@@ -79,7 +107,7 @@ namespace orxonox
             this->setPosition(newPos);
             this->delay_ = true;
             this->delayTimer_.startTimer();
-        }
-		 */
+		}
     }
+	*/
 }

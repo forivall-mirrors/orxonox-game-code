@@ -104,9 +104,6 @@ namespace orxonox
 
 		/* Temporary hack to allow the player to add towers */
 		this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
-	
-		// Quick hack to test waypoints
-		createConsoleCommand( "aw", createExecutor( createFunctor(&TowerDefense::addWaypointsAndFirstEnemy, this) ) );
     }
 	
     TowerDefense::~TowerDefense()
@@ -130,21 +127,18 @@ namespace orxonox
     {
         Deathmatch::start();
 		
-        orxout() << "Adding towers for debug..." << endl;
+		const int kInitialTowerCount = 3;
+		Coordinate initialTowerCoordinates[kInitialTowerCount] = {{3,2}, {8,5}, {12,10}};
 		
-		// Mark corners
-		addTower(0,15); addTower(15,0);
-		
-		// Mark diagonal line
-		for (int i = 0 ; i <= 15; i++)
-			addTower(i,i);
-		
-		orxout() << "Done" << endl;
+		for (int i = 0; i < kInitialTowerCount; i++)
+		{
+			Coordinate coordinate = initialTowerCoordinates[i];
+			addTower(coordinate.x, coordinate.y);
+		}
 		
 		ChatManager::message("Use the console command addTower x y to add towers");
 
 		//TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
-
 	}
 	
 	void TowerDefense::end()
@@ -197,14 +191,8 @@ namespace orxonox
 		Tower* newTower = new Tower(this->center_);
 		newTower->addTemplate(this->center_->getTowerTemplate());
 
-		//this->center_->attach(newTower);
-
-		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 100);
+		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 75);
 		newTower->setGame(this);
-		//TODO: Save the Tower in a Vector. I would suggest std::vector< std::vector<Tower*> > towers_ as a protected member variable;
-		
-		// TODO: create Tower mesh
-		// TODO: load Tower mesh
 	}
 	
 	bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
@@ -228,27 +216,12 @@ namespace orxonox
 	void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
-		
-        static int test = 0;
-        if (++test == 10)
-        {
-			orxout()<< "10th tick." <<endl;
-			/*
-			for (std::set<SpawnPoint*>::iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); it++)
-			{
-				orxout() << "checking spawnpoint with name " << (*it)->getSpawnClass()->getName() << endl;
-			}
-			*/
-			
-			//addWaypointsAndFirstEnemy();
-			
-        }
     }
 	
 	// Function to test if we can add waypoints using code only. Doesn't work yet
 	
 	// THE PROBLEM: WaypointController's getControllableEntity() returns null, so it won't track. How do we get the controlableEntity to NOT BE NULL???
-	
+	/*
 	void TowerDefense::addWaypointsAndFirstEnemy()
 	{
 		SpaceShip *newShip = new SpaceShip(this->center_);
@@ -282,7 +255,7 @@ namespace orxonox
 		
 //		this->center_->attach(newShip);
 	}
-	
+	*/
 	/*
 	 void TowerDefense::playerEntered(PlayerInfo* player)
 	 {
