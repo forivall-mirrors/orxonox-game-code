@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -29,11 +29,11 @@
 /**
 @file
 @brief
-    Shared library macros, enums, constants and forward declarations for the questsystem module
+    Shared library macros, enums, constants and forward declarations for the TowerDefense module
 */
 
-#ifndef _PickupPrereqs_H__
-#define _PickupPrereqs_H__
+#ifndef _TowerDefensePrereqs_H__
+#define _TowerDefensePrereqs_H__
 
 #include "OrxonoxConfig.h"
 #include "OrxonoxPrereqs.h"
@@ -42,23 +42,20 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(PICKUP_STATIC_BUILD)
-#  ifdef PICKUP_SHARED_BUILD
-#    define _PickupExport __declspec(dllexport)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(TOWERDEFENSE_STATIC_BUILD)
+#  ifdef TOWERDEFENSE_SHARED_BUILD
+#    define _TowerDefenseExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _PickupExport
+#      define _TowerDefenseExport
 #    else
-#      define _PickupExport __declspec(dllimport)
+#      define _TowerDefenseExport __declspec(dllimport)
 #    endif
 #  endif
-#  define _PickupPrivate
-#elif defined (ORXONOX_GCC_VISIBILITY)
-#  define _PickupExport  __attribute__ ((visibility("default")))
-#  define _PickupPrivate __attribute__ ((visibility("hidden")))
+#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _TowerDefenseExport  __attribute__ ((visibility("default")))
 #else
-#  define _PickupExport
-#  define _PickupPrivate
+#  define _TowerDefenseExport
 #endif
 
 //-----------------------------------------------------------------------
@@ -67,24 +64,11 @@
 
 namespace orxonox
 {
-    class CollectiblePickup;
-    class DroppedPickup;
-    class Pickup;
-    class PickupCollection;
-    class PickupCollectionIdentifier;
-    class PickupManager;
-    class PickupRepresentation;
-    class PickupSpawner;
-
-    //items
-    class DronePickup;
-    class HealthPickup;
-    class InvisiblePickup;
-    class MetaPickup;
-    class SpeedPickup;
-    class ShieldPickup;
-    class ShrinkPickup;
-    class DamageBoostPickup;
+    class TowerDefense;
+	class Tower;
+    class TowerDefenseCenterpoint;
+	class TowerDefenseHUDController;
+	class TowerDefensePlayerStats;
 }
 
-#endif /* _PickupPrereqs_H__ */
+#endif /* _TowerDefensePrereqs_H__ */
