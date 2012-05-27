@@ -165,7 +165,7 @@ namespace orxonox
 
 	    inline void setTeam(int team)
 	        { this->team_ = team; }
-	    inline float getTeam() const
+	    inline int getTeam() const
 	        { return this->team_; }
 
         protected:
