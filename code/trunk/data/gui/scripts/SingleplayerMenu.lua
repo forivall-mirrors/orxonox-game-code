@@ -133,7 +133,7 @@ function P.SingleplayerSelectionChanged(e)
         end
     else
         -- also take care of "no level selected"
-        levelImage:setProperty("Image", nil)
+        levelImage:setProperty("Image", "")
         levelDescription:setText("")
         configButton:setProperty("Disabled", "True")
     end
