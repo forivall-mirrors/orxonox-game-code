@@ -43,7 +43,6 @@ namespace orxonox
             WaypointController(BaseObject* creator);
             virtual ~WaypointController();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
         protected:

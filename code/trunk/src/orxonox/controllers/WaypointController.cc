@@ -29,7 +29,6 @@
 #include "WaypointController.h"
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox
@@ -49,14 +48,6 @@ namespace orxonox
             if(this->waypoints_[i])
                 this->waypoints_[i]->destroy();
         }
-    }
-
-    void WaypointController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(WaypointController, XMLPort, xmlelement, mode);
-
-        XMLPortParam(ArtificialController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
-        XMLPortObject(ArtificialController, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
     }
 
     void WaypointController::tick(float dt)
