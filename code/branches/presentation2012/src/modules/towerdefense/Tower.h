@@ -23,7 +23,7 @@ See TowerDefenseReadme.txt for Information.
 
 namespace orxonox
 {
-    class _OrxonoxExport Tower : public Pawn
+    class _TowerDefenseExport Tower : public Pawn
     {
 	public:
 		Tower(BaseObject* creator);

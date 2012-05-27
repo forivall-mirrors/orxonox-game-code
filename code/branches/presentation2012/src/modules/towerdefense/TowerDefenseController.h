@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport TowerDefenseController : public WaypointController
+    class _TowerDefenseExport TowerDefenseController : public WaypointController
     {
         public:
             TowerDefenseController(BaseObject* creator);

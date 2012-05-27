@@ -44,7 +44,7 @@
 		 
 namespace orxonox
 {
-	class _OrxonoxExport TowerDefense : public Deathmatch
+	class _TowerDefenseExport TowerDefense : public Deathmatch
     {
 	public:
 		TowerDefense(BaseObject* creator);
