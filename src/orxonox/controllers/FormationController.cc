@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      ...
  *   Co-authors:
  *      Dominik Solenicki
  *
@@ -60,8 +60,8 @@ namespace orxonox
 
   static const unsigned int STANDARD_MAX_FORMATION_SIZE = 9;
   static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
-  static const int FORMATION_LENGTH =  110;
-  static const int FORMATION_WIDTH =  110;
+  static const float FORMATION_LENGTH =  110;
+  static const float FORMATION_WIDTH =  110;
   static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
   static const float SPEED_MASTER = 0.6f;
   static const float ROTATEFACTOR_MASTER = 0.2f;
@@ -323,7 +323,7 @@ namespace orxonox
                 if (distance < 100)
                 {   //linear speed reduction
                     this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
-		   
+
                 } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
 
             } else {
@@ -382,7 +382,7 @@ namespace orxonox
 
     void FormationController::searchNewMaster()
     {
-        if (this->state_==SLAVE) 
+        if (this->state_==SLAVE)
            return;
         if (!this->getControllableEntity())
             return;
@@ -393,7 +393,7 @@ namespace orxonox
         //go through all pawns
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-           
+
             //same team?
             Gametype* gt=this->getGametype();
             if (!gt)
@@ -478,7 +478,7 @@ void FormationController::commandSlaves()
             Vector3 pos = Vector3::ZERO;
 	         bool left=true;
             int i = 1;
-	    
+
             for(std::vector<FormationController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
                 pos = Vector3::ZERO;
@@ -489,7 +489,7 @@ void FormationController::commandSlaves()
                     pos+=dest+i*FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
                     i++;
                     dest+=FORMATION_LENGTH*(orient*WorldEntity::BACK);
-                }		
+                }
                 (*it)->setTargetOrientation(orient);
                 (*it)->setTargetPosition(pos);
                 left=!left;
@@ -598,12 +598,12 @@ void FormationController::commandSlaves()
         }
 
         if (this->state_==SLAVE)  //become master of this formation
-        {   
+        {
             this->slaves_=this->myMaster_->slaves_;
             this->myMaster_->slaves_.clear();
             this->myMaster_->state_=SLAVE;
             this->myMaster_->myMaster_=this;
-            
+
             //delete myself in slavelist
             std::vector<FormationController*>::iterator it2 = std::find(this->slaves_.begin(), this->slaves_.end(), this);
             if (it2 != this->slaves_.end())
@@ -646,7 +646,7 @@ void FormationController::commandSlaves()
            i++;
            if (i>=slaves_.size()/2) break; //half the formation should attack.
        }
-    }     
+    }
 
 
     /**
@@ -859,7 +859,7 @@ void FormationController::commandSlaves()
 
     void FormationController::setTargetOrientation(const Quaternion& orient)
     {
-        this->targetOrientation_=orient;	
+        this->targetOrientation_=orient;
         this->bHasTargetOrientation_=true;
     }
 
