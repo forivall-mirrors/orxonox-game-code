@@ -23,11 +23,12 @@
  *      Fabian 'x3n' Landau
  *   Co-authors:
  *      Dominik Solenicki
- *      
+ *
  */
 
 #include "ArtificialController.h"
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "core/command/ConsoleCommand.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
@@ -45,6 +46,8 @@ namespace orxonox
 
     ArtificialController::ArtificialController(BaseObject* creator) : FormationController(creator)
     {
+        RegisterObject(ArtificialController);
+
         this->bSetupWorked = false;
         this->botlevel_ = 0.5f;
         this->timeout_ = 0;
@@ -63,6 +66,13 @@ namespace orxonox
         }
     }
 
+    void ArtificialController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(ArtificialController, XMLPort, xmlelement, mode);
+
+        XMLPortParam(ArtificialController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
+        XMLPortObject(ArtificialController, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
+    }
 
     /**
         @brief Gets called when ControllableEntity is being changed. Resets the bot when it dies.
@@ -275,5 +285,5 @@ namespace orxonox
         else
             this->updatePointsOfInterest("PickupSpawner", 20.0f); // take pickup en passant if there is a default waypoint
     }
- 
+
 }

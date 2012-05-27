@@ -41,6 +41,8 @@ namespace orxonox
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
 
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
             void abandonTarget(Pawn* target);
 
             virtual void changedControllableEntity();
@@ -61,10 +63,10 @@ namespace orxonox
             void updatePointsOfInterest(std::string name, float distance);
             void manageWaypoints();
 
-            
+
 
         protected:
-            
+
             void aimAtTarget();
 
             bool isCloseAtTarget(float distance) const;
