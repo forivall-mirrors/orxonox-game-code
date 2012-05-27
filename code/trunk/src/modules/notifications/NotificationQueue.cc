@@ -44,7 +44,7 @@ namespace orxonox
 {
 
     CreateFactory(NotificationQueue);
-    
+
     /**
     @brief
         Default constructor. Registers and initializes the object.
@@ -61,7 +61,7 @@ namespace orxonox
         this->displayTime_ = NotificationQueue::DEFAULT_DISPLAY_TIME;
 
         this->creationTime_ = std::time(0);
-        
+
         this->registerVariables();
     }
 
@@ -110,7 +110,7 @@ namespace orxonox
 
         if(this->isRegistered())
             this->clear();
-            
+
         this->create();
 
         this->targetsChanged();
@@ -170,8 +170,8 @@ namespace orxonox
         XMLPortParam(NotificationQueue, "size", setMaxSize, getMaxSize, xmlelement, mode);
         XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlelement, mode);
     }
-    
-    
+
+
     /**
     @brief
         Registers Variables to be Synchronised.
@@ -312,12 +312,12 @@ namespace orxonox
 
         orxout(verbose_more, context::notifications) << "Notification \"" << (*it)->notification->getMessage() << "\" removed from NotificationQueue '" << this->getName() << "'" << endl;
 
+        delete *containerIterator;
+
         this->ordering_.erase(containerIterator);
         this->notifications_.erase(it);
 
         this->size_--;
-
-        delete *containerIterator;
 
         // TODO: index automatically cast?
         // Inform that a Notification was removed.
@@ -369,7 +369,7 @@ namespace orxonox
             orxout(internal_warning, context::notifications) << "Trying to set maximal size of NotificationQueue '" << this->getName() << "' to 0. Ignoring..." << endl;
             return;
         }
-        
+
         this->maxSize_ = size;
         this->maxSizeChanged();
     }
@@ -399,7 +399,7 @@ namespace orxonox
         {
             orxout(internal_warning, context::notifications) << "Trying to set display time of NotificationQueue '" << this->getName() << "' to non-positive value. Ignoring..." << endl;
         }
-            
+
         this->displayTime_ = time;
         this->displayTimeChanged();
     }
