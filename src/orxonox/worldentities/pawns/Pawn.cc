@@ -128,7 +128,7 @@ namespace orxonox
 
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
-   
+
         XMLPortParam ( RadarViewable, "RVName", setRVName, getRVName, xmlelement, mode );
     }
 
@@ -452,18 +452,12 @@ namespace orxonox
         this->isHumanShip_ = true;
     }
 
-    void Pawn::changedActivity(void)
-    {
-        SUPER(Pawn, changedActivity);
-
-        this->setRadarVisibility(this->isVisible());
-    }
-
     void Pawn::changedVisibility(void)
     {
         SUPER(Pawn, changedVisibility);
-        //this->setVisible(this->isVisible());
-        this->setRadarVisibility(this->isVisible());
+
+        // enable proper radarviewability when the visibility is changed
+        this->RadarViewable::settingsChanged();
     }
 
 }
