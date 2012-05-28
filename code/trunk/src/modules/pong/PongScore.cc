@@ -129,11 +129,11 @@ namespace orxonox
             if (this->bShowLeftPlayer_)
             {
                 if (this->bShowName_ && this->bShowScore_ && player1_ != NULL)
-                        output1 = name1 + " - " + score1;
+                    output1 = name1 + " - " + score1;
                 else if (this->bShowScore_)
-                        output1 = score1;
+                    output1 = score1;
                 else if (this->bShowName_)
-                        output1 = name1;
+                    output1 = name1;
             }
 
             std::string output2;
