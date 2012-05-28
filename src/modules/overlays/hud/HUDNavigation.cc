@@ -78,7 +78,7 @@ HUDNavigation::HUDNavigation ( BaseObject* creator )
     this->setFont ( "Monofur" );
     this->setTextSize ( 0.05f );
     this->setNavMarkerSize ( 0.05f );
-    this->setDetectionLimit( 10000.0f ); 
+    this->setDetectionLimit( 10000.0f );
 }
 
 HUDNavigation::~HUDNavigation()
@@ -100,7 +100,7 @@ void HUDNavigation::XMLPort ( Element& xmlelement, XMLPort::Mode mode )
     XMLPortParam ( HUDNavigation, "font",          setFont,          getFont,          xmlelement, mode );
     XMLPortParam ( HUDNavigation, "textSize",      setTextSize,      getTextSize,      xmlelement, mode );
     XMLPortParam ( HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode );
-    XMLPortParam ( HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode ); 
+    XMLPortParam ( HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode );
 }
 
 void HUDNavigation::setFont ( const std::string& font )
@@ -145,16 +145,16 @@ float HUDNavigation::getTextSize() const
 }
 
 float HUDNavigation::getArrowSizeX(int dist)
-{    
-    if (dist < 600) 
+{
+    if (dist < 600)
         dist = 600;
     return this->getActualSize().x * 900 * navMarkerSize_ / dist;
 }
 
 float HUDNavigation::getArrowSizeY(int dist)
-{    
+{
     if (dist < 600)
-        dist = 600;   
+        dist = 600;
     return this->getActualSize().y * 900 * navMarkerSize_ / dist;
 }
 
@@ -183,8 +183,8 @@ void HUDNavigation::tick ( float dt )
     {
         ObjectMap::iterator it = activeObjectList_.find ( listIt->first );
         closeEnough_ = listIt->second < detectionLimit_ ;
-        // display radarviewables on HUD if the marker limit and max-distance is not exceeded 
-        if ( markerCount_ < markerLimit_ && (closeEnough_ ||  detectionLimit_ < 0) ) 
+        // display radarviewables on HUD if the marker limit and max-distance is not exceeded
+        if ( markerCount_ < markerLimit_ && (closeEnough_ ||  detectionLimit_ < 0) )
         {
 
 
@@ -200,8 +200,8 @@ void HUDNavigation::tick ( float dt )
 
             //display name next to cursor
             else{
-            it->second.text_->setCaption(it->first->getRVName()); 
-            textLength = it->first->getRVName().size() * it->second.text_->getCharHeight() * 0.3f;
+            it->second.text_->setCaption(it->first->getRadarName());
+            textLength = it->first->getRadarName().size() * it->second.text_->getCharHeight() * 0.3f;
             }
 
             // Transform to screen coordinates
@@ -310,7 +310,7 @@ void HUDNavigation::tick ( float dt )
             it->second.panel_->show();
             it->second.text_->show();
         }
-        else // do not display on HUD 
+        else // do not display on HUD
         {
             it->second.panel_->hide();
             it->second.text_->hide();
