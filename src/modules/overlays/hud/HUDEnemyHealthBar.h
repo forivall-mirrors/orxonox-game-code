@@ -22,62 +22,33 @@
  *   Author:
  *      Matthias Spalinger
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
 #ifndef _HUDEnemyHealthBar_H__
 #define _HUDEnemyHealthBar_H__
 
-#include "interfaces/RadarViewable.h"
-#include "worldentities/pawns/Pawn.h"
-
 #include "HUDHealthBar.h"
-#include "interfaces/RadarListener.h"
 
 namespace orxonox
 {
-    class _OverlaysExport HUDEnemyHealthBar : public HUDHealthBar, public RadarListener
+    class _OverlaysExport HUDEnemyHealthBar : public HUDHealthBar
     {
         public:
             HUDEnemyHealthBar(BaseObject* creator);
             virtual ~HUDEnemyHealthBar();
+
             void setConfigValues();
-
-            bool compareDistance ( std::pair<RadarViewable*, unsigned int > a, std::pair<RadarViewable*, unsigned int > b );
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-
-            //RadarListener interface
-            void addObject ( RadarViewable* object );
-            void removeObject ( RadarViewable* viewable );
-            void objectChanged(RadarViewable* viewable);
-            virtual void radarTick ( float dt ) {}
-            inline float getRadarSensitivity() const
-                { return 1.0f; }
 
             void changedOwner();
 
         private:
+            void updateTarget();
 
-            void setSensibility (float sense){
-                this->sens_ = sense;}
-            float getSensibility(){
-                return this->sens_;}
-
-            bool showObject(RadarViewable* rv);
-        
-            typedef std::list < std::pair<RadarViewable*, unsigned int > > sortedList;
-            sortedList sortedObjectList_;
-
-            Pawn* owner_;
-            float sens_;
+            ControllableEntity* owner_;
             bool useEnemyBar_;
-            unsigned int markerLimit_;
-
-            float currentYaw;
-            float currentPitch;
     };
 }
 #endif /* _HUDEnemyHealthBar_H__ */

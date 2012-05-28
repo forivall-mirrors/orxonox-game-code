@@ -109,10 +109,8 @@ namespace orxonox
             inline float getTextSpaceWidth() const
                 { return this->textoverlay_->getSpaceWidth(); }
 
-            inline void setOverlayText(SmartPtr<OverlayText> textoverlay)
-                { this->textoverlay_ = textoverlay; }
-            inline SmartPtr<OverlayText> getOverlayText() const
-                {return this->textoverlay_; }
+            inline void setHealthBarOwner(Pawn* owner)
+                { this->owner_ = owner; }
 
         private:
             WeakPtr<Pawn> owner_;
