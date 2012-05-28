@@ -75,8 +75,9 @@ namespace orxonox
 
         // Set the type of Bots for this particular Gametype.
         this->botclass_ = Class(PongBot);
-	this->scoreLimit_ = 10;
-	this->setConfigValues();
+
+        this->scoreLimit_ = 10;
+        this->setConfigValues();
     }
 
     /**
@@ -87,6 +88,11 @@ namespace orxonox
     {
         if (this->isInitialized())
             this->cleanup();
+    }
+
+    void Pong::setConfigValues()
+    {
+        SetConfigValue(scoreLimit_, 10).description("The player first reaching those points wins.");
     }
 
     /**
@@ -282,28 +288,21 @@ namespace orxonox
             this->bat_[1]->setPosition( this->center_->getFieldDimension().x / 2, 0, 0);
         }
 
-        // If a palyer gets 21 points, he won the game -> end of game
-        
-        PlayerInfo* player1 = this->getLeftPlayer();
-        PlayerInfo* player2 = this->getRightPlayer();
-        if(player1==NULL||player2==NULL) return; //safety
-        if(this->getScore(player1) >= scoreLimit_)
+        // If a player gets enough points, he won the game -> end of game
+        PlayerInfo* winningPlayer = NULL;
+        if (this->getLeftPlayer() && this->getScore(this->getLeftPlayer()) >= scoreLimit_)
+            winningPlayer = this->getLeftPlayer();
+        else if (this->getRightPlayer() && this->getScore(this->getRightPlayer()) >= scoreLimit_)
+            winningPlayer = this->getRightPlayer();
+
+        if (winningPlayer)
         {
-            std::string name1=player1->getName();
-            std::string message(name1 + " has won!");
-            ChatManager::message(message);
-            this->end();
-        }
-        else if(this->getScore(player2) >= scoreLimit_)
-        {
-             std::string name2=player2->getName();
-             std::string message2(name2 + " has won!");
-             ChatManager::message(message2);
+             ChatManager::message(winningPlayer->getName() + " has won!");
              this->end();
         }
+
         // Restart the timer to start the ball.
         this->starttimer_.startTimer();
-
     }
 
     /**
@@ -342,14 +341,5 @@ namespace orxonox
             return this->bat_[1]->getPlayer();
         else
             return 0;
-    }
-
-    /**
-     @brief
-         Make scoreLimit_ configurable e.g. in the menu.
-     */
-    void Pong::setConfigValues()
-    {
-        SetConfigValue(scoreLimit_, 10).description("The player first reaching those points wins.");
     }
 }
