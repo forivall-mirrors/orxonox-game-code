@@ -73,7 +73,7 @@ namespace orxonox
                 { return this->boosting_; }
             void keepBoosting(void);
             void terminateBoosting(void);
-                  
+
 
             static void greet();
             static void switchCamera();
@@ -87,8 +87,6 @@ namespace orxonox
 
             static void toggleFormationFlight();
             static void FFChangeMode();
-            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
-
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
@@ -107,7 +105,7 @@ namespace orxonox
         protected:
             static HumanController* localController_s;
             bool controlPaused_;
-        
+
         private:
             bool boosting_; // Whether the HumanController is in boosting mode or not.
             Timer boostingTimeout_; // A timer to check whether the player is no longer boosting.
