@@ -55,7 +55,7 @@
       health            = 10000
       maxhealth         = 10000
       initialhealth     = 10000
-      RVName            = "Transporter"
+      radarname         = "Transporter"
     >
 
       <attached>

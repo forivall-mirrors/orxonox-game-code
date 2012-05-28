@@ -35,7 +35,7 @@
 #include "gametypes/Gametype.h"
 #include "worldentities/ControllableEntity.h"
 #include "controllers/Controller.h"
-#include "worldentities/pawns/SpaceShip.h"
+#include "interfaces/RadarViewable.h"
 
 namespace orxonox
 {
@@ -57,7 +57,7 @@ namespace orxonox
         this->updateGametypeInfo();
 
         this->registerVariables();
-        
+
     }
 
     PlayerInfo::~PlayerInfo()
@@ -153,7 +153,7 @@ namespace orxonox
 
         while (this->previousControllableEntity_.size() > 0)
             this->stopTemporaryControl();
-        
+
         if (this->controllableEntity_)
             this->stopControl();
 
@@ -171,11 +171,10 @@ namespace orxonox
         }
 
         this->changedControllableEntity();
-		SpaceShip* spaceship = dynamic_cast<SpaceShip*>(entity);
-        if (spaceship != NULL)
-        {
-            spaceship->setRVName(this->getName());
-        }
+
+		RadarViewable* radarviewable = orxonox_cast<RadarViewable*>(entity);
+        if (radarviewable != NULL)
+            radarviewable->setRadarName(this->getName());
     }
 
     void PlayerInfo::startTemporaryControl(ControllableEntity* entity)
@@ -243,7 +242,7 @@ namespace orxonox
         this->controllableEntity_->setController(0);
         if(this->isHumanPlayer()) // TODO: Multiplayer?
             this->controllableEntity_->destroyHud(); // HACK-ish
-        
+
 //        this->controllableEntity_ = this->previousControllableEntity_.back();
         do {
             this->controllableEntity_ = this->previousControllableEntity_.back();

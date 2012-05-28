@@ -508,7 +508,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 <!-- @Objects: 4 boxes (uncontrolled pawns) -->
-    <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 4" >
+    <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 4" >
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -522,7 +522,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         </collisionShapes>
     </Pawn>
 
-    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 3">
+    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 3">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -536,7 +536,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         </collisionShapes>
     </Pawn>
 
-    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 2">
+    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 radarname = "Box 2">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -550,7 +550,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         </collisionShapes>
     </Pawn>
 
-    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 1">
+    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 radarname = "Box 1">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -634,7 +634,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 <!--------------------------------------PART TWO: Moving targets --------------------------------------->
 
 <!-- @Objects: 2 pirates moving in squares, nonlethal -->
-                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" RVName="Pirate">
+                <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" radarname="Pirate">
                             <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
@@ -655,7 +655,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
                   </controller>
                 </SpaceShip>
 
-                <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget" RVName="Pirate">
+                <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget" radarname="Pirate">
                             <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
@@ -976,13 +976,13 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
     <SpaceShip
-        team     = 0
-        position = "-48900,100,0"
-        roll     = 90   yaw=0  pitch=20
-        mass     = 10000
-        health   = 100000 initialhealth=100000 maxhealth="100000"
-        name     = "HydroFarmer"
-        RVName   = "Hydrogen Farmer" >
+        team      = 0
+        position  = "-48900,100,0"
+        roll      = 90   yaw=0  pitch=20
+        mass      = 10000
+        health    = 100000 initialhealth=100000 maxhealth="100000"
+        name      = "HydroFarmer"
+        radarname = "Hydrogen Farmer" >
       <attached>
         <!-- Docking -->
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -1065,7 +1065,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         reloadrate          = "1"
         reloadwaittime      = "1"
         name                = "cruiser"
-        RVName              = "Spacecruiser" >
+        radarname           = "Spacecruiser" >
       <attached>
         <DockingTarget name="spaceShip" />
       </attached>
