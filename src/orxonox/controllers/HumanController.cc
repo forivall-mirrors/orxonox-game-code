@@ -84,7 +84,7 @@ namespace orxonox
 
     HumanController::~HumanController()
     {
-        if (HumanController::localController_s) 
+        if (HumanController::localController_s)
         {
             HumanController::localController_s->removeFromFormation();
         }
@@ -196,7 +196,7 @@ namespace orxonox
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->keepBoosting();
     }
-    
+
     /**
     @brief
         Starts, or keeps the boosting mode.
@@ -301,7 +301,7 @@ namespace orxonox
                 HumanController::localController_s->takeLeadOfFormation();
                 orxout(message) <<"FormationFlight enabled "<< endl;
             }
-            
+
         }
 
     }
@@ -329,14 +329,6 @@ namespace orxonox
                     break;
             }
         }
-    }
-
-
-    //used, when slaves are in DEFEND mode.
-    void HumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
-    {
-        if (!this->formationFlight_ || this->state_!=MASTER || this->formationMode_!=DEFEND) return;
-            this->masterAttacked(originator);
     }
 
     void HumanController::addBots(unsigned int amount)

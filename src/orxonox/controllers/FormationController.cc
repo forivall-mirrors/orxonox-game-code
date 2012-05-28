@@ -251,7 +251,14 @@ namespace orxonox
         }
     }
 
-  void FormationController::removeFromFormation()
+    //used, when slaves are in DEFEND mode.
+    void FormationController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+    {
+        if (!this->formationFlight_ || this->state_!=MASTER || this->formationMode_!=DEFEND) return;
+            this->masterAttacked(originator);
+    }
+
+    void FormationController::removeFromFormation()
     {
         if (this->state_ == SLAVE || this->myMaster_) // slaves can also be temporary free, so check if myMaster_ is set
             this->unregisterSlave();

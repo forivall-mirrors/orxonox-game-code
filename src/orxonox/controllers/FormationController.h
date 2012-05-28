@@ -95,7 +95,9 @@ namespace orxonox {
       inline FormationMode getFormationMode() const
            { return this->formationMode_; }
 
-    protected:
+      virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
+
+  protected:
       bool formationFlight_;
       bool passive_;
       int team_;
