@@ -45,34 +45,34 @@
 
 namespace orxonox
 {
-  /**
-  @brief
-    The SpaceRaceManager class controls a space race level, where the player has to reach check points in a given order.
-  */
+    /**
+    @brief
+        The SpaceRaceManager class controls a space race level, where the player has to reach check points in a given order.
+    */
     class _GametypesExport SpaceRaceManager : public BaseObject, public Tickable
     {
         friend class RaceCheckPoint;
-    
+
         public:
             SpaceRaceManager(BaseObject* creator);
             virtual ~SpaceRaceManager() ;
 
-            void XMLPort(Element& xmlelement, XMLPort::Mode mode); 
-            int getIndex(RaceCheckPoint* r);
+            void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
             void addCheckpoint(RaceCheckPoint* checkpoint);
             RaceCheckPoint* getCheckpoint(unsigned int index) const;
-        
+            int getIndex(RaceCheckPoint* checkpoint);
+
             void checkpointReached(RaceCheckPoint* check, PlayerInfo* player);
-        
+
             void tick(float dt);
-    
+
         protected:
-            void setRadVis(PlayerInfo* player, bool b);//sets RadarVisibility of the checkpoints the player can reach.
-    
+            void setRadVis(PlayerInfo* player, bool bVisible); ///< sets RadarVisibility of the checkpoints the player can reach.
+
         private:
             std::vector<RaceCheckPoint*> checkpoints_;
-            bool firstcheckpointvisible_;//true if the first check point is visible.
-        
+            bool firstcheckpointvisible_; ///< true if the first check point is visible.
     };
 }
 

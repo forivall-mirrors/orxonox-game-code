@@ -43,51 +43,49 @@
 
 namespace orxonox
 {
-  /**
-  @brief
-    The SpaceRace class enables the creation of a space race level, where the player has to reach check points in a given order.
-  */
+    /**
+    @brief
+        The SpaceRace class enables the creation of a space race level, where the player has to reach check points in a given order.
+    */
     class _GametypesExport SpaceRace : public Gametype
     {
         friend class RaceCheckPoint;
-       
+
 
         public:
             SpaceRace(BaseObject* creator);
             virtual ~SpaceRace() {}
 
+            void tick(float dt);
+
             virtual void start();
             virtual void end();
 
-            virtual void newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl);
-            virtual void newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl);
+            virtual void newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player);
 
-            inline void setCheckpointReached(int n, PlayerInfo* p)
-                { this->checkpointReached_[p] = n;}
-            inline int getCheckpointReached(PlayerInfo* p)
-                { return this->checkpointReached_[p]; }
+            inline void setCheckpointReached(int index, PlayerInfo* player)
+                { this->checkpointReached_[player] = index;}
+            inline int getCheckpointReached(PlayerInfo* player)
+                { return this->checkpointReached_[player]; }
 
-            inline void timeIsUp()
+            inline void setTimeIsUp()
                 { this->bTimeIsUp_ = true;}
-            void tick(float dt);
-            Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
-
+            inline Clock& getClock()
+                { return this->clock_; }
 
             bool allowPawnHit(Pawn* victim, Pawn* originator);
-
             bool allowPawnDamage(Pawn* victim, Pawn* originator);
-
             bool allowPawnDeath(Pawn* victim, Pawn* originator);
+
         protected:
-            virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
-            virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
+            virtual void playerEntered(PlayerInfo* player); ///< Initializes values.
+
         private:
             bool cantMove_;
-            std::map<PlayerInfo*, int>checkpointReached_; //The number of the last check point reached by each player.
-            std::set<float> scores_; //The times of the players are saved in a set.
-            bool bTimeIsUp_; //True if one of the check points is reached too late.
-            
-            int playersAlive_;
+            std::map<PlayerInfo*, int> checkpointReached_; ///< The number of the last check point reached by each player.
+            bool bTimeIsUp_;                               ///< True if one of the check points is reached too late.
+
+            Clock clock_; ///< The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
     };
 }
 

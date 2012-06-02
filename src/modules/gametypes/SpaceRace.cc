@@ -28,7 +28,6 @@
 
 #include "SpaceRace.h"
 
-
 #include "items/Engine.h"
 
 #include "core/CoreIncludes.h"
@@ -45,135 +44,84 @@ namespace orxonox
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
-        
+
+        this->cantMove_ = false;
         this->bTimeIsUp_ = false;
-        this->numberOfBots_ = 0;
-        this->cantMove_=false;
-        
     }
-       
-    
-  // void SpaceRace::SetConfigValues(){
-    //SUPER(Gametype,setConfigValues);
-    //this->Gametype::SetConfigValue(initialStartCountdown_, 3.0f);}
 
     void SpaceRace::end()
     {
         this->Gametype::end();
 
+        this->clock_.capture();
+        int s = this->clock_.getSeconds();
+        int ms = static_cast<int>(this->clock_.getMilliseconds() - 1000*s);
+        std::string message;
+
         if (this->bTimeIsUp_)
         {
-            this->clock_.capture();
-            int s = this->clock_.getSeconds();
-            int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-            const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
+            message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
                         + "You didn't reach the check point  before the time limit. You lose!";
-            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            ChatManager::message(message);
         }
         else
         {
-            this->clock_.capture();
-            int s = this->clock_.getSeconds();
-            int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-            const std::string& message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
+            message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
                         + "." + multi_cast<std::string>(ms) + " seconds.";
-            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            ChatManager::message(message);
-
-            float time = this->clock_.getSecondsPrecise();
-            this->scores_.insert(time);
-            std::set<float>::iterator it;
-            
-
         }
+
+        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        ChatManager::message(message);
     }
 
     void SpaceRace::start()
     {
-
         this->spawnPlayersIfRequested();
-        Gametype::checkStart(); 
-        this->cantMove_=true; 
-        
-        for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
-        {
+        Gametype::checkStart();
+        this->cantMove_ = true;
+
+        for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
             it->setActive(false);
-            
-        } 
-        this->addBots(this->numberOfBots_); 
+
+        this->addBots(this->numberOfBots_);
     }
-    
+
     void SpaceRace::tick(float dt)
     {
         SUPER(SpaceRace,tick,dt);
-    
-        if(!this->isStartCountdownRunning() && this->cantMove_)
+
+        if (!this->isStartCountdownRunning() && this->cantMove_)
         {
-            for(ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it) 
-            { 
+            for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
                 it->setActive(true);
-                
-            }
+
             this->cantMove_= false;
-            
-            std::string message("The match has started! Reach the check points as quickly as possible!");
+
+            std::string message = "The match has started! Reach the check points as quickly as possible!";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            ChatManager::message(message);            
+            ChatManager::message(message);
         }
-   
     }
 
-    
-    
-    void SpaceRace::newCheckpointReached(SpaceRaceManager* p, int index,PlayerInfo* pl)
+    void SpaceRace::newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player)
     {
-        this->checkpointReached_[pl]=index;
+        int index = checkpoint->getCheckpointIndex();
+        this->checkpointReached_[player] = index;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
-        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
+        int ms = this->clock_.getMilliseconds() % 1000;
         const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
-            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-            + " seconds.";// Message is too long for a normal screen.
+            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
     }
-   
-    void SpaceRace::newCheckpointReached(RaceCheckPoint* p, PlayerInfo* pl)
-    {   
-        int index = p->getCheckpointIndex();
-        this->checkpointReached_[pl]=index;
-        this->clock_.capture();
-        int s = this->clock_.getSeconds();
-        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
-            + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-            + " seconds.";
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        ChatManager::message(message);
-    }
-        
-    
+
     void SpaceRace::playerEntered(PlayerInfo* player)
     {
         Gametype::playerEntered(player);
-    
-        this->checkpointReached_[player]=-1;
-        //this->playersAlive_++;
-    }
-    
-    bool SpaceRace::playerLeft(PlayerInfo* player)
-    {
-        return Gametype::playerLeft(player);
-        // bool valid_player = true;
-        //if (valid_player)
-       // {
-        //    this->playersAlive_--;
-        //}
 
-       // return valid_player;
+        this->checkpointReached_[player] = -1;
     }
-    
+
     bool SpaceRace::allowPawnHit(Pawn* victim, Pawn* originator)
     {
         return false;
