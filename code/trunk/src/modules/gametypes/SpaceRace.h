@@ -58,7 +58,6 @@ namespace orxonox
 
             void tick(float dt);
 
-            virtual void start();
             virtual void end();
 
             virtual void newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player);

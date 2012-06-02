@@ -73,21 +73,18 @@ namespace orxonox
         ChatManager::message(message);
     }
 
-    void SpaceRace::start()
-    {
-        this->spawnPlayersIfRequested();
-        Gametype::checkStart();
-        this->cantMove_ = true;
-
-        for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
-            it->setActive(false);
-
-        this->addBots(this->numberOfBots_);
-    }
-
     void SpaceRace::tick(float dt)
     {
         SUPER(SpaceRace,tick,dt);
+
+        if (this->isStartCountdownRunning() && !this->cantMove_)
+        {
+            this->spawnPlayersIfRequested();
+            this->cantMove_ = true;
+
+            for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
+                it->setActive(false);
+        }
 
         if (!this->isStartCountdownRunning() && this->cantMove_)
         {
