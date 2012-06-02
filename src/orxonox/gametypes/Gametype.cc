@@ -403,8 +403,10 @@ namespace orxonox
                         if(Core::getInstance().inDevMode())
                             this->start();
                         else
+                        {
                             this->gtinfo_->setStartCountdown(this->initialStartCountdown_);
-                        this->gtinfo_->startStartCountdown();
+                            this->gtinfo_->startStartCountdown();
+                        }
                     }
                 }
             }
