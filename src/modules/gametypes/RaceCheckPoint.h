@@ -55,8 +55,6 @@ namespace orxonox
 
             inline void setNextcheckpoint(const Vector3& checkpoints)
                 { this->nextcheckpoints_ = checkpoints; }
-            inline void setNextcheckpoint(float x, float y, float z)
-                { this->setNextcheckpoint(Vector3(x, y, z)); }
             inline const Vector3& getNextcheckpoint() const
                 { return this->nextcheckpoints_; }
 

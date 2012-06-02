@@ -93,13 +93,15 @@ namespace orxonox
             return 0;
     }
 
-    int SpaceRaceManager::getIndex(RaceCheckPoint* checkpoint)
+    /**
+        @brief Returns the checkpoint with the given checkpoint-index (@see RaceCheckPoint::getCheckpointIndex).
+    */
+    RaceCheckPoint* SpaceRaceManager::findCheckpoint(int index) const
     {
         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
-            if (this->checkpoints_[i] == checkpoint)
-                return i;
-
-        return -1;
+            if (this->checkpoints_[i]->getCheckpointIndex() == index)
+                return this->checkpoints_[i];
+        return 0;
     }
 
     void SpaceRaceManager::checkpointReached(RaceCheckPoint* check, PlayerInfo* player)
@@ -112,24 +114,24 @@ namespace orxonox
         int index = gametype->getCheckpointReached(player);
         if (index > -1)
         {
-            Vector3 v = this->getCheckpoint(index)->getNextcheckpoint();
+            Vector3 v = this->findCheckpoint(index)->getNextcheckpoint();
 
-            if (this->getCheckpoint(v.x) == check)
+            if (this->findCheckpoint(v.x) == check)
             {
                 reachedValidCheckpoint = true;
             }
-            if (this->getCheckpoint(v.y) == check)
+            if (this->findCheckpoint(v.y) == check)
             {
                 reachedValidCheckpoint = true;
             }
-            if (this->getCheckpoint(v.z) == check)
+            if (this->findCheckpoint(v.z) == check)
             {
                 reachedValidCheckpoint = true;
             }
         }
         else
         {
-            reachedValidCheckpoint = (this->getIndex(check) == 0);
+            reachedValidCheckpoint = (check->getCheckpointIndex() == 0);
         }
 
         if (gametype && reachedValidCheckpoint)
@@ -146,39 +148,39 @@ namespace orxonox
             else
 			{
                 if (index > -1)
-                    this->setRadVis(player, false);
+                    this->setRadarVisibility(player, false);
                 else
-                    this->getCheckpoint(0)->setRadarVisibility(false);
+                    this->findCheckpoint(0)->setRadarVisibility(false);
 
                 gametype->newCheckpointReached(check, player);
-                this->setRadVis(player, true);
+                this->setRadarVisibility(player, true);
             }
         }
 
         check->resetPlayer();
     }
 
-    void SpaceRaceManager::setRadVis(PlayerInfo* player, bool bVisible)
+    void SpaceRaceManager::setRadarVisibility(PlayerInfo* player, bool bVisible)
     {
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
         int index = gametype->getCheckpointReached(player);
-        Vector3 v = this->getCheckpoint(index)->getNextcheckpoint();
+        Vector3 v = this->findCheckpoint(index)->getNextcheckpoint();
 
         if (v.x > -1)
         {
-            this->getCheckpoint(v.x)->setRadarVisibility(bVisible);
-            this->getCheckpoint(v.x)->settingsChanged();
+            this->findCheckpoint(v.x)->setRadarVisibility(bVisible);
+            this->findCheckpoint(v.x)->settingsChanged();
         }
         if (v.y > -1)
         {
-            this->getCheckpoint(v.y)->setRadarVisibility(bVisible);
-            this->getCheckpoint(v.y)->settingsChanged();
+            this->findCheckpoint(v.y)->setRadarVisibility(bVisible);
+            this->findCheckpoint(v.y)->settingsChanged();
         }
         if (v.z > -1)
         {
-            this->getCheckpoint(v.z)->setRadarVisibility(bVisible);
-            this->getCheckpoint(v.z)->settingsChanged();
+            this->findCheckpoint(v.z)->setRadarVisibility(bVisible);
+            this->findCheckpoint(v.z)->settingsChanged();
         }
     }
 }

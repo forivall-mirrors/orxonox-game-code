@@ -61,14 +61,15 @@ namespace orxonox
 
             void addCheckpoint(RaceCheckPoint* checkpoint);
             RaceCheckPoint* getCheckpoint(unsigned int index) const;
-            int getIndex(RaceCheckPoint* checkpoint);
+
+            RaceCheckPoint* findCheckpoint(int index) const;
 
             void checkpointReached(RaceCheckPoint* check, PlayerInfo* player);
 
             void tick(float dt);
 
         protected:
-            void setRadVis(PlayerInfo* player, bool bVisible); ///< sets RadarVisibility of the checkpoints the player can reach.
+            void setRadarVisibility(PlayerInfo* player, bool bVisible); ///< sets RadarVisibility of the checkpoints the player can reach.
 
         private:
             std::vector<RaceCheckPoint*> checkpoints_;
