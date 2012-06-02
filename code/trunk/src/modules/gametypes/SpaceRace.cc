@@ -77,6 +77,7 @@ namespace orxonox
     {
         SUPER(SpaceRace,tick,dt);
 
+        // spawn the players already when the countdown starts, but deactivate their engines
         if (this->isStartCountdownRunning() && !this->cantMove_)
         {
             this->spawnPlayersIfRequested();
@@ -86,6 +87,7 @@ namespace orxonox
                 it->setActive(false);
         }
 
+        // activate the engines again if the countdown ends
         if (!this->isStartCountdownRunning() && this->cantMove_)
         {
             for (ObjectList<Engine>::iterator it = ObjectList<Engine>::begin(); it; ++it)
@@ -103,10 +105,12 @@ namespace orxonox
     {
         int index = checkpoint->getCheckpointIndex();
         this->checkpointReached_[player] = index;
+
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = this->clock_.getMilliseconds() % 1000;
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(index)
+
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(index + 1)
             + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);

@@ -60,10 +60,7 @@ namespace orxonox
 
             virtual void end();
 
-            virtual void newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player);
-
-            inline void setCheckpointReached(int index, PlayerInfo* player)
-                { this->checkpointReached_[player] = index;}
+            void newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player);
             inline int getCheckpointReached(PlayerInfo* player)
                 { return this->checkpointReached_[player]; }
 
@@ -80,7 +77,7 @@ namespace orxonox
             virtual void playerEntered(PlayerInfo* player); ///< Initializes values.
 
         private:
-            bool cantMove_;
+            bool cantMove_;                                ///< Helper variable, used to stall the engines before the race starts.
             std::map<PlayerInfo*, int> checkpointReached_; ///< The number of the last check point reached by each player.
             bool bTimeIsUp_;                               ///< True if one of the check points is reached too late.
 
