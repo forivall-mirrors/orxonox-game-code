@@ -53,10 +53,10 @@ namespace orxonox
             inline int getCheckpointIndex() const
                 { return this->checkpointIndex_; }
 
-            inline void setNextcheckpoint(const Vector3& checkpoints)
-                { this->nextcheckpoints_ = checkpoints; }
-            inline const Vector3& getNextcheckpoint() const
-                { return this->nextcheckpoints_; }
+            void setNextCheckpointsAsVector3(const Vector3& checkpoints);
+            Vector3 getNextCheckpointsAsVector3() const;
+            const std::set<int>& getNextCheckpoints() const
+                { return this->nextCheckpoints_; }
 
             inline void setLast(bool isLast)
                 { this->bIsLast_ = isLast; }
@@ -79,11 +79,11 @@ namespace orxonox
                 { return this; }
 
         private:
-            int checkpointIndex_;     ///< The index of this check point. The race starts with the check point with the index 0
-            Vector3 nextcheckpoints_; ///< the indexes of the next check points
-            bool bIsLast_;            ///< True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
-            float timeLimit_;         ///< The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
-            PlayerInfo* player_;      ///< The player that reached the checkpoint
+            int checkpointIndex_;           ///< The index of this check point. The race starts with the check point with the index 0
+            std::set<int> nextCheckpoints_; ///< the indexes of the next check points
+            bool bIsLast_;                  ///< True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
+            float timeLimit_;               ///< The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
+            PlayerInfo* player_;            ///< The player that reached the checkpoint
     };
 }
 

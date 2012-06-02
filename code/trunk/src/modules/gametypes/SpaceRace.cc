@@ -103,24 +103,16 @@ namespace orxonox
 
     void SpaceRace::newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player)
     {
-        int index = checkpoint->getCheckpointIndex();
-        this->checkpointReached_[player] = index;
+        this->checkpointReached_[player] = checkpoint;
 
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = this->clock_.getMilliseconds() % 1000;
 
-        const std::string& message = "Checkpoint " + multi_cast<std::string>(index + 1)
+        const std::string& message = "Checkpoint " + multi_cast<std::string>(checkpoint->getCheckpointIndex() + 1)
             + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         ChatManager::message(message);
-    }
-
-    void SpaceRace::playerEntered(PlayerInfo* player)
-    {
-        Gametype::playerEntered(player);
-
-        this->checkpointReached_[player] = -1;
     }
 
     bool SpaceRace::allowPawnHit(Pawn* victim, Pawn* originator)

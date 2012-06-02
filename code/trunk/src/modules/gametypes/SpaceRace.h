@@ -61,7 +61,7 @@ namespace orxonox
             virtual void end();
 
             void newCheckpointReached(RaceCheckPoint* checkpoint, PlayerInfo* player);
-            inline int getCheckpointReached(PlayerInfo* player)
+            inline RaceCheckPoint* getCheckpointReached(PlayerInfo* player)
                 { return this->checkpointReached_[player]; }
 
             inline void setTimeIsUp()
@@ -73,13 +73,10 @@ namespace orxonox
             bool allowPawnDamage(Pawn* victim, Pawn* originator);
             bool allowPawnDeath(Pawn* victim, Pawn* originator);
 
-        protected:
-            virtual void playerEntered(PlayerInfo* player); ///< Initializes values.
-
         private:
-            bool cantMove_;                                ///< Helper variable, used to stall the engines before the race starts.
-            std::map<PlayerInfo*, int> checkpointReached_; ///< The number of the last check point reached by each player.
-            bool bTimeIsUp_;                               ///< True if one of the check points is reached too late.
+            bool cantMove_;                                            ///< Helper variable, used to stall the engines before the race starts.
+            std::map<PlayerInfo*, RaceCheckPoint*> checkpointReached_; ///< The number of the last check point reached by each player.
+            bool bTimeIsUp_;                                           ///< True if one of the check points is reached too late.
 
             Clock clock_; ///< The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
     };

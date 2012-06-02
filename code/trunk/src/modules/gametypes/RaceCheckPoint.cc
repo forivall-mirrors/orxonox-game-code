@@ -57,7 +57,6 @@ namespace orxonox
         this->settingsChanged();
 
         this->checkpointIndex_ = 0;
-        this->nextcheckpoints_ = Vector3::ZERO;
         this->bIsLast_ = false;
         this->timeLimit_ = 0;
         this->player_ = NULL;
@@ -75,7 +74,7 @@ namespace orxonox
         XMLPortParam(RaceCheckPoint, "checkpointindex", setCheckpointIndex, getCheckpointIndex, xmlelement, mode).defaultValues(0);
         XMLPortParam(RaceCheckPoint, "islast", setLast, isLast, xmlelement, mode).defaultValues(false);
         XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
-        XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode, const Vector3&).defaultValues(Vector3::ZERO);
+        XMLPortParam(RaceCheckPoint, "nextcheckpoints", setNextCheckpointsAsVector3, getNextCheckpointsAsVector3, xmlelement, mode);
     }
 
     void RaceCheckPoint::fire(bool bIsTriggered, BaseObject* originator)
@@ -100,5 +99,36 @@ namespace orxonox
             const_cast<GametypeInfo*>(this->getGametype()->getGametypeInfo())->sendAnnounceMessage(message);
             ChatManager::message(message);
         }
+    }
+
+    void RaceCheckPoint::setNextCheckpointsAsVector3(const Vector3& checkpoints)
+    {
+        this->nextCheckpoints_.clear();
+
+        if (checkpoints.x > -1)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5));
+        if (checkpoints.y > -1)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
+        if (checkpoints.z > -1)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
+    }
+
+    Vector3 RaceCheckPoint::getNextCheckpointsAsVector3() const
+    {
+        Vector3 checkpoints = Vector3(-1, -1, -1);
+
+        size_t count = 0;
+        for (std::set<int>::iterator it = this->nextCheckpoints_.begin(); it != this->nextCheckpoints_.end(); ++it)
+        {
+            switch (count)
+            {
+                case 0: checkpoints.x = static_cast<Ogre::Real>(*it); break;
+                case 1: checkpoints.y = static_cast<Ogre::Real>(*it); break;
+                case 2: checkpoints.z = static_cast<Ogre::Real>(*it); break;
+            }
+            ++count;
+        }
+
+        return checkpoints;
     }
 }
