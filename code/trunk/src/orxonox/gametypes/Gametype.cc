@@ -122,7 +122,7 @@ namespace orxonox
 
         if (this->gtinfo_->isStartCountdownRunning() && !this->gtinfo_->hasStarted())
             this->gtinfo_->countdownStartCountdown(dt);
-			
+
         if (!this->gtinfo_->hasStarted())
         {
             for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
@@ -130,9 +130,8 @@ namespace orxonox
                 // Inform the GametypeInfo that the player is ready to spawn.
                 if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
                     this->gtinfo_->playerReadyToSpawn(it->first);
-                   
-                
             }
+
             this->checkStart();
         }
         else if (!this->gtinfo_->hasEnded())
@@ -143,14 +142,11 @@ namespace orxonox
 
     void Gametype::start()
     {
-         
         this->addBots(this->numberOfBots_);
 
         this->gtinfo_->start();
 
         this->spawnPlayersIfRequested();
-        
-        
     }
 
     void Gametype::end()
@@ -400,7 +396,7 @@ namespace orxonox
                         if (it->first->isHumanPlayer())
                             hashumanplayers = true;
                     }
-                         
+
                     if (allplayersready && hashumanplayers)
                     {
                         // If in developer's mode, there is no start countdown.
@@ -412,7 +408,6 @@ namespace orxonox
                     }
                 }
             }
-            
         }
     }
 

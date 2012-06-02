@@ -41,79 +41,64 @@
 namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
-    
-     
 
     RaceCheckPoint::RaceCheckPoint(BaseObject* creator): DistanceMultiTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(RaceCheckPoint);
+
         this->setDistance(100);
         this->setBeaconMode("off");
         this->setBroadcast(false);
         this->setSimultaneousTriggerers(100);
-        this->bTimeLimit_ = 0;
 
         this->setRadarObjectColour(ColourValue::Blue);
         this->setRadarObjectShape(RadarViewable::Triangle);
         this->setRadarVisibility(false);
         this->settingsChanged();
-        this->reached_=NULL;
-      
+
+        this->checkpointIndex_ = 0;
+        this->nextcheckpoints_ = Vector3::ZERO;
+        this->bIsLast_ = false;
+        this->timeLimit_ = 0;
+        this->player_ = NULL;
     }
-    
+
 
    RaceCheckPoint::~RaceCheckPoint()
    {
-    
    }
-
-    void RaceCheckPoint::tick(float dt)
-    {
-        SUPER(RaceCheckPoint, tick, dt);
-
-        SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
-        assert(gametype);
-    }
 
     void RaceCheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(RaceCheckPoint, XMLPort, xmlelement, mode);
-        Vector3 v= Vector3(0,0,0);
+
         XMLPortParam(RaceCheckPoint, "checkpointindex", setCheckpointIndex, getCheckpointIndex, xmlelement, mode).defaultValues(0);
-        XMLPortParam(RaceCheckPoint, "islast", setLast, getLast, xmlelement, mode).defaultValues(false);
+        XMLPortParam(RaceCheckPoint, "islast", setLast, isLast, xmlelement, mode).defaultValues(false);
         XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
-    XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode,const Vector3&).defaultValues(v);
+        XMLPortParamTemplate(RaceCheckPoint, "nextcheckpoints", setNextcheckpoint, getNextcheckpoint, xmlelement, mode, const Vector3&).defaultValues(Vector3::ZERO);
     }
 
-    void RaceCheckPoint::fire(bool bIsTriggered,BaseObject* player)
+    void RaceCheckPoint::fire(bool bIsTriggered, BaseObject* originator)
     {
-        DistanceMultiTrigger::fire((bool)bIsTriggered,player);
-        
-        SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
-        assert(gametype);
-        ControllableEntity* entity = (ControllableEntity*) player;
-     
-        PlayerInfo* player2 = entity->getPlayer();
-     
-        if(bIsTriggered)
-            this->reached_=player2;
+        DistanceMultiTrigger::fire(bIsTriggered, originator);
+
+        if (bIsTriggered)
+        {
+            ControllableEntity* entity = orxonox_cast<ControllableEntity*>(originator);
+            if (entity)
+                this->player_ = entity->getPlayer();
+        }
     }
 
     void RaceCheckPoint::setTimelimit(float timeLimit)
     {
-        this->bTimeLimit_ = timeLimit;
-        if (this->bTimeLimit_ != 0)
+        this->timeLimit_ = timeLimit;
+        if (this->timeLimit_ != 0)
         {
-            SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
-            assert(gametype);
-            if (gametype)
-            {
-                const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
-                            + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1);
-                const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
-                ChatManager::message(message);
-            }
+            std::string message =  "You have " + multi_cast<std::string>(this->timeLimit_)
+                        + " seconds to reach the check point " + multi_cast<std::string>(this->checkpointIndex_ + 1);
+            const_cast<GametypeInfo*>(this->getGametype()->getGametypeInfo())->sendAnnounceMessage(message);
+            ChatManager::message(message);
         }
     }
-
 }
