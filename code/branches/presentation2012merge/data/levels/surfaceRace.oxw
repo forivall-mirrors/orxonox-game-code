@@ -300,7 +300,7 @@ gametype = SpaceRace
 </checkpoints>
 </SpaceRaceManager>
 
- <SpawnPoint team=0 position="0,8050,0" lookat="0,8000,-8000" spawnclass=SpaceShip pawndesign=spaceshipRace />
+ <SpawnPoint team=0 position="0,8050,0" lookat="0,8000,-8000" spawnclass=SpaceShip pawndesign=spaceshiprace />
 
 
     <!-- -----------------------Zylinder---------------------------- -->
