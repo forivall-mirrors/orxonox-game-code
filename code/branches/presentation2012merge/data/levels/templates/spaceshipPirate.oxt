@@ -34,12 +34,11 @@
    linearDamping     = 0.7
    angularDamping    = 0.9999999
   >
-
     <engines>
       <MultiStateEngine position=" 0, 0, 0" template=spaceshippirateengine />
     </engines>
     <attached>
-      <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=20 mesh="pirate.mesh" />
+      <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="pirate.mesh" />
       <BlinkingBillboard position=" 12.7,-3.8,0" material="Examples/Flare" colour="1.0, 1.0, 1" amplitude=0.04 frequency=1 quadratic=1 />
       <BlinkingBillboard position="-12.7,-3.8,0" material="Examples/Flare" colour="1.0, 1.0, 1" amplitude=0.04 frequency=1 quadratic=1 phase="90"/>
       <BlinkingBillboard position=" 8.7,-0.5,2.5" material="Examples/Flare" colour="1.0, 1.0, 1" amplitude=0.04 frequency=1 quadratic=1 phase="30"/>

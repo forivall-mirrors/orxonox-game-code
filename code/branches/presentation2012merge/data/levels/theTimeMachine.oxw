@@ -58,28 +58,6 @@
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipassffengine baseclass=MultiStateEngine>
-  <MultiStateEngine
-   boostfactor    = 2
-
-   speedfront     = 150
-   speedback      =  50
-   speedleftright =  50
-   speedupdown    =  50
-
-   defEngineSndNormal = "sounds/Engine_low.ogg"
-   defEngineSndBoost = "sounds/Engine_high.ogg"
-
-   accelerationfront     = 500
-   accelerationbrake     = 500
-   accelerationback      =  125
-   accelerationleftright =  125
-   accelerationupdown    =  125
-  >
-
-  </MultiStateEngine>
-</Template>
-
 <!--*****************************************************************************************************************************************************************************************-->
 
 <Level
