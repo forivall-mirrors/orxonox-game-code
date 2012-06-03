@@ -254,8 +254,9 @@ namespace orxonox
     //used, when slaves are in DEFEND mode.
     void FormationController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
     {
-        if (!this->formationFlight_ || this->state_!=MASTER || this->formationMode_!=DEFEND) return;
-            this->masterAttacked(originator);
+        if (!this->formationFlight_ || this->state_ != MASTER || this->formationMode_ != DEFEND)
+            return;
+        this->masterAttacked(originator);
     }
 
     void FormationController::removeFromFormation()
