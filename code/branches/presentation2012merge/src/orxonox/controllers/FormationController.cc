@@ -279,20 +279,26 @@ namespace orxonox
 //             return;
         }
 
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
-
+		if(coord.x < 0.0001 && coord.y < 0.0001)
+		{
+			// if the ship reaches a direction very close to the direct one, set it to the direct one
+			Vector3 v_temp = this->getControllableEntity()->getPosition();
+			Quaternion quat = v_temp.getRotationTo(target);
+			this->getControllableEntity()->rotate(quat);
+		}
 
         if(this->state_ == FREE)
         {
             if (this->target_ || distance > 10)
             {
                 // Multiply with ROTATEFACTOR_FREE to make them a bit slower
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * coord.x * 2);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * coord.y * 2);
             }
 
-            if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            if (this->target_ && distance <  200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
             {
               this->getControllableEntity()->moveFrontBack(-0.05f); // They don't brake with full power to give the player a chance
             } else this->getControllableEntity()->moveFrontBack(SPEED_FREE);
@@ -304,8 +310,8 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * coord.x * 2);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * coord.y * 2);
             }
 
             if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
@@ -317,27 +323,27 @@ namespace orxonox
 
 
         if(this->state_ == SLAVE)
-        {
+		{
 
-           this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-           this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+			this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * coord.x * 2);
+			this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * coord.y * 2);
 
-            if (distance < 300)
-            {
-		 if (bHasTargetOrientation_)
-		    {
-			copyTargetOrientation();
-		    }
-                if (distance < 100)
-                {   //linear speed reduction
-                    this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
+			if (distance < 300)
+			{
+				if (bHasTargetOrientation_)
+				{
+					copyTargetOrientation();
+				}
+				if (distance < 100)
+				{ //linear speed reduction
+					this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
 
-                } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
+				} else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
 
-            } else {
-                this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
-            }
-        }
+			} else {
+				this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
+			}
+		}
 
         if (distance < 10)
         {

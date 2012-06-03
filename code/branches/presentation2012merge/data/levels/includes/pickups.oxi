@@ -209,6 +209,41 @@
     </pickup>
 </PickupRepresentation>
 
+<!-- DamageBoost Pickup -->
+
+<PickupRepresentation
+    pickupName = "Small DamageBoost Pickup"
+    pickupDescription = "Multiplies the ship damage with 2."
+    spawnerTemplate = "smalldamageboostpickupRepresentation"
+    inventoryRepresentation = "SmallDamageBoost"
+>
+    <pickup>
+        <DamageBoostPickup template=smalldamageboostpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Medium DamageBoost Pickup"
+    pickupDescription = "Multiplies the ship damage with 5."
+    spawnerTemplate = "mediumdamageboostpickupRepresentation"
+    inventoryRepresentation = "MediumDamageBoost"
+>
+    <pickup>
+        <DamageBoostPickup template=mediumdamageboostpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Large DamageBoost Pickup"
+    pickupDescription = "Multiplies the ship damage with 7."
+    spawnerTemplate = "largedamageboostpickupRepresentation"
+    inventoryRepresentation = "LargeDamageBoost"
+>
+    <pickup>
+        <DamageBoostPickup template=largedamageboostpickup />
+    </pickup>
+</PickupRepresentation>
+
 <!-- Shrink Pickup -->
 
 <PickupRepresentation

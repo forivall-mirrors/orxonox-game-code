@@ -215,6 +215,84 @@
     </PickupRepresentation>
 </Template>
 
+<!-- DamageBoost pickups -->
+
+<Template name=smalldamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageSmall" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smalldamageboostpickup>
+  <DamageBoostPickup
+    duration = 10.0
+    damageMultiplier = 2.0
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+<Template name=mediumdamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageMedium" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediumdamageboostpickup>
+  <DamageBoostPickup
+    duration = 10.0
+    damageMultiplier = 5.0
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+<Template name=largedamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageLarge" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=largedamageboostpickup>
+  <DamageBoostPickup
+    duration = 10.0
+    damageMultiplier = 7.0
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+
 <!-- Speed pickups -->
 
 <Template name=smallspeedpickupRepresentation>
