@@ -191,7 +191,7 @@ namespace orxonox
 		Tower* newTower = new Tower(this->center_);
 		newTower->addTemplate(this->center_->getTowerTemplate());
 
-		newTower->setPosition((x-8) * tileScale, (y-8) * tileScale, 75);
+		newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
 		newTower->setGame(this);
 	}
 	
