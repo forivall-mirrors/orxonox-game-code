@@ -11,17 +11,17 @@ function P.onLoad()
    if string.sub(package.config,1,1) == '\\' then
            -- Windows
            dircmd = "dir /b/s"
-   end]]	
-   P.createFilterTab("All Ships")   
+   end]]
+   P.createFilterTab("All Ships")
 end
 
 function P.createShipList() --generates list with tagged shipmodels
    P.shipList = {}
    for line in io.lines("../levels/templates/.shipmodels") do  --checks if shipmodel is included in level file
-	if selectedlevel:hasShip(string.lower(line)) then
-		P.shipList[#P.shipList+1] = string.lower(line)
-	end
-   end  
+    if selectedlevel:hasShip(string.lower(line)) then
+        P.shipList[#P.shipList+1] = string.lower(line)
+    end
+   end
 end
 
 function P.update() --updates listbox with found models
@@ -45,11 +45,11 @@ end
 function P.createFilterTab(name) -- generates filter tab and list box, sets handler for selection changes
     tabName = "orxonox/ShipSelectionLevelTab"
     -- create new tab window with desired name
-    listbox = CEGUI.toListbox(winMgr:createWindow("MenuWidgets/Listbox", tabName)) 
+    listbox = CEGUI.toListbox(winMgr:createWindow("MenuWidgets/Listbox", tabName))
     listbox:setText(name)
     listbox:setProperty("UnifiedMaxSize", "{{1,0},{1,0}}")
-    --[[TODO: smaller list if image and description is implemented. 
-	listbox:setProperty("UnifiedAreaRect", "{{0.05,0},{0.1,0},{0.5,0},{0.675,0}}") --]]	 
+    --[[TODO: smaller list if image and description is implemented.
+    listbox:setProperty("UnifiedAreaRect", "{{0.05,0},{0.1,0},{0.5,0},{0.675,0}}") --]]
     listbox:setProperty("UnifiedAreaRect", "{{0,0},{0,0},{1,0},{1,0}}")
     -- fill listbox with items
     P.update()
@@ -106,11 +106,11 @@ end
 function P.ShipSelectionStartButton_clicked(e)
 
     if (selectedlevel ~= nil and P.ShipSelectionGetSelectedModel() ~= nil)  then
-	selectedlevel:selectShip(P.ShipSelectionGetSelectedModel())
+    selectedlevel:selectShip(P.ShipSelectionGetSelectedModel())
         orxonox.execute("startGame " .. "_temp.oxw")
         hideAllMenuSheets()
     else
-	orxonox.execute("orxout user_warning no ship model selected or no tagged shipmodel installed")
+    orxonox.execute("orxout user_warning no ship model selected or no tagged shipmodel installed")
     end
 end
 
@@ -127,6 +127,6 @@ end
 
 function P.ShipSelectionBackButton_clicked(e)
     orxonox.execute("keyESC")
-end 
+end
 
 return P

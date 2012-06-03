@@ -73,7 +73,7 @@ do
     <StaticEntity position="<?lua print(y) ?>,0,<?lua print(z) ?>" scale="<?lua print(j * 2) ?>" collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
-	</Model>
+        </Model>
       </attached>
       <collisionShapes>
         <BoxCollisionShape    halfExtents="<?lua print(j * 2) ?>,100,<?lua print(j * 2) ?>" position = "0,0,0" />
@@ -83,7 +83,7 @@ do
     <StaticEntity position="<?lua print(y) ?>,100,<?lua print(z) ?>" scale="<?lua print(j * 2) ?>" collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i+3,6) + 1) ?>.mesh">
-	</Model>
+        </Model>
       </attached>
       <collisionShapes>
         <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
@@ -93,7 +93,7 @@ do
     <StaticEntity position="<?lua print(y) ?>,200,<?lua print(z) ?>" scale="<?lua print(j * 2) ?>" collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*5,6) + 1) ?>.mesh">
-	</Model>
+        </Model>
       </attached>
       <collisionShapes>
         <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
@@ -103,7 +103,7 @@ do
     <StaticEntity position="<?lua print(y) ?>,-100,<?lua print(z) ?>" scale="<?lua print(j * 2) ?>" collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*13+1,6) + 1) ?>.mesh">
-	</Model>
+        </Model>
       </attached>
       <collisionShapes>
         <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
@@ -113,7 +113,7 @@ do
     <StaticEntity position="<?lua print(y) ?>,-200,<?lua print(z) ?>" scale="<?lua print(j * 2) ?>" collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*17,6) + 1) ?>.mesh">
-	</Model>
+        </Model>
       </attached>
       <collisionShapes>
         <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
@@ -124,7 +124,7 @@ do
     <StaticEntity position="<?lua print(y) ?>,300,<?lua print(z) ?>" scale="<?lua print(j * 2.1) ?>" pitch="90" roll="180" yaw="<?lua print(-90+i*360/max) ?>" collisionType=static >
       <attached>
         <Model position="0,0,0" scale=25 mesh="ast6.mesh">
-	</Model>
+        </Model>
       </attached>
       <collisionShapes>
         <BoxCollisionShape    halfExtents="50,140,30" position="0,0,0"/>

@@ -25,14 +25,14 @@
  *      ...
  *
  */
-	 
+
  /**
-	 @brief
-	 This manages the stats of the player. It is used by 'TowerDefense', the gametype
-	
-	 @ingroup TowerDefense
+    @brief
+        This manages the stats of the player. It is used by 'TowerDefense', the gametype
+
+    @ingroup TowerDefense
  */
-	 
+
 
 #ifndef _TowerDefensePlayerStats_H__
 #define _TowerDefensePlayerStats_H__
@@ -41,35 +41,35 @@
 
 namespace orxonox
 {
-	typedef enum _TowerCosts {
-		// Set to 0 for debug...
-		TDDefaultTowerCost = 0
-	} TowerCost;
-	
+    typedef enum _TowerCosts {
+        // Set to 0 for debug...
+        TDDefaultTowerCost = 0
+    } TowerCost;
+
     class _TowerDefenseExport TowerDefensePlayerStats
     {
-	public:
-		TowerDefensePlayerStats();
-		
-		inline int getCredit()
-			{ return credit_; }
-		
-		inline void setCredit(int credit)
-			{ credit_ = credit; }
-		
-		inline void buyTower(TowerCost cost)
-			{ credit_ -= cost;}
-		
-		inline int getWaveNumber()
-			{ return waveNumber_; }
-		
-		inline void didLoadNextWave()
-			{ waveNumber_++; }
-		
-	private:
-		int credit_;
-		int waveNumber_;
-		//int baseHealth_;
+    public:
+        TowerDefensePlayerStats();
+
+        inline int getCredit()
+            { return credit_; }
+
+        inline void setCredit(int credit)
+            { credit_ = credit; }
+
+        inline void buyTower(TowerCost cost)
+            { credit_ -= cost;}
+
+        inline int getWaveNumber()
+            { return waveNumber_; }
+
+        inline void didLoadNextWave()
+            { waveNumber_++; }
+
+    private:
+        int credit_;
+        int waveNumber_;
+        //int baseHealth_;
     };
 }
 

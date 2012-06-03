@@ -24,7 +24,7 @@
  *   Co-authors:
  *      ...
  */
- 
+
 #include "TowerDefenseHUDController.h"
 
 #include "core/CoreIncludes.h"
@@ -34,37 +34,37 @@
 
 namespace orxonox
 {
-	CreateFactory(TowerDefenseHUDController);
-	
+    CreateFactory(TowerDefenseHUDController);
+
     TowerDefenseHUDController::TowerDefenseHUDController(BaseObject* creator) : OverlayText(creator)
-	{
-		RegisterObject(TowerDefenseHUDController);
-	}
-	
-	TowerDefenseHUDController::~TowerDefenseHUDController()
-	{
-		
-	}
+    {
+        RegisterObject(TowerDefenseHUDController);
+    }
+
+    TowerDefenseHUDController::~TowerDefenseHUDController()
+    {
+
+    }
 
     void TowerDefenseHUDController::tick(float dt)
-	{
-		SUPER(TowerDefenseHUDController, tick, dt);
-	}
-	
+    {
+        SUPER(TowerDefenseHUDController, tick, dt);
+    }
+
     void TowerDefenseHUDController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-	{
-		SUPER(TowerDefenseHUDController, XMLPort, xmlelement, mode);
-	}
-	
+    {
+        SUPER(TowerDefenseHUDController, XMLPort, xmlelement, mode);
+    }
+
     void TowerDefenseHUDController::changedOwner()
     {
         SUPER(TowerDefenseHUDController, changedOwner);
-		/*
+        /*
         if (this->getOwner() != NULL && this->getOwner()->getGametype())
             this->owner_ = orxonox_cast<Pong*>(this->getOwner()->getGametype().get());
         else
             this->owner_ = 0;
-			*/
+        */
     }
-	
+
 }

@@ -25,14 +25,14 @@
  *      ...
  *
  */
-	 
+
  /**
-	 @brief
-	 This subclass of OverlayText is used to display the stats of the player in the HUD
-	 
-	 @ingroup TowerDefense
+    @brief
+        This subclass of OverlayText is used to display the stats of the player in the HUD
+
+    @ingroup TowerDefense
  */
-	 
+
 
 #ifndef _TowerDefenseHUDController_H__
 #define _TowerDefenseHUDController_H__
@@ -47,13 +47,13 @@ namespace orxonox
 {
     class _TowerDefenseExport TowerDefenseHUDController : public OverlayText, public Tickable
     {
-	public:
-		TowerDefenseHUDController(BaseObject* creator);
+    public:
+        TowerDefenseHUDController(BaseObject* creator);
         virtual ~TowerDefenseHUDController();
 
         virtual void tick(float dt);
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-		virtual void changedOwner();
+        virtual void changedOwner();
     };
 }
 

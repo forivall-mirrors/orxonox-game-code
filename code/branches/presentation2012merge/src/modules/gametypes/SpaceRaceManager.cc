@@ -148,7 +148,7 @@ namespace orxonox
                 gametype->end();
             }
             else
-			{
+            {
                 // adjust the radarvisibility
                 gametype->newCheckpointReached(newCheckpoint, player);
                 this->updateRadarVisibility(oldCheckpoint, newCheckpoint);

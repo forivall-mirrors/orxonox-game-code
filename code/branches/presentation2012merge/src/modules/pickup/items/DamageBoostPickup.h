@@ -56,7 +56,7 @@ namespace orxonox {
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
-    	    /**
+            /**
             @brief Get the time the DamagePickup lasts.
             @return Returns the time in seconds the DamagePickup lasts.
             */
@@ -94,7 +94,7 @@ namespace orxonox {
             float olddamageMultiplier_; //!< Helper to remember what the actual damage of the Pawn was before we changed it.
 
             Timer durationTimer_; //!< Timer.
-	    float duration_; //! Duration of damage boost.
+            float duration_; //! Duration of damage boost.
 
     };
 }

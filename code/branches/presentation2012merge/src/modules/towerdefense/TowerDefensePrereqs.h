@@ -65,10 +65,10 @@
 namespace orxonox
 {
     class TowerDefense;
-	class Tower;
+    class Tower;
     class TowerDefenseCenterpoint;
-	class TowerDefenseHUDController;
-	class TowerDefensePlayerStats;
+    class TowerDefenseHUDController;
+    class TowerDefensePlayerStats;
 }
 
 #endif /* _TowerDefensePrereqs_H__ */

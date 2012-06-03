@@ -11,7 +11,7 @@
   include("templates/lodInformation.oxt")
   include("templates/spaceshipRace.oxt")
   include("templates/pickupRepresentationTemplates.oxt")
- 
+
 ?>
 
 
@@ -38,16 +38,16 @@ gametype = SpaceRace
 
 
 <SpaceRaceManager>
- <checkpoints>	
-	<RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="150" checkpointindex="0" islast="false" nextcheckpoints="1,-1,-1">
+ <checkpoints>
+    <RaceCheckPoint name="checkpoint1" position="0,8050,-1000" direction="0,1,0" collisionType="static" scale="4" distance="150" checkpointindex="0" islast="false" nextcheckpoints="1,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
-	
-<!-- 
-		<Model position="0,0,55" mesh="testcube.mesh" scale3D="110,20,20" />
-		<Model position="0,0,-55" mesh="testcube.mesh" scale3D="110,20,20" />
-		<Model position="55,0,0" mesh="testcube.mesh" scale3D="20,20,110" />
-		<Model position="-55,0,0" mesh="testcube.mesh" scale3D="20,20,110" />
+
+<!--
+        <Model position="0,0,55" mesh="testcube.mesh" scale3D="110,20,20" />
+        <Model position="0,0,-55" mesh="testcube.mesh" scale3D="110,20,20" />
+        <Model position="55,0,0" mesh="testcube.mesh" scale3D="20,20,110" />
+        <Model position="-55,0,0" mesh="testcube.mesh" scale3D="20,20,110" />
 
 -->
 
@@ -56,7 +56,7 @@ gametype = SpaceRace
 
 
 
-	<collisionShapes>
+    <collisionShapes>
 
 
             <BoxCollisionShape position="0,0,220"     halfExtents="220, 40, 40" />
@@ -64,19 +64,19 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
 
 
-	
+
     </RaceCheckPoint>
 
 <RaceCheckPoint name="checkpoint2" position="1000,8050,-4000" direction="0,1,0" roll="45" collisionType="static" scale="4" distance="150" checkpointindex="1" islast="false" nextcheckpoints="2,-1,-1">
         <attached>
             <Model mass="50" scale="50" mesh="raceCheckPoint.mesh" />
         </attached>
-       
+
 
            <collisionShapes>
 
@@ -84,7 +84,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
-	 
+
         </collisionShapes>
     </RaceCheckPoint>
 
@@ -102,7 +102,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -120,7 +120,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -138,7 +138,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -156,7 +156,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
     </RaceCheckPoint>
 
@@ -174,7 +174,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -191,7 +191,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
-	 
+
         </collisionShapes>
     </RaceCheckPoint>
 
@@ -208,7 +208,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -226,7 +226,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -243,7 +243,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -260,7 +260,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
 
-	 
+
         </collisionShapes>
 
     </RaceCheckPoint>
@@ -277,7 +277,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
-	 
+
         </collisionShapes>
     </RaceCheckPoint>
 
@@ -292,7 +292,7 @@ gametype = SpaceRace
             <BoxCollisionShape position="0,0,-220"      halfExtents="220, 40, 40" />
             <BoxCollisionShape position="220,0,0"      halfExtents="40, 40, 220" />
             <BoxCollisionShape position="-220,0,0"       halfExtents="40, 40, 220" />
-	 
+
         </collisionShapes>
     </RaceCheckPoint>
 
@@ -302,31 +302,31 @@ gametype = SpaceRace
 
  <SpawnPoint team=0 position="0,8050,0" lookat="0,8000,-8000" spawnclass=SpaceShip pawndesign=spaceshipRace />
 
-  
-	<!-- -----------------------Zylinder---------------------------- -->
+
+    <!-- -----------------------Zylinder---------------------------- -->
 <StaticEntity position="2750,8050,6000" direction="1,0,0" roll="90"  scale="4" collisionType=static mass=100000 friction=0.01 >
       <attached>
-	<Model position="0,0,0" mesh="cylinder.mesh" scale3D="100,100,400" />
-	<!--
-            	<Model position="0,80,600" mesh="testcube.mesh" scale3D="90,18,-600" />
-		<Model position="0,-80,600" mesh="testcube.mesh" scale3D="90,18,-600" />
-		<Model position="80,0,600" mesh="testcube.mesh" scale3D="18,90,-600" />
-		<Model position="-80,0,600" mesh="testcube.mesh" scale3D="18,09,-600" />
-	 -->
+    <Model position="0,0,0" mesh="cylinder.mesh" scale3D="100,100,400" />
+    <!--
+                <Model position="0,80,600" mesh="testcube.mesh" scale3D="90,18,-600" />
+        <Model position="0,-80,600" mesh="testcube.mesh" scale3D="90,18,-600" />
+        <Model position="80,0,600" mesh="testcube.mesh" scale3D="18,90,-600" />
+        <Model position="-80,0,600" mesh="testcube.mesh" scale3D="18,09,-600" />
+    -->
 
       </attached>
 
 
- 	<collisionShapes>
-          
-            	
-		<BoxCollisionShape position="0,320,2400"            halfExtents="360,72,2400" />
-		<BoxCollisionShape position="0,-320,2400"      halfExtents="360,72,2400" />
-		<BoxCollisionShape position="320,0,2400"            halfExtents="72,360,2400" />
-		<BoxCollisionShape position="-320,0,2400"     halfExtents="72,360,2400" />
-            	
+    <collisionShapes>
 
-	
+
+        <BoxCollisionShape position="0,320,2400"            halfExtents="360,72,2400" />
+        <BoxCollisionShape position="0,-320,2400"      halfExtents="360,72,2400" />
+        <BoxCollisionShape position="320,0,2400"            halfExtents="72,360,2400" />
+        <BoxCollisionShape position="-320,0,2400"     halfExtents="72,360,2400" />
+
+
+
         </collisionShapes>
 
   </StaticEntity>
@@ -334,18 +334,18 @@ gametype = SpaceRace
 <!-- ------------------Cube between gate 4 and 5----------------- -->
 <StaticEntity position="4465,8050,-500" direction="0,0,0"   scale="1" collisionType=static mass=100000 friction=0.01 >
       <attached>
-	<Model position="0,0,0" mesh="blackcube.mesh" scale3D="450,600,50" />
+    <Model position="0,0,0" mesh="blackcube.mesh" scale3D="450,600,50" />
 <!--
-            	<Model position="0,0,0" mesh="testcube.mesh" scale3D="450,600,50" />
-		-->
+                <Model position="0,0,0" mesh="testcube.mesh" scale3D="450,600,50" />
+        -->
 
       </attached>
 
 
- 	<collisionShapes>
-          
-            	
-		<BoxCollisionShape position="0,0,0"            halfExtents="450,600,50" />
+    <collisionShapes>
+
+
+        <BoxCollisionShape position="0,0,0"            halfExtents="450,600,50" />
 
         </collisionShapes>
 
@@ -353,18 +353,18 @@ gametype = SpaceRace
 
 <StaticEntity position="3535,8050,-500" direction="0,0,0"   scale="1" collisionType=static mass=100000 friction=0.01 >
       <attached>
-	<Model position="0,0,0" mesh="blackcube.mesh" scale3D="450,600,50" />
+    <Model position="0,0,0" mesh="blackcube.mesh" scale3D="450,600,50" />
 <!--
-            	<Model position="0,0,0" mesh="testcube.mesh" scale3D="450,600,50" />
-		 -->
+                <Model position="0,0,0" mesh="testcube.mesh" scale3D="450,600,50" />
+        -->
 
       </attached>
 
 
- 	<collisionShapes>
-          
-            	
-		<BoxCollisionShape position="0,0,0"            halfExtents="450,600,50" />
+    <collisionShapes>
+
+
+        <BoxCollisionShape position="0,0,0"            halfExtents="450,600,50" />
 
         </collisionShapes>
 
@@ -373,7 +373,7 @@ gametype = SpaceRace
 
 
 
-	<!-- ------------------Boden----------------- -->
+    <!-- ------------------Boden----------------- -->
   <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
      <attached>
         <Model position="0,0,0" mesh="CubeGround.mesh" scale3D="8000,8000,8000" />
@@ -381,7 +381,7 @@ gametype = SpaceRace
       <collisionShapes>
         <BoxCollisionShape position="0,50,0" halfExtents="8000,8000,8000" />um j?:P"{
 
-      </collisionShapes> 
+      </collisionShapes>
 </StaticEntity>
 
 
@@ -415,10 +415,10 @@ gametype = SpaceRace
     max = 15
     for i = 0, max, 1
     do
-	x=-12000
-	y=10000
-	z=-12000
- 
+    x=-12000
+    y=10000
+    z=-12000
+
     ?>
     <?lua
     for k = 1, 15, 1

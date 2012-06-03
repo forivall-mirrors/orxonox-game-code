@@ -49,14 +49,14 @@ namespace orxonox
     TowerDefenseCenterpoint::TowerDefenseCenterpoint(BaseObject* creator) : MobileEntity(creator)
     {
         RegisterObject(TowerDefenseCenterpoint);
- 
- 	   	this->width_ = 15;
+
+        this->width_ = 15;
         this->height_ = 15;
         this->towerTemplate_ = "";
-        
+
         //this->setCollisionType(Static);
 
-		this->checkGametype();
+        this->checkGametype();
 
     }
 
@@ -70,9 +70,9 @@ namespace orxonox
 
         XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, getHeight, xmlelement, mode);
-		XMLPortParam(TowerDefenseCenterpoint, "tileScale", setTileScale, getTileScale, xmlelement, mode);
+        XMLPortParam(TowerDefenseCenterpoint, "tileScale", setTileScale, getTileScale, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "towerTemplate", setTowerTemplate, getTowerTemplate, xmlelement, mode);
-		
+
         //TODO: add XMLPortObject(TowerDefenseCenterpoint, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
         // This was copied and shightly modified from WaypointController.cc ; there are no getters and setters and no membervariable yet
         // The centerpoint should have all waypoints for "attached" to it. By using this function you can seperately add waypoints
@@ -99,9 +99,9 @@ namespace orxonox
     */
     void TowerDefenseCenterpoint::checkGametype()
     {
-		if (this->getGametype() != NULL && this->getGametype()->isA(Class(TowerDefense)))
+        if (this->getGametype() != NULL && this->getGametype()->isA(Class(TowerDefense)))
         {
-			// Sets the centerpoint of the gametype. The gametype uses this to later spawn in towers, he needs the tower template stored in the center point
+            // Sets the centerpoint of the gametype. The gametype uses this to later spawn in towers, he needs the tower template stored in the center point
             TowerDefense* towerDefenseGametype = orxonox_cast<TowerDefense*>(this->getGametype().get());
             towerDefenseGametype->setCenterpoint(this);
         }

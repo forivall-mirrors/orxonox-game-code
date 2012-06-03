@@ -9,7 +9,7 @@ selectedlevel = {} -- level for ship selection
 
 function P.onLoad()
     P.createLevelList()
-    
+
     -- create tabs with desired tab as argument (nil for all)
     P.createFilterTab("Gametypes", "gametype")
     P.createFilterTab("Missions", "mission")
@@ -18,10 +18,10 @@ function P.onLoad()
     P.createFilterTab("Presentations", "presentation")
     P.createFilterTab("Tests", "test")
     P.createFilterTab("Show All", nil)
-    
+
     -- update description and screenshot boxes
     P.SingleplayerSelectionChanged()
-    
+
     --buttons are arranged in a 1x3 matrix
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
@@ -47,7 +47,7 @@ function P.createLevelList()
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if (level ~= nil and level:getXMLFilename() ~= "_temp.oxw") then
-	    --os.execute("echo " .. level:getXMLFilename() .." >> ~/outputorx")
+            --os.execute("echo " .. level:getXMLFilename() .." >> ~/outputorx")
             local levelXMLFilename = level:getXMLFilename()
             -- create an imageset for each screenshot
             local imageName = level:getScreenshot()
@@ -150,7 +150,7 @@ function P.SingleplayerStartButton_clicked(e)
         else
             orxonox.execute("startGame " .. selectedlevel:getXMLFilename())
             hideAllMenuSheets()
-	end
+        end
     end
 end
 

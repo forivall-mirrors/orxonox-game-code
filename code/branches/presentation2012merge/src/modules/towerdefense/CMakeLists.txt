@@ -4,7 +4,7 @@ SET_SOURCE_FILES(TOWERDEFENSE_SRC_FILES
   TowerDefenseCenterpoint.cc
   TowerDefenseHUDController.cc
   TowerDefensePlayerStats.cc
-  
+
 )
 
 ORXONOX_ADD_LIBRARY(TowerDefense
@@ -12,6 +12,6 @@ ORXONOX_ADD_LIBRARY(TowerDefense
   FIND_HEADER_FILES
   LINK_LIBRARIES
     orxonox
-	overlays
+    overlays
   SOURCE_FILES ${TOWERDEFENSE_SRC_FILES}
 )

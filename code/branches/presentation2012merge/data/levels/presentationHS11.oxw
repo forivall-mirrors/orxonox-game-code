@@ -137,10 +137,10 @@
 
 
 <!-- Generate asteroid field and asteroid belt -->
-<!-- asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, maxSize, radius0, radius1, count, fog) --> 
+<!-- asteroidBelt(centerX, centerY, centerZ, yaw, pitch, segments, minSize, maxSize, radius0, radius1, count, fog) -->
     <?lua
-    	dofile("includes/asteroidField.lua")
-    	asteroidBelt(20000, 0, 13000, -48, -34, 70, 100, 200, 22000, 20000, 500, 1)
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(20000, 0, 13000, -48, -34, 70, 100, 200, 22000, 20000, 500, 1)
 
     ?>
 

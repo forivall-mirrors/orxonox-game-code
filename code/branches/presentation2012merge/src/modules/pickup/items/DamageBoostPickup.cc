@@ -69,8 +69,8 @@ namespace orxonox
     */
     void DamageBoostPickup::initialize(void)
     {
-    	this->duration_ = 0.0f;
-    	this->damageMultiplier_ = 1.0f; //The default damage multiplier.
+        this->duration_ = 0.0f;
+        this->damageMultiplier_ = 1.0f; //The default damage multiplier.
         //Defines who is allowed to pick up the pickup.
         this->addTarget(ClassIdentifier<SpaceShip>::getIdentifier());
     }
@@ -129,7 +129,7 @@ namespace orxonox
 
         SpaceShip* ship = this->carrierToSpaceShipHelper();
         if(ship == NULL) // If the PickupCarrier is no SpaceShip, then this pickup is useless and therefore is destroyed.
-           	this->Pickupable::destroy();
+            this->Pickupable::destroy();
 
 
         // If the pickup has transited to used.

@@ -21,13 +21,13 @@
  *
  *   Author:
  *      Matthias Hutter
- *   
+ *
  */
 
 /**
     @file ShipManager.cc
     @brief Work-in Progress: Implementation of the ShipManager singleton.
-    	   Should make SpaceShip info available to lua handlers.
+           Should make SpaceShip info available to lua handlers.
 */
 
 #include "LevelManager.h"
@@ -71,7 +71,7 @@ namespace orxonox
             delete *it;
     }
 
-   
+
     /**
     @brief
         Get the number of available Ships.
@@ -131,20 +131,20 @@ namespace orxonox
     */
     void ShipManager::compileAvailableShipList()
     {
-		/*
-		// We only want to load as little as possible
-		ClassTreeMask mask;
-		    mask.exclude(Class(BaseObject));
-		    mask.include(Class(SpaceShip));
-		SpaceShip* info = NULL;
-		XMLFile file = XMLFile(ship);
-		Loader::load(&file, mask, false, true);
-		for(ObjectList<SpaceShip>::iterator item = ObjectList<SpaceShip>::begin(); item != ObjectList<SpaceShip>::end(); ++item)
-		        if(item->getXMLFilename() == *it)
-		            info = item->copy();
-		Loader::unload(&file);
-		*/
-    
+        /*
+        // We only want to load as little as possible
+        ClassTreeMask mask;
+            mask.exclude(Class(BaseObject));
+            mask.include(Class(SpaceShip));
+        SpaceShip* info = NULL;
+        XMLFile file = XMLFile(ship);
+        Loader::load(&file, mask, false, true);
+        for(ObjectList<SpaceShip>::iterator item = ObjectList<SpaceShip>::begin(); item != ObjectList<SpaceShip>::end(); ++item)
+                if(item->getXMLFilename() == *it)
+                    info = item->copy();
+        Loader::unload(&file);
+        */
+
         // Get all files matching the level criteria
         Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
 

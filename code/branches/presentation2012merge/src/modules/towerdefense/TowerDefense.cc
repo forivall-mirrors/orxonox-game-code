@@ -81,10 +81,10 @@
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
 #include "controllers/WaypointController.h"
-	 
+
 #include "graphics/Model.h"
 #include "infos/PlayerInfo.h"
-	 
+
 #include "chat/ChatManager.h"
 
 /* Part of a temporary hack to allow the player to add towers */
@@ -93,216 +93,215 @@
 namespace orxonox
 {
     CreateUnloadableFactory(TowerDefense);
-	
-	TowerDefense::TowerDefense(BaseObject* creator) : Deathmatch(creator)
+
+    TowerDefense::TowerDefense(BaseObject* creator) : Deathmatch(creator)
     {
         RegisterObject(TowerDefense);
-		
+
         this->setHUDTemplate("TowerDefenseHUD");
 
-		this->stats_ = new TowerDefensePlayerStats();
+        this->stats_ = new TowerDefensePlayerStats();
 
-		/* Temporary hack to allow the player to add towers */
-		this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
+        /* Temporary hack to allow the player to add towers */
+        this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
     }
-	
+
     TowerDefense::~TowerDefense()
     {
-		/* Part of a temporary hack to allow the player to add towers */
+        /* Part of a temporary hack to allow the player to add towers */
         if (this->isInitialized())
         {
             if( this->dedicatedAddTower_ )
                 delete this->dedicatedAddTower_;
         }
     }
-	
-	void TowerDefense::setCenterpoint(TowerDefenseCenterpoint *centerpoint)
-	{
-		orxout() << "Centerpoint now setting..." << endl;
-		this->center_ = centerpoint;
-		orxout() << "Centerpoint now set..." << endl;
-	}
-	
+
+    void TowerDefense::setCenterpoint(TowerDefenseCenterpoint *centerpoint)
+    {
+        orxout() << "Centerpoint now setting..." << endl;
+        this->center_ = centerpoint;
+        orxout() << "Centerpoint now set..." << endl;
+    }
+
     void TowerDefense::start()
     {
         Deathmatch::start();
-		
-		const int kInitialTowerCount = 3;
-		Coordinate initialTowerCoordinates[kInitialTowerCount] = {{3,2}, {8,5}, {12,10}};
-		
-		for (int i = 0; i < kInitialTowerCount; i++)
-		{
-			Coordinate coordinate = initialTowerCoordinates[i];
-			addTower(coordinate.x, coordinate.y);
-		}
-		
-		ChatManager::message("Use the console command addTower x y to add towers");
 
-		//TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
-	}
-	
-	void TowerDefense::end()
-	{
-		Deathmatch::end();
-	 
-		ChatManager::message("Match is over");
-	}
-	
-	void TowerDefense::addTower(int x, int y)
-	{
-		const TowerCost towerCost = TDDefaultTowerCost;
-		
-		if (!this->hasEnoughCreditForTower(towerCost))
-		{
-			orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
-			return;
-		}
-		
-		if (this->towerExists(x,y))
-		{
-			orxout() << "tower exists!!" << endl;
-			return;
-		}		
-		
-		/*
-		unsigned int width = this->center_->getWidth();
-		unsigned int height = this->center_->getHeight();
-		*/
-		
-		int tileScale = (int) this->center_->getTileScale();
-			
-		if (x > 15 || y > 15 || x < 0 || y < 0)
-		{
-			//Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
-			orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
-			return;
-		}
-		
-		orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
-		
-		// Add tower to coordinatesStack
-		Coordinate newTowerCoordinates = {x, y};
-		addedTowersCoordinates_.push_back(newTowerCoordinates);
-		
-		// Reduce credit
-		this->stats_->buyTower(towerCost);
-		
-		// Create tower
-		Tower* newTower = new Tower(this->center_);
-		newTower->addTemplate(this->center_->getTowerTemplate());
+        const int kInitialTowerCount = 3;
+        Coordinate initialTowerCoordinates[kInitialTowerCount] = {{3,2}, {8,5}, {12,10}};
 
-		newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
-		newTower->setGame(this);
-	}
-	
-	bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
-	{
-		return ((this->stats_->getCredit()) >= towerCost);
-	}
-	
-	bool TowerDefense::towerExists(int x, int y)
-	{
-		for(std::vector<Coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it) 
-		{
-			Coordinate currentCoordinates = (Coordinate) (*it);
-			if (currentCoordinates.x == x && currentCoordinates.y == y)
-				return true;
-		}
-		
-		return false;
-	}
-	
-	
-	void TowerDefense::tick(float dt)
+        for (int i = 0; i < kInitialTowerCount; i++)
+        {
+            Coordinate coordinate = initialTowerCoordinates[i];
+            addTower(coordinate.x, coordinate.y);
+        }
+
+        ChatManager::message("Use the console command addTower x y to add towers");
+
+        //TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
+    }
+
+    void TowerDefense::end()
+    {
+        Deathmatch::end();
+
+        ChatManager::message("Match is over");
+    }
+
+    void TowerDefense::addTower(int x, int y)
+    {
+        const TowerCost towerCost = TDDefaultTowerCost;
+
+        if (!this->hasEnoughCreditForTower(towerCost))
+        {
+            orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
+            return;
+        }
+
+        if (this->towerExists(x,y))
+        {
+            orxout() << "tower exists!!" << endl;
+            return;
+        }
+
+        /*
+        unsigned int width = this->center_->getWidth();
+        unsigned int height = this->center_->getHeight();
+        */
+
+        int tileScale = (int) this->center_->getTileScale();
+
+        if (x > 15 || y > 15 || x < 0 || y < 0)
+        {
+            //Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
+            orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
+            return;
+        }
+
+        orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
+
+        // Add tower to coordinatesStack
+        Coordinate newTowerCoordinates = {x, y};
+        addedTowersCoordinates_.push_back(newTowerCoordinates);
+
+        // Reduce credit
+        this->stats_->buyTower(towerCost);
+
+        // Create tower
+        Tower* newTower = new Tower(this->center_);
+        newTower->addTemplate(this->center_->getTowerTemplate());
+
+        newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
+        newTower->setGame(this);
+    }
+
+    bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
+    {
+        return ((this->stats_->getCredit()) >= towerCost);
+    }
+
+    bool TowerDefense::towerExists(int x, int y)
+    {
+        for(std::vector<Coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it)
+        {
+            Coordinate currentCoordinates = (Coordinate) (*it);
+            if (currentCoordinates.x == x && currentCoordinates.y == y)
+                return true;
+        }
+
+        return false;
+    }
+
+
+    void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
     }
-	
-	// Function to test if we can add waypoints using code only. Doesn't work yet
-	
-	// THE PROBLEM: WaypointController's getControllableEntity() returns null, so it won't track. How do we get the controlableEntity to NOT BE NULL???
-	/*
-	void TowerDefense::addWaypointsAndFirstEnemy()
-	{
-		SpaceShip *newShip = new SpaceShip(this->center_);
-		newShip->addTemplate("spaceshipassff");
-		
-		WaypointController *newController = new WaypointController(newShip);
-		newController->setAccuracy(3);
-		
-		Model *wayPoint1 = new Model(newController);
-		wayPoint1->setMeshSource("crate.mesh");	
-		wayPoint1->setPosition(7,-7,5);
-		wayPoint1->setScale(0.2);
-			
-		Model *wayPoint2 = new Model(newController);
-		wayPoint2->setMeshSource("crate.mesh");
-		wayPoint2->setPosition(7,7,5);
-		wayPoint2->setScale(0.2);
-			
-		newController->addWaypoint(wayPoint1);
-		newController->addWaypoint(wayPoint2);
-			
-		// The following line causes the game to crash
 
-		newShip->setController(newController);
-//		newController -> getPlayer() -> startControl(newShip);
-		newShip->setPosition(-7,-7,5);
-		newShip->setScale(0.1);
-		//newShip->addSpeed(1);
-		
-		
-		
-//		this->center_->attach(newShip);
-	}
-	*/
-	/*
-	 void TowerDefense::playerEntered(PlayerInfo* player)
-	 {
-	 Deathmatch::playerEntered(player);
-	 
-	 const std::string& message = player->getName() + " entered the game";
-	 ChatManager::message(message);
-	 }
-	 
-	 bool TowerDefense::playerLeft(PlayerInfo* player)
-	 {
-	 bool valid_player = Deathmatch::playerLeft(player);
-	 
-	 if (valid_player)
-	 {
-	 const std::string& message = player->getName() + " left the game";
-	 ChatManager::message(message);
-	 }
-	 
-	 return valid_player;
-	 }
-	 
-	 
-	 void TowerDefense::pawnKilled(Pawn* victim, Pawn* killer)
-	 {
-	 if (victim && victim->getPlayer())
-	 {
-	 std::string message;
-	 if (killer)
-	 {
-	 if (killer->getPlayer())
-	 message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
-	 else
-	 message = victim->getPlayer()->getName() + " was killed";
-	 }
-	 else
-	 message = victim->getPlayer()->getName() + " died";
-	 
-	 ChatManager::message(message);
-	 }
-	 
-	 Deathmatch::pawnKilled(victim, killer);
-	 }
-	 
-	 void TowerDefense::playerScored(PlayerInfo* player)
-	 {
-	 Gametype::playerScored(player);
-	 
-	 }*/
+    // Function to test if we can add waypoints using code only. Doesn't work yet
+
+    // THE PROBLEM: WaypointController's getControllableEntity() returns null, so it won't track. How do we get the controlableEntity to NOT BE NULL???
+    /*
+    void TowerDefense::addWaypointsAndFirstEnemy()
+    {
+        SpaceShip *newShip = new SpaceShip(this->center_);
+        newShip->addTemplate("spaceshipassff");
+
+        WaypointController *newController = new WaypointController(newShip);
+        newController->setAccuracy(3);
+
+        Model *wayPoint1 = new Model(newController);
+        wayPoint1->setMeshSource("crate.mesh");
+        wayPoint1->setPosition(7,-7,5);
+        wayPoint1->setScale(0.2);
+
+        Model *wayPoint2 = new Model(newController);
+        wayPoint2->setMeshSource("crate.mesh");
+        wayPoint2->setPosition(7,7,5);
+        wayPoint2->setScale(0.2);
+
+        newController->addWaypoint(wayPoint1);
+        newController->addWaypoint(wayPoint2);
+
+        // The following line causes the game to crash
+
+        newShip->setController(newController);
+//        newController -> getPlayer() -> startControl(newShip);
+        newShip->setPosition(-7,-7,5);
+        newShip->setScale(0.1);
+        //newShip->addSpeed(1);
+
+
+
+//      this->center_->attach(newShip);
+    }
+    */
+    /*
+    void TowerDefense::playerEntered(PlayerInfo* player)
+    {
+        Deathmatch::playerEntered(player);
+
+        const std::string& message = player->getName() + " entered the game";
+        ChatManager::message(message);
+    }
+
+    bool TowerDefense::playerLeft(PlayerInfo* player)
+    {
+        bool valid_player = Deathmatch::playerLeft(player);
+
+        if (valid_player)
+        {
+            const std::string& message = player->getName() + " left the game";
+            ChatManager::message(message);
+        }
+
+        return valid_player;
+    }
+
+
+    void TowerDefense::pawnKilled(Pawn* victim, Pawn* killer)
+    {
+        if (victim && victim->getPlayer())
+        {
+            std::string message;
+            if (killer)
+            {
+                if (killer->getPlayer())
+                    message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
+                else
+                    message = victim->getPlayer()->getName() + " was killed";
+            }
+            else
+                message = victim->getPlayer()->getName() + " died";
+
+            ChatManager::message(message);
+        }
+
+        Deathmatch::pawnKilled(victim, killer);
+    }
+
+    void TowerDefense::playerScored(PlayerInfo* player)
+    {
+        Gametype::playerScored(player);
+    }*/
 }

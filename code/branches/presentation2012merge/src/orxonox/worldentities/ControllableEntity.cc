@@ -86,7 +86,7 @@ namespace orxonox
         this->setConfigValues();
         this->setPriority( Priority::VeryHigh );
         this->registerVariables();
-	this->team_ = -1;
+        this->team_ = -1;
     }
 
     ControllableEntity::~ControllableEntity()

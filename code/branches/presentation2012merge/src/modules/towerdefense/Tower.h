@@ -9,7 +9,7 @@
 /**
 @brief
 See TowerDefenseReadme.txt for Information.
-    
+
 @ingroup TowerDefense
 */
 
@@ -19,32 +19,32 @@ See TowerDefenseReadme.txt for Information.
 
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "worldentities/pawns/SpaceShip.h"
-	
+
 
 namespace orxonox
 {
     class _TowerDefenseExport Tower : public Pawn
     {
-	public:
-		Tower(BaseObject* creator);
-		virtual ~Tower() {};
-		
-		// Maybe later override these to move towers with cursor keys
-		/*
-		virtual void moveFrontBack(const Vector2& value);
-		virtual void moveRightLeft(const Vector2& value);
-		*/
-		
-		// Overriding these to stop towers from spasing out
-		void setOrientation(const Quaternion& orientation);
+    public:
+        Tower(BaseObject* creator);
+        virtual ~Tower() {};
+
+        // Maybe later override these to move towers with cursor keys
+        /*
+        virtual void moveFrontBack(const Vector2& value);
+        virtual void moveRightLeft(const Vector2& value);
+        */
+
+        // Overriding these to stop towers from spasing out
+        void setOrientation(const Quaternion& orientation);
         virtual void rotateYaw(const Vector2& value);
         virtual void rotatePitch(const Vector2& value);
         virtual void rotateRoll(const Vector2& value);
-		
-		void setGame(TowerDefense* towerdefense)
-		{ assert(towerdefense); game_ = towerdefense; }
-	private:
-		TowerDefense* game_;
+
+        void setGame(TowerDefense* towerdefense)
+        { assert(towerdefense); game_ = towerdefense; }
+    private:
+        TowerDefense* game_;
     };
 }
 

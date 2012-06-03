@@ -12,9 +12,9 @@ class TDEnemy
 {
 
 private:
-	float health;
-	float speed;
-	float armour;
+    float health;
+    float speed;
+    float armour;
 
 
 

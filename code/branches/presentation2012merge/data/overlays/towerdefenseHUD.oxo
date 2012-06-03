@@ -7,10 +7,8 @@
      textsize  = 0.05
      colour    = "1.0, 1.0, 1.0, 1.0"
      align     = "left"
-	 
-	 caption = "Hello World"
+
+     caption = "Hello World"
     />
-	
-	
   </OverlayGroup>
 </Template>

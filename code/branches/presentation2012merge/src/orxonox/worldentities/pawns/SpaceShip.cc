@@ -132,7 +132,7 @@ namespace orxonox
     void SpaceShip::setConfigValues()
     {
         SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
-        
+
         SetConfigValueExternal(bEnableMotionBlur_, "GraphicsSettings", "enableMotionBlur", true)
             .description("Enable or disable the motion blur effect when moving very fast")
             .callback(this, &SpaceShip::changedEnableMotionBlur);
@@ -502,8 +502,8 @@ namespace orxonox
     */
     void SpaceShip::resetCamera()
     {
-	if(this->hasLocalController() && this->hasHumanController())
-	{
+        if(this->hasLocalController() && this->hasHumanController())
+        {
             Camera *camera = this->getCamera();
             if (camera == 0)
             {
@@ -513,7 +513,7 @@ namespace orxonox
             this->shakeDt_ = 0.0f;
             camera->setPosition(this->cameraOriginalPosition_);
             camera->setOrientation(this->cameraOriginalOrientation_);
-	}
+        }
     }
 
 }
