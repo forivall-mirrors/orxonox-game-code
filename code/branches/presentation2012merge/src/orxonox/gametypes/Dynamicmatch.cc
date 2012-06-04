@@ -150,7 +150,7 @@ namespace orxonox
                 evaluatePlayerParties(); //check if the party change has to trigger futher party changes
 
                 //Give new pig boost
-                SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
+                SpaceShip* spaceship = orxonox_cast<SpaceShip*>(victim);
                 this->grantPigBoost(spaceship);
             }
 
@@ -244,7 +244,7 @@ namespace orxonox
                      }
                 }
                 //Give new pig boost
-                SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
+                SpaceShip* spaceship = orxonox_cast<SpaceShip*>(victim);
                 this->grantPigBoost(spaceship);
             }
             // killer vs piggy
@@ -425,7 +425,7 @@ namespace orxonox
     void Dynamicmatch::setPlayerColour(PlayerInfo* player) // sets a player's colour
     {
         std::map<PlayerInfo*, int>::const_iterator it_player = this->playerParty_.find(player);
-        Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
+        Pawn* pawn = orxonox_cast<Pawn*>(player->getControllableEntity());
             if (pawn)
             {
                 pawn->setRadarObjectColour(this->partyColours_[it_player->second]);

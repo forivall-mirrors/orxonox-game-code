@@ -337,7 +337,7 @@ namespace orxonox
         OrxonoxClass* item = NULL;
         this->clone(item);
 
-        Pickupable* pickup = dynamic_cast<Pickupable*>(item);
+        Pickupable* pickup = orxonox_cast<Pickupable*>(item);
 
         orxout(verbose, context::pickups) << "Pickupable (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << endl;
         return pickup;

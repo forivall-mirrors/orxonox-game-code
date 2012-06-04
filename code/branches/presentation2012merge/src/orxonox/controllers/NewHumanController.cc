@@ -297,7 +297,7 @@ namespace orxonox
     {
         //Used in HumanController for formationFlight
         HumanController::hit(originator,contactpoint,damage);
-        
+
         if (this->showDamageOverlay_ && !this->controlPaused_ && this->controllableEntity_ && !this->controllableEntity_->isInMouseLook())
         {
             Vector3 posA;
@@ -396,7 +396,7 @@ namespace orxonox
                 WorldEntity* wePtr;
                 try
                 {
-                    wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
+                    wePtr = orxonox_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
                 }
                 catch (...)
                 {

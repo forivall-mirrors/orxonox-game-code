@@ -209,7 +209,7 @@ namespace orxonox
 
         SUPER(Pickup, clone, item);
 
-        Pickup* pickup = dynamic_cast<Pickup*>(item);
+        Pickup* pickup = orxonox_cast<Pickup*>(item);
         pickup->setActivationTypeDirect(this->getActivationTypeDirect());
         pickup->setDurationTypeDirect(this->getDurationTypeDirect());
 

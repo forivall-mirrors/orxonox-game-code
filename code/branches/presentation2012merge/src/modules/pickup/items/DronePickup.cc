@@ -143,7 +143,7 @@ namespace orxonox
                 drone->addTemplate(this->getDroneTemplate());
 
                 Controller* controller = drone->getController();
-                DroneController* droneController = dynamic_cast<DroneController*>(controller);
+                DroneController* droneController = orxonox_cast<DroneController*>(controller);
                 if(droneController != NULL)
                 {
                     droneController->setOwner(pawn);
@@ -174,7 +174,7 @@ namespace orxonox
     Pawn* DronePickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
         {
@@ -197,7 +197,7 @@ namespace orxonox
 
         SUPER(DronePickup, clone, item);
 
-        DronePickup* pickup = dynamic_cast<DronePickup*>(item);
+        DronePickup* pickup = orxonox_cast<DronePickup*>(item);
         pickup->setDroneTemplate(this->getDroneTemplate());
 
         pickup->initializeIdentifier();

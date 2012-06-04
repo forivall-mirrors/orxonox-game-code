@@ -397,7 +397,7 @@ namespace orxonox
                 public: \
                     inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) \
                     { \
-                        (dynamic_cast<T*>(object))->T:: functionname
+                        (orxonox_cast<T*>(object))->T:: functionname
 
         /*
             JUST ADD THE FUNCTION ARGUMENTS BETWEEN BOTH MACROS, ENCLOSED BY BRACKETS
@@ -507,7 +507,7 @@ namespace orxonox
                 // @param ... The arguments of the function
                 inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) )
                 {
-                    (dynamic_cast<T*>(object))->T:: functionname ( Call the function with it's arguments );
+                    (orxonox_cast<T*>(object))->T:: functionname ( Call the function with it's arguments );
                 }
 
                 Identifier* getParentIdentifier() const

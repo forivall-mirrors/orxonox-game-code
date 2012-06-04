@@ -158,7 +158,7 @@ namespace orxonox
 
         SUPER(InvisiblePickup, clone, item);
 
-        InvisiblePickup* pickup = dynamic_cast<InvisiblePickup*>(item);
+        InvisiblePickup* pickup = orxonox_cast<InvisiblePickup*>(item);
         pickup->setDuration(this->getDuration());
         pickup->initializeIdentifier();
     }
@@ -201,7 +201,7 @@ namespace orxonox
     Pawn* InvisiblePickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
         {

@@ -229,7 +229,7 @@ namespace orxonox
             if(this->getHealthTypeDirect() == pickupHealthType::temporary)
             {
                 PickupCarrier* carrier = this->getCarrier();
-                Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+                Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
                 if(pawn == NULL)
                 {
@@ -263,7 +263,7 @@ namespace orxonox
     Pawn* HealthPickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
             orxout(internal_error, context::pickups) << "Invalid PickupCarrier in HealthPickup." << endl;
@@ -284,7 +284,7 @@ namespace orxonox
 
         SUPER(HealthPickup, clone, item);
 
-        HealthPickup* pickup = dynamic_cast<HealthPickup*>(item);
+        HealthPickup* pickup = orxonox_cast<HealthPickup*>(item);
         pickup->setHealth(this->getHealth());
         pickup->setHealthRate(this->getHealthRate());
         pickup->setHealthTypeDirect(this->getHealthTypeDirect());

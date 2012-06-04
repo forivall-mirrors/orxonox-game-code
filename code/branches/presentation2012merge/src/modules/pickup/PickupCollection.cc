@@ -78,7 +78,7 @@ namespace orxonox
             (*it)->destroy();
         }
         this->pickups_.clear();
-        
+
         if(this->pickupCollectionIdentifier_ != NULL)
             delete this->pickupCollectionIdentifier_;
     }
@@ -194,7 +194,7 @@ namespace orxonox
         if(this->processingPickedUp_)
             return;
 
-        // If at least all the enabled pickups of this PickupCollection are no longer picked up. 
+        // If at least all the enabled pickups of this PickupCollection are no longer picked up.
         if(this->pickedUpCounter_ <= this->disabledCounter_ && this->isPickedUp())
             this->Pickupable::destroy();
 
@@ -217,7 +217,7 @@ namespace orxonox
 
         SUPER(PickupCollection, clone, item);
 
-        PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
+        PickupCollection* pickup = orxonox_cast<PickupCollection*>(item);
         // Clone all Pickupables this PickupCollection consist of.
         for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
@@ -296,7 +296,7 @@ namespace orxonox
         Informs the PickupCollection, that one of its pickups has changed its used status to the input value.
         This is used internally by the CollectiblePickup class.
     @param changed
-        The value the used status has changed to. 
+        The value the used status has changed to.
     */
     void PickupCollection::pickupChangedUsed(bool changed)
     {

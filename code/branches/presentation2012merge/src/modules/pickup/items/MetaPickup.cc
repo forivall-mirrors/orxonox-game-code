@@ -171,7 +171,7 @@ namespace orxonox {
 
         SUPER(MetaPickup, clone, item);
 
-        MetaPickup* pickup = dynamic_cast<MetaPickup*>(item);
+        MetaPickup* pickup = orxonox_cast<MetaPickup*>(item);
         pickup->setMetaTypeDirect(this->getMetaTypeDirect());
 
         pickup->initializeIdentifier();

@@ -176,7 +176,7 @@ namespace orxonox
     Pawn* ShieldPickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
         {
@@ -198,7 +198,7 @@ namespace orxonox
 
         SUPER(ShieldPickup, clone, item);
 
-        ShieldPickup* pickup = dynamic_cast<ShieldPickup*>(item);
+        ShieldPickup* pickup = orxonox_cast<ShieldPickup*>(item);
         pickup->setDuration(this->getDuration());
         pickup->setShieldAbsorption(this->getShieldAbsorption());
         pickup->setShieldHealth(this->getShieldHealth());

@@ -198,7 +198,7 @@ namespace orxonox
                     break;
 
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
-                PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(*it);
+                PickupCarrier* carrier = orxonox_cast<PickupCarrier*>(*it);
                 // If a PickupCarrier, that fits the target-range of the Pickupable spawned by this PickupSpawner, is in trigger-distance and the carrier is not blocked.
                 if(distance.length() < this->triggerDistance_ && carrier != NULL && this->blocked_.find(carrier) == this->blocked_.end())
                 {
@@ -302,7 +302,7 @@ namespace orxonox
         {
             orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") triggered and active." << endl;
 
-            PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
+            PickupCarrier* carrier = orxonox_cast<PickupCarrier*>(pawn);
             assert(carrier);
 
             // If the Pawn isn't a target of the Pickupable.

@@ -210,7 +210,7 @@ namespace orxonox
         {
             if(!player->getControllableEntity())
                 return;
-            Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
+            Pawn* pawn = orxonox_cast<Pawn*>(player->getControllableEntity());
             if(!pawn)
                 return;
             if(bHardPunishment)

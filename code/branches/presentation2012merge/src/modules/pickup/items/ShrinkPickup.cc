@@ -147,7 +147,7 @@ namespace orxonox
     void ShrinkPickup::changedPickedUp(void)
     {
         SUPER(ShrinkPickup, changedPickedUp);
-        
+
         if(!this->isPickedUp() && this->isActive_)
         {
             if(this->isShrinking_ || this->isTerminating_)
@@ -270,7 +270,7 @@ namespace orxonox
                 this->currentFactor_ = currentFactor;
 
                 bool destroy = false;
-                
+
                 // Stop shrinking if the desired size is reached.
                 if(this->timeRemainig_ <= 0.0f)
                 {
@@ -313,7 +313,7 @@ namespace orxonox
     Pawn* ShrinkPickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         return pawn;
     }
@@ -330,7 +330,7 @@ namespace orxonox
             item = new ShrinkPickup(this);
 
         SUPER(ShrinkPickup, clone, item);
-        ShrinkPickup* pickup = dynamic_cast<ShrinkPickup*>(item);
+        ShrinkPickup* pickup = orxonox_cast<ShrinkPickup*>(item);
         pickup->setShrinkFactor(this->getShrinkFactor());
         pickup->setDuration(this->getDuration());
         pickup->setShrinkDuration(this->getShrinkDuration());

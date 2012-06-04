@@ -175,7 +175,7 @@ namespace orxonox
     SpaceShip* SpeedPickup::carrierToSpaceShipHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        SpaceShip* ship = dynamic_cast<SpaceShip*>(carrier);
+        SpaceShip* ship = orxonox_cast<SpaceShip*>(carrier);
 
         if(ship == NULL)
         {
@@ -198,7 +198,7 @@ namespace orxonox
 
         SUPER(SpeedPickup, clone, item);
 
-        SpeedPickup* pickup = dynamic_cast<SpeedPickup*>(item);
+        SpeedPickup* pickup = orxonox_cast<SpeedPickup*>(item);
         pickup->setDuration(this->getDuration());
         pickup->setSpeedAdd(this->getSpeedAdd());
         pickup->setSpeedMultiply(this->getSpeedMultiply());

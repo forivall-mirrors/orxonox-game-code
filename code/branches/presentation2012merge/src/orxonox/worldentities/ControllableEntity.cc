@@ -265,7 +265,7 @@ namespace orxonox
                 this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
                 this->cameraPositionRootNode_->_update(true, false); // update the camera node because otherwise the camera will drag back in position which looks strange
 
-                NewHumanController* controller = dynamic_cast<NewHumanController*>(this->getController());
+                NewHumanController* controller = orxonox_cast<NewHumanController*>(this->getController());
                 if (controller)
                     controller->centerCursor();
             }

@@ -179,7 +179,7 @@ namespace orxonox
     SpaceShip* DamageBoostPickup::carrierToSpaceShipHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        SpaceShip* ship = dynamic_cast<SpaceShip*>(carrier);
+        SpaceShip* ship = orxonox_cast<SpaceShip*>(carrier);
 
         if(ship == NULL)
         {
@@ -202,7 +202,7 @@ namespace orxonox
 
         SUPER(DamageBoostPickup, clone, item);
 
-        DamageBoostPickup* pickup = dynamic_cast<DamageBoostPickup*>(item);
+        DamageBoostPickup* pickup = orxonox_cast<DamageBoostPickup*>(item);
         pickup->setDuration(this->getDuration());
         pickup->setDamageMultiplier(this->getDamageMultiplier());
         pickup->initializeIdentifier();

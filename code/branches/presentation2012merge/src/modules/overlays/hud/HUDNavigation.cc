@@ -426,7 +426,7 @@ void HUDNavigation::objectChanged(RadarViewable* viewable)
 
 bool HUDNavigation::showObject(RadarViewable* rv)
 {
-    if ( rv == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
+    if ( rv == orxonox_cast<RadarViewable*> ( this->getOwner() ) )
         return false;
     assert( rv->getWorldEntity() );
     if ( rv->getWorldEntity()->isVisible()==false || rv->getRadarVisibility()==false )
