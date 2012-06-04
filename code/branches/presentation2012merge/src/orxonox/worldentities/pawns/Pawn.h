@@ -164,7 +164,7 @@ namespace orxonox // tolua_export
             // These are used with the Damage Boost Pickup to use the damage multiplier.
             inline void setDamageMultiplier(float multiplier)
                 { this->damageMultiplier_ = multiplier; }
-            inline float getDamageMultiplier()
+            inline float getDamageMultiplier() const
                 { return this->damageMultiplier_; }
 
 
@@ -209,13 +209,12 @@ namespace orxonox // tolua_export
             float shieldHealth_;
             float maxShieldHealth_;
             float initialShieldHealth_;
-            float shieldAbsorption_; // Has to be between 0 and 1
+            float shieldAbsorption_; ///< Has to be between 0 and 1
             float reloadRate_;
             float reloadWaitTime_;
             float reloadWaitCountdown_;
 
-            // Modifier
-            float damageMultiplier_; // Used by the Damage Boost Pickup.
+            float damageMultiplier_; ///< Used by the Damage Boost Pickup.
 
             WeakPtr<Pawn> lastHitOriginator_;
 
