@@ -231,7 +231,8 @@ namespace orxonox
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         // Applies multiplier given by the DamageBoost Pickup.
-        damage *= originator->getDamageMultiplier();
+        if (originator)
+            damage *= originator->getDamageMultiplier();
 
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {
