@@ -5,23 +5,23 @@ P.activeTabIndexes = {}
 P.scrollbarWidth = 13
 P.shipList = {}
 function P.onLoad()
-   local dircmd = "ls -l ../levels/templates/ | awk '{print $9}' | grep \"spaceship\" | sed -e 's/\\.[a-zA-Z]*$//'" -- go to spaceships folder and generate a list of installed shipmodels.
-   os.execute(dircmd .. " > ../levels/templates/.shipmodels") --saves output in a textfile
-   --[[TODO: program a Windows Version / platform independent version here:
-   if string.sub(package.config,1,1) == '\\' then
-           -- Windows
-           dircmd = "dir /b/s"
-   end]]
-   P.createFilterTab("All Ships")
+    orxonox.execute("set shipmodelsfile [open {../levels/templates/.shipmodels} w+]")
+    orxonox.execute("foreach line [glob -directory ../levels/templates/ spaceship*] { regexp {.*/(.*)\\..*} $line matchall match1; puts $shipmodelsfile $match1 }")
+    orxonox.execute("close $shipmodelsfile")
+    P.createFilterTab("All Ships")
 end
 
 function P.createShipList() --generates list with tagged shipmodels
-   P.shipList = {}
-   for line in io.lines("../levels/templates/.shipmodels") do  --checks if shipmodel is included in level file
-    if selectedlevel:hasStartingShip(string.lower(line)) then
-        P.shipList[#P.shipList+1] = string.lower(line)
+    P.shipList = {}
+    file = io.open("../levels/templates/.shipmodels")
+    if file ~= nil then
+        for line in file:lines() do  --checks if shipmodel is included in level file
+            if selectedlevel:hasStartingShip(string.lower(line)) then
+                P.shipList[#P.shipList+1] = string.lower(line)
+            end
+        end
+        --file.close() -- TODO: investigate why close() seems to crash?
     end
-   end
 end
 
 function P.update() --updates listbox with found models
