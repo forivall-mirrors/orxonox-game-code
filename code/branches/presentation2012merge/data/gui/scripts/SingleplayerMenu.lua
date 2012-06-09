@@ -47,7 +47,6 @@ function P.createLevelList()
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if (level ~= nil and level:getXMLFilename() ~= "_temp.oxw") then
-            --os.execute("echo " .. level:getXMLFilename() .." >> ~/outputorx")
             local levelXMLFilename = level:getXMLFilename()
             -- create an imageset for each screenshot
             local imageName = level:getScreenshot()

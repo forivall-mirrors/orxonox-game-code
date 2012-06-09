@@ -18,7 +18,7 @@ end
 function P.createShipList() --generates list with tagged shipmodels
    P.shipList = {}
    for line in io.lines("../levels/templates/.shipmodels") do  --checks if shipmodel is included in level file
-    if selectedlevel:hasShip(string.lower(line)) then
+    if selectedlevel:hasStartingShip(string.lower(line)) then
         P.shipList[#P.shipList+1] = string.lower(line)
     end
    end
@@ -31,7 +31,7 @@ function P.update() --updates listbox with found models
     local tabIndexes = {}
     for k,v in pairs(P.shipList) do
         --TODO: only add ship if is in the right filter tab
-        --if tag == nil or v:hasShip(tag) then
+        --if tag == nil or v:hasStartingShip(tag) then
             local item = CEGUI.createListboxTextItem(v)
             item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
             listbox:addItem(item)
@@ -106,7 +106,7 @@ end
 function P.ShipSelectionStartButton_clicked(e)
 
     if (selectedlevel ~= nil and P.ShipSelectionGetSelectedModel() ~= nil)  then
-    selectedlevel:selectShip(P.ShipSelectionGetSelectedModel())
+    selectedlevel:selectStartingShip(P.ShipSelectionGetSelectedModel())
         orxonox.execute("startGame " .. "_temp.oxw")
         hideAllMenuSheets()
     else

@@ -117,27 +117,26 @@ namespace orxonox // tolua_export
             */
             inline bool hasTag(const std::string& tag) const { return this->tags_.find(tag) != this->tags_.end(); } // tolua_export
 
-            void setShips(const std::string& ships); //!< Set the starting ship models of the level
-            bool addShip(const std::string& ship, bool update = true); //!< Add a model to shipselection
+            void setStartingShips(const std::string& ships); //!< Set the starting ship models of the level
+            bool addStartingShip(const std::string& ship, bool update = true); //!< Add a model to shipselection
             /**
             @brief Get the set of starting ship models the Level allows
             @return Returns a comma-seperated string of all the allowed ship models for the shipselection.
             */
-            inline const std::string& getShips(void) const
+            inline const std::string& getStartingShips(void) const
                 { return this->startingShipsString_; }
             /**
             @brief Get whether the Level allows a specific starting ship model
             @param ship The ship model for which is checked.
             @return Returns true if the Level allows the input ship model
             */
-            inline bool hasShip(const std::string& ship) const { return this->ships_.find(ship) != this->ships_.end(); } // tolua_export
+            inline bool hasStartingShip(const std::string& ship) const { return this->startingShips_.find(ship) != this->startingShips_.end(); } // tolua_export
+            inline void selectStartingShip(const std::string& ship) { this->changeStartingShip(ship); } // tolua_export
             /**
             @brief Get the XML-filename of the Level.
             @return Returns the XML-filename (including *.oxw extension) of the Level.
             */
-
             inline const std::string& getXMLFilename(void) const { return this->xmlfilename_; } // tolua_export
-            inline void selectShip (const std::string& ship) { this->changeShip(ship); } // tolua_export
 
 
         protected:
@@ -151,35 +150,9 @@ namespace orxonox // tolua_export
             std::string xmlfilename_; //!< The XML-filename of the Level.
 
         private:
-
-            inline void changeShip (const std::string& model) {
-                static std::string shipSelectionTag = "shipselection";
-                //HACK: Read Level XML File, find "shipselection", replace with ship model
-                std::string levelPath = "../levels/";
-                levelPath.append(this->getXMLFilename());
-                std::string tempPath = "../levels/";
-                tempPath.append("_temp.oxw");
-                orxout(user_status) << levelPath << endl;
-                orxout(user_status) << tempPath << endl;
-                std::ifstream myLevel (levelPath.c_str());
-                std::ofstream tempLevel (tempPath.c_str());
-                while(!myLevel.eof())
-                {
-                    std::string buff;
-                    std::getline(myLevel, buff);
-                    std::string pawndesignString = "pawndesign=";
-                    size_t found = buff.find(pawndesignString.append(shipSelectionTag));
-                    if (found!= std::string::npos)
-                        buff = buff.substr(0, found + 11) + model + buff.substr(found+11+shipSelectionTag.length(), std::string::npos);
-                    tempLevel.write(buff.c_str(), buff.length());
-                    tempLevel << std::endl;
-                }
-                myLevel.close();
-                tempLevel.close();
-                orxout(user_status) << "done" << endl;
-            }
+            void changeStartingShip (const std::string& model);
+            void startingshipsUpdated(void); //!< Updates the comma-seperated string of all possible starting ships.
             void tagsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
-            void shipsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
             static void initializeTags(void); //!< Initialize the set of allowed tags.
             /**
             @brief Check whether an input tag is allowed.
@@ -197,7 +170,7 @@ namespace orxonox // tolua_export
             std::string screenshot_; //!< The screenshot of the Level.
             std::set<std::string> tags_; //!< The set of tags the Level is tagged with.
             std::string tagsString_; //!< The comma-seperated string of all the tags the Level is tagged with.
-            std::set<std::string> ships_; //!< The set of starting ship models the Level allows.
+            std::set<std::string> startingShips_; //!< The set of starting ship models the Level allows.
             std::string startingShipsString_; //!< The comma-seperated string of all the allowed ship models for the shipselection.
     }; // tolua_export
 
@@ -275,14 +248,15 @@ namespace orxonox // tolua_export
             @brief Set the starting ship models of the level
             @param A comma-seperated string of all the allowed ship models for the shipselection.
             */
-            inline void setShips(const std::string& ships)
-                { this->LevelInfoItem::setShips(ships); }
+            inline void setStartingShips(const std::string& ships)
+                { this->LevelInfoItem::setStartingShips(ships); }
             /**
             @brief Get the starting ship models of the level
             @return Returns a comma-seperated string of all the allowed ship models for the shipselection.
             */
-            inline const std::string& getShips(void) const
-                { return this->LevelInfoItem::getShips(); }
+            inline const std::string& getStartingShips(void) const
+                { return this->LevelInfoItem::getStartingShips(); }
+
             LevelInfoItem* copy(void); //!< Copies the contents of this LevelInfo object to a new LevelInfoItem object.
     };
 
