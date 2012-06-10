@@ -228,7 +228,7 @@
     </PickupSpawner>
     
     <!-- @Objects: 4 boxes (uncontrolled pawns) -->
-    <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 4" >
+    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 4" >
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -242,7 +242,7 @@
         </collisionShapes>
     </Pawn>
 
-    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 3">
+    <Pawn team=1 health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 3">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -256,7 +256,7 @@
         </collisionShapes>
     </Pawn>
 
-    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 2">
+    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 2">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -270,7 +270,7 @@
         </collisionShapes>
     </Pawn>
 
-    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 1">
+    <Pawn health=30 position="0,400,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 RVName = "Box 1">
         <events>
           <visibility>
             <EventListener event="flying4" />
