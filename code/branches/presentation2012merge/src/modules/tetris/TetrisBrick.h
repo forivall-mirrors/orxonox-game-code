@@ -27,17 +27,17 @@
  */
 
 /**
-    @file TetrisStone.h
-    @brief Declaration of the TetrisStone class.
+    @file TetrisBrick.h
+    @brief Declaration of the TetrisBrick class.
     @ingroup Tetris
 */
 
-#ifndef _TetrisStone_H__
-#define _TetrisStone_H__
+#ifndef _TetrisBrick_H__
+#define _TetrisBrick_H__
 
 #include "tetris/TetrisPrereqs.h"
 
-#include "worldentities/pawns/Pawn.h"
+#include "worldentities/ControllableEntity.h"
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -45,52 +45,63 @@ namespace orxonox
 
     /**
     @brief
-
+        ContainerClass in order to create TetrisBricks by combining TetrisStones.
     @author
 
     @ingroup Tetris
     */
-    class _TetrisExport TetrisStone : public Pawn
+    class _TetrisExport TetrisBrick : public ControllableEntity
     {
         public:
-            TetrisStone(BaseObject* creator); //!< Constructor. Registers and initializes the object.
-            virtual ~TetrisStone() {}
+            TetrisBrick(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            virtual ~TetrisBrick() {}
 
             virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
             virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
-
             virtual void changedPlayer(); //!< Is called when the player changed.
 
-            /**
-            @brief Set the size of the stone.
-            @param size The dimensions a stone has in the game world. (A stone is a cube)
-            */
-            void setSize(float size)
-                { this->size_ = size; }
-            /**
-            @brief Get the size of the stone.
-            @return Returns the dimensions a stone has in the game world. (A stone is a cube)
-            */
-            float getSize(void) const
-                { return this->size_; }
+            bool isValidMove(const Vector3& position, bool isRotation);
+            unsigned int getNumberOfStones(void) const
+                { return this->brickStones_.size(); }
+            TetrisStone* getStone(unsigned int i);
+            bool contains(TetrisStone* stone);
 
             void setGame(Tetris* tetris)
                 { assert(tetris); tetris_ = tetris; }
+            unsigned int getRotationCount(void)
+                { return this->rotationCount_;}
 
-        private:
+            void releaseStones(TetrisCenterpoint* center);
+
+        protected:
+            void createBrick(void); //!< Create a cluster of TetrisStones
+            void formBrick(TetrisStone* stone, unsigned int i);
+            Tetris* getTetris();
+
+            unsigned int shapeIndex_; //!< My way to represent the different brick shapes.
+            unsigned int stonesPerBrick_; //!< So many stones are contained in this brick.
+            std::vector<TetrisStone*> brickStones_; //!< A list of all stones in a brick.
+
+
             void enableMovement(void)
                 { this->delay_ = false; }
             void unlockRotation(void)
                 { this->lockRotation_ = false; }
 
-            float size_; //!< The dimensions a stone has in the game world.
+            float getSize(void) const
+                { return this->size_; }
+
+
+            float size_; //!< The dimensions a stone has in the game world. //TODO: get stone dimensions
             bool delay_;
             bool lockRotation_;
+
+            unsigned int rotationCount_; //!< Stores the bricks orientation
             Timer delayTimer_;
             Timer rotationTimer_; ///!< This timer is used to filter out multiple rotation inputs.
+            Tetris* tetris_; //<! The Tetris class is responsible to initialize this value.
 
-            Tetris* tetris_;
     };
 }
 
-#endif /* _TetrisStone_H__ */
+#endif /* _TetrisBrick_H__ */

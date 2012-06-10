@@ -30,18 +30,19 @@
 //killerfarbe schwarz; evtl. eigenes Raumfahrzeug;
 //Low; Codeoptimierung und Dokumentation
 
-/*
-short gaming manual:
-There are three different parties a player can belong to: victim, chaser or killer
-Every player starts as chaser. As long as there are not enough victims and killers, you can change your and other player's parties by shooting them.
-In order to win you have to earn as much points as possible:
-- as victim by escaping the chasers
-- as chaser by shooting the victim
-- as killer by killing the chasers
+/**
+@brief
+    Short Gaming Manual:
+    There are three different parties a player can belong to: victim, chaser or killer
+    Every player starts as chaser. As long as there are not enough victims and killers, you can change your and other player's parties by shooting them.
+    In order to win you have to earn as much points as possible:
+    - as victim by escaping the chasers
+    - as chaser by shooting the victim
+    - as killer by killing the chasers
 
 
-What you shouldn't do is shooting at players of your own party. By doing so your score will decrease.
-P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser.
+    What you shouldn't do is shooting at players of your own party. By doing so your score will decrease.
+    P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser.
 */
 #include "Dynamicmatch.h"
 
@@ -94,7 +95,6 @@ namespace orxonox
             ColourValue(1.0f, 0.3f, 0.3f),  //chasercolour
             ColourValue(0.3f, 0.3f, 1.0f),  //piggycolour
             ColourValue(0.3f, 1.0f, 0.3f)   //killercolour  what about black: 0.0f, 0.0f, 0.0f
-
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 
@@ -110,8 +110,8 @@ namespace orxonox
             return false;
         if (victim && victim->getPlayer()) //&& originator && originator->getPlayer() ??
         {
-        int target= playerParty_[victim->getPlayer()];
-        int source= playerParty_[originator->getPlayer()];
+            int target = playerParty_[victim->getPlayer()];
+            int source = playerParty_[originator->getPlayer()];
 
             //Case: Not Enough Pigs: party change (= party management)
             if (notEnoughPigs)
@@ -308,13 +308,13 @@ namespace orxonox
 
     /**
     @brief
-        Grant the piggy a boost.
+        Grant the victim a boost.
     @param spaceship
         The SpaceShip to give the boost.
     */
     void Dynamicmatch::grantPigBoost(SpaceShip* spaceship)
     {
-        // Give pig boost
+        // Give victim boost
         if (spaceship)
         {
             spaceship->addSpeedFactor(5);
@@ -373,11 +373,15 @@ namespace orxonox
         SUPER(Dynamicmatch, tick, dt);
 
         if (this->hasStarted() && !gameEnded_)
-        {   pointsPerTime =pointsPerTime + dt;
-            gameTime_ = gameTime_ - dt;
-            if (pointsPerTime > 2.0f)//hard coded!! should be changed
+        {
+orxout() << " number of chasers:  " << numberOf[chaser] << endl;
+orxout() << " number of killers:  " << numberOf[killer] << endl;
+orxout() << " number of victims:  " << numberOf[piggy] << endl;
+            pointsPerTime = pointsPerTime + dt; //increase points
+            gameTime_ = gameTime_ - dt; // decrease game time
+            if (pointsPerTime > 2.0f) //hard coded points for victim! should be changed
             {
-                pointsPerTime=0.0f;
+                pointsPerTime = 0.0f;
                 rewardPig();
             }
             if (gameTime_<= 0)
@@ -407,6 +411,9 @@ namespace orxonox
         }
     }
 
+/**
+    @brief The reward function is called every 2 seconds via the tick function and makes the victim score points.
+*/
     void Dynamicmatch::rewardPig()
     {
         for (std::map< PlayerInfo*, int >::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it) //durch alle Spieler iterieren und alle piggys finden
@@ -414,7 +421,7 @@ namespace orxonox
             if (it->second==piggy)
             {
                  //Spieler mit der Pig-party frags++
-                 std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(it->first);// still not sure if right syntax
+                 std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(it->first);
                  if (it2 != this->players_.end())
                  {
                      it2->second.frags_++;

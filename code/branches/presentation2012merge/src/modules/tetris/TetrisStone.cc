@@ -29,6 +29,7 @@
 /**
     @file TetrisStone.cc
     @brief Implementation of the TetrisStone class.
+    @ingroup Tetris
 */
 
 #include "TetrisStone.h"
@@ -46,13 +47,15 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    TetrisStone::TetrisStone(BaseObject* creator) : ControllableEntity(creator)
+    TetrisStone::TetrisStone(BaseObject* creator) : Pawn(creator)
     {
         RegisterObject(TetrisStone);
-        
+
         this->size_ = 10.0f;
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisStone::enableMovement, this)));
+        this->lockRotation_ = false;
+
     }
 
     /**
@@ -63,9 +66,17 @@ namespace orxonox
     */
     void TetrisStone::moveFrontBack(const Vector2& value)
     {
-        if(value.x < 0)
+        if(value.x < 0) //speedup on key down
         {
             this->setVelocity(this->getVelocity()*1.1);
+        }
+        else if(!this->lockRotation_) //rotate when key up is pressed
+        {
+            this->lockRotation_ = true; // multiple calls of this function have to be filtered out.
+            this->rotationTimer_.setTimer(0.1f, false, createExecutor(createFunctor(&TetrisStone::unlockRotation, this)));
+            Quaternion q(Degree(90), Vector3::UNIT_Z);
+            this->setOrientation(this->getOrientation()*q); //rotation: roll 90°
+
         }
     }
 
