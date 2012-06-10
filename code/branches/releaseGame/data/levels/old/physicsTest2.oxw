@@ -1,0 +1,280 @@
+<?lua
+  include("spaceshipTemplatesPhysics.oxw")
+?>
+<?lua
+  include("HUDTemplates3.oxo")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/Starbox"
+   negativeWorldRange = "-100000, -100000, -100000"
+   positiveWorldRange = " 100000,  100000,  100000"
+   hasPhysics   = true
+  >
+      <!--SpawnPoint position="0,   0,  100"           spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="0,   0, -700" yaw  =180 spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="0, 300, -300" pitch=-90 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+
+    <!-- axes in ogre's origin of coordinate system for phsics engine testing purposes-->
+    <StaticEntity
+     position        = "0,0,0"
+     name            = "banana"
+     collisionType   = "static"
+     mass            = 1000
+    >
+      <attached>
+        <Model position="0,0,0" scale=100 mesh="plane.mesh" />
+        <Model position="0,-0.0001,0" roll=180 scale=100 mesh="plane.mesh" />
+      </attached>
+      <collisionShapes>
+        <PlaneCollisionShape name="thePlane" planeNormal="0,1,0" planeOffset=0 />
+      </collisionShapes>
+    </StaticEntity>
+
+    <!-- red sphere for phsics engine testing purposes-->
+    <!--StaticEntity position="40,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="sphere.mesh" />
+      </attached>
+    </StaticEntity-->
+
+    <!-- yellow cube for phsics engine testing purposes-->
+    <!--StaticEntity position="80,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="cube.mesh" />
+      </attached>
+    </StaticEntity-->
+
+    <MovableEntity
+     name            = "blubb"
+     position        = "-150, 20, -500"
+     collisionType   = "kinematic"
+     mass            = 10000
+     velocity        = "30, 0, 0"
+    >
+      <attached>
+        <Model name = "moedeli" position="0,0,0" scale=20 mesh="sphere.mesh" />
+        <StaticEntity name="hahaha" position="0,0,0" collisionType="static">
+          <collisionShapes>
+            <SphereCollisionShape name="firstSphere" radius=20/>
+          </collisionShapes>
+        </StaticEntity>
+      </attached>
+
+      <!--attached>
+        <SphereCollisionShape name = "secondSphere" radius=0.4 position="1,1,1"/>
+        <CompoundCollisionShape position="4,4,4">
+          <SphereCollisionShape name = "thirdSphere" radius=1.0/>
+        </CompoundCollisionShape>
+      </attached-->
+    </MovableEntity>
+
+    <MovableEntity
+     name            = "blubb2"
+     position        = "150, 30, -500"
+     collisionType   = "dynamic"
+     mass            = 10
+     velocity        = "-30, 0, 0"
+    >
+      <attached>
+        <Model position="0,0,0" scale=20 mesh="sphere.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape name = "secondSphere" radius=20 position="0,0,0"/>
+      </collisionShapes>
+    </MovableEntity>
+
+    <StaticEntity
+     name            = "blubbStatic"
+     position        = "0, 15, -500"
+     collisionType   = "Static"
+     mass            = 10
+    >
+      <attached>
+        <Model position="0,0,0" scale=20 mesh="sphere.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape name = "secondSphere" radius=20 position="0,0,0"/>
+      </collisionShapes>
+    </StaticEntity>
+
+    <!--SpawnPoint position="0,   0,  100"           spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="0,   0, -700" yaw  =180 spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="0, 300, -300" pitch=-90 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+
+    <MovableEntity
+     name            = "apple1"
+     position        = "-150, 80, -500"
+     collisionType   = "dynamic"
+     mass            = 10
+     velocity        = "30, 0, 0"
+    >
+      <attached>
+        <Model position="0,0,0" scale=20 mesh="sphere.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape name = "secondSphere" radius=20 position="0,0,0"/>
+      </collisionShapes>
+    </MovableEntity>
+
+    <MovableEntity
+     name            = "apple2"
+     position        = "50, 80, -500"
+     collisionType   = "dynamic"
+     mass            = 10
+     velocity        = "-30, 0, 0"
+    >
+      <attached>
+        <Model position="0,0,0" scale=20 mesh="sphere.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape name = "secondSphere" radius=20 position="0,0,0"/>
+        <SphereCollisionShape name = "secondSphere" radius=20 position="1,0,0"/>
+      </collisionShapes>
+    </MovableEntity>
+
+    <MovableEntity
+     name            = "apple3"
+     position        = "150, 80, -500"
+     collisionType   = "dynamic"
+     mass            = 10
+     velocity        = "-30, 0, 0"
+    >
+      <attached>
+        <Model position="0,0,0" scale=20 mesh="sphere.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape name = "secondSphere" radius=20 position="0,0,0"/>
+      </collisionShapes>
+    </MovableEntity>
+
+    <!--MovableEntity scale=1.5 position="0,0,-300" velocity="0,0,0" rotationaxis="0,1,0" rotationrate=90>
+      <events>
+        <activity>
+          <DistanceTrigger position="0,0,-300" distance=50 target="ControllableEntity" invert=1 />
+        </activity>
+      </events>
+      <attached>
+        <Model position="0,0,0" scale=10 mesh="ast1.mesh" />
+        <StaticEntity position="0,0,100">
+          <attached>
+            <Model position="0,0,0" scale=6 mesh="ast1.mesh" />
+            <MovableEntity position="0,0,0" velocity="0,0,0" rotationaxis="0,0,1" rotationrate=500>
+              <attached>
+                <Model position="0,35,0" scale=2 mesh="ast1.mesh" />
+                <Model position="0,-35,0" scale=2 mesh="ast1.mesh" />
+                <Model position="35,0,0" scale=2 mesh="ast1.mesh">
+                  <attached>
+                    <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+                  </attached>
+                </Model>
+                <Model position="-35,0,0" scale=2 mesh="ast1.mesh">
+                  <attached>
+                    <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+                  </attached>
+                </Model>
+              </attached>
+            </MovableEntity>
+          </attached>
+        </StaticEntity>
+        <MovableEntity position="0,0,-100" velocity="0,0,0" rotationaxis="0,1,0" rotationrate=200>
+          <attached>
+            <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+            <Model position="0,0,0" scale=6 mesh="ast1.mesh" />
+            <Model position="0,0,-50" scale=3 mesh="ast1.mesh" />
+            <Model position="0,0,50" scale=3 mesh="ast1.mesh" />
+          </attached>
+        </MovableEntity>
+      </attached>
+    </MovableEntity-->
+
+
+    <!--ParticleSpawner position="-500,0,-200" source="Orxonox/BigExplosion1part1" lifetime=3.0 loop=1 />
+    <ParticleSpawner position="-500,0,-300" source="Orxonox/BigExplosion1part1" lifetime=3.0 loop=1 />
+    <ParticleSpawner position="-500,0,-400" source="Orxonox/BigExplosion1part1" lifetime=3.0 loop=1 />
+    <ParticleSpawner position="-500,0,-500" source="Orxonox/BigExplosion1part1" lifetime=2.5 loop=1 />
+    <ParticleSpawner position="-500,0,-600" source="Orxonox/BigExplosion1part1" lifetime=2.5 loop=1 /-->
+
+
+    <ParticleSpawner position="0,20,100" source="Orxonox/BigExplosion1part3" lifetime=2.0 loop=0 autostart=0>
+      <events>
+        <spawn>
+          <EventTrigger delay=1>
+            <events>
+              <trigger>
+                <SpawnPoint position="0,20,100" spawnclass=SpaceShip pawndesign=spaceshipassff />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </spawn>
+      </events>
+    </ParticleSpawner>
+
+
+    <!--ParticleEmitter name=fireright position="200,0,0" source="Orxonox/fire3" active=false>
+      <events>
+        <activity>
+          <DistanceTrigger name=firetrigger1 position="200,0,0" distance=100 target="ControllableEntity" />
+        </activity>
+      </events>
+    </ParticleEmitter>
+    <ParticleEmitter name=fireleft position="-200,0,0" source="Orxonox/fire3" active=false>
+      <events>
+        <activity>
+          <DistanceTrigger name=firetrigger2 position="-200,0,0" distance=100 target="ControllableEntity" />
+        </activity>
+      </events>
+    </ParticleEmitter>
+    <ParticleEmitter name=firecenter position="0,0,0" source="Orxonox/fire3" active=false>
+      <events>
+        <activity>
+          <EventListener event=firetrigger1 />
+          <EventListener event=firetrigger2 />
+        </activity>
+      </events>
+    </ParticleEmitter-->
+
+
+    <!--EventDispatcher>
+      <targets>
+        <EventTarget target=fireright />
+        <EventTarget target=firecenter />
+        <EventTarget target=fireleft />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="0,0,200" distance=100 target="ControllableEntity" />
+        </activity>
+      </events>
+    </EventDispatcher-->
+
+
+    <!--Model position="0,50,0" scale=3 mesh="assff.mesh">
+      <events>
+        <visibility>
+          <DistanceTrigger position="0,50,0" distance=50 target="ControllableEntity" invert=1 />
+        </visibility>
+      </events>
+    </Model-->
+
+
+    <Model position="0,0,200" scale=10 mesh="ast2.mesh" shadow=true />
+    <!--Model position="0,0,-200" scale=10 mesh="ast1.mesh" shadow=true /-->
+    <Model position="0,200,0" scale=10 mesh="ast3.mesh" shadow=true />
+    <Model position="0,-200,0" scale=10 mesh="ast4.mesh" shadow=true />
+    <Model position="200,0,0" scale=10 mesh="ast5.mesh" shadow=false />
+    <Model position="-200,0,0" scale=10 mesh="ast6.mesh" shadow=false />
+
+    <Model position="1000,-200,0" scale3D="1,100,100" mesh="ast1.mesh" />
+
+    <Model position="0, 0,-100" pitch=-90 roll=-90 scale=4 mesh="assff.mesh" />
+    <!--Model position="0,100,-100" pitch=-90 roll=-90 scale=4 mesh="pirate.mesh" />
+    <Model position="0,300,-100" pitch=-90 roll=-90 scale=4 mesh="spacecruiser.mesh" /-->
+
+  </Scene>
+</Level>
