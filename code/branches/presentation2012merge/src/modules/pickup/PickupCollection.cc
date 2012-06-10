@@ -69,13 +69,13 @@ namespace orxonox
     @brief
         Destructor. Iterates through all Pickupables this PickupCollection consists of and destroys them if they haven't been already.
     */
-    PickupCollection::~ PickupCollection()
+    PickupCollection::~PickupCollection()
     {
         // Destroy all Pickupables constructing this PickupCollection.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
-            (*it)->removeFromCollection();
-            (*it)->destroy();
+            (*it)->wasRemovedFromCollection();
+            (*it)->destroyPickup();
         }
         this->pickups_.clear();
 
@@ -92,20 +92,6 @@ namespace orxonox
         SUPER(PickupCollection, XMLPort, xmlelement, mode);
 
         XMLPortObject(PickupCollection, CollectiblePickup, "pickupables", addPickupable, getPickupable, xmlelement, mode);
-
-        this->initializeIdentifier();
-    }
-
-    /**
-    @brief
-        Initializes the PickupIdentifier for this pickup.
-    */
-    void PickupCollection::initializeIdentifier(void)
-    {
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            this->pickupCollectionIdentifier_->addPickup((*it)->getPickupIdentifier());
-        }
     }
 
     /**
@@ -119,7 +105,7 @@ namespace orxonox
 
         this->processingUsed_ = true;
         // Change used for all Pickupables this PickupCollection consists of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
             (*it)->setUsed(this->isUsed());
 
         this->processingUsed_ = false;
@@ -156,7 +142,7 @@ namespace orxonox
         SUPER(PickupCollection, changedCarrier);
 
         // Change the PickupCarrier for all Pickupables this PickupCollection consists of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
             if(this->getCarrier() == NULL)
                 (*it)->setCarrier(NULL);
@@ -176,8 +162,8 @@ namespace orxonox
 
         this->processingPickedUp_ = true;
         // Change the pickedUp status for all Pickupables this PickupCollection consists of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-            (*it)->setPickedUp(this->isPickedUp());
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); )
+            (*(it++))->setPickedUp(this->isPickedUp());
 
         this->processingPickedUp_ = false;
 
@@ -219,14 +205,12 @@ namespace orxonox
 
         PickupCollection* pickup = orxonox_cast<PickupCollection*>(item);
         // Clone all Pickupables this PickupCollection consist of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
             Pickupable* newPickup = (*it)->clone();
             CollectiblePickup* collectible = static_cast<CollectiblePickup*>(newPickup);
             pickup->addPickupable(collectible);
         }
-
-        pickup->initializeIdentifier();
     }
 
     /**
@@ -239,7 +223,7 @@ namespace orxonox
     */
     bool PickupCollection::isTarget(const PickupCarrier* carrier) const
     {
-        for(std::vector<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
             if(!carrier->isTarget(*it))
                 return false;
@@ -273,8 +257,8 @@ namespace orxonox
         if(pickup == NULL)
             return false;
 
-        pickup->addToCollection(this);
         this->pickups_.push_back(pickup);
+        pickup->wasAddedToCollection(this);
         return true;
     }
 
@@ -288,7 +272,37 @@ namespace orxonox
     */
     const Pickupable* PickupCollection::getPickupable(unsigned int index) const
     {
-        return this->pickups_[index];
+        unsigned int count = 0;
+        for (std::list<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
+        {
+            if (count == index)
+                return *it;
+            else
+                ++count;
+        }
+        return NULL;
+    }
+
+    /**
+    @brief
+        Removes the Pickup from the Collection.
+    @param pickup
+        The Pickup to be removed.
+    @return
+        Returns true if the pickup was in the collection.
+    */
+    bool PickupCollection::removePickupable(CollectiblePickup* pickup)
+    {
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
+        {
+            if (*it == pickup)
+            {
+                this->pickups_.erase(it);
+                pickup->wasRemovedFromCollection();
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

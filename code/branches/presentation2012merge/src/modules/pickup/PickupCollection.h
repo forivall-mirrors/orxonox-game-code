@@ -88,14 +88,16 @@ namespace orxonox
 
             bool addPickupable(CollectiblePickup* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
             const Pickupable* getPickupable(unsigned int index) const; //!< Get the Pickupable at the given index.
+            bool removePickupable(CollectiblePickup* pickup); //!< Removes the input Pickupable from the list of Pickupables in this PickupCollection.
+
+            inline const std::list<CollectiblePickup*>& getPickups() const
+                { return this->pickups_; }
 
             void pickupChangedUsed(bool changed); //!< Informs the PickupCollection, that one of its pickups has changed its used status to the input value.
             void pickupChangedPickedUp(bool changed); //!< Informs the PickupCollection, that one of its pickups has changed its picked up status to the input value.
             void pickupDisabled(void); //!< Informs the PickupCollection, that one of its pickups has been disabled.
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier for this pickup.
-
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
 
             PickupCollectionIdentifier* pickupCollectionIdentifier_; //!< The PickupCollectionIdentifier of this PickupCollection. Is used to distinguish different PickupCollections amongst themselves.
@@ -104,7 +106,7 @@ namespace orxonox
             void changedUsedAction(void); //!< Helper method.
             void changedPickedUpAction(void); //!< Helper method.
 
-            std::vector<CollectiblePickup*> pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
+            std::list<CollectiblePickup*> pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
 
             unsigned int usedCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are in use.
             unsigned int pickedUpCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are picked up.

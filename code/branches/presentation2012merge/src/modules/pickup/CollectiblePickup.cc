@@ -44,11 +44,9 @@ namespace orxonox {
         Constructor.
         Registers the object and initializes variables.
     */
-    CollectiblePickup::CollectiblePickup() : isInCollection_(false)
+    CollectiblePickup::CollectiblePickup() : collection_(NULL)
     {
         RegisterObject(CollectiblePickup);
-
-        this->collection_ = NULL;
     }
 
     /**
@@ -57,39 +55,8 @@ namespace orxonox {
     */
     CollectiblePickup::~CollectiblePickup()
     {
-
-    }
-
-    /**
-    @brief
-        Is called by OrxonoxClass::destroy() before the object is actually destroyed.
-    */
-    void CollectiblePickup::preDestroy(void)
-    {
-        this->Pickupable::preDestroy();
-
-        // The PickupCollection has to be destroyed as well.
-        if(this->isInCollection())
-            this->collection_->Pickupable::destroy();
-    }
-
-    /**
-    @brief
-        Destroys a Pickupable.
-    */
-    void CollectiblePickup::destroyPickup(void)
-    {
-        if(!this->isInCollection()) // If the CollectiblePickup is not in a PickupCollection the destroyPickup method of Pickupable is called.
-            this->Pickupable::destroyPickup();
-        else // Else the ColectiblePickup is dropped and disabled,
-        {
-            this->drop(false);
-            if(this->isInCollection() && this->isEnabled()) // It is only disabled if it is enabled and still ina PickupCollection after having been dropped.
-            {
-                this->setDisabled();
-                this->collection_->pickupDisabled();
-            }
-        }
+        if (this->isInCollection())
+            this->collection_->removePickupable(this);
     }
 
     /**
@@ -130,36 +97,21 @@ namespace orxonox {
 
     /**
     @brief
-        Adds this CollectiblePickup to the input PickupCollection.
+        Notifies this CollectiblePickup that it was added to a PickupCollection.
     @param collection
         A pointer to the PickupCollection to which the CollectiblePickup should be added.
-    @return
-        Returns true if the CollectiblePickup was successfully added to the PickupCollection.
     */
-    bool CollectiblePickup::addToCollection(PickupCollection* collection)
+    void CollectiblePickup::wasAddedToCollection(PickupCollection* collection)
     {
-        if(this->isInCollection() || collection == NULL) //If the CollectiblePickup already is in a PickupCollection or if the input pointer is NULL.
-            return false;
-
-        this->isInCollection_ = true;
         this->collection_ = collection;
-        return true;
     }
 
     /**
     @brief
-        Removes this CollectiblePickup from its PickupCollection.
-    @return
-        Returns true if the CollectiblePickup was succcessfully removed.
+        Notifies this CollectiblePickup that it was removed from its PickupCollection.
     */
-    bool CollectiblePickup::removeFromCollection(void)
+    void CollectiblePickup::wasRemovedFromCollection(void)
     {
-        if(!this->isInCollection()) //If the CollectiblePickup is not in a PickupCollection.
-            return false;
-
-        this->isInCollection_ = false;
         this->collection_ = NULL;
-        return true;
     }
-
 }

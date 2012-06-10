@@ -60,15 +60,13 @@ namespace orxonox
     {
 
         public:
-            PickupCollectionIdentifier(Pickupable* pickup); //!< Constructor.
+            PickupCollectionIdentifier(PickupCollection* pickup); //!< Constructor.
             ~PickupCollectionIdentifier(); //!< Destructor.
 
             virtual int compare(const PickupIdentifier* identifier) const; //!< Compares a PickupCollectionIdentifier with a PickupIdentifier.
 
-            void addPickup(const PickupIdentifier* identifier); //!< Add a @ref orxonox::Pickupable "Pickupable" to the PickupCollectionIdentifier.
-
         private:
-            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_; //!< The set of PickupIdentifiers of the @ref orxonox::Pickupable "Pickupables", the @ref orxonox::PickupCollection "PickupCollection" with this PickupCollectionIdentifier consists of, ordered by the rule set by @ref orxonox::PickupIdentifierCompare "PickupIdentifierCompare".
+            PickupCollection* collection_;
 
     };
 
