@@ -74,6 +74,9 @@ namespace orxonox
         // Destroy all Pickupables constructing this PickupCollection.
         for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
+            if((*it)->isBeingDestroyed())
+                continue;
+
             (*it)->wasRemovedFromCollection();
             (*it)->destroyPickup();
         }
@@ -275,7 +278,7 @@ namespace orxonox
         if(this->pickups_.size() >= index)
             return NULL;
 
-        std::list<CollectiblePickup*>::iterator it = this->pickups_.begin();
+        std::list<CollectiblePickup*>::const_iterator it = this->pickups_.begin();
         std::advance(it, index);
         return *it;
     }

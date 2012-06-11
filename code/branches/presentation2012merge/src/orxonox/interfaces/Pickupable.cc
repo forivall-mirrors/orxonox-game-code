@@ -103,7 +103,7 @@ namespace orxonox
     */
     void Pickupable::destroyPickup(void)
     {
-        if(!this->beingDestroyed_)
+        if(!this->isBeingDestroyed())
             this->OrxonoxClass::destroy();
         else
             orxout(internal_warning, context::pickups) << this->getIdentifier()->getName() << " may be unsafe. " << endl;

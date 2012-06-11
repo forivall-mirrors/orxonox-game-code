@@ -173,6 +173,13 @@ namespace orxonox
                 { this->enabled_ = false; }
 
             /**
+            @brief Check whether the Pickupable is in the process of being destroyed.
+            @return Returns true if so.
+            */
+            inline bool isBeingDestroyed(void)
+                { return this->beingDestroyed_; }
+
+            /**
             @brief Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
                    This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
                    DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance);
