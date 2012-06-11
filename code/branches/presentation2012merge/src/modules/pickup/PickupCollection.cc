@@ -272,15 +272,12 @@ namespace orxonox
     */
     const Pickupable* PickupCollection::getPickupable(unsigned int index) const
     {
-        unsigned int count = 0;
-        for (std::list<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
-        {
-            if (count == index)
-                return *it;
-            else
-                ++count;
-        }
-        return NULL;
+        if(this->pickups_.size() >= index)
+            return NULL;
+
+        std::list<CollectiblePickup*>::iterator it = this->pickups_.begin();
+        std::advance(it, index);
+        return *it;
     }
 
     /**
