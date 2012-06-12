@@ -72,7 +72,7 @@ namespace orxonox
         for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
             (*it)->wasRemovedFromCollection();
-            (*it)->destroyPickup();
+            (*it)->destroy();
         }
         this->pickups_.clear();
 
