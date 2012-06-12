@@ -58,9 +58,6 @@ namespace orxonox
         RegisterObject(PickupCollection);
 
         this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier(this);
-        this->usedCounter_ = 0;
-        this->pickedUpCounter_ = 0;
-        this->disabledCounter_ = 0;
         this->processingUsed_ = false;
         this->processingPickedUp_ = false;
     }
@@ -123,12 +120,22 @@ namespace orxonox
         if(this->processingUsed_)
             return;
 
+        size_t numPickupsEnabled = 0;
+        size_t numPickupsInUse = 0;
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
+        {
+            if ((*it)->isEnabled())
+                ++numPickupsEnabled;
+            if ((*it)->isUsed())
+                ++numPickupsInUse;
+        }
+
         // If all the pickups are not in use but the PickupCollection is.
-        if(this->usedCounter_ == 0 && this->isUsed())
+        if(numPickupsInUse == 0 && this->isUsed())
             this->setUsed(false);
 
         // If all the enabled pickups are in use but the PickupCollection is not.
-        if(this->usedCounter_ != 0 && this->usedCounter_ == this->pickups_.size()-this->disabledCounter_ && !this->isUsed())
+        if(numPickupsInUse > 0 && numPickupsInUse == numPickupsEnabled && !this->isUsed())
             this->setUsed(true);
     }
 
@@ -181,10 +188,17 @@ namespace orxonox
             return;
 
         // If at least all the enabled pickups of this PickupCollection are no longer picked up.
-        if(this->pickedUpCounter_ <= this->disabledCounter_ && this->isPickedUp())
+        bool isOnePickupEnabledAndPickedUp = false;
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
+        {
+            if ((*it)->isEnabled() && (*it)->isPickedUp())
+            {
+                isOnePickupEnabledAndPickedUp = true;
+                break;
+            }
+        }
+        if(!isOnePickupEnabledAndPickedUp && this->isPickedUp())
             this->Pickupable::destroy();
-        else if(!this->isPickedUp()) // If the PickupCollection is no longer picked up.
-            this->pickedUpCounter_ = 0;
     }
 
     /**
@@ -257,6 +271,7 @@ namespace orxonox
 
         this->pickups_.push_back(pickup);
         pickup->wasAddedToCollection(this);
+        this->pickupsChanged();
         return true;
     }
 
@@ -294,6 +309,7 @@ namespace orxonox
             {
                 this->pickups_.erase(it);
                 pickup->wasRemovedFromCollection();
+                this->pickupsChanged();
                 return true;
             }
         }
@@ -309,11 +325,6 @@ namespace orxonox
     */
     void PickupCollection::pickupChangedUsed(bool changed)
     {
-        if(changed)
-            this->usedCounter_++;
-        else
-            this->usedCounter_--;
-
         this->changedUsedAction();
     }
 
@@ -326,11 +337,6 @@ namespace orxonox
     */
     void PickupCollection::pickupChangedPickedUp(bool changed)
     {
-        if(changed)
-            this->pickedUpCounter_++;
-        else
-            this->pickedUpCounter_--;
-
         this->changedPickedUpAction();
     }
 
@@ -341,7 +347,16 @@ namespace orxonox
     */
     void PickupCollection::pickupDisabled(void)
     {
-        this->disabledCounter_++;
+    }
+
+    /**
+    @brief
+        Helpfer function if the number of pickups in this collection has changed.
+    */
+    void PickupCollection::pickupsChanged(void)
+    {
+        this->changedUsedAction();
+        this->changedPickedUpAction();
     }
 
     /**

@@ -105,12 +105,9 @@ namespace orxonox
         private:
             void changedUsedAction(void); //!< Helper method.
             void changedPickedUpAction(void); //!< Helper method.
+            void pickupsChanged(void); //!< Helper method.
 
             std::list<CollectiblePickup*> pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
-
-            unsigned int usedCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are in use.
-            unsigned int pickedUpCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are picked up.
-            unsigned int disabledCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are disabled.
 
             bool processingUsed_; //!< Boolean to ensure, that the PickupCollection doesn't update its used status while its internal state is inconsistent.
             bool processingPickedUp_; //!< Boolean to ensure, that the PickupCollection doesn't update its picked upp status while its internal state is inconsistent.
