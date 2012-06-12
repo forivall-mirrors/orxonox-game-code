@@ -74,16 +74,13 @@ namespace orxonox
         // Destroy all Pickupables constructing this PickupCollection.
         for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
-            if((*it)->isBeingDestroyed())
-                continue;
-
             (*it)->wasRemovedFromCollection();
             (*it)->destroyPickup();
         }
         this->pickups_.clear();
 
         if(this->pickupCollectionIdentifier_ != NULL)
-            delete this->pickupCollectionIdentifier_;
+            this->pickupCollectionIdentifier_->destroy();
     }
 
     /**
@@ -186,9 +183,7 @@ namespace orxonox
         // If at least all the enabled pickups of this PickupCollection are no longer picked up.
         if(this->pickedUpCounter_ <= this->disabledCounter_ && this->isPickedUp())
             this->Pickupable::destroy();
-
-        // If the PickupCollection is no longer picked up.
-        if(!this->isPickedUp())
+        else if(!this->isPickedUp()) // If the PickupCollection is no longer picked up.
             this->pickedUpCounter_ = 0;
     }
 
