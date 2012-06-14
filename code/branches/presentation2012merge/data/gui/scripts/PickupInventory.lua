@@ -175,7 +175,7 @@ function P.cleanup(destroyDetails)
     end
     for k,v in pairs(P.detailsWindows) do
         if v ~= nil then
-            winMgr:destroyWindow(v)
+            P.destroyDetailWindow(k)
         end
     end
 end
@@ -322,6 +322,10 @@ function P.closeDetailWindow(e)
     local match = string.gmatch(name, "%d+")
     local detailNr = tonumber(match())
     
+    P.destroyDetailWindow(detailNr)
+end
+
+function P.destroyDetailWindow(detailNr)
     local window = P.detailsWindows[detailNr]
     winMgr:destroyWindow(window)
     P.detailsWindows[detailNr] = nil

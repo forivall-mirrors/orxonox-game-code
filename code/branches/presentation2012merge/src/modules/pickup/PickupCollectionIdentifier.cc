@@ -71,9 +71,7 @@ namespace orxonox
     {
         assert(identifier);
 
-        // Slight un-niceity to cast the const PickupIdentifier to a const PickupCollectionIdentifier, but since we cast to a const, there is no harm done.
-        PickupIdentifier* temp = const_cast<PickupIdentifier*>(identifier);
-        const PickupCollectionIdentifier* collectionIdentifier = orxonox_cast<PickupCollectionIdentifier*>(temp);
+        const PickupCollectionIdentifier* collectionIdentifier = orxonox_cast<const PickupCollectionIdentifier*>(identifier);
 
         // If the input PickupIdentifier 'identifier' is no PickupCollectionIdentifier then just the two PickupIdentifiers are compared.
         if(collectionIdentifier == NULL)
