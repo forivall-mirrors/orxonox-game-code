@@ -47,6 +47,8 @@ namespace orxonox
 
         this->cantMove_ = false;
         this->bTimeIsUp_ = false;
+        this->numberOfBots_ = 0; // quick fix: don't allow default-bots to enter the race
+                                 // remove this line, if a raceBot has been created.
     }
 
     void SpaceRace::end()

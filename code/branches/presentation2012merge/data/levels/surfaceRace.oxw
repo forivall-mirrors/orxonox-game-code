@@ -1,6 +1,12 @@
+<!-- 
+TODO:
+    Replace bottom's texture. It just does not look good.
+    Pickups are not displayed properly.
+-->
+
 <LevelInfo
  name = "Surface Race"
- description = "just awesome"
+ description = "Race on a planet's surface."
  screenshot = "surfaceRace.png"
  tags = "gametype"
 />
@@ -16,7 +22,7 @@
 
 
 <Level
-gametype = SpaceRace
+  gametype = SpaceRace
 >
 
   <templates>
@@ -32,6 +38,10 @@ gametype = SpaceRace
     positiveWorldRange = " 100000,  100000,  100000"
     hasPhysics   = true
   >
+
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
 
   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 

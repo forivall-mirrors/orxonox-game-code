@@ -58,6 +58,8 @@ namespace orxonox
             virtual void end();
 
             virtual void newCheckpointReached();
+            virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command.
+                                                        //<! This is only a temporary solution. Better: create racingBots.
 
             inline void setCheckpointsReached(int n)
                 { this->checkpointsReached_ = n;}
