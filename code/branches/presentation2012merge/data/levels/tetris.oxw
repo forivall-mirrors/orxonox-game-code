@@ -8,9 +8,9 @@
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("tetrisHUD.oxo")
   include("templates/lodInformation.oxt")
 ?>
+<!-- include("tetrisHUD.oxo") -->
 
 <Template name=tetrisstonecameras defaults=0>
   <TetrisStone>
