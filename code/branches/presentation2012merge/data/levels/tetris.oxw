@@ -8,9 +8,15 @@
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
+  include("tetrisHUD.oxo")
   include("templates/lodInformation.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipGhost.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/spaceshipTransporter.oxt")
+  include("templates/spaceshipH2.oxt")
 ?>
-<!-- include("tetrisHUD.oxo") -->
 
 <Template name=tetrisstonecameras defaults=0>
   <TetrisStone>
@@ -96,7 +102,88 @@
     	asteroidBelt(10000, 0, 0, -40, -90, 70, 100, 200, 24000, 20000, 500, 0)
 
     ?>
-
-
+<!-- -------- 4 spaceships rotating around the tetris field --------- -->
+    <SpaceShip position="500,500,400" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshipswallow />
+      </templates>
+      <controller>
+        <WaypointController team=10>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=0 position="1000,-75,0" />
+            <Model mesh="cube.mesh" scale=0 position="650,-75,650" />
+            <Model mesh="cube.mesh" scale=0 position="-55,-75,1000" />
+            <Model mesh="cube.mesh" scale=0 position="-700,-75,650" />
+            <Model mesh="cube.mesh" scale=0 position="-1000,-75,0" />
+            <Model mesh="cube.mesh" scale=0 position="-700,-75,-650" />
+            <Model mesh="cube.mesh" scale=0 position="-55,-75,-1000" />
+            <Model mesh="cube.mesh" scale=0 position="650,-75,-650" />
+          </waypoints>
+        </WaypointController>
+      </controller>
+    </SpaceShip>
+    
+   <SpaceShip position="-500,-500,-400" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshippirate />
+      </templates>
+      <controller>
+        <WaypointController team=10>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=0 position="-1000,-200,0" />
+            <Model mesh="cube.mesh" scale=0 position="-700,-150,650" />
+            <Model mesh="cube.mesh" scale=0 position="-55,-75,1000" />
+            <Model mesh="cube.mesh" scale=0 position="650,100,650" />          
+            <Model mesh="cube.mesh" scale=0 position="1000,150,0" />
+            <Model mesh="cube.mesh" scale=0 position="650,100,-650" />
+            <Model mesh="cube.mesh" scale=0 position="-55,0,-1000" />
+            <Model mesh="cube.mesh" scale=0 position="-700,-100,-650" />
+          </waypoints>
+        </WaypointController>
+      </controller>
+    </SpaceShip>
+    
+       <SpaceShip position="-600,500,400" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshipghost />
+      </templates>
+      <controller>
+        <WaypointController team=10>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=0 position="-700,200,650" />
+            <Model mesh="cube.mesh" scale=0 position="-55,100,1000" />
+            <Model mesh="cube.mesh" scale=0 position="650,0,650" />          
+            <Model mesh="cube.mesh" scale=0 position="1000,-100,0" />
+            <Model mesh="cube.mesh" scale=0 position="650,0,-650" />
+            <Model mesh="cube.mesh" scale=0 position="-55,100,-1000" />
+            <Model mesh="cube.mesh" scale=0 position="-700,200,-650" />
+            <Model mesh="cube.mesh" scale=0 position="-1000,300,0" />
+          </waypoints>
+        </WaypointController>
+      </controller>
+    </SpaceShip>
+    
+    <SpaceShip position="1000,-75,0" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshipHtwo />
+      </templates>
+      <controller>
+        <WaypointController team=10>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=10 position="400,240,400" />
+            <Model mesh="cube.mesh" scale=10 position="-55,240,700" />
+            <Model mesh="cube.mesh" scale=10 position="-500,240,400" />
+            <Model mesh="cube.mesh" scale=10 position="-700,240,0" />
+            <Model mesh="cube.mesh" scale=10 position="-500,240,-400" />
+            <Model mesh="cube.mesh" scale=10 position="-55,240,-700" />
+            <Model mesh="cube.mesh" scale=10 position="400,240,-400" />
+            <Model mesh="cube.mesh" scale=10 position="700,240,0" />
+          </waypoints>
+        </WaypointController>
+      </controller>
+    </SpaceShip>
+    
+    
+    
   </Scene>
 </Level>
