@@ -140,7 +140,7 @@ namespace orxonox // tolua_export
             inline const Pickupable* getPickup(unsigned int index) const
                 { if(index == 0) return this->pickup_; return NULL; }
 
-            StaticEntity* getSpawnerRepresentation(PickupSpawner* spawner); //!< Get a spawnerRepresentation for a specific PickupSpawner.
+            StaticEntity* createSpawnerRepresentation(PickupSpawner* spawner); //!< Create a spawnerRepresentation for a specific PickupSpawner.
 
         protected:
             /**

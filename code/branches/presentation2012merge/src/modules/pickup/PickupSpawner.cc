@@ -95,7 +95,7 @@ namespace orxonox
         else
         {
             PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
-            this->attach(representation->getSpawnerRepresentation(this));
+            this->attach(representation->createSpawnerRepresentation(this));
             this->setActive(true);
         }
     }
@@ -149,7 +149,7 @@ namespace orxonox
         else
         {
             PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
-            this->attach(representation->getSpawnerRepresentation(this));
+            this->attach(representation->createSpawnerRepresentation(this));
             this->setActive(true);
         }
     }

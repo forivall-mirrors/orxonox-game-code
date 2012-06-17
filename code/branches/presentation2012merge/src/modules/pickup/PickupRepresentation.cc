@@ -150,27 +150,25 @@ namespace orxonox
     @return
         Returns a pointer to the StaticEntity.
     */
-    StaticEntity* PickupRepresentation::getSpawnerRepresentation(PickupSpawner* spawner)
+    StaticEntity* PickupRepresentation::createSpawnerRepresentation(PickupSpawner* spawner)
     {
         if(this->spawnerRepresentation_ == NULL)
         {
             orxout(verbose, context::pickups) << "PickupRepresentation: No spawner representation found." << endl;
             if(this->spawnerTemplate_ == "")
             {
-                orxout(verbose, context::pickups) << "PickupRepresentation: Spawner template is empty." << endl;
+                orxout(internal_warning, context::pickups) << "PickupRepresentation: Spawner template is empty." << endl;
                 // If neither spawnerRepresentation nor spawnerTemplate was specified
                 return this->getDefaultSpawnerRepresentation(spawner);
             }
             this->addTemplate(this->spawnerTemplate_);
         }
 
-        StaticEntity* representation = this->spawnerRepresentation_;
-        representation->setVisible(true);
+        this->spawnerRepresentation_->setVisible(true);
+        StaticEntity* temp = this->spawnerRepresentation_;
+        this->spawnerRepresentation_ = NULL;
 
-        this->addTemplate(this->spawnerTemplate_);
-        this->spawnerRepresentation_->setVisible(false);
-
-        return representation;
+        return temp;
     }
 
     /**
