@@ -490,7 +490,7 @@
 </Template>
 
 <Template name=smallshrinkpickup>
-  <InvisiblePickup 
+  <ShrinkPickup 
     duration = 10.0
     shrinkFactor = 2.5
     activaionType = "immediate"
@@ -515,7 +515,7 @@
 </Template>
 
 <Template name=mediumshrinkpickup>
-  <InvisiblePickup 
+  <ShrinkPickup 
     duration = 30.0
     shrinkFactor = 5.0
     activaionType = "immediate"
@@ -540,7 +540,7 @@
 </Template>
 
 <Template name=hugeshrinkpickup>
-  <InvisiblePickup 
+  <ShrinkPickup 
     duration = 60.0
     shrinkFactor = 10.0
     activaionType = "immediate"
