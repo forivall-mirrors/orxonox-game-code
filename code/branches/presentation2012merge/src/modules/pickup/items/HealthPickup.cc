@@ -90,21 +90,9 @@ namespace orxonox
     */
     void HealthPickup::initializeIdentifier(void)
     {
-        std::stringstream stream;
-        stream << this->getHealth();
-        std::string type1 = "health";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        std::string val2 = this->getHealthType();
-        std::string type2 = "healthType";
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getHealthRate();
-        std::string val3 = stream.str();
-        std::string type3 = "healthRate";
-        this->pickupIdentifier_->addParameter(type3, val3);
+        this->pickupIdentifier_->addParameter("health", this->getHealth());
+        this->pickupIdentifier_->addParameter("healthType", this->getHealthType());
+        this->pickupIdentifier_->addParameter("healthRate", this->getHealthRate());
     }
 
     /**

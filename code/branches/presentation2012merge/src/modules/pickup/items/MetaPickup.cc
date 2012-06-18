@@ -89,9 +89,7 @@ namespace orxonox {
     */
     void MetaPickup::initializeIdentifier(void)
     {
-        std::string val = this->getMetaType();
-        std::string type = "metaType";
-        this->pickupIdentifier_->addParameter(type, val);
+        this->pickupIdentifier_->addParameter("metaType", this->getMetaType());
     }
 
     /**

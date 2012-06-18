@@ -81,18 +81,8 @@ namespace orxonox
     */
     void DamageBoostPickup::initializeIdentifier(void)
     {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getDamageMultiplier();
-        std::string type2 = "damageMultiplier";
-        std::string val2 = stream.str();
-        this->pickupIdentifier_->addParameter(type2, val2);
-
+        this->pickupIdentifier_->addParameter("duration", this->getDuration());
+        this->pickupIdentifier_->addParameter("damageMultiplier", this->getDamageMultiplier());
     }
 
     /**

@@ -84,9 +84,7 @@ namespace orxonox
     */
     void DronePickup::initializeIdentifier(void)
     {
-        std::string val = this->getDroneTemplate();
-        std::string type = "droneTemplate";
-        this->pickupIdentifier_->addParameter(type, val);
+        this->pickupIdentifier_->addParameter("droneTemplate", this->getDroneTemplate());
     }
 
     /**

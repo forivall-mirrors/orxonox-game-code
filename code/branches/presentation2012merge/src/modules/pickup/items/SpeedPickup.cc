@@ -83,23 +83,9 @@ namespace orxonox
     */
     void SpeedPickup::initializeIdentifier(void)
     {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getSpeedAdd();
-        std::string type2 = "speedAdd";
-        std::string val2 = stream.str();
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getSpeedMultiply();
-        std::string type3 = "speedMultiply";
-        std::string val3 = stream.str();
-        this->pickupIdentifier_->addParameter(type3, val3);
+        this->pickupIdentifier_->addParameter("duration", this->getDuration());
+        this->pickupIdentifier_->addParameter("speedAdd", this->getSpeedAdd());
+        this->pickupIdentifier_->addParameter("speedMultiply", this->getSpeedMultiply());
     }
 
     /**

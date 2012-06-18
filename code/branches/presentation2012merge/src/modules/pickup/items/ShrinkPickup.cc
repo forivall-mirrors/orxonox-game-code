@@ -82,23 +82,9 @@ namespace orxonox
 
     void ShrinkPickup::initializeIdentifier(void)
     {
-        std::stringstream stream;
-        stream << this->getShrinkFactor();
-        std::string type1 = "shrinkFactor";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getDuration();
-        std::string val2 = stream.str();
-        std::string type2 = "duration";
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getShrinkDuration();
-        std::string val3 = stream.str();
-        std::string type3 = "shrinkDuration";
-        this->pickupIdentifier_->addParameter(type3, val3);
+        this->pickupIdentifier_->addParameter("shrinkFactor", this->getShrinkFactor());
+        this->pickupIdentifier_->addParameter("duration", this->getDuration());
+        this->pickupIdentifier_->addParameter("shrinkDuration", this->getShrinkDuration());
     }
 
    /**

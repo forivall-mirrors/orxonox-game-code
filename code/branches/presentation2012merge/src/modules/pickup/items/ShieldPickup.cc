@@ -83,24 +83,9 @@ namespace orxonox
     */
     void ShieldPickup::initializeIdentifier(void)
     {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getShieldHealth();
-        std::string type2 = "ShieldHealth";
-        std::string val2 = stream.str();
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getShieldAbsorption();
-        std::string type3 = "ShieldAbsorption";
-        std::string val3 = stream.str();
-        this->pickupIdentifier_->addParameter(type3, val3);
-
+        this->pickupIdentifier_->addParameter("duration", this->getDuration());
+        this->pickupIdentifier_->addParameter("ShieldHealth", this->getShieldHealth());
+        this->pickupIdentifier_->addParameter("ShieldAbsorption", this->getShieldAbsorption());
     }
 
     /**

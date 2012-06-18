@@ -89,13 +89,8 @@ namespace orxonox
     */
     void Pickup::initializeIdentifier(void)
     {
-        std::string val1 = this->getActivationType();
-        std::string type1 = "activationType";
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        std::string val2 = this->getDurationType();
-        std::string type2 = "durationType";
-        this->pickupIdentifier_->addParameter(type2, val2);
+        this->pickupIdentifier_->addParameter("activationType", this->getActivationType());
+        this->pickupIdentifier_->addParameter("durationType", this->getDurationType());
     }
 
     /**

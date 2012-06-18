@@ -82,11 +82,7 @@ namespace orxonox
     */
     void InvisiblePickup::initializeIdentifier(void)
     {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
+        this->pickupIdentifier_->addParameter("duration", this->getDuration());
     }
 
     /**

@@ -71,7 +71,7 @@ namespace orxonox
 
             virtual int compare(const PickupIdentifier* identifier) const; //!< Compares two PickupIdentifiers and returns 0 if a == b, <0 if a < b and >0 if a > b for a.compare(b).
 
-            bool addParameter(const std::string& name, const std::string& value); //!< Add a parameter to the PickupIdentifier.
+            bool addParameter(const std::string& name, const MultiType& value); //!< Add a parameter to the PickupIdentifier.
 
         private:
             Pickupable* pickup_; //!< The Pickupable the PickupIdentififer is for.

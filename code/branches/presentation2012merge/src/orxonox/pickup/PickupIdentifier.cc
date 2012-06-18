@@ -112,7 +112,7 @@ namespace orxonox
     @return
         Returns false if the parameter already existed, true if not.
     */
-    bool PickupIdentifier::addParameter(const std::string& name, const std::string& value)
+    bool PickupIdentifier::addParameter(const std::string& name, const MultiType& value)
     {
         orxout(verbose, context::pickups) << "PickupIdentifier " << name << ", " << value << endl;
 
@@ -122,7 +122,7 @@ namespace orxonox
             return false;
         }
 
-        this->parameters_[name] = value;
+        this->parameters_[name] = value.getString();
 
         return true;
     }
