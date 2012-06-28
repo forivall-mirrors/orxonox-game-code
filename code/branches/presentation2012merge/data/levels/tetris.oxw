@@ -40,8 +40,8 @@
   <TetrisBrick>
     <camerapositions>
       <CameraPosition position="55,75,200" absolute=true />
-      <CameraPosition position="0,50,160" drag=true mouselook=true />
-      <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true />
+      <!--CameraPosition position="0,50,160" drag=true mouselook=true />
+      <CameraPosition position="0,50,0" pitch=-90 drag=true mouselook=true /-->
     </camerapositions>
   </TetrisBrick>
 </Template>
@@ -103,12 +103,12 @@
 
     ?>
 <!-- -------- 4 spaceships rotating around the tetris field --------- -->
-    <SpaceShip position="500,500,400" lookat="0,0,0">
+    <SpaceShip position="1000,-75,1" lookat="0,0,0">
       <templates>
         <Template link=spaceshipswallow />
       </templates>
       <controller>
-        <WaypointController team=10>
+        <WaypointController team=10 accuracy=200>
           <waypoints>
             <Model mesh="cube.mesh" scale=0 position="1000,-75,0" />
             <Model mesh="cube.mesh" scale=0 position="650,-75,650" />
@@ -143,12 +143,12 @@
       </controller>
     </SpaceShip>
     
-       <SpaceShip position="-600,500,400" lookat="0,0,0">
+       <SpaceShip position="-700,200,651" lookat="1,0,0">
       <templates>
         <Template link=spaceshipghost />
       </templates>
       <controller>
-        <WaypointController team=10>
+        <WaypointController team=10 accuracy=300>
           <waypoints>
             <Model mesh="cube.mesh" scale=0 position="-700,200,650" />
             <Model mesh="cube.mesh" scale=0 position="-55,100,1000" />
@@ -170,14 +170,14 @@
       <controller>
         <WaypointController team=10>
           <waypoints>
-            <Model mesh="cube.mesh" scale=10 position="400,240,400" />
-            <Model mesh="cube.mesh" scale=10 position="-55,240,700" />
-            <Model mesh="cube.mesh" scale=10 position="-500,240,400" />
-            <Model mesh="cube.mesh" scale=10 position="-700,240,0" />
-            <Model mesh="cube.mesh" scale=10 position="-500,240,-400" />
-            <Model mesh="cube.mesh" scale=10 position="-55,240,-700" />
-            <Model mesh="cube.mesh" scale=10 position="400,240,-400" />
-            <Model mesh="cube.mesh" scale=10 position="700,240,0" />
+            <Model mesh="cube.mesh" scale=0 position="400,240,400" />
+            <Model mesh="cube.mesh" scale=0 position="-55,240,700" />
+            <Model mesh="cube.mesh" scale=0 position="-500,240,400" />
+            <Model mesh="cube.mesh" scale=0 position="-700,240,0" />
+            <Model mesh="cube.mesh" scale=0 position="-500,240,-400" />
+            <Model mesh="cube.mesh" scale=0 position="-55,240,-700" />
+            <Model mesh="cube.mesh" scale=0 position="400,240,-400" />
+            <Model mesh="cube.mesh" scale=0 position="700,240,0" />
           </waypoints>
         </WaypointController>
       </controller>

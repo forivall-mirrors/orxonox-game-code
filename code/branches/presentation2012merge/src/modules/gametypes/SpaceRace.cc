@@ -22,7 +22,7 @@
  *   Author:
  *     Mauro Salomon
  *   Co-authors:
- *      ...
+ *      Celine Egger
  *
  */
 
