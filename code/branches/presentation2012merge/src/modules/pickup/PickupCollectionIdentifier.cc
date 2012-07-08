@@ -91,10 +91,9 @@ namespace orxonox
             const PickupIdentifier* id1 = (*it1)->getPickupIdentifier();
             const PickupIdentifier* id2 = (*it2)->getPickupIdentifier();
 
-            if(id1->compare(id2) < 0)
-                return -1;
-            if(id2->compare(id1) < 0)
-                return 1;
+            int result = id1->compare(id2);
+            if(result != 0)
+                return result;
         }
 
         // This means they are equal.
