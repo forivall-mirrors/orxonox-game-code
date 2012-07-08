@@ -105,7 +105,7 @@ namespace orxonox
     @param templatename
         The name of the Template to e set.
     */
-    void DronePickup::setDroneTemplate(std::string templatename){
+    void DronePickup::setDroneTemplate(const std::string& templatename){
         droneTemplate_ = templatename;
     }
 

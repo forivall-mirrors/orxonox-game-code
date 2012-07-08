@@ -105,10 +105,10 @@ namespace orxonox
 
         XMLPortParam(HealthPickup, "health", setHealth, getHealth, xmlelement, mode);
         XMLPortParam(HealthPickup, "healthRate", setHealthRate, getHealthRate, xmlelement, mode);
-        XMLPortParam(HealthPickup, "healthType", setHealthType, getHealthType, xmlelement, mode);
+        XMLPortParam(HealthPickup, "healthType", setHealthTypeAsString, getHealthTypeAsString, xmlelement, mode);
 
         if(!this->isContinuous())
-            this->healthRate_ = 0.0f;
+            this->setHealthRate(0.0f); // TODO: this logic should be inside tick(), not in XMLPort
 
         this->initializeIdentifier();
     }
@@ -138,7 +138,7 @@ namespace orxonox
             float fullHealth = pawn->getHealth() + health;
             this->setHealth(this->getHealth()-health);
 
-            switch(this->getHealthTypeDirect())
+            switch(this->getHealthType())
             {
                 case pickupHealthType::permanent:
                     if(pawn->getMaxHealth() < fullHealth)
@@ -185,7 +185,7 @@ namespace orxonox
                     this->Pickupable::destroy();
 
                 float health = 0.0f;
-                switch(this->getHealthTypeDirect())
+                switch(this->getHealthType())
                 {
                     case pickupHealthType::permanent:
                         health = pawn->getHealth()+this->getHealth();
@@ -214,7 +214,7 @@ namespace orxonox
         }
         else
         {
-            if(this->getHealthTypeDirect() == pickupHealthType::temporary)
+            if(this->getHealthType() == pickupHealthType::temporary)
             {
                 PickupCarrier* carrier = this->getCarrier();
                 Pawn* pawn = orxonox_cast<Pawn*>(carrier);
@@ -275,7 +275,7 @@ namespace orxonox
         HealthPickup* pickup = orxonox_cast<HealthPickup*>(item);
         pickup->setHealth(this->getHealth());
         pickup->setHealthRate(this->getHealthRate());
-        pickup->setHealthTypeDirect(this->getHealthTypeDirect());
+        pickup->setHealthType(this->getHealthType());
 
         pickup->initializeIdentifier();
     }
@@ -286,9 +286,9 @@ namespace orxonox
     @return
         Returns the health type as a string.
     */
-    const std::string& HealthPickup::getHealthType(void) const
+    const std::string& HealthPickup::getHealthTypeAsString(void) const
     {
-        switch(this->getHealthTypeDirect())
+        switch(this->getHealthType())
         {
             case pickupHealthType::limited:
                 return HealthPickup::healthTypeLimited_s;
@@ -339,14 +339,14 @@ namespace orxonox
     @param type
         The type as a string.
     */
-    void HealthPickup::setHealthType(std::string type)
+    void HealthPickup::setHealthTypeAsString(const std::string& type)
     {
         if(type == HealthPickup::healthTypeLimited_s)
-            this->setHealthTypeDirect(pickupHealthType::limited);
+            this->setHealthType(pickupHealthType::limited);
         else if(type == HealthPickup::healthTypeTemporary_s)
-            this->setHealthTypeDirect(pickupHealthType::temporary);
+            this->setHealthType(pickupHealthType::temporary);
         else if(type == HealthPickup::healthTypePermanent_s)
-            this->setHealthTypeDirect(pickupHealthType::permanent);
+            this->setHealthType(pickupHealthType::permanent);
         else
             orxout(internal_error, context::pickups) << "Invalid healthType '" << type << "' in HealthPickup." << endl;
     }

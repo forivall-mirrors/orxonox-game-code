@@ -115,9 +115,9 @@ namespace orxonox {
             @brief Get the type of HealthPickup, this pickup is.
             @return Returns the health type as an enum.
             */
-            inline pickupHealthType::Value getHealthTypeDirect(void) const
+            inline pickupHealthType::Value getHealthType(void) const
                 { return this->healthType_; }
-            const std::string& getHealthType(void) const; //!< Get the health type of this pickup.
+            const std::string& getHealthTypeAsString(void) const; //!< Get the health type of this pickup.
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
@@ -129,9 +129,9 @@ namespace orxonox {
             @brief Set the health type of this pickup.
             @param type The type of this pickup as an enum.
             */
-            inline void setHealthTypeDirect(pickupHealthType::Value type)
+            inline void setHealthType(pickupHealthType::Value type)
                 { this->healthType_ = type; }
-            void setHealthType(std::string type); //!< Set the type of the HealthPickup.
+            void setHealthTypeAsString(const std::string& type); //!< Set the type of the HealthPickup.
 
         private:
             void initialize(void); //!< Initializes the member variables.

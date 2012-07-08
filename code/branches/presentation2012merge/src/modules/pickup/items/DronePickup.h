@@ -76,7 +76,7 @@ namespace orxonox {
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
 
-            void setDroneTemplate(std::string templatename); //!< Set the droneTemplate.
+            void setDroneTemplate(const std::string& templatename); //!< Set the droneTemplate.
 
         private:
             void initialize(void); //!< Initializes the member variables.
