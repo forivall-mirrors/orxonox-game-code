@@ -79,7 +79,7 @@ namespace orxonox {
     {
         this->addTarget(ClassIdentifier<PickupCarrier>::getIdentifier());
 
-        this->setDurationTypeDirect(pickupDurationType::once);
+        this->setDurationType(pickupDurationType::once);
         this->metaType_ = pickupMetaType::none;
     }
 

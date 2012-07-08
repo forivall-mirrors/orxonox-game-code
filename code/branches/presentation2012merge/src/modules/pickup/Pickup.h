@@ -108,42 +108,42 @@ namespace orxonox
             @brief Get the activation type of the Pickup.
             @return Returns the activation type of the Pickup.
             */
-            inline pickupActivationType::Value getActivationTypeDirect(void) const
+            inline pickupActivationType::Value getActivationType(void) const
                 { return this->activationType_; }
             /**
             @brief Get the duration type of the Pickup.
             @return Returns the duration type of the Pickup.
             */
-            inline pickupDurationType::Value getDurationTypeDirect(void) const
+            inline pickupDurationType::Value getDurationType(void) const
                 { return this->durationType_; }
 
-            const std::string& getActivationType(void) const; //!< Get the activation type of the Pickup.
-            const std::string& getDurationType(void) const; //!< Get the duration type of the Pickup.
+            const std::string& getActivationTypeAsString(void) const; //!< Get the activation type of the Pickup.
+            const std::string& getDurationTypeAsString(void) const; //!< Get the duration type of the Pickup.
 
             /**
             @brief Get whether the activation type is 'immediate'.
             @return Returns true if the activation type is 'immediate'.
             */
             inline bool isImmediate(void) const
-                { return this->getActivationTypeDirect() == pickupActivationType::immediate; }
+                { return this->getActivationType() == pickupActivationType::immediate; }
             /**
             @brief Get whether the activation type is 'onUse'.
             @return Returns true if the activation type is 'onUse'.
             */
             inline bool isOnUse(void) const
-                { return this->getActivationTypeDirect() == pickupActivationType::onUse; }
+                { return this->getActivationType() == pickupActivationType::onUse; }
             /**
             @brief Get whether the duration type is 'once'.
             @return Returns true if the duration type is 'once'.
             */
             inline bool isOnce(void) const
-                { return this->getDurationTypeDirect() == pickupDurationType::once; }
+                { return this->getDurationType() == pickupDurationType::once; }
             /**
             @brief Get whether the duration type is 'continuous'.
             @return Returns true if the duration type is 'continuous'.
             */
             inline bool isContinuous(void) const
-                { return this->getDurationTypeDirect() == pickupDurationType::continuous; }
+                { return this->getDurationType() == pickupDurationType::continuous; }
 
             virtual void changedPickedUp(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the OrxonoxClass.
@@ -157,17 +157,17 @@ namespace orxonox
             @brief Set the activation type of the Pickup.
             @param type The activation type of the Pickup.
             */
-            inline void setActivationTypeDirect(pickupActivationType::Value type)
+            inline void setActivationType(pickupActivationType::Value type)
                 { this->activationType_ = type; }
             /**
             @brief Set the duration type of the Pickup.
             @param type The duration type of the Pickup.
             */
-            inline void setDurationTypeDirect(pickupDurationType::Value type)
+            inline void setDurationType(pickupDurationType::Value type)
                 { this->durationType_ = type; }
 
-            void setActivationType(const std::string& type); //!< Set the activation type of the Pickup.
-            void setDurationType(const std::string& type); //!< Set the duration type of the Pickup.
+            void setActivationTypeAsString(const std::string& type); //!< Set the activation type of the Pickup.
+            void setDurationTypeAsString(const std::string& type); //!< Set the duration type of the Pickup.
 
         private:
             void initialize(void); //!< Initializes the member variables.

@@ -101,8 +101,8 @@ namespace orxonox
     {
         SUPER(Pickup, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Pickup, "activationType", setActivationType, getActivationType, xmlelement, mode);
-        XMLPortParam(Pickup, "durationType", setDurationType, getDurationType, xmlelement, mode);
+        XMLPortParam(Pickup, "activationType", setActivationTypeAsString, getActivationTypeAsString, xmlelement, mode);
+        XMLPortParam(Pickup, "durationType", setDurationTypeAsString, getDurationTypeAsString, xmlelement, mode);
 
         this->initializeIdentifier();
     }
@@ -113,9 +113,9 @@ namespace orxonox
     @return
         Returns a string containing the activation type.
     */
-    const std::string& Pickup::getActivationType(void) const
+    const std::string& Pickup::getActivationTypeAsString(void) const
     {
-        switch(this->activationType_)
+        switch(this->getActivationType())
         {
             case pickupActivationType::immediate:
                 return activationTypeImmediate_s;
@@ -132,9 +132,9 @@ namespace orxonox
     @return
         Returns a string containing the duration type.
     */
-    const std::string& Pickup::getDurationType(void) const
+    const std::string& Pickup::getDurationTypeAsString(void) const
     {
-        switch(this->durationType_)
+        switch(this->getDurationType())
         {
             case pickupDurationType::once:
                 return durationTypeOnce_s;
@@ -151,12 +151,12 @@ namespace orxonox
     @param type
         The activation type of the Pickup as a string.
     */
-    void Pickup::setActivationType(const std::string& type)
+    void Pickup::setActivationTypeAsString(const std::string& type)
     {
         if(type == Pickup::activationTypeImmediate_s)
-            this->activationType_ = pickupActivationType::immediate;
+            this->setActivationType(pickupActivationType::immediate);
         else if(type == Pickup::activationTypeOnUse_s)
-            this->activationType_ = pickupActivationType::onUse;
+            this->setActivationType(pickupActivationType::onUse);
         else
             orxout(internal_error, context::pickups) << "Invalid activationType '" << type << "' in " << this->getIdentifier()->getName() << "." << endl;
     }
@@ -167,12 +167,12 @@ namespace orxonox
     @param type
         The duration type of the Pickup as a string.
     */
-    void Pickup::setDurationType(const std::string& type)
+    void Pickup::setDurationTypeAsString(const std::string& type)
     {
         if(type == Pickup::durationTypeOnce_s)
-            this->durationType_ = pickupDurationType::once;
+            this->setDurationType(pickupDurationType::once);
         else if(type == Pickup::durationTypeContinuous_s)
-            this->durationType_ = pickupDurationType::continuous;
+            this->setDurationType(pickupDurationType::continuous);
         else
             orxout(internal_error, context::pickups) << "Invalid durationType '" << type << "' in " << this->getIdentifier()->getName() << "." << endl;
     }
@@ -205,8 +205,8 @@ namespace orxonox
         SUPER(Pickup, clone, item);
 
         Pickup* pickup = orxonox_cast<Pickup*>(item);
-        pickup->setActivationTypeDirect(this->getActivationTypeDirect());
-        pickup->setDurationTypeDirect(this->getDurationTypeDirect());
+        pickup->setActivationType(this->getActivationType());
+        pickup->setDurationType(this->getDurationType());
 
         pickup->initializeIdentifier();
     }

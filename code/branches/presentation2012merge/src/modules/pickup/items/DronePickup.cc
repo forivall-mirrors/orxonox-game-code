@@ -74,7 +74,7 @@ namespace orxonox
     void DronePickup::initialize(void)
     {
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
-        this->setDurationTypeDirect(pickupDurationType::once);
+        this->setDurationType(pickupDurationType::once);
         this->droneTemplate_ = "";
     }
 
