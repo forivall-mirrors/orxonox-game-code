@@ -26,7 +26,7 @@
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
-    skybox       = "Orxonox/skypanoramagen1"
+    skybox       = "Orxonox/skyBoxBasic"
   >
   <?lua include("includes/notifications.oxi") ?>
 

@@ -22,7 +22,7 @@
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
-   skybox       = "Orxonox/skypanoramagen1"
+   skybox       = "Orxonox/skyBoxBasic"
   >
 
     <Template name=PortalDefault>

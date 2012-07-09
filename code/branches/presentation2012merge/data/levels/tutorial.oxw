@@ -23,7 +23,7 @@
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
-   skybox       = "Orxonox/skypanoramagen1"
+   skybox       = "Orxonox/skyBoxBasic"
   >
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>

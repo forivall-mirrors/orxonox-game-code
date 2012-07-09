@@ -22,7 +22,7 @@
 
   <Scene
    ambientlight = "0.1, 0.1, 0.1"
-   skybox       = "Orxonox/skypanoramagen1"
+   skybox       = "Orxonox/skyBoxBasic"
    gravity      = "0,-1000,0"
    negativeWorldRange = "-100000, -100000, -100000"
    positiveWorldRange = " 100000,  100000,  100000"

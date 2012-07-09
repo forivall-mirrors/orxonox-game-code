@@ -25,7 +25,7 @@
 
   <Scene
     ambientlight = "0.3, 0.3, 0.3"
-    skybox     = "Orxonox/skypanoramagen1"
+    skybox     = "Orxonox/skyBoxBasic"
   >
 
     <Script code="showGUI NotificationLayer false true" needsGraphics="true" />

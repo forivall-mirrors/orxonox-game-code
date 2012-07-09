@@ -26,7 +26,7 @@
 
   <Scene
    ambientlight = "0.6, 0.4, 0.4"
-   skybox       = "Orxonox/skypanoramagen2"
+   skybox       = "Orxonox/skyBoxSomeNebula"
   >
 
     <?lua

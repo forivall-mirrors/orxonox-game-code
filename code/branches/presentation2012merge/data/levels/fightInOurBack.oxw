@@ -120,7 +120,7 @@
     <!-- Ausgang: Szene ===> ambientlight/skybox -->
     <Scene
      ambientlight="0.8,0.8,0.8"
-     skybox="Orxonox/skypanoramagen1"
+     skybox="Orxonox/skyBoxBasic"
     >
 
         <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
