@@ -104,6 +104,9 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
+            virtual const std::string& getRepresentationName() const
+                { return this->representationName_; }
+
             /**
             @brief Get the activation type of the Pickup.
             @return Returns the activation type of the Pickup.
@@ -149,9 +152,13 @@ namespace orxonox
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the OrxonoxClass.
 
         protected:
-            void initializeIdentifier(void);
-
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+
+            /**
+            @brief Sets the representation name which refers to the name of the PickupRepresentation that is used to represent this pickup.
+            */
+            inline void setRepresentationName(const std::string& name)
+                { this->representationName_ = name; }
 
             /**
             @brief Set the activation type of the Pickup.
@@ -172,6 +179,7 @@ namespace orxonox
         private:
             void initialize(void); //!< Initializes the member variables.
 
+            std::string representationName_; //!< The name of the associated PickupRepresentation.
             pickupActivationType::Value activationType_; //!< The activation type of the Pickup.
             pickupDurationType::Value durationType_; //!< The duration type of the Pickup.
 

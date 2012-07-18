@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -79,17 +78,6 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void ShieldPickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("duration", this->getDuration());
-        this->pickupIdentifier_->addParameter("ShieldHealth", this->getShieldHealth());
-        this->pickupIdentifier_->addParameter("ShieldAbsorption", this->getShieldAbsorption());
-    }
-
-    /**
-    @brief
         Method for creating a ShieldPickup object through XML.
     */
     void ShieldPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -99,8 +87,6 @@ namespace orxonox
         XMLPortParam(ShieldPickup, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode);
         XMLPortParam(ShieldPickup, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode);
         XMLPortParam(ShieldPickup, "duration", setDuration, getDuration, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -187,7 +173,6 @@ namespace orxonox
         pickup->setDuration(this->getDuration());
         pickup->setShieldAbsorption(this->getShieldAbsorption());
         pickup->setShieldHealth(this->getShieldHealth());
-        pickup->initializeIdentifier();
     }
 
     /**

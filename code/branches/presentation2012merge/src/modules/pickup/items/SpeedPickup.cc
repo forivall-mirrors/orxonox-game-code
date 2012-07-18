@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
@@ -79,17 +78,6 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void SpeedPickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("duration", this->getDuration());
-        this->pickupIdentifier_->addParameter("speedAdd", this->getSpeedAdd());
-        this->pickupIdentifier_->addParameter("speedMultiply", this->getSpeedMultiply());
-    }
-
-    /**
-    @brief
         Method for creating a SpeedPickup object through XML.
     */
     void SpeedPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -99,8 +87,6 @@ namespace orxonox
         XMLPortParam(SpeedPickup, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(SpeedPickup, "speedAdd", setSpeedAdd, getSpeedAdd, xmlelement, mode);
         XMLPortParam(SpeedPickup, "speedMultiply", setSpeedMultiply, getSpeedMultiply, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -188,8 +174,6 @@ namespace orxonox
         pickup->setDuration(this->getDuration());
         pickup->setSpeedAdd(this->getSpeedAdd());
         pickup->setSpeedMultiply(this->getSpeedMultiply());
-
-        pickup->initializeIdentifier();
     }
 
     /**

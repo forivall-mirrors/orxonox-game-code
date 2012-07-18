@@ -3,7 +3,6 @@ SET_SOURCE_FILES(PICKUP_SRC_FILES
   DroppedPickup.cc
   Pickup.cc
   PickupCollection.cc
-  PickupCollectionIdentifier.cc
   PickupManager.cc
   PickupRepresentation.cc
   PickupSpawner.cc

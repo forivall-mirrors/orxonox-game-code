@@ -120,8 +120,6 @@ namespace orxonox {
             const std::string& getHealthTypeAsString(void) const; //!< Get the health type of this pickup.
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
             void setHealth(float health); //!< Sets the health.
             void setHealthRate(float speed); //!< Set the rate at which health is transferred if the pickup is continuous.
 

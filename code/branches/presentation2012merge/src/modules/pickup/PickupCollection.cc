@@ -38,7 +38,6 @@
 
 #include "CollectiblePickup.h"
 #include "DroppedPickup.h"
-#include "PickupCollectionIdentifier.h"
 
 #include "PickupCollection.h"
 
@@ -53,11 +52,10 @@ namespace orxonox
     @param creator
         The creator of the object.
     */
-    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator), pickupCollectionIdentifier_(NULL)
+    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(PickupCollection);
 
-        this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier(this);
         this->processingUsed_ = false;
         this->processingPickedUp_ = false;
     }
@@ -75,9 +73,6 @@ namespace orxonox
             (*it)->destroy();
         }
         this->pickups_.clear();
-
-        if(this->pickupCollectionIdentifier_ != NULL)
-            this->pickupCollectionIdentifier_->destroy();
     }
 
     /**
@@ -88,6 +83,7 @@ namespace orxonox
     {
         SUPER(PickupCollection, XMLPort, xmlelement, mode);
 
+        XMLPortParam(PickupCollection, "representation", setRepresentationName, getRepresentationName, xmlelement, mode);
         XMLPortObject(PickupCollection, CollectiblePickup, "pickupables", addPickupable, getPickupable, xmlelement, mode);
     }
 
@@ -216,6 +212,7 @@ namespace orxonox
         SUPER(PickupCollection, clone, item);
 
         PickupCollection* pickup = orxonox_cast<PickupCollection*>(item);
+        pickup->setRepresentationName(this->getRepresentationName());
         // Clone all Pickupables this PickupCollection consist of.
         for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
@@ -242,18 +239,6 @@ namespace orxonox
         }
 
         return true;
-    }
-
-    /**
-    @brief
-        Get the PickupIdentifier of this PickupCollection.
-        This is in fact the PickupCollectionIdentifier.
-    @return
-        Returns a pointer to the PickupIdentifier of this PickupCollection.
-    */
-    const PickupIdentifier* PickupCollection::getPickupIdentifier(void) const
-    {
-        return this->pickupCollectionIdentifier_;
     }
 
     /**

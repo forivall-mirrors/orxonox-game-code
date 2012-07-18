@@ -105,8 +105,6 @@ namespace orxonox {
             const std::string& getMetaTypeAsString(void) const; //!< Get the meta type of this MetaPickup.
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
             /**
             @brief Set the meta type of the MetaPickup.
             @param type The meta type as an enum.

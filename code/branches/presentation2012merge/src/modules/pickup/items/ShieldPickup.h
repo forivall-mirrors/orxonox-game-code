@@ -103,7 +103,6 @@ namespace orxonox {
                 { return this->shieldAbsorption_; }
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             void pickupTimerCallback(void); //!< Helper method. Is called by the Timer as soon as it expires.
 
             void setDuration(float duration); //!< Sets the duration.

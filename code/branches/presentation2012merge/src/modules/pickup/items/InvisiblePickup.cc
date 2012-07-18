@@ -39,7 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -78,23 +77,12 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void InvisiblePickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("duration", this->getDuration());
-    }
-
-    /**
-    @brief
         Method for creating a HealthPickup object through XML.
     */
     void InvisiblePickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(InvisiblePickup, XMLPort, xmlelement, mode);
         XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -156,7 +144,6 @@ namespace orxonox
 
         InvisiblePickup* pickup = orxonox_cast<InvisiblePickup*>(item);
         pickup->setDuration(this->getDuration());
-        pickup->initializeIdentifier();
     }
 
     /**

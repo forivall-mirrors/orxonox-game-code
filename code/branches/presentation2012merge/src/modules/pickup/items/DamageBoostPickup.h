@@ -78,7 +78,6 @@ namespace orxonox {
 
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             void setDamageMultiplier(float damageMultiplier); //!< Sets the DamageMultiplier according to the XML.
 
 

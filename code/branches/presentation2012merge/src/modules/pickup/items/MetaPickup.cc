@@ -35,7 +35,6 @@
 #include "core/XMLPort.h"
 
 #include "interfaces/PickupCarrier.h"
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "MetaPickup.h"
@@ -85,15 +84,6 @@ namespace orxonox {
 
     /**
     @brief
-        Helper method to initialize the PickupIdentifier.
-    */
-    void MetaPickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("metaType", this->getMetaType());
-    }
-
-    /**
-    @brief
         Method for creating a MetaPickup object through XML.
     */
     void MetaPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -101,8 +91,6 @@ namespace orxonox {
         SUPER(MetaPickup, XMLPort, xmlelement, mode);
 
         XMLPortParam(MetaPickup, "metaType", setMetaTypeAsString, getMetaTypeAsString, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -171,8 +159,6 @@ namespace orxonox {
 
         MetaPickup* pickup = orxonox_cast<MetaPickup*>(item);
         pickup->setMetaType(this->getMetaType());
-
-        pickup->initializeIdentifier();
     }
 
     /**

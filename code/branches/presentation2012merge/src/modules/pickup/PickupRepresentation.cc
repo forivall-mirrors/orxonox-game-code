@@ -51,7 +51,7 @@ namespace orxonox
         Constructor. Registers the object and initializes its member variables.
         This is primarily for use of the PickupManager in creating a default PickupRepresentation.
     */
-    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), Synchronisable(NULL), spawnerRepresentation_(NULL), pickup_(NULL)
+    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), Synchronisable(NULL), spawnerRepresentation_(NULL)
     {
         RegisterObject(PickupRepresentation);
 
@@ -63,14 +63,12 @@ namespace orxonox
     @brief
         Default Constructor. Registers the object and initializes its member variables.
     */
-    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), spawnerRepresentation_(NULL), pickup_(NULL)
+    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), spawnerRepresentation_(NULL)
     {
         RegisterObject(PickupRepresentation);
 
         this->initialize();
         this->registerVariables();
-
-        PickupManager::getInstance().registerRepresentation(this); // Registers the PickupRepresentation with the PickupManager.
     }
 
     /**
@@ -83,13 +81,7 @@ namespace orxonox
             this->spawnerRepresentation_->destroy();
 
         if(this->isInitialized())
-        {
-            if(GameMode::isMaster() && this->pickup_ != NULL)
-            {
-                PickupManager::getInstance().unregisterRepresentation(this->pickup_->getPickupIdentifier(), this);
-            }
-            PickupManager::getInstance().unregisterRepresentation(this);
-        }
+            PickupManager::getInstance().unregisterRepresentation(this->getName());
     }
 
     /**
@@ -127,17 +119,7 @@ namespace orxonox
         XMLPortParam(PickupRepresentation, "pickupDescription", setPickupDescription, getPickupDescription, xmlelement, mode);
         XMLPortParam(PickupRepresentation, "spawnerTemplate", setSpawnerTemplate, getSpawnerTemplate, xmlelement, mode);
         XMLPortParam(PickupRepresentation, "inventoryRepresentation", setInventoryRepresentation, getInventoryRepresentation, xmlelement, mode);
-        XMLPortObject(PickupRepresentation, Pickupable, "pickup", setPickup, getPickup, xmlelement, mode);
         XMLPortObject(PickupRepresentation, StaticEntity, "spawner-representation", setSpawnerRepresentation, getSpawnerRepresentationIndex, xmlelement, mode);
-
-        if(GameMode::isMaster())
-        {
-            // Registers the PickupRepresentation with the PickupManager through the PickupIdentifier of the Pickupable it represents.
-            PickupManager::getInstance().registerRepresentation(this->pickup_->getPickupIdentifier(), this);
-        }
-
-        if(this->spawnerRepresentation_ != NULL)
-            this->spawnerRepresentation_->setVisible(false);
 
         orxout(verbose, context::pickups) << "PickupRepresentation created: name: '" << this->name_ << "', description: '" << this->description_ << "', spawnerTemplate: '" << this->spawnerTemplate_ << "'." << endl;
     }
@@ -169,6 +151,20 @@ namespace orxonox
         this->spawnerRepresentation_ = NULL;
 
         return temp;
+    }
+
+    void PickupRepresentation::changedName()
+    {
+        // Registers the PickupRepresentation with the PickupManager.
+        PickupManager::getInstance().unregisterRepresentation(this->getOldName());
+        PickupManager::getInstance().registerRepresentation(this->getName(), this);
+    }
+
+    void PickupRepresentation::setSpawnerRepresentation(StaticEntity* representation)
+    {
+        this->spawnerRepresentation_ = representation;
+        if(this->spawnerRepresentation_ != NULL)
+            this->spawnerRepresentation_->setVisible(false);
     }
 
     /**

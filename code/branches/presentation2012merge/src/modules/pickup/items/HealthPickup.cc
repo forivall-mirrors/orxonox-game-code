@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -86,17 +85,6 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void HealthPickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("health", this->getHealth());
-        this->pickupIdentifier_->addParameter("healthType", this->getHealthType());
-        this->pickupIdentifier_->addParameter("healthRate", this->getHealthRate());
-    }
-
-    /**
-    @brief
         Method for creating a HealthPickup object through XML.
     */
     void HealthPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -109,8 +97,6 @@ namespace orxonox
 
         if(!this->isContinuous())
             this->setHealthRate(0.0f); // TODO: this logic should be inside tick(), not in XMLPort
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -276,8 +262,6 @@ namespace orxonox
         pickup->setHealth(this->getHealth());
         pickup->setHealthRate(this->getHealthRate());
         pickup->setHealthType(this->getHealthType());
-
-        pickup->initializeIdentifier();
     }
 
     /**

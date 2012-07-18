@@ -36,8 +36,6 @@
 #include "core/CoreIncludes.h"
 #include "util/StringUtils.h"
 
-#include "pickup/PickupIdentifier.h"
-
 #include "DroppedPickup.h"
 
 namespace orxonox
@@ -85,26 +83,15 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentififer of this Pickup.
-    */
-    void Pickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("activationType", this->getActivationType());
-        this->pickupIdentifier_->addParameter("durationType", this->getDurationType());
-    }
-
-    /**
-    @brief
         Method for creating a Pickup object through XML.
     */
     void Pickup::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Pickup, XMLPort, xmlelement, mode);
 
+        XMLPortParam(Pickup, "representation", setRepresentationName, getRepresentationName, xmlelement, mode);
         XMLPortParam(Pickup, "activationType", setActivationTypeAsString, getActivationTypeAsString, xmlelement, mode);
         XMLPortParam(Pickup, "durationType", setDurationTypeAsString, getDurationTypeAsString, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -205,10 +192,9 @@ namespace orxonox
         SUPER(Pickup, clone, item);
 
         Pickup* pickup = orxonox_cast<Pickup*>(item);
+        pickup->setRepresentationName(this->getRepresentationName());
         pickup->setActivationType(this->getActivationType());
         pickup->setDurationType(this->getDurationType());
-
-        pickup->initializeIdentifier();
     }
 
     /**

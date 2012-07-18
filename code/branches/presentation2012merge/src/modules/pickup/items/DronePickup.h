@@ -74,8 +74,6 @@ namespace orxonox {
             const std::string& getDroneTemplate() const; //!< Get the name of the droneTemplate.
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
             void setDroneTemplate(const std::string& templatename); //!< Set the droneTemplate.
 
         private:

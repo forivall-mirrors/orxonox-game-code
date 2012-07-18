@@ -39,7 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "worldentities/CameraPosition.h"
@@ -80,13 +79,6 @@ namespace orxonox
         this->currentFactor_ = 1.0f;
     }
 
-    void ShrinkPickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("shrinkFactor", this->getShrinkFactor());
-        this->pickupIdentifier_->addParameter("duration", this->getDuration());
-        this->pickupIdentifier_->addParameter("shrinkDuration", this->getShrinkDuration());
-    }
-
    /**
     @brief
         Method for creating a ShrinkPickup object through XML.
@@ -98,8 +90,6 @@ namespace orxonox
         XMLPortParam(ShrinkPickup, "shrinkFactor", setShrinkFactor, getShrinkFactor, xmlelement, mode);
         XMLPortParam(ShrinkPickup, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(ShrinkPickup, "shrinkDuration", setShrinkDuration, getShrinkDuration, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -320,7 +310,5 @@ namespace orxonox
         pickup->setShrinkFactor(this->getShrinkFactor());
         pickup->setDuration(this->getDuration());
         pickup->setShrinkDuration(this->getShrinkDuration());
-
-        pickup->initializeIdentifier();
     }
 }

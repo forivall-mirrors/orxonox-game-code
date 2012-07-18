@@ -130,13 +130,13 @@
 
     <PickupSpawner position="-25,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
       <pickup>
-        <MetaPickup metaType="use" />
+        <MetaPickup representation="use" metaType="use" />
       </pickup>
     </PickupSpawner>
 
     <PickupSpawner position="0,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
       <pickup>
-        <MetaPickup metaType="drop" />
+        <MetaPickup representation="drop" metaType="drop" />
       </pickup>
     </PickupSpawner>
 
@@ -193,19 +193,16 @@
 
     <!-- PickupRepresentation for the pickup below, since it is not a standard pickup provided by pickups.oxi -->
     <PickupRepresentation
+      name = "MediumHealth"
       pickupName = "Medium Health Pack"
       pickupDescription = "Once used adds a medium amout of health to the ship."
       spawnerTemplate = "mediumhealthpickupRepresentation"
       inventoryRepresentation = "MediumHealth"
-    >
-      <pickup>
-        <HealthPickup health=500 activationType=immediate healthRate=10 durationType=continuous />
-      </pickup>
-    </PickupRepresentation>
+    />
 
     <PickupSpawner position="-50,0,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
-        <HealthPickup health=500 activationType=immediate healthRate=10 durationType=continuous />
+        <HealthPickup representation="MediumHealth" health=500 activationType=immediate healthRate=10 durationType=continuous />
       </pickup>
     </PickupSpawner>
 

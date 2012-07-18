@@ -147,19 +147,16 @@
 
     <!-- PickupRepresentation for the pickup below, since it is not a standard pickup provided by pickups.oxi -->
     <PickupRepresentation
+      name = "MediumHealth"
       pickupName = "Medium Health Pack"
       pickupDescription = "Once used adds a medium amout of health to the ship."
       spawnerTemplate = "mediumhealthpickupRepresentation"
       inventoryRepresentation = "MediumHealth"
-    >
-      <pickup>
-        <HealthPickup health=50 activationType="onUse" durationType="once" />
-      </pickup>
-    </PickupRepresentation>
+    />
 
     <PickupSpawner position="25,-75,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
-        <HealthPickup health=50 activationType=onUse durationType=once />
+        <HealthPickup representation="MediumHealth" health=50 activationType=onUse durationType=once />
       </pickup>
     </PickupSpawner>
 

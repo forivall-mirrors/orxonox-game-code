@@ -72,7 +72,6 @@ namespace orxonox
     class DroppedPickup;
     class Pickup;
     class PickupCollection;
-    class PickupCollectionIdentifier;
     class PickupManager;
     class PickupRepresentation;
     class PickupSpawner;

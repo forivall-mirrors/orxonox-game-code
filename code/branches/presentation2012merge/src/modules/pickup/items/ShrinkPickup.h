@@ -118,9 +118,6 @@ namespace orxonox {
             inline void setShrinkDuration(float speed)
                 { if(speed <= 0.0f) { orxout(internal_warning, context::pickups) << "Invalid shrink duration in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkDuration_ = speed; }
 
-        protected:
-            void initializeIdentifier(void);
-
         private:
             void initialize(void);
 
@@ -134,7 +131,7 @@ namespace orxonox {
 
             float currentFactor_;       //!< The shrink factor that is currently applied.
             float timeRemainig_;        //!< The remaining shrink time.
-            
+
             Pawn* carrierToPawnHelper(void);
             Timer durationTimer_;
             void terminate(void);

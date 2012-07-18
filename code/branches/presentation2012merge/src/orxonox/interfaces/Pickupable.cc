@@ -38,7 +38,6 @@
 #include "util/Convert.h"
 
 #include "infos/PlayerInfo.h"
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "PickupCarrier.h"
@@ -51,13 +50,12 @@ namespace orxonox
     @brief
         Constructor. Registers the objects and initializes its member variables.
     */
-    Pickupable::Pickupable() : pickupIdentifier_(NULL), used_(false), pickedUp_(false)
+    Pickupable::Pickupable() : used_(false), pickedUp_(false)
     {
         RegisterRootObject(Pickupable);
 
         this->carrier_ = NULL;
 
-        this->pickupIdentifier_ = new PickupIdentifier(this);
         this->beingDestroyed_ = false;
         this->enabled_ = true;
     }
@@ -68,11 +66,6 @@ namespace orxonox
     */
     Pickupable::~Pickupable()
     {
-        if(this->pickupIdentifier_ != NULL)
-        {
-            orxout(verbose, context::pickups) << "Pickupable (&" << this << ") destroyed." << endl;
-            this->pickupIdentifier_->destroy();
-        }
     }
 
     /**

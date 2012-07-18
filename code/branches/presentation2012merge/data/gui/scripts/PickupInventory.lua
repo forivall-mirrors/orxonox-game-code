@@ -107,7 +107,7 @@ function P.createInventory()
 end
 
 function P.createPickupEntry(index, pickup)
-    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup.pickup)
+    local representation = orxonox.PickupManager:getInstance():getRepresentation(pickup.representationName)
 
     local name = "orxonox/PickupInventory/Box/Pickup" .. index
 
@@ -192,7 +192,7 @@ end
 
 function P.createDetailsWindow(pickupIndex)
     local pickup = P.pickupsList[pickupIndex]
-    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup.pickup)
+    local representation = orxonox.PickupManager:getInstance():getRepresentation(pickup.representationName)
 
     local index = P.getNewDetailNumber()
     local name = "orxonox/PickupInventory/Details" .. index

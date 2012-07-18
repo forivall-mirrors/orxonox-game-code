@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
@@ -77,16 +76,6 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void DamageBoostPickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("duration", this->getDuration());
-        this->pickupIdentifier_->addParameter("damageMultiplier", this->getDamageMultiplier());
-    }
-
-    /**
-    @brief
         Method for creating a DamageBoostPickup object through XML.
     */
     void DamageBoostPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -95,8 +84,6 @@ namespace orxonox
 
         XMLPortParam(DamageBoostPickup, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(DamageBoostPickup, "damageMultiplier", setDamageMultiplier, getDamageMultiplier, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     // Work in Progress setDamage Function
@@ -195,7 +182,6 @@ namespace orxonox
         DamageBoostPickup* pickup = orxonox_cast<DamageBoostPickup*>(item);
         pickup->setDuration(this->getDuration());
         pickup->setDamageMultiplier(this->getDamageMultiplier());
-        pickup->initializeIdentifier();
     }
 
     /**

@@ -151,9 +151,6 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
 
-    // pickup
-    class PickupIdentifier;
-
     //sound
     class AmbientSound;
     class BaseSound;

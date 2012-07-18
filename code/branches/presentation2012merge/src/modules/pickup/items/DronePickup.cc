@@ -38,7 +38,6 @@
 #include "core/XMLPort.h"
 
 #include "controllers/DroneController.h"
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/Drone.h"
 #include "worldentities/pawns/Pawn.h"
 
@@ -80,23 +79,12 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void DronePickup::initializeIdentifier(void)
-    {
-        this->pickupIdentifier_->addParameter("droneTemplate", this->getDroneTemplate());
-    }
-
-    /**
-    @brief
         Method for creating a DronePickup object through XML.
     */
     void DronePickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(DronePickup, XMLPort, xmlelement, mode);
         XMLPortParam(DronePickup, "droneTemplate", setDroneTemplate, getDroneTemplate, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -197,7 +185,5 @@ namespace orxonox
 
         DronePickup* pickup = orxonox_cast<DronePickup*>(item);
         pickup->setDroneTemplate(this->getDroneTemplate());
-
-        pickup->initializeIdentifier();
     }
 }

@@ -49,8 +49,6 @@ namespace orxonox
     @brief
         The PickupCollection combines different @ref orxonox::Pickupable "Pickupables" (more precisely @ref orxonox::CollectiblePickup "CollectiblePickups") to a coherent, single pickup and makes them seem (from the outside looking in) just as if they were just one @ref orxonox::Pickupable "Pickupable".
 
-        To differentiate between different types of @ref orxonox::PickupCollection "PickupCollections" (just as we differentiate between different types of @ref orxonox::Pickupable "Pickupables") we define a new identifyer called the @ref orxonox::PickupCollectionIdentifier "PickupCollectionIdentifier" which has pretty much the same properties as the @ref orxonox::PickupIdentifier "PickupIdentifier" but extende to @ref orxonox::PickupCollection "PickupCollections".
-
         A PickupCollection can be created in XML as follows:
         @code
         <PickupCollection>
@@ -84,7 +82,10 @@ namespace orxonox
 
             virtual bool isTarget(const PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
 
-            virtual const PickupIdentifier* getPickupIdentifier(void) const; //!< Get the PickupIdentifier of this PickupCollection.
+            inline void setRepresentationName(const std::string& name)
+                { this->representationName_ = name; }
+            virtual const std::string& getRepresentationName() const
+                { return this->representationName_; }
 
             bool addPickupable(CollectiblePickup* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
             const Pickupable* getPickupable(unsigned int index) const; //!< Get the Pickupable at the given index.
@@ -100,13 +101,12 @@ namespace orxonox
         protected:
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
 
-            PickupCollectionIdentifier* pickupCollectionIdentifier_; //!< The PickupCollectionIdentifier of this PickupCollection. Is used to distinguish different PickupCollections amongst themselves.
-
         private:
             void changedUsedAction(void); //!< Helper method.
             void changedPickedUpAction(void); //!< Helper method.
             void pickupsChanged(void); //!< Helper method.
 
+            std::string representationName_; //!< The name of the associated PickupRepresentation.
             std::list<CollectiblePickup*> pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
 
             bool processingUsed_; //!< Boolean to ensure, that the PickupCollection doesn't update its used status while its internal state is inconsistent.
