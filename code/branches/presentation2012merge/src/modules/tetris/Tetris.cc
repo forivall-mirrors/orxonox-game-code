@@ -201,7 +201,7 @@ namespace orxonox
                 continue;
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
-                int y_offset = static_cast<int>((this->activeBrick_->getPosition().y-currentStonePosition.y+10)/10)*10 + currentStonePosition.y;
+                float y_offset = static_cast<int>((this->activeBrick_->getPosition().y-currentStonePosition.y+10)/10)*10 + currentStonePosition.y;
                 if(y_offset < 0) //filter out extreme cases (very rare bug)
                 	y_offset = 0;
                 this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, y_offset, this->activeBrick_->getPosition().z));
@@ -212,7 +212,7 @@ namespace orxonox
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
-        	int yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
+        	float yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
         	if(yOffset < 0) //catch brake-throughs
         	    yOffset = 0;
         	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
@@ -245,7 +245,7 @@ namespace orxonox
     */
     Vector3 Tetris::rotateVector(Vector3 position, unsigned int amount)
     {
-    	int temp = 0;
+    	float temp = 0;
         for(unsigned int i = 0; i < amount; i++)
         {
             temp = position.x;
@@ -382,7 +382,7 @@ namespace orxonox
 
         // Attach the brick to the Centerpoint and set the position of the brick to be at the left side.
         this->center_->attach(this->futureBrick_);
-        float xPos = (this->center_->getWidth()*1.6 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
+        float xPos = (this->center_->getWidth()*1.6f + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
         float yPos = (this->center_->getHeight()-5.1f)*this->center_->getStoneSize();
         this->futureBrick_->setPosition(xPos, yPos, 0.0f);
         this->futureBrick_->setGame(this);
