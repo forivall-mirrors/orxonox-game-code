@@ -61,18 +61,6 @@ namespace orxonox {
 
     /**
     @brief
-        Is called by the PickupCarrier when it is being destroyed.
-    */
-    void CollectiblePickup::carrierDestroyed(void)
-    {
-        if(!this->isInCollection())
-            this->Pickupable::destroy();
-        else // If the CollectiblePickup is part of a PickupCollection it is just dropped instead of destroyed.
-            this->drop(false);
-    }
-
-    /**
-    @brief
         Is called when the pickup has transited from used to unused or the other way around.
     */
     void CollectiblePickup::changedUsed(void)

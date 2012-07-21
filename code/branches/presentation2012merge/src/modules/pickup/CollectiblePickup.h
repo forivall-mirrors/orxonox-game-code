@@ -70,8 +70,6 @@ namespace orxonox {
             bool isInCollection(void) const
                 { return this->collection_ != NULL; }
 
-            void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
-
         private:
             void wasAddedToCollection(PickupCollection* collection);
             void wasRemovedFromCollection(void);
