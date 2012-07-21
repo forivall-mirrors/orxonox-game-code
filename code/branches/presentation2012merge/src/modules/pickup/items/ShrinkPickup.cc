@@ -93,6 +93,48 @@ namespace orxonox
     }
 
     /**
+    @brief Sets the shrinking factor.
+    @param factor The factor, needs to greater than 1.
+    */
+    void ShrinkPickup::setShrinkFactor(float factor)
+    {
+        if(factor <= 1.0f)
+        {
+            orxout(internal_warning, context::pickups) << "Invalid shrinking factor in ShrinkPickup. Ignoring.." << endl;
+            return;
+        }
+        this->shrinkFactor_ = factor;
+    }
+
+    /**
+    @brief Set the duration for which the ship remains shrunken.
+    @param duration The duration, needs to be non-negative.
+    */
+    void ShrinkPickup::setDuration(float duration)
+    {
+        if(duration < 0.0f)
+        {
+            orxout(internal_warning, context::pickups) << "Invalid duration in ShrinkPickup. Ignoring.." << endl;
+            return;
+        }
+        this->duration_ = duration;
+    }
+
+    /**
+    @brief Set the shrink duration.
+    @param speed The shrink duration, needs to be positive.
+    */
+    void ShrinkPickup::setShrinkDuration(float speed)
+    {
+        if(speed <= 0.0f)
+        {
+            orxout(internal_warning, context::pickups) << "Invalid shrink duration in ShrinkPickup. Ignoring.." << endl;
+            return;
+        }
+        this->shrinkDuration_ = speed;
+    }
+
+    /**
     @brief
         Prepares for shrinking.
     */
