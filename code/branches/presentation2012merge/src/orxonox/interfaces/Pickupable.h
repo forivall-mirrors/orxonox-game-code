@@ -170,8 +170,7 @@ namespace orxonox
 
             /**
             @brief Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-                   This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
-                   DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance);
+                   This method must be implemented by any class directly inheriting from Pickupable.
             @return Returns true if a spawner was created, false if not.
             */
             virtual bool createSpawner(void) = 0;

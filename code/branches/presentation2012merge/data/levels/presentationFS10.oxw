@@ -101,49 +101,24 @@
       </SpaceShip>
     <?lua end ?>
 
-    <PickupSpawner position="500,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <DronePickup template=dronepickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=dronepickup position="500,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 
     <!-- Shield pickups -->
 
-    <PickupSpawner position="-25,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <ShieldPickup template=hugeshieldpickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=hugeshieldpickup position="-25,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 
     <!-- Health pickups -->
 
-    <PickupSpawner position="0,-75,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <HealthPickup template=hugehealthpickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=hugehealthpickup position="0,-75,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
 
     <!-- Speed pickups -->
 
-    <PickupSpawner position="25,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
-      <pickup>
-        <SpeedPickup template=hugespeedpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="50,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
-      <pickup>
-        <SpeedPickup template=smalljumppickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=hugespeedpickup position="25,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
+    <PickupSpawner pickup=smalljumppickup position="50,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
 
     <!-- Invisible pickups -->
 
-    <PickupSpawner position="0,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <InvisiblePickup template=hugeinvisiblepickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=hugeinvisiblepickup position="0,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 
     <!-- PickupRepresentation for the pickup below, since it is not a standard pickup provided by pickups.oxi -->
     <PickupRepresentation
@@ -154,11 +129,11 @@
       inventoryRepresentation = "MediumHealth"
     />
 
-    <PickupSpawner position="25,-75,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
-      <pickup>
-        <HealthPickup representation="MediumHealth" health=50 activationType=onUse durationType=once />
-      </pickup>
-    </PickupSpawner>
+    <Template name=onusehealthpickup baseclass=HealthPickup>
+      <HealthPickup representation="MediumHealth" health=50 activationType=onUse durationType=once />
+    </Template>
+
+    <PickupSpawner pickup=onusehealthpickup position="25,-75,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5" />
 
   </Scene>
 </Level>

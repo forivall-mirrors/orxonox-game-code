@@ -1,6 +1,5 @@
 SET_SOURCE_FILES(PICKUP_SRC_FILES
   CollectiblePickup.cc
-  DroppedPickup.cc
   Pickup.cc
   PickupCollection.cc
   PickupManager.cc

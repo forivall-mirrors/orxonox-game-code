@@ -16,7 +16,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallshieldpickup>
+<Template name=smallshieldpickup baseclass=ShieldPickup>
   <ShieldPickup
     representation = "smallshieldpickup"
     duration = 10
@@ -43,7 +43,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumshieldpickup>
+<Template name=mediumshieldpickup baseclass=ShieldPickup>
   <ShieldPickup
     representation = "mediumshieldpickup"
     duration = 30
@@ -71,7 +71,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugeshieldpickup>
+<Template name=hugeshieldpickup baseclass=ShieldPickup>
   <ShieldPickup
     representation = "hugeshieldpickup"
     duration = 60
@@ -100,7 +100,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallhealthpickup>
+<Template name=smallhealthpickup baseclass=HealthPickup>
   <HealthPickup
     representation = "smallhealthpickup"
     health = 10
@@ -126,7 +126,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumhealthpickup>
+<Template name=mediumhealthpickup baseclass=HealthPickup>
   <HealthPickup
     representation = "mediumhealthpickup"
     health = 50
@@ -152,7 +152,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugehealthpickup>
+<Template name=hugehealthpickup baseclass=HealthPickup>
   <HealthPickup
     representation = "hugehealthpickup"
     health = 100
@@ -178,7 +178,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=crazyhealthpickup>
+<Template name=crazyhealthpickup baseclass=HealthPickup>
   <HealthPickup
     representation = "crazyhealthpickup"
     health = 1000
@@ -240,7 +240,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smalldamageboostpickup>
+<Template name=smalldamageboostpickup baseclass=DamageBoostPickup>
   <DamageBoostPickup
     representation = "smalldamageboostpickup"
     duration = 10.0
@@ -266,7 +266,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumdamageboostpickup>
+<Template name=mediumdamageboostpickup baseclass=DamageBoostPickup>
   <DamageBoostPickup
     representation = "mediumdamageboostpickup"
     duration = 10.0
@@ -292,7 +292,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=largedamageboostpickup>
+<Template name=largedamageboostpickup baseclass=DamageBoostPickup>
   <DamageBoostPickup
     representation = "largedamageboostpickup"
     duration = 10.0
@@ -321,7 +321,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallspeedpickup>
+<Template name=smallspeedpickup baseclass=SpeedPickup>
   <SpeedPickup
     representation = "smallspeedpickup"
     duration = 10.0
@@ -348,7 +348,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumspeedpickup>
+<Template name=mediumspeedpickup baseclass=SpeedPickup>
   <SpeedPickup
     representation = "mediumspeedpickup"
     duration = 10.0
@@ -375,7 +375,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugespeedpickup>
+<Template name=hugespeedpickup baseclass=SpeedPickup>
   <SpeedPickup
     representation = "hugespeedpickup"
     duration = 10.0
@@ -402,7 +402,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smalljumppickup>
+<Template name=smalljumppickup baseclass=SpeedPickup>
   <SpeedPickup
     representation = "smalljumppickup"
     duration = 0.7
@@ -431,7 +431,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallinvisiblepickup>
+<Template name=smallinvisiblepickup baseclass=InvisiblePickup>
   <InvisiblePickup 
     representation = "smallinvisiblepickup"
     duration = 5.0
@@ -456,7 +456,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediuminvisiblepickup>
+<Template name=mediuminvisiblepickup baseclass=InvisiblePickup>
   <InvisiblePickup 
     representation = "mediuminvisiblepickup"
     duration = 10.0
@@ -481,7 +481,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugeinvisiblepickup>
+<Template name=hugeinvisiblepickup baseclass=InvisiblePickup>
   <InvisiblePickup 
     representation = "hugeinvisiblepickup"
     duration = 20.0
@@ -506,7 +506,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallshrinkpickup>
+<Template name=smallshrinkpickup baseclass=ShrinkPickup>
   <ShrinkPickup 
     representation = "smallshrinkpickup"
     duration = 10.0
@@ -532,7 +532,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumshrinkpickup>
+<Template name=mediumshrinkpickup baseclass=ShrinkPickup>
   <ShrinkPickup 
     representation = "mediumshrinkpickup"
     duration = 30.0
@@ -558,7 +558,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugeshrinkpickup>
+<Template name=hugeshrinkpickup baseclass=ShrinkPickup>
   <ShrinkPickup 
     representation = "hugeshrinkpickup"
     duration = 60.0
@@ -588,7 +588,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=triplehealthspeedinvisibilitypickup>
+<Template name=triplehealthspeedinvisibilitypickup baseclass=PickupCollection>
     <PickupCollection
         representation = "triplehealthspeedinvisibilitypickup"
     >
@@ -650,7 +650,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=dronepickup>
+<Template name=dronepickup baseclass=DronePickup>
     <DronePickup representation=dronepickup droneTemplate=droneTemplate />
 </Template>
 

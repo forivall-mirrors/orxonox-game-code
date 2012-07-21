@@ -37,7 +37,7 @@
 #include "interfaces/PickupCarrier.h"
 
 #include "CollectiblePickup.h"
-#include "DroppedPickup.h"
+#include "PickupSpawner.h"
 
 #include "PickupCollection.h"
 
@@ -347,14 +347,12 @@ namespace orxonox
     /**
     @brief
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
-        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
     @return
         Returns true if a spawner was created, false if not.
     */
     bool PickupCollection::createSpawner(void)
     {
-        new DroppedPickup(this, this, this->getCarrier());
+        PickupSpawner::createDroppedPickup(this, this, this->getCarrier());
         return true;
     }
 

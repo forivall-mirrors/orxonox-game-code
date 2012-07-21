@@ -38,11 +38,7 @@
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
 
-    <!--PickupSpawner position="-200,0,0" triggerDistance="10" respawnTime="10" maxSpawnedItems="10">
-      <pickup>
-        <DronePickup template=dronepickup />
-      </pickup>
-    </PickupSpawner-->
+    <!--PickupSpawner pickup=dronepickup position="-200,0,0" triggerDistance="10" respawnTime="10" maxSpawnedItems="10" /-->
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 

@@ -398,23 +398,9 @@ TODO:
 <!-- ---------------------PickUp---------------------- -->
 
 
- <PickupSpawner position="4000,8050,0" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8">
-      <pickup>
-        <SpeedPickup template=smallspeedpickup />
-      </pickup>
-    </PickupSpawner>
-
-   <PickupSpawner position="5500,8100,2000" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8">
-      <pickup>
-        <SpeedPickup template=mediumspeedpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="3000,8050,-4000" triggerDistance="40" respawnTime="60"  maxSpawnedItems="5" scale="8">
-      <pickup>
-        <ShrinkPickup template ="mediumshrinkpickup"/>
-      </pickup>
-    </PickupSpawner>>
+   <PickupSpawner pickup=smallspeedpickup position="4000,8050,0" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8" />
+   <PickupSpawner pickup=mediumspeedpickup position="5500,8100,2000" triggerDistance="40" respawnTime="10" maxSpawnedItems="99" scale="8" />
+   <PickupSpawner pickup="mediumshrinkpickup" position="3000,8050,-4000" triggerDistance="40" respawnTime="60"  maxSpawnedItems="5" scale="8" />
 
 
 

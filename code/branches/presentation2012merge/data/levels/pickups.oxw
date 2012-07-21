@@ -36,158 +36,66 @@
 
     <!-- Shield pickups -->
 
-    <PickupSpawner position="-25,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <ShieldPickup template=smallshieldpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="0,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <ShieldPickup template=mediumshieldpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <ShieldPickup template=hugeshieldpickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=smallshieldpickup position="-25,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=mediumshieldpickup position="0,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=hugeshieldpickup position="25,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 
     <!-- Health pickups -->
 
-    <PickupSpawner position="-25,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <HealthPickup template=smallhealthpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="0,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <HealthPickup template=mediumhealthpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <HealthPickup template=hugehealthpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="50,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <HealthPickup template=crazyhealthpickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=smallhealthpickup position="-25,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+    <PickupSpawner pickup=mediumhealthpickup position="0,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+    <PickupSpawner pickup=hugehealthpickup position="25,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+    <PickupSpawner pickup=crazyhealthpickup position="50,0,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
 
     <!-- Speed pickups -->
 
-    <PickupSpawner position="-25,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
-      <pickup>
-        <SpeedPickup template=smallspeedpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="0,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
-      <pickup>
-        <SpeedPickup template=mediumspeedpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
-      <pickup>
-        <SpeedPickup template=hugespeedpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="50,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
-      <pickup>
-        <SpeedPickup template=smalljumppickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=smallspeedpickup position="-25,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
+    <PickupSpawner pickup=mediumspeedpickup position="0,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
+    <PickupSpawner pickup=hugespeedpickup position="25,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
+    <PickupSpawner pickup=smalljumppickup position="50,25,-125" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
 
     <!-- Invisible pickups -->
 
-    <PickupSpawner position="-25,50,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <InvisiblePickup template=smallinvisiblepickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="0,50,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <InvisiblePickup template=mediuminvisiblepickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,50,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <InvisiblePickup template=hugeinvisiblepickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=smallinvisiblepickup position="-25,50,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=mediuminvisiblepickup position="0,50,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=hugeinvisiblepickup position="25,50,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 
     <!-- Meta pickups -->
 
-    <PickupSpawner position="-25,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <MetaPickup representation="use" metaType="use" />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="0,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <MetaPickup representation="drop" metaType="drop" />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <MetaPickup metaType="destroy" />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="50,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <MetaPickup metaType="destroyCarrier" />
-      </pickup>
-    </PickupSpawner>
+    <Template name=usemetapickup baseclass=MetaPickup>
+      <MetaPickup representation="use" metaType="use" />
+    </Template>
+    
+    <Template name=dropmetapickup baseclass=MetaPickup>
+      <MetaPickup representation="drop" metaType="drop" />
+    </Template>
+    
+    <Template name=destroymetapickup baseclass=MetaPickup>
+      <MetaPickup metaType="destroy" />
+    </Template>
+    
+    <Template name=destroycarriermetapickup baseclass=MetaPickup>
+      <MetaPickup metaType="destroyCarrier" />
+    </Template>
+    
+    <PickupSpawner pickup=usemetapickup position="-25,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=dropmetapickup position="0,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=destroymetapickup position="25,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+    <PickupSpawner pickup=destroycarriermetapickup position="50,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 
     <!-- Pickup Collection pickups -->
 
-    <PickupSpawner position="-50,25,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <PickupCollection template=triplehealthspeedinvisibilitypickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=triplehealthspeedinvisibilitypickup position="-50,25,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
     
     <!-- Drone pickup -->
     
-    <PickupSpawner position="-50,50,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <DronePickup template=dronepickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=dronepickup position="-50,50,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
     
     <!-- DamageBoost pickup -->
     
-    <PickupSpawner position="-50,75,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <DamageBoostPickup template=smalldamageboostpickup />
-      </pickup>
-    </PickupSpawner>
-    
-      <PickupSpawner position="-50,100,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <DamageBoostPickup template=mediumdamageboostpickup />
-      </pickup>
-    </PickupSpawner>
-    
-      <PickupSpawner position="-50,125,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <DamageBoostPickup template=largedamageboostpickup />
-      </pickup>
-    </PickupSpawner>
-    
+    <PickupSpawner pickup=smalldamageboostpickup position="-50,75,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+    <PickupSpawner pickup=mediumdamageboostpickup position="-50,100,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+    <PickupSpawner pickup=largedamageboostpickup position="-50,125,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
     
     <!-- Other pickups -->
 
@@ -200,29 +108,15 @@
       inventoryRepresentation = "MediumHealth"
     />
 
-    <PickupSpawner position="-50,0,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
-      <pickup>
-        <HealthPickup representation="MediumHealth" health=500 activationType=immediate healthRate=10 durationType=continuous />
-      </pickup>
-    </PickupSpawner>
+    <Template name=continuoushealthpickup baseclass=HealthPickup>
+      <HealthPickup representation="MediumHealth" health=500 activationType=immediate healthRate=10 durationType=continuous />
+    </Template>
+    
+    <PickupSpawner pickup=continuoushealthpickup position="-50,0,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5" />
 
-    <PickupSpawner position="-25,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
-      <pickup>
-        <ShrinkPickup template ="smallshrinkpickup"/>
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="0,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
-      <pickup>
-        <ShrinkPickup template ="mediumshrinkpickup"/>
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
-      <pickup>
-        <ShrinkPickup template ="hugeshrinkpickup"/>
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup="smallshrinkpickup" position="-25,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5" />
+    <PickupSpawner pickup="mediumshrinkpickup" position="0,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5" />
+    <PickupSpawner pickup="hugeshrinkpickup" position="25,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5" />
     
     <!-- @Objects: 4 boxes (uncontrolled pawns) -->
     <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box RVName = "Box 4" >
