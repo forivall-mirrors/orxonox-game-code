@@ -92,12 +92,7 @@ namespace orxonox {
         SUPER(CollectiblePickup, changedPickedUp);
 
         if(this->isInCollection())
-        {
-            if (!this->isPickedUp())
-                this->collection_->removePickupable(this);
-            else
-                this->collection_->pickupChangedPickedUp(this->isPickedUp());
-        }
+            this->collection_->pickupChangedPickedUp(this->isPickedUp());
     }
 
     /**
