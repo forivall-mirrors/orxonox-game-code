@@ -169,21 +169,4 @@ namespace orxonox
 
         return pawn;
     }
-
-    /**
-    @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void DronePickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new DronePickup(this);
-
-        SUPER(DronePickup, clone, item);
-
-        DronePickup* pickup = orxonox_cast<DronePickup*>(item);
-        pickup->setDroneTemplate(this->getDroneTemplate());
-    }
 }

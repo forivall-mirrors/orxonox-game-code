@@ -199,31 +199,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input Pickupable.
-        This method needs to be implemented by any Class inheriting from Pickupable.
-    @param item
-        A reference to a pointer to the OrxonoxClass that is to be duplicated.
-    */
-    void PickupCollection::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new PickupCollection(this);
-
-        SUPER(PickupCollection, clone, item);
-
-        PickupCollection* pickup = orxonox_cast<PickupCollection*>(item);
-        pickup->setRepresentationName(this->getRepresentationName());
-        // Clone all Pickupables this PickupCollection consist of.
-        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
-        {
-            Pickupable* newPickup = (*it)->clone();
-            CollectiblePickup* collectible = static_cast<CollectiblePickup*>(newPickup);
-            pickup->addPickupable(collectible);
-        }
-    }
-
-    /**
-    @brief
         Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
     @param carrier
         A pointer to the PickupCarrier we want to know of, whether it is a target of this PickupCollection.

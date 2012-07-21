@@ -159,25 +159,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void SpeedPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new SpeedPickup(this);
-
-        SUPER(SpeedPickup, clone, item);
-
-        SpeedPickup* pickup = orxonox_cast<SpeedPickup*>(item);
-        pickup->setDuration(this->getDuration());
-        pickup->setSpeedAdd(this->getSpeedAdd());
-        pickup->setSpeedMultiply(this->getSpeedMultiply());
-    }
-
-    /**
-    @brief
         Sets the duration for which the SpeedPickup stays active.
     @param duration
         The duration in seconds.

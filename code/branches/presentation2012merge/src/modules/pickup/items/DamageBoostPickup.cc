@@ -168,24 +168,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void DamageBoostPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new DamageBoostPickup(this);
-
-        SUPER(DamageBoostPickup, clone, item);
-
-        DamageBoostPickup* pickup = orxonox_cast<DamageBoostPickup*>(item);
-        pickup->setDuration(this->getDuration());
-        pickup->setDamageMultiplier(this->getDamageMultiplier());
-    }
-
-    /**
-    @brief
         Sets the duration for which the DamageBoostPickup stays active.
     @param duration
         The duration in seconds.

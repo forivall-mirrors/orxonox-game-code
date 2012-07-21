@@ -293,22 +293,4 @@ namespace orxonox
 
         return pawn;
     }
-
-    /**
-    @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void ShrinkPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new ShrinkPickup(this);
-
-        SUPER(ShrinkPickup, clone, item);
-        ShrinkPickup* pickup = orxonox_cast<ShrinkPickup*>(item);
-        pickup->setShrinkFactor(this->getShrinkFactor());
-        pickup->setDuration(this->getDuration());
-        pickup->setShrinkDuration(this->getShrinkDuration());
-    }
 }

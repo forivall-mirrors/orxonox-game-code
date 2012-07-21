@@ -158,25 +158,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void ShieldPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new ShieldPickup(this);
-
-        SUPER(ShieldPickup, clone, item);
-
-        ShieldPickup* pickup = orxonox_cast<ShieldPickup*>(item);
-        pickup->setDuration(this->getDuration());
-        pickup->setShieldAbsorption(this->getShieldAbsorption());
-        pickup->setShieldHealth(this->getShieldHealth());
-    }
-
-    /**
-    @brief
         Sets the duration.
     @param duration
         The duration in seconds.

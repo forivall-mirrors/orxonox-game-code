@@ -247,25 +247,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void HealthPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new HealthPickup(this);
-
-        SUPER(HealthPickup, clone, item);
-
-        HealthPickup* pickup = orxonox_cast<HealthPickup*>(item);
-        pickup->setHealth(this->getHealth());
-        pickup->setHealthRate(this->getHealthRate());
-        pickup->setHealthType(this->getHealthType());
-    }
-
-    /**
-    @brief
         Get the health type of this pickup.
     @return
         Returns the health type as a string.

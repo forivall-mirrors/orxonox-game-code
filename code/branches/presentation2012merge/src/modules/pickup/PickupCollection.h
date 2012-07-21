@@ -78,8 +78,6 @@ namespace orxonox
             virtual void changedCarrier(void); //!< Is called when the pickup has changed its PickupCarrier.
             virtual void changedPickedUp(void); //!< Is called when the pickup has transited from picked up to dropped or the other way around.
 
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input pickup.
-
             virtual bool isTarget(const PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
 
             inline void setRepresentationName(const std::string& name)

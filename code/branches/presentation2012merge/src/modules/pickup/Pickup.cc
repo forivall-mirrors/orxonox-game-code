@@ -180,25 +180,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the OrxonoxClass.
-    @param item
-        A reference to the pointer of the item that we're duplicating.
-    */
-    void Pickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new Pickup(this);
-
-        SUPER(Pickup, clone, item);
-
-        Pickup* pickup = orxonox_cast<Pickup*>(item);
-        pickup->setRepresentationName(this->getRepresentationName());
-        pickup->setActivationType(this->getActivationType());
-        pickup->setDurationType(this->getDurationType());
-    }
-
-    /**
-    @brief
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
     @return
         Returns true if a spawner was created, false if not.

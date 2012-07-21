@@ -321,23 +321,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the Pickupable.
-    @return
-        Returns the clone of this pickup as a pointer to a Pickupable.
-    */
-    Pickupable* Pickupable::clone(void)
-    {
-        OrxonoxClass* item = NULL;
-        this->clone(item);
-
-        Pickupable* pickup = orxonox_cast<Pickupable*>(item);
-
-        orxout(verbose, context::pickups) << "Pickupable (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << endl;
-        return pickup;
-    }
-
-    /**
-    @brief
         Method to transcribe a Pickupable as a Rewardable to the player.
     @param player
         A pointer to the PlayerInfo, do whatever you want with it.

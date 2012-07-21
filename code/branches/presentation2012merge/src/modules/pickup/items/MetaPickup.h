@@ -94,7 +94,6 @@ namespace orxonox {
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a MetaPickup object through XML.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
             @brief Returns the meta type of the MetaPickup.

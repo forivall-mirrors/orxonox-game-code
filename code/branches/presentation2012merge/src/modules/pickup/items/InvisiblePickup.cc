@@ -131,23 +131,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void InvisiblePickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new InvisiblePickup(this);
-
-        SUPER(InvisiblePickup, clone, item);
-
-        InvisiblePickup* pickup = orxonox_cast<InvisiblePickup*>(item);
-        pickup->setDuration(this->getDuration());
-    }
-
-    /**
-    @brief
         Sets the invisibility.
     @param invisibility
         The invisibility.

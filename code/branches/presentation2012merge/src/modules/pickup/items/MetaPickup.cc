@@ -146,23 +146,6 @@ namespace orxonox {
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void MetaPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new MetaPickup(this);
-
-        SUPER(MetaPickup, clone, item);
-
-        MetaPickup* pickup = orxonox_cast<MetaPickup*>(item);
-        pickup->setMetaType(this->getMetaType());
-    }
-
-    /**
-    @brief
         Get the meta type of this MetaPickup.
     @return
         Returns a string with the meta type of the MetaPickup.

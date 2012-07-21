@@ -96,7 +96,6 @@ namespace orxonox {
             virtual void tick(float dt); //!< Is called every tick.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
             @brief Get the health that is transferred to the Pawn upon usage of this pickup.

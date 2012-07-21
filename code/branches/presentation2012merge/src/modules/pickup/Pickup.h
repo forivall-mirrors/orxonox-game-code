@@ -149,7 +149,6 @@ namespace orxonox
                 { return this->getDurationType() == pickupDurationType::continuous; }
 
             virtual void changedPickedUp(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the OrxonoxClass.
 
         protected:
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
