@@ -107,7 +107,7 @@ namespace orxonox
 
         if((this->activeBrick_ != NULL)&&(!this->hasEnded()))
         {
-        	this->endGameCriteria_ += dt;
+            this->endGameCriteria_ += dt;
             if(!this->isValidBrickPosition(this->activeBrick_, this->activeBrick_->getPosition()))
             {
                 this->activeBrick_->setVelocity(Vector3::ZERO);
@@ -159,7 +159,7 @@ namespace orxonox
             TetrisStone* stone = brick->getStone(i);
             Vector3 stonePosition; //the current stone's offset to position
             if(isRotation)
-            	stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount()+1);
+                stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount()+1);
             else
                 stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
 
@@ -203,7 +203,7 @@ namespace orxonox
             {
                 float y_offset = static_cast<int>((this->activeBrick_->getPosition().y-currentStonePosition.y+10)/10)*10 + currentStonePosition.y;
                 if(y_offset < 0) //filter out extreme cases (very rare bug)
-                	y_offset = 0;
+                    y_offset = 0;
                 this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, y_offset, this->activeBrick_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
@@ -212,10 +212,10 @@ namespace orxonox
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
-        	float yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
-        	if(yOffset < 0) //catch brake-throughs
-        	    yOffset = 0;
-        	this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
+            float yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
+            if(yOffset < 0) //catch brake-throughs
+                yOffset = 0;
+            this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
             return false;
         }
 
@@ -245,7 +245,7 @@ namespace orxonox
     */
     Vector3 Tetris::rotateVector(Vector3 position, unsigned int amount)
     {
-    	float temp = 0;
+        float temp = 0;
         for(unsigned int i = 0; i < amount; i++)
         {
             temp = position.x;
@@ -420,14 +420,14 @@ namespace orxonox
     */
     void Tetris::findFullRows()
     {
-    	unsigned int correctPosition = 0;
-    	unsigned int stonesPerRow = 0;
-    	for (unsigned int row = 0; row < this->center_->getHeight(); row++)
-    	{
-    	    stonesPerRow = 0;
+        unsigned int correctPosition = 0;
+        unsigned int stonesPerRow = 0;
+        for (unsigned int row = 0; row < this->center_->getHeight(); row++)
+        {
+            stonesPerRow = 0;
             for(std::vector<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
             {
-            	correctPosition = static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize());
+                correctPosition = static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize());
                 if(correctPosition == row)
                 {
                     stonesPerRow++;
@@ -449,8 +449,8 @@ namespace orxonox
         for(std::vector<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
             if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) == row)
-            	(*it)->setPosition(Vector3(-50,-50,100));
-            	//{(*it)->destroy(); this->stones_.erase(it); orxout()<< "destroy row "<<endl;}//experimental
+                (*it)->setPosition(Vector3(-50,-50,100));
+                //{(*it)->destroy(); this->stones_.erase(it); orxout()<< "destroy row "<<endl;}//experimental
         }
       // adjust height of stones above the deleted row //TODO: check if this could be a source of a bug.
         for(std::vector<TetrisStone*>::iterator it2 = this->stones_.begin(); it2 != this->stones_.end(); ++it2)
