@@ -66,7 +66,7 @@ namespace orxonox
     {
         RegisterObject(Tetris);
 
-        this->activeBrick_ = NULL;
+        this->activeBrick_ = 0;
 
         // Pre-set the timer, but don't start it yet.
         this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Tetris::startBrick, this)));
@@ -75,7 +75,7 @@ namespace orxonox
         this->player_ = NULL;
         this->endGameCriteria_ = 0.0f;
         this->setHUDTemplate("TetrisHUD");
-        this->futureBrick_ = NULL;
+        this->futureBrick_ = 0;
     }
 
     /**
@@ -94,23 +94,20 @@ namespace orxonox
     */
     void Tetris::cleanup()
     {
-        if (this->isInitialized())
+        if (this->activeBrick_)
         {
-            if (this->activeBrick_)
-            {
-                this->activeBrick_->destroy();
-                this->activeBrick_ = NULL;
-            }
-            if (this->futureBrick_)
-            {
-                this->futureBrick_->destroy();
-                this->futureBrick_ = NULL;
-            }
-
-            for (std::list<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
-                (*it)->destroy();
-            this->stones_.clear();
+            this->activeBrick_->destroy();
+            this->activeBrick_ = 0;
         }
+        if (this->futureBrick_)
+        {
+            this->futureBrick_->destroy();
+            this->futureBrick_ = 0;
+        }
+
+        for (std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+            (*it)->destroy();
+        this->stones_.clear();
     }
 
     void Tetris::tick(float dt)
@@ -128,11 +125,9 @@ namespace orxonox
                 this->activeBrick_->releaseStones(this->center_);
                 this->findFullRows();
                 if(this->endGameCriteria_ < 0.1f) //end game if two bricks are created within a 0.1s interval.
-                {
                     this->end();
-                    return;
-                }
-                this->startBrick();
+                else
+                    this->startBrick();
                 this->endGameCriteria_ = 0.0f;
             }
         }
@@ -147,7 +142,7 @@ namespace orxonox
         else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
             return false;
 
-        for(std::list<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        for(std::list<SmartPtr<TetrisStone> >::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
 
@@ -200,7 +195,7 @@ namespace orxonox
         assert(stone);
 
         // we use a reverse iterator because we have to check for collisions with the topmost stones first
-        for(std::list<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
+        for(std::list<SmartPtr<TetrisStone> >::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
         {
             //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
@@ -363,7 +358,7 @@ namespace orxonox
 
         // Make the last brick to be created the active brick.
         this->activeBrick_ = this->futureBrick_;
-        this->futureBrick_ = NULL;
+        this->futureBrick_ = 0;
 
         // set its position
         this->player_->startControl(this->activeBrick_);
@@ -431,9 +426,9 @@ namespace orxonox
         for (unsigned int row = 0; row < this->center_->getHeight(); row++)
         {
             stonesPerRow = 0;
-            for(std::list<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); )
+            for(std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); )
             {
-                std::list<TetrisStone*>::iterator it_temp = it++;
+                std::list<SmartPtr<TetrisStone> >::iterator it_temp = it++;
                 correctPosition = static_cast<unsigned int>(((*it_temp)->getPosition().y - 5)/this->center_->getStoneSize());
                 if(correctPosition == row)
                 {
@@ -453,7 +448,7 @@ namespace orxonox
 
     void Tetris::clearRow(unsigned int row)
     {// clear the full row
-        for(std::list<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); )
+        for(std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); )
         {
             if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) == row)
             {
@@ -464,7 +459,7 @@ namespace orxonox
                 ++it;
         }
       // adjust height of stones above the deleted row //TODO: check if this could be a source of a bug.
-        for(std::list<TetrisStone*>::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        for(std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
             if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) > row)
                 (*it)->setPosition((*it)->getPosition()-Vector3(0,10,0));

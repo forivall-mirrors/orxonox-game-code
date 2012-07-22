@@ -91,9 +91,9 @@ namespace orxonox
             PlayerInfo* player_;
 
             WeakPtr<TetrisCenterpoint> center_; //!< The playing field.
-            std::list<TetrisStone*> stones_; //!< A list of all stones in play.
-            TetrisBrick* activeBrick_;
-            TetrisBrick* futureBrick_;
+            std::list<SmartPtr<TetrisStone> > stones_; //!< A list of all stones in play.
+            WeakPtr<TetrisBrick> activeBrick_;
+            WeakPtr<TetrisBrick> futureBrick_;
 
             Timer starttimer_; //!< A timer to delay the start of the game.
             float endGameCriteria_; //<! Works as a timer which is resetted, whenever a brick is created.

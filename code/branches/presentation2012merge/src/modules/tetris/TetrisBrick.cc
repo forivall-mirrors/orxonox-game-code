@@ -235,13 +235,13 @@ namespace orxonox
     void TetrisBrick::releaseStones(TetrisCenterpoint* center)
     {
         assert(this->tetris_);
-        for(unsigned int i = 0; i < brickStones_.size(); i++)
+        for(unsigned int i = 0; i < this->brickStones_.size(); i++)
         {
             this->brickStones_[i]->detachFromParent();
             this->brickStones_[i]->attachToParent(center);
             this->brickStones_[i]->setPosition(this->getPosition()+this->tetris_->rotateVector(this->brickStones_[i]->getPosition(),this->rotationCount_ ));
         }
-
+        this->brickStones_.clear();
     }
 
 }
