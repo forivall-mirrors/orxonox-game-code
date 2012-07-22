@@ -96,7 +96,6 @@ namespace orxonox
             WeakPtr<TetrisBrick> futureBrick_;
 
             Timer starttimer_; //!< A timer to delay the start of the game.
-            float endGameCriteria_; //<! Works as a timer which is resetted, whenever a brick is created.
     };
 }
 

@@ -73,7 +73,6 @@ namespace orxonox
         this->starttimer_.stopTimer();
 
         this->player_ = NULL;
-        this->endGameCriteria_ = 0.0f;
         this->setHUDTemplate("TetrisHUD");
         this->futureBrick_ = 0;
     }
@@ -116,7 +115,6 @@ namespace orxonox
 
         if((this->activeBrick_ != NULL)&&(!this->hasEnded()))
         {
-            this->endGameCriteria_ += dt;
             if(!this->isValidBrickPosition(this->activeBrick_))
             {
                 for (unsigned int i = 0; i < this->activeBrick_->getNumberOfStones(); i++)
@@ -124,11 +122,7 @@ namespace orxonox
                 this->activeBrick_->setVelocity(Vector3::ZERO);
                 this->activeBrick_->releaseStones(this->center_);
                 this->findFullRows();
-                if(this->endGameCriteria_ < 0.1f) //end game if two bricks are created within a 0.1s interval.
-                    this->end();
-                else
-                    this->startBrick();
-                this->endGameCriteria_ = 0.0f;
+                this->startBrick();
             }
         }
     }
@@ -377,6 +371,10 @@ namespace orxonox
 
         // create a new future brick
         this->createBrick();
+
+        // check if the new brick is in a valid position, otherwise end the game
+        if (!this->isValidBrickPosition(this->activeBrick_))
+            this->end();
     }
 
     void Tetris::createBrick(void)             //TODO: random rotation offset between 0 and 3 (times 90°)
