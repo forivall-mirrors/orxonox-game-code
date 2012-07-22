@@ -55,7 +55,7 @@ namespace orxonox
     {
         public:
             Tetris(BaseObject* creator); //!< Constructor. Registers and initializes the object.
-            virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.           
+            virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.
 
             virtual void start(void); //!< Starts the Tetris minigame.
             virtual void end(void); ///!< Ends the Tetris minigame.
@@ -87,16 +87,14 @@ namespace orxonox
             void findFullRows(void);
             void clearRow(unsigned int row);
 
-            
+
             PlayerInfo* player_;
 
             WeakPtr<TetrisCenterpoint> center_; //!< The playing field.
-            std::vector<TetrisBrick*> bricks_; //!< A list of all bricks in play.
-            std::vector<TetrisStone*> stones_; //!< A list of all stones in play.
-            std::vector< std::vector<bool> > grid_;
+            std::list<TetrisStone*> stones_; //!< A list of all stones in play.
             TetrisBrick* activeBrick_;
             TetrisBrick* futureBrick_;
-            
+
             Timer starttimer_; //!< A timer to delay the start of the game.
             float endGameCriteria_; //<! Works as a timer which is resetted, whenever a brick is created.
     };

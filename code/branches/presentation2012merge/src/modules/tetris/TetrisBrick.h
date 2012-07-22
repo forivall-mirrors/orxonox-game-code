@@ -64,7 +64,6 @@ namespace orxonox
             unsigned int getNumberOfStones(void) const
                 { return this->brickStones_.size(); }
             TetrisStone* getStone(unsigned int i);
-            bool contains(TetrisStone* stone);
 
             void setGame(Tetris* tetris)
                 { assert(tetris); tetris_ = tetris; }

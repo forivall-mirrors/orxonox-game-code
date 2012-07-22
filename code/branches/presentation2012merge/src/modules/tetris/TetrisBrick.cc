@@ -174,16 +174,6 @@ namespace orxonox
         }
         return NULL;
     }
-//TODO: refactor this function; is not needed if brickstones are added to Tetris::stones_ after collision.
-    bool TetrisBrick::contains(TetrisStone* stone)
-    {
-        for(unsigned int i = 0; i < brickStones_.size(); i++)
-        {
-            if(stone == brickStones_[i])
-                return true;
-        }
-        return false;
-    }
 
     /**
     @brief
