@@ -111,7 +111,7 @@ namespace orxonox
             {
                 const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
                             + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1);
-                const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
+                gametype->getGametypeInfo()->sendAnnounceMessage(message);
                 ChatManager::message(message);
             }
         }
