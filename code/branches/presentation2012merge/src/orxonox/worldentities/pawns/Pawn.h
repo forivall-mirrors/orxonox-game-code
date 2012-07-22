@@ -143,9 +143,6 @@ namespace orxonox // tolua_export
 
             virtual void addedWeaponPack(WeaponPack* wPack) {}
 
-            inline const WorldEntity* getWorldEntity() const
-                { return const_cast<Pawn*>(this); }
-
             inline void setSpawnParticleSource(const std::string& source)
                 { this->spawnparticlesource_ = source; }
             inline const std::string& getSpawnParticleSource() const
