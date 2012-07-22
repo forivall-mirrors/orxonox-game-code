@@ -37,7 +37,7 @@
 
 #include "tetris/TetrisPrereqs.h"
 
-#include "worldentities/pawns/Pawn.h"
+#include "worldentities/MovableEntity.h"
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -50,7 +50,7 @@ namespace orxonox
 
     @ingroup Tetris
     */
-    class _TetrisExport TetrisStone : public Pawn
+    class _TetrisExport TetrisStone : public MovableEntity
     {
         public:
             TetrisStone(BaseObject* creator); //!< Constructor. Registers and initializes the object.

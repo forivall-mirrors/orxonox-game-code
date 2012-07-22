@@ -77,7 +77,6 @@ namespace orxonox
         {
             // Create a new stone and add it to the brick.
             TetrisStone* stone = new TetrisStone(this);
-            stone->setHealth(1.0f);
             this->brickStones_.push_back(stone);
             this->attach(stone);
             this->formBrick(stone, i);
