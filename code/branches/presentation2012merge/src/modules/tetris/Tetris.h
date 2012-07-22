@@ -83,7 +83,7 @@ namespace orxonox
             void createBrick(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
             bool isValidStonePosition(TetrisStone* stone, const Vector3& position);
-            bool isValidBrickPosition(TetrisBrick* brick, const Vector3& position);
+            bool isValidBrickPosition(TetrisBrick* brick);
             void findFullRows(void);
             void clearRow(unsigned int row);
 

@@ -117,7 +117,7 @@ namespace orxonox
         if((this->activeBrick_ != NULL)&&(!this->hasEnded()))
         {
             this->endGameCriteria_ += dt;
-            if(!this->isValidBrickPosition(this->activeBrick_, this->activeBrick_->getPosition()))
+            if(!this->isValidBrickPosition(this->activeBrick_))
             {
                 for (unsigned int i = 0; i < this->activeBrick_->getNumberOfStones(); i++)
                     this->stones_.push_back(this->activeBrick_->getStone(i));
@@ -194,8 +194,8 @@ namespace orxonox
     {
         assert(stone);
 
-        // we use a reverse iterator because we have to check for collisions with the topmost stones first
-        for(std::list<SmartPtr<TetrisStone> >::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
+        // check for collisions with all stones
+        for(std::list<SmartPtr<TetrisStone> >::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
             //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
@@ -230,16 +230,23 @@ namespace orxonox
      * @brief This function determines wether a brick touches another brick or the ground.
      *
      */
-    bool Tetris::isValidBrickPosition(TetrisBrick* brick, const Vector3& position)
+    bool Tetris::isValidBrickPosition(TetrisBrick* brick)
     {
         assert(brick);
 
+        const Vector3& brickPosition = this->activeBrick_->getPosition();
+
+        // check all stones in the brick
         for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
         {
             TetrisStone* stone = brick->getStone(i);
-            Vector3 stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
-            if(! this->isValidStonePosition(stone, position + stonePosition) )
+            const Vector3& stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
+            if(! this->isValidStonePosition(stone, brickPosition + stonePosition) )
+            {
+                // recurse because all stones have to checked again after the brick was re-positioned
+                this->isValidBrickPosition(brick);
                 return false;
+            }
         }
         return true;
     }
