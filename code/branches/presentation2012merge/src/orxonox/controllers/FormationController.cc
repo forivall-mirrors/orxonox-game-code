@@ -1050,14 +1050,14 @@ namespace orxonox
         if (!this->getControllableEntity())
             return;
 
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
 
             if (this->target_ || distance > minDistance)
             {
                 // Multiply with ROTATEFACTOR_FREE to make them a bit slower
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * clamp(coord.x * 10, -1.0f, 1.0f));
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * clamp(coord.y * 10, -1.0f, 1.0f));
                 this->getControllableEntity()->moveFrontBack(SPEED_FREE);
             }
 
