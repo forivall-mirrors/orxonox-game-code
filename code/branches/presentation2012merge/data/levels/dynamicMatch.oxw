@@ -9,6 +9,8 @@
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipGhost.oxt")
   include("dynamicMatchHUD.oxo")
   include("templates/lodInformation.oxt")
@@ -38,19 +40,19 @@
 
 <!-- -----------12-Spawnpoints around the planet------------- -->
 <!-- inner Spawnpoints -->
-<TeamSpawnPoint team=0 position="1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="-1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,1000,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,-1000,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,0,1000" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,0,-1000" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+<TeamSpawnPoint team=0 position="1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="-1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,1000,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,-1000,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,0,1000" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,0,-1000" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
 <!--outer Spawnpoints -->
-<TeamSpawnPoint team=0 position="2000,0,0" lookat="0,0,1" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="-2000,0,0" lookat="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,2000,0" lookat="0,1,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,-2000,0" lookat="0,-1,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,0,2000" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-<TeamSpawnPoint team=0 position="0,0,-2000" lookat="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+<TeamSpawnPoint team=0 position="2000,0,0" lookat="0,0,1" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="-2000,0,0" lookat="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,2000,0" lookat="0,1,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,-2000,0" lookat="0,-1,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,0,2000" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+<TeamSpawnPoint team=0 position="0,0,-2000" lookat="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
 
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
@@ -63,9 +65,9 @@
               <?lua
                 createSpaceStationPar(0,2,1,2,1,4,1,50)
               ?>
-                <TeamSpawnPoint team=2 position="20,20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-                <TeamSpawnPoint team=2 position="-20,-20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-                <TeamSpawnPoint team=2 position="-10,10,20" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+                <TeamSpawnPoint team=2 position="20,20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+                <TeamSpawnPoint team=2 position="-20,-20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
+                <TeamSpawnPoint team=2 position="-10,10,20" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate/>
             </attached>
           </StaticEntity>
         </attached>

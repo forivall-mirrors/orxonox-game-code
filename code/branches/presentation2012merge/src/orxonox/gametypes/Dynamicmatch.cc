@@ -81,7 +81,7 @@ namespace orxonox
         this->numberOf[piggy]=0;
         this->numberOf[killer]=0;
         this->tutorial=true;
-        this->pointsPerTime=0.0f;
+        this->pointsPerTime=1.0f;
         this->setHUDTemplate("DynamicmatchHUD");
     }
 
@@ -452,7 +452,7 @@ orxout() << " number of victims:  " << numberOf[piggy] << endl;
     void Dynamicmatch::evaluatePlayerParties() //manages the notEnough booleans (here the percentage of special players is implemented)
     {
         //pigs: 1 + every 6th player is a pig
-        if ( (1+this->getNumberOfPlayers()/6) > numberOf[piggy])
+        if ( (1 + getPlayerCount()/6) > numberOf[piggy])
         {
             notEnoughPigs=true;
             if (tutorial) // Announce selectionphase
@@ -501,7 +501,7 @@ orxout() << " number of victims:  " << numberOf[piggy] << endl;
              }
         }
         //killers: every 4th player is a killer
-        if (getNumberOfPlayers()/4 > numberOf[killer])
+        if (getPlayerCount()/4 > numberOf[killer])
         {
             notEnoughKillers=true;
             if (tutorial) // Announce selectionphase
