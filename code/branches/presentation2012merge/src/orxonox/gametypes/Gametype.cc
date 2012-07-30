@@ -182,6 +182,7 @@ namespace orxonox
     {
         this->players_[player].state_ = PlayerState::Joined;
         this->gtinfo_->playerEntered(player);
+        orxout() << "# Players: " << this->getNumberOfPlayers() <<endl;
     }
 
     bool Gametype::playerLeft(PlayerInfo* player)
@@ -190,6 +191,7 @@ namespace orxonox
         if (it != this->players_.end())
         {
             this->players_.erase(it);
+            orxout() << "# Players: " << this->getNumberOfPlayers() <<endl;
             return true;
         }
         return false;
@@ -300,11 +302,11 @@ namespace orxonox
         }
     }
 
-    void Gametype::playerScored(PlayerInfo* player)
+    void Gametype::playerScored(PlayerInfo* player, int score)
     {
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
-            it->second.frags_++;
+            it->second.frags_ += score;
     }
 
     int Gametype::getScore(PlayerInfo* player) const

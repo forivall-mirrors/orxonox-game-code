@@ -275,13 +275,9 @@ namespace orxonox
             //Case: friendly fire
             else if (friendlyfire && (source == target))
             {
-                std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
-                if (it != this->players_.end())
-                    {
-                        it->second.frags_--;
-                    }
+           	    this->playerScored(originator->getPlayer(), -1);
             }
-        }// from far far away not to be removed!
+        }
         return false; //default: no damage
     }
 
@@ -295,13 +291,9 @@ namespace orxonox
         {
             if (playerParty_[originator->getPlayer()] == killer) //reward the killer
             {
-                std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
-                if (it != this->players_.end())
-                {
-                    it->second.frags_+=20; //value must be tested
-                }
+           	    this->playerScored(originator->getPlayer(), 25);
             }
-        return true;
+            return true;
         }
         else return false;
     }
@@ -341,6 +333,8 @@ namespace orxonox
         playerParty_[player]=chaser; //Set playerparty
         numberOf[chaser]++;
         Gametype::playerEntered(player);
+        orxout() << "# Players(2) : " << this->getNumberOfPlayers() <<endl;
+        orxout() << "# Players(3): " << this->getPlayerCount() <<endl;
         const std::string& message = player->getName() + " entered the game";
         ChatManager::message(message);
     }
@@ -360,6 +354,8 @@ namespace orxonox
             ChatManager::message(message);
             //remove player from map
             playerParty_.erase (player);
+            orxout() << "# Players(2) : " << this->getNumberOfPlayers() <<endl;
+            orxout() << "# Players(3): " << this->getPlayerCount() <<endl;
             //adjust player parties
             evaluatePlayerParties();
         }
@@ -374,9 +370,6 @@ namespace orxonox
 
         if (this->hasStarted() && !gameEnded_)
         {
-orxout() << " number of chasers:  " << numberOf[chaser] << endl;
-orxout() << " number of killers:  " << numberOf[killer] << endl;
-orxout() << " number of victims:  " << numberOf[piggy] << endl;
             pointsPerTime = pointsPerTime + dt; //increase points
             gameTime_ = gameTime_ - dt; // decrease game time
             if (pointsPerTime > 2.0f) //hard coded points for victim! should be changed
@@ -418,14 +411,9 @@ orxout() << " number of victims:  " << numberOf[piggy] << endl;
     {
         for (std::map< PlayerInfo*, int >::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it) //durch alle Spieler iterieren und alle piggys finden
         {
-            if (it->second==piggy)
+            if (it->second==piggy)//Spieler mit der Pig-party frags++
             {
-                 //Spieler mit der Pig-party frags++
-                 std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(it->first);
-                 if (it2 != this->players_.end())
-                 {
-                     it2->second.frags_++;
-                 }
+            	 this->playerScored(it->first);
             }
         }
     }
@@ -501,7 +489,7 @@ orxout() << " number of victims:  " << numberOf[piggy] << endl;
              }
         }
         //killers: every 4th player is a killer
-        if (getPlayerCount()/4 > numberOf[killer])
+        if (getPlayerCount()/4 > (int)numberOf[killer])
         {
             notEnoughKillers=true;
             if (tutorial) // Announce selectionphase

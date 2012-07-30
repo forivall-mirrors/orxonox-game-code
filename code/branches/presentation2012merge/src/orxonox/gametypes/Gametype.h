@@ -89,7 +89,7 @@ namespace orxonox
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
             virtual bool playerChangedName(PlayerInfo* player);
 
-            virtual void playerScored(PlayerInfo* player);
+            virtual void playerScored(PlayerInfo* player, int score = 1);
 
             virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
@@ -152,6 +152,10 @@ namespace orxonox
             virtual void resetTimer();
             virtual void resetTimer(float t);
 
+            /**
+            @brief Get number of Players.
+            Note that only those players are counted that were added before the game started.
+            */
             inline unsigned int getNumberOfPlayers() const
                 { return this->gtinfo_->getNumberOfPlayers(); }
 
