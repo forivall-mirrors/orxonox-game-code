@@ -309,8 +309,10 @@ namespace orxonox
         // Give victim boost
         if (spaceship)
         {
-            spaceship->addSpeedFactor(5);
             WeakPtr<SpaceShip>* ptr = new WeakPtr<SpaceShip>(spaceship);
+            if(ptr == NULL)
+                return;
+            spaceship->addSpeedFactor(5);
             ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
             executor->setDefaultValue(0, ptr);
             new Timer(10, false, executor, true);
@@ -489,7 +491,7 @@ namespace orxonox
              }
         }
         //killers: every 4th player is a killer
-        if (getPlayerCount()/4 > (int)numberOf[killer])
+        if ( static_cast<unsigned int>(getPlayerCount()/4) > numberOf[killer])
         {
             notEnoughKillers=true;
             if (tutorial) // Announce selectionphase

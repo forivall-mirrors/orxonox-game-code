@@ -47,7 +47,7 @@ namespace orxonox
             virtual bool playerChangedName(PlayerInfo* player);
 
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
-            virtual void playerScored(PlayerInfo* player);
+            virtual void playerScored(PlayerInfo* player, int score = 1);
     };
 }
 

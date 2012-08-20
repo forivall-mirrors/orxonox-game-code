@@ -25,8 +25,6 @@
  *      Johannes Ritz
  *
  *
- *BUG c) destroying the old stones causes segfault -> WeakPointer as solution ?
- *BUG d) wrong collision detection: sometimes stones "bounce off"
  *
  *
  *TASK c) end the game in a nicer way
