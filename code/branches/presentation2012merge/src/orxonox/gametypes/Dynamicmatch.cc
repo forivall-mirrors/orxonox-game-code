@@ -335,8 +335,6 @@ namespace orxonox
         playerParty_[player]=chaser; //Set playerparty
         numberOf[chaser]++;
         Gametype::playerEntered(player);
-        orxout() << "# Players(2) : " << this->getNumberOfPlayers() <<endl;
-        orxout() << "# Players(3): " << this->getPlayerCount() <<endl;
         const std::string& message = player->getName() + " entered the game";
         ChatManager::message(message);
     }
@@ -356,8 +354,6 @@ namespace orxonox
             ChatManager::message(message);
             //remove player from map
             playerParty_.erase (player);
-            orxout() << "# Players(2) : " << this->getNumberOfPlayers() <<endl;
-            orxout() << "# Players(3): " << this->getPlayerCount() <<endl;
             //adjust player parties
             evaluatePlayerParties();
         }
