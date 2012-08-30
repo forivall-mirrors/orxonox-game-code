@@ -56,13 +56,12 @@
   </templates>
   <?lua include("includes/notifications.oxi") ?>
 
-  <WorldAmbientSound source="Ganymede.ogg" playOnLoad=true looping=true />
-
+  <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true"/>
   <PongBot />
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
-   skybox       = "Orxonox/skypanoramagen1"
+   skybox       = "Orxonox/skyBoxBasic"
   >
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
@@ -91,13 +90,15 @@
             <ParticleSpawner name=scoreeffect_left position="-120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
             <ParticleSpawner name=scoreeffect_left position="-120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
 
-            <WorldSound name="scoreSound" position="0,0,0" source="sounds/pong_score.wav" >
+<!-- TODO: Create a Pong Score Sound and include it here.
+This WorldSound works, but doesn't make sense, since it is played together with ambient/moodDependedDirectory/Ganymede.ogg -->
+            <!--WorldSound name="scoreSound" position="0,0,0" source="ambient/default/Earth.ogg" >
               <events>
                 <play>
                   <EventListener event=pongcenter />
                 </play>
               </events>
-            </WorldSound>
+            </WorldSound-->
 
             <?lua
               for i = 1, 15, 1 do

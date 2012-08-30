@@ -52,7 +52,7 @@ namespace orxonox
         // Create a rocket for the controller.
         this->rocket_ = new SimpleRocket(this);
         this->rocket_->setController(this);
-        this->setControllableEntity(dynamic_cast<ControllableEntity*> (this->rocket_));
+        this->setControllableEntity(orxonox_cast<ControllableEntity*>(this->rocket_));
     }
 
 

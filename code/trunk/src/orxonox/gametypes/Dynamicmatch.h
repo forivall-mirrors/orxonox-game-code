@@ -80,7 +80,10 @@ namespace orxonox
             void tick (float dt);// used to end the game
             SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 
+
         protected:
+            inline int getPlayerCount() const
+                 { return this->numberOf[chaser] + numberOf[piggy] + this->numberOf[killer]; }
 
             std::map< PlayerInfo*, int > playerParty_; //player's parties are recorded here
             std::vector<ColourValue> partyColours_; //aus TeamDeathmatch

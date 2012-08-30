@@ -49,27 +49,27 @@
 namespace orxonox
 {
 
-  SetConsoleCommand("FormationController", "formationflight",  &FormationController::formationflight);
-  SetConsoleCommand("FormationController", "masteraction",     &FormationController::masteraction);
-  SetConsoleCommand("FormationController", "followme",         &FormationController::followme);
-  SetConsoleCommand("FormationController", "passivebehaviour", &FormationController::passivebehaviour);
-  SetConsoleCommand("FormationController", "formationsize",    &FormationController::formationsize);
+    SetConsoleCommand("FormationController", "formationflight",  &FormationController::formationflight);
+    SetConsoleCommand("FormationController", "masteraction",     &FormationController::masteraction);
+    SetConsoleCommand("FormationController", "followme",         &FormationController::followme);
+    SetConsoleCommand("FormationController", "passivebehaviour", &FormationController::passivebehaviour);
+    SetConsoleCommand("FormationController", "formationsize",    &FormationController::formationsize);
 
 
 
 
-  static const unsigned int STANDARD_MAX_FORMATION_SIZE = 9;
-  static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
-  static const float FORMATION_LENGTH =  110;
-  static const float FORMATION_WIDTH =  110;
-  static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
-  static const float SPEED_MASTER = 0.6f;
-  static const float ROTATEFACTOR_MASTER = 0.2f;
-  static const float SPEED_FREE = 0.8f;
-  static const float ROTATEFACTOR_FREE = 0.8f;
+    static const unsigned int STANDARD_MAX_FORMATION_SIZE = 9;
+    static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
+    static const float FORMATION_LENGTH =  110;
+    static const float FORMATION_WIDTH =  110;
+    static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
+    static const float SPEED_MASTER = 0.6f;
+    static const float ROTATEFACTOR_MASTER = 0.2f;
+    static const float SPEED_FREE = 0.8f;
+    static const float ROTATEFACTOR_FREE = 0.8f;
 
-  FormationController::FormationController(BaseObject* creator) : Controller(creator)
-  {
+    FormationController::FormationController(BaseObject* creator) : Controller(creator)
+    {
         RegisterObject(FormationController);
 
         this->target_ = 0;
@@ -90,11 +90,11 @@ namespace orxonox
         this->targetPosition_ = Vector3::ZERO;
         this->team_=-1;
         this->target_.setCallback(createFunctor(&FormationController::targetDied, this));
-  }
+    }
 
-  FormationController::~FormationController()
-  {
-    if (this->isInitialized())
+    FormationController::~FormationController()
+    {
+        if (this->isInitialized())
         {
             this->removeFromFormation();
 
@@ -122,9 +122,9 @@ namespace orxonox
                 }
             }
         }
-  }
+    }
 
-  void FormationController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void FormationController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(FormationController, XMLPort, xmlelement, mode);
 
@@ -136,11 +136,11 @@ namespace orxonox
 
 
 
-  /**
+    /**
         @brief Activates / deactivates formationflight behaviour
         @param form activate formflight if form is true
     */
-  void FormationController::formationflight(const bool form)
+    void FormationController::formationflight(const bool form)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -167,7 +167,7 @@ namespace orxonox
         }
     }
 
-  /**
+    /**
         @brief Get all masters to do a "specific master action"
         @param action which action to perform (integer, so it can be called with a console command (tmp solution))
     */
@@ -197,7 +197,7 @@ namespace orxonox
         }
     }
 
-  /**
+    /**
         @brief Sets shooting behaviour of pawns.
         @param passive if true, bots won't shoot.
     */
@@ -224,7 +224,7 @@ namespace orxonox
         }
     }
 
-  /**
+    /**
         @brief Sets maximal formation size
         @param size maximal formation size.
     */
@@ -279,20 +279,21 @@ namespace orxonox
 //             return;
         }
 
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
-
+        float rotateX = clamp(coord.x * 10, -1.0f, 1.0f);
+        float rotateY = clamp(coord.y * 10, -1.0f, 1.0f);
 
         if(this->state_ == FREE)
         {
             if (this->target_ || distance > 10)
             {
                 // Multiply with ROTATEFACTOR_FREE to make them a bit slower
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * rotateX);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * rotateY);
             }
 
-            if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            if (this->target_ && distance <  200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
             {
               this->getControllableEntity()->moveFrontBack(-0.05f); // They don't brake with full power to give the player a chance
             } else this->getControllableEntity()->moveFrontBack(SPEED_FREE);
@@ -304,8 +305,8 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * rotateX);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * rotateY);
             }
 
             if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
@@ -319,42 +320,42 @@ namespace orxonox
         if(this->state_ == SLAVE)
         {
 
-           this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
-           this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+            this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * rotateX);
+            this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * rotateY);
 
             if (distance < 300)
             {
-		 if (bHasTargetOrientation_)
-		    {
-			copyTargetOrientation();
-		    }
+                if (bHasTargetOrientation_)
+                {
+                    copyTargetOrientation();
+                }
                 if (distance < 100)
-                {   //linear speed reduction
+                { //linear speed reduction
                     this->getControllableEntity()->moveFrontBack(distance/100.0f*0.4f*SPEED_MASTER);
-
-                } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
-
-            } else {
-                this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
+                }
+                else
+                    this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
             }
+            else
+                this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
         }
 
         if (distance < 10)
         {
             this->positionReached();
-	    bHasTargetOrientation_=false;
+            bHasTargetOrientation_=false;
         }
     }
 
 
 
-  void FormationController::moveToTargetPosition()
+    void FormationController::moveToTargetPosition()
     {
         this->moveToPosition(this->targetPosition_);
     }
 
-  //copy the Roll orientation of given Quaternion.
-  void FormationController::copyOrientation(const Quaternion& orient)
+    //copy the Roll orientation of given Quaternion.
+    void FormationController::copyOrientation(const Quaternion& orient)
     {
         //roll angle difference in radian
         float diff=orient.getRoll(false).valueRadians()-(this->getControllableEntity()->getOrientation().getRoll(false).valueRadians());
@@ -372,7 +373,7 @@ namespace orxonox
     }
 
 
-   /**
+    /**
         @brief Unregisters a slave from its master. Initiated by a slave.
     */
     void FormationController::unregisterSlave()
@@ -462,11 +463,11 @@ namespace orxonox
             this->myMaster_ = 0;
         }
     }
- /**
+
+    /**
         @brief Commands the slaves of a master into a formation. Sufficiently fast not to be called within tick. Initiated by a master.
     */
-
-void FormationController::commandSlaves()
+    void FormationController::commandSlaves()
     {
         if(this->state_ != MASTER) return;
 
@@ -480,11 +481,11 @@ void FormationController::commandSlaves()
             this->slaves_.front()->setTargetPosition(dest);
         }
         else
-	// formation:
+        // formation:
         {
             dest += 1.0f*orient*WorldEntity::BACK;
             Vector3 pos = Vector3::ZERO;
-	         bool left=true;
+            bool left=true;
             int i = 1;
 
             for(std::vector<FormationController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
@@ -682,11 +683,12 @@ void FormationController::commandSlaves()
         if(this->state_ != MASTER) return;
 
         if (specificMasterActionHoldCount_ == 0)
-         {
+        {
             this->specificMasterAction_ = NONE;
             this->searchNewTarget();
-         }
-        else specificMasterActionHoldCount_--;
+        }
+        else
+            specificMasterActionHoldCount_--;
     }
 
     /**
@@ -710,12 +712,12 @@ void FormationController::commandSlaves()
     */
     void FormationController::turn180()
     {
-            Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, this->targetPosition_);
+        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, this->targetPosition_);
 
-            this->getControllableEntity()->rotateYaw(-2.0f * sgn(coord.x) * coord.x*coord.x);
-            this->getControllableEntity()->rotatePitch(2.0f * sgn(coord.y) * coord.y*coord.y);
+        this->getControllableEntity()->rotateYaw(-2.0f * sgn(coord.x) * coord.x*coord.x);
+        this->getControllableEntity()->rotatePitch(2.0f * sgn(coord.y) * coord.y*coord.y);
 
-            this->getControllableEntity()->moveFrontBack(SPEED_MASTER);
+        this->getControllableEntity()->moveFrontBack(SPEED_MASTER);
     }
 
     /**
@@ -733,8 +735,8 @@ void FormationController::commandSlaves()
     */
     void FormationController::spin()
     {
-            this->moveToTargetPosition();
-            this->getControllableEntity()->rotateRoll(0.8f);
+        this->moveToTargetPosition();
+        this->getControllableEntity()->rotateRoll(0.8f);
     }
 
   /**
@@ -772,26 +774,21 @@ void FormationController::commandSlaves()
 
         if((humanPawn != NULL) && (allMasters.size() != 0))
         {
-                float posHuman = humanPawn->getPosition().length();
-                float distance = 0.0f;
-                float minDistance = FLT_MAX;
-                int index = 0;
-                int i = 0;
+            float posHuman = humanPawn->getPosition().length();
+            float distance = 0.0f;
+            float minDistance = FLT_MAX;
+            int index = 0;
+            int i = 0;
 
-                for(std::vector<FormationController*>::iterator it = allMasters.begin(); it != allMasters.end(); it++, i++)
-                    {
-                        if (!FormationController::sameTeam((*it)->getControllableEntity(), humanPawn, (*it)->getGametype())) continue;
-                        distance = posHuman - (*it)->getControllableEntity()->getPosition().length();
-                        if(distance < minDistance) index = i;
-                    }
-                allMasters[index]->followInit(humanPawn);
+            for(std::vector<FormationController*>::iterator it = allMasters.begin(); it != allMasters.end(); it++, i++)
+            {
+                if (!FormationController::sameTeam((*it)->getControllableEntity(), humanPawn, (*it)->getGametype())) continue;
+                distance = posHuman - (*it)->getControllableEntity()->getPosition().length();
+                if(distance < minDistance) index = i;
             }
-
+            allMasters[index]->followInit(humanPawn);
+        }
     }
-
-
-
-
 
     /**
         @brief Master begins to follow a pawn. Is a "specific master action".
@@ -813,7 +810,7 @@ void FormationController::commandSlaves()
 
     }
 
-   /**
+    /**
         @brief Master begins to follow a randomly chosen human player of the same team. Is a "specific master action".
     */
     void FormationController::followRandomHumanInit()
@@ -841,7 +838,7 @@ void FormationController::commandSlaves()
     }
 
 
-  /**
+    /**
         @brief Master follows target with adjusted speed. Called within tick.
     */
     void FormationController::follow()
@@ -853,7 +850,7 @@ void FormationController::commandSlaves()
     }
 
 
-  void FormationController::setTargetPosition(const Vector3& target)
+    void FormationController::setTargetPosition(const Vector3& target)
     {
         this->targetPosition_ = target;
         this->bHasTargetPosition_ = true;
@@ -917,19 +914,19 @@ void FormationController::commandSlaves()
         }
     }
 
-  void FormationController::forgetTarget()
+    void FormationController::forgetTarget()
     {
         this->target_ = 0;
         this->bShooting_ = false;
     }
 
-   void FormationController::targetDied()
+    void FormationController::targetDied()
     {
         this->forgetTarget();
         this->searchRandomTargetPosition();
     }
 
-  bool FormationController::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
+    bool FormationController::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
     {
         if (entity1 == entity2)
             return true;
@@ -1053,14 +1050,14 @@ void FormationController::commandSlaves()
         if (!this->getControllableEntity())
             return;
 
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
 
             if (this->target_ || distance > minDistance)
             {
                 // Multiply with ROTATEFACTOR_FREE to make them a bit slower
-                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * clamp(coord.x * 10, -1.0f, 1.0f));
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * clamp(coord.y * 10, -1.0f, 1.0f));
                 this->getControllableEntity()->moveFrontBack(SPEED_FREE);
             }
 

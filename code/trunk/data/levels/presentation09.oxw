@@ -21,7 +21,7 @@
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
-   skybox       = "Orxonox/skypanoramagen1"
+   skybox       = "Orxonox/skyBoxBasic"
   >
   
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />

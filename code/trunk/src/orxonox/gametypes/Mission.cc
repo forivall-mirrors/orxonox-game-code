@@ -62,7 +62,7 @@ namespace orxonox
         if (victim && victim->getPlayer() && this->lives_ == 1)
         {
             this->missionAccomplished_ = false;
-	    this->end();
+            this->end();
         }
     }
 
@@ -77,11 +77,11 @@ namespace orxonox
     void Mission::end()
     {
         Gametype::end();
-	/*if (this->missionAccomplished_) 
+        /*if (this->missionAccomplished_)
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
-	else
+        else
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
-	 * */
+        */
     }
 
     void Mission::setTeams()

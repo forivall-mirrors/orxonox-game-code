@@ -68,7 +68,7 @@ namespace orxonox {
         - @b destroyCarrier The PickupCarrier is immediately destroyed upon using the MetaPickup.
 
         The default value is <em>none</em>, which basically does nothing.
-        
+
         The parameter <b>activation type</b> can be used to specify, whether the MetaPickup is used upon pickup (<em>immediate</em>) or not (<em>onUse</em>). With <em>immediate</em> being the default.
 
         An example of a XML implementation of a MetaPickup would be:
@@ -94,26 +94,23 @@ namespace orxonox {
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a MetaPickup object through XML.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
             @brief Returns the meta type of the MetaPickup.
             @return Returns an enum with the meta type of the MetaPickup.
             */
-            inline pickupMetaType::Value getMetaTypeDirect(void) const
+            inline pickupMetaType::Value getMetaType(void) const
                 { return this->metaType_; }
-            const std::string& getMetaType(void) const; //!< Get the meta type of this MetaPickup.
+            const std::string& getMetaTypeAsString(void) const; //!< Get the meta type of this MetaPickup.
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
             /**
             @brief Set the meta type of the MetaPickup.
             @param type The meta type as an enum.
             */
-            inline void setMetaTypeDirect(pickupMetaType::Value type)
+            inline void setMetaType(pickupMetaType::Value type)
                 { this->metaType_ =  type; }
-            void setMetaType(const std::string& type); //!< Set the meta type of this MetaPickup.
+            void setMetaTypeAsString(const std::string& type); //!< Set the meta type of this MetaPickup.
 
         private:
             void initialize(void); //!< Initializes the member variables.

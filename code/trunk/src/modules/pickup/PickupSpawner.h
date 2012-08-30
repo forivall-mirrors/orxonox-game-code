@@ -77,11 +77,11 @@ namespace orxonox
     {
         public:
             PickupSpawner(BaseObject* creator); //!< Default Constructor.
-            PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems); //!< Constructor.
             virtual ~PickupSpawner(); //!< Destructor.
 
+            static PickupSpawner* createDroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance = 10.0);
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a PickupSpawner through XML.
-            virtual void changedActivity(); //!< Invoked when activity has changed (set visibilty).
             virtual void tick(float dt); //!< Tick, checks if any Pawn is close enough to trigger.
 
             /**
@@ -102,8 +102,23 @@ namespace orxonox
             */
             inline int getMaxSpawnedItems(void) const
                 { return this->maxSpawnedItems_; }
+            /**
+            @brief Returns the name of the template which is used to create a pickup for this spawner.
+            */
+            inline const std::string& getPickupTemplateName() const
+                { return this->pickupTemplateName_; }
+            /**
+            @brief Returns the template which is used to create a pickup for this spawner.
+            */
+            inline Template* getPickupTemplate() const
+                {return this->pickupTemplate_; }
 
-        protected:
+        private:
+            void initialize(void);
+
+            void trigger(PickupCarrier* carrier); //!< Method called when a carrier is close enough.
+            void respawnTimerCallback(); //!< Method called when the timer runs out.
+
             void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
             void startRespawnTimer(void); //!< Invoked by the timer, re-activates the PickupSpawner.
 
@@ -127,20 +142,19 @@ namespace orxonox
             */
             inline void setRespawnTime(float time)
                 { this->respawnTime_ = time; }
+
             void setMaxSpawnedItems(int items); //!< Sets the maximum number of spawned items.
 
-            virtual Pickupable* getPickup(void); //!< Creates a new Pickupable.
+            void setPickupTemplateName(const std::string& name);
+            void setPickupTemplate(Template* temp);
 
+            Pickupable* createPickup(void); //!< Creates a new Pickupable.
             void setPickupable(Pickupable* pickup); //!< Sets a Pickupable for the PickupSpawner to spawn.
-            const Pickupable* getPickupable(void) const; //!< Get the Pickupable that is spawned by this PickupSpawner.
 
             Pickupable* pickup_; //!< The pickup to be spawned.
-
-        private:
-            void initialize(void);
-
-            void trigger(Pawn* pawn); //!< Method called when a Pawn is close enough.
-            void respawnTimerCallback(); //!< Method called when the timer runs out.
+            StaticEntity* representation_; //!< The active representation of the spawner.
+            std::string pickupTemplateName_; //!< The name of the pickup template.
+            Template* pickupTemplate_; //!< The template to be used to create a pickupable.
 
             int maxSpawnedItems_; //!< Maximum number of items spawned by this PickupSpawner.
             int spawnsRemaining_; //!< Number of items that can be spawned by this PickupSpawner until it selfdestructs.

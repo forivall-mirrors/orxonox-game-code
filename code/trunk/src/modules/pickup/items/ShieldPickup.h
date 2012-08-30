@@ -81,7 +81,6 @@ namespace orxonox {
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
             @brief Get the duration, the time the shield is actvie at the most.
@@ -103,7 +102,6 @@ namespace orxonox {
                 { return this->shieldAbsorption_; }
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             void pickupTimerCallback(void); //!< Helper method. Is called by the Timer as soon as it expires.
 
             void setDuration(float duration); //!< Sets the duration.

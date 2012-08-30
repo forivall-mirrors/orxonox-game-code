@@ -593,7 +593,7 @@ namespace orxonox
         @param name The group of the requested command
         @param bPrintError If true, an error is printed if the command doesn't exist
     */
-    /* static */ const ConsoleCommand* ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ ConsoleCommand* ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
     {
         // find the group
         std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandMap().find(group);
@@ -623,7 +623,7 @@ namespace orxonox
         @param name The group of the requested command in lowercase
         @param bPrintError If true, an error is printed if the command doesn't exist
     */
-    /* static */ const ConsoleCommand* ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ ConsoleCommand* ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
     {
         std::string groupLC = getLowercase(group);
         std::string nameLC = getLowercase(name);

@@ -67,7 +67,7 @@ namespace orxonox
             inline bool hasStarted() const
                 { return this->bStarted_; }
             void changedStarted(void); // Is called when the game has changed to started.
-            
+
             /**
             @brief Get whether the game has ended yet.
             @return Returns true if the game has ended, false if not.
@@ -107,7 +107,7 @@ namespace orxonox
             inline bool isReadyToSpawn() const
                 { return this->readyToSpawn_; }
             void changedReadyToSpawn(bool ready); // Inform the GametypeInfo that the local player has changed its spawned status.
-            
+
             /**
             @brief Get whether the local player is spawned.
             @return Returns true if the local player is currently spawned, false if not.
@@ -118,23 +118,20 @@ namespace orxonox
 
             inline const std::string& getHUDTemplate() const
                 { return this->hudtemplate_; }
-            
-            inline unsigned int getNumberOfPlayers() const
-                {  return this->spawnedPlayers_.size(); }
 
-            void sendAnnounceMessage(const std::string& message);
-            void sendAnnounceMessage(const std::string& message, unsigned int clientID);
-            void sendKillMessage(const std::string& message, unsigned int clientID);
-            void sendDeathMessage(const std::string& message, unsigned int clientID);
-            void sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour);
-            void sendFadingMessage(const std::string& message, unsigned int clientID);
+            void sendAnnounceMessage(const std::string& message) const;
+            void sendAnnounceMessage(const std::string& message, unsigned int clientID) const;
+            void sendKillMessage(const std::string& message, unsigned int clientID) const;
+            void sendDeathMessage(const std::string& message, unsigned int clientID) const;
+            void sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour) const;
+            void sendFadingMessage(const std::string& message, unsigned int clientID) const;
 
-            void dispatchAnnounceMessage(const std::string& message);
-            void dispatchKillMessage(const std::string& message);
-            void dispatchDeathMessage(const std::string& message);
-            void dispatchStaticMessage(const std::string& message,const ColourValue& colour);
-            void dispatchFadingMessage(const std::string& message);
-            
+            void dispatchAnnounceMessage(const std::string& message) const;
+            void dispatchKillMessage(const std::string& message) const;
+            void dispatchDeathMessage(const std::string& message) const;
+            void dispatchStaticMessage(const std::string& message,const ColourValue& colour) const;
+            void dispatchFadingMessage(const std::string& message) const;
+
         protected:
             void start(void); // Inform the GametypeInfo that the game has started.
             void end(void); // Inform the GametypeInfo that the game has ended.
@@ -164,7 +161,7 @@ namespace orxonox
             float startCountdown_; //!< The current value of the start countdown.
             unsigned int counter_; //!< The current integer value of the start countdown, the start countdown counter.
             std::string hudtemplate_;
-            
+
             std::set<PlayerInfo*> spawnedPlayers_; //!< A set of players that are currently spawned.
             bool spawned_; //!< Whether the local Player is currently spawned.
             bool readyToSpawn_; //!< Whether the local Player is ready to spawn.

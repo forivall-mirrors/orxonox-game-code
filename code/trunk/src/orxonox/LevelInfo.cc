@@ -41,7 +41,7 @@ namespace orxonox
 {
 
     // LevelInfoItem
-    
+
     //! The list of allowed tags.
     /*static*/ std::set<std::string> LevelInfoItem::possibleTags_s = std::set<std::string>();
 
@@ -92,6 +92,7 @@ namespace orxonox
             LevelInfoItem::possibleTags_s.insert("mission");
             LevelInfoItem::possibleTags_s.insert("gametype");
             LevelInfoItem::possibleTags_s.insert("minigame");
+            LevelInfoItem::possibleTags_s.insert("shipselection");
         }
     }
 
@@ -105,10 +106,25 @@ namespace orxonox
     {
         SubString substr = SubString(tags, ",", " "); // Split the string into tags.
         const std::vector<std::string>& strings = substr.getAllStrings();
-        for(std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); it++)
+        for (std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); it++)
             this->addTag(*it, false);
 
         this->tagsUpdated();
+    }
+    /**
+    @brief
+        Set the starting ship models of the level
+    @param tags
+        A comma-seperated string of all the allowed ship models for the shipselection.
+    */
+    void LevelInfoItem::setStartingShips(const std::string& ships)
+    {
+        SubString substr = SubString(ships, ",", " "); // Split the string into tags.
+        const std::vector<std::string>& strings = substr.getAllStrings();
+        for(std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); it++)
+            this->addStartingShip(*it, false);
+
+        this->startingshipsUpdated();
     }
 
     /**
@@ -136,6 +152,26 @@ namespace orxonox
 
     /**
     @brief
+        Add a ship model to allowed models for the shipselection
+    @param ship
+        The ship model to be added.
+    @param update
+        Whether the comma-seperated string of all ship models should be updated. Default is true.
+    @return
+        Returns true if the ship was successfully added, if the ship was already present it returns false.
+    */
+    bool LevelInfoItem::addStartingShip(const std::string& ship, bool update)
+    {
+        bool success = this->startingShips_.insert(ship).second;
+        if(update && success)
+            this->startingshipsUpdated();
+
+        return success;
+    }
+
+
+    /**
+    @brief
         Updates the comma-seperated string of all tags, if the set of tags has changed.
     */
     void LevelInfoItem::tagsUpdated(void)
@@ -153,6 +189,55 @@ namespace orxonox
 
         this->tagsString_ = std::string(stream.str());
     }
+
+    /**
+    @brief
+        Updates the comma-seperated string of all ships, if the set of tags has changed.
+    */
+    void LevelInfoItem::startingshipsUpdated(void)
+    {
+        std::stringstream stream;
+        std::set<std::string>::iterator temp;
+        for(std::set<std::string>::iterator it = this->startingShips_.begin(); it != this->startingShips_.end(); )
+        {
+            temp = it;
+            if(++it == this->startingShips_.end()) // If this is the last ship we don't add a comma.
+                stream << *temp;
+            else
+                stream << *temp << ", ";
+        }
+
+        this->startingShipsString_ = std::string(stream.str());
+    }
+
+    void LevelInfoItem::changeStartingShip(const std::string& model)
+    {
+        static std::string shipSelectionTag = "shipselection";
+        //HACK: Read Level XML File, find "shipselection", replace with ship model
+        std::string levelPath = "../levels/";
+        levelPath.append(this->getXMLFilename());
+        std::string tempPath = "../levels/";
+        tempPath.append("_temp.oxw");
+        orxout(user_status) << levelPath << endl;
+        orxout(user_status) << tempPath << endl;
+        std::ifstream myLevel (levelPath.c_str());
+        std::ofstream tempLevel (tempPath.c_str());
+        while(!myLevel.eof())
+        {
+            std::string buff;
+            std::getline(myLevel, buff);
+            std::string pawndesignString = "pawndesign=";
+            size_t found = buff.find(pawndesignString.append(shipSelectionTag));
+            if (found!= std::string::npos)
+                buff = buff.substr(0, found + 11) + model + buff.substr(found+11+shipSelectionTag.length(), std::string::npos);
+            tempLevel.write(buff.c_str(), buff.length());
+            tempLevel << std::endl;
+        }
+        myLevel.close();
+        tempLevel.close();
+        orxout(user_status) << "done" << endl;
+    }
+
 
     // LevelInfo
 
@@ -191,6 +276,7 @@ namespace orxonox
         XMLPortParam(LevelInfo, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(LevelInfo, "screenshot", setScreenshot, getScreenshot, xmlelement, mode);
         XMLPortParam(LevelInfo, "tags", setTags, getTags, xmlelement, mode);
+        XMLPortParam(LevelInfo, "startingships", setStartingShips, getStartingShips, xmlelement, mode);
     }
 
     /**
@@ -206,6 +292,7 @@ namespace orxonox
         info->setDescription(this->getDescription());
         info->setScreenshot(this->getScreenshot());
         info->setTags(this->getTags());
+        info->setStartingShips(this->getStartingShips());
         return info;
     }
 

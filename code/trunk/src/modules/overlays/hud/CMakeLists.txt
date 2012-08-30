@@ -11,7 +11,6 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   AnnounceMessage.cc
   KillMessage.cc
   DeathMessage.cc
-  UnderAttackHealthBar.cc
   TeamBaseMatchScore.cc
   GametypeStaticMessage.cc
   GametypeFadingMessage.cc

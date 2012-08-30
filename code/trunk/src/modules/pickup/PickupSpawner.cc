@@ -54,50 +54,11 @@ namespace orxonox
     @param creator
         Pointer to the object which created this item.
     */
-    PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator), pickup_(NULL)
+    PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator), pickup_(NULL), representation_(NULL), pickupTemplate_(NULL)
     {
         RegisterObject(PickupSpawner);
 
         this->initialize();
-    }
-
-    /**
-    @brief
-        Constructor, Creates a fully functional PickupSpawner.
-    @param creator
-        The creator of this PickupSpawner.
-    @param pickup
-        The Pickupable to be spawned by this PickupSpawner.
-    @param triggerDistance
-        The distance at which the PickupSpawner will trigger.
-    @param respawnTime
-        The minimum time between two spawns.
-    @param maxSpawnedItems
-        The maximum number of items spawned by this PickupSpawner.
-    */
-    PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator), pickup_(NULL)
-    {
-        RegisterObject(PickupSpawner);
-
-        this->initialize();
-
-        this->pickup_ = pickup;
-
-        this->triggerDistance_ = triggerDistance;
-        this->respawnTime_ = respawnTime;
-        this->setMaxSpawnedItems(maxSpawnedItems);
-
-        if(this->pickup_ == NULL)
-        {
-            orxout(internal_warning, context::pickups) << "A PickupSpawner was created without a valid Pickupable. This won't work." << endl;
-            this->setActive(false);
-        }
-        else
-        {
-            PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
-            this->attach(representation->getSpawnerRepresentation(this));
-            this->setActive(true);
-        }
     }
 
     /**
@@ -111,6 +72,8 @@ namespace orxonox
         this->maxSpawnedItems_ = INF;
         this->spawnsRemaining_ = INF;
         this->selfDestruct_ = false;
+
+        this->setPickupable(NULL);
     }
 
     /**
@@ -125,6 +88,32 @@ namespace orxonox
 
     /**
     @brief
+        Factory method, Creates a fully functional PickupSpawner.
+    @param creator
+        The creator of this PickupSpawner.
+    @param pickup
+        The Pickupable to be spawned by this PickupSpawner.
+    @param carrier
+        The PickupCarrier that carried the input pickup before it was dropped.
+    @param triggerDistance
+        The distance at which the PickupSpawner will trigger.
+    */
+    /*static*/ PickupSpawner* PickupSpawner::createDroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance)
+    {
+        PickupSpawner* spawner = new PickupSpawner(creator);
+
+        spawner->setPickupable(pickup);
+        spawner->setTriggerDistance(triggerDistance);
+        spawner->setMaxSpawnedItems(1);
+
+        spawner->setPosition(carrier->getCarrierPosition());
+        spawner->block(carrier);
+
+        return spawner;
+    }
+
+    /**
+    @brief
         Method for creating a PickupSpawner through XML.
     @param xmlelement
         XML element which contains the PickupSpawner.
@@ -135,35 +124,10 @@ namespace orxonox
     {
         SUPER(PickupSpawner, XMLPort, xmlelement, mode);
 
-        XMLPortObject(PickupSpawner, Pickupable, "pickup", setPickupable, getPickupable, xmlelement, mode);
-
+        XMLPortParam(PickupSpawner, "pickup", setPickupTemplateName, getPickupTemplateName, xmlelement, mode);
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
         XMLPortParam(PickupSpawner, "maxSpawnedItems", setMaxSpawnedItems, getMaxSpawnedItems, xmlelement, mode);
-
-        if(this->pickup_ == NULL)
-        {
-            orxout(internal_warning, context::pickups) << "A PickupSpawner was created without a valid Pickupable. This won't work." << endl;
-            this->setActive(false);
-        }
-        else
-        {
-            PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
-            this->attach(representation->getSpawnerRepresentation(this));
-            this->setActive(true);
-        }
-    }
-
-    /**
-    @brief
-        Invoked when the activity has changed. Sets visibility of attached objects.
-    */
-    void PickupSpawner::changedActivity()
-    {
-        SUPER(PickupSpawner, changedActivity);
-
-        if(GameMode::isMaster())
-            this->setVisible(this->isActive());
     }
 
     /**
@@ -198,7 +162,7 @@ namespace orxonox
                     break;
 
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
-                PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(*it);
+                PickupCarrier* carrier = static_cast<PickupCarrier*>(*it);
                 // If a PickupCarrier, that fits the target-range of the Pickupable spawned by this PickupSpawner, is in trigger-distance and the carrier is not blocked.
                 if(distance.length() < this->triggerDistance_ && carrier != NULL && this->blocked_.find(carrier) == this->blocked_.end())
                 {
@@ -207,6 +171,45 @@ namespace orxonox
                 }
             }
         }
+    }
+
+    /**
+    @brief
+        Trigger the PickupSpawner.
+        Adds the pickup to the Pawn that triggered, sets the timer to re-activate and deactives the PickupSpawner.
+    @param carrier
+        Carrier which triggered the PickupSpawner.
+    */
+    void PickupSpawner::trigger(PickupCarrier* carrier)
+    {
+        orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") triggered and active." << endl;
+
+        PickupCarrier* target = carrier->getTarget(this->pickup_);
+
+        this->block(carrier);
+
+        assert(target);
+        bool pickedUp = this->pickup_->pickup(target);
+        assert(pickedUp);
+        pickedUp = false; // To avoid compiler warning.
+
+        this->setPickupable(NULL);
+        this->decrementSpawnsRemaining();
+    }
+
+    void PickupSpawner::setPickupTemplateName(const std::string& name)
+    {
+        Template* temp = Template::getTemplate(name);
+        if (temp)
+            this->setPickupTemplate(temp);
+    }
+
+    void PickupSpawner::setPickupTemplate(Template* temp)
+    {
+        this->pickupTemplate_ = temp;
+        this->pickupTemplateName_ = temp->getName();
+
+        this->setPickupable(this->createPickup());
     }
 
     /**
@@ -232,17 +235,16 @@ namespace orxonox
         if(this->spawnsRemaining_ != INF)
             this->spawnsRemaining_--;
 
+        this->setActive(false);
+
         if(this->spawnsRemaining_ != 0 && this->respawnTime_ > 0)
         {
             this->startRespawnTimer();
-
-            this->setActive(false);
             this->fireEvent();
         }
         else
         {
             orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") empty, selfdestruct initialized." << endl;
-            this->setActive(false);
             this->destroy();
         }
     }
@@ -258,73 +260,13 @@ namespace orxonox
 
     /**
     @brief
-        Sets a Pickupable for the PickupSpawner to spawn.
-    @param pickup
-        The Pickupable to be set.
+        Invoked by the timer, re-activates the PickupSpawner.
     */
-    void PickupSpawner::setPickupable(Pickupable* pickup)
+    void PickupSpawner::respawnTimerCallback()
     {
-        if(this->pickup_ != NULL)
-        {
-            orxout(internal_error, context::pickups) << "In PickupSpawner (&" << this << "): setPickupable called, with this->pickup_ already set." << endl;
-            return;
-        }
-        if(pickup == NULL)
-        {
-            orxout(internal_error, context::pickups) << "In PickupSpawner (&" << this << "): Argument of setPickupable is NULL." << endl;
-            return;
-        }
+        orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") reactivated." << endl;
 
-        this->pickup_ = pickup;
-    }
-
-    /**
-    @brief
-        Get the Pickupable that is spawned by this PickupSpawner.
-    @return
-        Returns the Pickupable that is spawned by this PickupSpawner.
-    */
-    const Pickupable* PickupSpawner::getPickupable(void) const
-    {
-        return this->pickup_;
-    }
-
-    /**
-    @brief
-        Trigger the PickupSpawner.
-        Adds the pickup to the Pawn that triggered, sets the timer to re-activate and deactives the PickupSpawner.
-    @param pawn
-        Pawn which triggered the PickupSpawner.
-    */
-    void PickupSpawner::trigger(Pawn* pawn)
-    {
-        if(this->isActive()) // Checks whether PickupSpawner is active.
-        {
-            orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") triggered and active." << endl;
-
-            PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
-            assert(carrier);
-
-            // If the Pawn isn't a target of the Pickupable.
-            if(!carrier->isTarget(this->pickup_))
-            {
-                orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") triggered but Pawn wasn't a target of the Pickupable." << endl;
-                return;
-            }
-
-            PickupCarrier* target = carrier->getTarget(this->pickup_);
-            Pickupable* pickup = this->getPickup();
-
-            this->block(carrier);
-
-            assert(pickup);
-            assert(target);
-            bool pickedUp = pickup->pickup(target);
-            assert(pickedUp);
-            pickedUp = false; // To avoid compiler warning.
-
-            this->decrementSpawnsRemaining();
-        }
+        this->setPickupable(this->createPickup());
     }
 
     /**
@@ -333,7 +275,7 @@ namespace orxonox
     @return
         The Pickupable created.
     */
-    Pickupable* PickupSpawner::getPickup(void)
+    Pickupable* PickupSpawner::createPickup(void)
     {
         if(this->spawnsRemaining_ == 0)
         {
@@ -341,18 +283,51 @@ namespace orxonox
             return NULL;
         }
 
-        Pickupable* pickup = this->pickup_->clone();
-        return pickup;
+        if (this->pickupTemplate_ != NULL)
+        {
+            Identifier* identifier = this->pickupTemplate_->getBaseclassIdentifier();
+            if (identifier != NULL)
+            {
+                Pickupable* pickup = orxonox_cast<Pickupable*>(identifier->fabricate(this));
+                orxonox_cast<BaseObject*>(pickup)->addTemplate(this->pickupTemplate_);
+                return pickup;
+            }
+            else
+                orxout(internal_error, context::pickups) << "No base class defined in pickup-template " << this->pickupTemplateName_ << endl;
+        }
+
+        return NULL;
     }
 
     /**
     @brief
-        Invoked by the timer, re-activates the PickupSpawner.
+        Sets a Pickupable for the PickupSpawner to spawn.
+    @param pickup
+        The Pickupable to be set.
     */
-    void PickupSpawner::respawnTimerCallback()
+    void PickupSpawner::setPickupable(Pickupable* pickup)
     {
-        orxout(verbose, context::pickups) << "PickupSpawner (&" << this << ") reactivated." << endl;
+        if (this->representation_ != NULL)
+        {
+            this->representation_->destroy();
+            this->representation_ = NULL;
+        }
 
-        this->setActive(true);
+        if (pickup != NULL)
+        {
+            if (this->pickup_ != NULL)
+                this->pickup_->destroy();
+
+            PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(pickup->getRepresentationName());
+            this->representation_ = representation->createSpawnerRepresentation(this);
+            this->attach(this->representation_);
+            this->setActive(true);
+        }
+        else
+        {
+            this->setActive(false);
+        }
+
+        this->pickup_ = pickup;
     }
 }

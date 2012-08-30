@@ -29,6 +29,7 @@
 /**
     @file TetrisCenterpoint.cc
     @brief Implementation of the TetrisCenterpoint class.
+    @ingroup Tetris
 */
 
 #include "TetrisCenterpoint.h"
@@ -54,6 +55,7 @@ namespace orxonox
         this->height_ = 11;
         this->stoneSize_ = 10.0f;
         this->stoneTemplate_ = "";
+        this->brickTemplate_ = "";
         this->stoneSpeed_ = 20.0f;
         
         this->checkGametype();
@@ -68,9 +70,10 @@ namespace orxonox
         SUPER(TetrisCenterpoint, XMLPort, xmlelement, mode);
 
         XMLPortParam(TetrisCenterpoint, "width", setWidth, getWidth, xmlelement, mode); // die Breite
-        XMLPortParam(TetrisCenterpoint, "height", setHeight, setWidth, xmlelement, mode); // die Grösse
+        XMLPortParam(TetrisCenterpoint, "height", setHeight, getHeight, xmlelement, mode); // die Grösse //was sollte das mit setWidth??
         XMLPortParam(TetrisCenterpoint, "stoneSize", setStoneSize, getStoneSize, xmlelement, mode); 
         XMLPortParam(TetrisCenterpoint, "stoneTemplate", setStoneTemplate, getStoneTemplate, xmlelement, mode);
+        XMLPortParam(TetrisCenterpoint, "brickTemplate", setBrickTemplate, getBrickTemplate, xmlelement, mode);
         XMLPortParam(TetrisCenterpoint, "stoneSpeed", setStoneSpeed, getStoneSpeed, xmlelement, mode);
     }
 

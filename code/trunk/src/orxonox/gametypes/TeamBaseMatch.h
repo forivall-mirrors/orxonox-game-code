@@ -46,7 +46,7 @@ namespace orxonox
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator);
 
-            virtual void playerScored(PlayerInfo* player);
+            virtual void playerScored(PlayerInfo* player, int score = 1);
             virtual void showPoints();
             virtual void endGame();
 

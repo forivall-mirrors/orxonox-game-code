@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -79,32 +78,6 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void ShieldPickup::initializeIdentifier(void)
-    {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getShieldHealth();
-        std::string type2 = "ShieldHealth";
-        std::string val2 = stream.str();
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getShieldAbsorption();
-        std::string type3 = "ShieldAbsorption";
-        std::string val3 = stream.str();
-        this->pickupIdentifier_->addParameter(type3, val3);
-
-    }
-
-    /**
-    @brief
         Method for creating a ShieldPickup object through XML.
     */
     void ShieldPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -114,8 +87,6 @@ namespace orxonox
         XMLPortParam(ShieldPickup, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode);
         XMLPortParam(ShieldPickup, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode);
         XMLPortParam(ShieldPickup, "duration", setDuration, getDuration, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -176,33 +147,13 @@ namespace orxonox
     Pawn* ShieldPickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
         {
             orxout(internal_error, context::pickups) << "Invalid PickupCarrier in ShieldPickup." << endl;
         }
         return pawn;
-    }
-
-    /**
-    @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void ShieldPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new ShieldPickup(this);
-
-        SUPER(ShieldPickup, clone, item);
-
-        ShieldPickup* pickup = dynamic_cast<ShieldPickup*>(item);
-        pickup->setDuration(this->getDuration());
-        pickup->setShieldAbsorption(this->getShieldAbsorption());
-        pickup->setShieldHealth(this->getShieldHealth());
-        pickup->initializeIdentifier();
     }
 
     /**

@@ -38,7 +38,6 @@
 #include "core/XMLPort.h"
 
 #include "controllers/DroneController.h"
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/Drone.h"
 #include "worldentities/pawns/Pawn.h"
 
@@ -74,19 +73,8 @@ namespace orxonox
     void DronePickup::initialize(void)
     {
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
-        this->setDurationTypeDirect(pickupDurationType::once);
+        this->setDurationType(pickupDurationType::once);
         this->droneTemplate_ = "";
-    }
-
-    /**
-    @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void DronePickup::initializeIdentifier(void)
-    {
-        std::string val = this->getDroneTemplate();
-        std::string type = "droneTemplate";
-        this->pickupIdentifier_->addParameter(type, val);
     }
 
     /**
@@ -97,8 +85,6 @@ namespace orxonox
     {
         SUPER(DronePickup, XMLPort, xmlelement, mode);
         XMLPortParam(DronePickup, "droneTemplate", setDroneTemplate, getDroneTemplate, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -107,7 +93,7 @@ namespace orxonox
     @param templatename
         The name of the Template to e set.
     */
-    void DronePickup::setDroneTemplate(std::string templatename){
+    void DronePickup::setDroneTemplate(const std::string& templatename){
         droneTemplate_ = templatename;
     }
 
@@ -143,7 +129,7 @@ namespace orxonox
                 drone->addTemplate(this->getDroneTemplate());
 
                 Controller* controller = drone->getController();
-                DroneController* droneController = dynamic_cast<DroneController*>(controller);
+                DroneController* droneController = orxonox_cast<DroneController*>(controller);
                 if(droneController != NULL)
                 {
                     droneController->setOwner(pawn);
@@ -174,7 +160,7 @@ namespace orxonox
     Pawn* DronePickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
         {
@@ -182,24 +168,5 @@ namespace orxonox
         }
 
         return pawn;
-    }
-
-    /**
-    @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void DronePickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new DronePickup(this);
-
-        SUPER(DronePickup, clone, item);
-
-        DronePickup* pickup = dynamic_cast<DronePickup*>(item);
-        pickup->setDroneTemplate(this->getDroneTemplate());
-
-        pickup->initializeIdentifier();
     }
 }

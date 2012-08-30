@@ -279,9 +279,6 @@
     #define SUPER_changedUsed(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
 
-    #define SUPER_clone(classname, functionname, ...) \
-        SUPER_ARGS(classname, functionname, __VA_ARGS__)
-
     #define SUPER_changedCarrier(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
 
@@ -397,7 +394,7 @@ namespace orxonox
                 public: \
                     inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) ) \
                     { \
-                        (dynamic_cast<T*>(object))->T:: functionname
+                        (orxonox_cast<T*>(object))->T:: functionname
 
         /*
             JUST ADD THE FUNCTION ARGUMENTS BETWEEN BOTH MACROS, ENCLOSED BY BRACKETS
@@ -507,7 +504,7 @@ namespace orxonox
                 // @param ... The arguments of the function
                 inline void operator()( SUPER_CALL_ARGUMENTS##hasarguments(__VA_ARGS__) )
                 {
-                    (dynamic_cast<T*>(object))->T:: functionname ( Call the function with it's arguments );
+                    (orxonox_cast<T*>(object))->T:: functionname ( Call the function with it's arguments );
                 }
 
                 Identifier* getParentIdentifier() const
@@ -565,15 +562,11 @@ namespace orxonox
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(11, clone, true, OrxonoxClass*& item)
-            (item)
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(12, changedCarrier, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(11, changedCarrier, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(13, changedPickedUp, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(12, changedPickedUp, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
@@ -631,7 +624,6 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(changedName);
     SUPER_INTRUSIVE_DECLARATION(changedGametype);
     SUPER_INTRUSIVE_DECLARATION(changedUsed);
-    SUPER_INTRUSIVE_DECLARATION(clone);
     SUPER_INTRUSIVE_DECLARATION(changedCarrier);
     SUPER_INTRUSIVE_DECLARATION(changedPickedUp);
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--

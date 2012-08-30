@@ -300,11 +300,11 @@ namespace orxonox
         }
     }
 
-    void Gametype::playerScored(PlayerInfo* player)
+    void Gametype::playerScored(PlayerInfo* player, int score)
     {
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
-            it->second.frags_++;
+            it->second.frags_ += score;
     }
 
     int Gametype::getScore(PlayerInfo* player) const

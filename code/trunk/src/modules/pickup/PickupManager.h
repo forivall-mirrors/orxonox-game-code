@@ -40,8 +40,6 @@
 #include <map>
 #include "core/WeakPtr.h"
 
-#include "pickup/PickupIdentifier.h"
-
 #include "PickupRepresentation.h"
 
 #include "util/Singleton.h"
@@ -66,6 +64,7 @@ namespace orxonox // tolua_export
         bool usable; //!< Whether the @ref orxonox::Pickupable "Pickupable" is usable.
         bool unusable; //!< Whether the @ref orxonox::Pickupable "Pickupable" is droppable.
         uint32_t representationObjectId; //!< The objectId of the @ref orxonox::PickupRepresentation "PickupRepresentation" that represents the @ref orxonox::Pickupable "Pickupable".
+        std::string representationName; //!< The name of the associated PickupRepresentation
     };
     // tolua_end
 
@@ -73,7 +72,7 @@ namespace orxonox // tolua_export
     @brief
         The PickupManager class manages @ref orxonox::Pickupable "Pickupables".
 
-        It has in essence two tasks to fulfill. Firstly it must link @ref orxonox::Pickupable "Pickupables" (through their @ref orxonox::PickupIdentifier "PickupIdentifiers") to their respective @ref orxonox::PickupRepresentation "PickupRepresentations". Secondly it manages the PickupInventory. (The PickupInventory is the GUI that displays @ref orxonox::Pickupable "Pickupables" for the covenience of the user.)
+        It has in essence two tasks to fulfill. Firstly it must link @ref orxonox::Pickupable "Pickupables" (through their representation-name attribute) to the respective @ref orxonox::PickupRepresentation "PickupRepresentations". Secondly it manages the PickupInventory. (The PickupInventory is the GUI that displays @ref orxonox::Pickupable "Pickupables" for the covenience of the user.)
 
         @section PickupManagerTechnicalDetails Technical details
         Unfortunately <em>under the hood</em> it isn't just as easy. At least the PickupInventory part isn't. To grasp why this is we need to have a brief look at how the pickups module works over the network:
@@ -85,8 +84,7 @@ namespace orxonox // tolua_export
         This leaves us with the PickupInventory component (and this is really the source of all the complexity).
 
         Firstly there are a number of lists (where by list I really mean any kind of ordered data structure) kept.
-        - The @ref orxonox::PickupManager::representations_ "representations_" list links @ref orxonox::PickupRepresentation "PickupRepresentations" with @ref orxonox::PickupIdentifier "PickupIdentifiers" and can be used to get the @ref orxonox::PickupRepresentation "PickupRepresentation" for a given @ref orxonox::Pickupable "Pickupable". It is only populated on the server (or in standalone mode). Each @ref orxonox::PickupRepresentation "PickupRepresentation" that is generated through XML registers itself with the PickupManager and is thereby added to the list.
-        - The @ref orxonox::PickupManager::representationsNetworked_ "representationsNetworked_" list is the networked (hence the name) equivalent to the @ref orxonox::PickupManager::representations_ "representations_" list. It links an objectId of a @ref orxonox::PickupRepresentation "PickupRepresentation" to a @ref orxonox::PickupRepresentation "PickupRepresentation". This list is maintained on all hosts, each representation registers itself (in its constructor) with the PickupManager. Since the representations are synchronised they are created on each host. The "same" instance on each host is identified by the same objectId and that is why we store the representations with the objectId as key. We can then use this list to get a @ref orxonox::PickupRepresentation "PickupRepresentation" for a specific @ref orxonox::Pickupable "Pickupable" (or more precisely a number identifiying that particular pickup, but we'll see that, when we look at the next list) on a client to be used in the PickupInventory.
+        - The @ref orxonox::PickupManager::representations_ "representations_" list links @ref orxonox::PickupRepresentation "PickupRepresentations" with its name and can be used to get the @ref orxonox::PickupRepresentation "PickupRepresentation" for a given @ref orxonox::Pickupable "Pickupable". It is only populated on the server (or in standalone mode). Each @ref orxonox::PickupRepresentation "PickupRepresentation" that is generated through XML registers itself with the PickupManager and is thereby added to the list.
         - The @ref orxonox::PickupManager::pickupInventoryContainers_ "pickupInventoryContainers_" list links a number identifying a @ref orxonox::Pickupable "Pickupable" to a data structure (the @ref orxonox::PickupInventoryContainer "PickupInventoryContainer"), which contains all necessary information about that @ref orxonox::Pickupable "Pickupable". This list is maintained on all hosts, a new container is inserted when a @ref orxonox::Pickupable "Pickupable" is picked up, but only if it has been picked up by the repsective host. This list is then used by the PickupInventory to access the required information and to get the correct @ref orxonox::PickupRepresentation "PickupRepresentation".
         - The @ref orxonox::PickupManager::pickups_ "pickups_" list links a number identifiying a @ref orxonox::Pickupable "Pickupable" to a (weak pointer to a) @ref orxonox::Pickupable "Pickupable". It is only maintained by the server (or in standalone mode), to be able to use, unuse and drop @ref orxonox::Pickupable "Pickupables" through the PickupInventory. Since @ref orxonox::Pickupable "Pickupables" only exist on the server a client that wants to change a pickups status has so send a request over the network (with the number identifying the pickup) to the server and then the server facilitates the change, using this list to map from the identifyer to the actual @ref orxonox::Pickupable "Pickupable".
         - The @ref orxonox::PickupManager::indexes_ "indexes_" list links a @ref orxonox::Pickupable "Pickupable" to the number identifying it. This is only maintained on the server (or in standalone mode), and is used for the inverse mapping of the previous list, which means the server uses it identify pickups on clients when it communicates changes in pickups to clients.
@@ -113,24 +111,19 @@ namespace orxonox // tolua_export
             */
             static PickupManager& getInstance() { return Singleton<PickupManager>::getInstance(); } // tolua_export
 
-            bool registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
-            bool unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Unegisters a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
+            bool registerRepresentation(const std::string& name, PickupRepresentation* representation);
+            bool unregisterRepresentation(const std::string& name);
 
-            bool registerRepresentation(PickupRepresentation* representation); //!< Registers a PickupRepresentation on the host it was created.
-            bool unregisterRepresentation(PickupRepresentation* representation); //!< Unregisters a PickupRepresentation on the host it is being destroyed.
-
-            PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
+            PickupRepresentation* getRepresentation(const std::string& name); // tolua_export
 
             virtual void pickupChangedUsed(Pickupable* pickup, bool used); //!< Is called by the PickupListener to notify the PickupManager, that the input Pickupable has transited to the input used state.
             static void pickupChangedUsedNetwork(uint32_t pickup, bool inUse, bool usable, bool unusable); //!< Helper method to react to the change in the used status of a Pickupable.
             virtual void pickupChangedPickedUp(Pickupable* pickup, bool pickedUp); //!< Is called by the PickupListener to notify the PickupManager, that the input Pickupable has transited to the input pickedUp state.
-            static void pickupChangedPickedUpNetwork(uint32_t pickup, bool usable, uint32_t representationObjectId, bool pickedUp); //!< Helper method to react to the change in the pickedUp status of a Pickupable.
+            static void pickupChangedPickedUpNetwork(uint32_t pickup, bool usable, uint32_t representationObjectId, const std::string& representationName, bool pickedUp); //!< Helper method to react to the change in the pickedUp status of a Pickupable.
 
         // Methods to be used by the PickupInventory.
         public:
             // tolua_begin
-            orxonox::PickupRepresentation* getPickupRepresentation(uint32_t pickup); //!< Get the PickupRepresentation of an input indentifier for Pickupable.
-
             int getNumPickups(void); //!< Get the number of pickups currently picked up by the player.
             /**
             @brief Get the next PickupInventoryContainer in the list.
@@ -162,8 +155,7 @@ namespace orxonox // tolua_export
 
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
 
-            std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types of Pickupables) and PickupRepresentations.
-            std::map<uint32_t, PickupRepresentation*> representationsNetworked_; //!< Map linking the PickupRepresentation's objectId to the PickupRepresentation itself. It is used for networking purposes.
+            std::map<std::string, PickupRepresentation*> representations_; //!< Map linking PickupRepresentations and their names.
 
             std::map<uint32_t, PickupInventoryContainer*> pickupInventoryContainers_; //!< Map linking a number identifying a Pickupable to a PickupInventoryContainer, which contains all necessary information about that Pickupable.
             std::map<uint32_t, PickupInventoryContainer*>::iterator pickupsIterator_; //!< An iterator pointing to the current Pickupable in pickupsList_.

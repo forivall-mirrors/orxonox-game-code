@@ -47,6 +47,8 @@ namespace orxonox
 
     CameraManager::CameraManager()
     {
+        RegisterRootObject(CameraManager);
+
         assert(GameMode::showsGraphics());
     }
 

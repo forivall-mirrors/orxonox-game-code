@@ -257,8 +257,16 @@ namespace orxonox
 
     void Scene::setSkybox(const std::string& skybox)
     {
-        if (GameMode::showsGraphics() && this->sceneManager_)
-            this->sceneManager_->setSkyBox(true, skybox);
+        try
+        {
+            if (GameMode::showsGraphics() && this->sceneManager_)
+                this->sceneManager_->setSkyBox(true, skybox);
+        }
+        catch (const Ogre::Exception&)
+        {
+            orxout(internal_error) << "Could not load skybox '" << skybox << "':" << endl;
+            orxout(internal_error) << Exception::handleMessage() << endl;
+        }
 
         this->skybox_ = skybox;
     }

@@ -86,7 +86,6 @@ namespace orxonox
             this->defaultRepresentation_->destroy();
 
         this->representations_.clear();
-        this->representationsNetworked_.clear();
 
         // Destroying all the PickupInventoryContainers that are still there.
         for(std::map<uint32_t, PickupInventoryContainer*>::iterator it = this->pickupInventoryContainers_.begin(); it != this->pickupInventoryContainers_.end(); it++)
@@ -105,25 +104,23 @@ namespace orxonox
 
     /**
     @brief
-        Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents, on the server (or in standalone mode).
-        For every type of Pickupable (uniquely identified by a PickupIdentifier) there can be one (and just one) PickupRepresentation registered.
-    @param identifier
-        The PickupIdentifier identifying the Pickupable.
+        Registers a PickupRepresentation.
+    @param name
+        The representation's name.
     @param representation
         A pointer to the PickupRepresentation.
     @return
         Returns true if successful and false if not.
     */
-    bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
+    bool PickupManager::registerRepresentation(const std::string& name, PickupRepresentation* representation)
     {
-        assert(identifier);
         assert(representation);
 
         // If the list is not empty and Pickupable already has a Representation registered.
-        if(!this->representations_.empty() && this->representations_.find(identifier) != this->representations_.end())
+        if(!this->representations_.empty() && this->representations_.find(name) != this->representations_.end())
             return false;
 
-        this->representations_[identifier] = representation;
+        this->representations_[name] = representation;
 
         orxout(verbose, context::pickups) << "PickupRepresentation &" << representation << " registered with the PickupManager." << endl;
         return true;
@@ -131,81 +128,36 @@ namespace orxonox
 
     /**
     @brief
-        Unegisters a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents, on the server (or in standalone mode).
-    @param identifier
-        The PickupIdentifier identifying the Pickupable.
-    @param representation
-        A pointer to the PickupRepresentation.
+        Unegisters a PickupRepresentation.
+    @param name
+        The representation's name.
     @return
         Returns true if successful and false if not.
     */
-    bool PickupManager::unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
+    bool PickupManager::unregisterRepresentation(const std::string& name)
     {
-        assert(identifier);
-        assert(representation);
-
-        std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
+        std::map<std::string, PickupRepresentation*>::iterator it = this->representations_.find(name);
         if(it == this->representations_.end()) // If the Pickupable is not registered in the first place.
             return false;
 
         this->representations_.erase(it);
 
-        orxout(verbose, context::pickups) << "PickupRepresentation &" << representation << " unregistered with the PickupManager." << endl;
+        orxout(verbose, context::pickups) << "PickupRepresentation &" << name << " unregistered with the PickupManager." << endl;
         return true;
     }
 
     /**
     @brief
-        Registers a PickupRepresentation on the host it was created.
-    @param representation
-        A pointer to the PickupRepresentation.
-    @return
-        Returns true if successful, false if not.
-    */
-    bool PickupManager::registerRepresentation(PickupRepresentation* representation)
-    {
-        assert(representation);
-
-        // If the list is not empty and PickupRepresentation is already registered.
-        if(!this->representationsNetworked_.empty() && this->representationsNetworked_.find(representation->getObjectID()) != this->representationsNetworked_.end())
-            return false;
-
-        this->representationsNetworked_[representation->getObjectID()] = representation;
-        return true;
-    }
-
-    /**
-    @brief
-        Unregisters a PickupRepresentation on the host it is being destroyed (which is the same host on which it was created).
-    @param representation
-        A pointer to the Pickuprepresentation.
-    @return
-        Returns true if successful, false if not.
-    */
-    bool PickupManager::unregisterRepresentation(PickupRepresentation* representation)
-    {
-        assert(representation);
-
-        std::map<uint32_t, PickupRepresentation*>::iterator it = this->representationsNetworked_.find(representation->getObjectID());
-        if(it == this->representationsNetworked_.end()) // If the Pickupable is not registered in the first place.
-            return false;
-
-        this->representationsNetworked_.erase(it);
-        return true;
-    }
-
-    /**
-    @brief
-        Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
-    @param identifier
-        The PickupIdentifier.
+        Get the PickupRepresentation with the given name.
+    @param name
+        The name of the PickupRepresentation.
     @return
         Returns a pointer to the PickupRepresentation.
     */
-    PickupRepresentation* PickupManager::getRepresentation(const PickupIdentifier* identifier)
+    PickupRepresentation* PickupManager::getRepresentation(const std::string& name)
     {
-        std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
-        if(it == this->representations_.end()) // If there is no PickupRepresentation associated with the input PickupIdentifier.
+        std::map<std::string, PickupRepresentation*>::iterator it = this->representations_.find(name);
+        if(it == this->representations_.end()) // If there is no PickupRepresentation associated with the input name.
         {
             orxout(verbose, context::pickups) << "PickupManager::getRepresentation() returned default representation." << endl;
             return this->defaultRepresentation_;
@@ -352,22 +304,22 @@ namespace orxonox
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
             // If there is no PickupRepresentation registered the default representation is used.
-            if(this->representations_.find(pickup->getPickupIdentifier()) == this->representations_.end())
-                PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickedUp);
+            if(this->representations_.find(pickup->getRepresentationName()) == this->representations_.end())
+                PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickup->getRepresentationName(), pickedUp);
             else
-                PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+                PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->representations_[pickup->getRepresentationName()]->getObjectID(), pickup->getRepresentationName(), pickedUp);
         }
         // If the concerned host is somewhere in the network, we call pickupChangedPickedUpNetwork() on its PickupManager.
         else
         {
             // If there is no PickupRepresentation registered the default representation is used.
-            if(this->representations_.find(pickup->getPickupIdentifier()) == this->representations_.end())
+            if(this->representations_.find(pickup->getRepresentationName()) == this->representations_.end())
             {
                 callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickedUp);
             }
             else
             {
-                callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+                callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getRepresentationName()]->getObjectID(), pickedUp);
             }
         }
 
@@ -387,7 +339,7 @@ namespace orxonox
     @param pickedUp
         The pickedUp status the Pickupable changed to.
     */
-    /*static*/ void PickupManager::pickupChangedPickedUpNetwork(uint32_t pickup, bool usable, uint32_t representationObjectId, bool pickedUp)
+    /*static*/ void PickupManager::pickupChangedPickedUpNetwork(uint32_t pickup, bool usable, uint32_t representationObjectId, const std::string& representationName, bool pickedUp)
     {
         PickupManager& manager = PickupManager::getInstance(); // Get the PickupManager singleton on this host.
         // If the Pickupable has been picked up, we create a new PickupInventoryContainer for it.
@@ -401,6 +353,7 @@ namespace orxonox
             container->usable = usable;
             container->unusable = false;
             container->representationObjectId = representationObjectId;
+            container->representationName = representationName;
             // Insert the container into the pickupInventoryContainers_ list.
             manager.pickupInventoryContainers_.insert(std::pair<uint32_t, PickupInventoryContainer*>(pickup, container));
 
@@ -416,36 +369,6 @@ namespace orxonox
 
             manager.updateGUI(); // Tell the PickupInventory that something has changed.
         }
-    }
-
-    /**
-    @brief
-        Get the PickupRepresentation of an input Pickupable.
-        This method spares us the hassle to export the PickupIdentifier class to lua.
-    @param pickup
-        The number identifying the Pickupable whose PickupRepresentation should be returned.
-    @return
-        Returns the PickupRepresentation of the input Pickupable or NULL if an error occurred.
-    */
-    orxonox::PickupRepresentation* PickupManager::getPickupRepresentation(uint32_t pickup)
-    {
-        // Clear and rebuild the representationsNetworked_ list.
-        //TODO: Better solution?
-        this->representationsNetworked_.clear();
-        for(ObjectList<PickupRepresentation>::iterator it = ObjectList<PickupRepresentation>::begin(); it != ObjectList<PickupRepresentation>::end(); ++it)
-            this->representationsNetworked_[it->getObjectID()] = *it;
-
-        // Get the container belonging to the input pickup, if not found return the default representation.
-        std::map<uint32_t, PickupInventoryContainer*>::iterator it = this->pickupInventoryContainers_.find(pickup);
-        if(it == this->pickupInventoryContainers_.end())
-            return this->defaultRepresentation_;
-
-        // Get the PickupRepresentation of the input pickup (through the objecId of the representation stored in the PickupInventoryContainer belonging to the pickup), if not found return the default representation.
-        std::map<uint32_t, PickupRepresentation*>::iterator it2 = this->representationsNetworked_.find(it->second->representationObjectId);
-        if(it2 == this->representationsNetworked_.end())
-            return this->defaultRepresentation_;
-
-        return it2->second;
     }
 
     /**

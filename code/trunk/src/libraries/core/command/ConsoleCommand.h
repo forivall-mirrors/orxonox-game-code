@@ -381,7 +381,7 @@ namespace orxonox
             {
                 public:
                     /// Constructor: Creates a manipulator for a given ConsoleCommand.
-                    ConsoleCommandManipulator(const ConsoleCommand* command) : command_(const_cast<ConsoleCommand*>(command)) {}
+                    ConsoleCommandManipulator(ConsoleCommand* command) : command_(command) {}
 
                     /// Changes the current function of the command. @param function The new function-pointer @param bForce If true, the new function-pointer is always assigned, even if the headers don't match
                     template <class F>
@@ -618,7 +618,7 @@ namespace orxonox
                 { return this->inputConfiguredParam_; }
 
             /// Returns a manipulator for this command.
-            inline ConsoleCommandManipulator getManipulator() const
+            inline ConsoleCommandManipulator getManipulator()
                 { return this; }
 
         private:
@@ -666,14 +666,14 @@ namespace orxonox
                 { return ConsoleCommand::getCommandMapLC(); }
 
             /// Returns a command (shortcut) with given name. @param name The name of the command shortcut @param bPrintError If true, an error is printed if the command doesn't exist
-            static inline const ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
+            static inline ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
                 { return ConsoleCommand::getCommand("", name, bPrintError); }
             /// Returns a command (shortcut) with given name in lowercase. @param name The lowercase name of the command shortcut @param bPrintError If true, an error is printed if the command doesn't exist
-            static inline const ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
+            static inline ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
                 { return ConsoleCommand::getCommandLC("", name, bPrintError); }
 
-            static const ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
-            static const ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
+            static ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+            static ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
 
             static void destroyAll();
 

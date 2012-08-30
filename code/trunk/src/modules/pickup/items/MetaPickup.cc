@@ -35,7 +35,6 @@
 #include "core/XMLPort.h"
 
 #include "interfaces/PickupCarrier.h"
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "MetaPickup.h"
@@ -79,19 +78,8 @@ namespace orxonox {
     {
         this->addTarget(ClassIdentifier<PickupCarrier>::getIdentifier());
 
-        this->setDurationTypeDirect(pickupDurationType::once);
+        this->setDurationType(pickupDurationType::once);
         this->metaType_ = pickupMetaType::none;
-    }
-
-    /**
-    @brief
-        Helper method to initialize the PickupIdentifier.
-    */
-    void MetaPickup::initializeIdentifier(void)
-    {
-        std::string val = this->getMetaType();
-        std::string type = "metaType";
-        this->pickupIdentifier_->addParameter(type, val);
     }
 
     /**
@@ -102,9 +90,7 @@ namespace orxonox {
     {
         SUPER(MetaPickup, XMLPort, xmlelement, mode);
 
-        XMLPortParam(MetaPickup, "metaType", setMetaType, getMetaType, xmlelement, mode);
-
-        this->initializeIdentifier();
+        XMLPortParam(MetaPickup, "metaType", setMetaTypeAsString, getMetaTypeAsString, xmlelement, mode);
     }
 
     /**
@@ -120,10 +106,10 @@ namespace orxonox {
         if(this->isUsed() && this->metaType_ != pickupMetaType::none)
         {
             PickupCarrier* carrier = this->getCarrier();
-            if(this->getMetaTypeDirect() != pickupMetaType::none && carrier != NULL)
+            if(this->getMetaType() != pickupMetaType::none && carrier != NULL)
             {
                 // If the metaType is destroyCarrier, then the PickupCarrier is destroyed.
-                if(this->getMetaTypeDirect() == pickupMetaType::destroyCarrier)
+                if(this->getMetaType() == pickupMetaType::destroyCarrier)
                 {
                     Pawn* pawn = orxonox_cast<Pawn*>(carrier);
                     pawn->kill();
@@ -138,17 +124,17 @@ namespace orxonox {
                         continue;
 
                     // If the metaType is use, then the Pickupable is set to used.
-                    if(this->getMetaTypeDirect() == pickupMetaType::use && !pickup->isUsed())
+                    if(this->getMetaType() == pickupMetaType::use && !pickup->isUsed())
                     {
                         pickup->setUsed(true);
                     }
                     // If the metaType is drop, then the Pickupable is dropped.
-                    else if(this->getMetaTypeDirect() == pickupMetaType::drop)
+                    else if(this->getMetaType() == pickupMetaType::drop)
                     {
                         pickup->drop();
                     }
                     // If the metaType is destroy, then the Pickupable is destroyed.
-                    else if(this->getMetaTypeDirect() == pickupMetaType::destroy)
+                    else if(this->getMetaType() == pickupMetaType::destroy)
                     {
                         pickup->Pickupable::destroy();
                     }
@@ -160,32 +146,13 @@ namespace orxonox {
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void MetaPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new MetaPickup(this);
-
-        SUPER(MetaPickup, clone, item);
-
-        MetaPickup* pickup = dynamic_cast<MetaPickup*>(item);
-        pickup->setMetaTypeDirect(this->getMetaTypeDirect());
-
-        pickup->initializeIdentifier();
-    }
-
-    /**
-    @brief
         Get the meta type of this MetaPickup.
     @return
         Returns a string with the meta type of the MetaPickup.
     */
-    const std::string& MetaPickup::getMetaType(void) const
+    const std::string& MetaPickup::getMetaTypeAsString(void) const
     {
-        switch(this->getMetaTypeDirect())
+        switch(this->getMetaType())
         {
             case pickupMetaType::none:
                 return MetaPickup::metaTypeNone_s;
@@ -208,27 +175,27 @@ namespace orxonox {
     @param type
         A string with the type to be set.
     */
-    void MetaPickup::setMetaType(const std::string& type)
+    void MetaPickup::setMetaTypeAsString(const std::string& type)
     {
         if(type == MetaPickup::metaTypeNone_s)
         {
-            this->setMetaTypeDirect(pickupMetaType::none);
+            this->setMetaType(pickupMetaType::none);
         }
         else if(type == MetaPickup::metaTypeUse_s)
         {
-            this->setMetaTypeDirect(pickupMetaType::use);
+            this->setMetaType(pickupMetaType::use);
         }
         else if(type == MetaPickup::metaTypeDrop_s)
         {
-            this->setMetaTypeDirect(pickupMetaType::drop);
+            this->setMetaType(pickupMetaType::drop);
         }
         else if(type == MetaPickup::metaTypeDestroy_s)
         {
-            this->setMetaTypeDirect(pickupMetaType::destroy);
+            this->setMetaType(pickupMetaType::destroy);
         }
         else if(type == MetaPickup::metaTypeDestroyCarrier_s)
         {
-            this->setMetaTypeDirect(pickupMetaType::destroyCarrier);
+            this->setMetaType(pickupMetaType::destroyCarrier);
         }
         else
             orxout(internal_warning, context::pickups) << "Invalid metaType '" << type << "' in MetaPickup." << endl;

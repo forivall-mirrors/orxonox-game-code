@@ -127,7 +127,7 @@ namespace orxonox
 
 
     // collect Points for killing oppenents
-    void TeamBaseMatch::playerScored(PlayerInfo* player)
+    void TeamBaseMatch::playerScored(PlayerInfo* player, int score)
     {
         int teamnr = this->getTeam(player);
         this->addTeamPoints(teamnr, 5);

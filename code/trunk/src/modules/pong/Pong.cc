@@ -255,9 +255,9 @@ namespace orxonox
     @brief
         Is called when the player scored.
     */
-    void Pong::playerScored(PlayerInfo* player)
+    void Pong::playerScored(PlayerInfo* player, int score)
     {
-        Deathmatch::playerScored(player);
+        Deathmatch::playerScored(player, score);
 
         if (this->center_ != NULL) // If there is a centerpoint.
         {

@@ -24,7 +24,7 @@
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
-    skybox       = "Orxonox/skypanoramagen1"
+    skybox       = "Orxonox/skyBoxBasic"
   >
 <!-- TODO:
 1. make collisionshapes bulletproof: -> attach movable entity with dynamic collisionshape within a static collisionshape 

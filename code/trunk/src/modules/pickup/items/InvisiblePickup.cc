@@ -39,7 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -78,27 +77,12 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void InvisiblePickup::initializeIdentifier(void)
-    {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-    }
-
-    /**
-    @brief
         Method for creating a HealthPickup object through XML.
     */
     void InvisiblePickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(InvisiblePickup, XMLPort, xmlelement, mode);
         XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -147,24 +131,6 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void InvisiblePickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new InvisiblePickup(this);
-
-        SUPER(InvisiblePickup, clone, item);
-
-        InvisiblePickup* pickup = dynamic_cast<InvisiblePickup*>(item);
-        pickup->setDuration(this->getDuration());
-        pickup->initializeIdentifier();
-    }
-
-    /**
-    @brief
         Sets the invisibility.
     @param invisibility
         The invisibility.
@@ -201,7 +167,7 @@ namespace orxonox
     Pawn* InvisiblePickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         if(pawn == NULL)
         {
