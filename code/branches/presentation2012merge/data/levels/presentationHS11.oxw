@@ -1,9 +1,9 @@
-<!-- TODO: add in level documentation !! -->
+<!--  -->
 
 
 <LevelInfo
  name = "Presentation HS 2011"
- description = "Oxonox Proudly Presents New Features From HS 2011"
+ description = "New Features: Asteroid field/belt generator; Formationflight; HUD (Enemyhealthbar, displaying Names)"
  tags = "presentation"
 />
 
@@ -205,7 +205,7 @@
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Make them attack opponents: Press (2)"  broadcast="true">
+    <SimpleNotification message="Make them attack opponents: Press (2) again"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=hint4 />
@@ -213,7 +213,7 @@
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Let the bots behave normal: Press (2) "  broadcast="true">
+    <SimpleNotification message="Let the bots behave 'normal': Press (2) again"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event=hint5 />

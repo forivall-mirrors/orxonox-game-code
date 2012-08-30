@@ -1,12 +1,11 @@
 <!-- 
 TODO:
     Replace bottom's texture. It just does not look good.
-    Pickups are not displayed properly.
 -->
 
 <LevelInfo
  name = "Surface Race"
- description = "Race on a planet's surface."
+ description = "Race on a planet's surface. Try to reach the goal in 70 Seconds."
  screenshot = "surfaceRace.png"
  tags = "gametype"
 />
