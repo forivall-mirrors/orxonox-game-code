@@ -300,8 +300,8 @@ namespace orxonox
         Deathmatch::pawnKilled(victim, killer);
     }
 
-    void TowerDefense::playerScored(PlayerInfo* player)
+    void TowerDefense::playerScored(PlayerInfo* player, int score)
     {
-        Gametype::playerScored(player);
+        Gametype::playerScored(player, score);
     }*/
 }
