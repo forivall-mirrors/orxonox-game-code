@@ -1,15 +1,5 @@
 <Template name="LastmanstandingHUD">
   <OverlayGroup name="LastmanstandingHUD" scale = "1, 1">
-    <OverlayText
-     position  = "0.02, 0.02"
-     pickpoint = "0.0, 0.0"
-     font      = "ShareTechMono"
-     textsize  = 0.04
-     colour    = "1.0, 1.0, 1.0, 1.0"
-     align     = "left"
-     caption   = "Lives:   "
-    />
-
     <LastManStandingInfos
      position  = "0.14, 0.02"
      pickpoint = "0.0, 0.0"
@@ -20,6 +10,15 @@
 
      showlives     = true
      showplayers     = false
+    />
+    <OverlayText
+     position  = "0.02, 0.02"
+     pickpoint = "0.0, 0.0"
+     font      = "ShareTechMono"
+     textsize  = 0.04
+     colour    = "1.0, 1.0, 1.0, 1.0"
+     align     = "left"
+     caption   = "Lives:   "
     />
 
     <OverlayText

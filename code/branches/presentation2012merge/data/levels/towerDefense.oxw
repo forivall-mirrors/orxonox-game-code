@@ -5,7 +5,7 @@
 <LevelInfo
  name = "Tower Defense"
  description = "Defend your Spacestation from incoming waves."
- tags = "gametype"
+ tags = "minigame"
  screenshot = "emptylevel.png"
 />
 
