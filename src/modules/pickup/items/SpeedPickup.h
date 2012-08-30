@@ -80,7 +80,6 @@ namespace orxonox {
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
             @brief Get the duration, the time the SpeedPickup is active.
@@ -102,7 +101,6 @@ namespace orxonox {
                 { return this->speedMultiply_; }
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             void pickupTimerCallback(void); //!< Function that gets called when timer ends.
 
             void setDuration(float duration); //!< Sets the duration.
@@ -111,7 +109,7 @@ namespace orxonox {
 
         private:
             void initialize(void); //!< Initializes the member variables.
-            SpaceShip* carrierToSpaceShipHelper(void); //!< Helper to transform the PickupCarrier to a SpaceSHip, and throw an error message if the conversion fails.
+            SpaceShip* carrierToSpaceShipHelper(void); //!< Helper to transform the PickupCarrier to a SpaceShip, and throw an error message if the conversion fails.
 
             Timer durationTimer_; //!< Timer.
 

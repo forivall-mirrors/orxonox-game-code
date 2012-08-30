@@ -44,7 +44,8 @@
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox
-{
+{//idea: add 2 triggers to the centerpoint (one to determine when a box would go above the centerpoint;
+//the other to find out when the lowest row is filled totally)
     
     /**
     @brief
@@ -117,6 +118,19 @@ namespace orxonox
                 { return this->stoneTemplate_; }
             
             /**
+            @brief Set the template for the bricks.
+            @param template The template name to be applied to each brick.
+            */
+            void setBrickTemplate(const std::string& templateName)
+                { this->brickTemplate_ = templateName; }
+            /**
+            @brief Get the template for the bricks.
+            @return Returns the template name to be applied to each brick.
+            */
+            const std::string& getBrickTemplate(void) const
+                { return this->brickTemplate_; }
+
+            /**
             @brief Set the speed of the stones.
             @param speed The speed to be set.
             */
@@ -136,6 +150,7 @@ namespace orxonox
             unsigned int height_;
             float stoneSize_;
             std::string stoneTemplate_;
+            std::string brickTemplate_;
             float stoneSpeed_;
 
     };

@@ -72,7 +72,7 @@ namespace orxonox
 
             virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
 
-            virtual void playerScored(PlayerInfo* player); //!< Is called when the player scored.
+            virtual void playerScored(PlayerInfo* player, int score = 1); //!< Is called when the player scored.
 
             /**
             @brief Set the PongCenterpoint (the playing field).

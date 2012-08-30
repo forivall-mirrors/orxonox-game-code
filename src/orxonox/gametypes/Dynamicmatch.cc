@@ -30,18 +30,19 @@
 //killerfarbe schwarz; evtl. eigenes Raumfahrzeug;
 //Low; Codeoptimierung und Dokumentation
 
-/*
-short gaming manual:
-There are three different parties a player can belong to: victim, chaser or killer
-Every player starts as chaser. As long as there are not enough victims and killers, you can change your and other player's parties by shooting them.
-In order to win you have to earn as much points as possible:
-- as victim by escaping the chasers
-- as chaser by shooting the victim
-- as killer by killing the chasers
+/**
+@brief
+    Short Gaming Manual:
+    There are three different parties a player can belong to: victim, chaser or killer
+    Every player starts as chaser. As long as there are not enough victims and killers, you can change your and other player's parties by shooting them.
+    In order to win you have to earn as much points as possible:
+    - as victim by escaping the chasers
+    - as chaser by shooting the victim
+    - as killer by killing the chasers
 
 
-What you shouldn't do is shooting at players of your own party. By doing so your score will decrease.
-P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser.
+    What you shouldn't do is shooting at players of your own party. By doing so your score will decrease.
+    P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser.
 */
 #include "Dynamicmatch.h"
 
@@ -80,7 +81,7 @@ namespace orxonox
         this->numberOf[piggy]=0;
         this->numberOf[killer]=0;
         this->tutorial=true;
-        this->pointsPerTime=0.0f;
+        this->pointsPerTime=1.0f;
         this->setHUDTemplate("DynamicmatchHUD");
     }
 
@@ -94,7 +95,6 @@ namespace orxonox
             ColourValue(1.0f, 0.3f, 0.3f),  //chasercolour
             ColourValue(0.3f, 0.3f, 1.0f),  //piggycolour
             ColourValue(0.3f, 1.0f, 0.3f)   //killercolour  what about black: 0.0f, 0.0f, 0.0f
-
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 
@@ -110,8 +110,8 @@ namespace orxonox
             return false;
         if (victim && victim->getPlayer()) //&& originator && originator->getPlayer() ??
         {
-        int target= playerParty_[victim->getPlayer()];
-        int source= playerParty_[originator->getPlayer()];
+            int target = playerParty_[victim->getPlayer()];
+            int source = playerParty_[originator->getPlayer()];
 
             //Case: Not Enough Pigs: party change (= party management)
             if (notEnoughPigs)
@@ -150,7 +150,7 @@ namespace orxonox
                 evaluatePlayerParties(); //check if the party change has to trigger futher party changes
 
                 //Give new pig boost
-                SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
+                SpaceShip* spaceship = orxonox_cast<SpaceShip*>(victim);
                 this->grantPigBoost(spaceship);
             }
 
@@ -244,7 +244,7 @@ namespace orxonox
                      }
                 }
                 //Give new pig boost
-                SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
+                SpaceShip* spaceship = orxonox_cast<SpaceShip*>(victim);
                 this->grantPigBoost(spaceship);
             }
             // killer vs piggy
@@ -275,13 +275,9 @@ namespace orxonox
             //Case: friendly fire
             else if (friendlyfire && (source == target))
             {
-                std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
-                if (it != this->players_.end())
-                    {
-                        it->second.frags_--;
-                    }
+           	    this->playerScored(originator->getPlayer(), -1);
             }
-        }// from far far away not to be removed!
+        }
         return false; //default: no damage
     }
 
@@ -295,30 +291,28 @@ namespace orxonox
         {
             if (playerParty_[originator->getPlayer()] == killer) //reward the killer
             {
-                std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
-                if (it != this->players_.end())
-                {
-                    it->second.frags_+=20; //value must be tested
-                }
+           	    this->playerScored(originator->getPlayer(), 25);
             }
-        return true;
+            return true;
         }
         else return false;
     }
 
     /**
     @brief
-        Grant the piggy a boost.
+        Grant the victim a boost.
     @param spaceship
         The SpaceShip to give the boost.
     */
     void Dynamicmatch::grantPigBoost(SpaceShip* spaceship)
     {
-        // Give pig boost
+        // Give victim boost
         if (spaceship)
         {
-            spaceship->addSpeedFactor(5);
             WeakPtr<SpaceShip>* ptr = new WeakPtr<SpaceShip>(spaceship);
+            if(ptr == NULL)
+                return;
+            spaceship->addSpeedFactor(5);
             ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
             executor->setDefaultValue(0, ptr);
             new Timer(10, false, executor, true);
@@ -373,11 +367,12 @@ namespace orxonox
         SUPER(Dynamicmatch, tick, dt);
 
         if (this->hasStarted() && !gameEnded_)
-        {   pointsPerTime =pointsPerTime + dt;
-            gameTime_ = gameTime_ - dt;
-            if (pointsPerTime > 2.0f)//hard coded!! should be changed
+        {
+            pointsPerTime = pointsPerTime + dt; //increase points
+            gameTime_ = gameTime_ - dt; // decrease game time
+            if (pointsPerTime > 2.0f) //hard coded points for victim! should be changed
             {
-                pointsPerTime=0.0f;
+                pointsPerTime = 0.0f;
                 rewardPig();
             }
             if (gameTime_<= 0)
@@ -407,25 +402,23 @@ namespace orxonox
         }
     }
 
+/**
+    @brief The reward function is called every 2 seconds via the tick function and makes the victim score points.
+*/
     void Dynamicmatch::rewardPig()
     {
         for (std::map< PlayerInfo*, int >::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it) //durch alle Spieler iterieren und alle piggys finden
         {
-            if (it->second==piggy)
+            if (it->second==piggy)//Spieler mit der Pig-party frags++
             {
-                 //Spieler mit der Pig-party frags++
-                 std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(it->first);// still not sure if right syntax
-                 if (it2 != this->players_.end())
-                 {
-                     it2->second.frags_++;
-                 }
+            	 this->playerScored(it->first);
             }
         }
     }
     void Dynamicmatch::setPlayerColour(PlayerInfo* player) // sets a player's colour
     {
         std::map<PlayerInfo*, int>::const_iterator it_player = this->playerParty_.find(player);
-        Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
+        Pawn* pawn = orxonox_cast<Pawn*>(player->getControllableEntity());
             if (pawn)
             {
                 pawn->setRadarObjectColour(this->partyColours_[it_player->second]);
@@ -445,7 +438,7 @@ namespace orxonox
     void Dynamicmatch::evaluatePlayerParties() //manages the notEnough booleans (here the percentage of special players is implemented)
     {
         //pigs: 1 + every 6th player is a pig
-        if ( (1+this->getNumberOfPlayers()/6) > numberOf[piggy])
+        if ( (1 + getPlayerCount()/6) > numberOf[piggy])
         {
             notEnoughPigs=true;
             if (tutorial) // Announce selectionphase
@@ -494,7 +487,7 @@ namespace orxonox
              }
         }
         //killers: every 4th player is a killer
-        if (getNumberOfPlayers()/4 > numberOf[killer])
+        if ( static_cast<unsigned int>(getPlayerCount()/4) > numberOf[killer])
         {
             notEnoughKillers=true;
             if (tutorial) // Announce selectionphase

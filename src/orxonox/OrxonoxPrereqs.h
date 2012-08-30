@@ -108,6 +108,7 @@ namespace orxonox
     class TeamBaseMatch;
     class TeamDeathmatch;
     class UnderAttack;
+    class TeamGametype;
 
     // graphics
     class Backlight;
@@ -149,9 +150,6 @@ namespace orxonox
     class Map;
     class OrxonoxOverlay;
     class OverlayGroup;
-
-    // pickup
-    class PickupIdentifier;
 
     //sound
     class AmbientSound;

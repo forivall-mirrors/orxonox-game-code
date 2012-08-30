@@ -54,6 +54,7 @@ namespace orxonox {
     */
     class _PickupExport CollectiblePickup : public Pickupable
     {
+        friend class PickupCollection;
 
         public:
             CollectiblePickup(); //!< Constructor.
@@ -67,21 +68,13 @@ namespace orxonox {
             @return Returns true if the CollectiblePickup is part of a PickupCollection.
             */
             bool isInCollection(void) const
-                { return this->isInCollection_; }
-
-            bool addToCollection(PickupCollection* collection); //!< Adds this CollectiblePickup to the input PickupCollection.
-            bool removeFromCollection(void); //!< Removes this CollectiblePickup from its PickupCollection.
-
-            void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
-
-        protected:
-            virtual void preDestroy(void); //!< Is called by OrxonoxClass::destroy() before the object is actually destroyed.
-            virtual void destroyPickup(void); //!< Destroys a Pickupable.
+                { return this->collection_ != NULL; }
 
         private:
-            bool isInCollection_; //!< True if the CollectiblePickup is in a PickupCollection.
-            PickupCollection* collection_; //!< A pointer to the PickupCollection this CollectiblePickup is in.
+            void wasAddedToCollection(PickupCollection* collection);
+            void wasRemovedFromCollection(void);
 
+            PickupCollection* collection_; //!< A pointer to the PickupCollection this CollectiblePickup is in.
     };
 }
 

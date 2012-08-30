@@ -37,8 +37,7 @@
 #include "interfaces/PickupCarrier.h"
 
 #include "CollectiblePickup.h"
-#include "DroppedPickup.h"
-#include "PickupCollectionIdentifier.h"
+#include "PickupSpawner.h"
 
 #include "PickupCollection.h"
 
@@ -53,14 +52,10 @@ namespace orxonox
     @param creator
         The creator of the object.
     */
-    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator), pickupCollectionIdentifier_(NULL)
+    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(PickupCollection);
 
-        this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier(this);
-        this->usedCounter_ = 0;
-        this->pickedUpCounter_ = 0;
-        this->disabledCounter_ = 0;
         this->processingUsed_ = false;
         this->processingPickedUp_ = false;
     }
@@ -69,18 +64,15 @@ namespace orxonox
     @brief
         Destructor. Iterates through all Pickupables this PickupCollection consists of and destroys them if they haven't been already.
     */
-    PickupCollection::~ PickupCollection()
+    PickupCollection::~PickupCollection()
     {
         // Destroy all Pickupables constructing this PickupCollection.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
-            (*it)->removeFromCollection();
+            (*it)->wasRemovedFromCollection();
             (*it)->destroy();
         }
         this->pickups_.clear();
-        
-        if(this->pickupCollectionIdentifier_ != NULL)
-            delete this->pickupCollectionIdentifier_;
     }
 
     /**
@@ -91,21 +83,8 @@ namespace orxonox
     {
         SUPER(PickupCollection, XMLPort, xmlelement, mode);
 
+        XMLPortParam(PickupCollection, "representation", setRepresentationName, getRepresentationName, xmlelement, mode);
         XMLPortObject(PickupCollection, CollectiblePickup, "pickupables", addPickupable, getPickupable, xmlelement, mode);
-
-        this->initializeIdentifier();
-    }
-
-    /**
-    @brief
-        Initializes the PickupIdentifier for this pickup.
-    */
-    void PickupCollection::initializeIdentifier(void)
-    {
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            this->pickupCollectionIdentifier_->addPickup((*it)->getPickupIdentifier());
-        }
     }
 
     /**
@@ -119,7 +98,7 @@ namespace orxonox
 
         this->processingUsed_ = true;
         // Change used for all Pickupables this PickupCollection consists of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
             (*it)->setUsed(this->isUsed());
 
         this->processingUsed_ = false;
@@ -137,12 +116,22 @@ namespace orxonox
         if(this->processingUsed_)
             return;
 
+        size_t numPickupsEnabled = 0;
+        size_t numPickupsInUse = 0;
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
+        {
+            if ((*it)->isEnabled())
+                ++numPickupsEnabled;
+            if ((*it)->isUsed())
+                ++numPickupsInUse;
+        }
+
         // If all the pickups are not in use but the PickupCollection is.
-        if(this->usedCounter_ == 0 && this->isUsed())
+        if(numPickupsInUse == 0 && this->isUsed())
             this->setUsed(false);
 
         // If all the enabled pickups are in use but the PickupCollection is not.
-        if(this->usedCounter_ != 0 && this->usedCounter_ == this->pickups_.size()-this->disabledCounter_ && !this->isUsed())
+        if(numPickupsInUse > 0 && numPickupsInUse == numPickupsEnabled && !this->isUsed())
             this->setUsed(true);
     }
 
@@ -156,7 +145,7 @@ namespace orxonox
         SUPER(PickupCollection, changedCarrier);
 
         // Change the PickupCarrier for all Pickupables this PickupCollection consists of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
             if(this->getCarrier() == NULL)
                 (*it)->setCarrier(NULL);
@@ -176,8 +165,8 @@ namespace orxonox
 
         this->processingPickedUp_ = true;
         // Change the pickedUp status for all Pickupables this PickupCollection consists of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-            (*it)->setPickedUp(this->isPickedUp());
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); )
+            (*(it++))->setPickedUp(this->isPickedUp());
 
         this->processingPickedUp_ = false;
 
@@ -194,39 +183,18 @@ namespace orxonox
         if(this->processingPickedUp_)
             return;
 
-        // If at least all the enabled pickups of this PickupCollection are no longer picked up. 
-        if(this->pickedUpCounter_ <= this->disabledCounter_ && this->isPickedUp())
-            this->Pickupable::destroy();
-
-        // If the PickupCollection is no longer picked up.
-        if(!this->isPickedUp())
-            this->pickedUpCounter_ = 0;
-    }
-
-    /**
-    @brief
-        Creates a duplicate of the input Pickupable.
-        This method needs to be implemented by any Class inheriting from Pickupable.
-    @param item
-        A reference to a pointer to the OrxonoxClass that is to be duplicated.
-    */
-    void PickupCollection::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new PickupCollection(this);
-
-        SUPER(PickupCollection, clone, item);
-
-        PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
-        // Clone all Pickupables this PickupCollection consist of.
-        for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        // If at least all the enabled pickups of this PickupCollection are no longer picked up.
+        bool isOnePickupEnabledAndPickedUp = false;
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
-            Pickupable* newPickup = (*it)->clone();
-            CollectiblePickup* collectible = static_cast<CollectiblePickup*>(newPickup);
-            pickup->addPickupable(collectible);
+            if ((*it)->isEnabled() && (*it)->isPickedUp())
+            {
+                isOnePickupEnabledAndPickedUp = true;
+                break;
+            }
         }
-
-        pickup->initializeIdentifier();
+        if(!isOnePickupEnabledAndPickedUp && this->isPickedUp())
+            this->Pickupable::destroy();
     }
 
     /**
@@ -239,25 +207,13 @@ namespace orxonox
     */
     bool PickupCollection::isTarget(const PickupCarrier* carrier) const
     {
-        for(std::vector<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::list<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
         {
             if(!carrier->isTarget(*it))
                 return false;
         }
 
         return true;
-    }
-
-    /**
-    @brief
-        Get the PickupIdentifier of this PickupCollection.
-        This is in fact the PickupCollectionIdentifier.
-    @return
-        Returns a pointer to the PickupIdentifier of this PickupCollection.
-    */
-    const PickupIdentifier* PickupCollection::getPickupIdentifier(void) const
-    {
-        return this->pickupCollectionIdentifier_;
     }
 
     /**
@@ -273,8 +229,9 @@ namespace orxonox
         if(pickup == NULL)
             return false;
 
-        pickup->addToCollection(this);
         this->pickups_.push_back(pickup);
+        pickup->wasAddedToCollection(this);
+        this->pickupsChanged();
         return true;
     }
 
@@ -288,7 +245,35 @@ namespace orxonox
     */
     const Pickupable* PickupCollection::getPickupable(unsigned int index) const
     {
-        return this->pickups_[index];
+        if(this->pickups_.size() >= index)
+            return NULL;
+
+        std::list<CollectiblePickup*>::const_iterator it = this->pickups_.begin();
+        std::advance(it, index);
+        return *it;
+    }
+
+    /**
+    @brief
+        Removes the Pickup from the Collection.
+    @param pickup
+        The Pickup to be removed.
+    @return
+        Returns true if the pickup was in the collection.
+    */
+    bool PickupCollection::removePickupable(CollectiblePickup* pickup)
+    {
+        for(std::list<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); ++it)
+        {
+            if (*it == pickup)
+            {
+                this->pickups_.erase(it);
+                pickup->wasRemovedFromCollection();
+                this->pickupsChanged();
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -296,15 +281,10 @@ namespace orxonox
         Informs the PickupCollection, that one of its pickups has changed its used status to the input value.
         This is used internally by the CollectiblePickup class.
     @param changed
-        The value the used status has changed to. 
+        The value the used status has changed to.
     */
     void PickupCollection::pickupChangedUsed(bool changed)
     {
-        if(changed)
-            this->usedCounter_++;
-        else
-            this->usedCounter_--;
-
         this->changedUsedAction();
     }
 
@@ -317,11 +297,6 @@ namespace orxonox
     */
     void PickupCollection::pickupChangedPickedUp(bool changed)
     {
-        if(changed)
-            this->pickedUpCounter_++;
-        else
-            this->pickedUpCounter_--;
-
         this->changedPickedUpAction();
     }
 
@@ -332,20 +307,27 @@ namespace orxonox
     */
     void PickupCollection::pickupDisabled(void)
     {
-        this->disabledCounter_++;
+    }
+
+    /**
+    @brief
+        Helpfer function if the number of pickups in this collection has changed.
+    */
+    void PickupCollection::pickupsChanged(void)
+    {
+        this->changedUsedAction();
+        this->changedPickedUpAction();
     }
 
     /**
     @brief
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
-        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
     @return
         Returns true if a spawner was created, false if not.
     */
     bool PickupCollection::createSpawner(void)
     {
-        new DroppedPickup(this, this, this->getCarrier());
+        PickupSpawner::createDroppedPickup(this, this, this->getCarrier());
         return true;
     }
 

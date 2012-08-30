@@ -52,8 +52,6 @@ namespace orxonox
 
         Pickups (@ref orxonox::Pickupable "Pickupables") are objects that (quite unsurprisingly) can be picked up. Additionally they can be used and unused (transition from used to not used), and also dropped.
 
-        A class of Pickups can incorporate many different types of pickups (see @ref orxonox::PickupIdentifier "PickupIdentifier"), each type is uniquely defined by a @ref orxonox::PickupIdentifier "PickupIdentifier". Each pickup has such an identifier identiying its type. This means that two pickups of the same type have identifiers which are equal.
-
     @author
         Damian 'Mozork' Frick
 
@@ -68,6 +66,9 @@ namespace orxonox
 
         public:
             virtual ~Pickupable(); //!< Default destructor.
+
+            //! @brief Returns the representation name which refers to the name of the PickupRepresentation that is used to represent this pickup.
+            virtual const std::string& getRepresentationName() const = 0;
 
             /**
             @brief Get whether the Pickupable is currently in use or not.
@@ -135,21 +136,6 @@ namespace orxonox
             bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this Pickupable.
             bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this Pickupable.
 
-            Pickupable* clone(void); //!< Creates a duplicate of the Pickupable.
-            /**
-            @brief Creates a duplicate of the input OrxonoxClass.
-                   This method needs to be implemented by any Class inheriting from Pickupable.
-            @param item A reference to a pointer to the OrxonoxClass that is to be duplicated.
-            */
-            virtual void clone(OrxonoxClass*& item) {}
-
-            /**
-            @brief Get the PickupIdentifier of this Pickupable.
-            @return Returns a pointer to the PickupIdentifier of this Pickupable.
-            */
-            virtual const PickupIdentifier* getPickupIdentifier(void) const
-                { return this->pickupIdentifier_; }
-
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
             bool setCarrier(PickupCarrier* carrier, bool tell = true); //!< Sets the carrier of the Pickupable.
@@ -157,11 +143,6 @@ namespace orxonox
             void destroy(void); //!< Is called internally within the Pickupable module to destroy pickups.
 
         protected:
-            /**
-            @brief Helper method to initialize the PickupIdentifier.
-            */
-            void initializeIdentifier(void) {}
-
             virtual void preDestroy(void); //!< A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
             virtual void destroyPickup(void); //!< Destroys a Pickupable.
             virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
@@ -173,14 +154,18 @@ namespace orxonox
                 { this->enabled_ = false; }
 
             /**
+            @brief Check whether the Pickupable is in the process of being destroyed.
+            @return Returns true if so.
+            */
+            inline bool isBeingDestroyed(void)
+                { return this->beingDestroyed_; }
+
+            /**
             @brief Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-                   This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
-                   DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance);
+                   This method must be implemented by any class directly inheriting from Pickupable.
             @return Returns true if a spawner was created, false if not.
             */
             virtual bool createSpawner(void) = 0;
-
-            PickupIdentifier* pickupIdentifier_; //!< The PickupIdentifier of this Pickupable.
 
         private:
 
@@ -202,9 +187,8 @@ namespace orxonox
 
     //! SUPER functions.
     SUPER_FUNCTION(10, Pickupable, changedUsed, false);
-    SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
-    SUPER_FUNCTION(13, Pickupable, changedPickedUp, false);
-    SUPER_FUNCTION(11, Pickupable, clone, false);
+    SUPER_FUNCTION(11, Pickupable, changedCarrier, false);
+    SUPER_FUNCTION(12, Pickupable, changedPickedUp, false);
 }
 
 #endif /* _Pickupable_H__ */

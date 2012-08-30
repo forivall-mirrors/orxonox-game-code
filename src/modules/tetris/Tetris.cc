@@ -22,8 +22,14 @@
  *   Author:
  *      ...
  *   Co-authors:
- *      ...
+ *      Johannes Ritz
  *
+ *
+ *
+ *
+ *TASK c) end the game in a nicer way
+ *TASK d) save the highscore
+ *TASK e) eye candy
  */
 
 /**
@@ -41,6 +47,7 @@
 
 #include "TetrisCenterpoint.h"
 #include "TetrisStone.h"
+#include "TetrisBrick.h"
 #include "infos/PlayerInfo.h"
 
 namespace orxonox
@@ -51,18 +58,21 @@ namespace orxonox
     /**
     @brief
         Constructor. Registers and initializes the object.
+    @ingroup Tetris
     */
     Tetris::Tetris(BaseObject* creator) : Deathmatch(creator)
     {
         RegisterObject(Tetris);
 
-        this->activeStone_ = NULL;
+        this->activeBrick_ = 0;
 
         // Pre-set the timer, but don't start it yet.
-        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Tetris::startStone, this)));
+        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Tetris::startBrick, this)));
         this->starttimer_.stopTimer();
 
         this->player_ = NULL;
+        this->setHUDTemplate("TetrisHUD");
+        this->futureBrick_ = 0;
     }
 
     /**
@@ -81,20 +91,36 @@ namespace orxonox
     */
     void Tetris::cleanup()
     {
+        if (this->activeBrick_)
+        {
+            this->activeBrick_->destroy();
+            this->activeBrick_ = 0;
+        }
+        if (this->futureBrick_)
+        {
+            this->futureBrick_->destroy();
+            this->futureBrick_ = 0;
+        }
 
+        for (std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+            (*it)->destroy();
+        this->stones_.clear();
     }
 
     void Tetris::tick(float dt)
     {
         SUPER(Tetris, tick, dt);
 
-        if(this->activeStone_ != NULL)
+        if((this->activeBrick_ != NULL)&&(!this->hasEnded()))
         {
-            if(!this->isValidStonePosition(this->activeStone_, this->activeStone_->getPosition()))
+            if(!this->isValidBrickPosition(this->activeBrick_))
             {
-                this->activeStone_->setVelocity(Vector3::ZERO);
-                this->createStone();
-                this->startStone();
+                for (unsigned int i = 0; i < this->activeBrick_->getNumberOfStones(); i++)
+                    this->stones_.push_back(this->activeBrick_->getStone(i));
+                this->activeBrick_->setVelocity(Vector3::ZERO);
+                this->activeBrick_->releaseStones(this->center_);
+                this->findFullRows();
+                this->startBrick();
             }
         }
     }
@@ -108,11 +134,8 @@ namespace orxonox
         else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
             return false;
 
-        for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        for(std::list<SmartPtr<TetrisStone> >::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
-            if(stone == *it)
-                continue;
-
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
 
             if((position.x == currentStonePosition.x) && abs(position.y-currentStonePosition.y) < this->center_->getStoneSize())
@@ -122,21 +145,63 @@ namespace orxonox
         return true;
     }
 
+    /**
+    @brief
+        Check for each stone in a brick if it is moved the right way.
+    */
+    bool Tetris::isValidMove(TetrisBrick* brick, const Vector3& position, bool isRotation = false)
+    {
+        assert(brick);
+
+        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
+        {
+            TetrisStone* stone = brick->getStone(i);
+            Vector3 stonePosition; //the current stone's offset to position
+            if(isRotation)
+                stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount()+1);
+            else
+                stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
+
+            if(! this->isValidMove(stone, position + stonePosition ))
+            {
+                return false;
+            }
+
+            //catch illegal rotation (such that collisions with ground are not permitted)
+            if(isRotation)
+            {
+                if((position + stonePosition).y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+
+
     bool Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
     {
         assert(stone);
 
-        // we use a reverse iterator because we have to check for collisions with the topmost stones first
-        for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
+        // check for collisions with all stones
+        for(std::list<SmartPtr<TetrisStone> >::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
-            if(stone == *it)
-                continue;
-
+            //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
+            //!< Saves the position of the currentStone
 
+            //filter out cases where the falling stone is already below a steady stone
+            if(position.y < currentStonePosition.y - this->center_->getStoneSize()/2.0f)
+                continue;
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
-                this->activeStone_->setPosition(Vector3(this->activeStone_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeStone_->getPosition().z));
+                float y_offset = static_cast<int>((this->activeBrick_->getPosition().y-currentStonePosition.y+10)/10)*10 + currentStonePosition.y;
+                if(y_offset < 0) //filter out extreme cases (very rare bug)
+                    y_offset = 0;
+                this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, y_offset, this->activeBrick_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
         }
@@ -144,11 +209,54 @@ namespace orxonox
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
-            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0f, stone->getPosition().z));
+            float yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
+            if(yOffset < 0) //catch brake-throughs
+                yOffset = 0;
+            this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
             return false;
         }
 
         return true;
+    }
+    /**
+     * @brief This function determines wether a brick touches another brick or the ground.
+     *
+     */
+    bool Tetris::isValidBrickPosition(TetrisBrick* brick)
+    {
+        assert(brick);
+
+        const Vector3& brickPosition = this->activeBrick_->getPosition();
+
+        // check all stones in the brick
+        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
+        {
+            TetrisStone* stone = brick->getStone(i);
+            const Vector3& stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
+            if(! this->isValidStonePosition(stone, brickPosition + stonePosition) )
+            {
+                // recurse because all stones have to checked again after the brick was re-positioned
+                this->isValidBrickPosition(brick);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+    @brief
+        A Vector3 is rolled 90 * degrees * amount (anticlockwise rotation)
+    */
+    Vector3 Tetris::rotateVector(Vector3 position, unsigned int amount)
+    {
+        float temp = 0;
+        for(unsigned int i = 0; i < amount; i++)
+        {
+            temp = position.x;
+            position.x = -position.y;
+            position.y = temp;
+        }
+        return position;
     }
 
     /**
@@ -159,8 +267,8 @@ namespace orxonox
     {
         if (this->center_ != NULL) // There needs to be a TetrisCenterpoint, i.e. the area the game takes place.
         {
-            // Create the first stone.
-            this->createStone();
+            // Create the first brick.
+            this->createBrick();
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
@@ -189,6 +297,12 @@ namespace orxonox
     */
     void Tetris::end()
     {
+        this->activeBrick_->setVelocity(Vector3::ZERO);
+        if(this->activeBrick_ != NULL)
+        {
+            this->player_->stopControl();
+        }
+
         this->cleanup();
 
         // Call end for the parent class.
@@ -224,51 +338,60 @@ namespace orxonox
         }
     }
 
-    /**
-    @brief
-        Starts the first stone.
-    */
-    void Tetris::startStone(void)
+
+
+    void Tetris::startBrick(void)
     {
         if(this->player_ == NULL)
             return;
 
         unsigned int cameraIndex = 0;
-        if(this->activeStone_ != NULL)
+        if(this->activeBrick_ != NULL)
         {
             // Get camera settings
-            cameraIndex = this->activeStone_->getCurrentCameraIndex();
+            cameraIndex = this->activeBrick_->getCurrentCameraIndex();
             this->player_->stopControl();
+            // destroy old active brick
+            this->activeBrick_->destroy();
         }
-        
-        // Make the last stone to be created the active stone.
-        this->activeStone_ = this->stones_.back();
-        
-        this->player_->startControl(this->activeStone_);
-        this->activeStone_->setVelocity(0.0f, -this->center_->getStoneSpeed(), 0.0f);
-        this->activeStone_->setCameraPosition(cameraIndex);
-    }
 
-    /**
-    @brief
-        Creates a new stone.
-    */
-    void Tetris::createStone(void)
-    {
-        // Create a new stone and add it to the list of stones.
-        TetrisStone* stone = new TetrisStone(this->center_);
-        this->stones_.push_back(stone);
-        
-        // Apply the stone template to the stone.
-        stone->addTemplate(this->center_->getStoneTemplate());
-        
-        // Attach the stone to the Centerpoint and set the position of the stone to be at the top middle.
-        this->center_->attach(stone);
+        // Make the last brick to be created the active brick.
+        this->activeBrick_ = this->futureBrick_;
+        this->futureBrick_ = 0;
+
+        // set its position
+        this->player_->startControl(this->activeBrick_);
         float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
         float yPos = (this->center_->getHeight()-0.5f)*this->center_->getStoneSize();
-        stone->setPosition(xPos, yPos, 0.0f);
-        stone->setGame(this);
+        this->activeBrick_->setPosition(xPos, yPos, 0.0f);
+        this->activeBrick_->setVelocity(0.0f, -this->center_->getStoneSpeed(), 0.0f);
+        this->activeBrick_->setCameraPosition(cameraIndex);
+
+        // create a new future brick
+        this->createBrick();
+
+        // check if the new brick is in a valid position, otherwise end the game
+        if (!this->isValidBrickPosition(this->activeBrick_))
+            this->end();
     }
+
+    void Tetris::createBrick(void)             //TODO: random rotation offset between 0 and 3 (times 90°)
+    {
+        // create new futureBrick_
+        this->futureBrick_ = new TetrisBrick(this->center_);
+
+
+        // Apply the stone template to the stone.
+        this->futureBrick_->addTemplate(this->center_->getBrickTemplate());
+
+        // Attach the brick to the Centerpoint and set the position of the brick to be at the left side.
+        this->center_->attach(this->futureBrick_);
+        float xPos = (this->center_->getWidth()*1.6f + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
+        float yPos = (this->center_->getHeight()-5.1f)*this->center_->getStoneSize();
+        this->futureBrick_->setPosition(xPos, yPos, 0.0f);
+        this->futureBrick_->setGame(this);
+    }
+
 
     /**
     @brief
@@ -281,6 +404,11 @@ namespace orxonox
         return this->player_;
     }
 
+    /*TetrisCenterpoint* Tetris::getCenterpoint(void) const
+    {
+        return this->center_;
+    }*/
+
     /**
     @brief Set the TetrisCenterpoint (the playing field).
     @param center A pointer to the TetrisCenterpoint to be set.
@@ -289,5 +417,58 @@ namespace orxonox
     {
         this->center_ = center;
     }
+
+    /**
+    @brief Check each row if it is full. Removes all full rows. Update
+    @brief Manages score.
+    */
+    void Tetris::findFullRows()
+    {
+        unsigned int correctPosition = 0;
+        unsigned int stonesPerRow = 0;
+        for (unsigned int row = 0; row < this->center_->getHeight(); row++)
+        {
+            stonesPerRow = 0;
+            for(std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); )
+            {
+                std::list<SmartPtr<TetrisStone> >::iterator it_temp = it++;
+                correctPosition = static_cast<unsigned int>(((*it_temp)->getPosition().y - 5)/this->center_->getStoneSize());
+                if(correctPosition == row)
+                {
+                    stonesPerRow++;
+                    if(stonesPerRow == this->center_->getWidth())
+                    {
+                        clearRow(row);
+                        row--; //the row counter has to be decreased in order to detect multiple rows!
+                        this->playerScored(this->player_);// add points
+                        //increase the stone's speed
+                        this->center_->setStoneSpeed(this->center_->getStoneSpeed()+1.0f);
+                    }
+                }
+            }
+        }
+    }
+
+    void Tetris::clearRow(unsigned int row)
+    {// clear the full row
+        for(std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); )
+        {
+            if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) == row)
+            {
+                (*it)->destroy();
+                this->stones_.erase(it++);
+            }
+            else
+                ++it;
+        }
+      // adjust height of stones above the deleted row //TODO: check if this could be a source of a bug.
+        for(std::list<SmartPtr<TetrisStone> >::iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        {
+            if(static_cast<unsigned int>(((*it)->getPosition().y - 5)/this->center_->getStoneSize()) > row)
+                (*it)->setPosition((*it)->getPosition()-Vector3(0,10,0));
+        }
+
+    }
+
 
 }

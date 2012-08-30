@@ -108,13 +108,13 @@ namespace orxonox
 
                 if (bIsDestination_)
                 {
-                    const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage("Congratulations - you have won the match!");
+                    gametype->getGametypeInfo()->sendAnnounceMessage("Congratulations - you have won the match!");
                     gametype->end();
                 }
 
                 if (!bIsFirst_ && !bIsDestination_)
                 {
-                    const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage("Checkpoint reached");
+                    gametype->getGametypeInfo()->sendAnnounceMessage("Checkpoint reached");
                 }
             }
         }

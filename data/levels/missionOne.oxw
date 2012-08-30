@@ -1152,11 +1152,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 
 
 <!-- @Objects: Pickup - find better place !! -->
-    <PickupSpawner position="-48650,700,100" triggerDistance="70" respawnTime="30" maxSpawnedItems="1">
-      <pickup>
-        <ShieldPickup template=hugeshieldpickup />
-      </pickup>
-    </PickupSpawner>
+    <PickupSpawner pickup=hugeshieldpickup position="-48650,700,100" triggerDistance="70" respawnTime="30" maxSpawnedItems="1" />
 
 
     <DistanceTrigger name="pickup" position="-48650,700,100" target="Pawn" distance=60 stayActive="true" delay=0 />

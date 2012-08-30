@@ -57,7 +57,7 @@ namespace orxonox
             const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
                         + "You didn't reach the check point " + multi_cast<std::string>(this->checkpointsReached_+1)
                         + " before the time limit. You lose!";
-            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+            this->getGametypeInfo()->sendAnnounceMessage(message);
             ChatManager::message(message);
         }
         else
@@ -67,7 +67,7 @@ namespace orxonox
             int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
             const std::string& message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
                         + "." + multi_cast<std::string>(ms) + " seconds.";
-            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+            this->getGametypeInfo()->sendAnnounceMessage(message);
             ChatManager::message(message);
 /*
             float time = this->clock_.getSecondsPrecise();
@@ -84,7 +84,7 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started! Reach the check points as quickly as possible!");
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        this->getGametypeInfo()->sendAnnounceMessage(message);
         ChatManager::message(message);
     }
 
@@ -97,7 +97,7 @@ namespace orxonox
         const std::string& message = "Checkpoint " + multi_cast<std::string>(this->getCheckpointsReached())
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
                         + " seconds.";
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        this->getGametypeInfo()->sendAnnounceMessage(message);
         ChatManager::message(message);
     }
 

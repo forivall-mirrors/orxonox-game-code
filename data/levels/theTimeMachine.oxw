@@ -38,6 +38,10 @@
    linearDamping     = 0.7
    angularDamping    = 0.9999999
   >
+    <engines>
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipassffengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipassffengine />
+    </engines>
     <attached>
       <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
       <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />
@@ -70,7 +74,7 @@
     
     <Scene
         ambientlight="0.8,0.8,0.8"
-        skybox="Orxonox/skypanoramagen2"
+        skybox="Orxonox/skyBoxSomeNebula"
     >
 
         <Light type=directional position="0,0,0" direction="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 1.0, 0.9" />

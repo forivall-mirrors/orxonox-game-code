@@ -36,9 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "util/StringUtils.h"
 
-#include "pickup/PickupIdentifier.h"
-
-#include "DroppedPickup.h"
+#include "PickupSpawner.h"
 
 namespace orxonox
 {
@@ -85,31 +83,15 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentififer of this Pickup.
-    */
-    void Pickup::initializeIdentifier(void)
-    {
-        std::string val1 = this->getActivationType();
-        std::string type1 = "activationType";
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        std::string val2 = this->getDurationType();
-        std::string type2 = "durationType";
-        this->pickupIdentifier_->addParameter(type2, val2);
-    }
-
-    /**
-    @brief
         Method for creating a Pickup object through XML.
     */
     void Pickup::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Pickup, XMLPort, xmlelement, mode);
 
-        XMLPortParam(Pickup, "activationType", setActivationType, getActivationType, xmlelement, mode);
-        XMLPortParam(Pickup, "durationType", setDurationType, getDurationType, xmlelement, mode);
-
-        this->initializeIdentifier();
+        XMLPortParam(Pickup, "representation", setRepresentationName, getRepresentationName, xmlelement, mode);
+        XMLPortParam(Pickup, "activationType", setActivationTypeAsString, getActivationTypeAsString, xmlelement, mode);
+        XMLPortParam(Pickup, "durationType", setDurationTypeAsString, getDurationTypeAsString, xmlelement, mode);
     }
 
     /**
@@ -118,9 +100,9 @@ namespace orxonox
     @return
         Returns a string containing the activation type.
     */
-    const std::string& Pickup::getActivationType(void) const
+    const std::string& Pickup::getActivationTypeAsString(void) const
     {
-        switch(this->activationType_)
+        switch(this->getActivationType())
         {
             case pickupActivationType::immediate:
                 return activationTypeImmediate_s;
@@ -137,9 +119,9 @@ namespace orxonox
     @return
         Returns a string containing the duration type.
     */
-    const std::string& Pickup::getDurationType(void) const
+    const std::string& Pickup::getDurationTypeAsString(void) const
     {
-        switch(this->durationType_)
+        switch(this->getDurationType())
         {
             case pickupDurationType::once:
                 return durationTypeOnce_s;
@@ -156,12 +138,12 @@ namespace orxonox
     @param type
         The activation type of the Pickup as a string.
     */
-    void Pickup::setActivationType(const std::string& type)
+    void Pickup::setActivationTypeAsString(const std::string& type)
     {
         if(type == Pickup::activationTypeImmediate_s)
-            this->activationType_ = pickupActivationType::immediate;
+            this->setActivationType(pickupActivationType::immediate);
         else if(type == Pickup::activationTypeOnUse_s)
-            this->activationType_ = pickupActivationType::onUse;
+            this->setActivationType(pickupActivationType::onUse);
         else
             orxout(internal_error, context::pickups) << "Invalid activationType '" << type << "' in " << this->getIdentifier()->getName() << "." << endl;
     }
@@ -172,12 +154,12 @@ namespace orxonox
     @param type
         The duration type of the Pickup as a string.
     */
-    void Pickup::setDurationType(const std::string& type)
+    void Pickup::setDurationTypeAsString(const std::string& type)
     {
         if(type == Pickup::durationTypeOnce_s)
-            this->durationType_ = pickupDurationType::once;
+            this->setDurationType(pickupDurationType::once);
         else if(type == Pickup::durationTypeContinuous_s)
-            this->durationType_ = pickupDurationType::continuous;
+            this->setDurationType(pickupDurationType::continuous);
         else
             orxout(internal_error, context::pickups) << "Invalid durationType '" << type << "' in " << this->getIdentifier()->getName() << "." << endl;
     }
@@ -198,35 +180,13 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the OrxonoxClass.
-    @param item
-        A reference to the pointer of the item that we're duplicating.
-    */
-    void Pickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new Pickup(this);
-
-        SUPER(Pickup, clone, item);
-
-        Pickup* pickup = dynamic_cast<Pickup*>(item);
-        pickup->setActivationTypeDirect(this->getActivationTypeDirect());
-        pickup->setDurationTypeDirect(this->getDurationTypeDirect());
-
-        pickup->initializeIdentifier();
-    }
-
-    /**
-    @brief
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
-        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
     @return
         Returns true if a spawner was created, false if not.
     */
     bool Pickup::createSpawner(void)
     {
-        new DroppedPickup(this, this, this->getCarrier());
+        PickupSpawner::createDroppedPickup(this, this, this->getCarrier());
         return true;
     }
 

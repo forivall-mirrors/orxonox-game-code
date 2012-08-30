@@ -1,14 +1,17 @@
 <LevelInfo
  name = "Coding Tutorial"
  description = "Level for the coding tutorial."
- tags = "tutorial"
+ tags = "tutorial, shipselection"
  screenshot = "codingtutorial.png"
+ startingships = "spaceshipassff, spaceshipghost, spaceshipspacecruiser"
 />
 
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipGhost.oxt")
+  include("templates/spaceshipSpacecruiser.oxt")
   include("templates/lodInformation.oxt")
 ?>
 
@@ -20,12 +23,8 @@
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
-   skybox       = "Orxonox/skypanoramagen1"
+   skybox       = "Orxonox/skyBoxBasic"
   >
-
-
-
-
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
     <Model scale="1" mesh="drone.mesh"/>
@@ -52,7 +51,7 @@
     <?lua
       for i = 1, 10, 1 do
     ?>
-      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=shipselection />
     <?lua end ?>
 
     <GlobalShader compositor="Bloom" visible=false>

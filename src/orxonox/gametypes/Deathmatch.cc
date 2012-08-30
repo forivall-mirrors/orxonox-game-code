@@ -113,9 +113,9 @@ namespace orxonox
         Gametype::pawnKilled(victim, killer);
     }
 
-    void Deathmatch::playerScored(PlayerInfo* player)
+    void Deathmatch::playerScored(PlayerInfo* player, int score)
     {
-        Gametype::playerScored(player);
+        Gametype::playerScored(player, score);
 
         if (player)
         {

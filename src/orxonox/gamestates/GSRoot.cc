@@ -75,8 +75,9 @@ namespace orxonox
         unsigned int nr=0;
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; ++it)
         {
-            if (dynamic_cast<Synchronisable*>(*it))
-                orxout(debug_output) << "object: " << it->getIdentifier()->getName() << " id: " << dynamic_cast<Synchronisable*>(*it)->getObjectID() << endl;
+            Synchronisable* synchronisable = orxonox_cast<Synchronisable*>(*it);
+            if (synchronisable)
+                orxout(debug_output) << "object: " << it->getIdentifier()->getName() << " id: " << synchronisable->getObjectID() << endl;
             else
                 orxout(debug_output) << "object: " << it->getIdentifier()->getName() << endl;
             nr++;

@@ -107,7 +107,7 @@ function P.createInventory()
 end
 
 function P.createPickupEntry(index, pickup)
-    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup.pickup)
+    local representation = orxonox.PickupManager:getInstance():getRepresentation(pickup.representationName)
 
     local name = "orxonox/PickupInventory/Box/Pickup" .. index
 
@@ -175,7 +175,7 @@ function P.cleanup(destroyDetails)
     end
     for k,v in pairs(P.detailsWindows) do
         if v ~= nil then
-            winMgr:destroyWindow(v)
+            P.destroyDetailWindow(k)
         end
     end
 end
@@ -192,7 +192,7 @@ end
 
 function P.createDetailsWindow(pickupIndex)
     local pickup = P.pickupsList[pickupIndex]
-    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup.pickup)
+    local representation = orxonox.PickupManager:getInstance():getRepresentation(pickup.representationName)
 
     local index = P.getNewDetailNumber()
     local name = "orxonox/PickupInventory/Details" .. index
@@ -322,6 +322,10 @@ function P.closeDetailWindow(e)
     local match = string.gmatch(name, "%d+")
     local detailNr = tonumber(match())
     
+    P.destroyDetailWindow(detailNr)
+end
+
+function P.destroyDetailWindow(detailNr)
     local window = P.detailsWindows[detailNr]
     winMgr:destroyWindow(window)
     P.detailsWindows[detailNr] = nil

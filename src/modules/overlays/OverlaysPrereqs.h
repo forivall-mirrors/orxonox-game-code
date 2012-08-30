@@ -94,7 +94,6 @@ namespace orxonox
     class LastManStandingInfos;
     class PauseNotice;
     class TeamBaseMatchScore;
-    class UnderAttackHealthBar;
 
     // stats
     class CreateLines;

@@ -22,7 +22,7 @@
  *   Author:
  *     Mauro Salomon
  *   Co-authors:
- *      ...
+ *      Celine Egger
  *
  */
 
@@ -47,6 +47,8 @@ namespace orxonox
 
         this->cantMove_ = false;
         this->bTimeIsUp_ = false;
+        this->numberOfBots_ = 0; // quick fix: don't allow default-bots to enter the race
+                                 // remove this line, if a raceBot has been created.
     }
 
     void SpaceRace::end()
@@ -69,7 +71,7 @@ namespace orxonox
                         + "." + multi_cast<std::string>(ms) + " seconds.";
         }
 
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        this->getGametypeInfo()->sendAnnounceMessage(message);
         ChatManager::message(message);
     }
 
@@ -96,7 +98,7 @@ namespace orxonox
             this->cantMove_= false;
 
             std::string message = "The match has started! Reach the check points as quickly as possible!";
-            const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+            this->getGametypeInfo()->sendAnnounceMessage(message);
             ChatManager::message(message);
         }
     }
@@ -111,7 +113,7 @@ namespace orxonox
 
         const std::string& message = "Checkpoint " + multi_cast<std::string>(checkpoint->getCheckpointIndex() + 1)
             + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds.";
-        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+        this->getGametypeInfo()->sendAnnounceMessage(message);
         ChatManager::message(message);
     }
 

@@ -16,8 +16,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallshieldpickup>
+<Template name=smallshieldpickup baseclass=ShieldPickup>
   <ShieldPickup
+    representation = "smallshieldpickup"
     duration = 10
     shieldabsorption = 0.7
     shieldhealth = 300
@@ -42,8 +43,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumshieldpickup>
+<Template name=mediumshieldpickup baseclass=ShieldPickup>
   <ShieldPickup
+    representation = "mediumshieldpickup"
     duration = 30
     shieldabsorption = 0.8
     shieldhealth = 500
@@ -69,8 +71,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugeshieldpickup>
+<Template name=hugeshieldpickup baseclass=ShieldPickup>
   <ShieldPickup
+    representation = "hugeshieldpickup"
     duration = 60
     shieldabsorption = 0.95
     shieldhealth = 700
@@ -97,8 +100,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallhealthpickup>
+<Template name=smallhealthpickup baseclass=HealthPickup>
   <HealthPickup
+    representation = "smallhealthpickup"
     health = 10
     healthType = "limited"
     activationType = "immediate"
@@ -122,8 +126,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumhealthpickup>
+<Template name=mediumhealthpickup baseclass=HealthPickup>
   <HealthPickup
+    representation = "mediumhealthpickup"
     health = 50
     healthType = "limited"
     activationType = "immediate"
@@ -147,8 +152,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugehealthpickup>
+<Template name=hugehealthpickup baseclass=HealthPickup>
   <HealthPickup
+    representation = "hugehealthpickup"
     health = 100
     healthType = "limited"
     activationType = "immediate"
@@ -172,8 +178,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=crazyhealthpickup>
+<Template name=crazyhealthpickup baseclass=HealthPickup>
   <HealthPickup
+    representation = "crazyhealthpickup"
     health = 1000
     healthType = "permanent"
     activationType = "immediate"
@@ -215,6 +222,87 @@
     </PickupRepresentation>
 </Template>
 
+<!-- DamageBoost pickups -->
+
+<Template name=smalldamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageSmall" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smalldamageboostpickup baseclass=DamageBoostPickup>
+  <DamageBoostPickup
+    representation = "smalldamageboostpickup"
+    duration = 10.0
+    damageMultiplier = 2.0
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+<Template name=mediumdamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageMedium" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediumdamageboostpickup baseclass=DamageBoostPickup>
+  <DamageBoostPickup
+    representation = "mediumdamageboostpickup"
+    duration = 10.0
+    damageMultiplier = 5.0
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+<Template name=largedamageboostpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1 >
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.30,0.30,0.30" material="damageLarge" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=largedamageboostpickup baseclass=DamageBoostPickup>
+  <DamageBoostPickup
+    representation = "largedamageboostpickup"
+    duration = 10.0
+    damageMultiplier = 7.0
+    activationType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+
 <!-- Speed pickups -->
 
 <Template name=smallspeedpickupRepresentation>
@@ -233,8 +321,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallspeedpickup>
+<Template name=smallspeedpickup baseclass=SpeedPickup>
   <SpeedPickup
+    representation = "smallspeedpickup"
     duration = 10.0
     speedAdd = 0.0
     SpeedMultiply = 10.0
@@ -259,8 +348,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumspeedpickup>
+<Template name=mediumspeedpickup baseclass=SpeedPickup>
   <SpeedPickup
+    representation = "mediumspeedpickup"
     duration = 10.0
     speedAdd = 0.0
     SpeedMultiply = 25.0
@@ -285,8 +375,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugespeedpickup>
+<Template name=hugespeedpickup baseclass=SpeedPickup>
   <SpeedPickup
+    representation = "hugespeedpickup"
     duration = 10.0
     speedAdd = 0.0
     SpeedMultiply = 50.0
@@ -311,8 +402,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smalljumppickup>
+<Template name=smalljumppickup baseclass=SpeedPickup>
   <SpeedPickup
+    representation = "smalljumppickup"
     duration = 0.7
     speedAdd = 5000.0
     SpeedMultiply = 1.0
@@ -339,8 +431,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallinvisiblepickup>
+<Template name=smallinvisiblepickup baseclass=InvisiblePickup>
   <InvisiblePickup 
+    representation = "smallinvisiblepickup"
     duration = 5.0
     activaionType = "immediate"
     durationType = "continuous"
@@ -363,8 +456,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediuminvisiblepickup>
+<Template name=mediuminvisiblepickup baseclass=InvisiblePickup>
   <InvisiblePickup 
+    representation = "mediuminvisiblepickup"
     duration = 10.0
     activaionType = "immediate"
     durationType = "continuous"
@@ -387,8 +481,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugeinvisiblepickup>
+<Template name=hugeinvisiblepickup baseclass=InvisiblePickup>
   <InvisiblePickup 
+    representation = "hugeinvisiblepickup"
     duration = 20.0
     activaionType = "immediate"
     durationType = "continuous"
@@ -411,8 +506,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smallshrinkpickup>
-  <InvisiblePickup 
+<Template name=smallshrinkpickup baseclass=ShrinkPickup>
+  <ShrinkPickup 
+    representation = "smallshrinkpickup"
     duration = 10.0
     shrinkFactor = 2.5
     activaionType = "immediate"
@@ -436,8 +532,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=mediumshrinkpickup>
-  <InvisiblePickup 
+<Template name=mediumshrinkpickup baseclass=ShrinkPickup>
+  <ShrinkPickup 
+    representation = "mediumshrinkpickup"
     duration = 30.0
     shrinkFactor = 5.0
     activaionType = "immediate"
@@ -461,8 +558,9 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=hugeshrinkpickup>
-  <InvisiblePickup 
+<Template name=hugeshrinkpickup baseclass=ShrinkPickup>
+  <ShrinkPickup 
+    representation = "hugeshrinkpickup"
     duration = 60.0
     shrinkFactor = 10.0
     activaionType = "immediate"
@@ -490,8 +588,10 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=triplehealthspeedinvisibilitypickup>
-    <PickupCollection>
+<Template name=triplehealthspeedinvisibilitypickup baseclass=PickupCollection>
+    <PickupCollection
+        representation = "triplehealthspeedinvisibilitypickup"
+    >
         <pickupables>
             <HealthPickup template=mediumhealthpickup />
             <SpeedPickup template=mediumspeedpickup />
@@ -550,7 +650,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=dronepickup>
-    <DronePickup droneTemplate=droneTemplate />
+<Template name=dronepickup baseclass=DronePickup>
+    <DronePickup representation=dronepickup droneTemplate=droneTemplate />
 </Template>
 

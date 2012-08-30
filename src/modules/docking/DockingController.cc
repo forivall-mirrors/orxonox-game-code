@@ -59,7 +59,7 @@ namespace orxonox
             return;
 
         float distance = (this->dock_->getWorldPosition() - entity->getPosition()).length();
-        Vector2 coord = get2DViewdirection(     // I don't understand this too
+        Vector2 coord = get2DViewcoordinates(     // I don't understand this too
             entity->getPosition(),
             entity->getOrientation() * WorldEntity::FRONT,
             entity->getOrientation() * WorldEntity::UP,
@@ -69,8 +69,8 @@ namespace orxonox
         // adjust direction of spaceship
         if (distance > 10)
         {
-            entity->rotateYaw(-1.0f * 0.8f * sgn(coord.x) * coord.x*coord.x);
-            entity->rotatePitch(0.8f * sgn(coord.y) * coord.y*coord.y);
+            entity->rotateYaw(-1.0f * 0.8f * clamp(coord.x * 10, -1.0f, 1.0f));
+            entity->rotatePitch(0.8f * clamp(coord.y * 10, -1.0f, 1.0f));
         }
 
         /*// adjust speed

@@ -172,7 +172,7 @@ namespace orxonox
 
         this->changedControllableEntity();
 
-		RadarViewable* radarviewable = orxonox_cast<RadarViewable*>(entity);
+        RadarViewable* radarviewable = orxonox_cast<RadarViewable*>(entity);
         if (radarviewable != NULL)
             radarviewable->setRadarName(this->getName());
     }

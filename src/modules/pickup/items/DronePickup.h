@@ -69,14 +69,11 @@ namespace orxonox {
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a DronePickup object through XML.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             const std::string& getDroneTemplate() const; //!< Get the name of the droneTemplate.
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
-            void setDroneTemplate(std::string templatename); //!< Set the droneTemplate.
+            void setDroneTemplate(const std::string& templatename); //!< Set the droneTemplate.
 
         private:
             void initialize(void); //!< Initializes the member variables.

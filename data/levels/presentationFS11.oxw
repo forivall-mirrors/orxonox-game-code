@@ -421,10 +421,7 @@ include("templates/pickupRepresentationTemplates.oxt")
         </events>
     </SimpleNotification>
 
-    <PickupSpawner position="-72487,420,-63" respawnTime="10" triggerDistance="20" maxSpawnedItems="5" active="false">
-      <pickup>
-        <ShrinkPickup template ="smallshrinkpickup"/>
-      </pickup>
+    <PickupSpawner pickup="smallshrinkpickup" position="-72487,420,-63" respawnTime="10" triggerDistance="20" maxSpawnedItems="5" active="false">
       <events>
         <activity>
             <EventListener event=portaldelaytrigger3 />

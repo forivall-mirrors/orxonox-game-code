@@ -67,7 +67,7 @@ namespace orxonox
     GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
     {
         RegisterObject(GametypeInfo);
-        
+
         this->bStarted_ = false;
         this->bEnded_ = false;
         this->startCountdown_ = 10.0f;
@@ -164,11 +164,11 @@ namespace orxonox
     {
         if(this->bStarted_)
            { return;}
-        
+
         this->bStarted_ = true;
         this->changedStarted();
-        
-       
+
+
     }
 
     /**
@@ -194,7 +194,7 @@ namespace orxonox
     {
         if(this->startCountdown_ == countdown || countdown < 0.0f)
             return;
-        
+
         this->startCountdown_ = countdown;
         // Set the counter to the ceiling of the current countdown.
         this->counter_ = static_cast<unsigned int>(std::ceil(countdown));
@@ -224,7 +224,7 @@ namespace orxonox
     {
         if(this->counter_ == 0)
             return;
-        
+
         this->counter_--;
         this->changedCountdownCounter();
     }
@@ -324,7 +324,7 @@ namespace orxonox
     {
         if(this->spawned_ == spawned)
             return;
-        
+
         this->spawned_ = spawned;
         // Clear the notifications if the Player has spawned.
         if(this->spawned_ && !this->hasEnded())
@@ -394,7 +394,7 @@ namespace orxonox
     // Announce messages.
     // TODO: Replace with notifications.
 
-    void GametypeInfo::sendAnnounceMessage(const std::string& message)
+    void GametypeInfo::sendAnnounceMessage(const std::string& message) const
     {
         if (GameMode::isMaster())
         {
@@ -403,7 +403,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendAnnounceMessage(const std::string& message, unsigned int clientID)
+    void GametypeInfo::sendAnnounceMessage(const std::string& message, unsigned int clientID) const
     {
         if (GameMode::isMaster())
         {
@@ -414,7 +414,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendKillMessage(const std::string& message, unsigned int clientID)
+    void GametypeInfo::sendKillMessage(const std::string& message, unsigned int clientID) const
     {
         if (GameMode::isMaster())
         {
@@ -425,7 +425,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendDeathMessage(const std::string& message, unsigned int clientID)
+    void GametypeInfo::sendDeathMessage(const std::string& message, unsigned int clientID) const
     {
         if (GameMode::isMaster())
         {
@@ -436,7 +436,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour)
+    void GametypeInfo::sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour) const
     {
         if (GameMode::isMaster())
         {
@@ -447,7 +447,7 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendFadingMessage(const std::string& message, unsigned int clientID)
+    void GametypeInfo::sendFadingMessage(const std::string& message, unsigned int clientID) const
     {
         if (GameMode::isMaster())
         {
@@ -458,31 +458,31 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::dispatchAnnounceMessage(const std::string& message)
+    void GametypeInfo::dispatchAnnounceMessage(const std::string& message) const
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->announcemessage(this, message);
     }
 
-    void GametypeInfo::dispatchKillMessage(const std::string& message)
+    void GametypeInfo::dispatchKillMessage(const std::string& message) const
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->killmessage(this, message);
     }
 
-    void GametypeInfo::dispatchDeathMessage(const std::string& message)
+    void GametypeInfo::dispatchDeathMessage(const std::string& message) const
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->deathmessage(this, message);
     }
 
-     void GametypeInfo::dispatchStaticMessage(const std::string& message, const ColourValue& colour)
+     void GametypeInfo::dispatchStaticMessage(const std::string& message, const ColourValue& colour) const
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->staticmessage(this, message, colour);
     }
 
-     void GametypeInfo::dispatchFadingMessage(const std::string& message)
+     void GametypeInfo::dispatchFadingMessage(const std::string& message) const
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->fadingmessage(this, message);

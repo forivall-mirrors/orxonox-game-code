@@ -55,7 +55,7 @@ namespace orxonox
     {
         public:
             Tetris(BaseObject* creator); //!< Constructor. Registers and initializes the object.
-            virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.           
+            virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.
 
             virtual void start(void); //!< Starts the Tetris minigame.
             virtual void end(void); ///!< Ends the Tetris minigame.
@@ -67,25 +67,34 @@ namespace orxonox
             void setCenterpoint(TetrisCenterpoint* center);
 
             PlayerInfo* getPlayer(void) const; //!< Get the player.
+            WeakPtr<TetrisCenterpoint> getCenterpoint(void)
+                { return this->center_; }
 
             bool isValidMove(TetrisStone* stone, const Vector3& position);
+            bool isValidMove(TetrisBrick* brick, const Vector3& position, bool isRotation);
+            Vector3 rotateVector(Vector3 position, unsigned int amount);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.
 
+
         private:
-            void startStone(void); //!< Starts with the first stone.
-            void createStone(void);
+            void startBrick(void);
+            void createBrick(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
             bool isValidStonePosition(TetrisStone* stone, const Vector3& position);
-            
+            bool isValidBrickPosition(TetrisBrick* brick);
+            void findFullRows(void);
+            void clearRow(unsigned int row);
+
+
             PlayerInfo* player_;
 
             WeakPtr<TetrisCenterpoint> center_; //!< The playing field.
-            std::vector<TetrisStone*> stones_; //!< A list of all stones in play.
-            std::vector< std::vector<bool> > grid_;
-            TetrisStone* activeStone_;
-            
+            std::list<SmartPtr<TetrisStone> > stones_; //!< A list of all stones in play.
+            WeakPtr<TetrisBrick> activeBrick_;
+            WeakPtr<TetrisBrick> futureBrick_;
+
             Timer starttimer_; //!< A timer to delay the start of the game.
     };
 }

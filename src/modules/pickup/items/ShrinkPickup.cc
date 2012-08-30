@@ -39,7 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "worldentities/CameraPosition.h"
@@ -80,27 +79,6 @@ namespace orxonox
         this->currentFactor_ = 1.0f;
     }
 
-    void ShrinkPickup::initializeIdentifier(void)
-    {
-        std::stringstream stream;
-        stream << this->getShrinkFactor();
-        std::string type1 = "shrinkFactor";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getDuration();
-        std::string val2 = stream.str();
-        std::string type2 = "duration";
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getShrinkDuration();
-        std::string val3 = stream.str();
-        std::string type3 = "shrinkDuration";
-        this->pickupIdentifier_->addParameter(type3, val3);
-    }
-
    /**
     @brief
         Method for creating a ShrinkPickup object through XML.
@@ -112,8 +90,48 @@ namespace orxonox
         XMLPortParam(ShrinkPickup, "shrinkFactor", setShrinkFactor, getShrinkFactor, xmlelement, mode);
         XMLPortParam(ShrinkPickup, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(ShrinkPickup, "shrinkDuration", setShrinkDuration, getShrinkDuration, xmlelement, mode);
+    }
 
-        this->initializeIdentifier();
+    /**
+    @brief Sets the shrinking factor.
+    @param factor The factor, needs to greater than 1.
+    */
+    void ShrinkPickup::setShrinkFactor(float factor)
+    {
+        if(factor <= 1.0f)
+        {
+            orxout(internal_warning, context::pickups) << "Invalid shrinking factor in ShrinkPickup. Ignoring.." << endl;
+            return;
+        }
+        this->shrinkFactor_ = factor;
+    }
+
+    /**
+    @brief Set the duration for which the ship remains shrunken.
+    @param duration The duration, needs to be non-negative.
+    */
+    void ShrinkPickup::setDuration(float duration)
+    {
+        if(duration < 0.0f)
+        {
+            orxout(internal_warning, context::pickups) << "Invalid duration in ShrinkPickup. Ignoring.." << endl;
+            return;
+        }
+        this->duration_ = duration;
+    }
+
+    /**
+    @brief Set the shrink duration.
+    @param speed The shrink duration, needs to be positive.
+    */
+    void ShrinkPickup::setShrinkDuration(float speed)
+    {
+        if(speed <= 0.0f)
+        {
+            orxout(internal_warning, context::pickups) << "Invalid shrink duration in ShrinkPickup. Ignoring.." << endl;
+            return;
+        }
+        this->shrinkDuration_ = speed;
     }
 
     /**
@@ -147,7 +165,7 @@ namespace orxonox
     void ShrinkPickup::changedPickedUp(void)
     {
         SUPER(ShrinkPickup, changedPickedUp);
-        
+
         if(!this->isPickedUp() && this->isActive_)
         {
             if(this->isShrinking_ || this->isTerminating_)
@@ -270,7 +288,7 @@ namespace orxonox
                 this->currentFactor_ = currentFactor;
 
                 bool destroy = false;
-                
+
                 // Stop shrinking if the desired size is reached.
                 if(this->timeRemainig_ <= 0.0f)
                 {
@@ -313,28 +331,8 @@ namespace orxonox
     Pawn* ShrinkPickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
 
         return pawn;
-    }
-
-    /**
-    @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void ShrinkPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new ShrinkPickup(this);
-
-        SUPER(ShrinkPickup, clone, item);
-        ShrinkPickup* pickup = dynamic_cast<ShrinkPickup*>(item);
-        pickup->setShrinkFactor(this->getShrinkFactor());
-        pickup->setDuration(this->getDuration());
-        pickup->setShrinkDuration(this->getShrinkDuration());
-
-        pickup->initializeIdentifier();
     }
 }

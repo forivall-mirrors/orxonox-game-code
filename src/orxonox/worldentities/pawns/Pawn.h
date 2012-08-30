@@ -143,9 +143,6 @@ namespace orxonox // tolua_export
 
             virtual void addedWeaponPack(WeaponPack* wPack) {}
 
-            inline const WorldEntity* getWorldEntity() const
-                { return const_cast<Pawn*>(this); }
-
             inline void setSpawnParticleSource(const std::string& source)
                 { this->spawnparticlesource_ = source; }
             inline const std::string& getSpawnParticleSource() const
@@ -160,6 +157,13 @@ namespace orxonox // tolua_export
                 { this->numexplosionchunks_ = chunks; }
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
+
+            // These are used with the Damage Boost Pickup to use the damage multiplier.
+            inline void setDamageMultiplier(float multiplier)
+                { this->damageMultiplier_ = multiplier; }
+            inline float getDamageMultiplier() const
+                { return this->damageMultiplier_; }
+
 
             virtual void startLocalHumanControl();
 
@@ -202,10 +206,12 @@ namespace orxonox // tolua_export
             float shieldHealth_;
             float maxShieldHealth_;
             float initialShieldHealth_;
-            float shieldAbsorption_; // Has to be between 0 and 1
+            float shieldAbsorption_; ///< Has to be between 0 and 1
             float reloadRate_;
             float reloadWaitTime_;
             float reloadWaitCountdown_;
+
+            float damageMultiplier_; ///< Used by the Damage Boost Pickup.
 
             WeakPtr<Pawn> lastHitOriginator_;
 

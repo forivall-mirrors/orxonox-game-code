@@ -91,7 +91,7 @@ namespace orxonox
 
     void HUDRadar::addObject(RadarViewable* object)
     {
-        if (object == dynamic_cast<RadarViewable*>(this->owner_))
+        if (object == orxonox_cast<RadarViewable*>(this->owner_))
             return;
         if( showObject(object) == false ) //do not show objects that are "invisible" or "radar invisible"
             return;
@@ -188,7 +188,7 @@ namespace orxonox
 
     bool HUDRadar::showObject(RadarViewable* rv)
     {
-        if ( rv == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
+        if ( rv == orxonox_cast<RadarViewable*> ( this->getOwner() ) )
             return false;
         assert( rv->getWorldEntity() );
         if ( rv->getWorldEntity()->isVisible()==false || rv->getRadarVisibility()==false )

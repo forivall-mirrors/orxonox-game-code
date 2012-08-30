@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
@@ -79,31 +78,6 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the PickupIdentifier of this pickup.
-    */
-    void SpeedPickup::initializeIdentifier(void)
-    {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-
-        stream.clear();
-        stream << this->getSpeedAdd();
-        std::string type2 = "speedAdd";
-        std::string val2 = stream.str();
-        this->pickupIdentifier_->addParameter(type2, val2);
-
-        stream.clear();
-        stream << this->getSpeedMultiply();
-        std::string type3 = "speedMultiply";
-        std::string val3 = stream.str();
-        this->pickupIdentifier_->addParameter(type3, val3);
-    }
-
-    /**
-    @brief
         Method for creating a SpeedPickup object through XML.
     */
     void SpeedPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
@@ -113,8 +87,6 @@ namespace orxonox
         XMLPortParam(SpeedPickup, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(SpeedPickup, "speedAdd", setSpeedAdd, getSpeedAdd, xmlelement, mode);
         XMLPortParam(SpeedPickup, "speedMultiply", setSpeedMultiply, getSpeedMultiply, xmlelement, mode);
-
-        this->initializeIdentifier();
     }
 
     /**
@@ -175,7 +147,7 @@ namespace orxonox
     SpaceShip* SpeedPickup::carrierToSpaceShipHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        SpaceShip* ship = dynamic_cast<SpaceShip*>(carrier);
+        SpaceShip* ship = orxonox_cast<SpaceShip*>(carrier);
 
         if(ship == NULL)
         {
@@ -183,27 +155,6 @@ namespace orxonox
         }
 
         return ship;
-    }
-
-    /**
-    @brief
-        Creates a duplicate of the input OrxonoxClass.
-    @param item
-        A pointer to the Orxonox class.
-    */
-    void SpeedPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new SpeedPickup(this);
-
-        SUPER(SpeedPickup, clone, item);
-
-        SpeedPickup* pickup = dynamic_cast<SpeedPickup*>(item);
-        pickup->setDuration(this->getDuration());
-        pickup->setSpeedAdd(this->getSpeedAdd());
-        pickup->setSpeedMultiply(this->getSpeedMultiply());
-
-        pickup->initializeIdentifier();
     }
 
     /**

@@ -71,10 +71,9 @@ namespace orxonox {
 
             InvisiblePickup(BaseObject* creator); //!< Constructor.
             virtual ~InvisiblePickup(); //!< Destructor.
-            
+
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
             @brief Checks whether the Pawn is invisible.
@@ -90,8 +89,6 @@ namespace orxonox {
                 { return this->duration_; }
 
         protected:
-            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
             bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
             void setDuration(float duration); //!< Sets the time the InvisibilityPickup will last.
 

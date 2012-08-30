@@ -48,8 +48,6 @@ namespace orxonox
         this->destroyer_.setCallback(createFunctor(&UnderAttack::killedDestroyer, this));
         this->gameEnded_ = false;
 
-        //this->setHUDTemplate("UnderAttackHUD"); 
-        //This HUD is in conflict with the HUDEnemyHealthBar
         this->setConfigValues();
         this->timesequence_ = static_cast<int>(this->gameTime_);
     }
