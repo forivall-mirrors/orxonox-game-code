@@ -1,5 +1,5 @@
 <Template name="LastmanstandingHUD">
-  <OverlayGroup name="DynamicmatcHUD" scale = "1, 1">
+  <OverlayGroup name="LastmanstandingHUD" scale = "1, 1">
     <OverlayText
      position  = "0.02, 0.02"
      pickpoint = "0.0, 0.0"

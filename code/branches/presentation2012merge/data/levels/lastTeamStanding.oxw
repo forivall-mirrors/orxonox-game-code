@@ -28,7 +28,6 @@
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/skyBoxBasic"
   >
-  <?lua include("includes/notifications.oxi") ?>
 
     <?lua
       include("includes/pickups.oxi")

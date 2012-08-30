@@ -56,8 +56,8 @@
   </templates>
   <?lua include("includes/notifications.oxi") ?>
 
-  <WorldAmbientSound source="Ganymede.ogg" playOnLoad=true looping=true />
-
+  <!--WorldAmbientSound source="Ganymede.ogg" playOnLoad=true looping=true /-->
+  <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true"/>
   <PongBot />
 
   <Scene
