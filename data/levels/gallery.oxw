@@ -167,8 +167,20 @@
 
 
 
+<!-- BILLBOARDS - Flares -->
+    <Billboard position="-400,0,0" material="Flares/ringflare" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,60,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,120,0" material="Flares/point_lensflare" colour="0.7,0.4,0.1" scale=0.5/>
+    <Billboard position="-400,180,0" material="Flares/Flare" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-60,0" material="Flares/backlightflare" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-120,0" material="Flares/ThrusterFlare1" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-180,0" material="Flares/LightningBall_1" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-240,0" material="Portals/Default" />
 
 
+
+<!-- Particle Emitters -->
+    <ParticleEmitter pitch=-135 roll=30 position="-400,0,300" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
 
 
 
