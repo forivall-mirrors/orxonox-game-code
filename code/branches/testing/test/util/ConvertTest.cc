@@ -90,10 +90,15 @@ namespace orxonox
         EXPECT_EQ('a', multi_cast<char>(std::string("a")));
         EXPECT_EQ('\n', multi_cast<char>(std::string("\n")));
         EXPECT_EQ('\0', multi_cast<char>(std::string("")));
+        EXPECT_EQ('1', multi_cast<char>(std::string("123")));
 
         // bool
         EXPECT_TRUE(multi_cast<bool>(std::string("true")));
         EXPECT_FALSE(multi_cast<bool>(std::string("false")));
+        EXPECT_FALSE(multi_cast<bool>(std::string("0")));
+        EXPECT_FALSE(multi_cast<bool>(std::string("0.123")));
+        EXPECT_TRUE(multi_cast<bool>(std::string("1")));
+        EXPECT_TRUE(multi_cast<bool>(std::string("123.456")));
 
         // TODO: Check consistency of conversion depending on MathConvert.h and reversibility
 /*

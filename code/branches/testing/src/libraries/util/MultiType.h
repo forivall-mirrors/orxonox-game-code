@@ -329,7 +329,6 @@ namespace orxonox
 
             /// Converts the current value to type T.
             template <typename T> inline bool convert() { return this->force<T>(MultiType(*this)); }
-//            template <typename T> inline bool convert() { return this->force<T>(this->get<typename Loki::TypeTraits<T>::UnqualifiedReferredType>()); }
 
             /// Resets value and type. Type will be void afterwards and null() returns true.
             inline void reset() { if (this->value_) delete this->value_; this->value_ = 0; }
