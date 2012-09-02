@@ -36,7 +36,7 @@
                         <Property Name="HorzFormatting" Value="HorzCentred" />
                         <Property Name="VertFormatting" Value="TopAligned" />
                         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-                        <Property Name="Text">Orxonox version 0.0.3
+                        <Property Name="Text">Orxonox version 0.0.4
     
     Programming Language:  C++ - lua - tcl
     Environment:  OpenAL - Ogre - OIS - CEGUI - enet - ODE
@@ -45,6 +45,7 @@
     http://www.orxonox.net
     
     Credits:
+    http://www.orxonox.net/wiki/credits
                       </Property>
                     </Window>
                 </Window>
