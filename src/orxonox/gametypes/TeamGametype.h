@@ -61,6 +61,8 @@ namespace orxonox
 
             inline const ColourValue& getTeamColour(int teamnr) const
                 { return this->teamcolours_[teamnr]; }
+            int getTeamScore(PlayerInfo* player);
+
 
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
@@ -76,6 +78,8 @@ namespace orxonox
             void setTeamColour(PlayerInfo* player, Pawn* pawn);
             void setDefaultObjectColour(Pawn* pawn);
             void colourPawn(Pawn* pawn, int teamNr);
+            void announceTeamWin(int winnerTeam);
+
     };
 }
 
