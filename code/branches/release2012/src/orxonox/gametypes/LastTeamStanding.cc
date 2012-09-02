@@ -241,17 +241,10 @@ namespace orxonox
                 {
                     party = it2->second;
                 }
-                //if (party < 0) return; //if search failed
+                if (party < 0) return; //if search failed
                 //victory message to all team members, loose message to everyone else
-                for (std::map<PlayerInfo*, int>::iterator it3 = this->teamnumbers_.begin(); it3 != this->teamnumbers_.end(); ++it3)
-                {
-                  if (it3->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
-                        continue;
-                    if (it3->second == party)
-                        {this->gtinfo_->sendAnnounceMessage("You have won the match!", it3->first->getClientID());}
-                    else
-                        {this->gtinfo_->sendAnnounceMessage("You have lost the match!", it3->first->getClientID());}
-                }
+                this->announceTeamWin(party);
+
                 return;
             }
         }
