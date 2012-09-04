@@ -56,7 +56,8 @@ namespace orxonox
     SetConsoleCommand("HumanController", __CC_boost_name,          &HumanController::keepBoost     ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
     SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
-    SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
+    SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut().keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("HumanController", "mouseLookOFF",           &HumanController::mouseLookOFF  ).addShortcut().keybindMode(KeybindMode::OnRelease);
     SetConsoleCommand("HumanController", __CC_suicide_name,        &HumanController::suicide       ).addShortcut();
     SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
     SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
@@ -248,6 +249,11 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->mouseLook();
+    }
+
+    void HumanController::mouseLookOFF()
+    {
+        HumanController::mouseLook();
     }
 
     void HumanController::suicide()

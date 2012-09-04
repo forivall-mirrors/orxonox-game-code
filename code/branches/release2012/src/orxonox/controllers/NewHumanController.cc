@@ -50,7 +50,7 @@
 
 namespace orxonox
 {
-    SetConsoleCommand("NewHumanController", "changeMode", &NewHumanController::changeMode).keybindMode(KeybindMode::OnPress); //disabling free aiming
+    SetConsoleCommand("NewHumanController", "changeMode", &NewHumanController::changeMode).keybindMode(KeybindMode::OnPress); //disabled
     SetConsoleCommand("NewHumanController", "accelerate", &NewHumanController::accelerate).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("NewHumanController", "decelerate", &NewHumanController::decelerate).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("NewHumanController", "unfire",     &NewHumanController::unfire    ).keybindMode(KeybindMode::OnRelease).addShortcut();
