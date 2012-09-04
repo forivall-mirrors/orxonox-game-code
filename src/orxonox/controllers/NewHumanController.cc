@@ -50,7 +50,7 @@
 
 namespace orxonox
 {
-    SetConsoleCommand("NewHumanController", "changeMode", &NewHumanController::changeMode).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("NewHumanController", "changeMode", &NewHumanController::changeMode).keybindMode(KeybindMode::OnPress); //disabling free aiming
     SetConsoleCommand("NewHumanController", "accelerate", &NewHumanController::accelerate).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("NewHumanController", "decelerate", &NewHumanController::decelerate).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("NewHumanController", "unfire",     &NewHumanController::unfire    ).keybindMode(KeybindMode::OnRelease).addShortcut();
@@ -481,7 +481,7 @@ namespace orxonox
 
     void NewHumanController::changeMode()
     {
-        if (NewHumanController::localController_s)
+        /*if (NewHumanController::localController_s)
         {
             if (NewHumanController::localController_s->controlMode_ == 0)
             {
@@ -490,7 +490,7 @@ namespace orxonox
             }
             else
                 NewHumanController::localController_s->controlMode_ = 0;
-        }
+        }*/ //BRUTE FORCE: Turn off free aiming
     }
 
     void NewHumanController::changedControllableEntity()
