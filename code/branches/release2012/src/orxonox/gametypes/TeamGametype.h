@@ -62,7 +62,8 @@ namespace orxonox
             inline const ColourValue& getTeamColour(int teamnr) const
                 { return this->teamcolours_[teamnr]; }
             int getTeamScore(PlayerInfo* player);
-
+            int getTeamSize(int team);
+            int getHumansInTeam(int team);
 
         protected:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;

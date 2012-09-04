@@ -187,6 +187,29 @@ namespace orxonox
         return teamscore;
     }
 
+    int TeamGametype::getTeamSize(int team)
+    {
+        int teamSize = 0;
+        for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+        {
+            if (it->second == team)
+                teamSize++;
+        }
+        return teamSize;
+    }
+
+    int TeamGametype::getHumansInTeam(int team)
+    {
+        int teamSize = 0;
+        for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+        {
+            if (it->second == team  && it->first->isHumanPlayer())
+                teamSize++;
+        }
+        return teamSize;
+    }
+
+
     SpawnPoint* TeamGametype::getBestSpawnPoint(PlayerInfo* player) const
     {
         int desiredTeamNr = -1;
