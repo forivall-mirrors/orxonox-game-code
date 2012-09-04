@@ -45,6 +45,10 @@
       </MovableEntity>
     <?lua end ?>
 
+
+
+
+
     <Destroyer
       position          = "100,150,0"
       collisionType     = dynamic
@@ -52,17 +56,17 @@
       velocity          = "-35,0,0"
       angularDamping    = 0.9999999
       health            = 10000
-      maxhealth         = 10000
+      maxhealth         = 10000000
       initialhealth     = 10000
       radarname         = "Transporter"
     >
 
       <attached>
-        <TeamSpawnPoint team=1 position="150,0,7" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="0,0,7" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="-50,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="100,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="50,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="150,0,-50" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="0,0,-50" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="-50,0,-50" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="100,0,-50" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="50,0,-50" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <?lua for i = 1, 100, 1 do ?>
           <TeamSpawnPoint
             team=0

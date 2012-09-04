@@ -50,9 +50,11 @@ namespace orxonox
             virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
+            virtual void playerEntered(PlayerInfo* player);
 
         protected:
             virtual void killedDestroyer();
+            void setTransporterHealth();
 
             WeakPtr<Destroyer> destroyer_;
             unsigned int teams_;
