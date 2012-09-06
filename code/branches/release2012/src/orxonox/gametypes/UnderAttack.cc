@@ -206,7 +206,7 @@ namespace orxonox
             //Calculation: Each attacker deals about 3500 damage. A human attacker deals 1500 damage additionally.
             //Each defender prevents 500 damage. If human 2000 damage will be additionally be prevented.
             //TODO: use gametime and the damage dealt so far in order to calculate the transporter's life more precisely
-            float health = this->getTeamSize(attacker_)*3500.0f + this->getHumansInTeam(attacker_)*1500.0f - this->getTeamSize(defender_)*500.0f - this->getHumansInTeam(defender_)*2000.0f ;
+            float health = this->getTeamSize(attacker_)*2000.0f + this->getHumansInTeam(attacker_)*3000.0f - this->getTeamSize(defender_)*500.0f - this->getHumansInTeam(defender_)*2000.0f ;
             this->destroyer_->setHealth(std::max(health, 5000.0f)); //the destoyer should have at least 5000.0f life. 
         }
     }
