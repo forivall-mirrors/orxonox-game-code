@@ -2,7 +2,7 @@
  name = "Mission One"
  description = "First Guided Steps in the Orxonoxian Universe."
  screenshot = "missionOne.png"
- tags = "mission"
+ tags = "mission, singleplayer"
 />
 
 <?lua

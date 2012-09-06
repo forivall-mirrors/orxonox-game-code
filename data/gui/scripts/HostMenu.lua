@@ -62,7 +62,7 @@ function P.createLevelList()
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if level ~= nil then
-            if P.showAll or not level:hasTag("test") then
+            if P.showAll or not level:hasTag("test") or not level:hasTag("singleplayer") then
                 table.insert(P.levelList, level)
             end
         end
