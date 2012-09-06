@@ -30,7 +30,7 @@ function P.onShow()
     if P.showAll ~= orxonox.GUIManager:inDevMode() then
         local window = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
         local button = tolua.cast(window,"CEGUI::Checkbox")
-        P.showAll = not P.showAll
+        --P.showAll = not P.showAll
         button:setSelected(P.showAll)
     end
 
@@ -62,7 +62,7 @@ function P.createLevelList()
     while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
         if level ~= nil then
-            if P.showAll or not level:hasTag("test") or not level:hasTag("singleplayer") then
+            if P.showAll or not level:hasTag("test") and not level:hasTag("singleplayer") then
                 table.insert(P.levelList, level)
             end
         end
