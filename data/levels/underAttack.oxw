@@ -45,25 +45,6 @@
       </MovableEntity>
     <?lua end ?>
 
-<!--- A SpaceBoundary moving along with the transporter, in order to filter out bots that are too far away from the transporter ---->
-      <MovableEntity
-          position="0,0,0"
-          velocity="-35,0,0"
-      >
-        <attached>
-            <SpaceBoundaries position="1,2,3" maxDistance="1600" warnDistance="300" showDistance="300" reactionMode="1" healthDecrease="5.0" />
-          <BlinkingBillboard
-            position="0,0,0"
-            material="Flares/ringflare2"
-            colour="1.0, 0.5, 0.3"
-            phase="-180"
-            amplitude=0.1
-            frequency=0.5
-            quadratic=1
-          />
-        </attached>
-      </MovableEntity>
-
 
     <Destroyer
       position          = "100,150,0"
@@ -78,9 +59,10 @@
     >
 
       <attached>
+        <SpaceBoundaries position="1,2,3" maxDistance="1600" warnDistance="300" showDistance="300" reactionMode="1" healthDecrease="5.0" />
         <TeamSpawnPoint team=1 position="200,0,20" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="50,0,100" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="-200,0,20" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="-200,0,-60" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="100,0,-50" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="400,0,20" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <?lua for i = 1, 100, 1 do ?>
