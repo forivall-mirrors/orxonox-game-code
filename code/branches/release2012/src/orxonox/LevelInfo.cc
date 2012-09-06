@@ -93,6 +93,7 @@ namespace orxonox
             LevelInfoItem::possibleTags_s.insert("gametype");
             LevelInfoItem::possibleTags_s.insert("minigame");
             LevelInfoItem::possibleTags_s.insert("shipselection");
+            LevelInfoItem::possibleTags_s.insert("singleplayer");
         }
     }
 
