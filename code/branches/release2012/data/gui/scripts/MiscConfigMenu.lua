@@ -32,11 +32,13 @@ function P.onLoad()
     table.insert(P.commandList, "Gametype numberOfBots_")
     table.insert(P.commandList, "UnderAttack gameTime_")
     table.insert(P.commandList, "TeamDeathmatch teams_")
+    table.insert(P.commandList, "TeamDeathmatch maxScore_")
     table.insert(P.commandList, "HumanPlayer nick_")
     table.insert(P.commandList, "ChatOverlay displayTime_")
     table.insert(P.commandList, "Core bDevMode_")
     table.insert(P.commandList, "HUDNavigation MarkerLimit_")
     table.insert(P.commandList, "HUDNavigation showDistance")
+
 
     P.nameList = {}
     table.insert(P.nameList, "Mouse sensitivity")
@@ -54,11 +56,12 @@ function P.onLoad()
     table.insert(P.nameList, "Number of Bots")
     table.insert(P.nameList, "UnderAttack: game time")
     table.insert(P.nameList, "TeamDeathmatch: Number of teams")
+    table.insert(P.nameList, "TeamDeathmatch: Score needed to end the game")
     table.insert(P.nameList, "Playername")
     table.insert(P.nameList, "Chat: display time")
     table.insert(P.nameList, "Developer's Mode")
     table.insert(P.nameList, "Marker Limit")
-    table.insert(P.nameList, "Show Distance next to cursor")
+
 
     P.linesList = {}
 
