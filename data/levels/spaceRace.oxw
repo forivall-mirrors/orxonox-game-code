@@ -1,5 +1,5 @@
 <LevelInfo
- name = "Old Space Race"
+ name = "Space Race"
  description = "Have a furious Race in Space: Reach the checkpoints as fast as possible."
  tags = "gametype, singleplayer"
  screenshot = "spacerace.png"

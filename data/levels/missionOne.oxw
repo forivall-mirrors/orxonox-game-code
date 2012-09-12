@@ -1,6 +1,6 @@
 <LevelInfo
  name = "Mission One"
- description = "First Guided Steps in the Orxonoxian Universe."
+ description = "Codename: Awakening - First Guided Steps in the Orxonoxian Universe."
  screenshot = "missionOne.png"
  tags = "mission, singleplayer"
 />
@@ -281,7 +281,7 @@ break (S)
 roll     (Q) and (E)
 boost (Space)
 
-Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
+Whenever you don't know what to do, press (F3) to have a look at the current quest. Quit this menu via (Esc)." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="missionOne.navigation" />
         </complete-effects>
