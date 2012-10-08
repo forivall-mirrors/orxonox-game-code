@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<GUILayout>
+    <Window Type="MenuWidgets/StaticImage" Name="orxonox/Background">
+        <Property Name="UnifiedSize" Value="{{1.0,0},{1.0,0}}"/>
+        <Property Name="Image" Value="set:MainMenuBackground image:Background"/>
+        <Property Name="FrameEnabled" Value="set:true"/>
+        <Property Name="BackgroundEnabled" Value="set:false"/>
+        <Property Name="InheritsAlpha" Value="False" />
+    </Window>
+</GUILayout>
