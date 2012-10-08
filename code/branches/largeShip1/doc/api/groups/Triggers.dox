@@ -1,0 +1,147 @@
+/**
+    @addtogroup Triggers Triggers
+    @ingroup Objects
+
+    Triggers are objects which react to certain events. They can be combined and used as simple overlay logic in levels.
+
+    @defgroup NormalTrigger Trigger
+    @ingroup Triggers
+    
+    @ref orxonox::Trigger "Triggers" are objects which react to certain events by changing their boolean state. That state is the trigger's activity @ref orxonox::Trigger can be either <em>active</em> or <em>not active</em>.
+    
+    @section TriggerTechnicalDetails Technical Details
+    A common @ref orxonox::Trigger "Trigger" is an object that can either be <em>active</em> or <em>inactive</em>, with a specified behavior how to switch between the two. Each time a switch occurs an @ref orxonox::Event "Event" is fired (see the @ref Eventsystem "Eventsystem" for more information about how that works exactly), with th @ref orxonox::Trigger "Trigger" as the originator. This way the entity that reacts to the @ref orxonox::Trigger "Trigger" triggering receives information about the @ref orxonox::Trigger "Trigger" that created the @ref orxonox::Event "Event". If the @ref orxonox::Trigger "Trigger" is also a @ref orxonox::PlayerTrigger "PlayerTrigger", under some conditions, the entity that caused the @ref orxonox::Trigger "Trigger" to trigger can be accessed.
+
+    Also, just as with all triggers, @ref orxonox::Trigger "Triggers" can be nested (even with e.g. @ref orxonox::MultiTrigger "MultiTriggers").
+    @code
+    <Trigger switch="true" delay="2">
+        <DistanceTrigger position="100,0,0" distance="80" />
+        <EventMultiTrigger ... />
+    </Trigger>
+    @endcode
+
+    @ref orxonox::Trigger "Triggers" also allow for additional complexity which can be added through the choice of the parameters explained below.
+    But first it is important to understand a small implementation detail. There is a distinction between the @ref orxonox::Trigger "Trigger" being triggered (there is the state <em>triggered</em> for that) and the @ref orxonox::Trigger "Trigger" being active (for that is the state <em>activity</em>). From the outside only the <em>activity</em> is visible. The state <em>triggered</em> tells us whether the trigger is actually triggered, but it could pretend (for some reason, some of which we will see shortly) to be <em>active</em> to the outside, while it in fact isn't. The standard behavior is, that the <em>activity</em> changes, when the @ref orxonox::Trigger "Trigger" transits from being <em>triggered</em> to being <em>not triggered</em> or the other way around.
+
+    The parameters of the @ref orxonox::Trigger "Trigger" are: 
+    - @b delay The delay is the time in seconds, that the trigger waits until it reacts (i.e. changes it's state) to the triggering condition being fulfilled. Internally this is handled by a state queue coupled with a counter, for each state that is delayed. The state becomes <em>active</em> when the counter runs out. This allows the @ref orxonox::Trigger "Trigger" to work even if the delay changes at runtime. However if the delay changes it only affects newly arriving states not the ones already in the queue. The default is <code>0.0</code>.
+    - @b switch Switch is a boolean, if <code>true</code> the @ref orxonox::Trigger "Trigger" is in <em>switch-mode</em>, meaning, that the <em>activity</em> changes only when the trigger is <em>triggered</em>, not when it is <em>not triggered</em> (Just like a light switch does). This means, that in <em>switch-mode</em> the <em>activity</em> only changes, when the trigger changes from being <em>not triggered</em> to being <em>triggered</em> but not the other way around. The default is <code>false</code>.
+    - @b stayActive Stay active is also a boolean, if <code>true</code> the @ref orxonox::Trigger "Trigger" stays active after it has been activated as many times as specified by the parameter <em>activations</em>. In essence this means, that after the last time it is activated it cannot be deactivated. The default is <code>false</code>.
+    - @b activations Activations is the number of times the @ref orxonox::Trigger "Trigger" can be activated until the trigger can't be triggered anymore. The default is <code>-1</code>, which denotes infinity.
+    - @b invert Invert is a boolean, if <code>true</code> the @ref orxonox::Trigger "Trigger" is in <em>invert-mode</em>, meaning, that if the triggering condition is fulfilled the @ref orxonox::Trigger "Trigger" will have the state <em>not triggered</em> and and if the condition is not fulfilled it will have the state <em>triggered</em>. In short it inverts the behavior of the @ref orxonox::Trigger "Trigger". The default is <code>false</code>.
+    - @b mode The mode describes how the @ref orxonox::Trigger "Trigger" acts in relation to all the triggers (its children), that are appended to it. There are 3 modes: <em>and</em>, meaning that the @ref orxonox::Trigger "Trigger" can only be triggered if all the appended triggers are active. <em>or</em>, meaning that the @ref orxonox::Trigger "Trigger" can only be triggered if at least one of the appended triggers is active. And <em>xor</em>, meaning that the @ref orxonox::Trigger "Trigger" can only be triggered if one and only one appended trigger is active. Note, that I wrote 'can only be active', that implies, that there is an additional condition to the <em>activity</em> of the @ref orxonox::Trigger "Trigger" and that is the fulfillment of the triggering condition (the @ref orxonox::Trigger "Trigger" class itself doesn't have one, but all derived classes should). Also bear in mind, that the <em>activity</em> of a @ref orxonox::Trigger "Trigger" is still coupled to the object that triggered it. The default is <em>and</em>.
+
+    @subsection Sub-typesOfTriggers Sub-types of Triggers
+
+    @subsubsection EventTrigger EventTrigger
+    An @ref orxonox::EventTrigger "EventTrigger" can either be used to be triggered when an @ref orxonox::Event "Event", that itself is triggering, arrives at its event port.
+
+    A common usage could look like this:
+    @code
+    <EventTrigger invert="true" delay="1">
+        <events>
+            <trigger>
+                <Trigger ... />
+                <Trigger ... />
+            </trigger>
+        </events>
+    </EventTrigger>
+    @endcode
+
+    @subsubsection DistanceTrigger DistanceTrigger
+    The @ref orxonox::DistanceTrigger "DistanceTrigger" is a Trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the @ref orxonox::DistanceTrigger "DistanceTrigger". The object can be specified further by setting the <em>beaconMode</em> and attaching a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" to the object.
+    Parameters are (additional to the ones of Trigger):
+    - @b distance Which specifies the maximum distance at which the @ref orxonox::DistanceTrigger "DistanceTrigger" still triggers, i.e. its range. Default is <code>100</code>.
+    - @b target Which specifies the class of objects that can trigger the @ref orxonox::DistanceTrigger "DistanceTrigger". Default is <code>"Pawn"</code>.
+    - @b beaconMode Which specifies, whether the @ref orxonox::DistanceTrigger "DistanceTrigger" operates on @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" or not. If <em>off</em> the DistanceMultiTrigger works as usual. If set to <em>identify</em> the @ref orxonox::DistanceTrigger "DistanceTrigger" is only triggered by objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. If set to <em>exclude</em> the @ref orxonox::DistanceTrigger "DistanceTrigger" is only triggered by objects that don't have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. Default is <em>off</em>.
+    - @b targetname Which specifies the name @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" need to have to make the @ref orxonox::DistanceTrigger "DistanceTrigger" react to them if it is in <em>beacon-mode</em> (the beaconMode is not <em>off</em>).
+
+    A simple @ref orxonox::DistanceTrigger "DistanceTrigger" could look like this:
+    @code
+    <DistanceTrigger position="0,0,0" switch="true" target="Pawn" distance="20" />
+    @endcode
+
+    An implementation that only reacts to objects with a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" attached would look like this:
+    @code
+    <DistanceTrigger position="0,0,0" target="Pawn" beaconMode="identify" targetname="beacon1" distance="30" />
+    @endcode
+    This particular @ref orxonox::DistanceTrigger "DistanceTrigger" would only react if an object was in range, that had a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the name <em>beacon1</em> attached.
+
+    @defgroup MultiTrigger MultiTrigger
+    @ingroup Triggers
+
+    @ref orxonox::MultiTrigger "MultiTriggers" are (as they are @ref orxonox::TriggerBase "Triggers") objects which react to certain events. They offer all the functionality that the common @ref orxonox::Trigger "Triggers" do with one significant difference. The common @ref orxonox::Trigger "Trigger" has just one state, it can either be <em>active</em> or <em>not acive</em>, it doesn't discriminate between who's triggering (or not triggering) it. A @ref orxonox::MultiTrigger "MultiTrigger", on the other hand, has a distinct state (<em>active</em> or <em>not actve</em>) for each entity that is defined as being able to trigger said @ref orxonox::MultiTrigger "MultiTrigger".
+
+    This difference becomes significant, when, for example, you want a @ref orxonox::DistanceTrigger "DistanceTrigger" to trigger a @ref orxonox::QuestEffectBeacon "QuestEffectBeacon" to hand out a @ref orxonox::Quest "Quest" to any @ref orxonox::Pawn "Pawn" that enters its range. With a simple @ref orxonox::DistanceTrigger "DistanceTrigger" (as opposed to the more complex @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger") the first @ref orxonox::Pawn "Pawn" to be in range would trigger it an receive the @ref orxonox::Quest "Quest", however if a second @ref orxonox::Pawn "Pawn" would enter the range, while the first @ref orxonox::Pawn "Pawn" still is in the range nothing would happen and even after the first @ref orxonox::Pawn "Pawn" left nothing would happen, since the whole time the @ref orxonox::DistanceTrigger "DistanceTrigger" would just be <em>active</em>. In contrast with a @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" the first @ref orxonox::Pawn "Pawn" would enter the range and the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" would have the state <em>active</em> for this exact @ref orxonox::Pawn "Pawn" (but for none else) and thus the @ref orxonox::Pawn "Pawn" would receive the @ref orxonox::Quest "Quest" and when the second @ref orxonox::Pawn "Pawn" enters the range the state of the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" for that second @ref orxonox::Pawn "Pawn" would change to <em>active</em> and it would receive the @ref orxonox::Quest "Quest" as well.
+
+    @section WhenToUseMultiTriggers When to use MultiTriggers
+    Consequentially you would use @ref orxonox::MultiTrigger "MultiTriggers" (instead of common @ref orxonox::Trigger "Triggers"), when it is important that the trigger has different states for each triggering entity and when that fact is essential in the concept of the object that reacts to the triggering. However you should not just use @ref orxonox::MultiTrigger "MultiTrigger" instead of @ref orxonox::Trigger "Trigger", when in doubt, because @ref orxonox::MultiTrigger "MultiTrigger" produces significantly more overhead than @ref orxonox::Trigger "Trigger" due to the added complexity.
+
+    @section HowToUseMultiTriggers How to use MultiTriggers
+    ...
+    
+    @section HowToCreateANewMultiTrigger How to create a new MultiTrigger.
+    ...
+
+    @section MultiTriggerTechnicalDetails Technical Details
+    A common @ref orxonox::Trigger "Trigger" is an object that can either be <em>active</em> or <em>inactive</em>, with a specified behavior how to switch between the two. A @ref orxonox::MultiTrigger "MultiTrigger" generalizes that behavior for multiple objects triggering the trigger. A @ref orxonox::MultiTrigger "MultiTrigger" can be <em>active</em> or <em>inactive</em> for any object triggering it, with the state for each object being completely independent of the state for all other objects. Each time a switch occurs an @ref orxonox::Event "Event" is fired (see the @ref Eventsystem "Eventsystem" for more information about how that works exactly), with a @ref orxonox::MultiTriggerContainer "MultiTriggerContainer" as the originator, containing a pointer to the @ref orxonox::MultiTrigger "MultiTrigger" that caused the @ref orxonox::Event "Event" and a pointer to the object that caused the trigger to change it's activity. This way the entity that reacts to the @ref orxonox::MultiTrigger "MultiTrigger" triggering receives the information it needs about the entity that triggered the @ref orxonox::MultiTrigger "MultiTrigger".
+
+    Also, just as with all triggers, @ref orxonox::MultiTrigger "MultiTriggers" can be nested (even with triggers other than @ref orxonox::MultiTrigger "MultiTriggers").
+    @code
+    <MultiTrigger switch="true" delay="2">
+        <DistanceMultiTrigger position="100,0,0" distance="80" />
+        <EventTrigger ... />
+    </Trigger>
+    @endcode
+
+    @ref orxonox::MultiTrigger "MultiTriggers" also allow for additional complexity which can be added through the choice of the parameters (some of which are also present in the common @ref orxonox::Trigger "Trigger") explained (briefly) below.
+    But first it is important to understand a small implementation detail. There is a distinction between the @ref orxonox::MultiTrigger "MultiTrigger" being triggered (there is the state <em>triggered</em> for that) and the @ref orxonox::MultiTrigger "MultiTrigger" being active (for that is the state <em>activity</em>). From the outside only the <em>activity</em> is visible. The state <em>triggered</em> tells us whether the trigger is actually triggered, but it could pretend (for some reason, some of which we will see shortly) to be <em>active</em> to the outside, while it in fact isn't. The standard behavior is, that the <em>activity</em> changes, when the @ref orxonox::MultiTrigger "MultiTrigger" transits from being <em>triggered</em> to being <em>not triggered</em> or the other way around.
+
+    The parameters of the @ref orxonox::MultiTrigger "MultiTrigger" are: 
+    - @b delay The delay is the time in seconds, that the trigger waits until it reacts (i.e. changes it's state) to the triggering condition being fulfilled. Internally this is handled by a state queue coupled with a counter, for each state that is delayed. The state becomes <em>active</em> when the counter runs out. This allows the @ref orxonox::MultiTrigger "MultiTrigger" to work even if the delay changes at runtime. However if the delay changes it only affects newly arriving states not the ones already in the queue. The default is <code>0.0</code>.
+    - @b switch Switch is a boolean, if <code>true</code> the @ref orxonox::MultiTrigger "MultiTrigger" is in <em>switch-mode</em>, meaning, that the <em>activity</em> changes only when the trigger is triggered, not when it is un-triggered (Just like a light switch does). This means, that in <em>switch-mode</em> the <em>activity</em> only changes, when the trigger changes from not being triggered to being triggered but not the other way around. The default is <code>false</code>.
+    - @b stayActive Stay active is also a boolean, if <code>true</code> the @ref orxonox::MultiTrigger "MultiTrigger" stays active after it has been activated as many times as specified by the parameter <em>activations</em>. In essence this means, that after the last time it is activated it cannot be deactivated. The default is <code>false</code>.
+    - @b activations Activations is the number of times the @ref orxonox::MultiTrigger "MultiTrigger" can be activated until the trigger can't be triggered anymore. The default is <code>-1</code>, which denotes infinity.
+    - @b invert Invert is a boolean, if <code>true</code> the @ref orxonox::MultiTrigger "MultiTrigger" is in <em>invert-mode</em>, meaning, that if the triggering condition is fulfilled the @ref orxonox::MultiTrigger "MultiTrigger" will have the state <em>not triggered</em> and and if the condition is not fulfilled it will have the state <em>triggered</em>. In short it inverts the behavior of the @ref orxonox::MultiTrigger "MultiTrigger". The default is <code>false</code>.
+    - @b simultaneousTriggerers The number of simultaneous triggerers limits the number of objects that are allowed to trigger the @ref orxonox::MultiTrigger "MultiTrigger" at the same time. Or more precisely, the number of distinct objects the @ref orxonox::MultiTrigger "MultiTrigger" has positive <em>triggered</em> states for, at each point in time. The default is <code>-1</code>, which denotes infinity.
+    - @b mode The mode describes how the @ref orxonox::MultiTrigger "MultiTrigger" acts in relation to all the triggers (its children), that are appended to it. There are 3 modes: <em>and</em>, meaning that the @ref orxonox::MultiTrigger "MultiTrigger" can only be triggered if all the appended triggers are active. <em>or</em>, meaning that the @ref orxonox::MultiTrigger "MultiTrigger" can only be triggered if at least one of the appended triggers is active. And <em>xor</em>, meaning that the @ref orxonox::MultiTrigger "MultiTrigger" can only be triggered if one and only one appended trigger is active. Note, that I wrote 'can only be active', that implies, that there is an additional condition to the <em>activity</em> of the @ref orxonox::MultiTrigger "MultiTrigger" and that is the fulfillment of the triggering condition (the @ref orxonox::MultiTrigger "MultiTrigger" class itself doesn't have one, but all derived classes should). Also bear in mind, that the <em>activity</em> of a @ref orxonox::MultiTrigger "MultiTrigger" is still coupled to the object that triggered it. The default is <em>and</em>.
+    - @b broadcast Broadcast is a boolean, if <code>true</code> the @ref orxonox::MultiTrigger "MultiTrigger" is in <em>broadcast-mode</em>, meaning, that all trigger events that are caused by no originator (originator is <code>NULL</code>) are broadcast as having come from every possible originator, or more precisely as having come from all objects that are specified targets of this @ref orxonox::MultiTrigger "MultiTrigger". The default is <code>false</code>.
+    - @b target The target describes the kind of objects that are allowed to trigger this @ref orxonox::MultiTrigger "MultiTrigger". The parameter has to be set to the class name of the class that is allowed to trigger the @ref orxonox::MultiTrigger "MultiTrigger". The default is <code>Pawn</code>.
+
+    @subsection Sub-typesOfMultiTriggers Sub-types of MultiTriggers
+
+    @subsubsection EventMultiTrigger EventMultiTrigger
+    An @ref orxonox::EventMultiTrigger "EventMultiTrigger" can either be used to broadcast an @ref orxonox::Event "Event" that does not come from a @ref orxonox::MultiTrigger "MultiTrigger" to all entities that are targets of the @ref orxonox::EventMultiTrigger "EventMultiTrigger" or, more in line with its prototype the @ref orxonox::EventTrigger "EventTrigger", to be triggered for an entity when an @ref orxonox::Event "Event" that was caused by an entity of the same type is captured.
+
+    A common usage could look like this:
+    @code
+    <EventMultiTrigger invert="true" delay="1">
+        <events>
+            <trigger>
+                <MultiTrigger ... />
+                <Trigger ... />
+            </trigger>
+        </events>
+    </EventMultiTrigger>
+    @endcode
+
+    @subsubsection DistanceMultiTrigger DistanceMultiTrigger
+    A @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" is the @ref orxonox::MultiTrigger "MultiTrigger" equivalent of the @ref orxonox::DistanceTrigger "DistanceTrigger" and works just the same way. It triggers (now separately for each object triggering it, since it's a @ref orxonox::MultiTrigger "MultiTrigger") whenever an object that is a target of the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" is in the specified range.
+
+    The target object can be specified further by setting the <em>beaconMode</em> and attaching a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" to the object.
+    Parameters are (additional to the ones of @ref orxonox::MultiTrigger "MultiTrigger"):
+    - @b distance Which specifies the maximum distance at which the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" still triggers. Default is <code>100</code>.
+    - @b beaconMode Which specifies, whether the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" operates on @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" or not. If <em>off</em> the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" works as usual. If set to <em>identify</em> the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" is only triggered by objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. If set to <em>exclude</em> the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" is only triggered by objects that don't have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. Default is <em>off</em>.
+    - @b targetname Which specifies the name @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" need to have to make the @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" react to them if it is in <em>beacon-mode</em> (the beaconMode is not <em>off</em>).
+
+    A simple @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" could look like this:
+    @code
+    <@ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" position="0,0,0" switch="true" target="Pawn" distance="20" />
+    @endcode
+
+    An implementation that only reacts to objects with a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" attached would look like this:
+    @code
+    <@ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" position="0,0,0" target="Pawn" beaconMode="identify" targetname="beacon1" distance="30" />
+    @endcode
+    This particular @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" would only react if an object was in range, that had a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the name <em>beacon1</em> attached.
+*/
