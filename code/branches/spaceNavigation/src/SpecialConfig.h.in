@@ -1,0 +1,103 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+/**
+@file
+@brief
+    Various constants and options that only affect very little code.
+@note
+    This is merely to avoid recompiling everything when only a path changes.
+@remarks
+    @GENERATED_FILE_COMMENT@
+*/
+
+#ifndef _SpecialConfig_H__
+#define _SpecialConfig_H__
+
+#include "OrxonoxConfig.h"
+
+#cmakedefine DEPENDENCY_PACKAGE_ENABLE      ///< Defined if a precompiled depdency package was used. We then copy all libraries too when installing.
+
+#cmakedefine INSTALL_COPYABLE               ///< Orxonox either gets installed to the system or just into a folder. The latter uses relative paths.
+
+#cmakedefine CMAKE_CONFIGURATION_TYPES      ///< Using MSVC or XCode IDE
+
+#cmakedefine DBGHELP_FOUND                  ///< If DbgHelp was found on windows
+
+#cmakedefine ORXONOX_USE_WINMAIN            ///< Whether or not the console window is started as well
+
+// Handle default ConfigValues
+namespace orxonox { namespace specialConfig
+{
+    // DEFAULT RELATIVE PATHS (might not be used at all)
+    const char defaultRuntimePath[] = "@DEFAULT_RUNTIME_PATH@";
+    const char defaultLibraryPath[] = "@DEFAULT_LIBRARY_PATH@";
+    const char defaultArchivePath[] = "@DEFAULT_ARCHIVE_PATH@";
+    const char defaultModulePath[]  = "@DEFAULT_MODULE_PATH@";
+    const char defaultDocPath[]     = "@DEFAULT_DOC_PATH@";
+    const char defaultDataPath[]    = "@DEFAULT_DATA_PATH@";
+    const char defaultConfigPath[]  = "@DEFAULT_CONFIG_PATH@";
+    const char defaultLogPath[]     = "@DEFAULT_LOG_PATH@";
+
+#ifndef INSTALL_COPYABLE
+    // INSTALLATION PATHS
+    const char dataInstallDirectory[]       = "@CMAKE_INSTALL_PREFIX@/@DATA_INSTALL_DIRECTORY@";
+    const char moduleInstallDirectory[]     = "@CMAKE_INSTALL_PREFIX@/@MODULE_INSTALL_DIRECTORY@";
+#endif
+
+    // DEVELOPMENT RUN PATHS
+    const char dataDevDirectory[]           = "@DATA_DIRECTORY@";
+    const char externalDataDevDirectory[]   = "@EXTERNAL_DATA_DIRECTORY@";
+#ifdef CMAKE_CONFIGURATION_TYPES
+    const char moduleDevDirectory[]         = "@CMAKE_MODULE_OUTPUT_DIRECTORY@/" CMAKE_INTDIR;
+    const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" CMAKE_INTDIR;
+    const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@/"    CMAKE_INTDIR;
+#else
+    const char moduleDevDirectory[]         = "@CMAKE_MODULE_OUTPUT_DIRECTORY@";
+    const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@";
+    const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@";
+#endif
+
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+    const char dependencyLibraryDirectory[] = "@DEP_LIBRARY_DIR@";
+#endif
+
+    // Module extension
+    const char moduleExtension[] = "@ORXONOX_MODULE_EXTENSION@";
+
+    // OGRE PLUGINS
+#ifdef NDEBUG
+    const char ogrePlugins[] = "@OGRE_PLUGINS_RELEASE@";
+    const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_RELEASE@";
+#else
+    const char ogrePlugins[] = "@OGRE_PLUGINS_DEBUG@";
+    const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
+#endif
+} }
+
+#endif /* _SpecialConfig_H__ */
