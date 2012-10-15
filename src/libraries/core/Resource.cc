@@ -100,7 +100,7 @@ namespace orxonox
                 ptr->basename = it->basename;
                 ptr->group = group;
                 ptr->size = it->uncompressedSize;
-                if (dynamic_cast<Ogre::FileSystemArchive*>(it->archive) != NULL)
+                if (dynamic_cast<const Ogre::FileSystemArchive*>(it->archive) != NULL)
                 {
                     boost::filesystem::path base(it->archive->getName());
                     base /= it->filename;
