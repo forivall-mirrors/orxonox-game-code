@@ -93,6 +93,10 @@ namespace orxonox
             return 0;
     }
 
+    std::vector<RaceCheckPoint*> SpaceRaceManager::getAllCheckpoints(){
+        return checkpoints_;
+    }
+
     /**
         @brief Returns the checkpoint with the given checkpoint-index (@see RaceCheckPoint::getCheckpointIndex).
     */

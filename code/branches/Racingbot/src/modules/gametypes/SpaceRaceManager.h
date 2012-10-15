@@ -66,6 +66,8 @@ namespace orxonox
 
             void checkpointReached(RaceCheckPoint* newCheckpoint, PlayerInfo* player);
 
+            std::vector<RaceCheckPoint*> getAllCheckpoints();
+
             void tick(float dt);
 
         protected:
