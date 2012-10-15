@@ -64,6 +64,12 @@
    navMarkerSize = 0.03
    aimMarkerSize = 0.04
   />
+  
+  <HUDAimAssistant
+   name			 = "AimAssistant"
+   correctAspect = true
+   pointerSize	 = 0.03
+ />
 
   <HUDRadar
    name          = "Radar"

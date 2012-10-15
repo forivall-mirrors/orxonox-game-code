@@ -54,7 +54,7 @@
 
 namespace orxonox
 {
-    bool compareDistance(std::pair<RadarViewable*, unsigned int> a, std::pair<RadarViewable*, unsigned int> b)
+    static bool compareDistance(std::pair<RadarViewable*, unsigned int> a, std::pair<RadarViewable*, unsigned int> b)
     {
         return a.second < b.second;
     }
@@ -157,6 +157,8 @@ namespace orxonox
     void HUDNavigation::tick(float dt)
     {
         SUPER(HUDNavigation, tick, dt);
+
+        orxout() << "hello world" << std::endl;
 
         Camera* cam = CameraManager::getInstance().getActiveCamera();
         if (cam == NULL)
