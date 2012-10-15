@@ -6,6 +6,7 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   HUDBoostBar.cc
   HUDHealthBar.cc
   HUDTimer.cc
+  HUDFindClosestEnemy.cc
   HUDEnemyHealthBar.cc
   ChatOverlay.cc
   AnnounceMessage.cc

@@ -90,6 +90,7 @@ namespace orxonox
     class HUDSpeedBar;
     class HUDBoostBar;
     class HUDTimer;
+    class HUDFindClosestEnemy;
     class KillMessage;
     class LastManStandingInfos;
     class PauseNotice;

@@ -77,6 +77,13 @@
    halfDotSizeDistance = 3000
    maximumDotSize      = 0.1
   />
+  <HUDFindClosestEnemy
+   name          = "FindClosestEnemy"
+   correctAspect = true
+   font          = "Monofur"
+   textSize      = 0.05
+  
+  />
 
   <ChatOverlay
    name     = "chat"
@@ -84,6 +91,11 @@
    font     = "VeraMono"
    caption  = ""
    textSize = 0.025
+  />
+  <FindClosestEnemy
+  
+  
+  
   />
 </OverlayGroup>
 
