@@ -32,6 +32,7 @@
 #include <sstream>
 #include <string>
 #include <OgreEntity.h>
+#include <OgreSubEntity.h>
 #include <OgreSceneManager.h>
 
 #include "util/Convert.h"
@@ -88,6 +89,25 @@ namespace orxonox
     {
         if (this->entity_)
             return this->entity_->getName();
+        else
+            return BLANKSTRING;
+    }
+
+    void Mesh::setMaterial(const std::string& name)
+    {
+        if (this->entity_)
+            this->entity_->setMaterialName(name);
+    }
+
+    const std::string& Mesh::getMaterial() const
+    {
+        if (this->entity_)
+        {
+            if(this->entity_->getSubEntity(0))
+                return this->entity_->getSubEntity(0)->getMaterialName(); //return the Material of the first SubEntity, should be enough for now
+            else
+                return BLANKSTRING;
+        }
         else
             return BLANKSTRING;
     }

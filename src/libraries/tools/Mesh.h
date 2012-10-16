@@ -47,6 +47,9 @@ namespace orxonox
 
             const std::string& getName() const;
 
+            void setMaterial(const std::string& name);
+            const std::string& getMaterial() const;
+
             void setVisible(bool bVisible);
             bool isVisible() const;
 
