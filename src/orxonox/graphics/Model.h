@@ -62,9 +62,15 @@ namespace orxonox
             inline bool getCastShadows() const
                 { return this->bCastShadows_; }
 
+            inline void setMaterial(const std::string& materialname)
+                { this->materialName_ = materialname; this->changedMaterial(); }
+            inline const std::string& getMaterial() const
+                { return this->materialName_; }
+
         protected:
             void registerVariables();
             void changedMesh();
+            void changedMaterial();
             void changedShadows();
 
             //LoD
@@ -79,6 +85,7 @@ namespace orxonox
             std::string meshSrc_;
             Mesh mesh_;
             bool bCastShadows_;
+            std::string materialName_;
 
             //LoD
             bool bGlobalEnableLod_;

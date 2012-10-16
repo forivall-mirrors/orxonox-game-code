@@ -70,6 +70,7 @@ namespace orxonox
         XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode);
 
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
+        XMLPortParam(Model, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
 
@@ -108,6 +109,11 @@ namespace orxonox
                     this->enableLod();
             }
         }
+    }
+
+    void Model::changedMaterial()
+    {
+        this->mesh_.setMaterial(this->materialName_);
     }
 
     void Model::changedShadows()
