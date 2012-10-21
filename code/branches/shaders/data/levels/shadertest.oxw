@@ -64,7 +64,7 @@
 
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
-    <Model scale="1" mesh="drone.mesh" material="Asteroid/BumpMap"/>
+    <Model scale="1" mesh="drone.mesh" renderQueueGroup="52" material="glow/drone"/>
   </attached>
   <collisionShapes>
     <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />
