@@ -36,6 +36,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
 BUILD_UNIT SceneBuildUnit.cc
   CameraManager.cc
   Scene.cc
+  RenderQueueListener.cc
 END_BUILD_UNIT
 )
 

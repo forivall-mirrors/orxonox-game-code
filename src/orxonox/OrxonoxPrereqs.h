@@ -75,6 +75,7 @@ namespace orxonox
     class PawnManager;
     class PlayerManager;
     class Radar;
+    class RenderQueueListener;
     class Scene;
 
     // chat

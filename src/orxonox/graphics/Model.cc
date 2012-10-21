@@ -43,7 +43,7 @@ namespace orxonox
     CreateFactory(Model);
 
     Model::Model(BaseObject* creator) :
-        StaticEntity(creator), bCastShadows_(true), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)
+        StaticEntity(creator), bCastShadows_(true), renderQueueGroup_(RENDER_QUEUE_STENCIL_OBJECTS), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)
     {
         RegisterObject(Model);
 
@@ -70,6 +70,7 @@ namespace orxonox
         XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode);
 
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
+        XMLPortParam(Model, "renderQueueGroup", setRenderQueueGroup, getRenderQueueGroup, xmlelement, mode);
         XMLPortParam(Model, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
@@ -77,6 +78,8 @@ namespace orxonox
     void Model::registerVariables()
     {
         registerVariable(this->meshSrc_,    VariableDirection::ToClient, new NetworkCallback<Model>(this, &Model::changedMesh));
+        registerVariable(this->renderQueueGroup_,    VariableDirection::ToClient, new NetworkCallback<Model>(this, &Model::changedRenderQueueGroup));
+        registerVariable(this->materialName_,    VariableDirection::ToClient, new NetworkCallback<Model>(this, &Model::changedMaterial));
         registerVariable(this->bCastShadows_, VariableDirection::ToClient, new NetworkCallback<Model>(this, &Model::changedShadows));
     }
 
@@ -107,6 +110,17 @@ namespace orxonox
 
                 if (this->bGlobalEnableLod_)
                     this->enableLod();
+            }
+        }
+    }
+
+    void Model::changedRenderQueueGroup()
+    {
+        if (GameMode::showsGraphics())
+        {
+            if (this->mesh_.getEntity())
+            {
+                this->mesh_.getEntity()->setRenderQueueGroup(this->renderQueueGroup_);
             }
         }
     }
