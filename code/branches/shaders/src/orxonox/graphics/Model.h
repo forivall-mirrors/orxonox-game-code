@@ -33,6 +33,7 @@
 
 #include <string>
 #include "tools/Mesh.h"
+#include "RenderQueueListener.h"
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox
@@ -57,6 +58,12 @@ namespace orxonox
             inline const std::string& getMeshSource() const
                 { return this->meshSrc_; }
 
+            //TODO: let this function accept strings instead of ints for the XML Port, so we don't have to rely on static int values which may change in future Ogre revisions
+            inline void setRenderQueueGroup(const int renderQueueGroup)
+                { this->renderQueueGroup_ = renderQueueGroup; this->changedRenderQueueGroup(); }
+            inline const int getRenderQueueGroup() const
+                { return this->renderQueueGroup_; }
+
             inline void setCastShadows(bool bCastShadows)
                 { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
             inline bool getCastShadows() const
@@ -70,6 +77,7 @@ namespace orxonox
         protected:
             void registerVariables();
             void changedMesh();
+            void changedRenderQueueGroup();
             void changedMaterial();
             void changedShadows();
 
@@ -85,6 +93,7 @@ namespace orxonox
             std::string meshSrc_;
             Mesh mesh_;
             bool bCastShadows_;
+            int renderQueueGroup_;
             std::string materialName_;
 
             //LoD
