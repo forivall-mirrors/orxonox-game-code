@@ -42,11 +42,12 @@ namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
 
-    RaceCheckPoint::RaceCheckPoint(BaseObject* creator): DistanceMultiTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
+    RaceCheckPoint::RaceCheckPoint(BaseObject* creator) :
+        DistanceMultiTrigger(creator), RadarViewable(creator,
+                static_cast<WorldEntity*> (this))
     {
-        RegisterObject(RaceCheckPoint);
-
-        this->setDistance(100);
+        RegisterObject(RaceCheckPoint)
+;        this->setDistance(100);
         this->setBeaconMode("off");
         this->setBroadcast(false);
         this->setSimultaneousTriggerers(100);
@@ -59,13 +60,13 @@ namespace orxonox
         this->checkpointIndex_ = 0;
         this->bIsLast_ = false;
         this->timeLimit_ = 0;
-        this->player_ = NULL;
+        //this->players_ = vector<PlayerInfo*>();
     }
 
+    RaceCheckPoint::~RaceCheckPoint()
+    {
 
-   RaceCheckPoint::~RaceCheckPoint()
-   {
-   }
+    }
 
     void RaceCheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -85,7 +86,7 @@ namespace orxonox
         {
             ControllableEntity* entity = orxonox_cast<ControllableEntity*>(originator);
             if (entity)
-                this->player_ = entity->getPlayer();
+            this->players_.push_back(entity->getPlayer());
         }
     }
 
@@ -94,8 +95,8 @@ namespace orxonox
         this->timeLimit_ = timeLimit;
         if (this->timeLimit_ != 0)
         {
-            std::string message =  "You have " + multi_cast<std::string>(this->timeLimit_)
-                        + " seconds to reach the check point " + multi_cast<std::string>(this->checkpointIndex_ + 1);
+            std::string message = "You have " + multi_cast<std::string>(this->timeLimit_)
+            + " seconds to reach the check point " + multi_cast<std::string>(this->checkpointIndex_ + 1);
             this->getGametype()->getGametypeInfo()->sendAnnounceMessage(message);
             ChatManager::message(message);
         }
@@ -106,11 +107,41 @@ namespace orxonox
         this->nextCheckpoints_.clear();
 
         if (checkpoints.x > -1)
-            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5));
+        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5));
         if (checkpoints.y > -1)
-            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
+        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
         if (checkpoints.z > -1)
-            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
+        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
+    }
+
+    PlayerInfo* RaceCheckPoint::getPlayer(unsigned int clientID) const
+    {
+        if (players_.size() > 0)
+        {
+            for (int i = 0; i < players_.size(); i++)
+            {
+                if (this->players_[i]->getClientID() == clientID)
+                {
+                    return players_[i];
+                }
+            }
+        }
+        return NULL;
+    }
+
+    bool RaceCheckPoint::playerWasHere(PlayerInfo* player) const
+    {
+        if (players_.size() > 0)
+        {
+            for (int i = 0; i < players_.size(); i++)
+            {
+                if (this->players_[i] == player)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     Vector3 RaceCheckPoint::getNextCheckpointsAsVector3() const

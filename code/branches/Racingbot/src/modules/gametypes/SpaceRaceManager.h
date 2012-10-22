@@ -77,6 +77,9 @@ namespace orxonox
         private:
             std::vector<RaceCheckPoint*> checkpoints_;
             bool firstcheckpointvisible_; ///< true if the first check point is visible.
+            SpaceRace* race_; // needed to get the players
+            //int amountOfPlayers;
+            std::map<PlayerInfo*, Player> players_;
     };
 }
 

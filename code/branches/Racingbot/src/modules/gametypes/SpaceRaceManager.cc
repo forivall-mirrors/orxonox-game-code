@@ -37,30 +37,32 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 
-
-
 namespace orxonox
 {
     CreateFactory(SpaceRaceManager);
 
-    SpaceRaceManager::SpaceRaceManager(BaseObject* creator) : BaseObject(creator)
+    SpaceRaceManager::SpaceRaceManager(BaseObject* creator) :
+        BaseObject(creator)
     {
-        RegisterObject(SpaceRaceManager);
-
+        RegisterObject(SpaceRaceManager)
+;        this->race_ = orxonox_cast<SpaceRace*>(this->getGametype().get());
+        assert(race_);
+        //amountOfPlayers=(race_->getPlayers()).size();
         this->firstcheckpointvisible_ = false;
+        this->players_ = this->race_->getPlayers();
     }
 
     SpaceRaceManager::~SpaceRaceManager()
     {
         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
-            this->checkpoints_[i]->destroy();
+        this->checkpoints_[i]->destroy();
     }
 
     void SpaceRaceManager::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(SpaceRaceManager, XMLPort, xmlelement, mode);
 
-        XMLPortObject(SpaceRaceManager, RaceCheckPoint, "checkpoints", addCheckpoint, getCheckpoint,  xmlelement, mode);
+        XMLPortObject(SpaceRaceManager, RaceCheckPoint, "checkpoints", addCheckpoint, getCheckpoint, xmlelement, mode);
     }
 
     void SpaceRaceManager::tick(float dt)
@@ -73,11 +75,15 @@ namespace orxonox
             this->firstcheckpointvisible_ = true;
         }
 
-        for (size_t i = 0; i < this->checkpoints_.size(); ++i)
+        for ( std::map< PlayerInfo*, Player>::iterator it = players_.begin(); it != players_.end(); ++it)
         {
-            if (this->checkpoints_[i]->getPlayer() != NULL)
-                this->checkpointReached(this->checkpoints_[i], this->checkpoints_[i]->getPlayer());
+            for (size_t i = 0; i < this->checkpoints_.size(); ++i)
+            {
+                if (this->checkpoints_[i]->playerWasHere(it->first))
+                this->checkpointReached(this->checkpoints_[i], it->first /*this->checkpoints_[i]->getPlayer()*/);
+            }
         }
+
     }
 
     void SpaceRaceManager::addCheckpoint(RaceCheckPoint* checkpoint)
@@ -88,35 +94,36 @@ namespace orxonox
     RaceCheckPoint* SpaceRaceManager::getCheckpoint(unsigned int index) const
     {
         if (index < this->checkpoints_.size())
-            return this->checkpoints_[index];
+        return this->checkpoints_[index];
         else
-            return 0;
+        return 0;
     }
 
-    std::vector<RaceCheckPoint*> SpaceRaceManager::getAllCheckpoints(){
+    std::vector<RaceCheckPoint*> SpaceRaceManager::getAllCheckpoints()
+    {
         return checkpoints_;
     }
 
     /**
-        @brief Returns the checkpoint with the given checkpoint-index (@see RaceCheckPoint::getCheckpointIndex).
-    */
+     @brief Returns the checkpoint with the given checkpoint-index (@see RaceCheckPoint::getCheckpointIndex).
+     */
     RaceCheckPoint* SpaceRaceManager::findCheckpoint(int index) const
     {
         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
-            if (this->checkpoints_[i]->getCheckpointIndex() == index)
-                return this->checkpoints_[i];
+        if (this->checkpoints_[i]->getCheckpointIndex() == index)
+        return this->checkpoints_[i];
         return 0;
     }
 
     bool SpaceRaceManager::reachedValidCheckpoint(RaceCheckPoint* oldCheckpoint, RaceCheckPoint* newCheckpoint, PlayerInfo* player) const
     {
-        if (oldCheckpoint)
+        if (oldCheckpoint != NULL)
         {
             // the player already visited an old checkpoint; see which checkpoints are possible now
             const std::set<int>& possibleCheckpoints = oldCheckpoint->getNextCheckpoints();
             for (std::set<int>::const_iterator it = possibleCheckpoints.begin(); it != possibleCheckpoints.end(); ++it)
-                if (this->findCheckpoint(*it) == newCheckpoint)
-                    return true;
+            if (this->findCheckpoint(*it) == newCheckpoint)
+            return true;
             return false;
         }
         else
@@ -131,9 +138,9 @@ namespace orxonox
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(gametype);
         if (!gametype)
-            return;
+        return;
 
-        RaceCheckPoint* oldCheckpoint = gametype->getCheckpointReached(player);
+        RaceCheckPoint* oldCheckpoint = gametype->getCheckpointReached(player); // returns the last from player reached checkpoint
 
         if (this->reachedValidCheckpoint(oldCheckpoint, newCheckpoint, player))
         {
@@ -159,7 +166,7 @@ namespace orxonox
             }
         }
 
-        newCheckpoint->resetPlayer();
+        // newCheckpoint->resetPlayer(); loescht playerpointer TODO: check if problems occur
     }
 
     void SpaceRaceManager::updateRadarVisibility(RaceCheckPoint* oldCheckpoint, RaceCheckPoint* newCheckpoint) const
@@ -168,7 +175,7 @@ namespace orxonox
         {
             const std::set<int>& oldVisible = oldCheckpoint->getNextCheckpoints();
             for (std::set<int>::const_iterator it = oldVisible.begin(); it != oldVisible.end(); ++it)
-                this->findCheckpoint(*it)->setRadarVisibility(false);
+            this->findCheckpoint(*it)->setRadarVisibility(false);
         }
 
         if (newCheckpoint)
@@ -177,7 +184,7 @@ namespace orxonox
 
             const std::set<int>& newVisible = newCheckpoint->getNextCheckpoints();
             for (std::set<int>::const_iterator it = newVisible.begin(); it != newVisible.end(); ++it)
-                this->findCheckpoint(*it)->setRadarVisibility(true);
+            this->findCheckpoint(*it)->setRadarVisibility(true);
         }
     }
 }
