@@ -44,14 +44,16 @@
     <attached>
       <Model position="0,0,0" yaw=90 pitch=0 roll=0 scale=4 mesh="escortShip.mesh" />
       <Model position="0,0,0" yaw=180 pitch=90 roll=0 scale=4 mesh="escortWeapon.mesh" />
+<!--Model mesh="cube.mesh" mass=10 position="0,0,3" scale3D="10,4,8" />
+<Model mesh="cube.mesh" mass=10 position="12.6,-2,3" scale3D="2.8,2.8,11" />
+<Model mesh="cube.mesh" mass=10 position="-12.6,-2,3" scale3D="2.8,2.8,11" />
+<Model mesh="cube.mesh" mass=10 position="0,0,-12" scale3D="4,4,7" /-->
     </attached>
     <collisionShapes>
-      <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />
-      <BoxCollisionShape position="13,-1.3,0"  halfExtents="3, 1, 2" />
-      <BoxCollisionShape position="-13,-1.3,0" halfExtents="3, 1, 2" />
-      <BoxCollisionShape position="0,0,7"      halfExtents="3, 2, 2" />
-      <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
-      <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
+      <BoxCollisionShape position="0    ,0 ,  3" halfExtents="10,   4,8" />
+      <BoxCollisionShape position="12.6 ,-2,  3" halfExtents="2.8,2.8,11"/>
+      <BoxCollisionShape position="-12.6,-2,  3" halfExtents="2.8,2.8,11"/>
+      <BoxCollisionShape position="0,     0,-12" halfExtents="4  , 4 ,7" />
     </collisionShapes>
 <?lua
   include("../includes/weaponSettingsEscort.oxi")
@@ -62,7 +64,7 @@
 <Template name=spaceshipassffcameras defaults=0>
   <SpaceShip>
     <camerapositions>
-      <CameraPosition position="0,11, 40" drag=true mouselook=true />
+      <CameraPosition position="0,13, 40" drag=true mouselook=true />
       <CameraPosition position="0,20, 80" drag=true mouselook=true />
       <CameraPosition position="0,30,120" drag=true mouselook=true />
     </camerapositions>
