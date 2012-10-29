@@ -27,6 +27,11 @@
  *
  */
 
+/**
+  @file RenderQueueListener.cc
+  @brief Definition of the RenderQueueListener class.
+*/
+
 #include "RenderQueueListener.h"
 
 #include <OgreRoot.h>
@@ -34,6 +39,12 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+    This function is called just before a RenderQueueGroup is rendered, this function is called by Ogre automatically with the correct parameters.
+
+    In this case we use it to set the stencil buffer parameters of the render system
+    */
     void RenderQueueListener::renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation)
     {
         if (queueGroupId == RENDER_QUEUE_STENCIL_OBJECTS)
@@ -55,7 +66,13 @@ namespace orxonox
                   Ogre::SOP_KEEP,Ogre::SOP_KEEP,Ogre::SOP_REPLACE,false);       
         }
     }
-   
+    
+    /**
+    @brief
+        This function is called just after a RenderQueueGroup has been rendered, this function is called by Ogre automatically with the correct parameters.
+        
+        in this case we use it to unset the stencil buffer parameters, so the rest of the render queue is unaffected by it.
+    */
     void RenderQueueListener::renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation)
     {
         if (queueGroupId == RENDER_QUEUE_STENCIL_LAST) 
