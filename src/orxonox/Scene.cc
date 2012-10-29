@@ -27,6 +27,12 @@
  *
  */
 
+/**
+@file Scene.cc
+@brief Implementation of Scene Class
+*/
+
+
 #include "Scene.h"
 
 #include <OgreRoot.h>
@@ -52,7 +58,12 @@
 namespace orxonox
 {
     CreateFactory(Scene);
-
+    
+    /**
+    @brief 
+        Constructor, it sets common standard paramters for a scene depending on whether it will be rendered or not.
+        It also makes sure we user our own render queue listener for rendering instead of the standard listener provided by Ogre
+    */
     Scene::Scene(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Scene);

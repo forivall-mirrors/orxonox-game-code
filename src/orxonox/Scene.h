@@ -27,6 +27,11 @@
  *
  */
 
+/**
+@file Scene.h
+@brief Definition of Scene Class
+*/
+
 #ifndef _Scene_H__
 #define _Scene_H__
 
@@ -47,6 +52,12 @@ namespace orxonox
     class _OrxonoxExport Scene : public BaseObject, public Synchronisable, public Tickable
     {
         public:
+            /**
+            @brief 
+                This class holds a Scene which is a collection of all kinds of objects to be rendered in the same space,
+                with the same physics and the same light properties. Objects can be anything from a light source, over non physical objects
+                like Billboards to just plain Models with an attached Mesh
+            */
             Scene(BaseObject* creator);
             virtual ~Scene();
 
@@ -93,15 +104,15 @@ namespace orxonox
             void networkcallback_applyShadows()
                 { this->setShadow(this->bShadows_); }
 
-            Ogre::SceneManager*      sceneManager_;
-            Ogre::SceneNode*         rootSceneNode_;
+            Ogre::SceneManager*      sceneManager_; //!< This is a pointer to the Ogre SceneManager we're using to render the Scene
+            Ogre::SceneNode*         rootSceneNode_; //!< This is a pointer to the root node of the Scene tree
 
-            std::string              skybox_;
-            ColourValue              ambientLight_;
-            std::list<BaseObject*>   objects_;
-            bool                     bShadows_;
-            float                    soundReferenceDistance_;
-            Radar*                   radar_;
+            std::string              skybox_; //!< This string holds information about the skybox we're using
+            ColourValue              ambientLight_; //!< This variable holds the color value for the ambient light in our scene, usually black in space
+            std::list<BaseObject*>   objects_; //!< This list holds all the objects created in our scene
+            bool                     bShadows_; //!< Do we want shadows in our scene?
+            float                    soundReferenceDistance_; //!< This holds a reference distance, which represents the distance between our scene and the listener
+            Radar*                   radar_; //!< This is a pointer to a Radar object assigned with this scene
 
 
         /////////////
