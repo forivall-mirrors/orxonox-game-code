@@ -29,7 +29,7 @@
 
 /**
   @file RenderQueueListener.cc
-  @brief Definition of the RenderQueueListener class.
+  @brief Implementation of the RenderQueueListener class.
 */
 
 #include "RenderQueueListener.h"
