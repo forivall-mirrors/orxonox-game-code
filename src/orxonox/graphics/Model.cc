@@ -35,6 +35,7 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "Scene.h"
+#include "RenderQueueListener.h"
 #include "graphics/MeshLodInformation.h"
 #include "Level.h"
 
@@ -74,6 +75,28 @@ namespace orxonox
         XMLPortParam(Model, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
+    
+    /**
+    @brief
+        This function turns a string from XML Port into a usable ID for the rendering system
+        It defaults to the main queue if the group isn't recognized.
+        
+    @param renderQueueGroup
+        This is a string representing the render queue group. Accepted values:
+        'main', 'stencil glow', 'stencil object'
+    */
+    const unsigned int Model::getRenderQueueGroupID(const std::string& renderQueueGroup) const
+    {
+        if(renderQueueGroup.compare("stencil glow")==0)
+        {
+            return RENDER_QUEUE_STENCIL_GLOW;
+        }
+        if(renderQueueGroup.compare("stencil object")==0)
+        {
+            return RENDER_QUEUE_STENCIL_OBJECTS;
+        }
+        return RENDER_QUEUE_MAIN;
+    }
 
     void Model::registerVariables()
     {
@@ -106,6 +129,7 @@ namespace orxonox
             {
                 this->attachOgreObject(this->mesh_.getEntity());
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
+                this->mesh_.getEntity()->setRenderQueueGroup(this->renderQueueGroup_);
                 this->mesh_.setVisible(this->isVisible());
 
                 if (this->bGlobalEnableLod_)

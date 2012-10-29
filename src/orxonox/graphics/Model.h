@@ -26,6 +26,11 @@
  *
  */
 
+/**
+  @file Model.h
+  @brief Definition of Model Class
+*/
+
 #ifndef _Model_H__
 #define _Model_H__
 
@@ -40,6 +45,13 @@ namespace orxonox
 {
     class _OrxonoxExport Model : public StaticEntity
     {
+        /**
+        @brief
+            The class Model stores a Mesh and some additional properties, so you can easily render any Model and apply different effects to it.
+            
+            You can assign any Material to any Mesh to completely change the way it looks, to further add versatility you can also assign the Model
+            to a render queue group, to enable proper rendering of fancy effect like glowing edges around objects with alpha blending.
+        */
         public:
             Model(BaseObject* creator);
             virtual ~Model();
@@ -58,9 +70,8 @@ namespace orxonox
             inline const std::string& getMeshSource() const
                 { return this->meshSrc_; }
 
-            //TODO: let this function accept strings instead of ints for the XML Port, so we don't have to rely on static int values which may change in future Ogre revisions
-            inline void setRenderQueueGroup(const int renderQueueGroup)
-                { this->renderQueueGroup_ = renderQueueGroup; this->changedRenderQueueGroup(); }
+            inline void setRenderQueueGroup(const std::string& renderQueueGroup)
+                { this->renderQueueGroup_ = getRenderQueueGroupID(renderQueueGroup); this->changedRenderQueueGroup(); }
             inline const int getRenderQueueGroup() const
                 { return this->renderQueueGroup_; }
 
@@ -75,6 +86,17 @@ namespace orxonox
                 { return this->materialName_; }
 
         protected:
+            /**
+            @brief
+                This function turns a string from XML Port into a usable ID for the rendering system
+                It defaults to the main queue if the group isn't recognized.
+                
+            @param renderQueueGroup
+                This is a string representing the render queue group. Accepted values:
+                main, stencil glow, stencil object
+            */
+            const unsigned int getRenderQueueGroupID(const std::string& renderQueueGroup) const;
+
             void registerVariables();
             void changedMesh();
             void changedRenderQueueGroup();
@@ -90,18 +112,18 @@ namespace orxonox
                 { return this->lodLevel_; }
             float getBiggestScale(Vector3 scale3d);
 
-            std::string meshSrc_;
-            Mesh mesh_;
-            bool bCastShadows_;
-            int renderQueueGroup_;
-            std::string materialName_;
+            std::string meshSrc_; //!< This string stores the path where the mesh is stored
+            Mesh mesh_; //!< This is the mesh object linked to this Object, it stores the data from the mesh file in a usable format for the Ogre engine
+            bool bCastShadows_; //!< This value determines whether a Model is casting a shadow or not, turn it off to save performance, when not needed
+            unsigned int renderQueueGroup_; //!< This variable stores which render queue group this object is assigned to
+            std::string materialName_; //!< This string stores the name of the material to be applied to the mesh/model
 
             //LoD
-            bool bGlobalEnableLod_;
-            float lodLevel_;
-            bool bLodEnabled_;
-            unsigned int numLodLevels_;
-            float lodReductionRate_;
+            bool bGlobalEnableLod_; //!< Has LoD been turned on in the graphics configuration?
+            float lodLevel_; //!< Standard LoD Level
+            bool bLodEnabled_; //!< Is LoD to be used on this model?
+            unsigned int numLodLevels_; //!< How many LoD does this model feature
+            float lodReductionRate_; //!< How fast should be switched to lower LoDs
 
     };
 }
