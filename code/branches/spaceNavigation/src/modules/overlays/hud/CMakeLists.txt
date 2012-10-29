@@ -1,5 +1,4 @@
 ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
-  HUDAimAssistant.cc
   HUDBar.cc
   HUDNavigation.cc
   HUDRadar.cc

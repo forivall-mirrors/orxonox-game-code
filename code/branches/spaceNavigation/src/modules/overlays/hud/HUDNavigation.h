@@ -74,6 +74,7 @@ namespace orxonox
             struct ObjectInfo
             {
                 Ogre::PanelOverlayElement* panel_;
+                Ogre::PanelOverlayElement* target_;
                 Ogre::TextAreaOverlayElement* text_;
                 bool outOfView_;
                 bool wasOutOfView_;
@@ -103,6 +104,8 @@ namespace orxonox
             float getArrowSizeX(int dist) const;
             float getArrowSizeY(int dist) const;
 
+            Vector3* toAimPosition(RadarViewable* target) const;
+
             std::map<RadarViewable*, ObjectInfo> activeObjectList_;
             std::list<std::pair<RadarViewable*, unsigned int> > sortedObjectList_;
 
@@ -110,6 +113,13 @@ namespace orxonox
             std::string fontName_;
             float textSize_;
             bool showDistance_;
+
+            static const float LIGHTNING_GUN_SPEED_ = 700.0f;
+            static const float HSW01_SPEED_ = 2500.0f;
+
+            float currentMunitionSpeed_;
+
+            Pawn* ship_;
 
             unsigned int markerLimit_;
             float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value.
