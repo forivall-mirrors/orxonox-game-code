@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Shader Test"
  description = "Level to test shader functionality. Based on Asteroidfields."
- tags = "shaders"
+ tags = "test"
  screenshot = "codingtutorial.png"
  startingships = "spaceshipassff, spaceshipghost, spaceshipspacecruiser"
 />
@@ -64,8 +64,8 @@
 
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
-    <Model scale="1" mesh="drone.mesh" renderQueueGroup="stencil glow" material="glow"/>
-    <Model scale="1" mesh="drone.mesh" renderQueueGroup="stencil object"/>
+    <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="stencil glow" material="glow"/>
+    <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="stencil object"/>
   </attached>
   <collisionShapes>
     <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />
