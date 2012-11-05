@@ -44,12 +44,11 @@ namespace orxonox
     SpaceRaceManager::SpaceRaceManager(BaseObject* creator) :
         BaseObject(creator)
     {
-        RegisterObject(SpaceRaceManager)
-;        this->race_ = orxonox_cast<SpaceRace*>(this->getGametype().get());
+        RegisterObject(SpaceRaceManager);
+        this->race_ = orxonox_cast<SpaceRace*>(this->getGametype().get());
         assert(race_);
         //amountOfPlayers=(race_->getPlayers()).size();
         this->firstcheckpointvisible_ = false;
-        this->players_ = this->race_->getPlayers();
     }
 
     SpaceRaceManager::~SpaceRaceManager()
@@ -69,6 +68,8 @@ namespace orxonox
     {
         SUPER(SpaceRaceManager,tick,dt);
 
+        this->players_ = this->race_->getPlayers();
+
         if (this->checkpoints_[0] != NULL && !this->firstcheckpointvisible_)
         {
             this->checkpoints_[0]->setRadarVisibility(true);
@@ -77,10 +78,12 @@ namespace orxonox
 
         for ( std::map< PlayerInfo*, Player>::iterator it = players_.begin(); it != players_.end(); ++it)
         {
+
             for (size_t i = 0; i < this->checkpoints_.size(); ++i)
             {
-                if (this->checkpoints_[i]->playerWasHere(it->first))
+                if (this->checkpoints_[i]->playerWasHere(it->first)){
                 this->checkpointReached(this->checkpoints_[i], it->first /*this->checkpoints_[i]->getPlayer()*/);
+                }
             }
         }
 
@@ -141,7 +144,10 @@ namespace orxonox
         return;
 
         RaceCheckPoint* oldCheckpoint = gametype->getCheckpointReached(player); // returns the last from player reached checkpoint
-
+        // % fixing
+        orxout() << "SpaceRaceManager.checkpointReached( "<<newCheckpoint->getCheckpointIndex()
+                 <<", "<< player->isHumanPlayer() << endl;
+        // % end fixing
         if (this->reachedValidCheckpoint(oldCheckpoint, newCheckpoint, player))
         {
             // the player reached a valid checkpoint

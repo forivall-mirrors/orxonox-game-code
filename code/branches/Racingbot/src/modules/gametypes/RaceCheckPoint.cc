@@ -107,7 +107,7 @@ namespace orxonox
         this->nextCheckpoints_.clear();
 
         if (checkpoints.x > -1)
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5));
+        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5)); // the red number has the type double and for the cast (to int) is added 0.5 so that the cast works correctly
         if (checkpoints.y > -1)
         this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
         if (checkpoints.z > -1)

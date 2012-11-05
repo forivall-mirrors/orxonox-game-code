@@ -37,13 +37,21 @@ namespace orxonox
 {
     class _GametypesExport SpaceRaceController : public ArtificialController, public Tickable
     {
-        private:/*
-            vector<RaceCheckPoint*> lastRaceCheckpoint;
-            vector<RaceCheckPoint*> nextRaceCheckpoint;*/
-            //RaceCheckPoint* nextPoint();
+        private:
+            std::vector<RaceCheckPoint*> staticRacePoints_;
+            RaceCheckPoint* nextRaceCheckpoint_;
+            RaceCheckPoint* currentRaceCheckpoint_;
+            std::vector<RaceCheckPoint*> checkpoints_;
+            int lastDistance;
+
+            int recCalculateDistance(RaceCheckPoint*, Vector3 currentPosition);
+            int distanceSpaceshipToCheckPoint(RaceCheckPoint*);
+            RaceCheckPoint* nextPointFind(RaceCheckPoint*);
+            RaceCheckPoint* adjustNextPoint();
             std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<RaceCheckPoint*>);
             std::vector<RaceCheckPoint*> staticCheckpoints();
-            void rekSimulationCheckpointsReached(RaceCheckPoint* , std::vector<RaceCheckPoint*>* checkpoints, std::map< RaceCheckPoint*, int>*);
+            int rekSimulationCheckpointsReached(RaceCheckPoint* , std::vector<RaceCheckPoint*>* checkpoints, std::map< RaceCheckPoint*, int>*);
+
         public:
           SpaceRaceController(BaseObject* creator);
           virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
