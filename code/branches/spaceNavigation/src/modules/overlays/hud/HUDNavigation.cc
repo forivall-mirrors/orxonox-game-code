@@ -204,6 +204,14 @@ namespace orxonox
                     textLength = it->first->getRadarName().size() * it->second.text_->getCharHeight() * 0.3f;
                 }
 
+                // TODO : closest object is selected
+                if(listIt == this->sortedObjectList_.begin())
+                {
+                    it->second.selected_ = true;
+                } else {
+                    it->second.selected_ = false;
+                }
+
                 // Transform to screen coordinates
                 Vector3 pos = camTransform * it->first->getRVWorldPosition();
 
@@ -292,7 +300,7 @@ namespace orxonox
                         //it->second.panel_->setMaterialName("Orxonox/NavTDC");
                         it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("tdc.png", it->first->getRadarObjectColour()));
                         it->second.panel_->setDimensions(this->navMarkerSize_ * this->getActualSize().x, this->navMarkerSize_ * this->getActualSize().y);
-                        it->second.target_->setDimensions(aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
+                        it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
                     }
 
@@ -306,22 +314,27 @@ namespace orxonox
                     it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
 
                     // Target marker
-                    Vector3* targetPos = this->toAimPosition(it->first);
-                    Vector3 screenPos = camTransform * *targetPos;
-                    // Check if the target marker is in view too
-                    if(screenPos.z > 1 || screenPos.x < -1.0 || screenPos.x > 1.0
-                            || screenPos.y < -1.0 || screenPos.y > 1.0)
+                    if(it->second.selected_)
                     {
-                        it->second.target_->hide();
-                    }
-                    else
-                    {
-                        it->second.target_->setLeft((screenPos.x + 1.0f - it->second.target_->getWidth()) * 0.5f);
-                        it->second.target_->setTop((-screenPos.y + 1.0f - it->second.target_->getHeight()) * 0.5f);
-                        it->second.target_->show();
-                    }
+                        Vector3* targetPos = this->toAimPosition(it->first);
+                        Vector3 screenPos = camTransform * *targetPos;
+                        // Check if the target marker is in view too
+                        if(screenPos.z > 1 || screenPos.x < -1.0 || screenPos.x > 1.0
+                                || screenPos.y < -1.0 || screenPos.y > 1.0)
+                        {
+                            it->second.target_->hide();
+                        }
+                        else
+                        {
+                            it->second.target_->setLeft((screenPos.x + 1.0f - it->second.target_->getWidth()) * 0.5f);
+                            it->second.target_->setTop((-screenPos.y + 1.0f - it->second.target_->getHeight()) * 0.5f);
+                            it->second.target_->show();
+                        }
 
-                    delete targetPos;
+                        delete targetPos;
+                    }
+                    else // don't show marker for not selected enemies
+                        it->second.target_->hide();
                 }
 
                 // Make sure the overlays are shown
@@ -404,7 +417,7 @@ namespace orxonox
         text->hide();
 
         ObjectInfo tempStruct =
-        {   panel, target, text, false /*, TODO: initialize wasOutOfView_ */};
+        {   panel, target, text, false, false, false};
         this->activeObjectList_[object] = tempStruct;
 
         this->background_->addChild(panel);

@@ -78,6 +78,7 @@ namespace orxonox
                 Ogre::TextAreaOverlayElement* text_;
                 bool outOfView_;
                 bool wasOutOfView_;
+                bool selected_;
             };
 
             bool showObject(RadarViewable* rv);
