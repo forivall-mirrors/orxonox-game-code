@@ -144,10 +144,7 @@ namespace orxonox
         return;
 
         RaceCheckPoint* oldCheckpoint = gametype->getCheckpointReached(player); // returns the last from player reached checkpoint
-        // % fixing
-        orxout() << "SpaceRaceManager.checkpointReached( "<<newCheckpoint->getCheckpointIndex()
-                 <<", "<< player->isHumanPlayer() << endl;
-        // % end fixing
+
         if (this->reachedValidCheckpoint(oldCheckpoint, newCheckpoint, player))
         {
             // the player reached a valid checkpoint

@@ -28,9 +28,8 @@
 #include "core/XMLPort.h"
 #include "gametypes/SpaceRaceManager.h"
 
-// Von SpaceRaceManager points einlesen
-// Berechnungsklasse nextPoint zur verfuegung stellen
-// ^- aufrufen ueber tick (if ob noetig)
+// WEnn RAcer nach start erstellt wird fehler in Tick
+// Fuer beide Spieler wird next point angezeigt
 namespace orxonox
 {
     CreateFactory(SpaceRaceController);
@@ -42,7 +41,6 @@ namespace orxonox
         ArtificialController(creator)
     {
         RegisterObject(SpaceRaceController);
-
         std::vector<RaceCheckPoint*> checkpoints;
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
         {
@@ -67,7 +65,8 @@ namespace orxonox
 
     RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
     {
-        int distances[] = { -1, -1, -1 };
+        int distances[] =
+        {   -1, -1, -1};
         int temp_i = 0;
         for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
         {
@@ -102,10 +101,12 @@ namespace orxonox
     RaceCheckPoint* SpaceRaceController::adjustNextPoint()
     {
         if (currentRaceCheckpoint_ == NULL) // no Adjust possible
+
         {
             return nextRaceCheckpoint_;
         }
         if ((currentRaceCheckpoint_->getNextCheckpoints()).size() == 1) // no Adjust possible
+
         {
             return nextRaceCheckpoint_;
         }
@@ -140,7 +141,7 @@ namespace orxonox
             std::vector<RaceCheckPoint*> allCheckpoints)
     {
         std::map<RaceCheckPoint*, int> * zaehler = new std::map<
-                RaceCheckPoint*, int>(); // counts how many times the checkpoit was reached (for simulation)
+        RaceCheckPoint*, int>(); // counts how many times the checkpoit was reached (for simulation)
         for (unsigned int i = 0; i < allCheckpoints.size(); i++)
         {
             zaehler->insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
@@ -202,6 +203,7 @@ namespace orxonox
     }
     void SpaceRaceController::tick(float dt)
     {
+        if (this->getControllableEntity() ==  NULL || this->getControllableEntity()->getPlayer() == NULL ){orxout()<<this->getControllableEntity()<<endl; return;}
         if (nextRaceCheckpoint_->playerWasHere(this->getControllableEntity()->getPlayer()))
         {//Checkpoint erreicht
             currentRaceCheckpoint_=nextRaceCheckpoint_;
