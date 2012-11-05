@@ -62,13 +62,13 @@
         asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
     ?>
 
-<Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
+<Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass="50" linearDamping="0.9" angularDamping="0.7">
   <attached>
     <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="stencil glow" material="glow"/>
-    <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="stencil object"/>
+    <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="main"/>
   </attached>
   <collisionShapes>
-    <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />
+    <SphereCollisionShape position="10,10,10" radius="30" />
   </collisionShapes>
 </Drone>
 
