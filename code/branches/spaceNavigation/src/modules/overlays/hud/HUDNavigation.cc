@@ -71,12 +71,14 @@ namespace orxonox
         this->setFont("Monofur");
         this->setTextSize(0.05f);
         this->setNavMarkerSize(0.05f);
+        this->setAimMarkerSize(0.02f);
+
         this->setDetectionLimit(10000.0f);
         this->currentMunitionSpeed_ = 2500.0f;
 
-        Pawn* ship = orxonox_cast<Pawn*>(this->getOwner());
+        /*Pawn* ship = orxonox_cast<Pawn*>(this->getOwner());
         if(ship != NULL)
-            this->ship_ = ship;
+            this->ship_ = ship;*/
     }
 
     HUDNavigation::~HUDNavigation()
@@ -103,6 +105,7 @@ namespace orxonox
         XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlelement, mode);
         XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode);
         XMLPortParam(HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode);
+        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlelement, mode);
     }
 
     void HUDNavigation::setFont(const std::string& font)
@@ -289,6 +292,7 @@ namespace orxonox
                         //it->second.panel_->setMaterialName("Orxonox/NavTDC");
                         it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("tdc.png", it->first->getRadarObjectColour()));
                         it->second.panel_->setDimensions(this->navMarkerSize_ * this->getActualSize().x, this->navMarkerSize_ * this->getActualSize().y);
+                        it->second.target_->setDimensions(aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
                     }
 
@@ -297,7 +301,11 @@ namespace orxonox
                     it->second.panel_->setLeft((pos.x + 1.0f - it->second.panel_->getWidth()) * 0.5f);
                     it->second.panel_->setTop((-pos.y + 1.0f - it->second.panel_->getHeight()) * 0.5f);
 
-                    // TODO : Target marker
+                    // Position text
+                    it->second.text_->setLeft((pos.x + 1.0f + it->second.panel_->getWidth()) * 0.5f);
+                    it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
+
+                    // Target marker
                     Vector3* targetPos = this->toAimPosition(it->first);
                     Vector3 screenPos = camTransform * *targetPos;
                     // Check if the target marker is in view too
@@ -308,17 +316,12 @@ namespace orxonox
                     }
                     else
                     {
-                        it->second.target_->show();
                         it->second.target_->setLeft((screenPos.x + 1.0f - it->second.target_->getWidth()) * 0.5f);
                         it->second.target_->setTop((-screenPos.y + 1.0f - it->second.target_->getHeight()) * 0.5f);
+                        it->second.target_->show();
                     }
 
-                    orxout() << targetPos->x << endl;
                     delete targetPos;
-
-                    // Position text
-                    it->second.text_->setLeft((pos.x + 1.0f + it->second.panel_->getWidth()) * 0.5f);
-                    it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
                 }
 
                 // Make sure the overlays are shown
@@ -330,7 +333,7 @@ namespace orxonox
             {
                 it->second.panel_->hide();
                 it->second.text_->hide();
-                it->second.target_->hide(); // TODO :
+                it->second.target_->hide();
             }
         }
     }
@@ -353,8 +356,7 @@ namespace orxonox
             if (it->second.text_ != NULL)
                 it->second.text_->setCharHeight(it->second.text_->getCharHeight() * yScale);
             if (it->second.target_ != NULL)
-                it->second.target_->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
-            // TODO : targetMarkerSize_ ???
+                it->second.target_->setDimensions(this->aimMarkerSize_ * xScale, this->aimMarkerSize_ * yScale);
         }
     }
 
@@ -387,8 +389,8 @@ namespace orxonox
         // Create target marker
         Ogre::PanelOverlayElement* target = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("Panel", "HUDNavigation_targetMarker_" + getUniqueNumberString()));
-        target->setMaterialName(TextureGenerator::getMaterialName("target.png" /* TODO : create the target picture */, object->getRadarObjectColour()));
-        target->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
+        target->setMaterialName(TextureGenerator::getMaterialName("target.png", object->getRadarObjectColour()));
+        target->setDimensions(this->aimMarkerSize_ * xScale, this->aimMarkerSize_ * yScale);
 
         // Create text
         Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>( Ogre::OverlayManager::getSingleton()

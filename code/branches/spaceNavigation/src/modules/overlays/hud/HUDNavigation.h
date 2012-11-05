@@ -90,6 +90,13 @@ namespace orxonox
             }
             inline float getNavMarkerSize() const
                 { return navMarkerSize_; }
+            inline void setAimMarkerSize(float size)
+            {
+                aimMarkerSize_ = size;
+                this->sizeChanged();
+            }
+            inline float getAimMarkerSize() const
+                { return aimMarkerSize_; }
             inline void setDetectionLimit(float limit)
                 { this->detectionLimit_ = limit; }
             inline float getDetectionLimit() const
@@ -110,6 +117,7 @@ namespace orxonox
             std::list<std::pair<RadarViewable*, unsigned int> > sortedObjectList_;
 
             float navMarkerSize_;
+            float aimMarkerSize_;
             std::string fontName_;
             float textSize_;
             bool showDistance_;
