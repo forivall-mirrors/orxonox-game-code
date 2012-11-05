@@ -44,7 +44,7 @@ namespace orxonox
     CreateFactory(Model);
 
     Model::Model(BaseObject* creator) :
-        StaticEntity(creator), bCastShadows_(true), renderQueueGroup_(RENDER_QUEUE_STENCIL_OBJECTS), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)
+        StaticEntity(creator), bCastShadows_(true), renderQueueGroup_(RENDER_QUEUE_MAIN), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)
     {
         RegisterObject(Model);
 
