@@ -114,6 +114,8 @@ namespace orxonox
             int reenterDelay_;
             std::map<MobileEntity *, time_t> jumpOutTimes_;   //!< Stores the time at which a certain MobileEntity @ref jumpOut "jumped out" of this PortalEndPoint
             std::set<MobileEntity *> recentlyJumpedOut_;   //!< Stores the entities witch recently jumped out of this PortalEndPoint and haven't left the activation radius yet. This is needed in order to prevent them from beeing pulled into the PortalEndPoint they have just come out of.
+
+            WorldSound* portalSound_;
     };
 
 }
