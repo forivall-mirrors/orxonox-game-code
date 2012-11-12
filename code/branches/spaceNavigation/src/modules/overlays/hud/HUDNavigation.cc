@@ -488,25 +488,32 @@ namespace orxonox
         Vector3 wePosition = HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition();
         Vector3 targetPosition = target->getRVWorldPosition();
         Vector3 targetSpeed = target->getRVOrientedVelocity();
+        Vector3 relativePosition = targetPosition - wePosition; //Vector from attacker to target
+
+        float p_half = relativePosition.dotProduct(targetSpeed)/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_);
+        float time1 = -p_half + sqrt(p_half * p_half - relativePosition.squaredLength()/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_));
+        orxout()<< "TIME 1: " << time1 <<endl;
+
+
 
         // munSpeed*time = lengthBetween(wePosition, targetPosition + targetSpeed*time)
         // from this we extract:
-        float a = targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_;
+        float a = pow(targetSpeed.length(),2) - pow(this->currentMunitionSpeed_,2);
         float b = 2*((targetPosition.x - wePosition.x)*targetSpeed.x
                     +(targetPosition.y - wePosition.y)*targetSpeed.y
                     +(targetPosition.z - wePosition.z)*targetSpeed.z);
-        float c = (wePosition-targetPosition).squaredLength();
+        float c = pow((targetPosition-wePosition).length(),2);
 
         // calculate smallest time solution, in case it exists
-        float det = b * b - 4 * a * c;
-        if(det < 0)
+        if(pow(b,2) - 4*a*c < 0)
             return NULL;
-        float time = (-b - sqrt(det))/(2*a);
+        float time = (-b - sqrt(pow(b,2) - 4*a*c))/(2*a);
+        orxout()<< "TIME 1: " << time1 <<endl;
         if(time < 0)
-            time = (-b + sqrt(det))/(2*a);
+            time = (-b + sqrt(pow(b,2) - 4*a*c))/(2*a);
         if(time < 0)
             return NULL;
-        Vector3* result = new Vector3(targetPosition + time * targetSpeed);
+        Vector3* result = new Vector3(targetPosition + targetSpeed * time);
         return result;
     }
 }
