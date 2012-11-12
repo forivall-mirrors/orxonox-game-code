@@ -86,14 +86,14 @@ namespace orxonox
             // XMLPort accessors
             inline void setNavMarkerSize(float size)
             {
-                navMarkerSize_ = size;
+                this->navMarkerSize_ = size;
                 this->sizeChanged();
             }
             inline float getNavMarkerSize() const
                 { return navMarkerSize_; }
             inline void setAimMarkerSize(float size)
             {
-                aimMarkerSize_ = size;
+                this->aimMarkerSize_ = size;
                 this->sizeChanged();
             }
             inline float getAimMarkerSize() const

@@ -70,7 +70,7 @@ namespace orxonox
         // Set default values
         this->setFont("Monofur");
         this->setTextSize(0.05f);
-        this->setNavMarkerSize(0.05f);
+        this->setNavMarkerSize(0.03f);
         this->setAimMarkerSize(0.02f);
 
         this->setDetectionLimit(10000.0f);
@@ -180,6 +180,7 @@ namespace orxonox
         unsigned int markerCount = 0;
         bool closeEnough = false; // only display objects that are close enough to be relevant for the player
 
+
         for (std::list<std::pair<RadarViewable*, unsigned int> >::iterator listIt = this->sortedObjectList_.begin(); listIt != this->sortedObjectList_.end(); ++markerCount, ++listIt)
         {
             std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.find(listIt->first);
@@ -226,7 +227,7 @@ namespace orxonox
                     pos.y = -pos.y;
                 }
                 else
-                outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
+                    outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
 
                 if (outOfView)
                 {
@@ -314,10 +315,10 @@ namespace orxonox
                     it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
 
                     // Target marker
-                    if(it->second.selected_)
+                    if(it->second.selected_ && it->first->getRVOrientedVelocity().squaredLength() != 0)
                     {
                         Vector3* targetPos = this->toAimPosition(it->first);
-                        Vector3 screenPos = camTransform * *targetPos;
+                        Vector3 screenPos = camTransform * (*targetPos);
                         // Check if the target marker is in view too
                         if(screenPos.z > 1 || screenPos.x < -1.0 || screenPos.x > 1.0
                                 || screenPos.y < -1.0 || screenPos.y > 1.0)
@@ -490,21 +491,22 @@ namespace orxonox
 
         // munSpeed*time = lengthBetween(wePosition, targetPosition + targetSpeed*time)
         // from this we extract:
-        float a = pow(targetSpeed.length(),2) - pow(this->currentMunitionSpeed_,2);
+        float a = targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_;
         float b = 2*((targetPosition.x - wePosition.x)*targetSpeed.x
                     +(targetPosition.y - wePosition.y)*targetSpeed.y
                     +(targetPosition.z - wePosition.z)*targetSpeed.z);
-        float c = pow((targetPosition-wePosition).length(),2);
+        float c = (wePosition-targetPosition).squaredLength();
 
         // calculate smallest time solution, in case it exists
-        if(pow(b,2) - 4*a*c < 0)
+        float det = b * b - 4 * a * c;
+        if(det < 0)
             return NULL;
-        float time = (-b - sqrt(pow(b,2) - 4*a*c))/(2*a);
+        float time = (-b - sqrt(det))/(2*a);
         if(time < 0)
-            time = (-b + sqrt(pow(b,2) - 4*a*c))/(2*a);
+            time = (-b + sqrt(det))/(2*a);
         if(time < 0)
             return NULL;
-        Vector3* result = new Vector3(targetPosition + targetSpeed * time);
+        Vector3* result = new Vector3(targetPosition + time * targetSpeed);
         return result;
     }
 }
