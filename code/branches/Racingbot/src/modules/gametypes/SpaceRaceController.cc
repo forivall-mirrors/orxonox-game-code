@@ -22,14 +22,19 @@
  *  Created on: Oct 8, 2012
  *      Author: purgham
  */
-
+ /**
+  * Conventions:
+  * -first Checkpoint has index 0
+  *
+  */
 #include <gametypes/SpaceRaceController.h>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "gametypes/SpaceRaceManager.h"
 
-// WEnn RAcer nach start erstellt wird fehler in Tick
-// Fuer beide Spieler wird next point angezeigt
+
+
+
 namespace orxonox
 {
     CreateFactory(SpaceRaceController);
@@ -49,8 +54,15 @@ namespace orxonox
         }
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
+        //OrxAssert(1==2, "Orxassert test");
         checkpoints_=checkpoints;
         staticRacePoints_ = findStaticCheckpoints(checkpoints);
+        for (int i=0; true; i++){
+            if(checkpoints_[i]->getCheckpointIndex()==0){
+                nextRaceCheckpoint_=checkpoints_[i];
+                break;
+            }
+        }
 
     }
 
@@ -65,12 +77,11 @@ namespace orxonox
 
     RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
     {
-        int distances[] =
-        {   -1, -1, -1};
+        int distances[] ={   -1, -1, -1};
         int temp_i = 0;
         for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
         {
-            distances[temp_i] = recCalculateDistance(raceCheckpoint,this->getControllableEntity()->getPosition());
+            distances[temp_i] = recCalculateDistance(raceCheckpoint, this->getControllableEntity()->getPosition());
             temp_i++;
         }
         if (distances[0] > distances[1] && distances[1] != -1)
@@ -118,6 +129,7 @@ namespace orxonox
 
     int SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, Vector3 currentPosition)
     {
+        orxout()<< "rec Aufruf" << endl;
         // if ( staticCheckPoint was reached)
         if (std::find(staticRacePoints_.begin(), staticRacePoints_.end(),currentCheckPoint) != staticRacePoints_.end())
         {
@@ -126,10 +138,22 @@ namespace orxonox
         else
         {
             int minimum = std::numeric_limits<int>::max();
+            int temp=0;
             for (std::set<int>::iterator it = currentCheckPoint->getNextCheckpoints().begin(); it!= currentCheckPoint->getNextCheckpoints().end(); ++it)
-            {
-                minimum= std::min(minimum,(int) (currentPosition- currentCheckPoint->getPosition()).length() + recCalculateDistance(checkpoints_[(*it)], currentCheckPoint->getPosition()));
-            }//TODO: fix cast
+            { //temp++;
+                WorldEntity* ttt= dynamic_cast<WorldEntity*> (currentCheckPoint);
+                OrxAssert(!(ttt==NULL), "WorldEntity null");
+                OrxAssert(!(ttt->getNode()==NULL), "Node of WorldEntity is null");
+
+                //orxout()<< temp <<endl;
+                //if(temp==1){orxout()<<currentCheckPoint << " == null?  => "<<(currentCheckPoint==NULL)<<currentPosition<<endl;}
+                Vector3 t=(currentPosition- ttt->getPosition()); //TODO: Find Crash Reason. Why can't currentCheck access node.
+                int tt=static_cast<int>(t.length());
+                //OrxAssert(!currentCheckPoint.empty(), "currentCheckPoint == null");
+                //OrxAssert(!(it == currentCheckPoint->getNextCheckpoints().end()), "it is null");
+                minimum= std::min(minimum, tt+ recCalculateDistance(checkpoints_[(*it)], currentCheckPoint->getPosition()));
+                // minimum of distanz from 'currentPosition' to the next static Checkpoint
+            }//Error tritt manchmal auf
             return minimum;
         }
     }
@@ -203,7 +227,7 @@ namespace orxonox
     }
     void SpaceRaceController::tick(float dt)
     {
-        if (this->getControllableEntity() ==  NULL || this->getControllableEntity()->getPlayer() == NULL ){orxout()<<this->getControllableEntity()<<endl; return;}
+        if (this->getControllableEntity() ==  NULL || this->getControllableEntity()->getPlayer() == NULL ){orxout()<<this->getControllableEntity()<< " in tick"<<endl; return;}
         if (nextRaceCheckpoint_->playerWasHere(this->getControllableEntity()->getPlayer()))
         {//Checkpoint erreicht
             currentRaceCheckpoint_=nextRaceCheckpoint_;

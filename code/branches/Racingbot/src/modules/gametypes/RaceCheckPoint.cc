@@ -42,12 +42,11 @@ namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
 
-    RaceCheckPoint::RaceCheckPoint(BaseObject* creator) :
-        DistanceMultiTrigger(creator), RadarViewable(creator,
-                static_cast<WorldEntity*> (this))
+    RaceCheckPoint::RaceCheckPoint(BaseObject* creator) : DistanceMultiTrigger(creator),
+            RadarViewable(creator, static_cast<WorldEntity*> (this))
     {
-        RegisterObject(RaceCheckPoint)
-;        this->setDistance(100);
+        RegisterObject(RaceCheckPoint);
+        this->setDistance(100);
         this->setBeaconMode("off");
         this->setBroadcast(false);
         this->setSimultaneousTriggerers(100);
@@ -61,6 +60,10 @@ namespace orxonox
         this->bIsLast_ = false;
         this->timeLimit_ = 0;
         //this->players_ = vector<PlayerInfo*>();
+
+        myPosition_= this->getPosition();
+        orxout(user_status) << "test" << std::endl;
+
     }
 
     RaceCheckPoint::~RaceCheckPoint()
@@ -86,7 +89,7 @@ namespace orxonox
         {
             ControllableEntity* entity = orxonox_cast<ControllableEntity*>(originator);
             if (entity)
-            this->players_.push_back(entity->getPlayer());
+                this->players_.push_back(entity->getPlayer());
         }
     }
 

@@ -39,8 +39,8 @@ namespace orxonox
     {
         private:
             std::vector<RaceCheckPoint*> staticRacePoints_;
-            RaceCheckPoint* nextRaceCheckpoint_;
-            RaceCheckPoint* currentRaceCheckpoint_;
+            RaceCheckPoint* nextRaceCheckpoint_;    // checkpoint that should be reached
+            RaceCheckPoint* currentRaceCheckpoint_; // last checkPoint (already reached)
             std::vector<RaceCheckPoint*> checkpoints_;
             int lastDistance;
 
