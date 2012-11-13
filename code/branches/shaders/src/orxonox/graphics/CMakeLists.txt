@@ -12,6 +12,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
 BUILD_UNIT GraphicsBuildUnit.cc
   Backlight.cc
   Camera.cc
+  LensFlare.cc
   Light.cc
 END_BUILD_UNIT
 )
