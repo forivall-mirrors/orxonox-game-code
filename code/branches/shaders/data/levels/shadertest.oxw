@@ -65,17 +65,20 @@
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass="50" linearDamping="0.9" angularDamping="0.7">
   <attached>
     <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="stencil glow" material="glow"/>
-    <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="main"/>
+    <Model position="10,10,10" scale="30" mesh="planets/earth.mesh" renderQueueGroup="main" />
   </attached>
   <collisionShapes>
     <SphereCollisionShape position="10,10,10" radius="30" />
   </collisionShapes>
 </Drone>
 
+<LensFlare position="5000,10,2500">
+</LensFlare>
+
     <!-- Planet close to spawn point -->
 
     <Planet
-      position="15000,0,0"
+      position="15000,0,-1000"
       scale="5000"
       collisionType="dynamic"
       linearDamping="0.8"
