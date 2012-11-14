@@ -36,14 +36,42 @@
 
 #include <OgreRoot.h>
 #include <OgreRenderQueueListener.h>
+#include <OgreHardwareOcclusionQuery.h>
 
 namespace orxonox
 {
+    RenderQueueListener::RenderQueueListener() : pixelCount_(0), pixelState_(RenderQueueListener::READY_FOR_RENDER)
+    {
+        hardwareOcclusionQuery_ = Ogre::Root::getSingleton().getRenderSystem()->createHardwareOcclusionQuery(); //create a new HOQ for the scene this listener is used in
+    }
+    
+    RenderQueueListener::~RenderQueueListener()
+    {
+        Ogre::Root::getSingleton().getRenderSystem()->destroyHardwareOcclusionQuery(hardwareOcclusionQuery_); //destroy the created HOQ
+    }
+    
+    /**
+    @brief
+    This function is returning the current pixel count and resets the pixel state if we're ready to do another Hardware Occlusion Query
+    
+    @return
+    current pixel count taken from the last Hardware Occlusion Query
+    */
+    unsigned int RenderQueueListener::getPixelCount()
+    {
+        if(this->pixelState_==RenderQueueListener::READY_FOR_ACCESS)
+        {
+            this->hardwareOcclusionQuery_->pullOcclusionQuery(&(this->pixelCount_));
+            this->pixelState_=RenderQueueListener::READY_FOR_RENDER;
+        }
+        return this->pixelCount_;
+    }
+    
     /**
     @brief
     This function is called just before a RenderQueueGroup is rendered, this function is called by Ogre automatically with the correct parameters.
 
-    In this case we use it to set the stencil buffer parameters of the render system
+    In this case we use it to set the stencil buffer parameters of the render system and issue a Hardware Occlusion Query
     */
     void RenderQueueListener::renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation)
     {
@@ -59,11 +87,17 @@ namespace orxonox
         } 
         if (queueGroupId == RENDER_QUEUE_STENCIL_GLOW)
         { 
-              Ogre::RenderSystem * renderSystem = Ogre::Root::getSingleton().getRenderSystem(); 
-              renderSystem->setStencilCheckEnabled(true); 
-              renderSystem->setStencilBufferParams(Ogre::CMPF_NOT_EQUAL,
-                  STENCIL_VALUE_FOR_GLOW, STENCIL_FULL_MASK, 
-                  Ogre::SOP_KEEP,Ogre::SOP_KEEP,Ogre::SOP_REPLACE,false);       
+            Ogre::RenderSystem * renderSystem = Ogre::Root::getSingleton().getRenderSystem(); 
+            renderSystem->setStencilCheckEnabled(true); 
+            renderSystem->setStencilBufferParams(Ogre::CMPF_NOT_EQUAL,
+                STENCIL_VALUE_FOR_GLOW, STENCIL_FULL_MASK, 
+                Ogre::SOP_KEEP,Ogre::SOP_KEEP,Ogre::SOP_REPLACE,false);       
+        }
+        if (queueGroupId == RENDER_QUEUE_HOQ && this->pixelState_==RenderQueueListener::READY_FOR_RENDER)
+        { 
+            this->hardwareOcclusionQuery_->beginOcclusionQuery();
+            this->pixelState_=RenderQueueListener::QUERY_STARTED;
+            //TODO: Skip this rendering step altogheter if we haven't requested the pixel count yet, not sure if this is possible without a custom SceneManager
         }
     }
     
@@ -80,6 +114,11 @@ namespace orxonox
             Ogre::RenderSystem * renderSystem = Ogre::Root::getSingleton().getRenderSystem(); 
             renderSystem->setStencilCheckEnabled(false); 
             renderSystem->setStencilBufferParams(); 
+        }
+        if (queueGroupId == RENDER_QUEUE_HOQ && this->pixelState_==RenderQueueListener::QUERY_STARTED)
+        {
+            this->hardwareOcclusionQuery_->endOcclusionQuery();
+            this->pixelState_=RenderQueueListener::READY_FOR_ACCESS;
         }
     }
 }

@@ -68,6 +68,8 @@ namespace orxonox
                 { return this->sceneManager_; }
             inline Ogre::SceneNode* getRootSceneNode() const
                 { return this->rootSceneNode_; }
+            inline RenderQueueListener* getRenderQueueListener() const
+                { return this->renderQueueListener_; }
 
             void setSkybox(const std::string& skybox);
             inline const std::string& getSkybox() const
@@ -106,6 +108,7 @@ namespace orxonox
 
             Ogre::SceneManager*      sceneManager_; //!< This is a pointer to the Ogre SceneManager we're using to render the Scene
             Ogre::SceneNode*         rootSceneNode_; //!< This is a pointer to the root node of the Scene tree
+            RenderQueueListener*     renderQueueListener_; //!< this is a pointer to the RenderQueueListener we're using for this Scene
 
             std::string              skybox_; //!< This string holds information about the skybox we're using
             ColourValue              ambientLight_; //!< This variable holds the color value for the ambient light in our scene, usually black in space

@@ -170,4 +170,13 @@ namespace orxonox
             bSet->setDefaultDimensions(width, height);
         }
     }
+    
+    void Billboard::setRenderQueueGroup(unsigned char groupID)
+    {
+        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
+        if( bSet != NULL )
+        {
+            bSet->setRenderQueueGroup(groupID);
+        }
+    }
 }
