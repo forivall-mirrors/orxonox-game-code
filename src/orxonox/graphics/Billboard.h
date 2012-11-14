@@ -80,6 +80,8 @@ namespace orxonox
             void setCommonUpVector(Vector3 vec); //!< normalised Vector vec as argument
             
             void setDefaultDimensions(float width, float height);
+            
+            void setRenderQueueGroup(unsigned char groupID);
 
 
         protected:

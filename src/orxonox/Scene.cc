@@ -77,8 +77,8 @@ namespace orxonox
             assert(Ogre::Root::getSingletonPtr());
             this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
             this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
-            RenderQueueListener* renderQueueListener = new RenderQueueListener();
-            this->sceneManager_->addRenderQueueListener(renderQueueListener);//add our own renderQueueListener
+            this->renderQueueListener_ = new RenderQueueListener();
+            this->sceneManager_->addRenderQueueListener(this->renderQueueListener_);//add our own renderQueueListener
 
             this->radar_ = new Radar();
         }

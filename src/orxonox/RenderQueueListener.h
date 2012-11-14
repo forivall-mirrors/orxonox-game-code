@@ -38,6 +38,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgreRenderQueueListener.h>
+#include <OgreHardwareOcclusionQuery.h>
 
 namespace orxonox
 {
@@ -46,7 +47,8 @@ namespace orxonox
         RENDER_QUEUE_MAIN = Ogre::RENDER_QUEUE_MAIN, //reference to the main render queue
         RENDER_QUEUE_STENCIL_OBJECTS = RENDER_QUEUE_MAIN+1,
         RENDER_QUEUE_STENCIL_GLOW = RENDER_QUEUE_MAIN+2,
-        RENDER_QUEUE_STENCIL_LAST = RENDER_QUEUE_STENCIL_GLOW //this is a reference to the last render queue to be affected by stencil glow effects
+        RENDER_QUEUE_STENCIL_LAST = RENDER_QUEUE_STENCIL_GLOW, //this is a reference to the last render queue to be affected by stencil glow effects
+        RENDER_QUEUE_HOQ = RENDER_QUEUE_STENCIL_LAST+1 //this is where we render the objects for occlusion queries (use transparent material)
     };
 
     const int STENCIL_VALUE_FOR_GLOW = 1; //!< this is a reference value for our mask, 
@@ -64,6 +66,18 @@ namespace orxonox
     class _OrxonoxExport RenderQueueListener : public Ogre::RenderQueueListener
     {
         public:
+            RenderQueueListener();
+            ~RenderQueueListener();
+    
+            /**
+            @brief
+            This function is returning the current pixel count and resets the pixel state if we're ready to do another Hardware Occlusion Query
+            
+            @return
+            current pixel count taken from the last Hardware Occlusion Query
+            */
+            unsigned int getPixelCount();
+            
             /**
             @brief
                 This function is called just before a RenderQueueGroup is rendered, this function is called by Ogre automatically with the correct parameters.
@@ -78,6 +92,19 @@ namespace orxonox
                 in this case we use it to unset the stencil buffer parameters, so the rest of the render queue is unaffected by it.
             */
             virtual void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
+            
+        private:
+            Ogre::HardwareOcclusionQuery* hardwareOcclusionQuery_; //!< this stores the current instance of the HOQ used in the render system
+            unsigned int pixelCount_; //!< this stores the last pixel count returned by the last HOQ in the corresponding render group
+            
+            enum PixelState //!< enum to distinguish the several HOQ pixel count states
+            {
+                READY_FOR_RENDER,
+                QUERY_STARTED,
+                READY_FOR_ACCESS
+            };
+            
+            PixelState pixelState_; //!< this stores the current state of the Hardware Occlusion Query
     };
 }
 

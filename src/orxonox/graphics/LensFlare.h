@@ -39,6 +39,7 @@
 
 #include "OgreBillboardSet.h"
 
+#include "core/GraphicsManager.h"
 #include "util/Math.h"
 #include "worldentities/StaticEntity.h"
 #include "graphics/Billboard.h"
@@ -53,11 +54,20 @@ namespace orxonox
     @author
         David 'davidsa' Salvisberg
     */
+    //TODO: The Hardware Occlusion only works properly for a single Flare on the screen,
+    // if we have multiple strong lights it'll become way more complicated to determine how much of every object is occluded individually
+    // there's below a 100 render queue groups, so maybe we should take turns for each object to be tested, so we only have one of the objects rendered at a time
+    // obviously we shouldn't use too much of these effects anyways, since they use a lot of performance, so not sure whether it's worth implementing a solution that works for multiple lens flares on screen 
     class _OrxonoxExport LensFlare : public StaticEntity, public Tickable
     {
         public:
             LensFlare(BaseObject* creator);
             virtual ~LensFlare();
+            
+            inline void setScale(float scale)
+                { this->scale_=scale; }
+            inline float getScale()
+                { return this->scale_; }
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
@@ -71,6 +81,10 @@ namespace orxonox
             void createBillboards();
             
             void updateBillboardPositions();
+            
+            Billboard* occlusionBillboard_;
+            unsigned int cameraDistance_;
+            float scale_;
     };
 }
 
