@@ -36,6 +36,8 @@
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
 
+#include <typeinfo>
+
 #include "util/Math.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
@@ -314,8 +316,26 @@ namespace orxonox
                     it->second.text_->setLeft((pos.x + 1.0f + it->second.panel_->getWidth()) * 0.5f);
                     it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
 
+                    // Make sure the overlays are shown
+                    it->second.panel_->show();
+                    it->second.text_->show();
+
                     // Target marker
-                    if(it->second.selected_ && it->first->getRVOrientedVelocity().squaredLength() != 0)
+                    const Pawn* pawn = dynamic_cast<const Pawn*>(it->first->getWorldEntity());
+                    Pawn* humanPawn = HumanController::getLocalControllerEntityAsPawn();
+                    // TODO : find another solution!
+                    orxout() << "My team: " << humanPawn->getTeam() << std::endl;
+                    orxout() << "Targets team: " << pawn->getTeam() << std::endl;
+                    if(!it->second.selected_
+                            || it->first->getRVVelocity().squaredLength() == 0
+                            || pawn == NULL
+                            || humanPawn == NULL
+                            /*|| pawn->getTeam() == humanPawn->getTeam()*/)
+                    {
+                        // don't show marker for not selected enemies nor if the selected doesn't move
+                        it->second.target_->hide();
+                    }
+                    else
                     {
                         Vector3* targetPos = this->toAimPosition(it->first);
                         Vector3 screenPos = camTransform * (*targetPos);
@@ -334,13 +354,8 @@ namespace orxonox
 
                         delete targetPos;
                     }
-                    else // don't show marker for not selected enemies
-                        it->second.target_->hide();
-                }
 
-                // Make sure the overlays are shown
-                it->second.panel_->show();
-                it->second.text_->show();
+                }
             }
             else // do not display on HUD
 
@@ -402,7 +417,7 @@ namespace orxonox
 
         // Create target marker
         Ogre::PanelOverlayElement* target = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_targetMarker_" + getUniqueNumberString()));
+                    .createOverlayElement("Panel", "HUDNavigation_targetMarker_" + getUniqueNumberString()));
         target->setMaterialName(TextureGenerator::getMaterialName("target.png", object->getRadarObjectColour()));
         target->setDimensions(this->aimMarkerSize_ * xScale, this->aimMarkerSize_ * yScale);
 
@@ -487,14 +502,11 @@ namespace orxonox
     {
         Vector3 wePosition = HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition();
         Vector3 targetPosition = target->getRVWorldPosition();
-        Vector3 targetSpeed = target->getRVOrientedVelocity();
+        Vector3 targetSpeed = target->getRVVelocity();
         Vector3 relativePosition = targetPosition - wePosition; //Vector from attacker to target
 
         float p_half = relativePosition.dotProduct(targetSpeed)/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_);
         float time1 = -p_half + sqrt(p_half * p_half - relativePosition.squaredLength()/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_));
-        orxout()<< "TIME 1: " << time1 <<endl;
-
-
 
         // munSpeed*time = lengthBetween(wePosition, targetPosition + targetSpeed*time)
         // from this we extract:
@@ -509,7 +521,6 @@ namespace orxonox
         if(det < 0) 
             return NULL;
         float time = (-b - sqrt(det))/(2*a); 
-        orxout()<< "TIME 2: " << time1 <<endl;
         if(time < 0)
             time = (-b + sqrt(det))/(2*a); 
         if(time < 0)
