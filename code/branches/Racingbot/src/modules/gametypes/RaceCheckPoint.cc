@@ -61,7 +61,7 @@ namespace orxonox
         this->timeLimit_ = 0;
         //this->players_ = vector<PlayerInfo*>();
 
-        myPosition_= this->getPosition();
+        myPosition_= this->getPosition(); //eingefuegt
         orxout(user_status) << "test" << std::endl;
 
     }

@@ -54,9 +54,11 @@ namespace orxonox
         }
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
-        //OrxAssert(1==2, "Orxassert test");
         checkpoints_=checkpoints;
         staticRacePoints_ = findStaticCheckpoints(checkpoints);
+        // initialisation of currentRaceCheckpoint_
+        currentRaceCheckpoint_ = NULL;
+        // find first Checkpoint
         for (int i=0; true; i++){
             if(checkpoints_[i]->getCheckpointIndex()==0){
                 nextRaceCheckpoint_=checkpoints_[i];
