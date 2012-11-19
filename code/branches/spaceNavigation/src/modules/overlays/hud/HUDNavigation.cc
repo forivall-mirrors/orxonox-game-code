@@ -498,19 +498,20 @@ namespace orxonox
 
         // munSpeed*time = lengthBetween(wePosition, targetPosition + targetSpeed*time)
         // from this we extract:
-        float a = pow(targetSpeed.length(),2) - pow(this->currentMunitionSpeed_,2);
+        float a = targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_;
         float b = 2*((targetPosition.x - wePosition.x)*targetSpeed.x
                     +(targetPosition.y - wePosition.y)*targetSpeed.y
                     +(targetPosition.z - wePosition.z)*targetSpeed.z);
-        float c = pow((targetPosition-wePosition).length(),2);
+        float c = (wePosition-targetPosition).squaredLength();
 
         // calculate smallest time solution, in case it exists
-        if(pow(b,2) - 4*a*c < 0)
+        float det = b * b - 4 * a * c; 
+        if(det < 0) 
             return NULL;
-        float time = (-b - sqrt(pow(b,2) - 4*a*c))/(2*a);
-        orxout()<< "TIME 1: " << time1 <<endl;
+        float time = (-b - sqrt(det))/(2*a); 
+        orxout()<< "TIME 2: " << time1 <<endl;
         if(time < 0)
-            time = (-b + sqrt(pow(b,2) - 4*a*c))/(2*a);
+            time = (-b + sqrt(det))/(2*a); 
         if(time < 0)
             return NULL;
         Vector3* result = new Vector3(targetPosition + targetSpeed * time);
