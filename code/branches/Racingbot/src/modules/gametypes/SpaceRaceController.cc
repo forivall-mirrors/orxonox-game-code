@@ -22,35 +22,41 @@
  *  Created on: Oct 8, 2012
  *      Author: purgham
  */
- /**
-  * Conventions:
-  * -first Checkpoint has index 0
-  *
-  */
+
+/**
+ * Conventions:
+ * -first Checkpoint has index 0
+ * -staticCheckPoint= static Point (see def over = constructor)
+ */
+
+
+/*TODO:
+ * tICK KORRIGIEREN
+ *
+ *
+ */
 #include <gametypes/SpaceRaceController.h>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "gametypes/SpaceRaceManager.h"
 
-
-
-
 namespace orxonox
 {
     CreateFactory(SpaceRaceController);
 
+    const int AdjustDistance = 500;
     /*
      * Idea: Find static Point (checkpoints the spaceship has to reach)
      */
     SpaceRaceController::SpaceRaceController(BaseObject* creator) :
         ArtificialController(creator)
     {
-        RegisterObject(SpaceRaceController);
-        std::vector<RaceCheckPoint*> checkpoints;
+        RegisterObject(SpaceRaceController)
+;        std::vector<RaceCheckPoint*> checkpoints;
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
         {
             checkpoints = it->getAllCheckpoints();
-            nextRaceCheckpoint_=it->findCheckpoint(1);
+            nextRaceCheckpoint_=it->findCheckpoint(0);
         }
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
@@ -58,109 +64,32 @@ namespace orxonox
         staticRacePoints_ = findStaticCheckpoints(checkpoints);
         // initialisation of currentRaceCheckpoint_
         currentRaceCheckpoint_ = NULL;
-        // find first Checkpoint
-        for (int i=0; true; i++){
-            if(checkpoints_[i]->getCheckpointIndex()==0){
-                nextRaceCheckpoint_=checkpoints_[i];
-                break;
-            }
-        }
+        /*
+         // find first Checkpoint
+         for (int i=0; true; i++){
+         if(checkpoints_[i]->getCheckpointIndex()==0){
+         nextRaceCheckpoint_=checkpoints_[i];
+         break;
+         }
+         }*/
 
+        virtualCheckPointIndex=-1;
     }
 
-    int SpaceRaceController::distanceSpaceshipToCheckPoint(RaceCheckPoint* CheckPoint)
+
+    //------------------------------
+    // functions for initialisation
+
+    void SpaceRaceController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        if (this->getControllableEntity() != NULL)
-        {
-            return (CheckPoint->getPosition()- this->getControllableEntity()->getPosition()).length();
-        }
-        return -1;
-    }
+        SUPER(SpaceRaceController, XMLPort, xmlelement, mode);
+        XMLPortParam(ArtificialController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
+        XMLPortObject(ArtificialController, WorldEntity, "waypoints", addWaypoint, getWaypoint, xmlelement, mode);
 
-    RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
-    {
-        int distances[] ={   -1, -1, -1};
-        int temp_i = 0;
-        for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
-        {
-            distances[temp_i] = recCalculateDistance(raceCheckpoint, this->getControllableEntity()->getPosition());
-            temp_i++;
-        }
-        if (distances[0] > distances[1] && distances[1] != -1)
-        {
-            if (distances[2] < distances[1] && distances[2] != -1)
-            {
-                return checkpoints_[*raceCheckpoint->getNextCheckpoints().end()]; // return [2]
-            }
-            else
-            {
-                std::set<int>::iterator temp = raceCheckpoint->getNextCheckpoints().begin();
-                return checkpoints_[*(++temp)];
-            }
-        }
-        else
-        {
-            if (distances[2] < distances[0] && distances[2] != -1)
-            {
-                return checkpoints_[*raceCheckpoint->getNextCheckpoints().end()]; // return [2]
-            }
-            else
-            {
-                return checkpoints_[*raceCheckpoint->getNextCheckpoints().begin()]; // return [2]
-            }
-        }
-    }
-
-    RaceCheckPoint* SpaceRaceController::adjustNextPoint()
-    {
-        if (currentRaceCheckpoint_ == NULL) // no Adjust possible
-
-        {
-            return nextRaceCheckpoint_;
-        }
-        if ((currentRaceCheckpoint_->getNextCheckpoints()).size() == 1) // no Adjust possible
-
-        {
-            return nextRaceCheckpoint_;
-        }
-
-        //Adjust possible
-
-        return nextPointFind(currentRaceCheckpoint_);
-    }
-
-    int SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, Vector3 currentPosition)
-    {
-        orxout()<< "rec Aufruf" << endl;
-        // if ( staticCheckPoint was reached)
-        if (std::find(staticRacePoints_.begin(), staticRacePoints_.end(),currentCheckPoint) != staticRacePoints_.end())
-        {
-            return (currentCheckPoint->getPosition() - currentPosition).length();
-        }
-        else
-        {
-            int minimum = std::numeric_limits<int>::max();
-            int temp=0;
-            for (std::set<int>::iterator it = currentCheckPoint->getNextCheckpoints().begin(); it!= currentCheckPoint->getNextCheckpoints().end(); ++it)
-            { //temp++;
-                WorldEntity* ttt= dynamic_cast<WorldEntity*> (currentCheckPoint);
-                OrxAssert(!(ttt==NULL), "WorldEntity null");
-                OrxAssert(!(ttt->getNode()==NULL), "Node of WorldEntity is null");
-
-                //orxout()<< temp <<endl;
-                //if(temp==1){orxout()<<currentCheckPoint << " == null?  => "<<(currentCheckPoint==NULL)<<currentPosition<<endl;}
-                Vector3 t=(currentPosition- ttt->getPosition()); //TODO: Find Crash Reason. Why can't currentCheck access node.
-                int tt=static_cast<int>(t.length());
-                //OrxAssert(!currentCheckPoint.empty(), "currentCheckPoint == null");
-                //OrxAssert(!(it == currentCheckPoint->getNextCheckpoints().end()), "it is null");
-                minimum= std::min(minimum, tt+ recCalculateDistance(checkpoints_[(*it)], currentCheckPoint->getPosition()));
-                // minimum of distanz from 'currentPosition' to the next static Checkpoint
-            }//Error tritt manchmal auf
-            return minimum;
-        }
     }
 
     /*
+     * called from constructor 'SpaceRaceController'
      * returns a vector of static Point (checkpoints the spaceship has to reach)
      */
     std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(
@@ -189,8 +118,8 @@ namespace orxonox
     }
 
     /*
-     *
-     * return how many ways go from the given checkpoint to the last one
+     * called from 'findStaticCheckpoints'
+     * return how many ways go from the given Checkpoint to the last Checkpoint (of the Game)
      */
     int SpaceRaceController::rekSimulationCheckpointsReached(RaceCheckPoint* currentCheckpoint, std::vector<RaceCheckPoint*>* checkpoints, std::map<RaceCheckPoint*, int>* zaehler)
     {
@@ -202,7 +131,7 @@ namespace orxonox
         else
         {
             int numberOfWays = 0; // counts number of ways from this Point to the last point
-            for (std::set<int>::iterator it =
+            for (std::set<int>::iterator it =lastPositionSpaceship=this->getControllableEntity()->getPosition();
                     currentCheckpoint->getNextCheckpoints().begin(); it
                     != currentCheckpoint->getNextCheckpoints().end(); ++it)
             {
@@ -213,34 +142,172 @@ namespace orxonox
         }
     }
 
+
+
+    //-------------------------------------
+    // functions for dynamic Way-search
+
+    int SpaceRaceController::distanceSpaceshipToCheckPoint(RaceCheckPoint* CheckPoint)
+    {
+        if (this->getControllableEntity() != NULL)
+        {
+            return (CheckPoint->getPosition()- this->getControllableEntity()->getPosition()).length();
+        }
+        return -1;
+    }
+
+    /*
+     * called by: 'tick' or  'adjustNextPoint'
+     * returns the next Checkpoint which the shortest way contains
+     */
+    RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
+    {
+        int distances[] = {   -1, -1, -1};
+        int temp_i = 0;
+        for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
+        {
+            distances[temp_i] = recCalculateDistance(findCheckpoint(*it), this->getControllableEntity()->getPosition());
+            temp_i++;
+        }
+        if (distances[0] > distances[1] && distances[1] != -1)
+        {
+            if (distances[2] < distances[1] && distances[2] != -1)
+            {
+                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
+            }
+            else
+            {
+                std::set<int>::iterator temp = raceCheckpoint->getNextCheckpoints().begin();
+                return findCheckpoint(*(++temp)); // return [1]
+            }
+        }
+        else
+        {
+            if (distances[2] < distances[0] && distances[2] != -1)
+            {
+                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return [2]
+            }
+            else
+            {
+                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().begin()); // return [0]
+            }
+        }
+    }
+
+    /*
+     * called from 'nextPointFind'
+     * returns the distance between "currentPosition" and the next static checkpoint that can be reached from "currentCheckPoint"
+     */
+    int SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, Vector3 currentPosition)
+    {
+        // find: looks if the currentCheckPoint is a staticCheckPoint (staticCheckPoint is the same as: static Point)
+        if (std::find(staticRacePoints_.begin(), staticRacePoints_.end(), currentCheckPoint) != staticRacePoints_.end())
+        {
+            return (currentCheckPoint->getPosition() - currentPosition).length();
+        }
+        else
+        {
+            int minimum = std::numeric_limits<int>::max();
+            for (std::set<int>::iterator it = currentCheckPoint->getNextCheckpoints().begin(); it!= currentCheckPoint->getNextCheckpoints().end(); ++it)
+            {
+                int dist_currentCheckPoint_currentPosition = static_cast<int> ((currentPosition- currentCheckPoint->getPosition()).length());
+
+                minimum= std::min(minimum, dist_currentCheckPoint_currentPosition + recCalculateDistance(findCheckpoint(*it), currentCheckPoint->getPosition()));
+                // minimum of distanz from 'currentPosition' to the next static Checkpoint
+            }
+            return minimum;
+        }
+    }
+
+    /*called by 'tick'
+     *adjust chosen way of the Spaceship every "AdjustDistance" because spaceship could be displaced through an other one
+     */
+    RaceCheckPoint* SpaceRaceController::adjustNextPoint()
+    {
+        if (currentRaceCheckpoint_ == NULL) // no Adjust possible
+
+        {
+            return nextRaceCheckpoint_;
+        }
+        if ((currentRaceCheckpoint_->getNextCheckpoints()).size() == 1) // no Adjust possible
+
+        {
+            return nextRaceCheckpoint_;
+        }
+
+        //Adjust possible
+
+        return nextPointFind(currentRaceCheckpoint_);
+    }
+
+    RaceCheckPoint* SpaceRaceController::findCheckpoint(int index) const
+       {
+           for (size_t i = 0; i < this->checkpoints_.size(); ++i)
+           if (this->checkpoints_[i]->getCheckpointIndex() == index)
+           return this->checkpoints_[i];
+           return NULL;
+       }
+
+    bool SpaceRaceController::addVirtualCheckPoint(int positionInNextCheckPoint, RaceCheckPoint* previousCheckpoint, int indexFollowingCheckPoint , Vector3 virtualCheckPointPosition ){
+
+        RaceCheckPoint* newTempRaceCheckPoint = new RaceCheckPoint(this);
+        newTempRaceCheckPoint->setPosition(virtualCheckPointPosition);
+        newTempRaceCheckPoint->setCheckpointIndex(virtualCheckPointIndex);
+        newTempRaceCheckPoint->setLast(false);
+        newTempRaceCheckPoint->setNextCheckpointsAsVector3(Vector3(indexFollowingCheckPoint,-1,-1));
+
+        Vector3 temp = previousCheckpoint->getNextCheckpointsAsVector3();
+        checkpoints_.insert(checkpoints_.end(), newTempRaceCheckPoint);
+        switch(positionInNextCheckPoint){
+            case 0: temp.x=virtualCheckPointIndex; break;
+            case 1: temp.y=virtualCheckPointIndex; break;
+            case 2: temp.z=virtualCheckPointIndex; break;
+        }
+        virtualCheckPointIndex--;
+    }
+
+
+
     SpaceRaceController::~SpaceRaceController()
     {
-        // TODO Auto-generated destructor stub
+        for (int i =-1; i>virtualCheckPointIndex ; i--){
+            delete findCheckpoint(i);
+        }
     }
 
-    void SpaceRaceController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(SpaceRaceController, XMLPort, xmlelement, mode);
-        XMLPortParam(ArtificialController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(
-                100.0f);
-        XMLPortObject(ArtificialController, WorldEntity, "waypoints", addWaypoint, getWaypoint, xmlelement, mode)
-        ;
-
-    }
     void SpaceRaceController::tick(float dt)
     {
-        if (this->getControllableEntity() ==  NULL || this->getControllableEntity()->getPlayer() == NULL ){orxout()<<this->getControllableEntity()<< " in tick"<<endl; return;}
+        if (this->getControllableEntity() == NULL || this->getControllableEntity()->getPlayer() == NULL )
+        {   orxout()<<this->getControllableEntity()<< " in tick"<<endl; return;}
+        //FOR virtual Checkpoints
+        if(nextRaceCheckpoint_->getCheckpointIndex() < 0){
+            if( distanceSpaceshipToCheckPoint(nextRaceCheckpoint_) < 30){
+                currentRaceCheckpoint_=nextRaceCheckpoint_;
+                nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
+                lastPositionSpaceship=this->getControllableEntity()->getPosition();
+            }
+        }
+
         if (nextRaceCheckpoint_->playerWasHere(this->getControllableEntity()->getPlayer()))
         {//Checkpoint erreicht
             currentRaceCheckpoint_=nextRaceCheckpoint_;
             OrxAssert(nextRaceCheckpoint_, "next race checkpoint undefined");
             nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
+            lastPositionSpaceship=this->getControllableEntity()->getPosition();
         }
-        else if (std::abs(lastDistance - distanceSpaceshipToCheckPoint(nextRaceCheckpoint_)) < 500)
+        else if ((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()> AdjustDistance)
         {
             nextRaceCheckpoint_ = adjustNextPoint();
+            lastPositionSpaceship=this->getControllableEntity()->getPosition();
+        }
+        //korrigieren!
+        else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()<5){\
+            this->moveToPosition(Vector3(rnd()*100,rnd()*100,rnd()*100));
+            this->spin();
         }
         this->moveToPosition(nextRaceCheckpoint_->getPosition());
+
+
     }
 
 }
