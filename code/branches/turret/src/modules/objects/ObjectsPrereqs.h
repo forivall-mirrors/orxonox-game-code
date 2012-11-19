@@ -72,6 +72,7 @@ namespace orxonox
     class Planet;
     class Script;
     class SpaceBoundaries;
+    class Turret;
 
     // collisionshapes
     class BoxCollisionShape;
