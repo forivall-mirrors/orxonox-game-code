@@ -82,6 +82,8 @@ namespace orxonox
             void setDefaultDimensions(float width, float height);
             
             void setRenderQueueGroup(unsigned char groupID);
+            
+            void disableFrustumCulling();
 
 
         protected:

@@ -179,4 +179,13 @@ namespace orxonox
             bSet->setRenderQueueGroup(groupID);
         }
     }
+    
+    void Billboard::disableFrustumCulling()
+    {
+        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
+        if( bSet != NULL )
+        {
+            bSet->setBounds(Ogre::AxisAlignedBox(Ogre::AxisAlignedBox::EXTENT_INFINITE),0);
+        }
+    }
 }
