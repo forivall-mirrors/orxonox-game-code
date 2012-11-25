@@ -134,7 +134,7 @@ namespace orxonox
             
             void createBillboards();
             
-            void updateBillboardStates(unsigned int dimension, bool isLightVisible);
+            void updateBillboardStates(Vector3& viewDirection, unsigned int dimension, bool isLightVisible);
             
             void updateBillboardAlphas(float alpha);
             
@@ -146,6 +146,8 @@ namespace orxonox
             bool fadeOnViewBorder_;//!< should the effect fade out on the border of the view?
             unsigned int fadeResolution_;//!< how many points should be sampled per axis for the screen border fade. High number => smooth fade, but uses more processing power
             float fadeExponent_;//!< this determines how fast the flare fades away as it gets obstructed
+            //TODO: add XML port for colour manipulation
+            ColourValue* colour_;//!< this stores the base colour of the light
     };
 }
 
