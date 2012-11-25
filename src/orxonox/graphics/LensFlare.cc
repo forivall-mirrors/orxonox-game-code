@@ -46,7 +46,7 @@ namespace orxonox
 {
     CreateFactory(LensFlare);
     
-    LensFlare::LensFlare(BaseObject* creator) : StaticEntity(creator), scale_(1.0f), fadeOnViewBorder_(true), fadeResolution_(7), fadeExponent_(2.0f)
+    LensFlare::LensFlare(BaseObject* creator) : StaticEntity(creator), scale_(1.0f), fadeOnViewBorder_(true), fadeResolution_(7), fadeExponent_(2.0f), colour_(new ColourValue(1.0f,0.9f,0.9f,0.0f))
     {
         RegisterObject(LensFlare);
         
@@ -96,22 +96,59 @@ namespace orxonox
         burst->disableFrustumCulling();
         burst->setVisible(true);
         this->attach(burst);
+        
+        Billboard* bursthalo = new Billboard(this);
+        bursthalo->setMaterial("lensflare/bursthalo");
+        bursthalo->setPosition(this->getPosition());
+        bursthalo->disableFrustumCulling();
+        bursthalo->setVisible(true);
+        this->attach(bursthalo);
+        
+        bursthalo = new Billboard(this);
+        bursthalo->setMaterial("lensflare/halo1");
+        bursthalo->setPosition(this->getPosition());
+        bursthalo->disableFrustumCulling();
+        bursthalo->setVisible(true);
+        this->attach(bursthalo);
+        
+        bursthalo = new Billboard(this);
+        bursthalo->setMaterial("lensflare/halo2");
+        bursthalo->setPosition(this->getPosition());
+        bursthalo->disableFrustumCulling();
+        bursthalo->setVisible(true);
+        this->attach(bursthalo);
+        
+        bursthalo = new Billboard(this);
+        bursthalo->setMaterial("lensflare/halo3");
+        bursthalo->setPosition(this->getPosition());
+        bursthalo->disableFrustumCulling();
+        bursthalo->setVisible(true);
+        this->attach(bursthalo);
     }
 
     /**
     @brief
         This function updates the states of all the billboards, i.e. their positions, visibilty and dimensions
+    @param viewDirection
+        normalised vector pointing from the current camera to the point light center
     @param dimension
         the current dimension of the main billboard, we're always using square billboards
+    @param lightIsVisible
+        is the (point-)light source currently visible
     */
-    void LensFlare::updateBillboardStates(unsigned int dimension, bool lightIsVisible)
+    void LensFlare::updateBillboardStates(Vector3& viewDirection, unsigned int dimension, bool lightIsVisible)
     { 
-        //TODO: position and dimensions need to be calculated for everything but the main burst of the flare
+        //TODO: develop a more sane method for determining positions and scale factors of the flare components
+        //A good solution would probably be to introduce a data structure which stores a lens flare configuration
+        int i=0;
+        float step=0.0f;
         for(std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++) {
             Billboard* billboard=static_cast<Billboard*>(*it);
-            billboard->setPosition(this->getPosition());
+            billboard->setPosition(this->getPosition()-viewDirection*step);
             billboard->setVisible(lightIsVisible);
-            billboard->setDefaultDimensions(dimension,dimension);
+            billboard->setDefaultDimensions((i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f),(i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f));
+            step=0.25f*(i>2?(i-2):0);
+            i++;
         }
     }
 
@@ -124,6 +161,7 @@ namespace orxonox
     void LensFlare::updateBillboardAlphas(float alpha)
     {
         ColourValue* colour = new ColourValue(1.0f,1.0f,1.0f,alpha);
+        *colour+=*this->colour_;
         std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin();
         it++;
         for(;it!=this->getAttachedObjects().end(); it++) {
@@ -175,10 +213,11 @@ namespace orxonox
             {
                 this->fadeResolution_=3;//this is so we can still determine when the billboard has left the screen
             }
-            unsigned int pointCount=this->getPointCount(dimension);
-            updateBillboardStates(dimension,pointCount>0);
+            unsigned int pointCount=this->getPointCount(dimension/2);
+            Vector3 viewDirection=this->getPosition()-camera->getPosition()-camera->getDerivedDirection()*this->cameraDistance_;
+            updateBillboardStates(viewDirection,dimension,pointCount>0);
             if(pointCount>0) {
-                Ogre::Sphere* sphere=new Ogre::Sphere(this->getPosition(),dimension*0.25);
+                Ogre::Sphere* sphere=new Ogre::Sphere(this->getPosition(),dimension*0.25*0.5);//0.5 stems from the fact that we scaled down the occlusion billboard
                 float left, right, top, bottom;
                 camera->projectSphere(*sphere,&left,&top,&right,&bottom);//approximate maximum pixel count of billboard with a sphere
                 delete sphere;
@@ -186,15 +225,14 @@ namespace orxonox
                 Ogre::RenderWindow* window = GraphicsManager::getInstance().getRenderWindow();
                 float maxCount=(right-left)*(top-bottom)*window->getWidth()*window->getHeight()*0.25;
                 float pixelCount=this->getScene()->getRenderQueueListener()->getPixelCount();//get pixel count
-                float ratio=(maxCount==0)?0:(pixelCount/maxCount);//prevent division by zero
+                float ratio=(maxCount==0.0f)?0.0f:(pixelCount/maxCount);//prevent division by zero
                 float borderRatio=1.0f;
                 if(this->fadeOnViewBorder_)
                 {
                     borderRatio=((float) pointCount)/(((float) fadeResolution_)*((float) fadeResolution_));//ratio for the border fade
                 }
-                
                 //update alpha values of all billboards except the HOQ billboard
-                this->updateBillboardAlphas(std::min(1.0f,std::pow(std::min(ratio,borderRatio),2.0f)));
+                this->updateBillboardAlphas(std::min(1.0f,std::pow(std::min(ratio,borderRatio),this->fadeExponent_)));
             }
         }
     }
