@@ -70,6 +70,9 @@ namespace orxonox
             inline unsigned int getMarkerLimit() const
                 { return this->markerLimit_; }
 
+            void selectClosestTarget();
+            void selectNextTarget();
+
         private:
             struct ObjectInfo
             {
@@ -123,12 +126,13 @@ namespace orxonox
             float textSize_;
             bool showDistance_;
 
+            bool closestTarget_;
+            bool nextTarget_;
+
             static const float LIGHTNING_GUN_SPEED_ = 700.0f;
             static const float HSW01_SPEED_ = 2500.0f;
 
             float currentMunitionSpeed_;
-
-            Pawn* ship_;
 
             unsigned int markerLimit_;
             float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value.

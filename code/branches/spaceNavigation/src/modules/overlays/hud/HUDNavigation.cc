@@ -40,6 +40,7 @@
 
 #include "util/Math.h"
 #include "util/Convert.h"
+#include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "CameraManager.h"
@@ -56,6 +57,10 @@
 
 namespace orxonox
 {
+
+    SetConsoleCommand("selectClosest", &HUDNavigation::selectClosestTarget);
+    SetConsoleCommand("selectNext", &HUDNavigation::selectNextTarget);
+
     static bool compareDistance(std::pair<RadarViewable*, unsigned int> a,
             std::pair<RadarViewable*, unsigned int> b)
     {
@@ -78,9 +83,8 @@ namespace orxonox
         this->setDetectionLimit(10000.0f);
         this->currentMunitionSpeed_ = 2500.0f;
 
-        /*Pawn* ship = orxonox_cast<Pawn*>(this->getOwner());
-        if(ship != NULL)
-            this->ship_ = ship;*/
+        this->closestTarget_ = true;
+        this->nextTarget_ = false;
     }
 
     HUDNavigation::~HUDNavigation()
@@ -182,6 +186,7 @@ namespace orxonox
         unsigned int markerCount = 0;
         bool closeEnough = false; // only display objects that are close enough to be relevant for the player
 
+        bool nextHasToBeSelected = false;
 
         for (std::list<std::pair<RadarViewable*, unsigned int> >::iterator listIt = this->sortedObjectList_.begin(); listIt != this->sortedObjectList_.end(); ++markerCount, ++listIt)
         {
@@ -207,13 +212,40 @@ namespace orxonox
                     textLength = it->first->getRadarName().size() * it->second.text_->getCharHeight() * 0.3f;
                 }
 
-                // TODO : closest object is selected
-                if(listIt == this->sortedObjectList_.begin())
-                {
-                    it->second.selected_ = true;
-                } else {
-                    it->second.selected_ = false;
+
+                // Selected object
+                if(this->closestTarget_) {
+                    // select the closest object as target
+                    if(listIt == this->sortedObjectList_.begin())
+                    {
+                        it->second.selected_ = true;
+                    } else {
+                        it->second.selected_ = false;
+                    }
+                    closestTarget_ = false;
+                    orxout() << "Closest object selected" << std::endl;
                 }
+                else if(this->nextTarget_)
+                {
+                    // select the next closest object
+                    if(nextHasToBeSelected){
+                        it->second.selected_ = true;
+                        nextHasToBeSelected = false;
+                        this->nextTarget_ = false;
+                    }
+                    else if(it->second.selected_)
+                    {
+                        nextHasToBeSelected = true;
+                        it->second.selected_ = false;
+                    }
+                    else if(markerCount + 1 >= markerLimit_)
+                    {
+                        // this object is the last one that is marked, then select the closest
+                        this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
+                        nextHasToBeSelected = false;
+                    }
+                }
+
 
                 // Transform to screen coordinates
                 Vector3 pos = camTransform * it->first->getRVWorldPosition();
@@ -322,15 +354,12 @@ namespace orxonox
 
                     // Target marker
                     const Pawn* pawn = dynamic_cast<const Pawn*>(it->first->getWorldEntity());
-                    Pawn* humanPawn = HumanController::getLocalControllerEntityAsPawn();
-                    // TODO : find another solution!
-                    orxout() << "My team: " << humanPawn->getTeam() << std::endl;
-                    orxout() << "Targets team: " << pawn->getTeam() << std::endl;
+                    /* Pawn* humanPawn = HumanController::getLocalControllerEntityAsPawn();*/
                     if(!it->second.selected_
                             || it->first->getRVVelocity().squaredLength() == 0
                             || pawn == NULL
-                            || humanPawn == NULL
-                            /*|| pawn->getTeam() == humanPawn->getTeam()*/)
+                            /*|| humanPawn == NULL
+                            || pawn->getTeam() == humanPawn->getTeam()*/)
                     {
                         // don't show marker for not selected enemies nor if the selected doesn't move
                         it->second.target_->hide();
@@ -508,24 +537,19 @@ namespace orxonox
         float p_half = relativePosition.dotProduct(targetSpeed)/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_);
         float time1 = -p_half + sqrt(p_half * p_half - relativePosition.squaredLength()/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_));
 
-        // munSpeed*time = lengthBetween(wePosition, targetPosition + targetSpeed*time)
-        // from this we extract:
-        float a = targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_;
-        float b = 2*((targetPosition.x - wePosition.x)*targetSpeed.x
-                    +(targetPosition.y - wePosition.y)*targetSpeed.y
-                    +(targetPosition.z - wePosition.z)*targetSpeed.z);
-        float c = (wePosition-targetPosition).squaredLength();
-
-        // calculate smallest time solution, in case it exists
-        float det = b * b - 4 * a * c; 
-        if(det < 0) 
-            return NULL;
-        float time = (-b - sqrt(det))/(2*a); 
-        if(time < 0)
-            time = (-b + sqrt(det))/(2*a); 
-        if(time < 0)
-            return NULL;
-        Vector3* result = new Vector3(targetPosition + targetSpeed * time);
+        Vector3* result = new Vector3(targetPosition + targetSpeed * time1);
         return result;
+    }
+
+    void HUDNavigation::selectClosestTarget()
+    {
+        this->closestTarget_ = true;
+        orxout() << "selectClosestTarget" << std::endl;
+    }
+
+    void HUDNavigation::selectNextTarget()
+    {
+        this->nextTarget_ = true;
+        orxout() << "selectNextTarget" << std::endl;
     }
 }
