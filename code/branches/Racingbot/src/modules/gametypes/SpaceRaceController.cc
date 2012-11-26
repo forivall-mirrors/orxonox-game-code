@@ -44,7 +44,8 @@ namespace orxonox
 {
     CreateFactory(SpaceRaceController);
 
-    const int AdjustDistance = 500;
+    const int ADJUSTDISTANCE = 500;
+    const int MINDISTANCE=5;
     /*
      * Idea: Find static Point (checkpoints the spaceship has to reach)
      */
@@ -92,8 +93,7 @@ namespace orxonox
      * called from constructor 'SpaceRaceController'
      * returns a vector of static Point (checkpoints the spaceship has to reach)
      */
-    std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(
-            std::vector<RaceCheckPoint*> allCheckpoints)
+    std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(std::vector<RaceCheckPoint*> allCheckpoints)
     {
         std::map<RaceCheckPoint*, int> * zaehler = new std::map<
         RaceCheckPoint*, int>(); // counts how many times the checkpoit was reached (for simulation)
@@ -101,7 +101,7 @@ namespace orxonox
         {
             zaehler->insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
         }
-        int maxWays = rekSimulationCheckpointsReached(zaehler->begin()->first,&allCheckpoints, zaehler);
+        int maxWays = rekSimulationCheckpointsReached(zaehler->begin()->first, zaehler);
 
         std::vector<RaceCheckPoint*> returnVec;
         returnVec.clear();
@@ -121,7 +121,7 @@ namespace orxonox
      * called from 'findStaticCheckpoints'
      * return how many ways go from the given Checkpoint to the last Checkpoint (of the Game)
      */
-    int SpaceRaceController::rekSimulationCheckpointsReached(RaceCheckPoint* currentCheckpoint, std::vector<RaceCheckPoint*>* checkpoints, std::map<RaceCheckPoint*, int>* zaehler)
+    int SpaceRaceController::rekSimulationCheckpointsReached(RaceCheckPoint* currentCheckpoint, std::map<RaceCheckPoint*, int>* zaehler)
     {
         if (currentCheckpoint->isLast())
         {// last point reached
@@ -131,11 +131,9 @@ namespace orxonox
         else
         {
             int numberOfWays = 0; // counts number of ways from this Point to the last point
-            for (std::set<int>::iterator it =lastPositionSpaceship=this->getControllableEntity()->getPosition();
-                    currentCheckpoint->getNextCheckpoints().begin(); it
-                    != currentCheckpoint->getNextCheckpoints().end(); ++it)
+            for (std::set<int>::iterator it = currentCheckpoint->getNextCheckpoints().begin(); it!= currentCheckpoint->getNextCheckpoints().end(); ++it)
             {
-                numberOfWays += rekSimulationCheckpointsReached((*checkpoints)[(*it)], checkpoints, zaehler);
+                numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
             }
             (*zaehler)[currentCheckpoint] += numberOfWays;
             return numberOfWays; // returns the number of ways from this point to the last one
@@ -295,19 +293,60 @@ namespace orxonox
             nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
             lastPositionSpaceship=this->getControllableEntity()->getPosition();
         }
-        else if ((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()> AdjustDistance)
+        else if ((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt > ADJUSTDISTANCE)
         {
             nextRaceCheckpoint_ = adjustNextPoint();
             lastPositionSpaceship=this->getControllableEntity()->getPosition();
         }
-        //korrigieren!
-        else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()<5){\
+        //korrigieren! done
+        else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt< MINDISTANCE  ){
             this->moveToPosition(Vector3(rnd()*100,rnd()*100,rnd()*100));
             this->spin();
+            //orxout(user_status) << "Mindistance reached" << std::endl;
+            return;
         }
+        //orxout(user_status) << "dt= " << dt << ";  distance= " << (lastPositionSpaceship-this->getControllableEntity()->getPosition()).length() <<std::endl;
+        lastPositionSpaceship=this->getControllableEntity()->getPosition();
         this->moveToPosition(nextRaceCheckpoint_->getPosition());
 
 
+        ObjectList<StaticEntity>::iterator it = ObjectList<StaticEntity>::begin();
+        /*if ( it->isA(RaceCheckPoint)){
+            orxout(user_status) << "works" << std::endl;
+        }
+        /*
+            for (ObjectList<StaticEntity>::iterator it = ObjectList<StaticEntity>::begin(); it!= ObjectList<StaticEntity>::end(); ++it)
+                {
+                    if ((*it).isA(RaceCheckPoint))
+                    btVector3 temppos;
+                    it->
+                    btScalar temppos;
+                    btCollisionShape* temp= it->getCollisionShape(temppos, temppos);
+                    it->get
+
+                 }
+*/
     }
 
+    int SpaceRaceController::pointToPointDistance(Vector3 point1, Vector3 point2){
+        for (ObjectList<StaticEntity>::iterator it = ObjectList<StaticEntity>::begin(); it!= ObjectList<StaticEntity>::end(); ++it)
+                        {
+                            if ((*it).isA(RaceCheckPoint)){break;} // does not work jet
+
+                            for (int i=0; it->getAttachedCollisionShape(i)!=0; i++){
+                                btVector3 temppos;
+                                btScalar tempradius;
+                                it->getAttachedCollisionShape(i)->getCollisionShape()->getCollisionShape(temppos,tempradius);
+                                //http://bulletphysics.com/Bullet/BulletFull/btCollisionShape_8cpp_source.html#l00032
+                                //ueber shape moegliche Hindernisse bestimmen
+                            }
+                            it->getAttachedCollisionShape(i);
+
+
+                         }
+        const int DeltaStrecke = 5;
+        for( int i=0; i*DeltaStrecke-5 < (point1-point2).length(); i++){
+            return 0;
+        }
+    }
 }

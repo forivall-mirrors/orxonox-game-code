@@ -51,10 +51,11 @@ namespace orxonox
             RaceCheckPoint* adjustNextPoint();
             std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<RaceCheckPoint*>);
             std::vector<RaceCheckPoint*> staticCheckpoints();
-            int rekSimulationCheckpointsReached(RaceCheckPoint* , std::vector<RaceCheckPoint*>* checkpoints, std::map< RaceCheckPoint*, int>*);
+            int rekSimulationCheckpointsReached(RaceCheckPoint* , std::map< RaceCheckPoint*, int>*);
             // same as SpaceRaceManager, but needed to add virtuell Checkpoints ( Checkpoints which don't exist but needed to avoid collisions with big Objects)
             RaceCheckPoint* findCheckpoint(int index) const;
             bool addVirtualCheckPoint(int , RaceCheckPoint* , int , Vector3 );
+            int pointToPointDistance(Vector3, Vector3);
 
         public:
           SpaceRaceController(BaseObject* creator);
