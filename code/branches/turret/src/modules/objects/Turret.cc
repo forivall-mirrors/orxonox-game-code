@@ -27,11 +27,9 @@
  */
 
 #include "Turret.h"
-
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
+#include "controllers/WaypointPatrolController.h"
 
 namespace orxonox
 {
@@ -43,7 +41,7 @@ namespace orxonox
     Turret::Turret(BaseObject* creator) : Pawn(creator)
     {
         RegisterObject(Turret);
-
+        this->controller_ = new WaypointPatrolController(this);
     }
 
     /**
@@ -54,7 +52,7 @@ namespace orxonox
 
     }
 
-    void Turret::rotateYaw(const Vector2& value)
+    /*void Turret::rotateYaw(const Vector2& value)
     {
 
     }
@@ -68,16 +66,22 @@ namespace orxonox
     void Turret::rotateRoll(const Vector2& value)
     {
 
+    }*/
+
+    void Turret::setAlertnessRadius(float value)
+    {
+    	this->controller_->setAlertnessRadius(value);
+    }
+    float Turret::getAlertnessRadius()
+    {
+    	return this->controller_->getAlertnessRadius();
     }
 
-
-
-    /*void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Turret, XMLPort, xmlelement, mode);
-
-        XMLPortParam(Turret, "atmosphere", setAtmosphere, getAtmosphere, xmlelement, mode).defaultValues("Turret/Atmosphere");
-    }*/
+        XMLPortParam(Turret, "alertnessRadius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues("400");
+    }
 
 
 }

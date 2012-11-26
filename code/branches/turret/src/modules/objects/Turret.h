@@ -45,7 +45,6 @@ namespace orxonox
     {
         public:
             Turret(BaseObject* creator);
-
             virtual ~Turret();
 
             //virtual void tick(float dt);
@@ -53,16 +52,18 @@ namespace orxonox
             virtual void moveRightLeft(const Vector2& value) {}
             virtual void moveUpDown(const Vector2& value) {}
 
-            virtual void rotateYaw(const Vector2& value);
+            /*virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
-            virtual void rotateRoll(const Vector2& value);
+            virtual void rotateRoll(const Vector2& value);*/
 
+            void setAlertnessRadius(float value);
+            float getAlertnessRadius();
 
-            //virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
 
         protected:
-
+            WaypointPatrolController* controller_;
         private:
 
     };
