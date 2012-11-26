@@ -134,14 +134,14 @@ namespace orxonox
             
             void createBillboards();
             
-            void updateBillboardStates(Vector3& viewDirection, unsigned int dimension, bool isLightVisible);
+            void updateBillboardStates(Vector3& viewDirection, float dimension, bool isLightVisible);
             
             void updateBillboardAlphas(float alpha);
             
-            unsigned int getPointCount(unsigned int dimension) const;
+            unsigned int getPointCount(float dimension) const;
             
             Billboard* occlusionBillboard_;//!< this is a transparent billboard used solely for the Hardware Occlusion Query
-            unsigned int cameraDistance_;//!< current distance of the lensflare center from the camera
+            float cameraDistance_;//!< current distance of the lensflare center from the camera
             float scale_;//!< this factor is used to scale the billboard to the desired size
             bool fadeOnViewBorder_;//!< should the effect fade out on the border of the view?
             unsigned int fadeResolution_;//!< how many points should be sampled per axis for the screen border fade. High number => smooth fade, but uses more processing power

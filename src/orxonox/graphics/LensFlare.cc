@@ -46,7 +46,7 @@ namespace orxonox
 {
     CreateFactory(LensFlare);
     
-    LensFlare::LensFlare(BaseObject* creator) : StaticEntity(creator), scale_(1.0f), fadeOnViewBorder_(true), fadeResolution_(7), fadeExponent_(2.0f), colour_(new ColourValue(1.0f,0.9f,0.9f,0.0f))
+    LensFlare::LensFlare(BaseObject* creator) : StaticEntity(creator), scale_(1.0f), fadeOnViewBorder_(true), fadeResolution_(7), fadeExponent_(2.0f), colour_(new ColourValue(1.0f,0.9f,0.9f))
     {
         RegisterObject(LensFlare);
         
@@ -136,17 +136,18 @@ namespace orxonox
     @param lightIsVisible
         is the (point-)light source currently visible
     */
-    void LensFlare::updateBillboardStates(Vector3& viewDirection, unsigned int dimension, bool lightIsVisible)
+    void LensFlare::updateBillboardStates(Vector3& viewDirection, float dimension, bool lightIsVisible)
     { 
         //TODO: develop a more sane method for determining positions and scale factors of the flare components
         //A good solution would probably be to introduce a data structure which stores a lens flare configuration
         int i=0;
         float step=0.0f;
+        Vector3 position=CameraManager::getInstance().getActiveCamera()->getOgreCamera()->getDerivedPosition();
         for(std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++) {
             Billboard* billboard=static_cast<Billboard*>(*it);
             billboard->setPosition(this->getPosition()-viewDirection*step);
             billboard->setVisible(lightIsVisible);
-            billboard->setDefaultDimensions((i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f),(i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f));
+            billboard->setDefaultDimensions((i<0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f),(i<0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f));
             step=0.25f*(i>2?(i-2):0);
             i++;
         }
@@ -160,15 +161,18 @@ namespace orxonox
     */
     void LensFlare::updateBillboardAlphas(float alpha)
     {
-        ColourValue* colour = new ColourValue(1.0f,1.0f,1.0f,alpha);
-        *colour+=*this->colour_;
+        this->colour_->a=alpha;
         std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin();
         it++;
-        for(;it!=this->getAttachedObjects().end(); it++) {
+        for(int i=0;it!=this->getAttachedObjects().end(); it++) {
+            if(i==2)
+            {
+                this->colour_->a*=0.5f;
+            }
             Billboard* billboard=static_cast<Billboard*>(*it);
-            billboard->setColour(*colour);
+            billboard->setColour(*(this->colour_));
+            i++;
         }
-        delete colour;
     }
     
     /**
@@ -179,14 +183,14 @@ namespace orxonox
     @return
         the absolute amount of point samples that are currently captured by the camera of the view port
     */
-    unsigned int LensFlare::getPointCount(unsigned int dimension) const
+    unsigned int LensFlare::getPointCount(float dimension) const
     {
         Ogre::Camera* camera=CameraManager::getInstance().getActiveCamera()->getOgreCamera();
         Vector3 position = this->getPosition();
-        Vector3 nX = camera->getOrientation().xAxis().normalisedCopy();
-        Vector3 nY = camera->getOrientation().yAxis().normalisedCopy();
+        Vector3 nX = camera->getDerivedOrientation().xAxis().normalisedCopy();
+        Vector3 nY = camera->getDerivedOrientation().yAxis().normalisedCopy();
         int halfRes=fadeResolution_/2;
-        int resDim=dimension/fadeResolution_;
+        float resDim=dimension/fadeResolution_;
         unsigned int count=0;
         for(int i=-halfRes;i<=halfRes;i++)
         {
@@ -208,24 +212,24 @@ namespace orxonox
         {
             Ogre::Camera* camera=CameraManager::getInstance().getActiveCamera()->getOgreCamera(); //get active Ogre Camera Instance, so we can check whether the light source is visible
             this->cameraDistance_=camera->getPosition().distance(this->getPosition());
-            unsigned int dimension=this->cameraDistance_*this->scale_;
+            float dimension=this->cameraDistance_*this->scale_;
             if(!this->fadeOnViewBorder_)
             {
                 this->fadeResolution_=3;//this is so we can still determine when the billboard has left the screen
             }
-            unsigned int pointCount=this->getPointCount(dimension/2);
-            Vector3 viewDirection=this->getPosition()-camera->getPosition()-camera->getDerivedDirection()*this->cameraDistance_;
+            unsigned int pointCount=this->getPointCount(dimension*0.5f);
+            Vector3 viewDirection=this->getPosition()-camera->getDerivedPosition()-camera->getDerivedDirection()*this->cameraDistance_;
             updateBillboardStates(viewDirection,dimension,pointCount>0);
             if(pointCount>0) {
-                Ogre::Sphere* sphere=new Ogre::Sphere(this->getPosition(),dimension*0.25*0.5);//0.5 stems from the fact that we scaled down the occlusion billboard
+                Ogre::Sphere* sphere=new Ogre::Sphere(this->getPosition(),dimension*0.25f);
                 float left, right, top, bottom;
                 camera->projectSphere(*sphere,&left,&top,&right,&bottom);//approximate maximum pixel count of billboard with a sphere
                 delete sphere;
                 
                 Ogre::RenderWindow* window = GraphicsManager::getInstance().getRenderWindow();
-                float maxCount=(right-left)*(top-bottom)*window->getWidth()*window->getHeight()*0.25;
+                float maxCount=(right-left)*(top-bottom)*window->getWidth()*window->getHeight()*0.25f;
                 float pixelCount=this->getScene()->getRenderQueueListener()->getPixelCount();//get pixel count
-                float ratio=(maxCount==0.0f)?0.0f:(pixelCount/maxCount);//prevent division by zero
+                float ratio=(maxCount<0.0f)?0.0f:(pixelCount/maxCount);//prevent underflow and division by zero
                 float borderRatio=1.0f;
                 if(this->fadeOnViewBorder_)
                 {
