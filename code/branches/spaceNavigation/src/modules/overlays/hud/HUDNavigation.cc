@@ -58,8 +58,8 @@
 namespace orxonox
 {
 
-    SetConsoleCommand("selectClosest", &HUDNavigation::selectClosestTarget);
-    SetConsoleCommand("selectNext", &HUDNavigation::selectNextTarget);
+    SetConsoleCommand("HUDNavigation","selectClosest", &HUDNavigation::selectClosestTarget).addShortcut().keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("HUDNavigation","selectNext", &HUDNavigation::selectNextTarget).addShortcut().keybindMode(KeybindMode::OnPress);
 
     static bool compareDistance(std::pair<RadarViewable*, unsigned int> a,
             std::pair<RadarViewable*, unsigned int> b)
@@ -67,6 +67,8 @@ namespace orxonox
         return a.second < b.second;
     }
     CreateFactory ( HUDNavigation );
+
+    HUDNavigation* HUDNavigation::localHUD_s = 0;
 
     HUDNavigation::HUDNavigation(BaseObject* creator) :
         OrxonoxOverlay(creator)
@@ -85,6 +87,7 @@ namespace orxonox
 
         this->closestTarget_ = true;
         this->nextTarget_ = false;
+        HUDNavigation::localHUD_s = this;
     }
 
     HUDNavigation::~HUDNavigation()
@@ -543,13 +546,19 @@ namespace orxonox
 
     void HUDNavigation::selectClosestTarget()
     {
-        this->closestTarget_ = true;
-        orxout() << "selectClosestTarget" << std::endl;
+        if(HUDNavigation::localHUD_s)
+        {
+            HUDNavigation::localHUD_s->closestTarget_ = true;
+            orxout() << "selectClosestTarget" << std::endl;
+        }
     }
 
     void HUDNavigation::selectNextTarget()
     {
-        this->nextTarget_ = true;
-        orxout() << "selectNextTarget" << std::endl;
+        if(HUDNavigation::localHUD_s)
+        {
+            HUDNavigation::localHUD_s->nextTarget_ = true;
+            orxout() << "selectNextTarget" << std::endl;
+        }
     }
 }

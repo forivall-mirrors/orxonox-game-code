@@ -70,8 +70,8 @@ namespace orxonox
             inline unsigned int getMarkerLimit() const
                 { return this->markerLimit_; }
 
-            void selectClosestTarget();
-            void selectNextTarget();
+            static void selectClosestTarget();
+            static void selectNextTarget();
 
         private:
             struct ObjectInfo
@@ -131,6 +131,8 @@ namespace orxonox
 
             static const float LIGHTNING_GUN_SPEED_ = 700.0f;
             static const float HSW01_SPEED_ = 2500.0f;
+            static HUDNavigation* localHUD_s; //!< This is used as a filter to only influence the local HUD.
+
 
             float currentMunitionSpeed_;
 
