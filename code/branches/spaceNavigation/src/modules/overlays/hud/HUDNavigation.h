@@ -131,7 +131,7 @@ namespace orxonox
 
             static const float LIGHTNING_GUN_SPEED_ = 700.0f;
             static const float HSW01_SPEED_ = 2500.0f;
-            static HUDNavigation* localHUD_s; //!< This is used as a filter to only influence the local HUD.
+            static HUDNavigation* localHUD_s; //!< This is used as a filter. Only the local HUD should be influenced by the static Console Command functions.
 
 
             float currentMunitionSpeed_;
