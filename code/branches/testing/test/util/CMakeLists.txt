@@ -1,10 +1,10 @@
 ORXONOX_ADD_EXECUTABLE(
     util_test
     EXCLUDE_FROM_ALL
-	NO_INSTALL
+    NO_INSTALL
   LINK_LIBRARIES
     util
-	gmock_orxonox
+    gmock_orxonox
   SOURCE_FILES
     ${GMOCK_MAIN}
     ConvertTest.cc
