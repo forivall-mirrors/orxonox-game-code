@@ -81,6 +81,28 @@ ENDMACRO(ORXONOX_ADD_LIBRARY)
 
 MACRO(ORXONOX_ADD_EXECUTABLE _target_name)
   TU_ADD_TARGET(${_target_name} EXECUTABLE "WIN32" ${ARGN})
+  
+  # When using Visual Studio we want to use the output directory as working
+  # directory and we also want to specify where the external dlls
+  # (lua, ogre, etc.) are. The problem hereby is that these information cannot
+  # be specified in CMake because they are not stored in the actual project file.
+  # This workaround will create a configured *.vcproj.user file that holds the
+  # right values. When starting the solution for the first time,
+  # these get written to the *vcproj.yourPCname.yourname.user
+  IF(MSVC)
+    IF(CMAKE_CL_64)
+      SET(MSVC_PLATFORM "x64")
+    ELSE()
+      SET(MSVC_PLATFORM "Win32")
+    ENDIF()
+    IF(MSVC10)
+      CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/template.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}.vcxproj.user")
+    ELSE()
+      STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
+             VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
+      CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/template.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}.vcproj.user")
+    ENDIF()
+  ENDIF(MSVC)
 ENDMACRO(ORXONOX_ADD_EXECUTABLE)
 
 
