@@ -32,6 +32,7 @@ ORXONOX_ADD_LIBRARY(gtest_orxonox
     VERSION         1.6.0
     EXCLUDE_FROM_ALL
     NO_INSTALL
+    LINK_LIBS_UNIX  pthread
     SOURCE_FILES    ${GTEST_FILES}
 )
 
