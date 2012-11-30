@@ -19,13 +19,21 @@ namespace orxonox
         EXPECT_EQ("0", multi_cast<std::string>(0.0f));
         EXPECT_EQ("10", multi_cast<std::string>(10.0f));
         EXPECT_EQ("123.456", multi_cast<std::string>(123.456f));
-        EXPECT_EQ("1.234e+012", multi_cast<std::string>(1234000000000.0f));
+        {
+            // expect 1.234e+012 or 1.234e+12
+            std::string value = multi_cast<std::string>(1234000000000.0f);
+            EXPECT_TRUE(value == "1.234e+012" || value == "1.234e+12");
+        }
 
         // double
         EXPECT_EQ("0", multi_cast<std::string>(0.0));
         EXPECT_EQ("10", multi_cast<std::string>(10.0));
         EXPECT_EQ("123.456", multi_cast<std::string>(123.456));
-        EXPECT_EQ("1.234e+012", multi_cast<std::string>(1234000000000.0));
+        {
+            // expect 1.234e+012 or 1.234e+12
+            std::string value = multi_cast<std::string>(1234000000000.0);
+            EXPECT_TRUE(value == "1.234e+012" || value == "1.234e+12");
+        }
 
         // char
         EXPECT_EQ("a", multi_cast<std::string>('a'));
