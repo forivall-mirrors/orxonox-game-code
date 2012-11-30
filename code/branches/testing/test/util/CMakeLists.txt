@@ -21,4 +21,4 @@ ORXONOX_ADD_EXECUTABLE(
 )
 ADD_DEPENDENCIES(test util_test)
 
-ADD_TEST(util_test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/util_test)
+ADD_TEST(util_test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/util_test --gtest_output=xml)
