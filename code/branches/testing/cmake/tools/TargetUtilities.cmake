@@ -350,6 +350,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_UNIX})
   ENDIF()
 
+  # Enable gcov (gcc code coverage analysis tool) if ENABLE_GCOV flag is defined
+  IF(ENABLE_GCOV)
+    TARGET_LINK_LIBRARIES(${_target_name} gcov)
+    ADD_COMPILER_FLAGS("-fprofile-arcs")
+    ADD_COMPILER_FLAGS("-ftest-coverage")
+  ENDIF()
+
   # Visual Leak Detector specific stuff (avoids the include)
   IF(VISUAL_LEAK_DETECTOR_ENABLE)
     TARGET_LINK_LIBRARIES(${_target_name} debug ${VLD_LIBRARY})
