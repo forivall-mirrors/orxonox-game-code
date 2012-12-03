@@ -311,7 +311,7 @@ namespace orxonox
             nextRaceCheckpoint_ = adjustNextPoint();
             lastPositionSpaceship=this->getControllableEntity()->getPosition();
         }
-        //korrigieren! done
+        //TODO: korrigieren!
         else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt< MINDISTANCE  ){
             this->moveToPosition(Vector3(rnd()*100,rnd()*100,rnd()*100));
             this->spin();
@@ -344,7 +344,7 @@ namespace orxonox
 
                             if (dynamic_cast<RaceCheckPoint*>(*it)!=NULL){continue;} // does not work jet
 
-                            problematicObjects.insert(problematicObjects.end(), (*it));
+                            problematicObjects.insert(problematicObjects.end(), *it);
                             //it->getScale3D();// vector fuer halbe wuerfellaenge
                         }
         Vector3 richtungen [6];
@@ -360,11 +360,12 @@ namespace orxonox
             const float PHI=1.1;
             bool collision=false;
 
-            for (float j =0; j<STEPS; j++){
-                Vector3 tempPosition=(point1 - (point2-point1+richtungen[i]*PHI)*j/STEPS);
+            for (int j =0; j<STEPS; j++){
+                Vector3 tempPosition=(point1 - (point2-point1+richtungen[i]*PHI)*(float)j/STEPS);
                 for (std::vector<StaticEntity*>::iterator it = problematicObjects.begin(); it!=problematicObjects.end(); ++it){
                     btVector3 positionObject;
                     btScalar radiusObject;
+                    //TODO: Probably it points on a wrong object
                     for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++){
                         (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()->getBoundingSphere(positionObject,radiusObject);
                         Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
@@ -381,8 +382,8 @@ namespace orxonox
             for (float j =0; j<STEPS; j++){
                 Vector3 possiblePosition=(point1 - (point2-point1+richtungen[i]*PHI)*j/STEPS);
                 collision=false;
-                for(float ij=0; ij<STEPS; j++){
-                    Vector3 tempPosition=(possiblePosition - (point2-possiblePosition)*ij/STEPS);
+                for(int ij=0; ij<STEPS; j++){
+                    Vector3 tempPosition=(possiblePosition - (point2-possiblePosition)*(float)ij/STEPS);
                             for (std::vector<StaticEntity*>::iterator it = problematicObjects.begin(); it!=problematicObjects.end(); ++it){
                                 btVector3 positionObject;
                                 btScalar radiusObject;
