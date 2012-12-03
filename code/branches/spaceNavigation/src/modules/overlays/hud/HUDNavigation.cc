@@ -215,38 +215,49 @@ namespace orxonox
                     textLength = it->first->getRadarName().size() * it->second.text_->getCharHeight() * 0.3f;
                 }
 
-
                 // Selected object
                 if(this->closestTarget_) {
                     // select the closest object as target
                     if(listIt == this->sortedObjectList_.begin())
                     {
                         it->second.selected_ = true;
-                    } else {
-                        it->second.selected_ = false;
+                        orxout() << "Closest object selected" << std::endl;
                     }
-                    closestTarget_ = false;
-                    orxout() << "Closest object selected" << std::endl;
+                    else if(it->second.selected_)
+                    {
+                        it->second.selected_ = false;
+                        orxout() << "Previous object unselected" << std::endl;
+                    }
+
                 }
+                // select the next closest object
                 else if(this->nextTarget_)
                 {
-                    // select the next closest object
                     if(nextHasToBeSelected){
                         it->second.selected_ = true;
                         nextHasToBeSelected = false;
-                        this->nextTarget_ = false;
+                        orxout() << "Next object selected" << std::endl;
                     }
                     else if(it->second.selected_)
                     {
                         nextHasToBeSelected = true;
                         it->second.selected_ = false;
+                        orxout() << "Previous object unselected" << std::endl;
+
+                        listIt++;
+
+                        if (markerCount + 1 >= this->markerLimit_ ||
+                                (listIt->second > this->detectionLimit_
+                                && detectionLimit_ >= 0))
+                        {
+                            this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
+                            nextHasToBeSelected = false;
+                        }
+
+                        listIt--;
                     }
-                    else if(markerCount + 1 >= markerLimit_)
-                    {
-                        // this object is the last one that is marked, then select the closest
-                        this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
-                        nextHasToBeSelected = false;
-                    }
+
+
                 }
 
 
@@ -397,6 +408,9 @@ namespace orxonox
                 it->second.target_->hide();
             }
         }
+
+        this->closestTarget_ = false;
+        this->nextTarget_ = false;
     }
 
     /** Overridden method of OrxonoxOverlay.
