@@ -38,7 +38,7 @@ namespace orxonox
     /**
      * @brief Constructor
      */
-    Turret::Turret(BaseObject* creator) : Pawn(creator)
+    Turret::Turret(BaseObject* creator) : SpaceShip(creator)
     {
         RegisterObject(Turret);
         this->controller_ = new WaypointPatrolController(this);
@@ -52,21 +52,15 @@ namespace orxonox
 
     }
 
-    /*void Turret::rotateYaw(const Vector2& value)
-    {
-
-    }
-
 
     void Turret::rotatePitch(const Vector2& value)
     {
-
+    	Vector2 pitch = value;
+    	float nextPitch = this->localAngularAcceleration_.x() + pitch.x*0.8f;
+    	// Einschraenken auf 0 bis 180
+    	this->localAngularAcceleration_.setX(nextPitch);
     }
 
-    void Turret::rotateRoll(const Vector2& value)
-    {
-
-    }*/
 
     void Turret::setAlertnessRadius(float value)
     {

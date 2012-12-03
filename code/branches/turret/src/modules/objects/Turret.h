@@ -37,24 +37,19 @@
 
 #include "objects/ObjectsPrereqs.h"
 
-#include "worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
-    class _ObjectsExport Turret : public Pawn
+    class _ObjectsExport Turret : public SpaceShip
     {
         public:
             Turret(BaseObject* creator);
             virtual ~Turret();
 
             //virtual void tick(float dt);
-            virtual void moveFrontBack(const Vector2& value) {}
-            virtual void moveRightLeft(const Vector2& value) {}
-            virtual void moveUpDown(const Vector2& value) {}
 
-            /*virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
-            virtual void rotateRoll(const Vector2& value);*/
 
             void setAlertnessRadius(float value);
             float getAlertnessRadius();
