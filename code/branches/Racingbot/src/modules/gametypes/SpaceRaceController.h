@@ -32,14 +32,14 @@
 #include "gametypes/Gametype.h"
 #include "gametypes/RaceCheckPoint.h"
 
-
 namespace orxonox
 {
-    class _GametypesExport SpaceRaceController : public ArtificialController, public Tickable
+    class _GametypesExport SpaceRaceController: public ArtificialController,
+            public Tickable
     {
         private:
             std::vector<RaceCheckPoint*> staticRacePoints_;
-            RaceCheckPoint* nextRaceCheckpoint_;    // checkpoint that should be reached
+            RaceCheckPoint* nextRaceCheckpoint_; // checkpoint that should be reached
             RaceCheckPoint* currentRaceCheckpoint_; // last checkPoint (already reached)
             std::vector<RaceCheckPoint*> checkpoints_;
             Vector3 lastPositionSpaceship;
@@ -51,20 +51,20 @@ namespace orxonox
             RaceCheckPoint* adjustNextPoint();
             std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<RaceCheckPoint*>);
             std::vector<RaceCheckPoint*> staticCheckpoints();
-            int rekSimulationCheckpointsReached(RaceCheckPoint* , std::map< RaceCheckPoint*, int>*);
+            int rekSimulationCheckpointsReached(RaceCheckPoint*, std::map<RaceCheckPoint*, int>*);
             // same as SpaceRaceManager, but needed to add virtuell Checkpoints ( Checkpoints which don't exist but needed to avoid collisions with big Objects)
             RaceCheckPoint* findCheckpoint(int index) const;
-            bool addVirtualCheckPoint(int , RaceCheckPoint* , int , Vector3 );
-            int pointToPointDistance(Vector3, Vector3);
+            RaceCheckPoint* addVirtualCheckPoint(RaceCheckPoint*, int , Vector3);
+            void placeVirtualCheckpoints(RaceCheckPoint*,RaceCheckPoint*);
+            bool vergleicheQuader(Vector3, Vector3);
 
         public:
-          SpaceRaceController(BaseObject* creator);
-          virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-          virtual ~SpaceRaceController();
-          virtual void tick(float dt);
+            SpaceRaceController(BaseObject* creator);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual ~SpaceRaceController();
+            virtual void tick(float dt);
     };
 
 }
-
 
 #endif /* SPACERACECONTROLLER_H_ */
