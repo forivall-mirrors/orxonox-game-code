@@ -215,49 +215,47 @@ namespace orxonox
                     textLength = it->first->getRadarName().size() * it->second.text_->getCharHeight() * 0.3f;
                 }
 
-                // Selected object
-                if(this->closestTarget_) {
-                    // select the closest object as target
+                // select the object that aim-assistant indicates
+                if(this->closestTarget_)
+                // select the closest object
+                {
                     if(listIt == this->sortedObjectList_.begin())
                     {
                         it->second.selected_ = true;
-                        orxout() << "Closest object selected" << std::endl;
                     }
                     else if(it->second.selected_)
                     {
                         it->second.selected_ = false;
-                        orxout() << "Previous object unselected" << std::endl;
                     }
 
                 }
-                // select the next closest object
                 else if(this->nextTarget_)
+                // select the next object in sortedObjectList
                 {
                     if(nextHasToBeSelected){
                         it->second.selected_ = true;
                         nextHasToBeSelected = false;
-                        orxout() << "Next object selected" << std::endl;
                     }
                     else if(it->second.selected_)
                     {
                         nextHasToBeSelected = true;
                         it->second.selected_ = false;
-                        orxout() << "Previous object unselected" << std::endl;
 
+                        // check if there's a next object
                         listIt++;
-
-                        if (markerCount + 1 >= this->markerLimit_ ||
-                                (listIt->second > this->detectionLimit_
-                                && detectionLimit_ >= 0))
+                        if(listIt != this->sortedObjectList_.end())
                         {
-                            this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
-                            nextHasToBeSelected = false;
+                            // and if the marker limit and max-distance are not exceeded for it
+                            if (markerCount + 1 >= this->markerLimit_ ||
+                                    (listIt->second > this->detectionLimit_ && detectionLimit_ >= 0))
+                            {
+                                // otherwise select the closest object
+                                this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
+                                nextHasToBeSelected = false;
+                            }
                         }
-
                         listIt--;
                     }
-
-
                 }
 
 
@@ -372,15 +370,18 @@ namespace orxonox
                     if(!it->second.selected_
                             || it->first->getRVVelocity().squaredLength() == 0
                             || pawn == NULL
-                            /*|| humanPawn == NULL
-                            || pawn->getTeam() == humanPawn->getTeam()*/)
+                            /* TODO : improve getTeam in such a way that it works
+                             * || humanPawn == NULL
+                             * || pawn->getTeam() == humanPawn->getTeam()*/)
                     {
                         // don't show marker for not selected enemies nor if the selected doesn't move
                         it->second.target_->hide();
                     }
-                    else
+                    else // object is selected and moves
                     {
+                        // get the aim position
                         Vector3* targetPos = this->toAimPosition(it->first);
+                        // Transform to screen coordinates
                         Vector3 screenPos = camTransform * (*targetPos);
                         // Check if the target marker is in view too
                         if(screenPos.z > 1 || screenPos.x < -1.0 || screenPos.x > 1.0
@@ -394,7 +395,6 @@ namespace orxonox
                             it->second.target_->setTop((-screenPos.y + 1.0f - it->second.target_->getHeight()) * 0.5f);
                             it->second.target_->show();
                         }
-
                         delete targetPos;
                     }
 
