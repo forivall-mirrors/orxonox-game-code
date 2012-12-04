@@ -84,7 +84,6 @@ namespace orxonox
         //TODO: add more billboards, possibly do some cleaning up, by using a loop
         this->occlusionBillboard_ = new Billboard(this);
         this->occlusionBillboard_->setMaterial("lensflare/hoq");
-        this->occlusionBillboard_->setPosition(this->getPosition());
         this->occlusionBillboard_->setVisible(false);
         this->occlusionBillboard_->disableFrustumCulling();
         this->occlusionBillboard_->setRenderQueueGroup(RENDER_QUEUE_HOQ);
@@ -92,35 +91,30 @@ namespace orxonox
         
         Billboard* burst = new Billboard(this);
         burst->setMaterial("lensflare/burst");
-        burst->setPosition(this->getPosition());
         burst->disableFrustumCulling();
         burst->setVisible(true);
         this->attach(burst);
         
         Billboard* bursthalo = new Billboard(this);
         bursthalo->setMaterial("lensflare/bursthalo");
-        bursthalo->setPosition(this->getPosition());
         bursthalo->disableFrustumCulling();
         bursthalo->setVisible(true);
         this->attach(bursthalo);
         
         bursthalo = new Billboard(this);
         bursthalo->setMaterial("lensflare/halo1");
-        bursthalo->setPosition(this->getPosition());
         bursthalo->disableFrustumCulling();
         bursthalo->setVisible(true);
         this->attach(bursthalo);
         
         bursthalo = new Billboard(this);
         bursthalo->setMaterial("lensflare/halo2");
-        bursthalo->setPosition(this->getPosition());
         bursthalo->disableFrustumCulling();
         bursthalo->setVisible(true);
         this->attach(bursthalo);
         
         bursthalo = new Billboard(this);
         bursthalo->setMaterial("lensflare/halo3");
-        bursthalo->setPosition(this->getPosition());
         bursthalo->disableFrustumCulling();
         bursthalo->setVisible(true);
         this->attach(bursthalo);
@@ -142,12 +136,11 @@ namespace orxonox
         //A good solution would probably be to introduce a data structure which stores a lens flare configuration
         int i=0;
         float step=0.0f;
-        Vector3 position=CameraManager::getInstance().getActiveCamera()->getOgreCamera()->getDerivedPosition();
         for(std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++) {
             Billboard* billboard=static_cast<Billboard*>(*it);
-            billboard->setPosition(this->getPosition()-viewDirection*step);
+            billboard->setPosition(-viewDirection*step);
             billboard->setVisible(lightIsVisible);
-            billboard->setDefaultDimensions((i<0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f),(i<0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f));
+            billboard->setDefaultDimensions((i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f),(i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f));
             step=0.25f*(i>2?(i-2):0);
             i++;
         }
@@ -167,7 +160,7 @@ namespace orxonox
         for(int i=0;it!=this->getAttachedObjects().end(); it++) {
             if(i==2)
             {
-                this->colour_->a*=0.5f;
+                this->colour_->a*=0.33f;
             }
             Billboard* billboard=static_cast<Billboard*>(*it);
             billboard->setColour(*(this->colour_));
@@ -186,7 +179,7 @@ namespace orxonox
     unsigned int LensFlare::getPointCount(float dimension) const
     {
         Ogre::Camera* camera=CameraManager::getInstance().getActiveCamera()->getOgreCamera();
-        Vector3 position = this->getPosition();
+        Vector3 position = this->getWorldPosition();
         Vector3 nX = camera->getDerivedOrientation().xAxis().normalisedCopy();
         Vector3 nY = camera->getDerivedOrientation().yAxis().normalisedCopy();
         int halfRes=fadeResolution_/2;
@@ -211,17 +204,17 @@ namespace orxonox
         if(this->isVisible())
         {
             Ogre::Camera* camera=CameraManager::getInstance().getActiveCamera()->getOgreCamera(); //get active Ogre Camera Instance, so we can check whether the light source is visible
-            this->cameraDistance_=camera->getPosition().distance(this->getPosition());
+            this->cameraDistance_=camera->getDerivedPosition().distance(this->getPosition());
             float dimension=this->cameraDistance_*this->scale_;
             if(!this->fadeOnViewBorder_)
             {
                 this->fadeResolution_=3;//this is so we can still determine when the billboard has left the screen
             }
-            unsigned int pointCount=this->getPointCount(dimension*0.5f);
-            Vector3 viewDirection=this->getPosition()-camera->getDerivedPosition()-camera->getDerivedDirection()*this->cameraDistance_;
+            unsigned int pointCount=this->getPointCount(dimension*0.25f*this->scale_);
+            Vector3 viewDirection=this->getWorldPosition()-camera->getDerivedPosition()-camera->getDerivedDirection()*this->cameraDistance_;
             updateBillboardStates(viewDirection,dimension,pointCount>0);
             if(pointCount>0) {
-                Ogre::Sphere* sphere=new Ogre::Sphere(this->getPosition(),dimension*0.25f);
+                Ogre::Sphere* sphere=new Ogre::Sphere(this->getPosition(),dimension*0.25f*this->scale_);
                 float left, right, top, bottom;
                 camera->projectSphere(*sphere,&left,&top,&right,&bottom);//approximate maximum pixel count of billboard with a sphere
                 delete sphere;
