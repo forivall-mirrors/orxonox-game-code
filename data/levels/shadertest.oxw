@@ -72,7 +72,7 @@
   </collisionShapes>
 </Drone>
 
-<LensFlare position="5000,10,2500" fadeOnViewBorder="true" fadeResolution="9" fadeExponent="1.5" scale="1.0">
+<LensFlare position="10000,20,5000" fadeOnViewBorder="true" fadeResolution="9" fadeExponent="2.5" scale="0.9">
 </LensFlare>
 
     <!-- Planet close to spawn point -->
