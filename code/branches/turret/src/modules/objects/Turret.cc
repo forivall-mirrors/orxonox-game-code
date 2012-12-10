@@ -56,9 +56,13 @@ namespace orxonox
 
     void Turret::rotatePitch(const Vector2& value)
     {
-    	/*this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
-    	Pawn::rotatePitch(value);*/
     	orxout()<< "Turret rotate Pitch"<< endl;
+
+    	const Quaternion& orient = this->getOrientation();
+    	Radian pitch = orient.getPitch();
+
+    	if((value.x > 0 && pitch < Radian(180)) || (value.x < 0 && pitch > Radian(0)))
+    		SpaceShip::rotatePitch(value);
     }
 
 
