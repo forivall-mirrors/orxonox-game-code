@@ -635,11 +635,11 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
 
 <!-- @Objects: 2 pirates moving in squares, nonlethal -->
                 <SpaceShip position="0,2000,200" lookat="0,0,0" name="movingtarget" radarname="Pirate">
-                            <!--events>
+                            <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
                                 </visibility>
-                            </events-->
+                            </events>
                     <templates>
                       <Template link=spaceshippirate />
                     </templates>
@@ -656,11 +656,11 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
                 </SpaceShip>
 
                 <SpaceShip position="0,2000,400" lookat="0,0,0" name="movingtarget" radarname="Pirate">
-                            <!--events>
+                            <events>
                                 <visibility>
                                     <EventListener event="boxtrigger4" />
                                 </visibility>
-                            </events-->
+                            </events>
                   <templates>
                     <Template link=spaceshippirate />
                   </templates>
