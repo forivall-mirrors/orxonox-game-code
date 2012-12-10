@@ -189,6 +189,18 @@ namespace orxonox
         unsigned int markerCount = 0;
         bool closeEnough = false; // only display objects that are close enough to be relevant for the player
 
+        // if the selected object doesn't exist any more or is now out of range select the closest object
+        std::map<RadarViewable*, ObjectInfo>::iterator selectedActiveObject = this->activeObjectList_.find(this->selectedTarget_);
+        if(selectedActiveObject == this->activeObjectList_.end())
+        {
+            this->closestTarget_ = true;
+        }
+        else if(this->detectionLimit_ < (this->selectedTarget_->getRVWorldPosition() - HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition()).length() + 0.5f)
+        {
+            this->closestTarget_ = true;
+            selectedActiveObject->second.selected_ = false;
+        }
+
         bool nextHasToBeSelected = false;
 
         for (std::list<std::pair<RadarViewable*, unsigned int> >::iterator listIt = this->sortedObjectList_.begin(); listIt != this->sortedObjectList_.end(); ++markerCount, ++listIt)
@@ -222,6 +234,7 @@ namespace orxonox
                     if(listIt == this->sortedObjectList_.begin())
                     {
                         it->second.selected_ = true;
+                        this->selectedTarget_ = it->first;
                     }
                     else if(it->second.selected_)
                     {
@@ -234,6 +247,7 @@ namespace orxonox
                 {
                     if(nextHasToBeSelected){
                         it->second.selected_ = true;
+                        this->selectedTarget_ = it->first;
                         nextHasToBeSelected = false;
                     }
                     else if(it->second.selected_)
@@ -251,6 +265,7 @@ namespace orxonox
                             {
                                 // otherwise select the closest object
                                 this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
+                                this->selectedTarget_ = it->first;
                                 nextHasToBeSelected = false;
                             }
                         }
@@ -563,7 +578,6 @@ namespace orxonox
         if(HUDNavigation::localHUD_s)
         {
             HUDNavigation::localHUD_s->closestTarget_ = true;
-            orxout() << "selectClosestTarget" << std::endl;
         }
     }
 
@@ -572,7 +586,6 @@ namespace orxonox
         if(HUDNavigation::localHUD_s)
         {
             HUDNavigation::localHUD_s->nextTarget_ = true;
-            orxout() << "selectNextTarget" << std::endl;
         }
     }
 }

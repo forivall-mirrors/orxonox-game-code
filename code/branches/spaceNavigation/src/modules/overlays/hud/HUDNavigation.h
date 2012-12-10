@@ -126,6 +126,8 @@ namespace orxonox
             float textSize_;
             bool showDistance_;
 
+            RadarViewable* selectedTarget_;
+
             bool closestTarget_;
             bool nextTarget_;
 
