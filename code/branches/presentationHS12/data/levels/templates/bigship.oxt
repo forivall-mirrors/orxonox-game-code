@@ -93,7 +93,7 @@
     <camerapositions>
       <CameraPosition position="0,30, 50" drag=true mouselook=true />
       <CameraPosition position="0,40, 80" drag=true mouselook=true />
-      <CameraPosition position="0,50,120" drag=true mouselook=true />
+      <CameraPosition position="0,100,80" drag=true mouselook=true />
     </camerapositions>
   </SpaceShip>
 </Template>
