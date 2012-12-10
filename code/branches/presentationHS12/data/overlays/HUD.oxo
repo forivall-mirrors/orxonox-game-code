@@ -51,7 +51,7 @@
    rotation   = 0
    value      = 0
   >
-    <BarColour position = 0.7 colour = "0.2,0.7,0.2" />
+    <BarColounar position = 0.7 colour = "0.2,0.7,0.2" />
     <BarColour position = 0.4 colour = "0.7,0.5,0.2" />
     <BarColour position = 0.1 colour = "0.7,0.2,0.2" />
   </HUDSpeedBar-->
@@ -62,7 +62,7 @@
    font          = "Monofur"
    textSize      = 0.05
    navMarkerSize = 0.03
-   aimMarkerSize = 0.04
+   aimMarkerSize = 0.02
   />
 
   <HUDRadar

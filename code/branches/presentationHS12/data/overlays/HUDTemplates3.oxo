@@ -104,7 +104,7 @@
      font          = "Monofur"
      textsize      = 0.05
      navMarkerSize = 0.03
-     aimMarkerSize = 0.04
+     aimMarkerSize = 0.02
     />
 
     <HUDRadar

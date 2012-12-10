@@ -112,6 +112,7 @@ namespace orxonox
 
         const Vector3& getRVWorldPosition() const;
         Vector3 getRVOrientedVelocity() const;
+        Vector3 getRVVelocity() const;
 
         inline void setRadarObjectShape(Shape shape)
             {
