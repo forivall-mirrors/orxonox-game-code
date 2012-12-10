@@ -50,6 +50,15 @@ namespace orxonox
     {
         RegisterObject(LensFlare);
         
+        this->lensConfiguration_=new std::vector<LensFlare::Lens*>();
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/burst"),1.0f,1.0f,1.0f)); //main burst
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/bursthalo"),0.7f,0.9f,1.0f)); //halo around main burst
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo1"),0.4f,0.2f,0.8f)); //all the different distanced lenses
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo2"),0.7f,0.3f,0.7f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo3"),0.3f,0.4f,0.6f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo3"),0.1f,0.8f,0.4f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo1"),0.15f,0.5f,0.35f));
+        
         this->createBillboards();
         
         this->registerVariables();
@@ -66,6 +75,7 @@ namespace orxonox
         XMLPortParam(LensFlare, "fadeOnViewBorder", setFadeOnViewBorder, isFadeOnViewBorder, xmlelement, mode).defaultValues(true);
         XMLPortParam(LensFlare, "fadeResolution", setFadeResolution, getFadeResolution, xmlelement, mode).defaultValues(7);
         XMLPortParam(LensFlare, "fadeExponent", setFadeExponent, getFadeExponent, xmlelement, mode).defaultValues(2.0f);
+        XMLPortParam(LensFlare, "colour", setColour, getColour, xmlelement, mode);
     }
     
     void LensFlare::registerVariables()
@@ -81,7 +91,6 @@ namespace orxonox
     */
     void LensFlare::createBillboards()
     {
-        //TODO: add more billboards, possibly do some cleaning up, by using a loop
         this->occlusionBillboard_ = new Billboard(this);
         this->occlusionBillboard_->setMaterial("lensflare/hoq");
         this->occlusionBillboard_->setVisible(false);
@@ -89,35 +98,13 @@ namespace orxonox
         this->occlusionBillboard_->setRenderQueueGroup(RENDER_QUEUE_HOQ);
         this->attach(this->occlusionBillboard_);
         
-        Billboard* burst = new Billboard(this);
-        burst->setMaterial("lensflare/burst");
-        burst->disableFrustumCulling();
-        burst->setVisible(true);
-        this->attach(burst);
-        
-        Billboard* bursthalo = new Billboard(this);
-        bursthalo->setMaterial("lensflare/bursthalo");
-        bursthalo->disableFrustumCulling();
-        bursthalo->setVisible(true);
-        this->attach(bursthalo);
-        
-        bursthalo = new Billboard(this);
-        bursthalo->setMaterial("lensflare/halo1");
-        bursthalo->disableFrustumCulling();
-        bursthalo->setVisible(true);
-        this->attach(bursthalo);
-        
-        bursthalo = new Billboard(this);
-        bursthalo->setMaterial("lensflare/halo2");
-        bursthalo->disableFrustumCulling();
-        bursthalo->setVisible(true);
-        this->attach(bursthalo);
-        
-        bursthalo = new Billboard(this);
-        bursthalo->setMaterial("lensflare/halo3");
-        bursthalo->disableFrustumCulling();
-        bursthalo->setVisible(true);
-        this->attach(bursthalo);
+        for(std::vector<LensFlare::Lens*>::iterator it = lensConfiguration_->begin(); it != lensConfiguration_->end(); ++it) {
+            Billboard* lensPart=new Billboard(this);
+            lensPart->setMaterial(*(*it)->material_);
+            lensPart->disableFrustumCulling();
+            lensPart->setVisible(true);
+            this->attach(lensPart);
+        }
     }
 
     /**
@@ -132,16 +119,16 @@ namespace orxonox
     */
     void LensFlare::updateBillboardStates(Vector3& viewDirection, float dimension, bool lightIsVisible)
     { 
-        //TODO: develop a more sane method for determining positions and scale factors of the flare components
-        //A good solution would probably be to introduce a data structure which stores a lens flare configuration
-        int i=0;
-        float step=0.0f;
-        for(std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++) {
+        this->occlusionBillboard_->setDefaultDimensions(dimension*0.5f,dimension*0.5f);
+        this->occlusionBillboard_->setVisible(lightIsVisible);
+        std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin();
+        it++;
+        for(int i=0; it != this->getAttachedObjects().end(); it++) {
             Billboard* billboard=static_cast<Billboard*>(*it);
-            billboard->setPosition(-viewDirection*step);
+            LensFlare::Lens* lens=lensConfiguration_->at(i);
+            billboard->setPosition(-viewDirection*(1.0f-lens->position_));
             billboard->setVisible(lightIsVisible);
-            billboard->setDefaultDimensions((i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f),(i==0?0.5f:1.0f)*(i>2?0.25f:1.0f)*dimension*std::pow((1.0f-step),-1.0f));
-            step=0.25f*(i>2?(i-2):0);
+            billboard->setDefaultDimensions(dimension*lens->scale_,dimension*lens->scale_);
             i++;
         }
     }
@@ -158,12 +145,11 @@ namespace orxonox
         std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin();
         it++;
         for(int i=0;it!=this->getAttachedObjects().end(); it++) {
-            if(i==2)
-            {
-                this->colour_->a*=0.33f;
-            }
+            ColourValue* cur=new ColourValue(0,0,0,0);
+            (*cur)+= *(this->colour_);
+            cur->a*=lensConfiguration_->at(i)->alpha_;
             Billboard* billboard=static_cast<Billboard*>(*it);
-            billboard->setColour(*(this->colour_));
+            billboard->setColour(*cur);
             i++;
         }
     }

@@ -45,7 +45,7 @@
 #include "graphics/Billboard.h"
 
 namespace orxonox
-{
+{    
       /**
     @brief
         This class adds a configurable LensFlare effect by adding multiple billboards for the several components of lens flare.
@@ -60,6 +60,26 @@ namespace orxonox
     // obviously we shouldn't use too many of these effects anyways, since they use a lot of processing power, so not sure whether it's worth implementing a solution that works for multiple lens flares on screen 
     class _OrxonoxExport LensFlare : public StaticEntity, public Tickable
     {
+          /**
+          @brief
+              This is a nested Class used to easily set properties of the different sublenses of a LensFlare effect
+          */
+          class Lens
+          {
+              public:
+                  std::string* material_;//!< Which material should the Lens use, current choices include burst, bursthalo, halo1, halo2, halo3
+                  float alpha_;//!< Which base alpha value should the Lens use
+                  float scale_;//!< Which base scale should the Lens Flare have
+                  float position_;//!< This defines how far along the view direction the flare should be positioned, e.g. 0.5 would position the flare halfway between the viewer and the base burst, 0 at the camera, 1 at the burst
+                  Lens(std::string* material, float alpha, float scale, float position)
+                  {
+                      this->material_=material;
+                      this->alpha_=alpha;
+                      this->scale_=scale;
+                      this->position_=position;
+                  }
+          };
+          
         public:
             LensFlare(BaseObject* creator);
             virtual ~LensFlare();
@@ -68,6 +88,26 @@ namespace orxonox
                 { this->scale_=scale; }
             inline float getScale() const
                 { return this->scale_; }
+                
+            /**
+            @brief
+                This sets the base colour of the billboards
+            @param colour
+                Vector3 containing r,g,b values
+            */
+            inline void setColour(const ColourValue& colour)
+            {
+                this->colour_->r=colour.r;
+                this->colour_->g=colour.g;
+                this->colour_->b=colour.b;
+            }
+            /**
+            @brief
+                This returns the current base colour of the billboards
+            @return a Vector3 containing r,g,b values
+            */
+            inline const ColourValue& getColour() const
+                { return *(new ColourValue(this->colour_->r,this->colour_->g,this->colour_->b)); }
                 
             /**
             @brief
@@ -140,13 +180,13 @@ namespace orxonox
             
             unsigned int getPointCount(float dimension) const;
             
+            std::vector<Lens*>* lensConfiguration_;//!< this stores the lensConfiguration
             Billboard* occlusionBillboard_;//!< this is a transparent billboard used solely for the Hardware Occlusion Query
             float cameraDistance_;//!< current distance of the lensflare center from the camera
             float scale_;//!< this factor is used to scale the billboard to the desired size
             bool fadeOnViewBorder_;//!< should the effect fade out on the border of the view?
             unsigned int fadeResolution_;//!< how many points should be sampled per axis for the screen border fade. High number => smooth fade, but uses more processing power
             float fadeExponent_;//!< this determines how fast the flare fades away as it gets obstructed
-            //TODO: add XML port for colour manipulation
             ColourValue* colour_;//!< this stores the base colour of the light
     };
 }
