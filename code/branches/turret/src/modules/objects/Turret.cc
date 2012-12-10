@@ -28,6 +28,7 @@
 
 #include "Turret.h"
 #include "core/CoreIncludes.h"
+#include "OgreQuaternion.h"
 #include "core/XMLPort.h"
 #include "controllers/WaypointPatrolController.h"
 
@@ -55,10 +56,9 @@ namespace orxonox
 
     void Turret::rotatePitch(const Vector2& value)
     {
-    	Vector2 pitch = value;
-    	float nextPitch = this->localAngularAcceleration_.x() + pitch.x*0.8f;
-    	// Einschraenken auf 0 bis 180
-    	this->localAngularAcceleration_.setX(nextPitch);
+    	/*this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
+    	Pawn::rotatePitch(value);*/
+    	orxout()<< "Turret rotate Pitch"<< endl;
     }
 
 

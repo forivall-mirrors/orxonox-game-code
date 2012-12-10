@@ -43,7 +43,7 @@
 
 
 
-<SpaceShip position="0,10,0" pitch="-45" yaw="225" roll="0">
+<SpaceShip position="0,10,0" pitch="90" yaw="0" roll="0">
     <templates>
         <Template link=spaceshipturret />
     </templates>
