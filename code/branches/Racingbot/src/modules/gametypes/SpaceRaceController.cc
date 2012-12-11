@@ -53,8 +53,10 @@ namespace orxonox
     SpaceRaceController::SpaceRaceController(BaseObject* creator) :
         ArtificialController(creator)
     {
-        RegisterObject(SpaceRaceController)
-;        std::vector<RaceCheckPoint*> checkpoints;
+        RegisterObject(SpaceRaceController);
+        std::vector<RaceCheckPoint*> checkpoints;
+
+        virtualCheckPointIndex=-2;
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
         {
             checkpoints = it->getAllCheckpoints();
@@ -63,11 +65,11 @@ namespace orxonox
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
         checkpoints_=checkpoints;
+
         for( std::vector<RaceCheckPoint*>::iterator it = checkpoints.begin(); it!=checkpoints.end(); ++it)
         {
             std::set<int> nextCheckPoints = ((*it)->getNextCheckpoints());
             if(!nextCheckPoints.empty()) {
-                orxout() << "yay" << endl;
                 for (std::set<int>::iterator numb = nextCheckPoints.begin(); numb!=nextCheckPoints.end(); numb++) {
                     RaceCheckPoint* point2 = findCheckpoint((*numb));
 
@@ -79,16 +81,13 @@ namespace orxonox
         staticRacePoints_ = findStaticCheckpoints(checkpoints);
         // initialisation of currentRaceCheckpoint_
         currentRaceCheckpoint_ = NULL;
-        /*
-         // find first Checkpoint
-         for (int i=0; true; i++){
-         if(checkpoints_[i]->getCheckpointIndex()==0){
-         nextRaceCheckpoint_=checkpoints_[i];
-         break;
-         }
-         }*/
 
-        virtualCheckPointIndex=-2;
+        int i;
+        for (i=-2; findCheckpoint(i)!= NULL; i--){
+            continue;
+        }
+        orxout()<<"Die ANzahl der virtuellen CP betraegt: "<< (-i)-2<<endl;
+
     }
 
     //------------------------------
@@ -108,8 +107,7 @@ namespace orxonox
      */
     std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(std::vector<RaceCheckPoint*> allCheckpoints)
     {
-        std::map<RaceCheckPoint*, int> * zaehler = new std::map<
-        RaceCheckPoint*, int>(); // counts how many times the checkpoit was reached (for simulation)
+        std::map<RaceCheckPoint*, int> * zaehler = new std::map<RaceCheckPoint*, int>(); // counts how many times the checkpoit was reached (for simulation)
         for (unsigned int i = 0; i < allCheckpoints.size(); i++)
         {
             zaehler->insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
@@ -139,24 +137,20 @@ namespace orxonox
 
         if (currentCheckpoint->isLast())
         {// last point reached
-            orxout() << "last one" << endl;
+
             (*zaehler)[currentCheckpoint] += 1;
             return 1; // 1 Way form the last point to this one
         }
         else
         {
             int numberOfWays = 0; // counts number of ways from this Point to the last point
-            for (std::set<int>::iterator it = currentCheckpoint->getNextCheckpoints().begin(); it!= currentCheckpoint->getNextCheckpoints().end(); ++it)
+            for (std::set<int>::iterator it = currentCheckpoint->getVirtualNextCheckpoints().begin(); it!= currentCheckpoint->getVirtualNextCheckpoints().end(); ++it)
             {
                 if(currentCheckpoint==findCheckpoint(*it)){
                     orxout() << currentCheckpoint->getCheckpointIndex()<<endl;
                     continue;
                 }
-                for (std::set<int>::iterator a = currentCheckpoint->getNextCheckpoints().begin(); a!= currentCheckpoint->getNextCheckpoints().end(); ++a){
-                    orxout() << "Nextcheckpoints: "<<(*a) << endl;
-                }
-                orxout() << "currentCheck; " << currentCheckpoint->getCheckpointIndex() << "findCheck; " << findCheckpoint(*it)->getCheckpointIndex() << endl;
-                numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
+               numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
             }
             (*zaehler)[currentCheckpoint] += numberOfWays;
             return numberOfWays; // returns the number of ways from this point to the last one
@@ -184,7 +178,7 @@ namespace orxonox
         int distances[] =
         {   -1, -1, -1};
         int temp_i = 0;
-        for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
+        for (std::set<int>::iterator it =raceCheckpoint->getVirtualNextCheckpoints().begin(); it!= raceCheckpoint->getVirtualNextCheckpoints().end(); ++it)
         {
             distances[temp_i] = recCalculateDistance(findCheckpoint(*it), this->getControllableEntity()->getPosition());
             temp_i++;
@@ -193,11 +187,11 @@ namespace orxonox
         {
             if (distances[2] < distances[1] && distances[2] != -1)
             {
-                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
+                return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
             }
             else
             {
-                std::set<int>::iterator temp = raceCheckpoint->getNextCheckpoints().begin();
+                std::set<int>::iterator temp = raceCheckpoint->getVirtualNextCheckpoints().begin();
                 return findCheckpoint(*(++temp)); // return [1]
             }
         }
@@ -205,11 +199,11 @@ namespace orxonox
         {
             if (distances[2] < distances[0] && distances[2] != -1)
             {
-                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return [2]
+                return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().end()); // return [2]
             }
             else
             {
-                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().begin()); // return [0]
+                return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().begin()); // return [0]
             }
         }
     }
@@ -228,7 +222,7 @@ namespace orxonox
         else
         {
             int minimum = std::numeric_limits<int>::max();
-            for (std::set<int>::iterator it = currentCheckPoint->getNextCheckpoints().begin(); it!= currentCheckPoint->getNextCheckpoints().end(); ++it)
+            for (std::set<int>::iterator it = currentCheckPoint->getVirtualNextCheckpoints().begin(); it!= currentCheckPoint->getVirtualNextCheckpoints().end(); ++it)
             {
                 int dist_currentCheckPoint_currentPosition = static_cast<int> ((currentPosition- currentCheckPoint->getPosition()).length());
 
@@ -249,7 +243,7 @@ namespace orxonox
         {
             return nextRaceCheckpoint_;
         }
-        if ((currentRaceCheckpoint_->getNextCheckpoints()).size() == 1) // no Adjust possible
+        if ((currentRaceCheckpoint_->getVirtualNextCheckpoints()).size() == 1) // no Adjust possible
 
         {
             return nextRaceCheckpoint_;
@@ -274,18 +268,19 @@ namespace orxonox
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it){
             newTempRaceCheckPoint = new RaceCheckPoint((*it));
         }
+        newTempRaceCheckPoint->setVisible(false);
         newTempRaceCheckPoint->setPosition(virtualCheckPointPosition);
         newTempRaceCheckPoint->setCheckpointIndex(virtualCheckPointIndex);
         newTempRaceCheckPoint->setLast(false);
-        newTempRaceCheckPoint->setNextCheckpointsAsVector3(Vector3(indexFollowingCheckPoint,-1,-1));
+        newTempRaceCheckPoint->setNextVirtualCheckpointsAsVector3(Vector3(indexFollowingCheckPoint,-1,-1));
 
-        Vector3 temp = previousCheckpoint->getNextCheckpointsAsVector3();
+        Vector3 temp = previousCheckpoint->getVirtualNextCheckpointsAsVector3();
         checkpoints_.insert(checkpoints_.end(), newTempRaceCheckPoint);
         int positionInNextCheckPoint;
         for (int i = 0; i <3; i++)
         {
-            if(previousCheckpoint->getNextCheckpointsAsVector3()[i]==indexFollowingCheckPoint)
-            positionInNextCheckPoint=i;
+            if(previousCheckpoint->getVirtualNextCheckpointsAsVector3()[i] == indexFollowingCheckPoint)
+                positionInNextCheckPoint=i;
         }
         switch(positionInNextCheckPoint)
         {
@@ -293,9 +288,13 @@ namespace orxonox
             case 1: temp.y=virtualCheckPointIndex; break;
             case 2: temp.z=virtualCheckPointIndex; break;
         }
-        previousCheckpoint->setNextCheckpointsAsVector3(temp);
+        previousCheckpoint->setNextVirtualCheckpointsAsVector3(temp); //Existiert internes Problem bei negativen index fueer next Checkpoint
         virtualCheckPointIndex--;
-        OrxAssert(virtualCheckPointIndex < -1, "TO much virtual cp");
+        //OrxAssert(virtualCheckPointIndex < -1, "TO much virtual cp");
+        /*orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<", following:"<<indexFollowingCheckPoint<<" :       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
+        temp=previousCheckpoint->getNextCheckpointsAsVector3();
+        orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<":       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
+        orxout()<<endl;*/
         return newTempRaceCheckPoint;
     }
 
@@ -314,28 +313,31 @@ namespace orxonox
         //FOR virtual Checkpoints
         if(nextRaceCheckpoint_->getCheckpointIndex() < 0)
         {
-            if( distanceSpaceshipToCheckPoint(nextRaceCheckpoint_) < 30)
+            if( distanceSpaceshipToCheckPoint(nextRaceCheckpoint_) < 200)
             {
                 currentRaceCheckpoint_=nextRaceCheckpoint_;
                 nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
                 lastPositionSpaceship=this->getControllableEntity()->getPosition();
+                orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
             }
         }
 
         if (nextRaceCheckpoint_->playerWasHere(this->getControllableEntity()->getPlayer()))
         {//Checkpoint erreicht
+
             currentRaceCheckpoint_=nextRaceCheckpoint_;
             OrxAssert(nextRaceCheckpoint_, "next race checkpoint undefined");
             nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
             lastPositionSpaceship=this->getControllableEntity()->getPosition();
+            orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
         }
         else if ((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt > ADJUSTDISTANCE)
         {
             nextRaceCheckpoint_ = adjustNextPoint();
             lastPositionSpaceship=this->getControllableEntity()->getPosition();
         }
-        //TODO: korrigieren!
 
+        // Abmessung fuer MINDISTANCE gut;
         else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt< MINDISTANCE )
         {
             this->moveToPosition(Vector3(rnd()*100,rnd()*100,rnd()*100));

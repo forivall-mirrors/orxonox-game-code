@@ -59,12 +59,24 @@ namespace orxonox
             }
 
             void setNextCheckpointsAsVector3(const Vector3& checkpoints);
-            Vector3 getNextCheckpointsAsVector3() const;
-            const std::set<int>& getNextCheckpoints() const
+            Vector3 getNextCheckpointsAsVector3();
+            Vector3 getVirtualNextCheckpointsAsVector3() const;
+            void setNextVirtualCheckpointsAsVector3(const Vector3& checkpoints);
+            int changeVirtualToRealCheckPoint(int);
+
+            const std::set<int>& getVirtualNextCheckpoints() const
             {
                 return this->nextCheckpoints_;
             }
-
+            std::set<int> getNextCheckpoints()
+            {
+                std::set<int> temp;
+                std::set<int> temp2=getVirtualNextCheckpoints();
+                for (std::set<int>::iterator it = temp2.begin(); it!=temp2.end(); ++it){
+                    temp.insert(changeVirtualToRealCheckPoint((*it)));
+                }
+                return temp;
+            }
             inline void setLast(bool isLast)
             {
                 this->bIsLast_ = isLast;
@@ -90,6 +102,7 @@ namespace orxonox
             }
 
         protected:
+
             virtual void fire(bool bIsTriggered, BaseObject* originator);
 
             inline const WorldEntity* getWorldEntity() const
@@ -98,12 +111,14 @@ namespace orxonox
             }
 
         private:
+
             int checkpointIndex_; ///< The index of this check point. The race starts with the check point with the index 0
             std::set<int> nextCheckpoints_; ///< the indexes of the next check points
             bool bIsLast_; ///< True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
             float timeLimit_; ///< The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
             std::vector<PlayerInfo*> players_; ///< The player that reached the checkpoint
             Vector3 myPosition_;
+            std::map<int,int> virtualToRealCheckPoints_; // if virtualChepoint was inserted the original can be reconstructed
     };
 }
 
