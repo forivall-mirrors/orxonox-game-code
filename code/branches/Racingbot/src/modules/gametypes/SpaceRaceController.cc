@@ -65,7 +65,7 @@ namespace orxonox
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
         checkpoints_=checkpoints;
-        orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;
+        /*orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;
         for(std::vector<RaceCheckPoint*>::iterator it=checkpoints_.begin(); it!=checkpoints_.end(); it++)
         {
             orxout()<<"Checkpoint "<<(*it)->getCheckpointIndex()<<"; NExtReal: ";
@@ -83,7 +83,7 @@ namespace orxonox
             }
             orxout()<<endl<<endl;
 
-        }//ausgabe
+        }//ausgabe*/
 
         for( std::vector<RaceCheckPoint*>::iterator it = checkpoints.begin(); it!=checkpoints.end(); ++it)
         {
@@ -98,7 +98,7 @@ namespace orxonox
                     placeVirtualCheckpoints((*it), point2);
                 }
             }
-        }
+        }/*
         for(std::vector<RaceCheckPoint*>::iterator it=checkpoints_.begin(); it!=checkpoints_.end(); it++)
         {
             orxout()<<"Checkpoint "<<(*it)->getCheckpointIndex()<<"; NExtReal: ";
@@ -117,7 +117,7 @@ namespace orxonox
             orxout()<<endl;
 
         }//ausgabe
-        orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;
+        orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;*/
         staticRacePoints_ = findStaticCheckpoints(checkpoints);
         // initialisation of currentRaceCheckpoint_
         currentRaceCheckpoint_ = NULL;
@@ -127,7 +127,7 @@ namespace orxonox
         {
             continue;
         }
-        orxout()<<"Die ANzahl der virtuellen CP betraegt: "<< (-i)-2<<endl;
+        //orxout()<<"Die ANzahl der virtuellen CP betraegt: "<< (-i)-2<<endl;
 
     }
 
@@ -189,7 +189,7 @@ namespace orxonox
             {
                 if(currentCheckpoint==findCheckpoint(*it))
                 {
-                    orxout() << currentCheckpoint->getCheckpointIndex()<<endl;
+                    //orxout() << currentCheckpoint->getCheckpointIndex()<<endl;
                     continue;
                 }
                 if(findCheckpoint(*it)==NULL){orxout()<<"Problematic Point: "<<(*it)<<endl;}
@@ -307,6 +307,7 @@ namespace orxonox
 
     RaceCheckPoint* SpaceRaceController::addVirtualCheckPoint( RaceCheckPoint* previousCheckpoint, int indexFollowingCheckPoint , Vector3 virtualCheckPointPosition )
     {
+        orxout()<<"add VCP at"<<virtualCheckPointPosition.x<<", "<<virtualCheckPointPosition.y<<", "<<virtualCheckPointPosition.z<<endl;
         RaceCheckPoint* newTempRaceCheckPoint;
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
         {
@@ -319,7 +320,7 @@ namespace orxonox
         newTempRaceCheckPoint->setNextVirtualCheckpointsAsVector3(Vector3(indexFollowingCheckPoint,-1,-1));
 
         Vector3 temp = previousCheckpoint->getVirtualNextCheckpointsAsVector3();
-        orxout()<<"temp bei 0: ="<< temp.x<< temp.y<< temp.z<<endl;
+        //orxout()<<"temp bei 0: ="<< temp.x<< temp.y<< temp.z<<endl;
         checkpoints_.insert(checkpoints_.end(), newTempRaceCheckPoint);
         int positionInNextCheckPoint;
         for (int i = 0; i <3; i++)
@@ -335,8 +336,8 @@ namespace orxonox
         }
         previousCheckpoint->setNextVirtualCheckpointsAsVector3(temp); //Existiert internes Problem bei negativen index fueer next Checkpoint
         virtualCheckPointIndex--;
-        orxout()<<"temp bei 1: ="<< temp.x<< temp.y<< temp.z<<endl;
-        orxout()<<"temp nach ausgabe: "<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().x<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().y<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().z<<endl;
+        //orxout()<<"temp bei 1: ="<< temp.x<< temp.y<< temp.z<<endl;
+        //orxout()<<"temp nach ausgabe: "<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().x<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().y<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().z<<endl;
         //OrxAssert(virtualCheckPointIndex < -1, "TO much virtual cp");
         /*orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<", following:"<<indexFollowingCheckPoint<<" :       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
          temp=previousCheckpoint->getNextCheckpointsAsVector3();
@@ -365,7 +366,7 @@ namespace orxonox
                 currentRaceCheckpoint_=nextRaceCheckpoint_;
                 nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
                 lastPositionSpaceship=this->getControllableEntity()->getPosition();
-                orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
+                //orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
             }
         }
 
@@ -376,7 +377,7 @@ namespace orxonox
             OrxAssert(nextRaceCheckpoint_, "next race checkpoint undefined");
             nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
             lastPositionSpaceship=this->getControllableEntity()->getPosition();
-            orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
+            //orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
         }
         else if ((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt > ADJUSTDISTANCE)
         {
@@ -496,7 +497,7 @@ namespace orxonox
 
         if(!directLinePossible(racepoint1, racepoint2, problematicObjects))
         {
-            orxout()<<"From "<<racepoint1->getCheckpointIndex()<<" to "<<racepoint2->getCheckpointIndex()<<"produces: "<< virtualCheckPointIndex<<endl;
+            //orxout()<<"From "<<racepoint1->getCheckpointIndex()<<" to "<<racepoint2->getCheckpointIndex()<<"produces: "<< virtualCheckPointIndex<<endl;
             computeVirtualCheckpoint(racepoint1, racepoint2, problematicObjects);
         }
 
