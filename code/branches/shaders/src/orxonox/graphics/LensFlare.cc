@@ -52,12 +52,14 @@ namespace orxonox
         
         this->lensConfiguration_=new std::vector<LensFlare::Lens*>();
         this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/burst"),1.0f,1.0f,1.0f)); //main burst
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/burst"),0.7f,1.2f,1.05f)); //secondary burst
         this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/bursthalo"),0.7f,0.9f,1.0f)); //halo around main burst
-        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo1"),0.4f,0.2f,0.8f)); //all the different distanced lenses
-        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo2"),0.7f,0.3f,0.7f));
-        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo3"),0.3f,0.4f,0.6f));
-        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo3"),0.1f,0.8f,0.4f));
-        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo1"),0.15f,0.5f,0.35f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/ring"),0.1f,2.5f,0.9f)); //all the different distanced lenses
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/iris"),0.1f,0.2f,0.5f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo5"),0.1f,0.3f,0.45f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo5"),0.4f,0.2f,0.35f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/iris"),0.1f,0.4f,0.25f));
+        this->lensConfiguration_->push_back(new LensFlare::Lens(new std::string("lensflare/halo4"),0.05f,0.2f,0.2f));
         
         this->createBillboards();
         
