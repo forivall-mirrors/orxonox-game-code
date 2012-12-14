@@ -63,8 +63,6 @@ namespace orxonox
 
         myPosition_= this->getPosition(); //eingefuegt
         //orxout(user_status) << "test" << std::endl;
-
-
     }
 
     RaceCheckPoint::~RaceCheckPoint()
@@ -108,26 +106,36 @@ namespace orxonox
 
     //Must not be called before setNextCheckpointsAsVector3 at least once has been called
     void RaceCheckPoint::setNextVirtualCheckpointsAsVector3(const Vector3& checkpoints){
-        std::set<int> lastcheckpoints=this->nextCheckpoints_;
+        /*std::set<int> lastcheckpoints=this->nextCheckpoints_;
         nextCheckpoints_.clear();
         std::set<int>::iterator it = lastcheckpoints.begin();
         if(checkpoints.x<-1){
             virtualToRealCheckPoints_.insert(std::pair<int,int>(checkpoints.x,(*it)));
             it++;
         }
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5)); // the red number has the type double and for the cast (to int) is added 0.5 so that the cast works correctly
+        if(checkpoints.x!=-1)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5)); // the red number has the type double and for the cast (to int) is added 0.5 so that the cast works correctly
 
         if(checkpoints.y<-1){
                     virtualToRealCheckPoints_.insert(std::pair<int,int>(checkpoints.y,(*it)));
                     it++;
         }
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
+        if(checkpoints.y!=-1)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
 
         if(checkpoints.z<-1){
                     virtualToRealCheckPoints_.insert(std::pair<int,int>(checkpoints.z,(*it)));
                     it++;
         }
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
+        if(checkpoints.z!=-1)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));*/
+        nextCheckpointsVirtual_.clear();
+        if(checkpoints.x!=-1)
+            nextCheckpointsVirtual_.insert(checkpoints.x);
+        if(checkpoints.y!=-1)
+                nextCheckpointsVirtual_.insert(checkpoints.y);
+        if(checkpoints.z!=-1)
+                nextCheckpointsVirtual_.insert(checkpoints.z);
     }
 
     void RaceCheckPoint::setNextCheckpointsAsVector3(const Vector3& checkpoints)
@@ -140,6 +148,8 @@ namespace orxonox
         this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
         if (checkpoints.z > -1)
         this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
+
+        this->nextCheckpointsVirtual_=nextCheckpoints_;
     }
 
     PlayerInfo* RaceCheckPoint::getPlayer(unsigned int clientID) const
@@ -174,7 +184,18 @@ namespace orxonox
 
     Vector3 RaceCheckPoint::getNextCheckpointsAsVector3()
     {
-        Vector3 checkpoints = getVirtualNextCheckpointsAsVector3();
+        Vector3 checkpoints(-1,-1,-1); int count=0;
+        for (std::set<int>::iterator it= nextCheckpoints_.begin();it!=nextCheckpoints_.end(); it++ ){
+            switch (count)
+                        {
+                            case 0: checkpoints.x = static_cast<Ogre::Real>(*it); break;
+                            case 1: checkpoints.y = static_cast<Ogre::Real>(*it); break;
+                            case 2: checkpoints.z = static_cast<Ogre::Real>(*it); break;
+                        }
+                        ++count;
+        }
+        return checkpoints;
+        //= getVirtualNextCheckpointsAsVector3();
         int j[3];
         j[0]=changeVirtualToRealCheckPoint(checkpoints.x);
         j[1]=changeVirtualToRealCheckPoint(checkpoints.y);
@@ -200,7 +221,7 @@ namespace orxonox
         Vector3 checkpoints = Vector3(-1, -1, -1);
 
         size_t count = 0;
-        for (std::set<int>::iterator it = this->nextCheckpoints_.begin(); it != this->nextCheckpoints_.end(); ++it)
+        for (std::set<int>::iterator it = this->nextCheckpointsVirtual_.begin(); it != this->nextCheckpointsVirtual_.end(); ++it)
         {
             switch (count)
             {

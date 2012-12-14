@@ -53,8 +53,8 @@ namespace orxonox
     SpaceRaceController::SpaceRaceController(BaseObject* creator) :
         ArtificialController(creator)
     {
-        RegisterObject(SpaceRaceController);
-        std::vector<RaceCheckPoint*> checkpoints;
+        RegisterObject(SpaceRaceController)
+;        std::vector<RaceCheckPoint*> checkpoints;
 
         virtualCheckPointIndex=-2;
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
@@ -65,25 +65,66 @@ namespace orxonox
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
         checkpoints_=checkpoints;
+        orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;
+        for(std::vector<RaceCheckPoint*>::iterator it=checkpoints_.begin(); it!=checkpoints_.end(); it++)
+        {
+            orxout()<<"Checkpoint "<<(*it)->getCheckpointIndex()<<"; NExtReal: ";
+            std::set<int> temp =(*it)->getNextCheckpoints();
+            for (std::set<int>::iterator ii =temp.begin(); ii!=temp.end(); ii++)
+            {
+                orxout()<<(*ii)<<", ";
+            }
+
+            orxout()<<" NextVirtual: ";
+            temp=(*it)->getVirtualNextCheckpoints();
+            for (std::set<int>::iterator ii =temp.begin(); ii!=temp.end(); ii++)
+            {
+                orxout()<<(*ii)<<", ";
+            }
+            orxout()<<endl<<endl;
+
+        }//ausgabe
 
         for( std::vector<RaceCheckPoint*>::iterator it = checkpoints.begin(); it!=checkpoints.end(); ++it)
         {
             std::set<int> nextCheckPoints = ((*it)->getNextCheckpoints());
-            if(!nextCheckPoints.empty()) {
-                for (std::set<int>::iterator numb = nextCheckPoints.begin(); numb!=nextCheckPoints.end(); numb++) {
+            if(!nextCheckPoints.empty())
+            {
+                for (std::set<int>::iterator numb = nextCheckPoints.begin(); numb!=nextCheckPoints.end(); numb++)
+                {
                     RaceCheckPoint* point2 = findCheckpoint((*numb));
 
                     if(point2 != NULL)
-                        placeVirtualCheckpoints((*it), point2);
+                    placeVirtualCheckpoints((*it), point2);
                 }
             }
         }
+        for(std::vector<RaceCheckPoint*>::iterator it=checkpoints_.begin(); it!=checkpoints_.end(); it++)
+        {
+            orxout()<<"Checkpoint "<<(*it)->getCheckpointIndex()<<"; NExtReal: ";
+            std::set<int> temp =(*it)->getNextCheckpoints();
+            for (std::set<int>::iterator ii =temp.begin(); ii!=temp.end(); ii++)
+            {
+                orxout()<<(*ii)<<", ";
+            }
+
+            orxout()<<" NextVirtual: ";
+            temp=(*it)->getVirtualNextCheckpoints();
+            for (std::set<int>::iterator ii =temp.begin(); ii!=temp.end(); ii++)
+            {
+                orxout()<<(*ii)<<", ";
+            }
+            orxout()<<endl;
+
+        }//ausgabe
+        orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;
         staticRacePoints_ = findStaticCheckpoints(checkpoints);
         // initialisation of currentRaceCheckpoint_
         currentRaceCheckpoint_ = NULL;
 
         int i;
-        for (i=-2; findCheckpoint(i)!= NULL; i--){
+        for (i=-2; findCheckpoint(i)!= NULL; i--)
+        {
             continue;
         }
         orxout()<<"Die ANzahl der virtuellen CP betraegt: "<< (-i)-2<<endl;
@@ -146,11 +187,13 @@ namespace orxonox
             int numberOfWays = 0; // counts number of ways from this Point to the last point
             for (std::set<int>::iterator it = currentCheckpoint->getVirtualNextCheckpoints().begin(); it!= currentCheckpoint->getVirtualNextCheckpoints().end(); ++it)
             {
-                if(currentCheckpoint==findCheckpoint(*it)){
+                if(currentCheckpoint==findCheckpoint(*it))
+                {
                     orxout() << currentCheckpoint->getCheckpointIndex()<<endl;
                     continue;
                 }
-               numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
+                if(findCheckpoint(*it)==NULL){orxout()<<"Problematic Point: "<<(*it)<<endl;}
+                numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
             }
             (*zaehler)[currentCheckpoint] += numberOfWays;
             return numberOfWays; // returns the number of ways from this point to the last one
@@ -265,7 +308,8 @@ namespace orxonox
     RaceCheckPoint* SpaceRaceController::addVirtualCheckPoint( RaceCheckPoint* previousCheckpoint, int indexFollowingCheckPoint , Vector3 virtualCheckPointPosition )
     {
         RaceCheckPoint* newTempRaceCheckPoint;
-        for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it){
+        for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
+        {
             newTempRaceCheckPoint = new RaceCheckPoint((*it));
         }
         newTempRaceCheckPoint->setVisible(false);
@@ -275,12 +319,13 @@ namespace orxonox
         newTempRaceCheckPoint->setNextVirtualCheckpointsAsVector3(Vector3(indexFollowingCheckPoint,-1,-1));
 
         Vector3 temp = previousCheckpoint->getVirtualNextCheckpointsAsVector3();
+        orxout()<<"temp bei 0: ="<< temp.x<< temp.y<< temp.z<<endl;
         checkpoints_.insert(checkpoints_.end(), newTempRaceCheckPoint);
         int positionInNextCheckPoint;
         for (int i = 0; i <3; i++)
         {
             if(previousCheckpoint->getVirtualNextCheckpointsAsVector3()[i] == indexFollowingCheckPoint)
-                positionInNextCheckPoint=i;
+            positionInNextCheckPoint=i;
         }
         switch(positionInNextCheckPoint)
         {
@@ -290,11 +335,13 @@ namespace orxonox
         }
         previousCheckpoint->setNextVirtualCheckpointsAsVector3(temp); //Existiert internes Problem bei negativen index fueer next Checkpoint
         virtualCheckPointIndex--;
+        orxout()<<"temp bei 1: ="<< temp.x<< temp.y<< temp.z<<endl;
+        orxout()<<"temp nach ausgabe: "<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().x<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().y<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().z<<endl;
         //OrxAssert(virtualCheckPointIndex < -1, "TO much virtual cp");
         /*orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<", following:"<<indexFollowingCheckPoint<<" :       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
-        temp=previousCheckpoint->getNextCheckpointsAsVector3();
-        orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<":       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
-        orxout()<<endl;*/
+         temp=previousCheckpoint->getNextCheckpointsAsVector3();
+         orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<":       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
+         orxout()<<endl;*/
         return newTempRaceCheckPoint;
     }
 
@@ -338,6 +385,7 @@ namespace orxonox
         }
 
         // Abmessung fuer MINDISTANCE gut;
+
         else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt< MINDISTANCE )
         {
             this->moveToPosition(Vector3(rnd()*100,rnd()*100,rnd()*100));
@@ -362,22 +410,26 @@ namespace orxonox
 
     }
 
-    bool SpaceRaceController::directLinePossible(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects){
+    bool SpaceRaceController::directLinePossible(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects)
+    {
 
         Vector3 cP1ToCP2=(racepoint2->getPosition()-racepoint1->getPosition()) / (racepoint2->getPosition()-racepoint1->getPosition()).length(); //unit Vector
         Vector3 centerCP1=racepoint1->getPosition();
         btVector3 positionObject;
         btScalar radiusObject;
 
-        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it!=allObjects.end(); ++it){
-            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++){
+        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it!=allObjects.end(); ++it)
+        {
+            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
+            {
                 btCollisionShape* currentShape = (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape();
                 if(currentShape == NULL)
-                    continue;
+                continue;
 
                 currentShape->getBoundingSphere(positionObject,radiusObject);
                 Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
-                if((powf((cP1ToCP2.dotProduct(centerCP1-positionObjectNonBT)),2)-(centerCP1-positionObjectNonBT).dotProduct(centerCP1-positionObjectNonBT)+powf(radiusObject, 2))>0){
+                if((powf((cP1ToCP2.dotProduct(centerCP1-positionObjectNonBT)),2)-(centerCP1-positionObjectNonBT).dotProduct(centerCP1-positionObjectNonBT)+powf(radiusObject, 2))>0)
+                {
                     return false;
                 }
 
@@ -387,42 +439,44 @@ namespace orxonox
 
     }
 
-    void SpaceRaceController::computeVirtualCheckpoint(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects){
-                Vector3 cP1ToCP2=(racepoint2->getPosition()-racepoint1->getPosition()) / (racepoint2->getPosition()-racepoint1->getPosition()).length(); //unit Vector
-                Vector3 centerCP1=racepoint1->getPosition();
-                btVector3 positionObject;
-                btScalar radiusObject;
+    void SpaceRaceController::computeVirtualCheckpoint(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects)
+    {
+        Vector3 cP1ToCP2=(racepoint2->getPosition()-racepoint1->getPosition()) / (racepoint2->getPosition()-racepoint1->getPosition()).length(); //unit Vector
+        Vector3 centerCP1=racepoint1->getPosition();
+        btVector3 positionObject;
+        btScalar radiusObject;
 
-                for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it!=allObjects.end(); ++it){
-                    for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++){
-                        btCollisionShape* currentShape = (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape();
-                        if(currentShape == NULL)
-                            continue;
+        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it!=allObjects.end(); ++it)
+        {
+            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
+            {
+                btCollisionShape* currentShape = (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape();
+                if(currentShape == NULL)
+                continue;
 
-                        currentShape->getBoundingSphere(positionObject,radiusObject);
-                        Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
-                        if((powf((cP1ToCP2.dotProduct(centerCP1-positionObjectNonBT)),2)-(centerCP1-positionObjectNonBT).dotProduct(centerCP1-positionObjectNonBT)+powf(radiusObject, 2))>0){
-                            Vector3 zufall;
-                            Vector3 objectmiddle=positionObjectNonBT;
-                            do{
-                                      zufall=Vector3(rnd(),rnd(),rnd());//random
-                            }while((zufall.crossProduct(objectmiddle-racepoint1->getPosition())).length()==0);
+                currentShape->getBoundingSphere(positionObject,radiusObject);
+                Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
+                if((powf((cP1ToCP2.dotProduct(centerCP1-positionObjectNonBT)),2)-(centerCP1-positionObjectNonBT).dotProduct(centerCP1-positionObjectNonBT)+powf(radiusObject, 2))>0)
+                {
+                    Vector3 zufall;
+                    Vector3 objectmiddle=positionObjectNonBT;
+                    do
+                    {
+                        zufall=Vector3(rnd(),rnd(),rnd());//random
+                    }while((zufall.crossProduct(objectmiddle-racepoint1->getPosition())).length()==0);
 
-
-                            Vector3 normalvec=zufall.crossProduct(objectmiddle-racepoint1->getPosition());
-                            // a'/b'=a/b => a' =b'*a/b
-                            float laengeNormalvec=(objectmiddle-racepoint1->getPosition()).length()/sqrt((objectmiddle-racepoint1->getPosition()).squaredLength()-radiusObject*radiusObject)*radiusObject;
-                            RaceCheckPoint* newVirtualCheckpoint=addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), objectmiddle+normalvec/normalvec.length()*laengeNormalvec);
-                            //placeVirtualCheckpoints(newVirtualCheckpoint, racepoint2);
-                            return;
-                        }
-
-                    }
+                    Vector3 normalvec=zufall.crossProduct(objectmiddle-racepoint1->getPosition());
+                    // a'/b'=a/b => a' =b'*a/b
+                    float laengeNormalvec=(objectmiddle-racepoint1->getPosition()).length()/sqrt((objectmiddle-racepoint1->getPosition()).squaredLength()-radiusObject*radiusObject)*radiusObject;
+                    RaceCheckPoint* newVirtualCheckpoint=addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), objectmiddle+normalvec/normalvec.length()*laengeNormalvec);
+                    //placeVirtualCheckpoints(newVirtualCheckpoint, racepoint2);
+                    return;
                 }
 
+            }
+        }
+
     }
-
-
 
     void SpaceRaceController::placeVirtualCheckpoints(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2)
     {
@@ -440,97 +494,98 @@ namespace orxonox
             //it->getScale3D();// vector fuer halbe wuerfellaenge
         }
 
-        if(!directLinePossible(racepoint1, racepoint2, problematicObjects)) {
+        if(!directLinePossible(racepoint1, racepoint2, problematicObjects))
+        {
+            orxout()<<"From "<<racepoint1->getCheckpointIndex()<<" to "<<racepoint2->getCheckpointIndex()<<"produces: "<< virtualCheckPointIndex<<endl;
             computeVirtualCheckpoint(racepoint1, racepoint2, problematicObjects);
         }
 
+        //
+        //        do{
+        //            zufall=Vector3(rnd(),rnd(),rnd());//random
+        //        }while((zufall.crossProduct(objectmiddle-racepoint1->getPosition())).length()==0);
+        //
+        //        Vector3 normalvec=zufall.crossProduct(objectmiddle-racepoint1->getPosition());
+        //        // a'/b'=a/b => a' =b'*a/b
+        //        float laengeNormalvec=(objectmiddle-racepoint1->getPosition()).length()/sqrt((objectmiddle-racepoint1->getPosition()).squaredLength()-radius*radius)*radius;
+        //        addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), objectmiddle+normalvec/normalvec.length()*laengeNormalvec);
 
-//
-//        do{
-//            zufall=Vector3(rnd(),rnd(),rnd());//random
-//        }while((zufall.crossProduct(objectmiddle-racepoint1->getPosition())).length()==0);
-//
-//        Vector3 normalvec=zufall.crossProduct(objectmiddle-racepoint1->getPosition());
-//        // a'/b'=a/b => a' =b'*a/b
-//        float laengeNormalvec=(objectmiddle-racepoint1->getPosition()).length()/sqrt((objectmiddle-racepoint1->getPosition()).squaredLength()-radius*radius)*radius;
-//        addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), objectmiddle+normalvec/normalvec.length()*laengeNormalvec);
-
-//        Vector3 richtungen [6];
-//        richtungen[0]= Vector3(1,0,0);
-//        richtungen[1]= Vector3(-1,0,0);
-//        richtungen[2]= Vector3(0,1,0);
-//        richtungen[3]= Vector3(0,-1,0);
-//        richtungen[4]= Vector3(0,0,1);
-//        richtungen[5]= Vector3(0,0,-1);
-//
-//        for (int i = 0; i< 6; i++)
-//        {
-//            const int STEPS=100;
-//            const float PHI=1.1;
-//            bool collision=false;
-//
-//            for (int j =0; j<STEPS; j++)
-//            {
-//                Vector3 tempPosition=(point1 - (point2-point1+richtungen[i]*PHI)*(float)j/STEPS);
-//                for (std::vector<StaticEntity*>::iterator it = problematicObjects.begin(); it!=problematicObjects.end(); ++it)
-//                {
-//                    btVector3 positionObject;
-//                    btScalar radiusObject;
-//                    if((*it)==NULL)
-//                    {   orxout()<<"Problempoint 1.1"<<endl; continue;}
-//                    //TODO: Probably it points on a wrong object
-//                    for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
-//                    {
-//                        if((*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()==NULL)
-//                        {    continue;}
-//
-//                        orxout()<<"Problempoint 2.1"<<endl;
-//                        (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()->getBoundingSphere(positionObject,radiusObject);
-//                        Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
-//                        if (((tempPosition - positionObjectNonBT).length()<radiusObject) && (vergleicheQuader((tempPosition-positionObjectNonBT),(*it)->getScale3D())))
-//                        {
-//                            collision=true; break;
-//                        }
-//                    }
-//                    if(collision) break;
-//                }
-//                if(collision)break;
-//            }
-//            if(collision) continue;
-//            // no collision => possible Way
-//            for (float j =0; j<STEPS; j++)
-//            {
-//                Vector3 possiblePosition=(point1 - (point2-point1+richtungen[i]*PHI)*j/STEPS);
-//                collision=false;
-//                for(int ij=0; ij<STEPS; j++)
-//                {
-//                    Vector3 tempPosition=(possiblePosition - (point2-possiblePosition)*(float)ij/STEPS);
-//                    for (std::vector<StaticEntity*>::iterator it = problematicObjects.begin(); it!=problematicObjects.end(); ++it)
-//                    {
-//                        btVector3 positionObject;
-//                        btScalar radiusObject;
-//                        if((*it)==NULL)
-//                        {   orxout()<<"Problempoint 1"<<endl; continue;}
-//                        for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
-//                        {
-//                            if((*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()==NULL)
-//                            {   orxout()<<"Problempoint 2.2"<<endl; continue;}
-//                            (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()->getBoundingSphere(positionObject,radiusObject);
-//                            Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
-//                            if (((tempPosition-positionObjectNonBT).length()<radiusObject) && (vergleicheQuader((tempPosition-positionObjectNonBT),(*it)->getScale3D())))
-//                            {
-//                                collision=true; break;
-//                            }
-//                        }
-//                        if(collision) break;
-//                    }
-//                    if(collision)break;
-//                    //addVirtualCheckPoint(racepoint1, racepoint2->getCheckpointIndex(), possiblePosition);
-//                    return;
-//                }
-//
-//            }
-//        }
+        //        Vector3 richtungen [6];
+        //        richtungen[0]= Vector3(1,0,0);
+        //        richtungen[1]= Vector3(-1,0,0);
+        //        richtungen[2]= Vector3(0,1,0);
+        //        richtungen[3]= Vector3(0,-1,0);
+        //        richtungen[4]= Vector3(0,0,1);
+        //        richtungen[5]= Vector3(0,0,-1);
+        //
+        //        for (int i = 0; i< 6; i++)
+        //        {
+        //            const int STEPS=100;
+        //            const float PHI=1.1;
+        //            bool collision=false;
+        //
+        //            for (int j =0; j<STEPS; j++)
+        //            {
+        //                Vector3 tempPosition=(point1 - (point2-point1+richtungen[i]*PHI)*(float)j/STEPS);
+        //                for (std::vector<StaticEntity*>::iterator it = problematicObjects.begin(); it!=problematicObjects.end(); ++it)
+        //                {
+        //                    btVector3 positionObject;
+        //                    btScalar radiusObject;
+        //                    if((*it)==NULL)
+        //                    {   orxout()<<"Problempoint 1.1"<<endl; continue;}
+        //                    //TODO: Probably it points on a wrong object
+        //                    for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
+        //                    {
+        //                        if((*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()==NULL)
+        //                        {    continue;}
+        //
+        //                        orxout()<<"Problempoint 2.1"<<endl;
+        //                        (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()->getBoundingSphere(positionObject,radiusObject);
+        //                        Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
+        //                        if (((tempPosition - positionObjectNonBT).length()<radiusObject) && (vergleicheQuader((tempPosition-positionObjectNonBT),(*it)->getScale3D())))
+        //                        {
+        //                            collision=true; break;
+        //                        }
+        //                    }
+        //                    if(collision) break;
+        //                }
+        //                if(collision)break;
+        //            }
+        //            if(collision) continue;
+        //            // no collision => possible Way
+        //            for (float j =0; j<STEPS; j++)
+        //            {
+        //                Vector3 possiblePosition=(point1 - (point2-point1+richtungen[i]*PHI)*j/STEPS);
+        //                collision=false;
+        //                for(int ij=0; ij<STEPS; j++)
+        //                {
+        //                    Vector3 tempPosition=(possiblePosition - (point2-possiblePosition)*(float)ij/STEPS);
+        //                    for (std::vector<StaticEntity*>::iterator it = problematicObjects.begin(); it!=problematicObjects.end(); ++it)
+        //                    {
+        //                        btVector3 positionObject;
+        //                        btScalar radiusObject;
+        //                        if((*it)==NULL)
+        //                        {   orxout()<<"Problempoint 1"<<endl; continue;}
+        //                        for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
+        //                        {
+        //                            if((*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()==NULL)
+        //                            {   orxout()<<"Problempoint 2.2"<<endl; continue;}
+        //                            (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape()->getBoundingSphere(positionObject,radiusObject);
+        //                            Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
+        //                            if (((tempPosition-positionObjectNonBT).length()<radiusObject) && (vergleicheQuader((tempPosition-positionObjectNonBT),(*it)->getScale3D())))
+        //                            {
+        //                                collision=true; break;
+        //                            }
+        //                        }
+        //                        if(collision) break;
+        //                    }
+        //                    if(collision)break;
+        //                    //addVirtualCheckPoint(racepoint1, racepoint2->getCheckpointIndex(), possiblePosition);
+        //                    return;
+        //                }
+        //
+        //            }
+        //        }
 
     }
 }

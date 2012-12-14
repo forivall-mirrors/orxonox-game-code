@@ -66,10 +66,12 @@ namespace orxonox
 
             const std::set<int>& getVirtualNextCheckpoints() const
             {
-                return this->nextCheckpoints_;
+                return this->nextCheckpointsVirtual_;
             }
-            std::set<int> getNextCheckpoints()
+
+            const std::set<int>& getNextCheckpoints()
             {
+                return nextCheckpoints_;
                 std::set<int> temp;
                 std::set<int> temp2=getVirtualNextCheckpoints();
                 for (std::set<int>::iterator it = temp2.begin(); it!=temp2.end(); ++it){
@@ -118,6 +120,7 @@ namespace orxonox
             float timeLimit_; ///< The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
             std::vector<PlayerInfo*> players_; ///< The player that reached the checkpoint
             Vector3 myPosition_;
+            std::set<int>  nextCheckpointsVirtual_;
             std::map<int,int> virtualToRealCheckPoints_; // if virtualChepoint was inserted the original can be reconstructed
     };
 }
