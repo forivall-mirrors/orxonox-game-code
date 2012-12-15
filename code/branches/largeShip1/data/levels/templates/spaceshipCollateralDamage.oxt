@@ -1,3 +1,4 @@
+<!-- keuschr /-->
 <Template name=spaceshipcollateraldamage>
   <SpaceShip
    hudtemplate            = spaceshiphud
