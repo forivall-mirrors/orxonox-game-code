@@ -1,0 +1,168 @@
+<!-- NEW FEATURES:
+- Three new Spaceships: collateralDamage; planetDestroyer; lightEscortship;
+- Shaders (not included here, since the ogre plugin is missing on Ubuntu)
+- Sound Effects (not included)
+- Animation (not included)
+- HUD aiming assistant
+- Turret
+- Racing Bots
+-->
+<LevelInfo
+ name = "Presentation HS 2012"
+ description = "New Features: new Spaceships, Racing AI, HUD Aiming Assistant, Turret, Shaders, Sound Effects"
+ tags = "presentation"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/bigship.oxt")
+  include("templates/spaceshipTurret.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
+?>
+
+<Level
+  gametype = SpaceRace
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+    <!--SpawnPoint team=0 position="-800,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort /-->
+    <!--SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=bigship /-->
+    <SpawnPoint team=0 position="-900,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage />
+    
+    <SpaceRaceManager>
+        <checkpoints>
+            <RaceCheckPoint name="checkpoint1" position="000,0,0" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false" nextcheckpoints="1,2,3">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+<!--- first three alternative paths --->
+            <RaceCheckPoint name="checkpoint2" position="1300,0,-800" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false" nextcheckpoints="7,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90/>
+                </attached>
+            </RaceCheckPoint>
+
+            <RaceCheckPoint name="checkpoint3" position="1200,-400,0" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false" nextcheckpoints="5,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+            <RaceCheckPoint name="checkpoint4" position="1200,100,700" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="false" nextcheckpoints="6,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+<!--- second three alternative paths --->
+            <!--RaceCheckPoint name="checkpoint5" position="2000,500,-400" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="4" islast="false" nextcheckpoints="7,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint-->
+
+            <RaceCheckPoint name="checkpoint6" position="2000,0,0" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="5" islast="false" nextcheckpoints="8,9,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+            <RaceCheckPoint name="checkpoint7" position="2000,-500,400" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="6" islast="false" nextcheckpoints="10,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+
+<!--- third generation --->
+
+            <RaceCheckPoint name="checkpoint8" position="5000,0,-3000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="7" islast="false" nextcheckpoints="12,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=135 />
+                </attached>
+            </RaceCheckPoint>
+
+            <RaceCheckPoint name="checkpoint9" position="3500,800,0" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="8" islast="false" nextcheckpoints="11,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+            <RaceCheckPoint name="checkpoint10" position="3500,-800,0" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="9" islast="false" nextcheckpoints="11,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+            <RaceCheckPoint name="checkpoint11" position="3500,0,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="10" islast="false" nextcheckpoints="12,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+<!-- Intermediate -->
+            <RaceCheckPoint name="checkpoint12" position="4500,0,-100" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="11" islast="false" nextcheckpoints="12,-1,-1">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=90 />
+                </attached>
+            </RaceCheckPoint>
+
+<!----  GOAL  ---->
+            <RaceCheckPoint name="checkpoint13" position="6000,0,2000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="12" islast="true">
+                <attached>
+                    <Model mass="50" scale="7" mesh="BigSpacegate.mesh" yaw=100 />
+                </attached>
+            </RaceCheckPoint>
+        </checkpoints>
+    </SpaceRaceManager>
+
+<!-- Simplify paths -->
+    <!-- PORTALS -->
+
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" scale="3"/>
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="2000,0,-1000" id="3" distance="60" target="MobileEntity" design="PortalDefault" />
+    <PortalEndPoint position="4500,0,-3400" id="4" distance="60" target="MobileEntity" design="PortalDefault" />
+    <PortalLink fromID="3" toID="4" />
+    <PortalLink fromID="4" toID="3" />
+
+
+    <!-- ForceField -->
+
+
+
+   <!-- Pickup -->
+   <PickupSpawner pickup=mediumspeedpickup position="5300,0,-2300" triggerDistance="60" respawnTime="10" maxSpawnedItems="99" scale="12" />
+
+  </Scene>
+</Level>
+
