@@ -31,6 +31,7 @@
 #include "controllers/ArtificialController.h"
 #include "gametypes/Gametype.h"
 #include "gametypes/RaceCheckPoint.h"
+#include "util/Math.h"
 
 namespace orxonox
 {

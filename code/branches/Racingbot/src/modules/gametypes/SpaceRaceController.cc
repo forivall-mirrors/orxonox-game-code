@@ -41,6 +41,7 @@
 #include "collisionshapes/CollisionShape.h"
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 
+
 namespace orxonox
 {
     CreateFactory(SpaceRaceController);
@@ -56,15 +57,15 @@ namespace orxonox
         RegisterObject(SpaceRaceController)
 ;        std::vector<RaceCheckPoint*> checkpoints;
 
-        virtualCheckPointIndex=-2;
-        for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it!= ObjectList<SpaceRaceManager>::end(); ++it)
+        virtualCheckPointIndex = -2;
+        for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it != ObjectList<SpaceRaceManager>::end(); ++it)
         {
             checkpoints = it->getAllCheckpoints();
-            nextRaceCheckpoint_=it->findCheckpoint(0);
+            nextRaceCheckpoint_ = it->findCheckpoint(0);
         }
 
         OrxAssert(!checkpoints.empty(), "No Checkpoints in Level");
-        checkpoints_=checkpoints;
+        checkpoints_ = checkpoints;
         /*orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;
         for(std::vector<RaceCheckPoint*>::iterator it=checkpoints_.begin(); it!=checkpoints_.end(); it++)
         {
@@ -85,7 +86,7 @@ namespace orxonox
 
         }//ausgabe*/
 
-        for( std::vector<RaceCheckPoint*>::iterator it = checkpoints.begin(); it!=checkpoints.end(); ++it)
+        for (std::vector<RaceCheckPoint*>::iterator it = checkpoints.begin(); it != checkpoints.end(); ++it)
         {
             std::set<int> nextCheckPoints = ((*it)->getNextCheckpoints());
             if(!nextCheckPoints.empty())
@@ -123,7 +124,7 @@ namespace orxonox
         currentRaceCheckpoint_ = NULL;
 
         int i;
-        for (i=-2; findCheckpoint(i)!= NULL; i--)
+        for (i = -2; findCheckpoint(i) != NULL; i--)
         {
             continue;
         }
@@ -139,7 +140,6 @@ namespace orxonox
         SUPER(SpaceRaceController, XMLPort, xmlelement, mode);
         XMLPortParam(ArtificialController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
         XMLPortObject(ArtificialController, WorldEntity, "waypoints", addWaypoint, getWaypoint, xmlelement, mode);
-
     }
 
     /*
@@ -148,7 +148,7 @@ namespace orxonox
      */
     std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(std::vector<RaceCheckPoint*> allCheckpoints)
     {
-        std::map<RaceCheckPoint*, int> * zaehler = new std::map<RaceCheckPoint*, int>(); // counts how many times the checkpoit was reached (for simulation)
+        std::map<RaceCheckPoint*, int> * zaehler = new std::map<RaceCheckPoint*, int>(); // counts how many times the checkpoint was reached (for simulation)
         for (unsigned int i = 0; i < allCheckpoints.size(); i++)
         {
             zaehler->insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
@@ -157,7 +157,7 @@ namespace orxonox
 
         std::vector<RaceCheckPoint*> returnVec;
         returnVec.clear();
-        for (std::map<RaceCheckPoint*, int>::iterator iter = zaehler->begin(); iter!= zaehler->end(); iter++)
+        for (std::map<RaceCheckPoint*, int>::iterator iter = zaehler->begin(); iter != zaehler->end(); iter++)
         {
             if (iter->second == maxWays)
             {
@@ -187,12 +187,13 @@ namespace orxonox
             int numberOfWays = 0; // counts number of ways from this Point to the last point
             for (std::set<int>::iterator it = currentCheckpoint->getVirtualNextCheckpoints().begin(); it!= currentCheckpoint->getVirtualNextCheckpoints().end(); ++it)
             {
-                if(currentCheckpoint==findCheckpoint(*it))
+                if(currentCheckpoint == findCheckpoint(*it))
                 {
                     //orxout() << currentCheckpoint->getCheckpointIndex()<<endl;
                     continue;
                 }
-                if(findCheckpoint(*it)==NULL){orxout()<<"Problematic Point: "<<(*it)<<endl;}
+                if(findCheckpoint(*it) == NULL)
+                    {orxout()<<"Problematic Point: "<<(*it)<<endl;}
                 numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
             }
             (*zaehler)[currentCheckpoint] += numberOfWays;
@@ -218,8 +219,7 @@ namespace orxonox
      */
     RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
     {
-        int distances[] =
-        {   -1, -1, -1};
+        int distances[] = {-1, -1, -1};
         int temp_i = 0;
         for (std::set<int>::iterator it =raceCheckpoint->getVirtualNextCheckpoints().begin(); it!= raceCheckpoint->getVirtualNextCheckpoints().end(); ++it)
         {
@@ -265,11 +265,11 @@ namespace orxonox
         else
         {
             int minimum = std::numeric_limits<int>::max();
-            for (std::set<int>::iterator it = currentCheckPoint->getVirtualNextCheckpoints().begin(); it!= currentCheckPoint->getVirtualNextCheckpoints().end(); ++it)
+            for (std::set<int>::iterator it = currentCheckPoint->getVirtualNextCheckpoints().begin(); it != currentCheckPoint->getVirtualNextCheckpoints().end(); ++it)
             {
                 int dist_currentCheckPoint_currentPosition = static_cast<int> ((currentPosition- currentCheckPoint->getPosition()).length());
 
-                minimum= std::min(minimum, dist_currentCheckPoint_currentPosition + recCalculateDistance(findCheckpoint(*it), currentCheckPoint->getPosition()));
+                minimum = std::min(minimum, dist_currentCheckPoint_currentPosition + recCalculateDistance(findCheckpoint(*it), currentCheckPoint->getPosition()));
                 // minimum of distanz from 'currentPosition' to the next static Checkpoint
             }
             return minimum;
@@ -373,55 +373,55 @@ namespace orxonox
         if (nextRaceCheckpoint_->playerWasHere(this->getControllableEntity()->getPlayer()))
         {//Checkpoint erreicht
 
-            currentRaceCheckpoint_=nextRaceCheckpoint_;
+            currentRaceCheckpoint_ = nextRaceCheckpoint_;
             OrxAssert(nextRaceCheckpoint_, "next race checkpoint undefined");
             nextRaceCheckpoint_ = nextPointFind(nextRaceCheckpoint_);
-            lastPositionSpaceship=this->getControllableEntity()->getPosition();
+            lastPositionSpaceship = this->getControllableEntity()->getPosition();
             //orxout()<< "CP "<< currentRaceCheckpoint_->getCheckpointIndex()<<" chanched to: "<< nextRaceCheckpoint_->getCheckpointIndex()<<endl;
         }
         else if ((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt > ADJUSTDISTANCE)
         {
             nextRaceCheckpoint_ = adjustNextPoint();
-            lastPositionSpaceship=this->getControllableEntity()->getPosition();
+            lastPositionSpaceship = this->getControllableEntity()->getPosition();
         }
 
         // Abmessung fuer MINDISTANCE gut;
 
-        else if((lastPositionSpaceship-this->getControllableEntity()->getPosition()).length()/dt< MINDISTANCE )
+        else if((lastPositionSpaceship - this->getControllableEntity()->getPosition()).length()/dt < MINDISTANCE )
         {
-            this->moveToPosition(Vector3(rnd()*100,rnd()*100,rnd()*100));
+            this->moveToPosition(Vector3(rnd()*100, rnd()*100, rnd()*100));
             this->spin();
             //orxout(user_status) << "Mindistance reached" << std::endl;
             return;
         }
         //orxout(user_status) << "dt= " << dt << ";  distance= " << (lastPositionSpaceship-this->getControllableEntity()->getPosition()).length() <<std::endl;
-        lastPositionSpaceship=this->getControllableEntity()->getPosition();
+        lastPositionSpaceship = this->getControllableEntity()->getPosition();
         this->moveToPosition(nextRaceCheckpoint_->getPosition());
     }
 
     // True if a coordinate of 'pointToPoint' is smaller then the corresponding coordinate of 'groesse'
     bool SpaceRaceController::vergleicheQuader(Vector3 pointToPoint, Vector3 groesse)
     {
-        if(abs(pointToPoint.x)<groesse.x)
-        return true;
-        if(abs(pointToPoint.y)<groesse.y)
-        return true;
-        if(abs(pointToPoint.z)<groesse.z)
-        return true;
+        if(abs(pointToPoint.x) < groesse.x)
+            return true;
+        if(abs(pointToPoint.y) < groesse.y)
+            return true;
+        if(abs(pointToPoint.z) < groesse.z)
+            return true;
 
     }
 
     bool SpaceRaceController::directLinePossible(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects)
     {
 
-        Vector3 cP1ToCP2=(racepoint2->getPosition()-racepoint1->getPosition()) / (racepoint2->getPosition()-racepoint1->getPosition()).length(); //unit Vector
-        Vector3 centerCP1=racepoint1->getPosition();
+        Vector3 cP1ToCP2 = (racepoint2->getPosition() - racepoint1->getPosition()) / (racepoint2->getPosition() - racepoint1->getPosition()).length(); //unit Vector
+        Vector3 centerCP1 = racepoint1->getPosition();
         btVector3 positionObject;
         btScalar radiusObject;
 
-        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it!=allObjects.end(); ++it)
+        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it != allObjects.end(); ++it)
         {
-            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
+            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape) != 0; everyShape++)
             {
                 btCollisionShape* currentShape = (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape();
                 if(currentShape == NULL)
@@ -440,16 +440,16 @@ namespace orxonox
 
     }
 
-    void SpaceRaceController::computeVirtualCheckpoint(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects)
+    void SpaceRaceController::computeVirtualCheckpoint(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2, std::vector<StaticEntity*> allObjects)
     {
         Vector3 cP1ToCP2=(racepoint2->getPosition()-racepoint1->getPosition()) / (racepoint2->getPosition()-racepoint1->getPosition()).length(); //unit Vector
         Vector3 centerCP1=racepoint1->getPosition();
         btVector3 positionObject;
         btScalar radiusObject;
 
-        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it!=allObjects.end(); ++it)
+        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it != allObjects.end(); ++it)
         {
-            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape)!=0; everyShape++)
+            for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape) != 0; everyShape++)
             {
                 btCollisionShape* currentShape = (*it)->getAttachedCollisionShape(everyShape)->getCollisionShape();
                 if(currentShape == NULL)
@@ -457,23 +457,28 @@ namespace orxonox
 
                 currentShape->getBoundingSphere(positionObject,radiusObject);
                 Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
-                if((powf((cP1ToCP2.dotProduct(centerCP1-positionObjectNonBT)),2)-(centerCP1-positionObjectNonBT).dotProduct(centerCP1-positionObjectNonBT)+powf(radiusObject, 2))>0)
-                {
-                    Vector3 zufall;
-                    Vector3 objectmiddle=positionObjectNonBT;
-                    do
-                    {
+				Vector3 norm_r_CP = cP1ToCP2.crossProduct(centerCP1-positionObjectNonBT);
+
+				if(norm_r_CP.length == 0){
+					Vector3 zufall;
+                    do{
                         zufall=Vector3(rnd(),rnd(),rnd());//random
-                    }while((zufall.crossProduct(objectmiddle-racepoint1->getPosition())).length()==0);
-
-                    Vector3 normalvec=zufall.crossProduct(objectmiddle-racepoint1->getPosition());
-                    // a'/b'=a/b => a' =b'*a/b
-                    float laengeNormalvec=(objectmiddle-racepoint1->getPosition()).length()/sqrt((objectmiddle-racepoint1->getPosition()).squaredLength()-radiusObject*radiusObject)*radiusObject;
-                    RaceCheckPoint* newVirtualCheckpoint=addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), objectmiddle+normalvec/normalvec.length()*laengeNormalvec);
-                    //placeVirtualCheckpoints(newVirtualCheckpoint, racepoint2);
-                    return;
-                }
-
+                    }while((zufall.crossProduct(cP1ToCP2)).length() == 0);
+					norm_r_CP=zufall.crossProduct(cP1ToCP2);
+				}
+				Vector3 VecToVCP = norm_r_CP.crossProduct(cP1ToCP2);
+				float distanzToCP1 = sqrt(powf(radiusObject,4)/(powf((centerCP1-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
+				float distanzToCP2 = sqrt(powf(radiusObject,4)/(powf((racepoint2->getPosition()-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
+				//TODO float distanz=max(distanzToCP1,distanzToCP2);
+				float distanz = 0.0f; //TEMPORARY
+				Vector3 newCheckpointPositionPos = positionObjectNonBT+(distanz*VecToVCP)/VecToVCP.length();
+				Vector3 newCheckpointPositionNeg = positionObjectNonBT-(distanz*VecToVCP)/VecToVCP.length();
+				if((newCheckpointPositionPos-centerCP1).length+(newCheckpointPositionPos-(centerCP1+cP1ToCP2)).length < (newCheckpointPositionNeg-centerCP1).length+(newCheckpointPositionNeg-(centerCP1+cP1ToCP2)).length){
+					RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionPos);
+				}else{
+					RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionNeg);
+				}
+				return;
             }
         }
 
@@ -488,7 +493,7 @@ namespace orxonox
         for (ObjectList<StaticEntity>::iterator it = ObjectList<StaticEntity>::begin(); it!= ObjectList<StaticEntity>::end(); ++it)
         {
 
-            if (dynamic_cast<RaceCheckPoint*>(*it)!=NULL)
+            if (dynamic_cast<RaceCheckPoint*>(*it) != NULL)
             {   continue;} // does not work jet
 
             problematicObjects.insert(problematicObjects.end(), *it);
