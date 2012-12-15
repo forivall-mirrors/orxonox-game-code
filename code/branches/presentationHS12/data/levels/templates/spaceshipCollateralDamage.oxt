@@ -2,14 +2,14 @@
 <Template name=spaceshipcollateraldamage>
   <SpaceShip
    hudtemplate            = spaceshiphud
-   camerapositiontemplate = spaceshipassffcameras
+   camerapositiontemplate = spaceshipCDcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
 
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
+   health            = 200
+   maxhealth         = 400
+   initialhealth     = 200
 
    shieldhealth        = 30
    initialshieldhealth = 30
@@ -39,8 +39,8 @@
    angularDamping    = 0.9999999
   >
     <engines>
-      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipassffengine />
-      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipassffengine />
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipCDengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipCDengine />
     </engines>
     <attached>
       <Model position="0,0,0" yaw=-90 pitch=0 roll=0 scale=4 mesh="collateralDamage.mesh" />
@@ -70,7 +70,7 @@
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipassffcameras defaults=0>
+<Template name=spaceshipCDcameras defaults=0>
   <SpaceShip>
     <camerapositions>
       <CameraPosition position="0,10, 40" drag=true mouselook=true />
@@ -81,7 +81,7 @@
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipassffengine baseclass=MultiStateEngine>
+<Template name=spaceshipCDengine baseclass=MultiStateEngine>
   <MultiStateEngine
    boostfactor    = 5
 
@@ -117,8 +117,8 @@
     </EffectContainer>
 
     <EffectContainer condition="normal or boost">
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 8, 0, 12" colour="1, 0.8, 0, 0.3" width=6 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=3 turnofftime=1 material="Flares/ThrusterFlare2" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-8, 0, 12" colour="1, 0.8, 0, 0.3" width=6 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=3 turnofftime=1 material="Flares/ThrusterFlare2" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 8, 0, 12" colour="1, 0.8, 0, 0.3" width=6 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=3 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-8, 0, 12" colour="1, 0.8, 0, 0.3" width=6 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=3 turnofftime=1 material="Flares/ThrusterFlare1" />
 
       <FadingBillboard mainstate=activity active=false scale=0.05 position="8, -1, 12" colour="1, 0.8, 0, 0.3" material="Examples/Flare" turnontime=1 turnofftime=0.5 />
       <FadingBillboard mainstate=activity active=false scale=0.05 position="-8, -1, 12" colour="1, 0.8, 0, 0.3" material="Examples/Flare" turnontime=1 turnofftime=0.5 />

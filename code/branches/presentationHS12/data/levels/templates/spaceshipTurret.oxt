@@ -1,7 +1,7 @@
 <Template name=spaceshipturret>
   <SpaceShip
    hudtemplate            = spaceshiphud
-   camerapositiontemplate = spaceshipassffcameras
+   camerapositiontemplate = spaceshipturretcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
@@ -46,5 +46,15 @@
 <?lua
   include("../includes/weaponSettingsTurret.oxi")
 ?>
+  </SpaceShip>
+</Template>
+
+<Template name=spaceshipturretcameras defaults=0>
+  <SpaceShip>
+    <camerapositions>
+      <CameraPosition position="0,10, 40" drag=true mouselook=true />
+      <CameraPosition position="0,20, 80" drag=true mouselook=true />
+      <CameraPosition position="0,30,120" drag=true mouselook=true />
+    </camerapositions>
   </SpaceShip>
 </Template>

@@ -12,7 +12,7 @@
 ?>
 
 <?lua
-  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipCollateralDamage.oxt")
 ?>

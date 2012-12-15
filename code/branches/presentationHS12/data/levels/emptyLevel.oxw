@@ -1,7 +1,7 @@
 <LevelInfo
- name = "Empty level"
- description = "A level with absolutely nothing in it."
- tags = "test"
+ name = "Presentation HS 2012"
+ description = "Orxonox Proudly Presents"
+ tags = "presentation"
  screenshot = "emptylevel.png"
 />
 

@@ -1,7 +1,7 @@
 <Template name=bigship>
   <SpaceShip
    hudtemplate            = spaceshiphud
-   camerapositiontemplate = spaceshipassffcameras
+   camerapositiontemplate = bigshipcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
@@ -24,9 +24,9 @@
    lift = 1;
    stallSpeed = 220;
 
-   boostPower            = 15
-   boostPowerRate        = 1
-   boostRate             = 5
+   boostPower            = 30
+   boostPowerRate        = 1.5
+   boostRate             = 4
    boostCooldownDuration = 10
 
    shakeFrequency = 15
@@ -38,8 +38,8 @@
    angularDamping    = 0.9999999
   >
     <engines>
-      <MultiStateEngine position=" 15, 0, 0" template=spaceshipassffengine />
-      <MultiStateEngine position="-15, 0, 0" template=spaceshipassffengine />
+      <MultiStateEngine position=" 15, 0, 0" template=bigshipengine />
+      <MultiStateEngine position="-15, 0, 0" template=bigshipengine />
     </engines>
     <attached>
 
@@ -88,17 +88,17 @@
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipassffcameras defaults=0>
+<Template name=bigshipcameras defaults=0>
   <SpaceShip>
     <camerapositions>
       <CameraPosition position="0,30, 50" drag=true mouselook=true />
-      <CameraPosition position="0,40, 80" drag=true mouselook=true />
       <CameraPosition position="0,10,80" drag=true mouselook=true />
+      <CameraPosition position="0,40,120" drag=true mouselook=true />
     </camerapositions>
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipassffengine baseclass=MultiStateEngine>
+<Template name=bigshipengine baseclass=MultiStateEngine>
   <MultiStateEngine
    boostfactor    = 2
 
