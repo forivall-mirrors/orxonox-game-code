@@ -357,7 +357,10 @@ namespace orxonox
     void SpaceRaceController::tick(float dt)
     {
         if (this->getControllableEntity() == NULL || this->getControllableEntity()->getPlayer() == NULL )
-        {   orxout()<<this->getControllableEntity()<< " in tick"<<endl; return;}
+        {
+            //orxout()<< this->getControllableEntity() << " in tick"<<endl;
+            return;
+        }
         //FOR virtual Checkpoints
         if(nextRaceCheckpoint_->getCheckpointIndex() < 0)
         {
@@ -408,6 +411,7 @@ namespace orxonox
             return true;
         if(abs(pointToPoint.z) < groesse.z)
             return true;
+        return false;
 
     }
 
@@ -459,7 +463,7 @@ namespace orxonox
                 Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
 				Vector3 norm_r_CP = cP1ToCP2.crossProduct(centerCP1-positionObjectNonBT);
 
-				if(norm_r_CP.length == 0){
+				if(norm_r_CP.length() == 0){
 					Vector3 zufall;
                     do{
                         zufall=Vector3(rnd(),rnd(),rnd());//random
@@ -469,13 +473,16 @@ namespace orxonox
 				Vector3 VecToVCP = norm_r_CP.crossProduct(cP1ToCP2);
 				float distanzToCP1 = sqrt(powf(radiusObject,4)/(powf((centerCP1-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
 				float distanzToCP2 = sqrt(powf(radiusObject,4)/(powf((racepoint2->getPosition()-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
-				//TODO float distanz=max(distanzToCP1,distanzToCP2);
-				float distanz = 0.0f; //TEMPORARY
+                float distanz = std::max(distanzToCP1,distanzToCP2);
+				//float distanz = 0.0f; //TEMPORARY
 				Vector3 newCheckpointPositionPos = positionObjectNonBT+(distanz*VecToVCP)/VecToVCP.length();
 				Vector3 newCheckpointPositionNeg = positionObjectNonBT-(distanz*VecToVCP)/VecToVCP.length();
-				if((newCheckpointPositionPos-centerCP1).length+(newCheckpointPositionPos-(centerCP1+cP1ToCP2)).length < (newCheckpointPositionNeg-centerCP1).length+(newCheckpointPositionNeg-(centerCP1+cP1ToCP2)).length){
+				if((newCheckpointPositionPos - centerCP1).length() + (newCheckpointPositionPos - (centerCP1+cP1ToCP2)).length() < (newCheckpointPositionNeg - centerCP1).length() + (newCheckpointPositionNeg - (centerCP1+cP1ToCP2)).length() )
+				{
 					RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionPos);
-				}else{
+				}
+				else
+				{
 					RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionNeg);
 				}
 				return;
