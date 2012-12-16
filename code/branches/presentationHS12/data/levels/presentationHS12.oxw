@@ -59,51 +59,51 @@
     ?>
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-800,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+    <SpawnPoint team=0 position="-900,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
     <!--SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=bigship /-->
     <!--SpawnPoint team=0 position="-900,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage /-->
     <!--SpawnPoint team=0 position="6000,0,2000" lookat="1,1,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage /-->
     
     <SpaceRaceManager>
         <checkpoints>
-            <RaceCheckPoint name="checkpoint1" position="000,0,0" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="0" islast="false" nextcheckpoints="1,2,3">
+            <RaceCheckPoint name="checkpoint1" position="000,0,0" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="0" islast="false" nextcheckpoints="1,2,3">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 <!--- first three alternative paths --->
-            <RaceCheckPoint name="checkpoint2" position="1300,0,-800" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="1" islast="false" nextcheckpoints="7,-1,-1">
+            <RaceCheckPoint name="checkpoint2" position="1300,0,-800" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="1" islast="false" nextcheckpoints="7,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90/>
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint3" position="1200,-400,0" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="2" islast="false" nextcheckpoints="5,-1,-1">
+            <RaceCheckPoint name="checkpoint3" position="1200,-400,0" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="2" islast="false" nextcheckpoints="5,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint4" position="1200,100,700" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="3" islast="false" nextcheckpoints="6,-1,-1">
+            <RaceCheckPoint name="checkpoint4" position="1200,100,700" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="3" islast="false" nextcheckpoints="6,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
 <!--- second three alternative paths --->
-            <!--RaceCheckPoint name="checkpoint5" position="2000,500,-400" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="4" islast="false" nextcheckpoints="7,-1,-1">
+            <!--RaceCheckPoint name="checkpoint5" position="2000,500,-400" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="4" islast="false" nextcheckpoints="7,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint-->
 
-            <RaceCheckPoint name="checkpoint6" position="2000,0,0" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="5" islast="false" nextcheckpoints="8,9,-1">
+            <RaceCheckPoint name="checkpoint6" position="2000,0,0" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="5" islast="false" nextcheckpoints="8,9,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint7" position="2000,-500,400" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="6" islast="false" nextcheckpoints="10,-1,-1">
+            <RaceCheckPoint name="checkpoint7" position="2000,-500,400" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="6" islast="false" nextcheckpoints="10,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
@@ -112,83 +112,78 @@
 
 <!--- third generation --->
 
-            <RaceCheckPoint name="checkpoint8" position="5000,0,-3000" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="7" islast="false" nextcheckpoints="12,-1,-1">
+            <RaceCheckPoint name="checkpoint8" position="5000,0,-3000" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="7" islast="false" nextcheckpoints="12,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=135 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint9" position="3500,800,0" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="8" islast="false" nextcheckpoints="11,-1,-1">
+            <RaceCheckPoint name="checkpoint9" position="3500,800,0" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="8" islast="false" nextcheckpoints="11,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint10" position="3500,-800,0" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="9" islast="false" nextcheckpoints="11,-1,-1">
+            <RaceCheckPoint name="checkpoint10" position="3500,-800,0" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="9" islast="false" nextcheckpoints="11,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint11" position="3500,0,1000" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="10" islast="false" nextcheckpoints="12,-1,-1">
+            <RaceCheckPoint name="checkpoint11" position="3500,0,1000" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="10" islast="false" nextcheckpoints="12,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
 <!-- Intermediate Solo Gate -->
-            <RaceCheckPoint name="checkpoint12" position="4500,0,-100" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="11" islast="false" nextcheckpoints="12,-1,-1">
+            <RaceCheckPoint name="checkpoint12" position="4500,0,-100" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="11" islast="false" nextcheckpoints="12,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=90 />
                 </attached>
             </RaceCheckPoint>
 
 <!----  First Common Point  ---->
-            <RaceCheckPoint name="checkpoint13" position="6000,0,2000" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="12" islast="false" nextcheckpoints="13,14,-1">
+            <RaceCheckPoint name="checkpoint13" position="6000,0,2000" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="12" islast="false" nextcheckpoints="13,14,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=100 pitch=45 />
                 </attached>
             </RaceCheckPoint>
 
 <!-- Two Paths (1) -->
-            <RaceCheckPoint name="checkpoint14" position="7500,-1500,2500" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="13" islast="false" nextcheckpoints="15,-1,-1">
+            <RaceCheckPoint name="checkpoint14" position="7500,-1500,2500" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="13" islast="false" nextcheckpoints="15,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=100 pitch=130 roll=1 />
-                    <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.6,0.4,0.1" scale=3 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint15" position="7500,-1500,1500" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="14" islast="false" nextcheckpoints="16,-1,-1">
+            <RaceCheckPoint name="checkpoint15" position="7500,-1500,1500" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="14" islast="false" nextcheckpoints="16,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=100 pitch=90 />
                 </attached>
             </RaceCheckPoint>
 
 <!-- Two Paths (2) -->
-            <RaceCheckPoint name="checkpoint16" position="9000,-3000, 3000" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="15" islast="false" nextcheckpoints="17,-1,-1">
+            <RaceCheckPoint name="checkpoint16" position="9000,-3000, 3000" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="15" islast="false" nextcheckpoints="17,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=100 pitch=130 roll=1 />
-                    <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=3 />
                 </attached>
             </RaceCheckPoint>
 
-            <RaceCheckPoint name="checkpoint17" position="9000,-3000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="16" islast="false" nextcheckpoints="17,-1,-1">
+            <RaceCheckPoint name="checkpoint17" position="9000,-3000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="16" islast="false" nextcheckpoints="17,-1,-1">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=100 pitch=110 />
                 </attached>
             </RaceCheckPoint>
 
 <!-- GOAL -->
-            <RaceCheckPoint name="checkpoint18" position="12000,-4000,2000" direction="0,-1,1" collisionType="static" scale="1" distance="70" checkpointindex="17" islast="true">
+            <RaceCheckPoint name="checkpoint18" position="12000,-4000,2000" direction="0,-1,1" collisionType="static" scale="1" distance="100" checkpointindex="17" islast="true">
                 <attached>
                     <Model mass="50" scale="6" mesh="BigSpacegate.mesh" yaw=100 pitch=135 />
                 </attached>
             </RaceCheckPoint>
         </checkpoints>
     </SpaceRaceManager>
-
-
-
 
 
 <!-- Simplify paths -->
@@ -295,6 +290,59 @@
       	<BlinkingBillboard position="-29,-35,142" material="Examples/Flare" colour="1, 0.4, 0.4, 0.1" amplitude=0.2 frequency=30 phase=0 quadratic=0 />
       </attached>
     </StaticEntity>
+
+   <!-- Docking -->
+    <Dock position="2830,20,50" roll=0 yaw=0 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+            <activity>
+                <EventListener event=notGameEnd />
+            </activity>
+        </events>
+        <attached>
+                    <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+	<BlinkingBillboard position="10,0,0" material="Examples/Flare" colour="1, 0.3, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="20,0,0" material="Examples/Flare" colour="1, 0.3, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="30,0,0" material="Examples/Flare" colour="1, 0.3, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="0,10,0" material="Examples/Flare" colour="0.3, 1, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="0,20,0" material="Examples/Flare" colour="0.3, 1, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="0,30,0" material="Examples/Flare" colour="0.3, 1, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="0,0,10" material="Examples/Flare" colour="0.3, 0.3, 1, 1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="0,0,20" material="Examples/Flare" colour="0.3, 0.3, 1, 1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+	<BlinkingBillboard position="0,0,30" material="Examples/Flare" colour="0.3, 0.3, 1, 1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+            <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+        </attached>
+
+    </Dock>
+    <SpaceShip
+        template            = "spaceshipcollateraldamage"
+        team                = "0"
+        position            = "2890,-40,6"
+        orientation         = "-0.14, 0.68, 0.68, 0.223"
+        lookat              = "0,0,0"
+        roll                = "180"
+        name                = "collateralDamage"
+        radarname           = "Collateral Damage" >
+        <!--
+        pitch               = "90"
+        yaw                 = "0"-->
+      <attached>
+        <DockingTarget name="spaceShip" />
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+      </attached>
+    </SpaceShip>
+
     <!-- triple large belt around the planet  -->
     <?lua
         dofile("includes/asteroidField.lua")
@@ -334,15 +382,101 @@
       </collisionShapes>
     </Planet>
 
+<StaticEntity position="6750,-750,2000" yaw=0 pitch=0>
+    <attached>
+        <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
+    </attached>
+</StaticEntity>
+<SpaceShip position="6750,-740,2000" pitch="90" yaw="0" roll="0" radarname="Automatic Turret">
+    <templates>
+        <Template link=spaceshipturret />
+    </templates>
+    <controller>
+        <WaypointPatrolController alertnessradius=1000 team=10>
+        </WaypointPatrolController>
+     </controller>
+</SpaceShip>
 
-<!-- INTERACTIVE LEVEL -->
+
+    <!--- Some Randomn Asteroids  --->
+    <?lua
+      for i = 1, 250, 1
+      do
+      j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(math.random()* 15000 - 1000) ?>,<?lua print(math.random() * 12000 - 4000) ?>,<?lua print(math.random() * 12000 - 4000) ?>"
+      collisionType = dynamic
+      linearDamping = 0.8
+      angularDamping = 0
+      scale = "<?lua print(j * 150)?>"
+      collisiondamage = 1
+      enablecollisiondamage = true
+    >
+      <attached>
+        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+
+    <?lua
+      end
+    ?>
+
+
+
+
+
+
+<!-- INTERACTIVE PART -->
     <DistanceTrigger name="start" position="-900,0,0"  target="Pawn" distance=100 stayActive="true" delay=0.5 />
     <DistanceTrigger name="spawnBots" position="-900,0,0"  target="Pawn" distance=100 stayActive="true" delay=4.5 />
+    <DistanceTrigger name="creditPetar" position="2000,0,0"  target="Pawn" distance=100 stayActive="true" delay=0.5 />
+    <DistanceTrigger name="creditDario" position="4500,0,-100"  target="Pawn" distance=200 stayActive="true" delay=5 />
 
     <SimpleNotification message="Sound Effetcs by Mike." broadcast="true">
         <events>
             <trigger>
                 <EventListener event=start />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Racing Bots by Michael." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=spawnBots />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Planetary Destroyer by Petar." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=creditPetar />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Collateral Damage by Raphael." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=dockMe />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Automatic Turret by Dario." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=creditDario />
             </trigger>
         </events>
     </SimpleNotification>
@@ -357,7 +491,7 @@
 
 
 <!-- SOUNDS & MUSIC -->
-            <WorldSound name="scoreSound" position="-900,0,0" source="sounds/ReadyGo.ogg" >
+            <WorldSound name="scoreSound" position="-920,0,0" source="sounds/ReadyGo.ogg" >
               <events>
                 <play>
                   <EventListener event="start" />
