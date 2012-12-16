@@ -175,7 +175,7 @@ namespace orxonox
 
         if (exclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
         {
-            if (CommandLineParser::getValue("keyboard_no_grab").getBool())
+            if (CommandLineParser::getValue("keyboard_no_grab").get<bool>())
                 paramList.insert(StringPair("x11_keyboard_grab", "false"));
             else
                 paramList.insert(StringPair("x11_keyboard_grab", "true"));
