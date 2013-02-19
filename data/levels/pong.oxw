@@ -92,7 +92,7 @@
 
 <!-- TODO: Create a Pong Score Sound and include it here.
 This WorldSound works, but doesn't make sense, since it is played together with ambient/moodDependedDirectory/Ganymede.ogg -->
-            <!--WorldSound name="scoreSound" position="0,0,0" source="ambient/default/Earth.ogg" >
+            <!--WorldSound name="scoreSound" position="0,0,0" source="sounds/PongScore_cut.ogg" >
               <events>
                 <play>
                   <EventListener event=pongcenter />

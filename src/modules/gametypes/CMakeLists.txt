@@ -4,6 +4,8 @@ SET_SOURCE_FILES(GAMETYPES_SRC_FILES
   SpaceRaceManager.cc
   OldSpaceRace.cc
   OldRaceCheckPoint.cc
+  SpaceRaceBot.cc
+  SpaceRaceController.cc
 )
 
 ORXONOX_ADD_LIBRARY(gametypes

@@ -66,6 +66,9 @@ namespace orxonox
 {
     class SpaceRace;
     class OldSpaceRace;
+    class SpaceRaceManager;
+    class SpaceRaceBot;
+    class SpaceRaceController;
 }
 
 #endif /* _GametypesPrereqs_H__ */

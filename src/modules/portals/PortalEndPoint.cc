@@ -27,6 +27,7 @@
  */
 
 #include "PortalEndPoint.h"
+#include "portals/PortalLink.h"
 
 #include <ctime>
 
@@ -34,10 +35,9 @@
 #include "core/XMLPort.h"
 
 #include "worldentities/MobileEntity.h"
-
 #include "objects/triggers/MultiTriggerContainer.h"
 
-#include "portals/PortalLink.h"
+#include "sound/WorldSound.h"
 
 namespace orxonox
 {
@@ -58,6 +58,13 @@ namespace orxonox
         this->setRadarObjectColour(ColourValue::White);
         this->setRadarObjectShape(RadarViewable::Dot);
         this->setRadarVisibility(true);
+        if( GameMode::isMaster() )
+        {
+            this->portalSound_ = new WorldSound(this);
+            this->portalSound_->setLooping(false);
+            this->attach(this->portalSound_);
+            this->portalSound_->setSource("sounds/Weapon_HsW01.ogg"); //TODO: change sound file
+        }
     }
 
     PortalEndPoint::~PortalEndPoint()
@@ -157,6 +164,11 @@ namespace orxonox
         entity->setPosition(this->getWorldPosition());
         entity->rotate(this->getWorldOrientation());
         entity->setVelocity(this->getWorldOrientation() * entity->getVelocity());
+        //play Sound
+        if( this->portalSound_ && !(this->portalSound_->isPlaying()))
+        {
+            this->portalSound_->play();
+        }
     }
 
 }

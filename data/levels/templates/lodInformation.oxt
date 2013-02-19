@@ -14,6 +14,8 @@
       <MeshLodInformation mesh=SolarPanel.mesh enabled=false/>
       <MeshLodInformation mesh=CuboidLandingZone.mesh enabled=false/>
       <MeshLodInformation mesh=HydroHarvester.mesh enabled=false />
+      <MeshLodInformation mesh=turretHead.mesh enabled=false />
+      <MeshLodInformation mesh=LaserBeam.mesh enabled=false/>
 
       <!-- disable LOD for some debris meshes which caused a crash (fixed in Ogre 1.7.3) -->
       <MeshLodInformation mesh=BodyDebris1.mesh enabled=false/>
