@@ -70,13 +70,18 @@ namespace orxonox
             inline unsigned int getMarkerLimit() const
                 { return this->markerLimit_; }
 
+            static void selectClosestTarget();
+            static void selectNextTarget();
+
         private:
             struct ObjectInfo
             {
                 Ogre::PanelOverlayElement* panel_;
+                Ogre::PanelOverlayElement* target_;
                 Ogre::TextAreaOverlayElement* text_;
                 bool outOfView_;
                 bool wasOutOfView_;
+                bool selected_;
             };
 
             bool showObject(RadarViewable* rv);
@@ -84,11 +89,18 @@ namespace orxonox
             // XMLPort accessors
             inline void setNavMarkerSize(float size)
             {
-                navMarkerSize_ = size;
+                this->navMarkerSize_ = size;
                 this->sizeChanged();
             }
             inline float getNavMarkerSize() const
                 { return navMarkerSize_; }
+            inline void setAimMarkerSize(float size)
+            {
+                this->aimMarkerSize_ = size;
+                this->sizeChanged();
+            }
+            inline float getAimMarkerSize() const
+                { return aimMarkerSize_; }
             inline void setDetectionLimit(float limit)
                 { this->detectionLimit_ = limit; }
             inline float getDetectionLimit() const
@@ -103,13 +115,26 @@ namespace orxonox
             float getArrowSizeX(int dist) const;
             float getArrowSizeY(int dist) const;
 
+            Vector3* toAimPosition(RadarViewable* target) const;
+
             std::map<RadarViewable*, ObjectInfo> activeObjectList_;
             std::list<std::pair<RadarViewable*, unsigned int> > sortedObjectList_;
 
             float navMarkerSize_;
+            float aimMarkerSize_;
             std::string fontName_;
             float textSize_;
             bool showDistance_;
+
+            RadarViewable* selectedTarget_;
+
+            bool closestTarget_;
+            bool nextTarget_;
+
+            static HUDNavigation* localHUD_s; //!< This is used as a filter. Only the local HUD should be influenced by the static Console Command functions.
+
+
+            float currentMunitionSpeed_;
 
             unsigned int markerLimit_;
             float detectionLimit_; //!< Objects that are more far away than detectionLimit_ are not displayed on the HUD. 10000.0f is the default value.

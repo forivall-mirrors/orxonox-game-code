@@ -36,8 +36,11 @@
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
 
+#include <typeinfo>
+
 #include "util/Math.h"
 #include "util/Convert.h"
+#include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "CameraManager.h"
@@ -54,23 +57,37 @@
 
 namespace orxonox
 {
-    bool compareDistance(std::pair<RadarViewable*, unsigned int> a, std::pair<RadarViewable*, unsigned int> b)
+
+    SetConsoleCommand("HUDNavigation","selectClosest", &HUDNavigation::selectClosestTarget).addShortcut().keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("HUDNavigation","selectNext", &HUDNavigation::selectNextTarget).addShortcut().keybindMode(KeybindMode::OnPress);
+
+    static bool compareDistance(std::pair<RadarViewable*, unsigned int> a,
+            std::pair<RadarViewable*, unsigned int> b)
     {
         return a.second < b.second;
     }
-
     CreateFactory ( HUDNavigation );
 
-    HUDNavigation::HUDNavigation(BaseObject* creator) : OrxonoxOverlay(creator)
+    HUDNavigation* HUDNavigation::localHUD_s = 0;
+
+    HUDNavigation::HUDNavigation(BaseObject* creator) :
+        OrxonoxOverlay(creator)
     {
-        RegisterObject(HUDNavigation);
-        this->setConfigValues();
+        RegisterObject(HUDNavigation)
+;        this->setConfigValues();
 
         // Set default values
         this->setFont("Monofur");
         this->setTextSize(0.05f);
-        this->setNavMarkerSize(0.05f);
+        this->setNavMarkerSize(0.03f);
+        this->setAimMarkerSize(0.02f);
+
         this->setDetectionLimit(10000.0f);
+        this->currentMunitionSpeed_ = 2500.0f;
+
+        this->closestTarget_ = true;
+        this->nextTarget_ = false;
+        HUDNavigation::localHUD_s = this;
     }
 
     HUDNavigation::~HUDNavigation()
@@ -78,7 +95,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it != this->activeObjectList_.end();)
-                removeObject((it++)->first);
+            removeObject((it++)->first);
         }
         this->sortedObjectList_.clear();
     }
@@ -93,10 +110,11 @@ namespace orxonox
     {
         SUPER(HUDNavigation, XMLPort, xmlelement, mode);
 
-        XMLPortParam(HUDNavigation, "font",           setFont,           getFont,           xmlelement, mode);
-        XMLPortParam(HUDNavigation, "textSize",       setTextSize,       getTextSize,       xmlelement, mode);
-        XMLPortParam(HUDNavigation, "navMarkerSize",  setNavMarkerSize,  getNavMarkerSize,  xmlelement, mode);
+        XMLPortParam(HUDNavigation, "font", setFont, getFont, xmlelement, mode);
+        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlelement, mode);
+        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode);
         XMLPortParam(HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode);
+        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlelement, mode);
     }
 
     void HUDNavigation::setFont(const std::string& font)
@@ -111,7 +129,7 @@ namespace orxonox
         for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it != this->activeObjectList_.end(); ++it)
         {
             if (it->second.text_ != NULL)
-                it->second.text_->setFontName(this->fontName_);
+            it->second.text_->setFontName(this->fontName_);
         }
     }
 
@@ -131,7 +149,7 @@ namespace orxonox
         for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it!=this->activeObjectList_.end(); ++it)
         {
             if (it->second.text_)
-                it->second.text_->setCharHeight(size);
+            it->second.text_->setCharHeight(size);
         }
     }
 
@@ -143,14 +161,14 @@ namespace orxonox
     float HUDNavigation::getArrowSizeX(int dist) const
     {
         if (dist < 600)
-            dist = 600;
+        dist = 600;
         return this->getActualSize().x * 900 * this->navMarkerSize_ / dist;
     }
 
     float HUDNavigation::getArrowSizeY(int dist) const
     {
         if (dist < 600)
-            dist = 600;
+        dist = 600;
         return this->getActualSize().y * 900 * this->navMarkerSize_ / dist;
     }
 
@@ -160,24 +178,37 @@ namespace orxonox
 
         Camera* cam = CameraManager::getInstance().getActiveCamera();
         if (cam == NULL)
-            return;
+        return;
         const Matrix4& camTransform = cam->getOgreCamera()->getProjectionMatrix() * cam->getOgreCamera()->getViewMatrix();
 
-
         for (std::list<std::pair<RadarViewable*, unsigned int> >::iterator listIt = this->sortedObjectList_.begin(); listIt != this->sortedObjectList_.end(); ++listIt)
-            listIt->second = (int)((listIt->first->getRVWorldPosition() - HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition()).length() + 0.5f);
+        listIt->second = (int)((listIt->first->getRVWorldPosition() - HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition()).length() + 0.5f);
 
         this->sortedObjectList_.sort(compareDistance);
 
         unsigned int markerCount = 0;
         bool closeEnough = false; // only display objects that are close enough to be relevant for the player
 
+        // if the selected object doesn't exist any more or is now out of range select the closest object
+        std::map<RadarViewable*, ObjectInfo>::iterator selectedActiveObject = this->activeObjectList_.find(this->selectedTarget_);
+        if(selectedActiveObject == this->activeObjectList_.end())
+        {
+            this->closestTarget_ = true;
+        }
+        else if(this->detectionLimit_ < (this->selectedTarget_->getRVWorldPosition() - HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition()).length() + 0.5f)
+        {
+            this->closestTarget_ = true;
+            selectedActiveObject->second.selected_ = false;
+        }
+
+        bool nextHasToBeSelected = false;
+
         for (std::list<std::pair<RadarViewable*, unsigned int> >::iterator listIt = this->sortedObjectList_.begin(); listIt != this->sortedObjectList_.end(); ++markerCount, ++listIt)
         {
             std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.find(listIt->first);
             closeEnough = listIt->second < this->detectionLimit_;
             // display radarviewables on HUD if the marker limit and max-distance is not exceeded
-            if (markerCount < this->markerLimit_ && (closeEnough ||  this->detectionLimit_ < 0))
+            if (markerCount < this->markerLimit_ && (closeEnough || this->detectionLimit_ < 0))
             {
                 // Get Distance to HumanController and save it in the TextAreaOverlayElement.
                 int dist = listIt->second;
@@ -195,6 +226,53 @@ namespace orxonox
                     it->second.text_->setCaption(it->first->getRadarName());
                     textLength = it->first->getRadarName().size() * it->second.text_->getCharHeight() * 0.3f;
                 }
+
+                // select the object that aim-assistant indicates
+                if(this->closestTarget_)
+                // select the closest object
+                {
+                    if(listIt == this->sortedObjectList_.begin())
+                    {
+                        it->second.selected_ = true;
+                        this->selectedTarget_ = it->first;
+                    }
+                    else if(it->second.selected_)
+                    {
+                        it->second.selected_ = false;
+                    }
+
+                }
+                else if(this->nextTarget_)
+                // select the next object in sortedObjectList
+                {
+                    if(nextHasToBeSelected){
+                        it->second.selected_ = true;
+                        this->selectedTarget_ = it->first;
+                        nextHasToBeSelected = false;
+                    }
+                    else if(it->second.selected_)
+                    {
+                        nextHasToBeSelected = true;
+                        it->second.selected_ = false;
+
+                        // check if there's a next object
+                        listIt++;
+                        if(listIt != this->sortedObjectList_.end())
+                        {
+                            // and if the marker limit and max-distance are not exceeded for it
+                            if (markerCount + 1 >= this->markerLimit_ ||
+                                    (listIt->second > this->detectionLimit_ && detectionLimit_ >= 0))
+                            {
+                                // otherwise select the closest object
+                                this->activeObjectList_.find(this->sortedObjectList_.begin()->first)->second.selected_ = true;
+                                this->selectedTarget_ = it->first;
+                                nextHasToBeSelected = false;
+                            }
+                        }
+                        listIt--;
+                    }
+                }
+
 
                 // Transform to screen coordinates
                 Vector3 pos = camTransform * it->first->getRVWorldPosition();
@@ -221,6 +299,7 @@ namespace orxonox
                     {
                         it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("arrows.png", it->first->getRadarObjectColour()));
                         it->second.wasOutOfView_ = true;
+                        it->second.target_->hide();
                     }
 
                     //float xDistScale = this->getActualSize().x * 1000.0f * this->navMarkerSize_ / dist;
@@ -283,6 +362,7 @@ namespace orxonox
                         //it->second.panel_->setMaterialName("Orxonox/NavTDC");
                         it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("tdc.png", it->first->getRadarObjectColour()));
                         it->second.panel_->setDimensions(this->navMarkerSize_ * this->getActualSize().x, this->navMarkerSize_ * this->getActualSize().y);
+                        it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
                     }
 
@@ -294,25 +374,65 @@ namespace orxonox
                     // Position text
                     it->second.text_->setLeft((pos.x + 1.0f + it->second.panel_->getWidth()) * 0.5f);
                     it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
-                }
 
-                // Make sure the overlays are shown
-                it->second.panel_->show();
-                it->second.text_->show();
+                    // Make sure the overlays are shown
+                    it->second.panel_->show();
+                    it->second.text_->show();
+
+                    // Target marker
+                    const Pawn* pawn = dynamic_cast<const Pawn*>(it->first->getWorldEntity());
+                    /* Pawn* humanPawn = HumanController::getLocalControllerEntityAsPawn();*/
+                    if(!it->second.selected_
+                            || it->first->getRVVelocity().squaredLength() == 0
+                            || pawn == NULL
+                            /* TODO : improve getTeam in such a way that it works
+                             * || humanPawn == NULL
+                             * || pawn->getTeam() == humanPawn->getTeam()*/)
+                    {
+                        // don't show marker for not selected enemies nor if the selected doesn't move
+                        it->second.target_->hide();
+                    }
+                    else // object is selected and moves
+                    {
+                        // get the aim position
+                        Vector3* targetPos = this->toAimPosition(it->first);
+                        // Transform to screen coordinates
+                        Vector3 screenPos = camTransform * (*targetPos);
+                        // Check if the target marker is in view too
+                        if(screenPos.z > 1 || screenPos.x < -1.0 || screenPos.x > 1.0
+                                || screenPos.y < -1.0 || screenPos.y > 1.0)
+                        {
+                            it->second.target_->hide();
+                        }
+                        else
+                        {
+                            it->second.target_->setLeft((screenPos.x + 1.0f - it->second.target_->getWidth()) * 0.5f);
+                            it->second.target_->setTop((-screenPos.y + 1.0f - it->second.target_->getHeight()) * 0.5f);
+                            it->second.target_->show();
+                        }
+                        delete targetPos;
+                    }
+
+                }
             }
             else // do not display on HUD
+
             {
                 it->second.panel_->hide();
                 it->second.text_->hide();
+                it->second.target_->hide();
             }
         }
+
+        this->closestTarget_ = false;
+        this->nextTarget_ = false;
     }
 
     /** Overridden method of OrxonoxOverlay.
-    @details
-        Usually the entire overlay scales with scale().
-        Here we obviously have to adjust this.
-    */
+     @details
+     Usually the entire overlay scales with scale().
+     Here we obviously have to adjust this.
+     */
     void HUDNavigation::sizeChanged()
     {
         // Use size to compensate for aspect ratio if enabled.
@@ -325,17 +445,19 @@ namespace orxonox
                 it->second.panel_->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
             if (it->second.text_ != NULL)
                 it->second.text_->setCharHeight(it->second.text_->getCharHeight() * yScale);
+            if (it->second.target_ != NULL)
+                it->second.target_->setDimensions(this->aimMarkerSize_ * xScale, this->aimMarkerSize_ * yScale);
         }
     }
 
     void HUDNavigation::addObject(RadarViewable* object)
     {
         if (showObject(object) == false)
-            return;
+        return;
 
         if (this->activeObjectList_.size() >= this->markerLimit_)
-            if (object == NULL)
-                return;
+        if (object == NULL)
+        return;
 
         // Object hasn't been added yet (we know that)
         assert(this->activeObjectList_.find(object) == this->activeObjectList_.end());
@@ -348,25 +470,35 @@ namespace orxonox
 
         // Create arrow/marker
         Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton()
-                                           .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
+                .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
         //panel->setMaterialName("Orxonox/NavTDC");
         panel->setMaterialName(TextureGenerator::getMaterialName("tdc.png", object->getRadarObjectColour()));
         panel->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
         //panel->setColour(object->getRadarObjectColour());
 
+        // Create target marker
+        Ogre::PanelOverlayElement* target = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+                    .createOverlayElement("Panel", "HUDNavigation_targetMarker_" + getUniqueNumberString()));
+        target->setMaterialName(TextureGenerator::getMaterialName("target.png", object->getRadarObjectColour()));
+        target->setDimensions(this->aimMarkerSize_ * xScale, this->aimMarkerSize_ * yScale);
+
+        // Create text
         Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>( Ogre::OverlayManager::getSingleton()
-                                             .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+                .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
         text->setFontName(this->fontName_);
         text->setCharHeight(text->getCharHeight() * yScale);
         text->setColour(object->getRadarObjectColour());
 
         panel->hide();
+        target->hide();
         text->hide();
 
-        ObjectInfo tempStruct = {panel, text, false /*, TODO: initialize wasOutOfView_ */};
+        ObjectInfo tempStruct =
+        {   panel, target, text, false, false, false};
         this->activeObjectList_[object] = tempStruct;
 
         this->background_->addChild(panel);
+        this->background_->addChild(target);
         this->background_->addChild(text);
 
         this->sortedObjectList_.push_front(std::make_pair(object, (unsigned int)0));
@@ -380,9 +512,11 @@ namespace orxonox
         {
             // Detach overlays
             this->background_->removeChild(it->second.panel_->getName());
+            this->background_->removeChild(it->second.target_->getName());
             this->background_->removeChild(it->second.text_->getName());
             // Properly destroy the overlay elements (do not use delete!)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.panel_);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.target_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.text_);
             // Remove from the list
             this->activeObjectList_.erase(viewable);
@@ -408,10 +542,10 @@ namespace orxonox
     bool HUDNavigation::showObject(RadarViewable* rv)
     {
         if (rv == orxonox_cast<RadarViewable*>(this->getOwner()))
-            return false;
+        return false;
         assert(rv->getWorldEntity());
         if (rv->getWorldEntity()->isVisible() == false || rv->getRadarVisibility() == false)
-            return false;
+        return false;
         return true;
     }
 
@@ -421,7 +555,37 @@ namespace orxonox
         for (std::set<RadarViewable*>::const_iterator it = respawnObjects.begin(); it != respawnObjects.end(); ++it)
         {
             if (!(*it)->isHumanShip_)
-                this->addObject(*it);
+            this->addObject(*it);
+        }
+    }
+
+    Vector3* HUDNavigation::toAimPosition(RadarViewable* target) const
+    {
+        Vector3 wePosition = HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition();
+        Vector3 targetPosition = target->getRVWorldPosition();
+        Vector3 targetSpeed = target->getRVVelocity();
+        Vector3 relativePosition = targetPosition - wePosition; //Vector from attacker to target
+
+        float p_half = relativePosition.dotProduct(targetSpeed)/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_);
+        float time1 = -p_half + sqrt(p_half * p_half - relativePosition.squaredLength()/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_));
+
+        Vector3* result = new Vector3(targetPosition + targetSpeed * time1);
+        return result;
+    }
+
+    void HUDNavigation::selectClosestTarget()
+    {
+        if(HUDNavigation::localHUD_s)
+        {
+            HUDNavigation::localHUD_s->closestTarget_ = true;
+        }
+    }
+
+    void HUDNavigation::selectNextTarget()
+    {
+        if(HUDNavigation::localHUD_s)
+        {
+            HUDNavigation::localHUD_s->nextTarget_ = true;
         }
     }
 }

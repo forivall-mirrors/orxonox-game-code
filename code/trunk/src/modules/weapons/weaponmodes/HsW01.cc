@@ -60,11 +60,14 @@ namespace orxonox
         this->speed_ = 2500.0f;
         this->delay_ = 0.0f;
         this->setMunitionName("LaserMunition");
+        this->mesh_ = "laserbeam.mesh";
+        this->sound_ = "sounds/Weapon_HsW01.ogg";
+
 
         this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&HsW01::shot, this)));
         this->delayTimer_.stopTimer();
 
-        this->setDefaultSound("sounds/Weapon_HsW01.ogg");
+        this->setDefaultSound(this->sound_);
     }
 
     HsW01::~HsW01()
@@ -77,6 +80,8 @@ namespace orxonox
 
         XMLPortParam(HsW01, "delay", setDelay, getDelay, xmlelement, mode);
         XMLPortParam(HsW01, "material", setMaterial, getMaterial, xmlelement, mode);
+        XMLPortParam(HsW01, "projectileMesh", setMesh, getMesh, xmlelement, mode);
+	XMLPortParam(HsW01, "sound", setSound, getSound, xmlelement, mode);
     }
 
     /**
@@ -107,7 +112,7 @@ namespace orxonox
         // Create the projectile.
         Projectile* projectile = new Projectile(this);
         Model* model = new Model(projectile);
-        model->setMeshSource("laserbeam.mesh");
+        model->setMeshSource(mesh_);
         model->setCastShadows(false);
         projectile->attach(model);
         model->setScale(5);

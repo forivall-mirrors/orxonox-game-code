@@ -4,6 +4,7 @@ SET_SOURCE_FILES(OBJECTS_SRC_FILES
   Planet.cc
   Script.cc
   SpaceBoundaries.cc
+  Turret.cc
 )
 
 ADD_SUBDIRECTORY(collisionshapes)

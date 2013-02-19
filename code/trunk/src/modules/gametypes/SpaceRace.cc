@@ -34,7 +34,7 @@
 #include "chat/ChatManager.h"
 #include "util/Convert.h"
 #include "util/Math.h"
-
+#include "SpaceRaceBot.h"
 #include "items/Engine.h"
 
 namespace orxonox
@@ -45,6 +45,7 @@ namespace orxonox
     {
         RegisterObject(SpaceRace);
 
+        this->botclass_ = Class(SpaceRaceBot);//ClassByString("")
         this->cantMove_ = false;
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0; // quick fix: don't allow default-bots to enter the race

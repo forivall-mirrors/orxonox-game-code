@@ -101,6 +101,13 @@ namespace orxonox
         return object->getWorldOrientation() * object->getVelocity();
     }
 
+    Vector3 RadarViewable::getRVVelocity() const
+    {
+        const WorldEntity* object = this->getWorldEntity();
+        validate(object);
+        return object->getVelocity();
+    }
+
     void RadarViewable::validate(const WorldEntity* object) const
     {
         if (!object)

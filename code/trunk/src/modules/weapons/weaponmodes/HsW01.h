@@ -60,6 +60,34 @@ namespace orxonox
 
         private:
             /**
+            @brief Set the mesh.
+            @param mesh The mesh name.
+            */
+            void setMesh(const std::string& mesh)
+                { this->mesh_ = mesh; }
+
+            /**
+            @brief Get the mesh.
+            @return Returns the mesh name.
+            */
+            const std::string& getMesh() const
+                { return this->mesh_; }
+
+	    /**
+            @brief Set the sound.
+            @param mesh The Sound name.
+            */
+            void setSound(const std::string& sound)
+                { this->sound_ = sound; }
+
+	    /**
+            @brief Get the sound.
+            @return Returns the sound name.
+            */
+            const std::string& getSound() const
+                { return this->sound_; }
+
+            /**
             @brief Set the material.
             @param material The material name.
             */
@@ -84,6 +112,11 @@ namespace orxonox
             void muzzleflash();
 
             std::string material_; //!< The material.
+            std::string mesh_; //!< The mesh.
+            std::string sound_; //!< The sound.
+
+
+
             float speed_; //!< The speed of the fired projectile.
             float delay_; //!< The firing delay.
             Timer delayTimer_; //!< A timer to delay the firing.
