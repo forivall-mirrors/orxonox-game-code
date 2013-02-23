@@ -11,6 +11,7 @@ ORXONOX_ADD_EXECUTABLE(
     MathTest.cc
     mboolTest.cc
     MultiTypeTest.cc
+    OutputTest.cc
     ScopeTest.cc
     SharedPtrTest.cc
     SingletonTest.cc
@@ -18,6 +19,16 @@ ORXONOX_ADD_EXECUTABLE(
     StringUtilsTest.cc
     SubStringTest.cc
     VA_NARGSTest.cc
+
+    output/BaseWriterTest.cc
+    output/ConsoleWriterTest.cc
+    output/LogWriterTest.cc
+    output/MemoryWriterTest.cc
+    output/OutputDefinitionsTest.cc
+    output/OutputListenerTest.cc
+    output/OutputManagerTest.cc
+    output/OutputStreamTest.cc
+    output/SubcontextOutputListenerTest.cc
 )
 ADD_DEPENDENCIES(test util_test)
 
