@@ -42,6 +42,7 @@
 #include <map>
 
 #include "OutputDefinitions.h"
+#include "AdditionalContextListener.h"
 
 namespace orxonox
 {
@@ -60,7 +61,7 @@ namespace orxonox
 
         Additionally OutputManager is used to register output contexts.
     */
-    class _UtilExport OutputManager
+    class _UtilExport OutputManager : public AdditionalContextListener
     {
         public:
             static OutputManager& getInstance();
@@ -71,10 +72,12 @@ namespace orxonox
             void registerListener(OutputListener* listener);
             void unregisterListener(OutputListener* listener);
 
-            void updateMasks();
-            void updateCombinedLevelMask();
-            void updateCombinedAdditionalContextsLevelMask();
-            void updateCombinedAdditionalContextsMask();
+            virtual void updatedLevelMask(const OutputListener* listener)
+                { this->updateCombinedLevelMask(); }
+            virtual void updatedAdditionalContextsLevelMask(const OutputListener* listener)
+                { this->updateCombinedAdditionalContextsLevelMask(); }
+            virtual void updatedAdditionalContextsMask(const OutputListener* listener)
+                { this->updateCombinedAdditionalContextsMask(); }
 
             /**
                 @brief Returns true if at least one of the output listeners will accept output with the given level and context.
@@ -94,10 +97,19 @@ namespace orxonox
             const std::string& getLevelName(OutputLevel level) const;
             std::string getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const;
 
+        protected:
+            inline const std::vector<OutputListener*>& getListeners() const
+                { return this->listeners_; }
+
         private:
             OutputManager();
             OutputManager(const OutputManager&);
             ~OutputManager();
+
+            void updateMasks();
+            void updateCombinedLevelMask();
+            void updateCombinedAdditionalContextsLevelMask();
+            void updateCombinedAdditionalContextsMask();
 
             std::vector<OutputListener*> listeners_;                            ///< List of all registered output listeners
 

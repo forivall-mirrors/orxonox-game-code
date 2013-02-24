@@ -112,6 +112,7 @@ namespace orxonox
     */
     void OutputManager::registerListener(OutputListener* listener)
     {
+        listener->registerListener(this);
         this->listeners_.push_back(listener);
         this->updateMasks();
     }
@@ -121,6 +122,7 @@ namespace orxonox
     */
     void OutputManager::unregisterListener(OutputListener* listener)
     {
+        listener->unregisterListener(this);
         for (std::vector<OutputListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if (*it == listener)

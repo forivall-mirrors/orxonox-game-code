@@ -83,6 +83,7 @@ namespace orxonox
 
 namespace orxonox
 {
+    class AdditionalContextListener;
     class Clock;
     class Exception;
     class ExprParser;

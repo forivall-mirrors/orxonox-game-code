@@ -54,6 +54,9 @@ namespace orxonox
             OutputListener(bool bRegister = true);
             virtual ~OutputListener();
 
+            void registerListener(AdditionalContextListener* listener);
+            void unregisterListener(AdditionalContextListener* listener);
+
             void setLevelMax(OutputLevel max);
             void setLevelRange(OutputLevel min, OutputLevel max);
             void setLevelMask(OutputLevel mask);
@@ -84,10 +87,15 @@ namespace orxonox
             /// @brief Pure virtual function, needs to be implemented in order to receive output.
             virtual void output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines) = 0;
 
+            inline const std::vector<AdditionalContextListener*>& getListeners() const
+                { return this->listeners_; }
+
         private:
-            OutputLevel       levelMask_;                   ///< Mask of accepted output levels, independent of contexts
-            OutputContextMask additionalContextsMask_;      ///< Mask of accepted additional contexts
-            OutputLevel       additionalContextsLevelMask_; ///< Mask of accepted output levels of the additional contexts
+            std::vector<AdditionalContextListener*> listeners_; ///< List of all registered additional context listeners
+
+            OutputLevel       levelMask_;                       ///< Mask of accepted output levels, independent of contexts
+            OutputContextMask additionalContextsMask_;          ///< Mask of accepted additional contexts
+            OutputLevel       additionalContextsLevelMask_;     ///< Mask of accepted output levels of the additional contexts
     };
 
     /**

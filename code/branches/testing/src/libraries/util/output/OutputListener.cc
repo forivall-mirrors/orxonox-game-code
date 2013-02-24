@@ -61,6 +61,29 @@ namespace orxonox
     }
 
     /**
+        @brief Adds a listener to the list.
+    */
+    void OutputListener::registerListener(AdditionalContextListener* listener)
+    {
+        this->listeners_.push_back(listener);
+    }
+
+    /**
+        @brief Removes a listener from the list.
+    */
+    void OutputListener::unregisterListener(AdditionalContextListener* listener)
+    {
+        for (std::vector<AdditionalContextListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        {
+            if (*it == listener)
+            {
+                this->listeners_.erase(it);
+                break;
+            }
+        }
+    }
+
+    /**
         @brief Defines the level mask in a way which accepts all output up to the level \c max.
     */
     void OutputListener::setLevelMax(OutputLevel max)
@@ -87,7 +110,8 @@ namespace orxonox
     {
         this->levelMask_ = mask;
 
-        OutputManager::getInstance().updateCombinedLevelMask();
+        for (size_t i = 0; i < this->listeners_.size(); ++i)
+            this->listeners_[i]->updatedLevelMask(this);
     }
 
     /**
@@ -117,7 +141,8 @@ namespace orxonox
     {
         this->additionalContextsLevelMask_ = mask;
 
-        OutputManager::getInstance().updateCombinedAdditionalContextsLevelMask();
+        for (size_t i = 0; i < this->listeners_.size(); ++i)
+            this->listeners_[i]->updatedAdditionalContextsLevelMask(this);
     }
 
     /**
@@ -127,7 +152,8 @@ namespace orxonox
     {
         this->additionalContextsMask_ = mask;
 
-        OutputManager::getInstance().updateCombinedAdditionalContextsMask();
+        for (size_t i = 0; i < this->listeners_.size(); ++i)
+            this->listeners_[i]->updatedAdditionalContextsMask(this);
     }
 
     /**
