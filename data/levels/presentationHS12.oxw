@@ -379,9 +379,9 @@
 <StaticEntity position="6750,-750,2000" yaw=0 pitch=0>
     <attached>
         <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketIn.mesh"    scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketTop.mesh"   scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketLeft.mesh"  scale3D="10,10,10" />
         <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
     </attached>
 </StaticEntity>
