@@ -64,13 +64,17 @@ namespace orxonox
     class _UtilExport OutputManager : public AdditionalContextListener
     {
         public:
+            OutputManager();
+            OutputManager(const OutputManager&);
+            virtual ~OutputManager();
+
             static OutputManager& getInstance();
             static OutputManager& getInstanceAndCreateListeners();
 
             void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
 
-            void registerListener(OutputListener* listener);
-            void unregisterListener(OutputListener* listener);
+            virtual void registerListener(OutputListener* listener);
+            virtual void unregisterListener(OutputListener* listener);
 
             virtual void updatedLevelMask(const OutputListener* listener)
                 { this->updateCombinedLevelMask(); }
@@ -102,10 +106,6 @@ namespace orxonox
                 { return this->listeners_; }
 
         private:
-            OutputManager();
-            OutputManager(const OutputManager&);
-            ~OutputManager();
-
             void updateMasks();
             void updateCombinedLevelMask();
             void updateCombinedAdditionalContextsLevelMask();
@@ -120,6 +120,12 @@ namespace orxonox
             std::map<std::string, OutputContextMask> contextMasks_;             ///< Contains all main-contexts and their masks
             std::map<std::string, OutputContextContainer> contextContainers_;   ///< Contains all contexts including sub-contexts and their containers
             OutputContextSubID subcontextCounter_;                              ///< Counts the number of sub-contexts (and generates their IDs)
+
+        public:
+            struct _UtilExport Testing
+            {
+                static SharedPtr<OutputManager>& getInstancePointer();
+            };
     };
 }
 

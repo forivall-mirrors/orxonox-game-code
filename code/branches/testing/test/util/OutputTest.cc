@@ -11,12 +11,12 @@ namespace orxonox
         }
     }
 
-    TEST(Output, CanUseOrxout)
+    TEST(OutputTest, CanUseOrxout)
     {
         orxout() << "test" << endl;
     }
 
-    TEST(Output, OrxoutUsesCorrectOutputLevel)
+    TEST(OutputTest, OrxoutUsesCorrectOutputLevel)
     {
         {
             const OutputStream& stream = orxout(internal_warning);
@@ -29,7 +29,7 @@ namespace orxonox
         }
     }
 
-    TEST(Output, OrxoutUsesCorrectOutputContext)
+    TEST(OutputTest, OrxoutUsesCorrectOutputContext)
     {
         const OutputStream& stream = orxout(verbose, context::unittest());
         EXPECT_EQ(verbose, stream.getOutputLevel());
@@ -38,7 +38,7 @@ namespace orxonox
         EXPECT_EQ(context::unittest().sub_id, stream.getOutputContext()->sub_id);
     }
 
-    TEST(Output, OrxoutAcceptsFunctionPointer)
+    TEST(OutputTest, OrxoutAcceptsFunctionPointer)
     {
         const OutputStream& stream = orxout(verbose, context::unittest);
         EXPECT_EQ(verbose, stream.getOutputLevel());

@@ -3,7 +3,7 @@
 
 namespace orxonox
 {
-    TEST(OutputDefinitions, Levels)
+    TEST(OutputDefinitionsTest, Levels)
     {
         EXPECT_EQ(0x0000, level::none);
     }

@@ -38,6 +38,7 @@
 #include "LogWriter.h"
 #include "util/Output.h"
 #include "util/StringUtils.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {
@@ -60,13 +61,18 @@ namespace orxonox
     {
     }
 
+    /*static*/ SharedPtr<OutputManager>& OutputManager::Testing::getInstancePointer()
+    {
+        static SharedPtr<OutputManager> instance(new OutputManager());
+        return instance;
+    }
+
     /**
         @brief Returns the only existing instance of the OutputManager singleton.
     */
     /*static*/ OutputManager& OutputManager::getInstance()
     {
-        static OutputManager instance;
-        return instance;
+        return *OutputManager::Testing::getInstancePointer();
     }
 
     /**

@@ -96,6 +96,8 @@ namespace orxonox
     template <class, ScopeID::Value>
     class ScopedSingleton;
     class ScopeListener;
+    template <class T>
+    class SharedPtr;
     class SignalHandler;
     template <class T>
     class Singleton;

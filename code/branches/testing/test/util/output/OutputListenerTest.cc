@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "util/output/OutputListener.h"
+#include "util/output/OutputManager.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {
@@ -19,12 +21,32 @@ namespace orxonox
         class MockOutputListener : public OutputListener
         {
             public:
+                MockOutputListener(bool bRegister = true) : OutputListener(bRegister) {}
+
                 MOCK_METHOD3(output, void(OutputLevel, const OutputContextContainer&, const std::vector<std::string>&));
+
+                inline const std::vector<AdditionalContextListener*>& getListeners() const
+                    { return OutputListener::getListeners(); }
+        };
+
+        class MockAdditionalContextListener : public AdditionalContextListener
+        {
+            public:
+                MOCK_METHOD1(updatedLevelMask, void(const OutputListener*));
+                MOCK_METHOD1(updatedAdditionalContextsLevelMask, void(const OutputListener*));
+                MOCK_METHOD1(updatedAdditionalContextsMask, void(const OutputListener*));
+        };
+
+        class MockOutputManager : public OutputManager
+        {
+            public:
+                MOCK_METHOD1(registerListener, void(OutputListener*));
+                MOCK_METHOD1(unregisterListener, void(OutputListener*));
         };
     }
 
     // test default settings
-    TEST(OutputListener, DefaultConstructorAcceptsNothing)
+    TEST(OutputListenerTest, DefaultConstructorAcceptsNothing)
     {
         MockOutputListener listener;
 
@@ -34,7 +56,7 @@ namespace orxonox
     }
 
     // test setLevelMax
-    TEST(OutputListener, TestSetLevelMax)
+    TEST(OutputListenerTest, SetLevelMax)
     {
         MockOutputListener listener;
 
@@ -51,7 +73,7 @@ namespace orxonox
     }
 
     // test setLevelRange
-    TEST(OutputListener, TestSetLevelRange)
+    TEST(OutputListenerTest, SetLevelRange)
     {
         MockOutputListener listener;
 
@@ -68,7 +90,7 @@ namespace orxonox
     }
 
     // test setLevelMask
-    TEST(OutputListener, TestSetLevelMask)
+    TEST(OutputListenerTest, SetLevelMask)
     {
         MockOutputListener listener;
 
@@ -85,7 +107,7 @@ namespace orxonox
     }
 
     // test setAdditionalContextsLevelMax
-    TEST(OutputListener, TestSetAdditionalContextsLevelMax)
+    TEST(OutputListenerTest, SetAdditionalContextsLevelMax)
     {
         MockOutputListener listener;
 
@@ -102,7 +124,7 @@ namespace orxonox
     }
 
     // test setAdditionalContextsLevelRange
-    TEST(OutputListener, TestSetAdditionalContextsLevelRange)
+    TEST(OutputListenerTest, SetAdditionalContextsLevelRange)
     {
         MockOutputListener listener;
 
@@ -119,7 +141,7 @@ namespace orxonox
     }
 
     // test setAdditionalContextsLevelMask
-    TEST(OutputListener, TestSetAdditionalContextsLevelMask)
+    TEST(OutputListenerTest, SetAdditionalContextsLevelMask)
     {
         MockOutputListener listener;
 
@@ -136,7 +158,7 @@ namespace orxonox
     }
 
     // test setAdditionalContextsMask
-    TEST(OutputListener, TestSetAdditionalContextsMask)
+    TEST(OutputListenerTest, SetAdditionalContextsMask)
     {
         MockOutputListener listener;
 
@@ -149,9 +171,108 @@ namespace orxonox
         EXPECT_TRUE(mask & context::unittest3().mask);
     }
 
-    // test setAdditionalContextsLevelMask calls OutputManager::updateCombinedAdditionalContextsLevelMask
-    // test setAdditionalContextsMask calls OutputManager::updateCombinedAdditionalContextsMask
+    // test registerListener
+    TEST(OutputListenerTest, RegisterListener)
+    {
+        MockOutputListener outputListener(false);
+        MockAdditionalContextListener additionalContextListener;
+
+        EXPECT_EQ(0u, outputListener.getListeners().size());
+        outputListener.registerListener(&additionalContextListener);
+        EXPECT_EQ(1u, outputListener.getListeners().size());
+        EXPECT_EQ(&additionalContextListener, outputListener.getListeners()[0]);
+    }
+
+    // test unregisterListener
+    TEST(OutputListenerTest, UnregisterListener)
+    {
+        MockOutputListener outputListener(false);
+        MockAdditionalContextListener additionalContextListener;
+
+        outputListener.registerListener(&additionalContextListener);
+        EXPECT_EQ(1u, outputListener.getListeners().size());
+        EXPECT_EQ(&additionalContextListener, outputListener.getListeners()[0]);
+
+        outputListener.unregisterListener(&additionalContextListener);
+        EXPECT_EQ(0u, outputListener.getListeners().size());
+    }
+
+    // test setLevelMask calls OutputManager::updatedLevelMask
+    TEST(OutputListenerTest, SetLevelMaskCallsListeners)
+    {
+        MockOutputListener listener;
+        MockAdditionalContextListener additionalContextListener;
+        listener.registerListener(&additionalContextListener);
+
+        EXPECT_CALL(additionalContextListener, updatedLevelMask(&listener)).Times(1);
+
+        listener.setLevelMask(level::debug_output);
+    }
+
+    // test setAdditionalContextsLevelMask calls OutputManager::updatedAdditionalContextsLevelMask
+    TEST(OutputListenerTest, SetAdditionalContextsLevelMaskCallsListeners)
+    {
+        MockOutputListener listener;
+        MockAdditionalContextListener additionalContextListener;
+        listener.registerListener(&additionalContextListener);
+
+        EXPECT_CALL(additionalContextListener, updatedAdditionalContextsLevelMask(&listener)).Times(1);
+
+        listener.setAdditionalContextsLevelMask(level::debug_output);
+    }
+
+    // test setAdditionalContextsMask calls OutputManager::updatedAdditionalContextsMask
+    TEST(OutputListenerTest, SetAdditionalContextsMaskCallsListeners)
+    {
+        MockOutputListener listener;
+        MockAdditionalContextListener additionalContextListener;
+        listener.registerListener(&additionalContextListener);
+
+        EXPECT_CALL(additionalContextListener, updatedAdditionalContextsMask(&listener)).Times(1);
+
+        listener.setAdditionalContextsMask(context::unittest1().mask);
+    }
 
     // test acceptsOutput
     // test unfilteredOutput
+
+    // Fixture
+    class OutputListenerTestWithMockedOutputManager : public ::testing::Test
+    {
+        public:
+            virtual void SetUp()
+            {
+                this->manager_ = new MockOutputManager();
+                OutputManager::Testing::getInstancePointer() = this->manager_;
+            }
+
+            virtual void TearDown()
+            {
+                OutputManager::Testing::getInstancePointer() = new OutputManager();
+            }
+
+        protected:
+            MockOutputManager* manager_;
+    };
+
+    // test default-constructor calls OutputManager::registerListener
+    TEST_F(OutputListenerTestWithMockedOutputManager, ConstructorRegistersInOutputManager)
+    {
+        EXPECT_CALL(*this->manager_, registerListener(::testing::_)).Times(1);
+        MockOutputListener listener;
+    }
+
+    // test prevent constructor from calling OutputManager::registerListener
+    TEST_F(OutputListenerTestWithMockedOutputManager, PreventRegisteringInOutputManager)
+    {
+        EXPECT_CALL(*this->manager_, registerListener(::testing::_)).Times(0);
+        MockOutputListener listener(false);
+    }
+
+    // test destructor calls OutputManager::unregisterListener
+    TEST_F(OutputListenerTestWithMockedOutputManager, DestructorUnregistersFromOutputManager)
+    {
+        MockOutputListener listener;
+        EXPECT_CALL(*this->manager_, unregisterListener(::testing::_)).Times(1);
+    }
 }
