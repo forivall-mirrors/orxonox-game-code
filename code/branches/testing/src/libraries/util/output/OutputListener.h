@@ -65,7 +65,7 @@ namespace orxonox
             void setAdditionalContextsLevelRange(OutputLevel min, OutputLevel max);
             void setAdditionalContextsLevelMask(OutputLevel mask);
 
-            void setAdditionalContextsMask(OutputContextMask mask);
+            virtual void setAdditionalContextsMask(OutputContextMask mask);
 
             /// @brief Returns the level mask.
             inline OutputLevel getLevelMask() const

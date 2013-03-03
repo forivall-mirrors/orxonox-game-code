@@ -234,7 +234,105 @@ namespace orxonox
     }
 
     // test acceptsOutput
+    namespace
+    {
+        void testContext(const OutputListener& listener, const OutputContextContainer& context, bool accepted)
+        {
+            EXPECT_TRUE(listener.acceptsOutput(level::message, context));
+            EXPECT_TRUE(listener.acceptsOutput(level::user_error, context));
+            EXPECT_TRUE(listener.acceptsOutput(level::user_warning, context));
+
+            if (accepted)
+            {
+                EXPECT_TRUE(listener.acceptsOutput(level::user_status, context));
+                EXPECT_TRUE(listener.acceptsOutput(level::internal_error, context));
+                EXPECT_TRUE(listener.acceptsOutput(level::internal_info, context));
+            }
+            else
+            {
+                EXPECT_FALSE(listener.acceptsOutput(level::user_status, context));
+                EXPECT_FALSE(listener.acceptsOutput(level::internal_error, context));
+                EXPECT_FALSE(listener.acceptsOutput(level::internal_info, context));
+            }
+
+            EXPECT_FALSE(listener.acceptsOutput(level::verbose, context));
+            EXPECT_FALSE(listener.acceptsOutput(level::verbose_ultra, context));
+        }
+    }
+
+    TEST(OutputListenerTest, AcceptsOutputNoAdditionalContext)
+    {
+        MockOutputListener listener;
+
+        listener.setLevelMax(level::user_warning);
+
+        testContext(listener, context::undefined(), false);
+        testContext(listener, context::unittest1(), false);
+        testContext(listener, context::unittest2(), false);
+    }
+
+    TEST(OutputListenerTest, AcceptsOutputWithAdditionalContext)
+    {
+        MockOutputListener listener;
+
+        listener.setLevelMax(level::user_warning);
+        listener.setAdditionalContextsMask(context::unittest1().mask);
+        listener.setAdditionalContextsLevelMax(level::internal_info);
+
+        testContext(listener, context::undefined(), false);
+        testContext(listener, context::unittest1(), true);
+        testContext(listener, context::unittest2(), false);
+    }
+
+    TEST(OutputListenerTest, AcceptsOutputWithTwoAdditionalContexts)
+    {
+        MockOutputListener listener;
+
+        listener.setLevelMax(level::user_warning);
+
+        listener.setLevelMax(level::user_warning);
+        listener.setAdditionalContextsMask(context::unittest1().mask | context::unittest2().mask);
+        listener.setAdditionalContextsLevelMax(level::internal_info);
+
+        testContext(listener, context::undefined(), false);
+        testContext(listener, context::unittest1(), true);
+        testContext(listener, context::unittest2(), true);
+    }
+
     // test unfilteredOutput
+    TEST(OutputListenerTest, UnfilteredOutputCallsOutputIfOutputAccepted)
+    {
+        MockOutputListener listener;
+
+        listener.setLevelMax(level::user_warning);
+
+        const OutputLevel& level = level::message;
+        const OutputContextContainer& context = context::undefined();
+
+        EXPECT_TRUE(listener.acceptsOutput(level, context));
+
+        std::vector<std::string> lines;
+        EXPECT_CALL(listener, output(level, ::testing::_, lines)).Times(1);
+
+        listener.unfilteredOutput(level, context, lines);
+    }
+
+    TEST(OutputListenerTest, UnfilteredOutputDoesNotCallOutputIfOutputNotAccepted)
+    {
+        MockOutputListener listener;
+
+        listener.setLevelMax(level::user_warning);
+
+        const OutputLevel& level = level::verbose;
+        const OutputContextContainer& context = context::undefined();
+
+        EXPECT_FALSE(listener.acceptsOutput(level, context));
+
+        std::vector<std::string> lines;
+        EXPECT_CALL(listener, output(level, ::testing::_, lines)).Times(0);
+
+        listener.unfilteredOutput(level, context, lines);
+    }
 
     // Fixture
     class OutputListenerTestWithMockedOutputManager : public ::testing::Test

@@ -72,7 +72,7 @@ namespace orxonox
             SubcontextOutputListener(bool bRegister = true);
             virtual ~SubcontextOutputListener();
 
-            void setAdditionalContextsMask(OutputContextMask mask);
+            virtual void setAdditionalContextsMask(OutputContextMask mask);
             void setAdditionalSubcontexts(const std::set<const OutputContextContainer*>& subcontexts);
 
             virtual bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const;

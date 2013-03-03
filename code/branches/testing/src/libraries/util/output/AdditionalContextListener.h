@@ -49,6 +49,8 @@ namespace orxonox
     class _UtilExport AdditionalContextListener
     {
         public:
+            virtual ~AdditionalContextListener() {}
+
             virtual void updatedLevelMask(const OutputListener* listener) = 0;
             virtual void updatedAdditionalContextsLevelMask(const OutputListener* listener) = 0;
             virtual void updatedAdditionalContextsMask(const OutputListener* listener) = 0;
