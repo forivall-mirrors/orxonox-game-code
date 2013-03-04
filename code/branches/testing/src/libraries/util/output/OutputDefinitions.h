@@ -104,6 +104,11 @@ namespace orxonox
         OutputContextMask mask;     ///< The mask of the context (or the mask of the main-context if this container defines a sub-context)
         OutputContextSubID sub_id;  ///< The id of the sub-context (or context::no_subcontext if this container doesn't define a sub-context)
         std::string name;           ///< The name of this context
+
+        inline bool operator==(const OutputContextContainer& other) const
+        {
+            return this->mask == other.mask && this->sub_id == other.sub_id && this->name == other.name;
+        }
     };
 
     typedef const OutputContextContainer& (OutputContextFunction)();

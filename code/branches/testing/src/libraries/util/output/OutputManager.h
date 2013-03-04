@@ -101,7 +101,6 @@ namespace orxonox
             const std::string& getLevelName(OutputLevel level) const;
             std::string getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const;
 
-        protected:
             inline const std::vector<OutputListener*>& getListeners() const
                 { return this->listeners_; }
 

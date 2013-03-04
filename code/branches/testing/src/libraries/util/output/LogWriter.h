@@ -56,6 +56,10 @@ namespace orxonox
     class _UtilExport LogWriter : public BaseWriter
     {
         public:
+            LogWriter();
+            LogWriter(const LogWriter&);
+            virtual ~LogWriter();
+
             static LogWriter& getInstance();
 
             void setLogPath(const std::string& path);
@@ -64,10 +68,6 @@ namespace orxonox
             virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
-            LogWriter();
-            LogWriter(const LogWriter&);
-            virtual ~LogWriter();
-
             void openFile();
             void closeFile();
 

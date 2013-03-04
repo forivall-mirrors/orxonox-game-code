@@ -312,7 +312,7 @@ namespace orxonox
         EXPECT_TRUE(listener.acceptsOutput(level, context));
 
         std::vector<std::string> lines;
-        EXPECT_CALL(listener, output(level, ::testing::_, lines)).Times(1);
+        EXPECT_CALL(listener, output(level, context, lines)).Times(1);
 
         listener.unfilteredOutput(level, context, lines);
     }
@@ -329,7 +329,7 @@ namespace orxonox
         EXPECT_FALSE(listener.acceptsOutput(level, context));
 
         std::vector<std::string> lines;
-        EXPECT_CALL(listener, output(level, ::testing::_, lines)).Times(0);
+        EXPECT_CALL(listener, output(level, context, lines)).Times(0);
 
         listener.unfilteredOutput(level, context, lines);
     }

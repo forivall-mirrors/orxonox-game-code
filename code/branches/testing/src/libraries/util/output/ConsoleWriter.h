@@ -49,6 +49,10 @@ namespace orxonox
     class _UtilExport ConsoleWriter : public BaseWriter
     {
         public:
+            ConsoleWriter();
+            ConsoleWriter(const ConsoleWriter&);
+            virtual ~ConsoleWriter();
+
             static ConsoleWriter& getInstance();
 
             void enable();
@@ -58,10 +62,6 @@ namespace orxonox
             virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
-            ConsoleWriter();
-            ConsoleWriter(const ConsoleWriter&);
-            virtual ~ConsoleWriter();
-
             bool bEnabled_; ///< If false, the instance will not write output to the console.
     };
 }
