@@ -53,8 +53,6 @@ namespace orxonox
             ConsoleWriter(const ConsoleWriter&);
             virtual ~ConsoleWriter();
 
-            static ConsoleWriter& getInstance();
-
             void enable();
             void disable();
 

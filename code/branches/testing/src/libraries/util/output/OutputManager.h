@@ -71,6 +71,10 @@ namespace orxonox
             static OutputManager& getInstance();
             static OutputManager& getInstanceAndCreateListeners();
 
+            MemoryWriter& getMemoryWriter();
+            ConsoleWriter& getConsoleWriter();
+            LogWriter& getLogWriter();
+
             void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
 
             virtual void registerListener(OutputListener* listener);

@@ -46,6 +46,7 @@
 #include "util/DisplayStringConversions.h"
 #include "util/ScopedSingletonManager.h"
 #include "util/output/MemoryWriter.h"
+#include "util/output/OutputManager.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
@@ -94,7 +95,7 @@ namespace orxonox
 
         // Output buffering is not anymore needed. Not the best solution to do
         // this here, but there isn't much of another way.
-        MemoryWriter::getInstance().disable();
+        OutputManager::getInstance().getMemoryWriter().disable();
     }
 
     /**

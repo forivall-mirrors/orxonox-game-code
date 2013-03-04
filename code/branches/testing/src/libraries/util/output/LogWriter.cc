@@ -75,15 +75,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the only existing instance of this class.
-    */
-    /*static*/ LogWriter& LogWriter::getInstance()
-    {
-        static LogWriter instance;
-        return instance;
-    }
-
-    /**
         @brief Opens the log-file in order to write output to it.
     */
     void LogWriter::openFile()
@@ -132,7 +123,7 @@ namespace orxonox
         this->openFile();
 
         // request old output from MemoryWriter
-        MemoryWriter::getInstance().resendOutput(this);
+        OutputManager::getInstance().getMemoryWriter().resendOutput(this);
     }
 
     /**

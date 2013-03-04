@@ -84,9 +84,13 @@ namespace orxonox
 namespace orxonox
 {
     class AdditionalContextListener;
+    class BaseWriter;
     class Clock;
+    class ConsoleWriter;
     class Exception;
     class ExprParser;
+    class LogWriter;
+    class MemoryWriter;
     class MultiType;
     class OutputListener;
     class OutputManager;
@@ -101,6 +105,7 @@ namespace orxonox
     class SignalHandler;
     template <class T>
     class Singleton;
+    class SubcontextOutputListener;
     class SubString;
 }
 

@@ -87,10 +87,40 @@ namespace orxonox
     {
         static OutputManager& instance = OutputManager::getInstance();
 
-        static MemoryWriter& memoryWriterInstance = MemoryWriter::getInstance(); (void)memoryWriterInstance;
-        static ConsoleWriter& consoleWriterInstance = ConsoleWriter::getInstance(); (void)consoleWriterInstance;
-        static LogWriter& logWriterInstance = LogWriter::getInstance(); (void)logWriterInstance;
+        static MemoryWriter& memoryWriterInstance = OutputManager::getInstance().getMemoryWriter(); (void)memoryWriterInstance;
+        static ConsoleWriter& consoleWriterInstance = OutputManager::getInstance().getConsoleWriter(); (void)consoleWriterInstance;
+        static LogWriter& logWriterInstance = OutputManager::getInstance().getLogWriter(); (void)logWriterInstance;
 
+        return instance;
+    }
+
+    /**
+     * @brief Returns the main instance of MemoryWriter which is managed by the OutputManager singleton.
+     * @note If OutputManager is ever un-singletonized, this instance must not remain static.
+     */
+    MemoryWriter& OutputManager::getMemoryWriter()
+    {
+        static MemoryWriter instance;
+        return instance;
+    }
+
+    /**
+     * @brief Returns the main instance of ConsoleWriter which is managed by the OutputManager singleton.
+     * @note If OutputManager is ever un-singletonized, this instance must not remain static.
+     */
+    ConsoleWriter& OutputManager::getConsoleWriter()
+    {
+        static ConsoleWriter instance;
+        return instance;
+    }
+
+    /**
+     * @brief Returns the main instance of LogWriter which is managed by the OutputManager singleton.
+     * @note If OutputManager is ever un-singletonized, this instance must not remain static.
+     */
+    LogWriter& OutputManager::getLogWriter()
+    {
+        static LogWriter instance;
         return instance;
     }
 

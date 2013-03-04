@@ -34,6 +34,7 @@
 #include "util/Clock.h"
 #include "util/Math.h"
 #include "util/output/ConsoleWriter.h"
+#include "util/output/OutputManager.h"
 #include "core/Game.h"
 #include "core/input/InputBuffer.h"
 
@@ -52,7 +53,7 @@ namespace orxonox
         , lastOutputLineHeight_(0)
     {
         // Disable standard this->cout_ logging
-        ConsoleWriter::getInstance().disable();
+        OutputManager::getInstance().getConsoleWriter().disable();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
@@ -108,7 +109,7 @@ namespace orxonox
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard this->cout_ logging again
-        ConsoleWriter::getInstance().enable();
+        OutputManager::getInstance().getConsoleWriter().enable();
 
         resetTerminalMode();
         this->shell_->destroy();

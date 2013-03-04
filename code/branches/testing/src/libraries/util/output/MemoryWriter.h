@@ -70,8 +70,6 @@ namespace orxonox
             MemoryWriter(const MemoryWriter&);
             virtual ~MemoryWriter();
 
-            static MemoryWriter& getInstance();
-
             void resendOutput(OutputListener* listener) const;
             void disable();
 

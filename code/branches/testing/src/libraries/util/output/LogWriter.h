@@ -60,8 +60,6 @@ namespace orxonox
             LogWriter(const LogWriter&);
             virtual ~LogWriter();
 
-            static LogWriter& getInstance();
-
             void setLogPath(const std::string& path);
 
         protected:

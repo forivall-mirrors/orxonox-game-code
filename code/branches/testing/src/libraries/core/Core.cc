@@ -54,6 +54,7 @@
 #include "util/Output.h"
 #include "util/Exception.h"
 #include "util/output/LogWriter.h"
+#include "util/output/OutputManager.h"
 #include "util/Scope.h"
 #include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
@@ -179,7 +180,7 @@ namespace orxonox
         this->setConfigValues();
 
         // Set the correct log path and rewrite the log file with the correct log levels
-        LogWriter::getInstance().setLogPath(PathConfig::getLogPathString());
+        OutputManager::getInstance().getLogWriter().setLogPath(PathConfig::getLogPathString());
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
@@ -257,24 +258,24 @@ namespace orxonox
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
-        SetConfigValueExternal(LogWriter::getInstance().configurableMaxLevel_,
-                               LogWriter::getInstance().getConfigurableSectionName(),
-                               LogWriter::getInstance().getConfigurableMaxLevelName(),
-                               LogWriter::getInstance().configurableMaxLevel_)
+        SetConfigValueExternal(OutputManager::getInstance().getLogWriter().configurableMaxLevel_,
+                               OutputManager::getInstance().getLogWriter().getConfigurableSectionName(),
+                               OutputManager::getInstance().getLogWriter().getConfigurableMaxLevelName(),
+                               OutputManager::getInstance().getLogWriter().configurableMaxLevel_)
             .description("The maximum level of output shown in the log file")
-            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevel);
-        SetConfigValueExternal(LogWriter::getInstance().configurableAdditionalContextsMaxLevel_,
-                               LogWriter::getInstance().getConfigurableSectionName(),
-                               LogWriter::getInstance().getConfigurableAdditionalContextsMaxLevelName(),
-                               LogWriter::getInstance().configurableAdditionalContextsMaxLevel_)
+            .callback(static_cast<BaseWriter*>(&OutputManager::getInstance().getLogWriter()), &BaseWriter::changedConfigurableLevel);
+        SetConfigValueExternal(OutputManager::getInstance().getLogWriter().configurableAdditionalContextsMaxLevel_,
+                               OutputManager::getInstance().getLogWriter().getConfigurableSectionName(),
+                               OutputManager::getInstance().getLogWriter().getConfigurableAdditionalContextsMaxLevelName(),
+                               OutputManager::getInstance().getLogWriter().configurableAdditionalContextsMaxLevel_)
             .description("The maximum level of output shown in the log file for additional contexts")
-            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableAdditionalContextsLevel);
-        SetConfigValueExternal(LogWriter::getInstance().configurableAdditionalContexts_,
-                               LogWriter::getInstance().getConfigurableSectionName(),
-                               LogWriter::getInstance().getConfigurableAdditionalContextsName(),
-                               LogWriter::getInstance().configurableAdditionalContexts_)
+            .callback(static_cast<BaseWriter*>(&OutputManager::getInstance().getLogWriter()), &BaseWriter::changedConfigurableAdditionalContextsLevel);
+        SetConfigValueExternal(OutputManager::getInstance().getLogWriter().configurableAdditionalContexts_,
+                               OutputManager::getInstance().getLogWriter().getConfigurableSectionName(),
+                               OutputManager::getInstance().getLogWriter().getConfigurableAdditionalContextsName(),
+                               OutputManager::getInstance().getLogWriter().configurableAdditionalContexts_)
             .description("Additional output contexts shown in the log file")
-            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableAdditionalContexts);
+            .callback(static_cast<BaseWriter*>(&OutputManager::getInstance().getLogWriter()), &BaseWriter::changedConfigurableAdditionalContexts);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")

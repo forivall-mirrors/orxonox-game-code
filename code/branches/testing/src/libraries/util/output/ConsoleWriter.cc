@@ -65,15 +65,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the only existing instance of this class.
-    */
-    /*static*/ ConsoleWriter& ConsoleWriter::getInstance()
-    {
-        static ConsoleWriter instance;
-        return instance;
-    }
-
-    /**
         @brief Inherited function from BaseWriter, writes output to the console using std::cout.
     */
     void ConsoleWriter::printLine(const std::string& line, OutputLevel)

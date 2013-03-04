@@ -87,7 +87,7 @@ namespace orxonox
         this->setConfigValues();
 
         // Get the previous output and add it to the Shell
-        MemoryWriter::getInstance().resendOutput(this);
+        OutputManager::getInstance().getMemoryWriter().resendOutput(this);
     }
 
     /**

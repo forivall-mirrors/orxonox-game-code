@@ -52,15 +52,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the only existing instance of this singleton class.
-    */
-    /*static*/ MemoryWriter& MemoryWriter::getInstance()
-    {
-        static MemoryWriter instance;
-        return instance;
-    }
-
-    /**
         @brief Implementation of the output() function inherited from OutputListener, stores the received output in memory.
     */
     void MemoryWriter::output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
