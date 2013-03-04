@@ -36,6 +36,9 @@
 #define _ConsoleWriter_H__
 
 #include "util/UtilPrereqs.h"
+
+#include <ostream>
+
 #include "BaseWriter.h"
 
 namespace orxonox
@@ -49,18 +52,22 @@ namespace orxonox
     class _UtilExport ConsoleWriter : public BaseWriter
     {
         public:
-            ConsoleWriter();
+            ConsoleWriter(std::ostream& outputStream);
             ConsoleWriter(const ConsoleWriter&);
             virtual ~ConsoleWriter();
 
             void enable();
             void disable();
 
+            inline const std::ostream& getOutputStream() const
+                { return this->outputStream_; }
+
         protected:
             virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
-            bool bEnabled_; ///< If false, the instance will not write output to the console.
+            std::ostream& outputStream_; ///< The ostream to which the console writer writes its output
+            bool bEnabled_;              ///< If false, the instance will not write output to the console.
     };
 }
 

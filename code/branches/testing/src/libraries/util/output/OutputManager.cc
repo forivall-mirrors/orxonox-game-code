@@ -33,6 +33,8 @@
 
 #include "OutputManager.h"
 
+#include <iostream>
+
 #include "MemoryWriter.h"
 #include "ConsoleWriter.h"
 #include "LogWriter.h"
@@ -110,7 +112,7 @@ namespace orxonox
      */
     ConsoleWriter& OutputManager::getConsoleWriter()
     {
-        static ConsoleWriter instance;
+        static ConsoleWriter instance(std::cout);
         return instance;
     }
 
