@@ -2,11 +2,15 @@
 #include "util/Output.h"
 #include "util/output/ConsoleWriter.h"
 #include "util/output/OutputManager.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {
     TEST(ConsoleWriterTest, Disable)
     {
+        // reset output manager
+        OutputManager::Testing::getInstancePointer() = new OutputManager();
+
         std::ostream stream(NULL);
         EXPECT_EQ(0U, OutputManager::getInstance().getListeners().size());
         ConsoleWriter writer(stream);
@@ -17,6 +21,9 @@ namespace orxonox
 
     TEST(ConsoleWriterTest, Enable)
     {
+        // reset output manager
+        OutputManager::Testing::getInstancePointer() = new OutputManager();
+
         std::ostream stream(NULL);
         ConsoleWriter writer(stream);
         writer.disable();

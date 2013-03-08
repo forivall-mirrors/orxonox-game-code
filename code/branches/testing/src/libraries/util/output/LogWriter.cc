@@ -57,11 +57,13 @@ namespace orxonox
 
         // get the path for a temporary file, depending on the system
 #ifdef ORXONOX_PLATFORM_WINDOWS
-        this->path_ = getenv("TEMP");
+        this->directory_ = getenv("TEMP");
 #else
-        this->path_ = "/tmp";
+        this->directory_ = "/tmp";
 #endif
-        this->bDefaultPath_ = true;
+
+        // send a message to the user so that he can find the file in the case of a crash.
+        OutputManager::getInstance().pushMessage(level::user_info, context::undefined(), "Opening log file " + this->getPath());
 
         this->openFile();
     }
@@ -79,15 +81,8 @@ namespace orxonox
     */
     void LogWriter::openFile()
     {
-        // get the full file-name
-        std::string name = this->path_ + '/' + this->filename_;
-
-        // if we open the log file in the default directory, send a message to the user so that he can find the file in the case of a crash.
-        if (this->bDefaultPath_)
-            OutputManager::getInstance().pushMessage(level::user_info, context::undefined(), "Opening log file " + name);
-
         // open the file
-        this->file_.open(name.c_str(), std::fstream::out);
+        this->file_.open(this->getPath().c_str(), std::fstream::out);
 
         // check if it worked and print some output
         if (this->file_.is_open())
@@ -111,15 +106,14 @@ namespace orxonox
     /**
         @brief Changes the path of the log-file. Re-writes the log-file by using MemoryWriter.
     */
-    void LogWriter::setLogPath(const std::string& path)
+    void LogWriter::setLogDirectory(const std::string& directory)
     {
         // notify about the change of the log-file (because the old file will no longer be updated)
-        OutputManager::getInstance().pushMessage(level::internal_info, context::undefined(), "Migrating log file from " + this->path_ + "\nto " + path);
+        OutputManager::getInstance().pushMessage(level::internal_info, context::undefined(), "Migrating log file from " + this->directory_ + "\nto " + directory);
 
         // close the old file, update the path and open the new file
         this->closeFile();
-        this->path_ = path;
-        this->bDefaultPath_ = false;
+        this->directory_ = directory;
         this->openFile();
 
         // request old output from MemoryWriter

@@ -180,7 +180,7 @@ namespace orxonox
         this->setConfigValues();
 
         // Set the correct log path and rewrite the log file with the correct log levels
-        OutputManager::getInstance().getLogWriter().setLogPath(PathConfig::getLogPathString());
+        OutputManager::getInstance().getLogWriter().setLogDirectory(PathConfig::getLogPathString());
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console

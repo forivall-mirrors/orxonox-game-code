@@ -60,7 +60,14 @@ namespace orxonox
             LogWriter(const LogWriter&);
             virtual ~LogWriter();
 
-            void setLogPath(const std::string& path);
+            void setLogDirectory(const std::string& directory);
+
+            /** @brief Returns the path to the logfile. */
+            inline std::string getPath() const
+                { return this->directory_ + '/' + this->filename_; }
+            /** @brief Returns the open file stream. */
+            inline const std::ofstream& getFile() const
+                { return this->file_; }
 
         protected:
             virtual void printLine(const std::string& line, OutputLevel level);
@@ -69,10 +76,8 @@ namespace orxonox
             void openFile();
             void closeFile();
 
-            std::string filename_;  ///< The name of the log-file (without directories)
-            std::string path_;      ///< The path of the log-file (without file-name)
-            bool bDefaultPath_;     ///< If true, the log-file resides at the default path (which is usually a temporary directory)
-
+            std::string filename_;  ///< The name of the log-file (without directory)
+            std::string directory_; ///< The directory where the log-file resided (without file-name)
             std::ofstream file_;    ///< The output file stream.
     };
 }
