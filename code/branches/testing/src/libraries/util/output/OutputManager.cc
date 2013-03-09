@@ -306,7 +306,7 @@ namespace orxonox
     std::string OutputManager::getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const
     {
         // "undefined" context is ignored because it's used implicitly if no explicit context is defined
-        static OutputContextMask undefined_mask = context::undefined().mask;
+        OutputContextMask undefined_mask = context::undefined().mask;
 
         std::string prefix = this->getLevelName(level) + ": ";
         if (context.mask != undefined_mask)

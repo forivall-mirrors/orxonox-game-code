@@ -77,6 +77,9 @@ namespace orxonox
 
             virtual bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const;
 
+            inline const std::set<OutputContextSubID>& getSubcontexts() const
+                { return this->subcontexts_; }
+
         private:
             OutputContextMask subcontextsCheckMask_;    ///< All contexts defined by this mask need to be checked whether they are accepted by the set of sub-contexts
             OutputContextMask subcontextsNoCheckMask_;  ///< All contexts defined by this mask don't need to be checked since we accept all sub-contexts
