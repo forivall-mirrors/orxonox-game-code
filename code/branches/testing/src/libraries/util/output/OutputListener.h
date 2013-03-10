@@ -80,7 +80,7 @@ namespace orxonox
             virtual bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const;
 
             /// @brief Called by OutputManager for each line of output, checks if this listener actually accepts this output before it calls the output() function.
-            inline void unfilteredOutput(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
+            virtual void unfilteredOutput(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
                 { if (this->acceptsOutput(level, context)) this->output(level, context, lines); }
 
         protected:

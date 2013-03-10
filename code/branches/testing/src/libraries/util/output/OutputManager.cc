@@ -59,6 +59,9 @@ namespace orxonox
         this->memoryWriterInstance_ = 0;
         this->consoleWriterInstance_ = 0;
         this->logWriterInstance_ = 0;
+
+        // register 'undefined' context in order to give it always the first context-ID
+        this->registerContext("undefined");
     }
 
     /**

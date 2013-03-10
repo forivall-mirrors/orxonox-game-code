@@ -108,6 +108,10 @@ namespace orxonox
             inline const std::vector<OutputListener*>& getListeners() const
                 { return this->listeners_; }
 
+            inline OutputLevel getCombinedLevelMask() const { return this->combinedLevelMask_; }
+            inline OutputLevel getCombinedAdditionalContextsLevelMask() const { return this->combinedAdditionalContextsLevelMask_; }
+            inline OutputContextMask getCombinedAdditionalContextsMask() const { return this->combinedAdditionalContextsMask_; }
+
         private:
             void updateMasks();
             void updateCombinedLevelMask();
