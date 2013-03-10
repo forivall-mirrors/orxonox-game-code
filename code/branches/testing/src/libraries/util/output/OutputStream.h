@@ -103,6 +103,7 @@ namespace orxonox
 
             inline const OutputLevel getOutputLevel() const { return this->level_; }
             inline const OutputContextContainer* getOutputContext() const { return this->context_; }
+            inline bool acceptsOutput() const { return this->bAcceptsOutput_; }
 
         private:
             /// @brief Generic function to add values to the output stream, using the inherited << operator from std::ostringstream.
