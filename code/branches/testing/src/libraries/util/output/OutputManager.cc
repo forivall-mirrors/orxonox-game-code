@@ -54,6 +54,11 @@ namespace orxonox
         this->combinedAdditionalContextsMask_ = context::none;
 
         this->subcontextCounter_ = 0;
+
+        this->isInitialized_ = false;
+        this->memoryWriterInstance_ = 0;
+        this->consoleWriterInstance_ = 0;
+        this->logWriterInstance_ = 0;
     }
 
     /**
@@ -61,6 +66,15 @@ namespace orxonox
     */
     OutputManager::~OutputManager()
     {
+        while (!this->listeners_.empty())
+            this->unregisterListener(this->listeners_[0]);
+
+        if (this->memoryWriterInstance_)
+            delete this->memoryWriterInstance_;
+        if (this->consoleWriterInstance_)
+            delete this->consoleWriterInstance_;
+        if (this->logWriterInstance_)
+            delete this->logWriterInstance_;
     }
 
     /*static*/ SharedPtr<OutputManager>& OutputManager::Testing::getInstancePointer()
@@ -87,42 +101,15 @@ namespace orxonox
     */
     /*static*/ OutputManager& OutputManager::getInstanceAndCreateListeners()
     {
-        static OutputManager& instance = OutputManager::getInstance();
+        OutputManager& instance = *OutputManager::Testing::getInstancePointer();
 
-        static MemoryWriter& memoryWriterInstance = OutputManager::getInstance().getMemoryWriter(); (void)memoryWriterInstance;
-        static ConsoleWriter& consoleWriterInstance = OutputManager::getInstance().getConsoleWriter(); (void)consoleWriterInstance;
-        static LogWriter& logWriterInstance = OutputManager::getInstance().getLogWriter(); (void)logWriterInstance;
+        if (!instance.isInitialized_) {
+            instance.isInitialized_ = true;
+            instance.memoryWriterInstance_ = new MemoryWriter();
+            instance.consoleWriterInstance_ = new ConsoleWriter(std::cout);
+            instance.logWriterInstance_ = new LogWriter();
+        }
 
-        return instance;
-    }
-
-    /**
-     * @brief Returns the main instance of MemoryWriter which is managed by the OutputManager singleton.
-     * @note If OutputManager is ever un-singletonized, this instance must not remain static.
-     */
-    MemoryWriter& OutputManager::getMemoryWriter()
-    {
-        static MemoryWriter instance;
-        return instance;
-    }
-
-    /**
-     * @brief Returns the main instance of ConsoleWriter which is managed by the OutputManager singleton.
-     * @note If OutputManager is ever un-singletonized, this instance must not remain static.
-     */
-    ConsoleWriter& OutputManager::getConsoleWriter()
-    {
-        static ConsoleWriter instance(std::cout);
-        return instance;
-    }
-
-    /**
-     * @brief Returns the main instance of LogWriter which is managed by the OutputManager singleton.
-     * @note If OutputManager is ever un-singletonized, this instance must not remain static.
-     */
-    LogWriter& OutputManager::getLogWriter()
-    {
-        static LogWriter instance;
         return instance;
     }
 

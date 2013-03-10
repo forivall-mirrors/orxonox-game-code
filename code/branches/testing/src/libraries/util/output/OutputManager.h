@@ -71,11 +71,11 @@ namespace orxonox
             static OutputManager& getInstance();
             static OutputManager& getInstanceAndCreateListeners();
 
-            MemoryWriter& getMemoryWriter();
-            ConsoleWriter& getConsoleWriter();
-            LogWriter& getLogWriter();
+            inline MemoryWriter& getMemoryWriter()   { return *this->memoryWriterInstance_; }
+            inline ConsoleWriter& getConsoleWriter() { return *this->consoleWriterInstance_; }
+            inline LogWriter& getLogWriter()         { return *this->logWriterInstance_; }
 
-            void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
+            virtual void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
 
             virtual void registerListener(OutputListener* listener);
             virtual void unregisterListener(OutputListener* listener);
@@ -123,6 +123,11 @@ namespace orxonox
             std::map<std::string, OutputContextMask> contextMasks_;             ///< Contains all main-contexts and their masks
             std::map<std::string, OutputContextContainer> contextContainers_;   ///< Contains all contexts including sub-contexts and their containers
             OutputContextSubID subcontextCounter_;                              ///< Counts the number of sub-contexts (and generates their IDs)
+
+            bool isInitialized_;                                                ///< Becomes true once the following instances were created
+            MemoryWriter*  memoryWriterInstance_;                               ///< The main instance of MemoryWriter, managed by OutputManager
+            ConsoleWriter* consoleWriterInstance_;                              ///< The main instance of ConsoleWriter, managed by OutputManager
+            LogWriter*     logWriterInstance_;                                  ///< The main instance of LogWriter, managed by OutputManager
 
         public:
             struct _UtilExport Testing

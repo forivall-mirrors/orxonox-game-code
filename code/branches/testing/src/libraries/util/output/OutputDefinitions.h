@@ -47,7 +47,7 @@
     context argument.
 */
 #define REGISTER_OUTPUT_CONTEXT(name) \
-    const OutputContextContainer& name() { static const OutputContextContainer& context = registerContext(#name); return context; }
+    const OutputContextContainer& name() { static OutputContextContainer context = registerContext(#name); return context; }
 
 /**
     @brief Defines a sub-context.
