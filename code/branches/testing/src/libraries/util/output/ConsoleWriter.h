@@ -46,8 +46,7 @@ namespace orxonox
     /**
         @brief ConsoleWriter inherits from BaseWriter and writes output to the console.
 
-        This class can be seen as an equivalent to std::cout within the output
-        system. It is implemented as a singleton for static acces.
+        This class can be seen as an equivalent to std::cout within the output system.
     */
     class _UtilExport ConsoleWriter : public BaseWriter
     {

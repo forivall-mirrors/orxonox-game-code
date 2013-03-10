@@ -46,8 +46,13 @@
     functions (or the containers they return) can be passed to orxout() as
     context argument.
 */
-#define REGISTER_OUTPUT_CONTEXT(name) \
-    const OutputContextContainer& name() { static OutputContextContainer context = registerContext(#name); return context; }
+#ifndef DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
+    #define REGISTER_OUTPUT_CONTEXT(name) \
+        const OutputContextContainer& name() { static OutputContextContainer context = registerContext(#name); return context; }
+#else
+    #define REGISTER_OUTPUT_CONTEXT(name) \
+        const OutputContextContainer& name() { return registerContext(#name); }
+#endif
 
 /**
     @brief Defines a sub-context.
@@ -59,8 +64,13 @@
     more descriptive names (e.g. input::keyboard) and they can be filtered
     individually by derivatives of orxonox::SubcontextOutputListener.
 */
-#define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
-    const OutputContextContainer& subname() { static const OutputContextContainer& context = registerContext(#name, #subname); return context; }
+#ifndef DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
+    #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
+        const OutputContextContainer& subname() { static const OutputContextContainer context = registerContext(#name, #subname); return context; }
+#else
+    #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
+        const OutputContextContainer& subname() { return registerContext(#name, #subname); }
+#endif
 
 // tolua_begin
 namespace orxonox

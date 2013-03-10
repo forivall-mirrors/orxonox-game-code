@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
+#define DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
+
 #include "util/Output.h"
 #include "util/output/OutputStream.h"
 #include "util/output/OutputManager.h"
@@ -140,7 +143,7 @@ namespace orxonox
 
         OutputStream stream;
 
-        const OutputContextContainer& context = context::undefined();
+        const OutputContextContainer& context = context::unittest1();
 
         stream.setOutputAttributes(level::verbose, context);
         EXPECT_FALSE(stream.acceptsOutput());

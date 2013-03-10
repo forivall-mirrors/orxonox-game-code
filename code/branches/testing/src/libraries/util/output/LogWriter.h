@@ -46,8 +46,7 @@ namespace orxonox
     /**
         @brief The LogWriter class inherits from BaseWriter and writes output to a log-file.
 
-        It is implemented as singleton because we (currently) use only one
-        log-file. The path of the file can be changed, in which case the file
+        The path of the file can be changed, in which case the file
         is rewritten by using the output stored by MemoryWriter. This adds the
         possibility to change the desired output levels before changing the
         path in order to get the complete output with the new output levels
