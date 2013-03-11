@@ -38,9 +38,12 @@
 
 #include "OutputManager.h"
 #include "MemoryWriter.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
+    static const int MAX_ARCHIVED_FILES = 9;
+
     /**
         @brief Constructor, initializes the desired output levels and the name and path of the log-file, and opens the log-file.
 
@@ -81,6 +84,9 @@ namespace orxonox
     */
     void LogWriter::openFile()
     {
+        // archive the old log file
+        this->archive();
+
         // open the file
         this->file_.open(this->getPath().c_str(), std::fstream::out);
 
@@ -101,6 +107,50 @@ namespace orxonox
             this->printLine("Log file closed", level::none);
             this->file_.close();
         }
+    }
+
+    /**
+     * @brief Archives old copies of the log file by adding increasing numbers to the filename.
+     */
+    void LogWriter::archive(int index)
+    {
+        std::string oldPath = this->getArchivedPath(index);
+
+        // see if the file already exists, otherwise return
+        std::ifstream stream(oldPath.c_str());
+        bool exists = stream.is_open();
+        stream.close();
+
+        if (!exists)
+            return;
+
+        if (index < MAX_ARCHIVED_FILES)
+        {
+            // increment the index and archive the file with the next higher index
+            this->archive(++index);
+
+            // create the new path based on the incremented index
+            std::string newPath = this->getArchivedPath(index);
+
+            // move the file
+            std::rename(oldPath.c_str(), newPath.c_str());
+        }
+        else
+        {
+            // delete the file
+            std::remove(oldPath.c_str());
+        }
+    }
+    
+    /**
+     * @brief Returns the path for archived copies of the logfile (based on the archive index)
+     */
+    std::string LogWriter::getArchivedPath(int index) const
+    {
+        std::string path = this->getPath();
+        if (index > 0)
+            path += '.' + multi_cast<std::string>(index);
+        return path;
     }
 
     /**

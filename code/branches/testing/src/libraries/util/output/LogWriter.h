@@ -75,6 +75,9 @@ namespace orxonox
             void openFile();
             void closeFile();
 
+            void archive(int index = 0);
+            std::string getArchivedPath(int index) const;
+
             std::string filename_;  ///< The name of the log-file (without directory)
             std::string directory_; ///< The directory where the log-file resided (without file-name)
             std::ofstream file_;    ///< The output file stream.
