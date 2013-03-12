@@ -120,14 +120,14 @@ namespace orxonox
 
         std::string line = getLineWhichContains(path, "myothertestoutput");
         EXPECT_FALSE(line.empty());
-        EXPECT_TRUE(std::isdigit(line[0]));
-        EXPECT_TRUE(std::isdigit(line[1]));
+        EXPECT_TRUE(isdigit(line[0]));
+        EXPECT_TRUE(isdigit(line[1]));
         EXPECT_EQ(':', line[2]);
-        EXPECT_TRUE(std::isdigit(line[3]));
-        EXPECT_TRUE(std::isdigit(line[4]));
+        EXPECT_TRUE(isdigit(line[3]));
+        EXPECT_TRUE(isdigit(line[4]));
         EXPECT_EQ(':', line[5]);
-        EXPECT_TRUE(std::isdigit(line[6]));
-        EXPECT_TRUE(std::isdigit(line[7]));
+        EXPECT_TRUE(isdigit(line[6]));
+        EXPECT_TRUE(isdigit(line[7]));
         EXPECT_EQ(' ', line[8]);
     }
 
