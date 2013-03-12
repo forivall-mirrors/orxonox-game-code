@@ -167,8 +167,8 @@ namespace orxonox
         this->openFile();
 
         // request old output from MemoryWriter
-        if (&OutputManager::getInstance().getMemoryWriter())
-            OutputManager::getInstance().getMemoryWriter().resendOutput(this);
+        if (OutputManager::getInstance().getMemoryWriter())
+            OutputManager::getInstance().getMemoryWriter()->resendOutput(this);
     }
 
     /**

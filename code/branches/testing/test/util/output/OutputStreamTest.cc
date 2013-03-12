@@ -63,7 +63,7 @@ namespace orxonox
     TEST(OutputStreamTest, ManipulatorOnlyAppliedIfOutputAccepted)
     {
         // disable MemoryWriter because otherwise we would always accept all output
-        OutputManager::getInstance().getMemoryWriter().disable();
+        OutputManager::getInstance().getMemoryWriter()->disable();
 
         {
             OutputStream stream;
@@ -139,7 +139,7 @@ namespace orxonox
     TEST_F(OutputStreamTestWithMockedOutputManager, OutputOnlySentToOutputManagerIfAccepted)
     {
         // disable MemoryWriter because otherwise we would always accept all output
-        OutputManager::getInstanceAndCreateListeners().getMemoryWriter().disable();
+        OutputManager::getInstanceAndCreateListeners().getMemoryWriter()->disable();
 
         OutputStream stream;
 

@@ -65,6 +65,6 @@ namespace orxonox
     TEST(ConsoleWriterTest, DefaultConsoleWriterUsesCout)
     {
         OutputManager::getInstanceAndCreateListeners();
-        EXPECT_EQ(std::cout, OutputManager::getInstance().getConsoleWriter().getOutputStream());
+        EXPECT_EQ(std::cout, OutputManager::getInstance().getConsoleWriter()->getOutputStream());
     }
 }

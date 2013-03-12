@@ -95,7 +95,7 @@ namespace orxonox
 
         // Output buffering is not anymore needed. Not the best solution to do
         // this here, but there isn't much of another way.
-        OutputManager::getInstance().getMemoryWriter().disable();
+        OutputManager::getInstance().getMemoryWriter()->disable();
     }
 
     /**

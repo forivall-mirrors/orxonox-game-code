@@ -71,9 +71,9 @@ namespace orxonox
             static OutputManager& getInstance();
             static OutputManager& getInstanceAndCreateListeners();
 
-            inline MemoryWriter& getMemoryWriter()   { return *this->memoryWriterInstance_; }
-            inline ConsoleWriter& getConsoleWriter() { return *this->consoleWriterInstance_; }
-            inline LogWriter& getLogWriter()         { return *this->logWriterInstance_; }
+            inline MemoryWriter* getMemoryWriter()   { return this->memoryWriterInstance_; }
+            inline ConsoleWriter* getConsoleWriter() { return this->consoleWriterInstance_; }
+            inline LogWriter* getLogWriter()         { return this->logWriterInstance_; }
 
             virtual void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
 

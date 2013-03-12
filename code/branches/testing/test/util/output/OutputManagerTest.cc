@@ -53,29 +53,29 @@ namespace orxonox
     // test getInstance does not create listeners
     TEST(OutputManagerTest, GetInstanceDoesNotCreateDefaultListeners)
     {
-        EXPECT_TRUE(NULL == &OutputManager::getInstance().getMemoryWriter());
-        EXPECT_TRUE(NULL == &OutputManager::getInstance().getConsoleWriter());
-        EXPECT_TRUE(NULL == &OutputManager::getInstance().getLogWriter());
+        EXPECT_TRUE(NULL == OutputManager::getInstance().getMemoryWriter());
+        EXPECT_TRUE(NULL == OutputManager::getInstance().getConsoleWriter());
+        EXPECT_TRUE(NULL == OutputManager::getInstance().getLogWriter());
     }
 
     // test getInstanceAndCreateListeners creates listeners
     TEST(OutputManagerTest, GetInstanceAndCreateListenersCreatesDefaultListeners)
     {
-        EXPECT_TRUE(NULL != &OutputManager::getInstanceAndCreateListeners().getMemoryWriter());
-        EXPECT_TRUE(NULL != &OutputManager::getInstanceAndCreateListeners().getConsoleWriter());
-        EXPECT_TRUE(NULL != &OutputManager::getInstanceAndCreateListeners().getLogWriter());
+        EXPECT_TRUE(NULL != OutputManager::getInstanceAndCreateListeners().getMemoryWriter());
+        EXPECT_TRUE(NULL != OutputManager::getInstanceAndCreateListeners().getConsoleWriter());
+        EXPECT_TRUE(NULL != OutputManager::getInstanceAndCreateListeners().getLogWriter());
     }
 
     // test getInstanceAndCreateListeners called again does not re-create listeners
     TEST(OutputManagerTest, GetInstanceAndCreateListenersDoesNotCreateDefaultListenersTwice)
     {
-        MemoryWriter* memoryWriter = &OutputManager::getInstanceAndCreateListeners().getMemoryWriter();
-        ConsoleWriter* consoleWriter = &OutputManager::getInstanceAndCreateListeners().getConsoleWriter();
-        LogWriter* logWriter = &OutputManager::getInstanceAndCreateListeners().getLogWriter();
+        MemoryWriter* memoryWriter = OutputManager::getInstanceAndCreateListeners().getMemoryWriter();
+        ConsoleWriter* consoleWriter = OutputManager::getInstanceAndCreateListeners().getConsoleWriter();
+        LogWriter* logWriter = OutputManager::getInstanceAndCreateListeners().getLogWriter();
 
-        EXPECT_TRUE(memoryWriter == &OutputManager::getInstanceAndCreateListeners().getMemoryWriter());
-        EXPECT_TRUE(consoleWriter == &OutputManager::getInstanceAndCreateListeners().getConsoleWriter());
-        EXPECT_TRUE(logWriter == &OutputManager::getInstanceAndCreateListeners().getLogWriter());
+        EXPECT_TRUE(memoryWriter == OutputManager::getInstanceAndCreateListeners().getMemoryWriter());
+        EXPECT_TRUE(consoleWriter == OutputManager::getInstanceAndCreateListeners().getConsoleWriter());
+        EXPECT_TRUE(logWriter == OutputManager::getInstanceAndCreateListeners().getLogWriter());
     }
 
     // test constructor
