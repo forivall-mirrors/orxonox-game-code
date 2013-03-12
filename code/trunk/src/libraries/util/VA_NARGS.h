@@ -35,6 +35,8 @@
     (of course overloading is not possible for different types, as macros are not
     type aware, but for different numbers of arguments is still very powerful).
 
+    Important: The macro can not be overloaded for 0 arguments: ORXONOX_VA_NARGS() returns 1!
+
     Example: A macro to call functions
     @code
     myfunction();                                           // A static function
@@ -63,6 +65,7 @@
     the number of arguments ("1" - "N"). Then all arguments are passed to the right macro.
 */
 
+#include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 
 /**

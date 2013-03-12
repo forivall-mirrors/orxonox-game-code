@@ -36,6 +36,9 @@
 #define _ConsoleWriter_H__
 
 #include "util/UtilPrereqs.h"
+
+#include <ostream>
+
 #include "BaseWriter.h"
 
 namespace orxonox
@@ -43,26 +46,27 @@ namespace orxonox
     /**
         @brief ConsoleWriter inherits from BaseWriter and writes output to the console.
 
-        This class can be seen as an equivalent to std::cout within the output
-        system. It is implemented as a singleton for static acces.
+        This class can be seen as an equivalent to std::cout within the output system.
     */
     class _UtilExport ConsoleWriter : public BaseWriter
     {
         public:
-            static ConsoleWriter& getInstance();
+            ConsoleWriter(std::ostream& outputStream);
+            ConsoleWriter(const ConsoleWriter&);
+            virtual ~ConsoleWriter();
 
             void enable();
             void disable();
+
+            inline const std::ostream& getOutputStream() const
+                { return this->outputStream_; }
 
         protected:
             virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
-            ConsoleWriter();
-            ConsoleWriter(const ConsoleWriter&);
-            virtual ~ConsoleWriter();
-
-            bool bEnabled_; ///< If false, the instance will not write output to the console.
+            std::ostream& outputStream_; ///< The ostream to which the console writer writes its output
+            bool bEnabled_;              ///< If false, the instance will not write output to the console.
     };
 }
 

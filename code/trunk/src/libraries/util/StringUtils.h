@@ -57,7 +57,7 @@ namespace orxonox
 
     _UtilExport void         vectorize(const std::string& str, char delimiter, std::vector<std::string>* output);
 
-    _UtilExport size_t       getNextQuote(const std::string& str, size_t start);
+    _UtilExport size_t       getNextQuote(const std::string& str, size_t start = 0);
     _UtilExport bool         isBetweenQuotes(const std::string& str, size_t pos);
 
     _UtilExport bool         hasStringBetweenQuotes(const std::string& str);
@@ -68,7 +68,6 @@ namespace orxonox
 
     _UtilExport bool         isEmpty(const std::string& str);
     _UtilExport bool         isComment(const std::string& str);
-    _UtilExport bool         isNumeric(const std::string& str);
 
     _UtilExport std::string  addSlashes(const std::string& str);
     _UtilExport std::string  removeSlashes(const std::string& str);
@@ -84,7 +83,6 @@ namespace orxonox
 
     _UtilExport bool         hasComment(const std::string& str);
     _UtilExport std::string  getComment(const std::string& str);
-    _UtilExport size_t       getCommentPosition(const std::string& str);
     _UtilExport size_t       getNextCommentPosition(const std::string& str, size_t start = 0);
 
     _UtilExport size_t       replaceCharacters(std::string& str, char target, char replacement);

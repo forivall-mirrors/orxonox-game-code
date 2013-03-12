@@ -113,10 +113,7 @@ namespace orxonox
                 size_t pass_;               ///< The ID of the pass
                 std::string parameter_;     ///< The name of the parameter
 
-                int valueInt_;              ///< The desired int value of the parameter
-                float valueFloat_;          ///< The desired float value of the parameter
-
-                MT_Type::Value valueType_;  ///< The type of the parameter (currently only int or float)
+                MultiType value_;           ///< The desired value of the parameter
             };
 
             std::list<ParameterContainer> parameters_;  ///< The list of parameters that should be set on the next update

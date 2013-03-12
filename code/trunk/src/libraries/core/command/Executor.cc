@@ -78,7 +78,7 @@ namespace orxonox
         @param error A pointer to a variable (or NULL) that is used to store the error code (see @ref CommandExecutorErrorCodes "CommandExecutor error codes")
         @param delimiter The delimiter that is used to separate the arguments in the string @a arguments
         @param bPrintError If true, errors are printed to the console if the function couldn't be executed with the given arguments
-        @return Returns the return value of the function (or MT_Type::Null if there is no return value)
+        @return Returns the return value of the function (or MultiType::Null if there is no return value)
     */
     MultiType Executor::parse(const std::string& arguments, int* error, const std::string& delimiter, bool bPrintError) const
     {
@@ -91,7 +91,7 @@ namespace orxonox
         @param error A pointer to a variable (or NULL) that is used to store the error code (see @ref CommandExecutorErrorCodes "CommandExecutor error codes")
         @param delimiter The delimiter that was used to separate the arguments in the SubString @a arguments (used to join the surplus arguments)
         @param bPrintError If true, errors are printed to the console if the function couldn't be executed with the given arguments
-        @return Returns the return value of the function (or MT_Type::Null if there is no return value)
+        @return Returns the return value of the function (or MultiType::Null if there is no return value)
     */
     MultiType Executor::parse(const SubString& arguments, int* error, const std::string& delimiter, bool bPrintError) const
     {
@@ -104,7 +104,7 @@ namespace orxonox
         {
             if (bPrintError)
                 orxout(internal_warning) << "Can't call executor " << this->name_ << " through parser: Not enough arguments or default values given (input: " << arguments.join() << ")." << endl;
-            return MT_Type::Null;
+            return MultiType::Null;
         }
 
         orxout(verbose, context::misc::executor) << "Executor::parse: \"" << arguments.join(delimiter) << "\" -> " << argCount << " arguments: " << arg[0] << " / " << arg[1] << " / " << arg[2] << " / " << arg[3] << " / " << arg[4] << endl;

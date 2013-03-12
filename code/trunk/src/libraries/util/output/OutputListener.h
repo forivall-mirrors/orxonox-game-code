@@ -54,6 +54,9 @@ namespace orxonox
             OutputListener(bool bRegister = true);
             virtual ~OutputListener();
 
+            void registerListener(AdditionalContextListener* listener);
+            void unregisterListener(AdditionalContextListener* listener);
+
             void setLevelMax(OutputLevel max);
             void setLevelRange(OutputLevel min, OutputLevel max);
             void setLevelMask(OutputLevel mask);
@@ -62,7 +65,7 @@ namespace orxonox
             void setAdditionalContextsLevelRange(OutputLevel min, OutputLevel max);
             void setAdditionalContextsLevelMask(OutputLevel mask);
 
-            void setAdditionalContextsMask(OutputContextMask mask);
+            virtual void setAdditionalContextsMask(OutputContextMask mask);
 
             /// @brief Returns the level mask.
             inline OutputLevel getLevelMask() const
@@ -77,17 +80,22 @@ namespace orxonox
             virtual bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const;
 
             /// @brief Called by OutputManager for each line of output, checks if this listener actually accepts this output before it calls the output() function.
-            inline void unfilteredOutput(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
+            virtual void unfilteredOutput(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
                 { if (this->acceptsOutput(level, context)) this->output(level, context, lines); }
 
         protected:
             /// @brief Pure virtual function, needs to be implemented in order to receive output.
             virtual void output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines) = 0;
 
+            inline const std::vector<AdditionalContextListener*>& getListeners() const
+                { return this->listeners_; }
+
         private:
-            OutputLevel       levelMask_;                   ///< Mask of accepted output levels, independent of contexts
-            OutputContextMask additionalContextsMask_;      ///< Mask of accepted additional contexts
-            OutputLevel       additionalContextsLevelMask_; ///< Mask of accepted output levels of the additional contexts
+            std::vector<AdditionalContextListener*> listeners_; ///< List of all registered additional context listeners
+
+            OutputLevel       levelMask_;                       ///< Mask of accepted output levels, independent of contexts
+            OutputContextMask additionalContextsMask_;          ///< Mask of accepted additional contexts
+            OutputLevel       additionalContextsLevelMask_;     ///< Mask of accepted output levels of the additional contexts
     };
 
     /**

@@ -46,8 +46,7 @@ namespace orxonox
     /**
         @brief The LogWriter class inherits from BaseWriter and writes output to a log-file.
 
-        It is implemented as singleton because we (currently) use only one
-        log-file. The path of the file can be changed, in which case the file
+        The path of the file can be changed, in which case the file
         is rewritten by using the output stored by MemoryWriter. This adds the
         possibility to change the desired output levels before changing the
         path in order to get the complete output with the new output levels
@@ -56,25 +55,31 @@ namespace orxonox
     class _UtilExport LogWriter : public BaseWriter
     {
         public:
-            static LogWriter& getInstance();
+            LogWriter();
+            LogWriter(const LogWriter&);
+            virtual ~LogWriter();
 
-            void setLogPath(const std::string& path);
+            void setLogDirectory(const std::string& directory);
+
+            /** @brief Returns the path to the logfile. */
+            inline std::string getPath() const
+                { return this->directory_ + '/' + this->filename_; }
+            /** @brief Returns the open file stream. */
+            inline const std::ofstream& getFile() const
+                { return this->file_; }
 
         protected:
             virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
-            LogWriter();
-            LogWriter(const LogWriter&);
-            virtual ~LogWriter();
-
             void openFile();
             void closeFile();
 
-            std::string filename_;  ///< The name of the log-file (without directories)
-            std::string path_;      ///< The path of the log-file (without file-name)
-            bool bDefaultPath_;     ///< If true, the log-file resides at the default path (which is usually a temporary directory)
+            void archive(int index = 0);
+            std::string getArchivedPath(int index) const;
 
+            std::string filename_;  ///< The name of the log-file (without directory)
+            std::string directory_; ///< The directory where the log-file resided (without file-name)
             std::ofstream file_;    ///< The output file stream.
     };
 }

@@ -33,7 +33,6 @@
 
 #include "ConsoleWriter.h"
 
-#include <iostream>
 
 #include "OutputManager.h"
 
@@ -47,7 +46,7 @@ namespace orxonox
 
         After creation, the instance is enabled.
     */
-    ConsoleWriter::ConsoleWriter() : BaseWriter("Console")
+    ConsoleWriter::ConsoleWriter(std::ostream& outputStream) : BaseWriter("Console"), outputStream_(outputStream)
     {
 #ifdef ORXONOX_RELEASE
         this->setLevelMax(level::user_info);
@@ -65,20 +64,11 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the only existing instance of this class.
-    */
-    /*static*/ ConsoleWriter& ConsoleWriter::getInstance()
-    {
-        static ConsoleWriter instance;
-        return instance;
-    }
-
-    /**
         @brief Inherited function from BaseWriter, writes output to the console using std::cout.
     */
     void ConsoleWriter::printLine(const std::string& line, OutputLevel)
     {
-        std::cout << line << std::endl;
+        this->outputStream_ << line << std::endl;
     }
 
     /**

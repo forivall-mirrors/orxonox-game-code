@@ -20,7 +20,8 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Christoph Renner
+ *      Christoph Renner (Linux implementation)
+ *      Fabian 'x3n' Landau (Windows implementation)
  *   Co-authors:
  *      ...
  *

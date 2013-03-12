@@ -116,19 +116,19 @@ namespace orxonox {
     //TODO: Move to KeyBinderManager...
     const std::string& CommandNotification::bindingNiceifyer(const std::string& binding)
     {
-        SubString string = SubString(binding, ".");
+        SubString substring = SubString(binding, ".");
         std::string name;
         std::string group;
-        switch(string.size())
+        switch(substring.size())
         {
             case 0:
                 return binding;
             case 1:
                 return binding;
             case 2:
-                group = string[0];
+                group = substring[0];
             default:
-                name = string.subSet(1, string.size()).join(".");
+                name = substring.subSet(1).join(".");
         }
 
         std::stringstream stream;
@@ -147,5 +147,5 @@ namespace orxonox {
 
         return *(new std::string(stream.str()));
     }
-    
+
 }

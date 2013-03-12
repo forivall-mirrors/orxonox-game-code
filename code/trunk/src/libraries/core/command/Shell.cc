@@ -87,7 +87,7 @@ namespace orxonox
         this->setConfigValues();
 
         // Get the previous output and add it to the Shell
-        MemoryWriter::getInstance().resendOutput(this);
+        OutputManager::getInstance().getMemoryWriter()->resendOutput(this);
     }
 
     /**
@@ -169,7 +169,7 @@ namespace orxonox
         else
         {
             OutputLevel level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
-            ModifyConfigValueExternal(this->configurableMaxLevel_, this->getConfigurableMaxLevelName(), tset, level);
+            ModifyConfigValueExternal(this->configurableMaxLevel_, this->getConfigurableMaxLevelName(), tset, static_cast<int>(level));
         }
     }
 

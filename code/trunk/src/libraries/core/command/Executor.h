@@ -168,7 +168,7 @@ namespace orxonox
                 if (index < MAX_FUNCTOR_ARGUMENTS)
                     return this->defaultValue_[index];
 
-                return MT_Type::Null;
+                return MultiType::Null;
             }
 
             bool allDefaultValuesSet() const;
