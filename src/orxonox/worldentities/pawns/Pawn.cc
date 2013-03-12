@@ -97,6 +97,12 @@ namespace orxonox
         this->isHumanShip_ = this->hasLocalController();
 
         this->setSyncMode(ObjectDirection::Bidirectional); // needed to synchronise e.g. aimposition
+
+        /* sewper awesome optimization. This loads all the files required for
+         * the big explosion once in the beginning to make sure the game does
+         * not start lagging at the first in-action explosion.
+         */
+        BigExplosion *chunk = new BigExplosion(this->getCreator());
     }
 
     Pawn::~Pawn()
