@@ -187,7 +187,7 @@ namespace orxonox
 
             // Check for data path override by the command line
             if (!CommandLineParser::getArgument("externalDataPath")->hasDefaultValue())
-                externalDataPath_ = CommandLineParser::getValue("externalDataPath").getString();
+                externalDataPath_ = CommandLineParser::getValue("externalDataPath").get<std::string>();
             else
                 externalDataPath_ = specialConfig::externalDataDevDirectory;
         }
@@ -226,7 +226,7 @@ namespace orxonox
         // Option to put all the config and log files in a separate folder
         if (!CommandLineParser::getArgument("writingPathSuffix")->hasDefaultValue())
         {
-            const std::string& directory(CommandLineParser::getValue("writingPathSuffix").getString());
+            const std::string& directory(CommandLineParser::getValue("writingPathSuffix").get<std::string>());
             configPath_ = configPath_ / directory;
             logPath_    = logPath_    / directory;
         }

@@ -46,8 +46,13 @@
     functions (or the containers they return) can be passed to orxout() as
     context argument.
 */
-#define REGISTER_OUTPUT_CONTEXT(name) \
-    const OutputContextContainer& name() { static const OutputContextContainer& context = registerContext(#name); return context; }
+#ifndef DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
+    #define REGISTER_OUTPUT_CONTEXT(name) \
+        const OutputContextContainer& name() { static OutputContextContainer context = registerContext(#name); return context; }
+#else
+    #define REGISTER_OUTPUT_CONTEXT(name) \
+        const OutputContextContainer& name() { return registerContext(#name); }
+#endif
 
 /**
     @brief Defines a sub-context.
@@ -59,8 +64,13 @@
     more descriptive names (e.g. input::keyboard) and they can be filtered
     individually by derivatives of orxonox::SubcontextOutputListener.
 */
-#define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
-    const OutputContextContainer& subname() { static const OutputContextContainer& context = registerContext(#name, #subname); return context; }
+#ifndef DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
+    #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
+        const OutputContextContainer& subname() { static const OutputContextContainer context = registerContext(#name, #subname); return context; }
+#else
+    #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
+        const OutputContextContainer& subname() { return registerContext(#name, #subname); }
+#endif
 
 // tolua_begin
 namespace orxonox
@@ -104,6 +114,11 @@ namespace orxonox
         OutputContextMask mask;     ///< The mask of the context (or the mask of the main-context if this container defines a sub-context)
         OutputContextSubID sub_id;  ///< The id of the sub-context (or context::no_subcontext if this container doesn't define a sub-context)
         std::string name;           ///< The name of this context
+
+        inline bool operator==(const OutputContextContainer& other) const
+        {
+            return this->mask == other.mask && this->sub_id == other.sub_id && this->name == other.name;
+        }
     };
 
     typedef const OutputContextContainer& (OutputContextFunction)();

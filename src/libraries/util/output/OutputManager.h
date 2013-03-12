@@ -42,6 +42,7 @@
 #include <map>
 
 #include "OutputDefinitions.h"
+#include "AdditionalContextListener.h"
 
 namespace orxonox
 {
@@ -60,21 +61,31 @@ namespace orxonox
 
         Additionally OutputManager is used to register output contexts.
     */
-    class _UtilExport OutputManager
+    class _UtilExport OutputManager : public AdditionalContextListener
     {
         public:
+            OutputManager();
+            OutputManager(const OutputManager&);
+            virtual ~OutputManager();
+
             static OutputManager& getInstance();
             static OutputManager& getInstanceAndCreateListeners();
 
-            void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
+            inline MemoryWriter* getMemoryWriter()   { return this->memoryWriterInstance_; }
+            inline ConsoleWriter* getConsoleWriter() { return this->consoleWriterInstance_; }
+            inline LogWriter* getLogWriter()         { return this->logWriterInstance_; }
 
-            void registerListener(OutputListener* listener);
-            void unregisterListener(OutputListener* listener);
+            virtual void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
 
-            void updateMasks();
-            void updateCombinedLevelMask();
-            void updateCombinedAdditionalContextsLevelMask();
-            void updateCombinedAdditionalContextsMask();
+            virtual void registerListener(OutputListener* listener);
+            virtual void unregisterListener(OutputListener* listener);
+
+            virtual void updatedLevelMask(const OutputListener* listener)
+                { this->updateCombinedLevelMask(); }
+            virtual void updatedAdditionalContextsLevelMask(const OutputListener* listener)
+                { this->updateCombinedAdditionalContextsLevelMask(); }
+            virtual void updatedAdditionalContextsMask(const OutputListener* listener)
+                { this->updateCombinedAdditionalContextsMask(); }
 
             /**
                 @brief Returns true if at least one of the output listeners will accept output with the given level and context.
@@ -94,10 +105,18 @@ namespace orxonox
             const std::string& getLevelName(OutputLevel level) const;
             std::string getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const;
 
+            inline const std::vector<OutputListener*>& getListeners() const
+                { return this->listeners_; }
+
+            inline OutputLevel getCombinedLevelMask() const { return this->combinedLevelMask_; }
+            inline OutputLevel getCombinedAdditionalContextsLevelMask() const { return this->combinedAdditionalContextsLevelMask_; }
+            inline OutputContextMask getCombinedAdditionalContextsMask() const { return this->combinedAdditionalContextsMask_; }
+
         private:
-            OutputManager();
-            OutputManager(const OutputManager&);
-            ~OutputManager();
+            void updateMasks();
+            void updateCombinedLevelMask();
+            void updateCombinedAdditionalContextsLevelMask();
+            void updateCombinedAdditionalContextsMask();
 
             std::vector<OutputListener*> listeners_;                            ///< List of all registered output listeners
 
@@ -108,6 +127,17 @@ namespace orxonox
             std::map<std::string, OutputContextMask> contextMasks_;             ///< Contains all main-contexts and their masks
             std::map<std::string, OutputContextContainer> contextContainers_;   ///< Contains all contexts including sub-contexts and their containers
             OutputContextSubID subcontextCounter_;                              ///< Counts the number of sub-contexts (and generates their IDs)
+
+            bool isInitialized_;                                                ///< Becomes true once the following instances were created
+            MemoryWriter*  memoryWriterInstance_;                               ///< The main instance of MemoryWriter, managed by OutputManager
+            ConsoleWriter* consoleWriterInstance_;                              ///< The main instance of ConsoleWriter, managed by OutputManager
+            LogWriter*     logWriterInstance_;                                  ///< The main instance of LogWriter, managed by OutputManager
+
+        public:
+            struct _UtilExport Testing
+            {
+                static SharedPtr<OutputManager>& getInstancePointer();
+            };
     };
 }
 

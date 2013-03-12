@@ -199,7 +199,7 @@ namespace orxonox
     template <>
     inline void CommandLineParser::getValue<std::string>(const std::string& name, std::string* value)
     {
-        *value = getArgument(name)->getValue().getString();
+        *value = getArgument(name)->getValue().get<std::string>();
     }
 
     /**
@@ -216,7 +216,7 @@ namespace orxonox
     {
         OrxAssert(!_getInstance().existsArgument(name),
             "Cannot add a command line argument with name '" + name + "' twice.");
-        OrxAssert(MultiType(defaultValue).getType() != MT_Type::Bool || MultiType(defaultValue).getBool() != true,
+        OrxAssert(!MultiType(defaultValue).isType<bool>() || MultiType(defaultValue).get<bool>() != true,
                "Boolean command line arguments with positive default values are not supported." << endl
             << "Please use SetCommandLineSwitch and adjust your argument: " << name);
 

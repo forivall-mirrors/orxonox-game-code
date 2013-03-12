@@ -49,7 +49,7 @@ namespace orxonox
     */
     void CommandLineArgument::parse(const std::string& value)
     {
-        if (value_.getType() == MT_Type::Bool)
+        if (value_.isType<bool>())
         {
             // simulate command line switch
             bool temp;
@@ -68,9 +68,9 @@ namespace orxonox
         }
         else
         {
-            if (!value_.setValue(value))
+            if (!value_.set(value))
             {
-                value_.setValue(defaultValue_);
+                value_.set(defaultValue_);
                 ThrowException(Argument, "Could not read command line argument '" + getName() + "'.");
             }
             else
@@ -297,10 +297,10 @@ namespace orxonox
             else
                 infoStr << "      ";
             infoStr << "--" << it->second->getName() << ' ';
-            if (it->second->getValue().getType() != MT_Type::Bool)
-                infoStr << "ARG ";
-            else
+            if (it->second->getValue().isType<bool>())
                 infoStr << "    ";
+            else
+                infoStr << "ARG ";
             // fill with the necessary amount of blanks
             infoStr << std::string(maxNameSize - it->second->getName().size(), ' ');
             infoStr << ": " << it->second->getInformation();

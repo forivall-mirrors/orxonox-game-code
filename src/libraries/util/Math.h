@@ -141,15 +141,6 @@ namespace orxonox
     }
 
     /**
-        @brief Rounds the value to the nearest integer.
-    */
-    template <typename T>
-    inline int round(T x)
-    {
-        return static_cast<int>(x + 0.5);
-    }
-
-    /**
         @brief The modulo operation, enhanced to work properly with negative values.
         @param x The value
         @param max The operand
@@ -246,7 +237,7 @@ namespace orxonox
     template <typename T>
     inline T interpolate(float time, const T& start, const T& end)
     {
-        return time * (end - start) + start;
+        return static_cast<T>(time * (end - start) + start);
     }
 
     /**
@@ -259,7 +250,7 @@ namespace orxonox
     template <typename T>
     inline T interpolateSmooth(float time, const T& start, const T& end)
     {
-        return (-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start;
+        return static_cast<T>((-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start);
     }
 
     /**

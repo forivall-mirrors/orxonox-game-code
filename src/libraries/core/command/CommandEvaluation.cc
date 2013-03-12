@@ -118,7 +118,7 @@ namespace orxonox
     /**
         @brief Executes the command which was evaluated by this object and returns its return-value.
         @param error A pointer to an integer (or NULL) which will be used to write error codes to (see @ref CommandExecutorErrorCodes "CommandExecutor error codes")
-        @return Returns the result of the command (or MT_Type::Null if there is no return value)
+        @return Returns the result of the command (or MultiType::Null if there is no return value)
     */
     MultiType CommandEvaluation::query(int* error)
     {
@@ -137,7 +137,7 @@ namespace orxonox
                 *error = CommandExecutor::Denied;
 
             if (*error != CommandExecutor::Success)
-                return MT_Type::Null;
+                return MultiType::Null;
         }
 
         // check if it's possible to execute the command
@@ -169,7 +169,7 @@ namespace orxonox
         }
 
         // return a null value in case of an error
-        return MT_Type::Null;
+        return MultiType::Null;
     }
 
     /**
@@ -224,7 +224,7 @@ namespace orxonox
         if (index < MAX_FUNCTOR_ARGUMENTS)
             return this->arguments_[index];
 
-        return MT_Type::Null;
+        return MultiType::Null;
     }
 
     /**
@@ -599,7 +599,7 @@ namespace orxonox
 
             // print the default value if available
             if (command->getExecutor()->defaultValueSet(i))
-                output += '=' + command->getExecutor()->getDefaultValue(i).getString() + ']';
+                output += '=' + command->getExecutor()->getDefaultValue(i).get<std::string>() + ']';
             else
                 output += '}';
         }

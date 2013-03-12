@@ -66,7 +66,9 @@ namespace orxonox
         };
 
         public:
-            static MemoryWriter& getInstance();
+            MemoryWriter();
+            MemoryWriter(const MemoryWriter&);
+            virtual ~MemoryWriter();
 
             void resendOutput(OutputListener* listener) const;
             void disable();
@@ -75,10 +77,6 @@ namespace orxonox
             virtual void output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines);
 
         private:
-            MemoryWriter();
-            MemoryWriter(const MemoryWriter&);
-            virtual ~MemoryWriter();
-
             std::vector<Message> messages_; ///< Stores all output messages from the creation of this instance until disable() is called.
     };
 }

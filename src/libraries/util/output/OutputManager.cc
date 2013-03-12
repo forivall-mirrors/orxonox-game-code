@@ -33,11 +33,14 @@
 
 #include "OutputManager.h"
 
+#include <iostream>
+
 #include "MemoryWriter.h"
 #include "ConsoleWriter.h"
 #include "LogWriter.h"
 #include "util/Output.h"
 #include "util/StringUtils.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {
@@ -51,6 +54,14 @@ namespace orxonox
         this->combinedAdditionalContextsMask_ = context::none;
 
         this->subcontextCounter_ = 0;
+
+        this->isInitialized_ = false;
+        this->memoryWriterInstance_ = 0;
+        this->consoleWriterInstance_ = 0;
+        this->logWriterInstance_ = 0;
+
+        // register 'undefined' context in order to give it always the first context-ID
+        this->registerContext("undefined");
     }
 
     /**
@@ -58,6 +69,21 @@ namespace orxonox
     */
     OutputManager::~OutputManager()
     {
+        while (!this->listeners_.empty())
+            this->unregisterListener(this->listeners_[0]);
+
+        if (this->memoryWriterInstance_)
+            delete this->memoryWriterInstance_;
+        if (this->consoleWriterInstance_)
+            delete this->consoleWriterInstance_;
+        if (this->logWriterInstance_)
+            delete this->logWriterInstance_;
+    }
+
+    /*static*/ SharedPtr<OutputManager>& OutputManager::Testing::getInstancePointer()
+    {
+        static SharedPtr<OutputManager> instance(new OutputManager());
+        return instance;
     }
 
     /**
@@ -65,8 +91,7 @@ namespace orxonox
     */
     /*static*/ OutputManager& OutputManager::getInstance()
     {
-        static OutputManager instance;
-        return instance;
+        return *OutputManager::Testing::getInstancePointer();
     }
 
     /**
@@ -79,11 +104,14 @@ namespace orxonox
     */
     /*static*/ OutputManager& OutputManager::getInstanceAndCreateListeners()
     {
-        static OutputManager& instance = OutputManager::getInstance();
+        OutputManager& instance = *OutputManager::Testing::getInstancePointer();
 
-        static MemoryWriter& memoryWriterInstance = MemoryWriter::getInstance(); (void)memoryWriterInstance;
-        static ConsoleWriter& consoleWriterInstance = ConsoleWriter::getInstance(); (void)consoleWriterInstance;
-        static LogWriter& logWriterInstance = LogWriter::getInstance(); (void)logWriterInstance;
+        if (!instance.isInitialized_) {
+            instance.isInitialized_ = true;
+            instance.memoryWriterInstance_ = new MemoryWriter();
+            instance.consoleWriterInstance_ = new ConsoleWriter(std::cout);
+            instance.logWriterInstance_ = new LogWriter();
+        }
 
         return instance;
     }
@@ -112,6 +140,7 @@ namespace orxonox
     */
     void OutputManager::registerListener(OutputListener* listener)
     {
+        listener->registerListener(this);
         this->listeners_.push_back(listener);
         this->updateMasks();
     }
@@ -121,6 +150,7 @@ namespace orxonox
     */
     void OutputManager::unregisterListener(OutputListener* listener)
     {
+        listener->unregisterListener(this);
         for (std::vector<OutputListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if (*it == listener)
@@ -266,7 +296,7 @@ namespace orxonox
     std::string OutputManager::getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const
     {
         // "undefined" context is ignored because it's used implicitly if no explicit context is defined
-        static OutputContextMask undefined_mask = context::undefined().mask;
+        OutputContextMask undefined_mask = context::undefined().mask;
 
         std::string prefix = this->getLevelName(level) + ": ";
         if (context.mask != undefined_mask)

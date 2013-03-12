@@ -82,7 +82,7 @@ namespace orxonox
         @param command A string containing the command
         @param error A pointer to a value (or NULL) where the error-code should be written to (see @ref CommandExecutorErrorCodes "error codes")
         @param useTcl If true, the command is passed to tcl (see TclBind)
-        @return Returns the return-value of the command (if any - MT_Type::Null otherwise)
+        @return Returns the return-value of the command (if any - MultiType::Null otherwise)
     */
     /* static */ MultiType CommandExecutor::queryMT(const std::string& command, int* error, bool useTcl)
     {
@@ -132,7 +132,7 @@ namespace orxonox
     */
     /* static */ std::string CommandExecutor::query(const std::string& command, int* error, bool useTcl)
     {
-        return CommandExecutor::queryMT(command, error, useTcl).getString();
+        return CommandExecutor::queryMT(command, error, useTcl).get<std::string>();
     }
 
     /**

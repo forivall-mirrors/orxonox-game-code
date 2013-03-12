@@ -64,7 +64,7 @@ namespace orxonox
         // check override
         if (!CommandLineParser::getArgument("level")->hasDefaultValue())
         {
-            ModifyConfigValue(defaultLevelName_, tset, CommandLineParser::getValue("level").getString());
+            ModifyConfigValue(defaultLevelName_, tset, CommandLineParser::getValue("level").get<std::string>());
         }
 
         this->compileAvailableLevelList();

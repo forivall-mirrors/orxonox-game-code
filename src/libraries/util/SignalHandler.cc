@@ -20,7 +20,8 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Christoph Renner
+ *      Christoph Renner (Linux implementation)
+ *      Fabian 'x3n' Landau (Windows implementation)
  *   Co-authors:
  *      ...
  *
@@ -138,46 +139,46 @@ namespace orxonox
 
       orxout(user_error) << "Received signal " << sigName.c_str() << endl << "Try to write backtrace to file orxonox_crash.log" << endl;
 
-      
+
       // First start GDB which will be attached to this process later on
-      
+
       int gdbIn[2];
       int gdbOut[2];
       int gdbErr[2];
-      
+
       if ( pipe(gdbIn) == -1 || pipe(gdbOut) == -1 || pipe(gdbErr) == -1 )
       {
         perror("pipe failed!\n");
         exit(EXIT_FAILURE);
       }
-      
+
       int gdbPid = fork();
       // this process will run gdb
-      
+
       if ( gdbPid == -1 )
       {
         perror("fork failed\n");
         exit(EXIT_FAILURE);
       }
-      
+
       if ( gdbPid == 0 )
       {
         // start gdb
-        
+
         close(gdbIn[1]);
         close(gdbOut[0]);
         close(gdbErr[0]);
-        
+
         dup2( gdbIn[0], STDIN_FILENO );
         dup2( gdbOut[1], STDOUT_FILENO );
         dup2( gdbErr[1], STDERR_FILENO );
-        
+
         execlp( "sh", "sh", "-c", "gdb", static_cast<void*>(NULL));
       }
-      
-      
+
+
       // Now start a fork of this process on which GDB will be attached on
-      
+
       int sigPipe[2];
       if ( pipe(sigPipe) == -1 )
       {
@@ -201,13 +202,13 @@ namespace orxonox
       if ( sigPid == 0 )
       {
         getInstance().dontCatch();
-        
+
         // make sure gdb is allowed to attach to our PID even if there are some system restrictions
 #ifdef PR_SET_PTRACER
         if( prctl(PR_SET_PTRACER, gdbPid, 0, 0, 0) == -1 )
           orxout(user_error) << "could not set proper permissions for GDB to attach to process..." << endl;
 #endif
-        
+
         // wait for message from parent when it has attached gdb
         int someData;
 

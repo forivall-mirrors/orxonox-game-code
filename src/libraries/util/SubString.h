@@ -57,7 +57,7 @@
     std::string text = "This is a test, \"Hello \\\" World\" and vector {1, 2, 3}";
     SubString tokens(text, SubString::WhiteSpaces, "", false, '\\', true, '"', true, '{', '}', true, '\0');
 
-    for (unsigned int i = 0; i < tokens.size(); ++i)
+    for (size_t i = 0; i < tokens.size(); ++i)
         orxout() << i << ": " << tokens[i] << endl;
     @endcode
 
@@ -126,16 +126,14 @@ namespace orxonox
                   char closeparenthesisChar = '}',
                   bool bRemoveParenthesisChars = true,
                   char commentChar = '\0');
-        SubString(unsigned int argc, const char** argv);
-        SubString(const SubString& other, unsigned int begin);
-        SubString(const SubString& other, unsigned int begin, unsigned int end);
+        SubString(size_t argc, const char** argv);
+        SubString(const SubString& other, size_t begin, size_t length = std::string::npos);
         ~SubString();
 
         // operate on the SubString
         SubString& operator=(const SubString& other);
         bool operator==(const SubString& other) const;
-        bool compare(const SubString& other) const;
-        bool compare(const SubString& other, unsigned int length) const;
+        bool compare(const SubString& other, size_t length = std::string::npos) const;
         SubString operator+(const SubString& other) const;
         SubString& operator+=(const SubString& other);
         /// Appends the tokens of another SubString to this. @return This SubString.
@@ -143,39 +141,38 @@ namespace orxonox
 
         /////////////////////////////////////////
         // Split and Join the any String. ///////
-        unsigned int split(const std::string& line,
-                           const std::string& delimiters = SubString::WhiteSpaces,
-                           const std::string& delimiterNeighbours = "",
-                           bool bAllowEmptyEntries = false,
-                           char escapeChar ='\\',
-                           bool bRemoveEscapeChar = true,
-                           char safemodeChar = '"',
-                           bool bRemoveSafemodeChar = true,
-                           char openparenthesisChar = '{',
-                           char closeparenthesisChar = '}',
-                           bool bRemoveParenthesisChars = true,
-                           char commentChar = '\0');
+        size_t split(const std::string& line,
+                     const std::string& delimiters = SubString::WhiteSpaces,
+                     const std::string& delimiterNeighbours = "",
+                     bool bAllowEmptyEntries = false,
+                     char escapeChar ='\\',
+                     bool bRemoveEscapeChar = true,
+                     char safemodeChar = '"',
+                     bool bRemoveSafemodeChar = true,
+                     char openparenthesisChar = '{',
+                     char closeparenthesisChar = '}',
+                     bool bRemoveParenthesisChars = true,
+                     char commentChar = '\0');
 
         std::string join(const std::string& delimiter = " ") const;
         ////////////////////////////////////////
 
         // retrieve a SubSet from the String
-        SubString subSet(unsigned int begin) const;
-        SubString subSet(unsigned int begin, unsigned int end) const;
+        SubString subSet(size_t begin, size_t length = std::string::npos) const;
 
         // retrieve Information from within
         /// Returns true if the SubString is empty
         inline bool empty() const { return this->tokens_.empty(); }
         /// Returns the number of tokens stored in this SubString
-        inline unsigned int size() const { return this->tokens_.size(); }
+        inline size_t size() const { return this->tokens_.size(); }
         /// Returns the i'th token from the subset of strings @param index The index of the requested token
-        inline const std::string& operator[](unsigned int index) const { return this->tokens_[index]; }
+        inline const std::string& operator[](size_t index) const { return this->tokens_[index]; }
         /// Returns the i'th token from the subset of strings @param index The index of the requested token
-        inline const std::string& getString(unsigned int index) const { return (*this)[index]; }
+        inline const std::string& getString(size_t index) const { return (*this)[index]; }
         /// Returns all tokens as std::vector
         inline const std::vector<std::string>& getAllStrings() const { return this->tokens_; }
         /// Returns true if the token is in safemode. @param index The index of the token
-        inline bool isInSafemode(unsigned int index) const { return this->bTokenInSafemode_[index]; }
+        inline bool isInSafemode(size_t index) const { return this->bTokenInSafemode_[index]; }
         /// Returns the front of the list of tokens.
         inline const std::string& front() const { return this->tokens_.front(); }
         /// Returns the back of the list of tokens.

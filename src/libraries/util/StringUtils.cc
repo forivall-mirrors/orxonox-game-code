@@ -80,9 +80,10 @@ namespace orxonox
         return str.substr(pos1, pos2 - pos1 + 1);
     }
 
-    /// Splits a given string by a delimiter and stores it in an output vector
+    /// Splits a given string by a delimiter and stores it in an output vector. See @ref SubString for a more sophisticated implementation.
     void vectorize(const std::string& str, char delimiter, std::vector<std::string>* output)
     {
+        output->clear();
         for (size_t start = 0, end = 0; end != std::string::npos; start = end + 1)
         {
             end = str.find_first_of(delimiter, start);
@@ -91,7 +92,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the position of the next quotation mark in the string, starting with start.
+        @brief Returns the position of the next quotation mark in the string, starting with start. Escaped quotation marks (with \ in front) are not considered.
         @param str The string
         @param start The first position to look at
         @return The position of the next quotation mark (@c std::string::npos if there is none)
@@ -129,12 +130,10 @@ namespace orxonox
         size_t quotecount = 0;
         size_t quote = static_cast<size_t>(-1);
         while ((quote = getNextQuote(str, quote + 1)) < pos)
-        {
-            if (quote == pos)
-                return false;
             quotecount++;
-        }
 
+        if (quote == pos)
+            return false;
         if (quote == std::string::npos)
             return false;
 
@@ -155,7 +154,7 @@ namespace orxonox
         size_t pos1 = getNextQuote(str, 0);
         size_t pos2 = getNextQuote(str, pos1 + 1);
         if (pos1 != std::string::npos && pos2 != std::string::npos)
-            return str.substr(pos1, pos2 - pos1 + 1);
+            return str.substr(pos1 + 1, pos2 - pos1 - 1);
         else
             return "";
     }
@@ -246,25 +245,6 @@ namespace orxonox
     bool isEmpty(const std::string& str)
     {
         return getStripped(str).empty();
-    }
-
-    /// Determines if a string contains only numbers and maximal one '.'.
-    bool isNumeric(const std::string& str)
-    {
-        bool foundPoint = false;
-
-        for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
-        {
-            if (((*it) < '0' || (*it) > '9'))
-            {
-                if ((*it) != '.' && !foundPoint)
-                    foundPoint = true;
-                else
-                    return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -443,23 +423,21 @@ namespace orxonox
     /// Returns true if the string contains a comment, introduced by #, %, ; or //.
     bool hasComment(const std::string& str)
     {
-        return (getCommentPosition(str) != std::string::npos);
+        return (getNextCommentPosition(str) != std::string::npos);
     }
 
-    /// If the string contains a comment, the comment gets returned (including the comment symbol), an empty string otherwise.
+    /// If the string contains a comment, the comment gets returned (including the comment symbol and white spaces in front of it), an empty string otherwise.
     std::string getComment(const std::string& str)
     {
-        return str.substr(getCommentPosition(str));
-    }
-
-    /// If the string contains a comment, the position of the comment-symbol gets returned, @c std::string::npos otherwise.
-    size_t getCommentPosition(const std::string& str)
-    {
-        return getNextCommentPosition(str, 0);
+        size_t pos = getNextCommentPosition(str);
+        if (pos == std::string::npos)
+            return "";
+        else
+            return str.substr(pos);
     }
 
     /**
-        @brief Returns the position of the next comment-symbol, starting with @a start.
+        @brief Returns the beginning of the next comment including whitespaces in front of the comment symbol.
         @param str The string
         @param start The first position to look at
     */
