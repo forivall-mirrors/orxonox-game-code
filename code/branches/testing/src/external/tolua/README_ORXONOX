@@ -1,2 +1,0 @@
-Beware that this tolua folder does not fully contain Tolua++. Instead you can only find the source code required for the generator executable.
-The actual tolua library has to be supplied and is called CEGUI_TOLUA_LIBRARY because we use the one supplied with CEGUI.
