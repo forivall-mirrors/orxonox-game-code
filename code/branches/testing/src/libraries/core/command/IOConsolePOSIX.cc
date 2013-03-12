@@ -75,7 +75,7 @@ namespace orxonox
         this->lastTerminalHeight_ = this->terminalHeight_;
 
         // Disable standard std::cout logging
-        OutputManager::getInstance().getConsoleWriter().disable();
+        OutputManager::getInstance().getConsoleWriter()->disable();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
@@ -103,7 +103,7 @@ namespace orxonox
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard std::cout logging again
-        OutputManager::getInstance().getConsoleWriter().enable();
+        OutputManager::getInstance().getConsoleWriter()->enable();
     }
 
     void IOConsole::preUpdate(const Clock& time)

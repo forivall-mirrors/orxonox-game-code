@@ -53,7 +53,7 @@ namespace orxonox
         , lastOutputLineHeight_(0)
     {
         // Disable standard this->cout_ logging
-        OutputManager::getInstance().getConsoleWriter().disable();
+        OutputManager::getInstance().getConsoleWriter()->disable();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
@@ -109,7 +109,7 @@ namespace orxonox
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard this->cout_ logging again
-        OutputManager::getInstance().getConsoleWriter().enable();
+        OutputManager::getInstance().getConsoleWriter()->enable();
 
         resetTerminalMode();
         this->shell_->destroy();
