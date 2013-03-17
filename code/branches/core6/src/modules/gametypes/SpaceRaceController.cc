@@ -85,7 +85,7 @@ namespace orxonox
             orxout()<<endl<<endl;
 
         }//ausgabe*/
-
+        /*
         for (std::vector<RaceCheckPoint*>::iterator it = checkpoints.begin(); it != checkpoints.end(); ++it)
         {
             std::set<int> nextCheckPoints = ((*it)->getNextCheckpoints());
@@ -99,7 +99,9 @@ namespace orxonox
                     //placeVirtualCheckpoints((*it), point2);
                 }
             }
-        }/*
+        }
+        */
+        /*
         for(std::vector<RaceCheckPoint*>::iterator it=checkpoints_.begin(); it!=checkpoints_.end(); it++)
         {
             orxout()<<"Checkpoint "<<(*it)->getCheckpointIndex()<<"; NExtReal: ";
@@ -300,8 +302,8 @@ namespace orxonox
     RaceCheckPoint* SpaceRaceController::findCheckpoint(int index) const
     {
         for (size_t i = 0; i < this->checkpoints_.size(); ++i)
-        if (this->checkpoints_[i]->getCheckpointIndex() == index)
-        return this->checkpoints_[i];
+            if (this->checkpoints_[i]->getCheckpointIndex() == index)
+                return this->checkpoints_[i];
         return NULL;
     }
 
@@ -339,10 +341,10 @@ namespace orxonox
         //orxout()<<"temp bei 1: ="<< temp.x<< temp.y<< temp.z<<endl;
         //orxout()<<"temp nach ausgabe: "<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().x<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().y<<previousCheckpoint->getVirtualNextCheckpointsAsVector3().z<<endl;
         //OrxAssert(virtualCheckPointIndex < -1, "TO much virtual cp");
-        /*orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<", following:"<<indexFollowingCheckPoint<<" :       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
+        orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<", following:"<<indexFollowingCheckPoint<<" :       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
          temp=previousCheckpoint->getNextCheckpointsAsVector3();
          orxout()<<"id: "<< previousCheckpoint->getCheckpointIndex() <<":       "<<temp.x<<", "<<temp.y<<", "<<temp.z<<";       ";
-         orxout()<<endl;*//*
+         orxout()<<endl;
         return newTempRaceCheckPoint;
     }*/
 

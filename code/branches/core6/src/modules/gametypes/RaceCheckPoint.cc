@@ -156,7 +156,7 @@ namespace orxonox
     {
         if (players_.size() > 0)
         {
-            for (int i = 0; i < players_.size(); i++)
+            for (size_t i = 0; i < players_.size(); i++)
             {
                 if (this->players_[i]->getClientID() == clientID)
                 {
@@ -171,7 +171,7 @@ namespace orxonox
     {
         if (players_.size() > 0)
         {
-            for (int i = 0; i < players_.size(); i++)
+            for (size_t i = 0; i < players_.size(); i++)
             {
                 if (this->players_[i] == player)
                 {
