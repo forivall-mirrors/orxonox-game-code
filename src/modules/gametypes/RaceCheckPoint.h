@@ -69,7 +69,7 @@ namespace orxonox
                 return this->nextCheckpointsVirtual_;
             }
 
-            const std::set<int>& getNextCheckpoints()
+            std::set<int> getNextCheckpoints()
             {
                 return nextCheckpoints_;
                 std::set<int> temp;
