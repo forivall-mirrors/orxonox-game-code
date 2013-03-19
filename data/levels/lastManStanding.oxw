@@ -132,6 +132,12 @@ do
       </collisionShapes>
     </StaticEntity>
 
+<!-- top explosion, this is instantiated here so it does not load all resources
+     later when the first kill happens. Far away since we don't want to see it -->
+     <BigExplosion position="1e12,0,0" collisionType=static visible=false >
+     </BigExplosion>
+
+
 
 <?lua end ?><!-- ---------------asteroid dome END------------------->
 
