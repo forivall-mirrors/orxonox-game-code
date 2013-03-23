@@ -52,11 +52,11 @@
 
     There are two possibilities to create an object out of a SubclassIdentifier: Either you just use
     the @c fabricate() function of the assigned Identifier through the overloaded @c operator->, which
-    returns a @c BaseObject* pointer, or you use the function of SubclassIdentifier, this time by using
+    returns a @c OrxonoxClass* pointer, or you use the function of SubclassIdentifier, this time by using
     @c operator., which returns a @c BaseClass* pointer (@a BaseClass is the baseclass specified by the
     template argument):
     @code
-    identifier->fabricate();    // calls Identifier::fabricate(), creates a SubClass, returns a BaseObject* pointer
+    identifier->fabricate();    // calls Identifier::fabricate(), creates a SubClass, returns a OrxonoxClass* pointer
 
     identifier.fabricate();     // calls SubclassIdentifier::fabricate(), creates a SubClass, returns a BaseClass* pointer
     @endcode
@@ -164,7 +164,7 @@ namespace orxonox
             /// Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
             T* fabricate(BaseObject* creator) const
             {
-                BaseObject* newObject = this->identifier_->fabricate(creator);
+                OrxonoxClass* newObject = this->identifier_->fabricate(creator);
 
                 // Check if the creation was successful
                 if (newObject)

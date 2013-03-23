@@ -55,13 +55,13 @@
 
     object->getIdentifier()->getName();                                         // returns "MyClass"
 
-    BaseObject* other = object->getIdentifier()->fabricate(0);                  // fabricates a new instance of MyClass
+    OrxonoxClass* other = object->getIdentifier()->fabricate(0);                // fabricates a new instance of MyClass
 
 
     // iterate through all objects of type MyClass:
     ObjectListBase* objects = object->getIdentifier()->getObjects();            // get a pointer to the object-list
     int count;
-    for (Iterator<BaseObject> it = objects.begin(); it != objects.end(); ++it)  // iterate through the objects
+    for (Iterator<MyClass> it = objects.begin(); it != objects.end(); ++it)     // iterate through the objects
         ++count;
     orxout() << count << endl;                                                  // prints "2" because we created 2 instances of MyClass so far
 
@@ -132,7 +132,7 @@ namespace orxonox
             /// Returns true if the Identifier has a Factory.
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
-            BaseObject* fabricate(BaseObject* creator);
+            OrxonoxClass* fabricate(BaseObject* creator);
 
             /// Returns true if the class can be loaded through XML.
             inline bool isLoadable() const { return this->bLoadable_; }

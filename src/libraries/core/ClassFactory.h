@@ -54,7 +54,7 @@ namespace orxonox
     {
         public:
             virtual ~Factory() {};
-            virtual BaseObject* fabricate(BaseObject* creator) = 0;
+            virtual OrxonoxClass* fabricate(BaseObject* creator) = 0;
     };
 
     // ###############################
@@ -81,9 +81,9 @@ namespace orxonox
                 @brief Creates and returns a new object of class T.
                 @return The new object
             */
-            inline BaseObject* fabricate(BaseObject* creator)
+            inline OrxonoxClass* fabricate(BaseObject* creator)
             {
-                return static_cast<BaseObject*>(new T(creator));
+                return static_cast<OrxonoxClass*>(new T(creator));
             }
     };
 }

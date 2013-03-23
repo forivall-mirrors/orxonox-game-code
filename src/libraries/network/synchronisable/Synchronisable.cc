@@ -155,7 +155,7 @@ namespace orxonox
         creator = orxonox_cast<BaseObject*>(synchronisable_creator);
     }
     assert(getSynchronisable(header.getObjectID())==0);   //make sure no object with this id exists
-    BaseObject *bo = id->fabricate(creator);
+    BaseObject *bo = orxonox_cast<BaseObject*>(id->fabricate(creator));
     assert(bo);
     Synchronisable *no = orxonox_cast<Synchronisable*>(bo);
     assert(no);
