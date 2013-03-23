@@ -21,7 +21,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
 
 #BUILD_UNIT CoreStableBuildUnit.cc
   ClassTreeMask.cc
-  CommandLineParser.cc
   DynLib.cc
   DynLibManager.cc
   Event.cc

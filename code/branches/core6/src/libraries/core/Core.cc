@@ -59,7 +59,7 @@
 #include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
-#include "CommandLineParser.h"
+#include "config/CommandLineParser.h"
 #include "config/ConfigFileManager.h"
 #include "config/ConfigValueIncludes.h"
 #include "CoreIncludes.h"

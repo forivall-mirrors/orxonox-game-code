@@ -36,10 +36,10 @@
 #include <map>
 
 #include "util/ScopedSingletonManager.h"
-#include "core/ClassTreeMask.h"
-#include "core/CommandLineParser.h"
+#include "core/config/CommandLineParser.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
+#include "core/ClassTreeMask.h"
 #include "core/Loader.h"
 #include "core/Resource.h"
 #include "core/XMLFile.h"

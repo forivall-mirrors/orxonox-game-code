@@ -41,7 +41,7 @@
 #ifndef _CommandLine_H__
 #define _CommandLine_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <fstream>
 #include <map>
