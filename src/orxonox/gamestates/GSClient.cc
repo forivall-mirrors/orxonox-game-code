@@ -29,7 +29,7 @@
 #include "GSClient.h"
 
 #include "util/Exception.h"
-#include "core/CommandLineParser.h"
+#include "core/config/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Client.h"

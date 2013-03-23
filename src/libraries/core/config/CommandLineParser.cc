@@ -36,7 +36,7 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "PathConfig.h"
+#include "core/PathConfig.h"
 
 namespace orxonox
 {
