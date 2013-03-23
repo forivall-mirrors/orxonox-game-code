@@ -33,6 +33,7 @@
 #include <boost/foreach.hpp>
 
 #include "util/StringUtils.h"
+#include "core/config/ConfigFile.h"
 #include "core/config/ConfigFileManager.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"

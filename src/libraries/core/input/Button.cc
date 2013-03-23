@@ -41,7 +41,7 @@
 #include "core/command/ConsoleCommand.h"
 #include "core/command/CommandEvaluation.h"
 #include "core/command/CommandExecutor.h"
-#include "core/config/ConfigFileManager.h"
+#include "core/config/ConfigFile.h"
 
 namespace orxonox
 {
