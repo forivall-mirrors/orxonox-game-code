@@ -36,7 +36,7 @@
 #include <vector>
 
 #include "core/CoreIncludes.h"
-#include "core/WeakPtr.h"
+#include "core/object/WeakPtr.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "worldentities/StaticEntity.h"

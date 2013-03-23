@@ -40,7 +40,7 @@
 #include <set>
 #include <string>
 
-#include "core/ObjectListIterator.h"
+#include "core/object/ObjectListIterator.h"
 #include "interfaces/RadarViewable.h"
 #include "tools/interfaces/Tickable.h"
 

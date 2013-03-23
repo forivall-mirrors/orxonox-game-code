@@ -39,7 +39,7 @@
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
-#include "core/SmartPtr.h"
+#include "core/object/SmartPtr.h"
 
 // tolua_begin
 namespace orxonox

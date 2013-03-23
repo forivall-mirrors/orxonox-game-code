@@ -37,12 +37,12 @@
 #ifndef _ClassFactory_H__
 #define _ClassFactory_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
 
 #include "util/Output.h"
-#include "Identifier.h"
+#include "core/Identifier.h"
 
 namespace orxonox
 {

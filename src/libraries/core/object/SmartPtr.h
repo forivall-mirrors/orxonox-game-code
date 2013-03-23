@@ -118,12 +118,11 @@
 #ifndef _SmartPtr_H__
 #define _SmartPtr_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 
-#include "Identifier.h"
-#include "OrxonoxClass.h"
+#include "core/OrxonoxClass.h"
 #include "WeakPtr.h"
 
 namespace orxonox

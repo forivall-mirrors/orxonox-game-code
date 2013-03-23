@@ -29,7 +29,7 @@
 #include "JoyStickQuantityListener.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ObjectList.h"
+#include "core/object/ObjectList.h"
 
 namespace orxonox
 {

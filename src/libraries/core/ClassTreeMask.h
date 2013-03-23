@@ -72,7 +72,7 @@
 #include <list>
 #include <stack>
 #include "BaseObject.h"
-#include "Iterator.h"
+#include "object/Iterator.h"
 
 namespace orxonox
 {

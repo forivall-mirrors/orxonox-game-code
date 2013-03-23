@@ -33,10 +33,8 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Language.cc
   Loader.cc
   LuaState.cc
-  MetaObjectList.cc
   Namespace.cc
   NamespaceNode.cc
-  ObjectListBase.cc
   OrxonoxClass.cc
   Template.cc
   ViewportEventListener.cc
@@ -69,6 +67,7 @@ END_BUILD_UNIT
 
 ADD_SUBDIRECTORY(command)
 ADD_SUBDIRECTORY(input)
+ADD_SUBDIRECTORY(object)
 
 ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES

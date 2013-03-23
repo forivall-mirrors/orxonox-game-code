@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "AIController.h"
-#include "core/WeakPtr.h"
+#include "core/object/WeakPtr.h"
 #include "tools/interfaces/Tickable.h"
 
 #include "tools/Timer.h"

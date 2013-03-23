@@ -39,7 +39,7 @@
 #ifndef _MetaObjectList_H__
 #define _MetaObjectList_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 namespace orxonox
 {

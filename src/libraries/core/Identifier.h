@@ -89,9 +89,9 @@
 #include <loki/TypeTraits.h>
 
 #include "util/Output.h"
-#include "MetaObjectList.h"
-#include "ObjectList.h"
-#include "ObjectListBase.h"
+#include "object/MetaObjectList.h"
+#include "object/ObjectList.h"
+#include "object/ObjectListBase.h"
 #include "Super.h"
 
 namespace orxonox

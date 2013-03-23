@@ -38,12 +38,12 @@
 #include "CoreIncludes.h"
 #include "Event.h"
 #include "EventIncludes.h"
-#include "Iterator.h"
 #include "Template.h"
 #include "XMLFile.h"
 #include "XMLNameListener.h"
 #include "XMLPort.h"
 #include "command/Functor.h"
+#include "object/Iterator.h"
 
 namespace orxonox
 {

@@ -50,7 +50,7 @@
 #include "util/mbool.h"
 #include "OrxonoxClass.h"
 #include "Super.h"
-#include "SmartPtr.h"
+#include "object/SmartPtr.h"
 
 namespace orxonox
 {

@@ -39,7 +39,7 @@
 
 #include <map>
 
-#include "core/WeakPtr.h"
+#include "core/object/WeakPtr.h"
 
 #include "worldentities/WorldEntity.h"
 
