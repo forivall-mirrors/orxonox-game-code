@@ -31,7 +31,7 @@
 #include "util/Math.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "gametypes/Gametype.h"
 #include "controllers/AIController.h"
 

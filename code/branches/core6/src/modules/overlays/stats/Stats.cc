@@ -34,7 +34,7 @@
 
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 
 namespace orxonox
 {

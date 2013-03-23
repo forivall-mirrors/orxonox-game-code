@@ -35,8 +35,8 @@
 
 #include "util/Convert.h"
 #include "util/SubString.h"
+#include "core/Language.h"
 #include "ConfigFileManager.h"
-#include "Language.h"
 
 namespace orxonox
 {

@@ -44,13 +44,13 @@
 #ifndef _ConfigValueContainer_H__
 #define _ConfigValueContainer_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
 #include <vector>
 
 #include "util/MultiType.h"
-#include "Identifier.h"
+#include "core/Identifier.h"
 
 namespace orxonox
 {

@@ -48,7 +48,7 @@
 #include "util/output/MemoryWriter.h"
 #include "util/output/OutputManager.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"

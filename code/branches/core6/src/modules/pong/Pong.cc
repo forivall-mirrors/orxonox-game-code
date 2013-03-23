@@ -36,7 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/command/Executor.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"

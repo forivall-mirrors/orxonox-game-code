@@ -35,7 +35,7 @@
 #ifndef _ConfigFileManager_H__
 #define _ConfigFileManager_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <list>
 #include <map>

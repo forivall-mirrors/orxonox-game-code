@@ -53,7 +53,7 @@
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "interfaces/TeamColourable.h"
 #include "items/Engine.h"
 #include "tools/Timer.h"

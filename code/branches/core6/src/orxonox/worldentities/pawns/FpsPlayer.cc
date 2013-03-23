@@ -37,7 +37,7 @@
 #include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "items/Engine.h"

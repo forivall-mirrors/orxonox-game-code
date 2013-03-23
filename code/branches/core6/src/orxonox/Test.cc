@@ -27,7 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "network/NetworkFunction.h"
 #include "Test.h"
