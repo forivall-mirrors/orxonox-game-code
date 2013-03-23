@@ -38,9 +38,9 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "util/StringUtils.h"
+#include "core/PathConfig.h"
+#include "core/command/ConsoleCommand.h"
 #include "ConfigValueContainer.h"
-#include "PathConfig.h"
-#include "command/ConsoleCommand.h"
 
 namespace orxonox
 {

@@ -50,7 +50,7 @@
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "tools/TextureGenerator.h"
 // #include <boost/bind/bind_template.hpp>
 

@@ -30,10 +30,10 @@
 
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
-#include "core/ConfigFileManager.h"
-#include "core/OrxonoxClass.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
+#include "core/OrxonoxClass.h"
+#include "core/config/ConfigFileManager.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "MasterServerComm.h"
 #include "MasterServerProtocol.h"
 

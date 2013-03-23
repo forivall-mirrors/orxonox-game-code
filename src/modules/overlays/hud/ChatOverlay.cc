@@ -34,7 +34,7 @@
 #include "util/Convert.h"
 #include "util/DisplayStringConversions.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/command/Executor.h"
 
 #include "tools/Timer.h"

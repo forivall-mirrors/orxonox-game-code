@@ -36,7 +36,7 @@
 #include <ostream>
 
 #include "util/StringUtils.h"
-#include "ConfigValueContainer.h"
+#include "config/ConfigValueContainer.h"
 #include "XMLPort.h"
 #include "object/ClassFactory.h"
 

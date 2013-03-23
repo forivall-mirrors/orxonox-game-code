@@ -31,7 +31,7 @@
 #include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "Scene.h"

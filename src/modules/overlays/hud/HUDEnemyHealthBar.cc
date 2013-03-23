@@ -28,7 +28,7 @@
 
 #include "HUDEnemyHealthBar.h"
 
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox

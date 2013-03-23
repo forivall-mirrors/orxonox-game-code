@@ -29,7 +29,7 @@
 #include "TeamGametype.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "infos/PlayerInfo.h"
 #include "interfaces/TeamColourable.h"
 #include "worldentities/TeamSpawnPoint.h"

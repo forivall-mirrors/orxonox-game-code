@@ -22,7 +22,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
 #BUILD_UNIT CoreStableBuildUnit.cc
   ClassTreeMask.cc
   CommandLineParser.cc
-  ConfigValueContainer.cc
   DynLib.cc
   DynLibManager.cc
   Event.cc
@@ -54,7 +53,7 @@ END_BUILD_UNIT
 
 BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
-  ConfigFileManager.cc
+  config/ConfigFileManager.cc
   PathConfig.cc
 END_BUILD_UNIT
 
@@ -66,6 +65,7 @@ END_BUILD_UNIT
 )
 
 ADD_SUBDIRECTORY(command)
+ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(input)
 ADD_SUBDIRECTORY(object)
 
@@ -73,7 +73,7 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     command/CommandExecutor.h
-    ConfigFileManager.h
+    config/ConfigFileManager.h
     Game.h
     GameMode.h
     GraphicsManager.h

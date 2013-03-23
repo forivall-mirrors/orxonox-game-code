@@ -32,7 +32,7 @@
 #include <cstring>
 
 #include "MasterServerProtocol.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 
 

@@ -46,7 +46,7 @@
 #include "CommandLineParser.h"
 #include "Core.h"
 #include "CoreIncludes.h"
-#include "ConfigValueIncludes.h"
+#include "config/ConfigValueIncludes.h"
 #include "GameMode.h"
 #include "GameState.h"
 #include "GraphicsManager.h"

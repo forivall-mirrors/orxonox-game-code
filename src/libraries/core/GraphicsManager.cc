@@ -51,7 +51,7 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "ConfigValueIncludes.h"
+#include "config/ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "Core.h"
 #include "Game.h"

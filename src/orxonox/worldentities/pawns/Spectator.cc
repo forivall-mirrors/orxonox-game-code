@@ -30,7 +30,7 @@
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/CommandExecutor.h"
 #include "core/command/ConsoleCommand.h"

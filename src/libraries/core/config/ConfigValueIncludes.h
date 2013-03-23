@@ -100,9 +100,9 @@
 #ifndef _ConfigValueIncludes_H__
 #define _ConfigValueIncludes_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
-#include "Identifier.h"
+#include "core/Identifier.h"
 #include "ConfigValueContainer.h"
 
 namespace orxonox

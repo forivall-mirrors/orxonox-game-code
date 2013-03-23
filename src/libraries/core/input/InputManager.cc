@@ -45,7 +45,7 @@
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/CommandLineParser.h"
 #include "core/GraphicsManager.h"
 #include "core/command/ConsoleCommand.h"
