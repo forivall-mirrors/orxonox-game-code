@@ -37,6 +37,7 @@
 #include "util/SubString.h"
 #include "core/Language.h"
 #include "ConfigFileManager.h"
+#include "SettingsConfigFile.h"
 
 namespace orxonox
 {

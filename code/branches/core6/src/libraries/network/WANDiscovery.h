@@ -32,7 +32,6 @@
 #include "packet/ServerInformation.h"
 #include "core/CoreIncludes.h"
 #include "core/OrxonoxClass.h"
-#include "core/config/ConfigFileManager.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "MasterServerComm.h"
 #include "MasterServerProtocol.h"

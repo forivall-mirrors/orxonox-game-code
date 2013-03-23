@@ -53,7 +53,7 @@ END_BUILD_UNIT
 
 BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
-  config/ConfigFileManager.cc
+  config/ConfigFile.cc
   PathConfig.cc
 END_BUILD_UNIT
 
@@ -73,7 +73,7 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     command/CommandExecutor.h
-    config/ConfigFileManager.h
+    config/SettingsConfigFile.h
     Game.h
     GameMode.h
     GraphicsManager.h
