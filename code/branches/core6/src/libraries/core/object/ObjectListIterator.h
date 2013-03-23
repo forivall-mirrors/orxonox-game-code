@@ -54,8 +54,8 @@
 #ifndef _ObjectListIterator_H__
 #define _ObjectListIterator_H__
 
-#include "CorePrereqs.h"
-#include "Identifier.h"
+#include "core/CorePrereqs.h"
+#include "core/Identifier.h"
 #include "ObjectList.h"
 
 namespace orxonox

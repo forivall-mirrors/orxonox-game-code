@@ -36,7 +36,7 @@
 
 #include "util/Math.h"
 #include "core/OrxonoxClass.h"
-#include "core/SmartPtr.h"
+#include "core/object/SmartPtr.h"
 
 namespace orxonox
 {

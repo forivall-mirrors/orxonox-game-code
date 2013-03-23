@@ -34,7 +34,7 @@
 #include "MetaObjectList.h"
 
 #include "util/Output.h"
-#include "Identifier.h"
+#include "core/Identifier.h"
 #include "ObjectListBase.h"
 
 namespace orxonox

@@ -80,12 +80,12 @@
 #ifndef _WeakPtr_H__
 #define _WeakPtr_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
-#include "Identifier.h"
-#include "OrxonoxClass.h"
-#include "command/Functor.h"
+
+#include "core/OrxonoxClass.h"
+#include "core/command/Functor.h"
 
 namespace orxonox
 {

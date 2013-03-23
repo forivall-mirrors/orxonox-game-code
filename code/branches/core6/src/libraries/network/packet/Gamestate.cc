@@ -33,7 +33,7 @@
 #include "util/Output.h"
 #include "util/OrxAssert.h"
 #include "core/GameMode.h"
-#include "core/ObjectList.h"
+#include "core/object/ObjectList.h"
 #include "network/synchronisable/Synchronisable.h"
 #include "network/GamestateHandler.h"
 #include "network/Host.h"

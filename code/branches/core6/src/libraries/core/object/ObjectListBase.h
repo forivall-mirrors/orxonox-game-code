@@ -39,7 +39,7 @@
 #ifndef _ObjectListBase_H__
 #define _ObjectListBase_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 #include <vector>
 
 namespace orxonox

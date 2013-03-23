@@ -31,7 +31,7 @@
 #include <OgreBillboardSet.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ObjectListIterator.h"
+#include "core/object/ObjectListIterator.h"
 #include "core/XMLPort.h"
 
 #include "graphics/Billboard.h"

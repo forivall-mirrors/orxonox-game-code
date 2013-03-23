@@ -70,12 +70,12 @@
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
-#include "ObjectList.h"
 #include "command/ConsoleCommand.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
 #include "command/TclThreadManager.h"
 #include "input/InputManager.h"
+#include "object/ObjectList.h"
 
 namespace orxonox
 {

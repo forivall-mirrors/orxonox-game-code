@@ -44,9 +44,8 @@
 #ifndef _ObjectList_H__
 #define _ObjectList_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
-#include "Identifier.h"
 #include "ObjectListBase.h"
 #include "ObjectListIterator.h"
 

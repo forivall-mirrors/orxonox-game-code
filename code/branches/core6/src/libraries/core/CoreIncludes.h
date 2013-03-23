@@ -79,8 +79,8 @@
 
 #include "util/Output.h"
 #include "Identifier.h"
-#include "ClassFactory.h"
-#include "ObjectList.h"
+#include "object/ClassFactory.h"
+#include "object/ObjectList.h"
 
 
 /**
