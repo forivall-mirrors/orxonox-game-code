@@ -31,7 +31,7 @@
     @ingroup Class Identifier
     @brief Declaration of Identifiable, the base of all classes that should own an Identifier.
 
-    It stores the Identifier and the MetaObjectList and has all needed functions to create and use the class-hierarchy.
+    It stores the Identifier and has all needed functions to create and use the class-hierarchy.
 */
 
 #ifndef _Identifiable_H__
@@ -45,7 +45,7 @@
 namespace orxonox
 {
     /**
-        @brief Identifiable is needed to create the class-hierarchy at startup and to store the Identifier and the MetaObjectList.
+        @brief Identifiable is needed to create the class-hierarchy at startup and to store the Identifier.
     */
     class _CoreExport Identifiable
     {

@@ -34,7 +34,6 @@
 #include "Identifiable.h"
 
 #include <cassert>
-#include "core/object/MetaObjectList.h"
 #include "core/object/Context.h"
 #include "Identifier.h"
 
