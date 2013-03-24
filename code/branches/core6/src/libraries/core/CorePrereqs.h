@@ -160,6 +160,7 @@ namespace orxonox
     template <class T>
     class Iterator;
     class Language;
+    class Listable;
     class LuaFunctor;
     class LuaState;
     class MemoryArchive;

@@ -27,40 +27,39 @@
  */
 
 /**
-    @defgroup OrxonoxClass OrxonoxClass
-    @ingroup Class
-*/
-
-/**
     @file
-    @ingroup Class OrxonoxClass
-    @brief Declaration of OrxonoxClass, the base class of all objects and interfaces in Orxonox.
+    @brief Implementation of Listable.
 */
 
-#ifndef _OrxonoxClass_H__
-#define _OrxonoxClass_H__
+#include "Listable.h"
 
-#include "core/CorePrereqs.h"
-
-#include "core/object/Listable.h"
-#include "core/object/Destroyable.h"
+#include "core/object/MetaObjectList.h"
 
 namespace orxonox
 {
     /**
-        @brief The class all objects and interfaces of the game-logic (not the engine) are derived from.
-
-        The BaseObject and Interfaces are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
+        @brief Constructor: creates the meta-object-list.
     */
-    class _CoreExport OrxonoxClass : virtual public Listable, virtual public Destroyable
+    Listable::Listable()
     {
-        public:
-            OrxonoxClass();
-            virtual ~OrxonoxClass();
+        this->metaList_ = new MetaObjectList();
+    }
 
-            /// Function to collect the SetConfigValue-macro calls.
-            void setConfigValues() {};
-    };
+    /**
+        @brief Destructor: Removes the object from the object-lists
+    */
+    Listable::~Listable()
+    {
+        this->unregisterObject();
+    }
+
+    /**
+        @brief Removes this object from the object-lists.
+    */
+    void Listable::unregisterObject()
+    {
+        if (this->metaList_)
+            delete this->metaList_;
+        this->metaList_ = 0;
+    }
 }
-
-#endif /* _OrxonoxClass_H__ */
