@@ -149,7 +149,7 @@ namespace orxonox
         orxout(verbose, context::templates) << object->getLoaderIndentation() << " aplying Template \"" << this->getName() << "\"..." << endl;
 
         // check if the template is applied on an object of the right type
-        Identifier* identifier = Identifier::getIdentifierByString(this->getXMLElement().Value());
+        Identifier* identifier = IdentifierManager::getIdentifierByString(this->getXMLElement().Value());
         if (!object->getIdentifier()->isA(identifier))
             orxout(internal_warning, context::templates) << "Template was defined for " << identifier->getName() << " but the object is of type " << object->getIdentifier()->getName() << endl;
 

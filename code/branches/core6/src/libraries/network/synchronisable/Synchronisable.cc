@@ -82,7 +82,7 @@ namespace orxonox
   Synchronisable::~Synchronisable()
   {
     // delete callback function objects
-    if(!Identifier::isCreatingHierarchy()){
+    if(!IdentifierManager::isCreatingHierarchy()){
       // remove object from the static objectMap
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID_);
