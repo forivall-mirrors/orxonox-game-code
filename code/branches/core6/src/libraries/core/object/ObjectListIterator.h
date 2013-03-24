@@ -222,7 +222,7 @@ namespace orxonox
                 @brief Increments the ObjectListIterator if it points at the given object.
                 @param object The object to compare with
             */
-            inline void incrementIfEqual(OrxonoxClass* object)
+            inline void incrementIfEqual(Listable* object)
             {
                 if (this->element_ && this->element_->objectBase_ == object)
                     this->operator++();
