@@ -79,7 +79,7 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <map>
@@ -89,9 +89,9 @@
 #include <loki/TypeTraits.h>
 
 #include "util/Output.h"
-#include "object/MetaObjectList.h"
-#include "object/ObjectList.h"
-#include "object/ObjectListBase.h"
+#include "core/object/MetaObjectList.h"
+#include "core/object/ObjectList.h"
+#include "core/object/ObjectListBase.h"
 #include "Super.h"
 
 namespace orxonox

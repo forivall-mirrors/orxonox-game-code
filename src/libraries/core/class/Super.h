@@ -71,7 +71,7 @@
 #ifndef _Super_H__
 #define _Super_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 #include "util/Output.h"
 
 ///////////////////////

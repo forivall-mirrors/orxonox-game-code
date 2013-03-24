@@ -34,8 +34,8 @@
 #include "OrxonoxClass.h"
 
 #include <cassert>
-#include "object/MetaObjectList.h"
-#include "object/Context.h"
+#include "core/object/MetaObjectList.h"
+#include "core/object/Context.h"
 #include "Identifier.h"
 
 namespace orxonox

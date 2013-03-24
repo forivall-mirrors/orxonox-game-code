@@ -50,7 +50,7 @@
 #include <vector>
 
 #include "util/MultiType.h"
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 
 namespace orxonox
 {

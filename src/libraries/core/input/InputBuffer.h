@@ -33,7 +33,7 @@
 
 #include <list>
 #include <string>
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "InputHandler.h"
 
 namespace orxonox

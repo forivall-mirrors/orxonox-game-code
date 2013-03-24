@@ -65,7 +65,7 @@
 #ifndef _SubclassIdentifier_H__
 #define _SubclassIdentifier_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cstdlib>
 #include "util/Output.h"

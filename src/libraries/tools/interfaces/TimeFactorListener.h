@@ -30,7 +30,7 @@
 #define _TimeFactorListener_H__
 
 #include "tools/ToolsPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {

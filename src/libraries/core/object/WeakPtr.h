@@ -84,7 +84,7 @@
 
 #include <cassert>
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "core/command/Functor.h"
 
 namespace orxonox

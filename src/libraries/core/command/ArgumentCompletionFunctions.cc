@@ -38,7 +38,7 @@
 
 #include "util/Convert.h"
 #include "util/StringUtils.h"
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 #include "core/config/SettingsConfigFile.h"
 #include "core/config/ConfigValueContainer.h"
 #include "CommandExecutor.h"

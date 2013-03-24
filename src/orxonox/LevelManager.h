@@ -45,7 +45,7 @@
 #include "LevelInfo.h"
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 // tolua_begin
 namespace orxonox

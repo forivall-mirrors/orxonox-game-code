@@ -32,7 +32,7 @@
 #include "CorePrereqs.h"
 
 #include "util/OgreForwardRefs.h"
-#include "OrxonoxClass.h"
+#include "class/OrxonoxClass.h"
 
 namespace orxonox
 {

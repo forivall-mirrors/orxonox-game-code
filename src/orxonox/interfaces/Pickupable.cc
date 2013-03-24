@@ -33,7 +33,7 @@
 
 #include "Pickupable.h"
 
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 

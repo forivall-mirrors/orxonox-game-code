@@ -122,7 +122,7 @@
 
 #include <cassert>
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "WeakPtr.h"
 
 namespace orxonox

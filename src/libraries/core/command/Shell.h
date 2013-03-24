@@ -49,7 +49,7 @@
 
 #include "util/output/BaseWriter.h"
 #include "core/Core.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {
