@@ -154,6 +154,7 @@ namespace orxonox
     struct GameStateTreeNode;
     class GraphicsManager;
     class GUIManager;
+    class Identifiable;
     class Identifier;
     template <class T>
     class Iterator;
