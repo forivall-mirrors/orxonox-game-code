@@ -43,7 +43,7 @@
     orxonox::SmartPtr is an implementation of a smart pointer - it wraps a pointer to an
     object  and keeps this object alive until no SmartPtr points to this object anymore.
     In contrast to orxonox::SharedPtr, SmartPtr works only with classes that are derived
-    from orxonox::OrxonoxClass, because it's an intrusive implementation, meaning the
+    from orxonox::Destroyable, because it's an intrusive implementation, meaning the
     reference counter is stored in the object itself.
 
     It's possible to use normal pointers and smart pointers to an object simultaneously.
@@ -77,7 +77,7 @@
             SmartPtr<OtherClass> object_;                   // a pointer to an instance of OtherClass is stored in a SmartPtr
     };
     @endcode
-    In this example we assume that OtherClass is a child of OrxonoxClass. We don't care
+    In this example we assume that OtherClass is a child of Destroyable. We don't care
     about the inheritance of MyClass though.
 
     Now we create an instance of MyClass and assign a pointer to an instance of OtherClass:
@@ -122,7 +122,7 @@
 
 #include <cassert>
 
-#include "core/class/OrxonoxClass.h"
+#include "core/object/Destroyable.h"
 #include "WeakPtr.h"
 
 namespace orxonox
@@ -226,8 +226,8 @@ namespace orxonox
                 return this->pointer_;
             }
 
-            /// Returns the wrapped pointer as @c OrxonoxClass*
-            inline OrxonoxClass* getBase() const
+            /// Returns the wrapped pointer as @c Destroyable*
+            inline Destroyable* getBase() const
             {
                 return this->base_;
             }
@@ -267,7 +267,7 @@ namespace orxonox
                     other.pointer_ = temp;
                 }
                 {
-                    OrxonoxClass* temp = this->base_;
+                    Destroyable* temp = this->base_;
                     this->base_ = other.base_;
                     other.base_ = temp;
                 }
@@ -281,7 +281,7 @@ namespace orxonox
 
         private:
             T* pointer_;            ///< The wrapped pointer to an object of type @a T
-            OrxonoxClass* base_;    ///< The wrapped pointer, casted up to OrxonoxClass (this is needed because with just a T* pointer, SmartPtr couln't be used with forward declarations)
+            Destroyable* base_;    ///< The wrapped pointer, casted up to Destroyable (this is needed because with just a T* pointer, SmartPtr couln't be used with forward declarations)
     };
 
     /// Swaps the contents of two smart pointers.

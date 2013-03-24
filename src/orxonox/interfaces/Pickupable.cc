@@ -70,7 +70,7 @@ namespace orxonox
 
     /**
     @brief
-        A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
+        A method that is called by Destroyable::destroy() before the object is actually destroyed.
     */
     void Pickupable::preDestroy(void)
     {
@@ -97,7 +97,7 @@ namespace orxonox
     void Pickupable::destroyPickup(void)
     {
         if(!this->isBeingDestroyed())
-            this->OrxonoxClass::destroy();
+            this->Destroyable::destroy();
         else
             orxout(internal_warning, context::pickups) << this->getIdentifier()->getName() << " may be unsafe. " << endl;
     }

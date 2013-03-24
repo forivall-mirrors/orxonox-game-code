@@ -39,7 +39,7 @@
     NULL. This can be used to store pointers to objects without knowing when they will be
     destroyed.
 
-    WeakPtr works only with objects that are derived from orxonox::OrxonoxClass, because
+    WeakPtr works only with objects that are derived from orxonox::Destroyable, because
     WeakPtr is intrusive and registers itself in the stored object, to get a notification if
     the object is being deleted.
 
@@ -57,7 +57,7 @@
     if (pointer)                                        // checks if pointer is not NULL (which is now false)
         pointer->someFunction();                        // this will not be executed
     @endcode
-    In this example we assumed that MyClass is derived of OrxonoxClass (otherwise it couldn't
+    In this example we assumed that MyClass is derived of Destroyable (otherwise it couldn't
     be used with a WeakPtr).
 
     A callback can be registerd with the WeakPtr that will be called if the object gets deleted.
@@ -84,7 +84,7 @@
 
 #include <cassert>
 
-#include "core/class/OrxonoxClass.h"
+#include "core/object/Destroyable.h"
 #include "core/command/Functor.h"
 
 namespace orxonox
@@ -168,8 +168,8 @@ namespace orxonox
                 return this->pointer_;
             }
 
-            /// Returns the wrapped pointer as @c OrxonoxClass*
-            inline OrxonoxClass* getBase() const
+            /// Returns the wrapped pointer as @c Destroyable*
+            inline Destroyable* getBase() const
             {
                 return this->base_;
             }
@@ -212,7 +212,7 @@ namespace orxonox
                     other.pointer_ = temp;
                 }
                 {
-                    OrxonoxClass* temp = this->base_;
+                    Destroyable* temp = this->base_;
                     this->base_ = other.base_;
                     other.base_ = temp;
                 }
@@ -240,7 +240,7 @@ namespace orxonox
             }
 
         private:
-            /// Will be called by OrxonoxClass::~OrxonoxClass() if the stored object is deleted. Resets the wrapped pointer and executes the callback.
+            /// Will be called by Destroyable::~Destroyable() if the stored object is deleted. Resets the wrapped pointer and executes the callback.
             inline void objectDeleted()
             {
                 this->base_ = 0;
@@ -250,7 +250,7 @@ namespace orxonox
             }
 
             T* pointer_;            ///< The wrapped pointer to an object of type @a T
-            OrxonoxClass* base_;    ///< The wrapped pointer, casted up to OrxonoxClass (this is needed because with just a T* pointer, WeakPtr couln't be used with forward declarations)
+            Destroyable* base_;    ///< The wrapped pointer, casted up to Destroyable (this is needed because with just a T* pointer, WeakPtr couln't be used with forward declarations)
             FunctorPtr callback_;   ///< This callback will be executed if the stored object is deleted
     };
 
