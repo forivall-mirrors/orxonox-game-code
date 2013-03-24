@@ -69,7 +69,7 @@ namespace orxonox
             inline virtual ~ConfigValueCallback() {}
             inline virtual void call(void* object)
             {
-                if (!Identifier::isCreatingHierarchy())
+                if (!IdentifierManager::isCreatingHierarchy())
                     (static_cast<T*>(object)->*this->function_)();
             }
 

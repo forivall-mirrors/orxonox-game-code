@@ -78,7 +78,7 @@
 #include "CorePrereqs.h"
 
 #include "util/Output.h"
-#include "class/Identifier.h"
+#include "class/IdentifierManager.h"
 #include "object/ClassFactory.h"
 #include "object/ObjectList.h"
 
@@ -141,7 +141,7 @@ namespace orxonox
     */
     inline Identifier* ClassByString(const std::string& name)
     {
-        return Identifier::getIdentifierByString(name);
+        return IdentifierManager::getIdentifierByString(name);
     }
 
     /**
@@ -150,7 +150,7 @@ namespace orxonox
     */
     inline Identifier* ClassByLowercaseString(const std::string& name)
     {
-        return Identifier::getIdentifierByLowercaseString(name);
+        return IdentifierManager::getIdentifierByLowercaseString(name);
     }
 
     /**
@@ -159,7 +159,7 @@ namespace orxonox
     */
     inline Identifier* ClassByID(uint32_t id)
     {
-        return Identifier::getIdentifierByID(id);
+        return IdentifierManager::getIdentifierByID(id);
     }
 
     /**

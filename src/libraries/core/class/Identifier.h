@@ -92,6 +92,7 @@
 #include "core/object/MetaObjectList.h"
 #include "core/object/ObjectList.h"
 #include "core/object/ObjectListBase.h"
+#include "IdentifierManager.h"
 #include "Super.h"
 
 namespace orxonox
@@ -112,6 +113,8 @@ namespace orxonox
     */
     class _CoreExport Identifier
     {
+        friend class IdentifierManager;
+
         public:
             /// Returns the name of the class the Identifier belongs to.
             inline const std::string& getName() const { return this->name_; }
@@ -150,11 +153,6 @@ namespace orxonox
             /////////////////////////////
             ////// Class Hierarchy //////
             /////////////////////////////
-            static void createClassHierarchy();
-
-            /// Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents.
-            inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
-
             /// Returns the parents of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
             /// Returns the begin-iterator of the parents-list.
@@ -182,39 +180,6 @@ namespace orxonox
             inline std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_.begin(); }
             /// Returns the end-iterator of the direct-children-list.
             inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_.end(); }
-
-
-            //////////////////////////
-            ///// Identifier Map /////
-            //////////////////////////
-            static void destroyAllIdentifiers();
-
-            static Identifier* getIdentifierByString(const std::string& name);
-            static Identifier* getIdentifierByLowercaseString(const std::string& name);
-            static Identifier* getIdentifierByID(uint32_t id);
-
-            static void clearNetworkIDs();
-
-            /// Returns the map that stores all Identifiers with their names.
-            static inline const std::map<std::string, Identifier*>& getStringIdentifierMap() { return Identifier::getStringIdentifierMapIntern(); }
-            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names.
-            static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapBegin() { return Identifier::getStringIdentifierMap().begin(); }
-            /// Returns a const_iterator to the end of the map that stores all Identifiers with their names.
-            static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapEnd() { return Identifier::getStringIdentifierMap().end(); }
-
-            /// Returns the map that stores all Identifiers with their names in lowercase.
-            static inline const std::map<std::string, Identifier*>& getLowercaseStringIdentifierMap() { return Identifier::getLowercaseStringIdentifierMapIntern(); }
-            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase.
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapBegin() { return Identifier::getLowercaseStringIdentifierMap().begin(); }
-            /// Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase.
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapEnd() { return Identifier::getLowercaseStringIdentifierMap().end(); }
-
-            /// Returns the map that stores all Identifiers with their IDs.
-            static inline const std::map<uint32_t, Identifier*>& getIDIdentifierMap() { return Identifier::getIDIdentifierMapIntern(); }
-            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their IDs.
-            static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapBegin() { return Identifier::getIDIdentifierMap().begin(); }
-            /// Returns a const_iterator to the end of the map that stores all Identifiers with their IDs.
-            static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd() { return Identifier::getIDIdentifierMap().end(); }
 
 
             /////////////////////////
@@ -258,17 +223,9 @@ namespace orxonox
             Identifier(const Identifier& identifier); // don't copy
             virtual ~Identifier();
 
-            static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
             virtual void createSuperFunctionCaller() const = 0;
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
-
-            /// Returns the map that stores all Identifiers with their names.
-            static std::map<std::string, Identifier*>& getStringIdentifierMapIntern();
-            /// Returns the map that stores all Identifiers with their names in lowercase.
-            static std::map<std::string, Identifier*>& getLowercaseStringIdentifierMapIntern();
-            /// Returns the map that stores all Identifiers with their network IDs.
-            static std::map<uint32_t, Identifier*>& getIDIdentifierMapIntern();
 
             /// Returns the children of the class the Identifier belongs to.
             inline std::set<const Identifier*>& getChildrenIntern() const { return this->children_; }
@@ -278,13 +235,6 @@ namespace orxonox
             ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
         private:
-            /// Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
-            inline static void startCreatingHierarchy() { hierarchyCreatingCounter_s++; }
-            /// Decreases the hierarchyCreatingCounter_s variable, causing the objects to stop storing their parents.
-            inline static void stopCreatingHierarchy()  { hierarchyCreatingCounter_s--; }
-
-            static std::map<std::string, Identifier*>& getTypeIDIdentifierMap();
-
             void initialize(std::set<const Identifier*>* parents);
 
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
@@ -298,10 +248,8 @@ namespace orxonox
             bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             Factory* factory_;                                             //!< The Factory, able to create new objects of the given class (if available)
-            static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
             uint32_t networkID_;                                           //!< The network ID to identify a class through the network
             const unsigned int classID_;                                   //!< Uniquely identifies a class (might not be the same as the networkID_)
-            static unsigned int classIDCounter_s;                          //!< Static counter for the unique classIDs
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
@@ -400,7 +348,7 @@ namespace orxonox
         ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
 
         // Get the entry from the map
-        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifierSingleton(name, proposal);
+        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getIdentifierSingleton(name, proposal);
 
         if (ClassIdentifier<T>::classIdentifier_s == proposal)
         {
@@ -427,7 +375,7 @@ namespace orxonox
             orxout(verbose, context::object_list) << "Register Object: " << className << endl;
 
         object->identifier_ = this;
-        if (Identifier::isCreatingHierarchy())
+        if (IdentifierManager::isCreatingHierarchy())
         {
             if (bRootClass && !object->parents_)
                 object->parents_ = new std::set<const Identifier*>();

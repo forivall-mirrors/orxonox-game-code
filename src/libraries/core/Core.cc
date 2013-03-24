@@ -197,7 +197,7 @@ namespace orxonox
 
         // creates the class hierarchy for all classes with factories
         orxout(internal_info) << "creating class hierarchy" << endl;
-        Identifier::createClassHierarchy();
+        IdentifierManager::createClassHierarchy();
 
         // Load OGRE excluding the renderer and the render window
         orxout(internal_info) << "creating GraphicsManager:" << endl;
@@ -247,7 +247,7 @@ namespace orxonox
         safeObjectDelete(&languageInstance_);
         safeObjectDelete(&configFileManager_);
         ConsoleCommand::destroyAll();
-        Identifier::destroyAllIdentifiers();
+        IdentifierManager::destroyAllIdentifiers();
         safeObjectDelete(&signalHandler_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&pathConfig_);

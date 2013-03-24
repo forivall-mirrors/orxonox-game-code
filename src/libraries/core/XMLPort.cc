@@ -58,7 +58,7 @@ namespace orxonox
 
                 for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                 {
-                    Identifier* identifier = Identifier::getIdentifierByString(child->Value());
+                    Identifier* identifier = IdentifierManager::getIdentifierByString(child->Value());
                     if (!identifier)
                     {
                         if (!this->sectionname_.empty())

@@ -45,14 +45,11 @@ namespace orxonox
     // ###############################
     // ###       Identifier        ###
     // ###############################
-    int Identifier::hierarchyCreatingCounter_s = 0;
-    unsigned int Identifier::classIDCounter_s = 0;
-
     /**
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
     */
     Identifier::Identifier()
-        : classID_(classIDCounter_s++)
+        : classID_(IdentifierManager::classIDCounter_s++)
     {
         this->objects_ = new ObjectListBase(this);
 
@@ -86,39 +83,6 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the identifier map with the names as received by typeid(). This is only used internally.
-    */
-    std::map<std::string, Identifier*>& Identifier::getTypeIDIdentifierMap()
-    {
-        static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
-        return identifiers;
-    }
-
-    /**
-        @brief Returns an identifier by name and adds it if not available
-        @param name The name of the identifier as typeid().name() suggests
-        @param proposal A pointer to a newly created identifier for the case of non existence in the map
-        @return The identifier (unique instance)
-    */
-    Identifier* Identifier::getIdentifierSingleton(const std::string& name, Identifier* proposal)
-    {
-        std::map<std::string, Identifier*>::const_iterator it = getTypeIDIdentifierMap().find(name);
-
-        if (it != getTypeIDIdentifierMap().end())
-        {
-            // There is already an entry: return it and delete the proposal
-            delete proposal;
-            return it->second;
-        }
-        else
-        {
-            // There is no entry: put the proposal into the map and return it
-            getTypeIDIdentifierMap()[name] = proposal;
-            return proposal;
-        }
-    }
-
-    /**
         @brief Registers a class, which means that the name and the parents get stored.
         @param parents A list, containing the Identifiers of all parents of the class
         @param bRootClass True if the class is either an Interface or the BaseObject itself
@@ -126,7 +90,7 @@ namespace orxonox
     void Identifier::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
     {
         // Check if at least one object of the given type was created
-        if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
+        if (!this->bCreatedOneObject_ && IdentifierManager::isCreatingHierarchy())
         {
             // If no: We have to store the information and initialize the Identifier
             orxout(verbose, context::identifier) << "Register Class in ClassIdentifier<" << this->getName() << ">-Singleton -> Initialize Singleton." << endl;
@@ -186,35 +150,6 @@ namespace orxonox
     }
 
     /**
-        @brief Creates the class-hierarchy by creating and destroying one object of each type.
-    */
-    void Identifier::createClassHierarchy()
-    {
-        orxout(internal_status) << "Create class-hierarchy" << endl;
-        Identifier::startCreatingHierarchy();
-        for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMap().begin(); it != Identifier::getStringIdentifierMap().end(); ++it)
-        {
-            // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
-            if (it->second->hasFactory())
-            {
-                OrxonoxClass* temp = it->second->fabricate(0);
-                temp->destroy();
-            }
-        }
-        Identifier::stopCreatingHierarchy();
-        orxout(internal_status) << "Finished class-hierarchy creation" << endl;
-    }
-
-    /**
-        @brief Destroys all Identifiers. Called when exiting the program.
-    */
-    void Identifier::destroyAllIdentifiers()
-    {
-        for (std::map<std::string, Identifier*>::iterator it = Identifier::getTypeIDIdentifierMap().begin(); it != Identifier::getTypeIDIdentifierMap().end(); ++it)
-            delete (it->second);
-    }
-
-    /**
         @brief Sets the name of the class.
     */
     void Identifier::setName(const std::string& name)
@@ -223,9 +158,9 @@ namespace orxonox
         {
             this->name_ = name;
             this->bSetName_ = true;
-            Identifier::getStringIdentifierMapIntern()[name] = this;
-            Identifier::getLowercaseStringIdentifierMapIntern()[getLowercase(name)] = this;
-            Identifier::getIDIdentifierMapIntern()[this->networkID_] = this;
+            IdentifierManager::getStringIdentifierMapIntern()[name] = this;
+            IdentifierManager::getLowercaseStringIdentifierMapIntern()[getLowercase(name)] = this;
+            IdentifierManager::getIDIdentifierMapIntern()[this->networkID_] = this;
         }
     }
 
@@ -255,7 +190,7 @@ namespace orxonox
     void Identifier::setNetworkID(uint32_t id)
     {
 //        Identifier::getIDIdentifierMapIntern().erase(this->networkID_);
-        Identifier::getIDIdentifierMapIntern()[id] = this;
+        IdentifierManager::getIDIdentifierMapIntern()[id] = this;
         this->networkID_ = id;
     }
 
@@ -311,86 +246,6 @@ namespace orxonox
     bool Identifier::isDirectParentOf(const Identifier* identifier) const
     {
         return (this->directChildren_.find(identifier) != this->directChildren_.end());
-    }
-
-    /**
-        @brief Returns the map that stores all Identifiers with their names.
-        @return The map
-    */
-    std::map<std::string, Identifier*>& Identifier::getStringIdentifierMapIntern()
-    {
-        static std::map<std::string, Identifier*> identifierMap;
-        return identifierMap;
-    }
-
-    /**
-        @brief Returns the map that stores all Identifiers with their names in lowercase.
-        @return The map
-    */
-    std::map<std::string, Identifier*>& Identifier::getLowercaseStringIdentifierMapIntern()
-    {
-        static std::map<std::string, Identifier*> lowercaseIdentifierMap;
-        return lowercaseIdentifierMap;
-    }
-
-    /**
-        @brief Returns the map that stores all Identifiers with their network IDs.
-        @return The map
-    */
-    std::map<uint32_t, Identifier*>& Identifier::getIDIdentifierMapIntern()
-    {
-        static std::map<uint32_t, Identifier*> identifierMap;
-        return identifierMap;
-    }
-
-    /**
-        @brief Returns the Identifier with a given name.
-        @param name The name of the wanted Identifier
-        @return The Identifier
-    */
-    Identifier* Identifier::getIdentifierByString(const std::string& name)
-    {
-        std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapIntern().find(name);
-        if (it != Identifier::getStringIdentifierMapIntern().end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns the Identifier with a given name in lowercase.
-        @param name The name of the wanted Identifier
-        @return The Identifier
-    */
-    Identifier* Identifier::getIdentifierByLowercaseString(const std::string& name)
-    {
-        std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMapIntern().find(name);
-        if (it != Identifier::getLowercaseStringIdentifierMapIntern().end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns the Identifier with a given network ID.
-        @param id The network ID of the wanted Identifier
-        @return The Identifier
-    */
-    Identifier* Identifier::getIdentifierByID(const uint32_t id)
-    {
-        std::map<uint32_t, Identifier*>::const_iterator it = Identifier::getIDIdentifierMapIntern().find(id);
-        if (it != Identifier::getIDIdentifierMapIntern().end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Cleans the NetworkID map (needed on clients for correct initialization)
-    */
-    void Identifier::clearNetworkIDs()
-    {
-        Identifier::getIDIdentifierMapIntern().clear();
     }
 
     /**
