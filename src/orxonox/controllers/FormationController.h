@@ -35,7 +35,6 @@
 #include "core/class/Super.h"
 
 #include "util/Math.h"
-#include "core/class/OrxonoxClass.h"
 #include "controllers/Controller.h"
 #include "worldentities/ControllableEntity.h"
 
