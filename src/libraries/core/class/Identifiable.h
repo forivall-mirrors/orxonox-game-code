@@ -56,7 +56,6 @@ namespace orxonox
             Identifiable();
             virtual ~Identifiable();
 
-            void destroy();
             void unregisterObject();
 
             /// Returns the Identifier of the object.
