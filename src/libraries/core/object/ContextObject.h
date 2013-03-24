@@ -31,29 +31,26 @@
     @ingroup Object
 */
 
-#ifndef _Context_H__
-#define _Context_H__
+#ifndef _ContextObject_H__
+#define _ContextObject_H__
 
 #include "core/CorePrereqs.h"
 
-#include "ContextObject.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _CoreExport Context : public ContextObject
+    class _CoreExport ContextObject : virtual public OrxonoxClass
     {
         public:
-            Context(Context* context);
-            virtual ~Context();
+            ContextObject(Context* context);
 
-            inline Context* getParentContext() const
-                { return this->parentContext_; }
-
-            static Context* getRootContext();
+            /// Returns the object's Context.
+            inline Context* getContext() const { return this->context_; }
 
         private:
-            Context* parentContext_;
+            Context* context_; //!< The object's context
     };
 }
 
-#endif /* _Context_H__ */
+#endif /* _ContextObject_H__ */

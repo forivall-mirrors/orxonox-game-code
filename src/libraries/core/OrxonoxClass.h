@@ -69,7 +69,7 @@ namespace orxonox
         friend class DestructionListener;
 
         public:
-            OrxonoxClass(Context* context = NULL);
+            OrxonoxClass();
             virtual ~OrxonoxClass();
 
             void destroy();
@@ -80,9 +80,6 @@ namespace orxonox
 
             /// Returns the Identifier of the object.
             inline Identifier* getIdentifier() const { return this->identifier_; }
-
-            /// Returns the object's Context.
-            inline Context* getContext() const { return this->context_; }
 
             bool isA(const Identifier* identifier);
             bool isExactlyA(const Identifier* identifier);
@@ -169,7 +166,6 @@ namespace orxonox
                 { this->destructionListeners_.erase(pointer); }
 
             Identifier* identifier_;                                //!< The Identifier of the object
-            Context* context_;                                      //!< The object's context
             std::set<const Identifier*>* parents_;                  //!< List of all parents of the object
             MetaObjectList* metaList_;                              //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
             int referenceCount_;                                    //!< Counts the references from smart pointers to this object
