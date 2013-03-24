@@ -415,10 +415,10 @@ namespace orxonox
                     } \
             };
 
-        #define SUPER_CALL_ARGUMENTSfalse(...) OrxonoxClass* object
-        #define SUPER_CALL_ARGUMENTS0(...)     OrxonoxClass* object
-        #define SUPER_CALL_ARGUMENTStrue(...) OrxonoxClass* object, __VA_ARGS__
-        #define SUPER_CALL_ARGUMENTS1(...)    OrxonoxClass* object, __VA_ARGS__
+        #define SUPER_CALL_ARGUMENTSfalse(...) Identifiable* object
+        #define SUPER_CALL_ARGUMENTS0(...)     Identifiable* object
+        #define SUPER_CALL_ARGUMENTStrue(...) Identifiable* object, __VA_ARGS__
+        #define SUPER_CALL_ARGUMENTS1(...)    Identifiable* object, __VA_ARGS__
 
 
     /*
