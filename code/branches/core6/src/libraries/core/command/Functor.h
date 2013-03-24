@@ -119,7 +119,7 @@
 
 #include "util/Output.h"
 #include "util/MultiType.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/object/Destroyable.h"
 #include "FunctorPtr.h"
 
 namespace orxonox
@@ -302,12 +302,12 @@ namespace orxonox
         protected:
             /// Casts the object and registers as destruction listener.
             inline void registerObject(O* object)
-                { OrxonoxClass* base = dynamic_cast<OrxonoxClass*>(object); if (base) { this->registerAsDestructionListener(base); } }
+                { Destroyable* base = dynamic_cast<Destroyable*>(object); if (base) { this->registerAsDestructionListener(base); } }
             /// Casts the object and unregisters as destruction listener.
             inline void unregisterObject(O* object)
-                { OrxonoxClass* base = dynamic_cast<OrxonoxClass*>(object); if (base) { this->unregisterAsDestructionListener(base); } }
+                { Destroyable* base = dynamic_cast<Destroyable*>(object); if (base) { this->unregisterAsDestructionListener(base); } }
 
-            /// Will be called by OrxonoxClass::~OrxonoxClass() if the stored object is deleted and the Functor is in safe mode.
+            /// Will be called by Destroyable::~Destroyable() if the stored object is deleted and the Functor is in safe mode.
             inline void objectDeleted()
                 { this->object_ = 0; }
 

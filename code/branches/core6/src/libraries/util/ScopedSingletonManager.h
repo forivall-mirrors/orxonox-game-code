@@ -67,7 +67,7 @@
 
 namespace orxonox
 {
-    class OrxonoxClass;
+    class Destroyable;
 
     /**
         @brief Base class of ClassScopedSingletonManager, implements some static functions
@@ -165,8 +165,8 @@ namespace orxonox
             singletonPtr_ = NULL;
         }
 
-        //! Destroys the singleton instance - overloaded for OrxonoxClass, calls OrxonoxClass::destroy()
-        void destroy(OrxonoxClass*)
+        //! Destroys the singleton instance - overloaded for Destroyable, calls Destroyable::destroy()
+        void destroy(Destroyable*)
         {
             singletonPtr_->destroy();
         }
@@ -245,8 +245,8 @@ namespace orxonox
             }
         }
 
-        //! Destroys the singleton instance - overloaded for OrxonoxClass, calls OrxonoxClass::destroy()
-        void destroy(OrxonoxClass*)
+        //! Destroys the singleton instance - overloaded for Destroyable, calls Destroyable::destroy()
+        void destroy(Destroyable*)
         {
             singletonPtr_->destroy();
         }

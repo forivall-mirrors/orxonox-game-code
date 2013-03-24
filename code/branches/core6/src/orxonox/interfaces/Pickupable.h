@@ -143,7 +143,7 @@ namespace orxonox
             void destroy(void); //!< Is called internally within the Pickupable module to destroy pickups.
 
         protected:
-            virtual void preDestroy(void); //!< A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
+            virtual void preDestroy(void); //!< A method that is called by Destroyable::destroy() before the object is actually destroyed.
             virtual void destroyPickup(void); //!< Destroys a Pickupable.
             virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
 
