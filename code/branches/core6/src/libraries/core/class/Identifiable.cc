@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Implementation of OrxonoxClass.
+    @brief Implementation of Identifiable.
 */
 
 #include "Identifiable.h"

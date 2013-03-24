@@ -164,9 +164,9 @@ namespace orxonox
 
     /**
         @brief Returns the Identifier with a given 'this' pointer.
-        @note This of course only works with OrxonoxClasses.
+        @note This of course only works with Identifiables.
               The only use is in conjunction with macros that don't know the class type.
-        @param object Pointer to an OrxonoxClass
+        @param object Pointer to an Identifiable
     */
     template <class T>
     inline Identifier* ClassByObjectType(const T*)

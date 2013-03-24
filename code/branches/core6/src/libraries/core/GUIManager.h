@@ -48,7 +48,6 @@
 #include "util/tribool.h"
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
-#include "class/OrxonoxClass.h"
 #include "WindowEventListener.h"
 
 #if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7

@@ -45,7 +45,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    BasicProjectile::BasicProjectile() : OrxonoxClass()
+    BasicProjectile::BasicProjectile()
     {
         RegisterRootObject(BasicProjectile);// Register the BasicProjectile class to the core
 
