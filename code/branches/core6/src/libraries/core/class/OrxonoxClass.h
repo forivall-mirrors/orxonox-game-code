@@ -42,9 +42,8 @@
 
 #include "core/CorePrereqs.h"
 
-#include <set>
-//#include "Super.h"
 #include "Identifiable.h"
+#include "core/object/Destroyable.h"
 
 namespace orxonox
 {
@@ -53,72 +52,15 @@ namespace orxonox
 
         The BaseObject and Interfaces are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
     */
-    class _CoreExport OrxonoxClass : public Identifiable
+    class _CoreExport OrxonoxClass : public Identifiable, public Destroyable
     {
-        template <class T>
-        friend class SmartPtr;
-
-        friend class DestructionListener;
-
         public:
             OrxonoxClass();
             virtual ~OrxonoxClass();
 
-            void destroy();
-
             /// Function to collect the SetConfigValue-macro calls.
             void setConfigValues() {};
-
-            /// Returns the number of @ref orxonox::SmartPtr "smart pointers" that point to this object.
-            inline unsigned int getReferenceCount() const
-                { return this->referenceCount_; }
-
-        protected:
-            /// This virtual function is called if destroy() is called and no SmartPtr points to this object. Used in some cases to create a new SmartPtr to prevent destruction.
-            virtual void preDestroy() {}
-
-        private:
-            /// Increments the reference counter (for smart pointers).
-            inline void incrementReferenceCount()
-                { ++this->referenceCount_; }
-            /// Decrements the reference counter (for smart pointers).
-            inline void decrementReferenceCount()
-            {
-                --this->referenceCount_;
-                if (this->referenceCount_ == 0 && this->requestedDestruction_)
-                    this->destroy();
-            }
-
-            /// Register a destruction listener (for example a weak pointer which points to this object).
-            inline void registerDestructionListener(DestructionListener* pointer)
-                { this->destructionListeners_.insert(pointer); }
-            /// Unegister a destruction listener (for example a weak pointer which pointed to this object before).
-            inline void unregisterDestructionListener(DestructionListener* pointer)
-                { this->destructionListeners_.erase(pointer); }
-
-            int referenceCount_;                                    //!< Counts the references from smart pointers to this object
-            bool requestedDestruction_;                             //!< Becomes true after someone called delete on this object
-            std::set<DestructionListener*> destructionListeners_;   //!< All destruction listeners (for example weak pointers which point to this object and like to get notified if it dies)
     };
-
-    /**
-        @brief This listener is used to inform weak pointers if an object of type OrxonoxClass gets destroyed.
-    */
-    class _CoreExport DestructionListener
-    {
-        friend class OrxonoxClass;
-
-        protected:
-            virtual ~DestructionListener() {}
-
-            inline void registerAsDestructionListener(OrxonoxClass* object)
-                { if (object) { object->registerDestructionListener(this); } }
-            inline void unregisterAsDestructionListener(OrxonoxClass* object)
-                { if (object) { object->unregisterDestructionListener(this); } }
-
-            virtual void objectDeleted() = 0;
-    };
-
 }
 
 #endif /* _OrxonoxClass_H__ */

@@ -28,10 +28,10 @@
 
 /**
     @file
-    @brief Implementation of OrxonoxClass.
+    @brief Implementation of Destroyable.
 */
 
-#include "OrxonoxClass.h"
+#include "Destroyable.h"
 
 #include <cassert>
 
@@ -40,14 +40,36 @@ namespace orxonox
     /**
         @brief Constructor: Sets the default values.
     */
-    OrxonoxClass::OrxonoxClass()
+    Destroyable::Destroyable()
     {
+        this->referenceCount_ = 0;
+        this->requestedDestruction_ = false;
     }
 
     /**
         @brief Destructor: Notifies all DestructionListener (for example @ref WeakPtr "weak pointers") that this object is being deleted.
     */
-    OrxonoxClass::~OrxonoxClass()
+    Destroyable::~Destroyable()
     {
+        assert(this->referenceCount_ <= 0);
+
+        // notify all destruction listeners
+        for (std::set<DestructionListener*>::iterator it = this->destructionListeners_.begin(); it != this->destructionListeners_.end(); )
+            (*(it++))->objectDeleted();
+    }
+
+    /**
+        @brief Deletes the object if no @ref orxonox::SmartPtr "smart pointers" point to this object. Otherwise schedules the object to be deleted as soon as possible.
+    */
+    void Destroyable::destroy()
+    {
+        assert(this); // Just in case someone tries to delete a NULL pointer
+        this->requestedDestruction_ = true;
+        if (this->referenceCount_ == 0)
+        {
+            this->preDestroy();
+            if (this->referenceCount_ == 0)
+                delete this;
+        }
     }
 }

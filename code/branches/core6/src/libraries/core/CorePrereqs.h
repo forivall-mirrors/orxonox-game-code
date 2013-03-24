@@ -142,6 +142,7 @@ namespace orxonox
     class ConfigValueContainer;
     class Context;
     class Core;
+    class Destroyable;
     class DestructionListener;
     class DynLib;
     class DynLibManager;
