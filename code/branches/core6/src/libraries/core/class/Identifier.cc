@@ -36,9 +36,9 @@
 #include <ostream>
 
 #include "util/StringUtils.h"
-#include "config/ConfigValueContainer.h"
-#include "XMLPort.h"
-#include "object/ClassFactory.h"
+#include "core/config/ConfigValueContainer.h"
+#include "core/XMLPort.h"
+#include "core/object/ClassFactory.h"
 
 namespace orxonox
 {

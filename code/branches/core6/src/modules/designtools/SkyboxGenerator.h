@@ -35,7 +35,7 @@
 #ifndef __SkyboxGenerator_h__
 #define __SkyboxGenerator_h__
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "util/Singleton.h"
 #include "tools/interfaces/Tickable.h"
 

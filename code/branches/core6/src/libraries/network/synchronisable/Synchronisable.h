@@ -39,7 +39,7 @@
 #include <set>
 
 #include "util/mbool.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "SynchronisableVariable.h"
 #include "NetworkCallback.h"
 

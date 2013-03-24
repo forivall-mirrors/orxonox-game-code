@@ -32,7 +32,7 @@
 */
 
 #include "ClassTreeMask.h"
-#include "Identifier.h"
+#include "class/Identifier.h"
 
 namespace orxonox
 {

@@ -43,8 +43,8 @@
 
 #include "tools/ToolsPrereqs.h"
 
-#include "core/OrxonoxClass.h"
-#include "core/Super.h"
+#include "core/class/OrxonoxClass.h"
+#include "core/class/Super.h"
 
 namespace orxonox
 {

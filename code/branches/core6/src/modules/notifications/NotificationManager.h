@@ -41,7 +41,7 @@
 #include <map>
 #include <string>
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "util/Singleton.h"
 #include "interfaces/NotificationListener.h"
 

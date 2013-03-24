@@ -42,7 +42,7 @@
 #include <string>
 
 #include "util/Output.h"
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 
 namespace orxonox
 {

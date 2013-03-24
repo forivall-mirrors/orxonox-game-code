@@ -67,7 +67,7 @@
 #include "GameMode.h"
 #include "GraphicsManager.h"
 #include "GUIManager.h"
-#include "Identifier.h"
+#include "class/Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
 #include "command/ConsoleCommand.h"

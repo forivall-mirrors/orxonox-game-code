@@ -35,7 +35,7 @@
 #include <cassert>
 
 #include "util/Math.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "core/object/SmartPtr.h"
 
 namespace orxonox

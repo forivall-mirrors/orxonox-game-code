@@ -27,13 +27,11 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Game.cc
   GameMode.cc
   GameState.cc
-  Identifier.cc
   Language.cc
   Loader.cc
   LuaState.cc
   Namespace.cc
   NamespaceNode.cc
-  OrxonoxClass.cc
   Template.cc
   ViewportEventListener.cc
   WindowEventListener.cc
@@ -63,6 +61,7 @@ BUILD_UNIT ThreadBuildUnit.cc
 END_BUILD_UNIT
 )
 
+ADD_SUBDIRECTORY(class)
 ADD_SUBDIRECTORY(command)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(input)

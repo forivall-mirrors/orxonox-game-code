@@ -35,7 +35,7 @@
 #include <string>
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox //tolua_export
 { //tolua_export

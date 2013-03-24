@@ -78,7 +78,7 @@
 #include "CorePrereqs.h"
 
 #include "util/Output.h"
-#include "Identifier.h"
+#include "class/Identifier.h"
 #include "object/ClassFactory.h"
 #include "object/ObjectList.h"
 

@@ -32,10 +32,10 @@
 #include "OrxonoxPrereqs.h"
 
 #include <vector>
-#include "core/Super.h"
+#include "core/class/Super.h"
 
 #include "util/Math.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "controllers/Controller.h"
 #include "worldentities/ControllableEntity.h"
 

@@ -119,7 +119,7 @@
 
 #include "util/Output.h"
 #include "util/MultiType.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "FunctorPtr.h"
 
 namespace orxonox

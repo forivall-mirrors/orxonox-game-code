@@ -55,7 +55,7 @@
 
 #include "core/CorePrereqs.h"
 
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 #include "ObjectListBase.h"
 
 namespace orxonox

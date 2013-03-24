@@ -34,7 +34,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <OgreDataStream.h>
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {

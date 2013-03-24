@@ -43,7 +43,7 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <set>
 #include <vector>

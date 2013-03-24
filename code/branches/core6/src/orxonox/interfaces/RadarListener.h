@@ -30,7 +30,7 @@
 #define _RadarListener_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {

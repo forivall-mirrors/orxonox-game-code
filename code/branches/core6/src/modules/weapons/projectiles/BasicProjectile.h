@@ -38,7 +38,7 @@
 
 #include "worldentities/pawns/Pawn.h"
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {

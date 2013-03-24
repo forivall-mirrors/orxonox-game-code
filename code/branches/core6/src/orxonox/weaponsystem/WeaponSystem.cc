@@ -29,7 +29,7 @@
 #include "WeaponSystem.h"
 
 #include "core/CoreIncludes.h"
-#include "core/SubclassIdentifier.h"
+#include "core/class/SubclassIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "WeaponSlot.h"

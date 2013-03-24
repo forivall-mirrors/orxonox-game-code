@@ -78,7 +78,7 @@
 
 #include "tools/ToolsPrereqs.h"
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "core/command/ExecutorPtr.h"
 
 namespace orxonox

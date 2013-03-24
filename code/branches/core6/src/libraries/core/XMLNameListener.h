@@ -35,7 +35,7 @@
 #define _XMLNameListener_H__
 
 #include "CorePrereqs.h"
-#include "OrxonoxClass.h"
+#include "class/OrxonoxClass.h"
 
 namespace orxonox
 {

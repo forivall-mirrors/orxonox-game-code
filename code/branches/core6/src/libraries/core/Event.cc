@@ -34,7 +34,7 @@
 #include "Event.h"
 
 #include "BaseObject.h"
-#include "Identifier.h"
+#include "class/Identifier.h"
 
 namespace orxonox
 {

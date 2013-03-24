@@ -48,8 +48,8 @@
 #include <list>
 
 #include "util/mbool.h"
-#include "OrxonoxClass.h"
-#include "Super.h"
+#include "class/OrxonoxClass.h"
+#include "class/Super.h"
 #include "object/SmartPtr.h"
 
 namespace orxonox

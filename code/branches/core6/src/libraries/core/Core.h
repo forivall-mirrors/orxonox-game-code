@@ -46,7 +46,7 @@
 #include <string>
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
+#include "class/OrxonoxClass.h"
 
 namespace orxonox
 {

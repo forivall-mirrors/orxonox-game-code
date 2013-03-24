@@ -38,7 +38,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "core/object/SmartPtr.h"
 
 // tolua_begin

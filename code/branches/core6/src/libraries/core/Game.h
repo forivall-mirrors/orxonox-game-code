@@ -49,7 +49,7 @@
 #include "util/Output.h"
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
+#include "class/OrxonoxClass.h"
 
 /**
 @brief

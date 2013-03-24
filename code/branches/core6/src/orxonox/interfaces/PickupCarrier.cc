@@ -34,7 +34,7 @@
 #include "PickupCarrier.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 
 #include "Pickupable.h"
 

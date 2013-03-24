@@ -40,7 +40,7 @@
 #include <set>
 #include <vector>
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {

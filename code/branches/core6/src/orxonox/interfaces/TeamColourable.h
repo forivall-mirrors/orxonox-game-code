@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/UtilPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {
