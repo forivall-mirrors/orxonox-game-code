@@ -268,7 +268,7 @@ namespace orxonox
             if (it->second.first == entryLC && ! it->second.second->isVector())
             {
                 std::string value;
-                it->second.second->getValue<std::string, OrxonoxClass>(&value, NULL);
+                it->second.second->getValue<std::string, void>(&value, NULL);
                 return value;
             }
         }
