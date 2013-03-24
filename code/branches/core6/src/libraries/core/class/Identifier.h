@@ -394,7 +394,7 @@ namespace orxonox
             orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
             object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
 
-            // Add pointer of type T to the map in the OrxonoxClass instance that enables "dynamic_casts"
+            // Add pointer of type T to the map in the Identifiable instance that enables "dynamic_casts"
             object->objectPointers_.push_back(std::make_pair(this->getClassID(), static_cast<void*>(object)));
             return false;
         }
@@ -423,7 +423,7 @@ namespace orxonox
     // ###############################
     /**
     @brief
-        Casts on object of type OrxonoxClass to any derived type that is
+        Casts on object of type Identifiable to any derived type that is
         registered in the class hierarchy.
     @return
         Returns NULL if the cast is not possible
