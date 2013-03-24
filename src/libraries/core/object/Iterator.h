@@ -68,7 +68,7 @@ namespace orxonox
 
         @see See @ref IteratorExample "Iterator.h" for more information an example.
     */
-    template <class T = OrxonoxClass>
+    template <class T>
     class Iterator
     {
         public:
@@ -294,7 +294,7 @@ namespace orxonox
                 @brief Increments the Iterator if it points at the given object.
                 @param object The object to compare with
             */
-            inline void incrementIfEqual(OrxonoxClass* object)
+            inline void incrementIfEqual(Listable* object)
             {
                 if (this->element_ && this->element_->objectBase_ == object)
                     this->operator++();
@@ -304,8 +304,6 @@ namespace orxonox
             ObjectListBaseElement* element_;       //!< The element the Iterator points at
             ObjectListBase* list_;                 //!< The list wherein the element is
     };
-
-    typedef Iterator<OrxonoxClass> BaseIterator;
 }
 
 #endif /* _Iterator_H__ */

@@ -55,11 +55,11 @@ namespace orxonox
                 @brief Constructor: Creates the list-element with an object.
                 @param objectBase The object to store
             */
-            ObjectListBaseElement(OrxonoxClass* objectBase) : next_(0), prev_(0), objectBase_(objectBase) {}
+            ObjectListBaseElement(Listable* objectBase) : next_(0), prev_(0), objectBase_(objectBase) {}
 
             ObjectListBaseElement* next_;       //!< The next element in the list
             ObjectListBaseElement* prev_;       //!< The previous element in the list
-            OrxonoxClass* objectBase_;
+            Listable* objectBase_;
     };
 
 
@@ -71,7 +71,7 @@ namespace orxonox
     class ObjectListElement : public ObjectListBaseElement
     {
         public:
-            ObjectListElement(T* object) : ObjectListBaseElement(static_cast<OrxonoxClass*>(object)), object_(object) {}
+            ObjectListElement(T* object) : ObjectListBaseElement(static_cast<Listable*>(object)), object_(object) {}
             T* object_;              //!< The object
     };
 
@@ -141,7 +141,7 @@ namespace orxonox
                     }
                 }
             }
-            void notifyIterators(OrxonoxClass* object) const;
+            void notifyIterators(Listable* object) const;
 
             inline Identifier* getIdentifier() const { return this->identifier_; }
 

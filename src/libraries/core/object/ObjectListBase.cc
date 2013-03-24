@@ -67,12 +67,12 @@ namespace orxonox
         @brief Increases all Iterators that currently point on the given element (because it gets removed).
         @param object The object that gets removed
     */
-    void ObjectListBase::notifyIterators(OrxonoxClass* object) const
+    void ObjectListBase::notifyIterators(Listable* object) const
     {
         for (std::vector<void*>::const_iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
-            ((Iterator<OrxonoxClass>*)(*it))->incrementIfEqual(object);
+            ((Iterator<Listable>*)(*it))->incrementIfEqual(object);
         for (std::vector<void*>::const_iterator it = this->objectListIterators_.begin(); it != this->objectListIterators_.end(); ++it)
-            ((ObjectListIterator<OrxonoxClass>*)(*it))->incrementIfEqual(object);
+            ((ObjectListIterator<Listable>*)(*it))->incrementIfEqual(object);
     }
 
     /**
