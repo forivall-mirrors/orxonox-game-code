@@ -35,6 +35,7 @@
 
 #include <cassert>
 #include "object/MetaObjectList.h"
+#include "object/Context.h"
 #include "Identifier.h"
 
 namespace orxonox
@@ -42,8 +43,12 @@ namespace orxonox
     /**
         @brief Constructor: Sets the default values.
     */
-    OrxonoxClass::OrxonoxClass()
+    OrxonoxClass::OrxonoxClass(Context* context) : context_(context)
     {
+        //assert(context);
+        if (!this->context_)
+            this->context_ = Context::getRootContext();
+
         this->identifier_ = 0;
         this->parents_ = 0;
         this->metaList_ = new MetaObjectList();

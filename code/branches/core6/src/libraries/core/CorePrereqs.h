@@ -140,6 +140,7 @@ namespace orxonox
     class ConfigFileManager;
     class ConfigFileSection;
     class ConfigValueContainer;
+    class Context;
     class Core;
     class DestructionListener;
     class DynLib;
