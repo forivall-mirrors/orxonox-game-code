@@ -47,7 +47,6 @@ namespace orxonox
     {
         this->identifier_ = 0;
         this->parents_ = 0;
-        this->metaList_ = new MetaObjectList();
         // Optimisation
         this->objectPointers_.reserve(6);
     }
@@ -57,24 +56,9 @@ namespace orxonox
     */
     Identifiable::~Identifiable()
     {
-//        if (!this->requestedDestruction_)
-//            orxout(internal_warning) << "Destroyed object without destroy() (" << this->getIdentifier()->getName() << ')' << endl;
-
-        this->unregisterObject();
-
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
         if (this->parents_)
             delete this->parents_;
-    }
-
-    /**
-        @brief Removes this object from the object-lists.
-    */
-    void Identifiable::unregisterObject()
-    {
-        if (this->metaList_)
-            delete this->metaList_;
-        this->metaList_ = 0;
     }
 
     /// Returns true if the object's class is of the given type or a derivative.

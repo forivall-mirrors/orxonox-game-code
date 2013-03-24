@@ -288,6 +288,9 @@ namespace orxonox
 
             bool initialiseObject(T* object, const std::string& className, bool bRootClass);
 
+            void addObjectToList(T* object, Listable*);
+            void addObjectToList(T* object, Identifiable*);
+
             void updateConfigValues(bool updateChildren = true) const;
 
         private:
@@ -391,13 +394,28 @@ namespace orxonox
         }
         else
         {
-            orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
-            object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+            this->addObjectToList(object, object);
 
             // Add pointer of type T to the map in the Identifiable instance that enables "dynamic_casts"
             object->objectPointers_.push_back(std::make_pair(this->getClassID(), static_cast<void*>(object)));
             return false;
         }
+    }
+
+    /**
+     * @brief Only adds the object to the object list if is a @ref Listable
+     */
+    template <class T>
+    void ClassIdentifier<T>::addObjectToList(T* object, Listable*)
+    {
+        orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
+        object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::addObjectToList(T*, Identifiable*)
+    {
+        // no action
     }
 
     /**
