@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    Context::Context(Context* context) : OrxonoxClass(this), parentContext_(context)
+    Context::Context(Context* context) : ContextObject(this), parentContext_(context)
     {
         RegisterRootObject(Context);
     }

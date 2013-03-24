@@ -28,32 +28,23 @@
 
 /**
     @file
-    @ingroup Object
+    @brief Implementation of ContextObject.
 */
-
-#ifndef _Context_H__
-#define _Context_H__
-
-#include "core/CorePrereqs.h"
 
 #include "ContextObject.h"
 
+#include <cassert>
+#include "core/CoreIncludes.h"
+#include "Context.h"
+
 namespace orxonox
 {
-    class _CoreExport Context : public ContextObject
+    ContextObject::ContextObject(Context* context) : context_(context)
     {
-        public:
-            Context(Context* context);
-            virtual ~Context();
+        RegisterRootObject(ContextObject);
 
-            inline Context* getParentContext() const
-                { return this->parentContext_; }
-
-            static Context* getRootContext();
-
-        private:
-            Context* parentContext_;
-    };
+        //assert(context);
+        if (!this->context_)
+            this->context_ = Context::getRootContext();
+    }
 }
-
-#endif /* _Context_H__ */
