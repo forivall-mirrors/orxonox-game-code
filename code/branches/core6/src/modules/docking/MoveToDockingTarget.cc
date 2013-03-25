@@ -35,6 +35,7 @@
 #include "MoveToDockingTarget.h"
 
 #include "core/XMLPort.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

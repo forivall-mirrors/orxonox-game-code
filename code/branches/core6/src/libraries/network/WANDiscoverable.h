@@ -30,7 +30,6 @@
 
 #include "NetworkPrereqs.h"
 #include "core/class/OrxonoxClass.h"
-#include "core/CoreIncludes.h"
 #include "MasterServerComm.h"
 
 namespace orxonox

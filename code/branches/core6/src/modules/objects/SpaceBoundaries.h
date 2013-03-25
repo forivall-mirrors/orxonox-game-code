@@ -35,7 +35,6 @@
 #include <list>
 #include <vector>
 
-#include "core/CoreIncludes.h"
 #include "core/object/WeakPtr.h"
 
 #include "tools/interfaces/Tickable.h"

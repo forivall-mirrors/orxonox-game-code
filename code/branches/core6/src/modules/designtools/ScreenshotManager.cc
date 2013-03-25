@@ -41,6 +41,7 @@
 #include <OgreRoot.h>
 #include <OgreViewport.h>
 
+#include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
