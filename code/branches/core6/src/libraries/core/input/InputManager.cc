@@ -279,7 +279,7 @@ namespace orxonox
         // Destroy calibrator helper handler and state
         this->destroyState("calibrator");
         // Destroy KeyDetector and state
-        calibratorCallbackHandler_->destroy();
+        delete calibratorCallbackHandler_;
         // Destroy the empty InputState
         this->destroyStateInternal(this->emptyState_);
 

@@ -31,7 +31,7 @@
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
 #include "core/CoreIncludes.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "MasterServerComm.h"
 #include "MasterServerProtocol.h"
@@ -46,7 +46,7 @@ namespace orxonox
 
   class _NetworkExport WANDiscovery
 // tolua_end
-    : public OrxonoxClass
+    : public Configurable
   { // tolua_export
     public:
       /** constructor */

@@ -95,7 +95,7 @@ namespace orxonox
     */
     Shell::~Shell()
     {
-        this->inputBuffer_->destroy();
+        delete this->inputBuffer_;
 
         OutputManager::getInstance().unregisterListener(this);
     }

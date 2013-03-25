@@ -51,7 +51,7 @@
 
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "class/OrxonoxClass.h"
+#include "config/Configurable.h"
 
 // tolua_begin
 namespace orxonox
@@ -62,7 +62,7 @@ namespace orxonox
     */
     class _CoreExport GraphicsManager
 // tolua_end
-        : public Singleton<GraphicsManager>, public OrxonoxClass, public Ogre::LogListener
+        : public Singleton<GraphicsManager>, public Configurable, public Ogre::LogListener
     { // tolua_export
         friend class Singleton<GraphicsManager>;
     public:

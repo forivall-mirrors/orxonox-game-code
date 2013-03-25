@@ -33,11 +33,11 @@
 
 #include "util/OgreForwardRefs.h"
 #include "core/GameState.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSMainMenu : public GameState, public OrxonoxClass
+    class _OrxonoxExport GSMainMenu : public GameState, public Configurable
     {
     public:
         GSMainMenu(const GameStateInfo& info);
