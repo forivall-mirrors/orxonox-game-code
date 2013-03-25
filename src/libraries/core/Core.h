@@ -65,7 +65,7 @@ namespace orxonox
     @remark
         You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core : public Singleton<Core>, public OrxonoxClass
+    class _CoreExport Core : public Singleton<Core>, public Configurable
     {
         friend class Singleton<Core>;
         friend class Game;

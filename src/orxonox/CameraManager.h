@@ -40,11 +40,10 @@
 #include <list>
 #include "util/OgreForwardRefs.h"
 #include "util/Singleton.h"
-#include "core/class/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager : public Singleton<CameraManager>, public OrxonoxClass
+    class _OrxonoxExport CameraManager : public Singleton<CameraManager>
     {
             friend class Singleton<CameraManager>;
         public:

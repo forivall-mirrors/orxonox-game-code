@@ -35,7 +35,7 @@
 #ifndef __SkyboxGenerator_h__
 #define __SkyboxGenerator_h__
 
-#include "core/class/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 #include "util/Singleton.h"
 #include "tools/interfaces/Tickable.h"
 
@@ -57,7 +57,7 @@ namespace orxonox
         Damian 'Mozork' Frick
     @ingroup Designtools
     */
-    class SkyboxGenerator : public virtual OrxonoxClass, public Singleton<SkyboxGenerator>, public Tickable
+    class SkyboxGenerator : public virtual Configurable, public Singleton<SkyboxGenerator>, public Tickable
     {
         friend class Singleton<SkyboxGenerator>;
 

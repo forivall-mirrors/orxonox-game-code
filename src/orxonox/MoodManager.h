@@ -33,7 +33,7 @@
 
 #include <string>
 #include "util/Singleton.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 
 namespace orxonox
 {
@@ -59,7 +59,7 @@ namespace orxonox
     @brief
         The MoodManager class serves to allow for different musical themes in the game.
     */
-    class _OrxonoxExport MoodManager : public Singleton<MoodManager>, public OrxonoxClass
+    class _OrxonoxExport MoodManager : public Singleton<MoodManager>, public Configurable
     {
             friend class Singleton<MoodManager>;
         public:
@@ -73,7 +73,6 @@ namespace orxonox
             static MoodManager& getInstance() { return Singleton<MoodManager>::getInstance(); }
 
         private:
-            ~MoodManager() {}
             void checkMoodValidity();
 
             // config values

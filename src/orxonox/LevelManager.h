@@ -45,7 +45,7 @@
 #include "LevelInfo.h"
 
 #include "util/Singleton.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 
 // tolua_begin
 namespace orxonox
@@ -66,7 +66,7 @@ namespace orxonox
     */
     class _OrxonoxExport LevelManager
     // tolua_end
-        : public Singleton<LevelManager>, public OrxonoxClass
+        : public Singleton<LevelManager>, public Configurable
     { // tolua_export
             friend class Singleton<LevelManager>;
         public:

@@ -37,7 +37,6 @@
 #include "util/OrxAssert.h"
 #include "util/ScopedSingletonManager.h"
 #include "core/command/ConsoleCommand.h"
-#include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
 
@@ -59,7 +58,6 @@ namespace orxonox
     */
     QuestManager::QuestManager()
     {
-        RegisterRootObject(QuestManager);
         orxout(internal_info, context::quests) << "QuestManager created." << endl;
     }
 

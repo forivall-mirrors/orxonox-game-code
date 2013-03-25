@@ -43,7 +43,7 @@
 #include <OgreHardwarePixelBuffer.h>
 
 #include "util/Singleton.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 
 namespace orxonox
 {
@@ -60,7 +60,7 @@ namespace orxonox
         Damian 'Mozork' Frick
     @ingroup Designtools
     */
-    class ScreenshotManager : public OrxonoxClass, public Singleton<ScreenshotManager>
+    class ScreenshotManager : public Configurable, public Singleton<ScreenshotManager>
     {
         friend class Singleton<ScreenshotManager>;
 
