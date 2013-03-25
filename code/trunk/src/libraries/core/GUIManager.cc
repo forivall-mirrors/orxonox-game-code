@@ -317,8 +317,18 @@ namespace orxonox
         guiSystem_ = &System::create(*guiRenderer_, resourceProvider_, 0, imageCodec_, scriptModule_);
 #endif
 
-	// Force Xerces parser (CEGUI 0.7.5+)
-	CEGUI::System::getSingleton().setXMLParser("XercesParser");
+        CEGUI::String defaultXMLParserName = CEGUI::System::getSingleton().getDefaultXMLParserName();
+        try
+        {
+            // Force Xerces parser (CEGUI 0.7.5+)
+            CEGUI::System::getSingleton().setXMLParser("XercesParser");
+        }
+        catch (const CEGUI::GenericException& e)
+        {
+            // Fall back to default parser
+            orxout(internal_warning) << "Cannot use XercesParser for CEGUI - using " << defaultXMLParserName << " instead" << endl;
+            CEGUI::System::getSingleton().setXMLParser(defaultXMLParserName);
+        }
 
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
