@@ -42,24 +42,18 @@
 
 #include "core/CorePrereqs.h"
 
-#include "core/object/Listable.h"
+#include "core/config/Configurable.h"
 #include "core/object/Destroyable.h"
 
 namespace orxonox
 {
     /**
-        @brief The class all objects and interfaces of the game-logic (not the engine) are derived from.
+        @brief This is the class from which all objects and interfaces of the game-logic (not the engine) are derived from.
 
         The BaseObject and Interfaces are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
     */
-    class _CoreExport OrxonoxClass : virtual public Listable, virtual public Destroyable
+    class _CoreExport OrxonoxClass : virtual public Configurable, virtual public Destroyable
     {
-        public:
-            OrxonoxClass();
-            virtual ~OrxonoxClass();
-
-            /// Function to collect the SetConfigValue-macro calls.
-            void setConfigValues() {};
     };
 }
 
