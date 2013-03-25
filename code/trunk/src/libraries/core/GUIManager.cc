@@ -317,6 +317,9 @@ namespace orxonox
         guiSystem_ = &System::create(*guiRenderer_, resourceProvider_, 0, imageCodec_, scriptModule_);
 #endif
 
+	// Force Xerces parser (CEGUI 0.7.5+)
+	CEGUI::System::getSingleton().setXMLParser("XercesParser");
+
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
 
