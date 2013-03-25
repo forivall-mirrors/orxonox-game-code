@@ -139,6 +139,7 @@ namespace orxonox
     class ConfigFileEntryValue;
     class ConfigFileManager;
     class ConfigFileSection;
+    class Configurable;
     class ConfigValueContainer;
     class Context;
     class Core;

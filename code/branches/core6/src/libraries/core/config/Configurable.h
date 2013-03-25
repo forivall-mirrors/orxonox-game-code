@@ -28,26 +28,28 @@
 
 /**
     @file
-    @brief Implementation of OrxonoxClass.
+    @ingroup Config ConfigFile
+    @brief Declaration of Configurable, the base class of all objects which may contain config values.
 */
 
-#include "OrxonoxClass.h"
+#ifndef _Configurable_H__
+#define _Configurable_H__
 
-#include <cassert>
+#include "core/CorePrereqs.h"
+
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
     /**
-        @brief Constructor: Sets the default values.
+        @brief This is the base class of all objects which may contain config values
     */
-    OrxonoxClass::OrxonoxClass()
+    class _CoreExport Configurable : virtual public Listable
     {
-    }
-
-    /**
-        @brief Destructor: Notifies all DestructionListener (for example @ref WeakPtr "weak pointers") that this object is being deleted.
-    */
-    OrxonoxClass::~OrxonoxClass()
-    {
-    }
+        public:
+            /// Function to collect the SetConfigValue-macro calls.
+            void setConfigValues() {};
+    };
 }
+
+#endif /* _Configurable_H__ */
