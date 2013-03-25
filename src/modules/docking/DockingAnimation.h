@@ -35,7 +35,6 @@
 #ifndef _DockingAnimation_H__
 #define _DockingAnimation_H__
 
-#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
 #include "infos/PlayerInfo.h"

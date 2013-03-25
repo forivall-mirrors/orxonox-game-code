@@ -35,7 +35,6 @@
 #ifndef _DockingEffect_H__
 #define _DockingEffect_H__
 
-#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
 #include "infos/PlayerInfo.h"

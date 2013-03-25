@@ -43,6 +43,7 @@
 #include "tools/interfaces/Tickable.h"
 
 #include "controllers/Controller.h"
+#include "PongBall.h"
 
 namespace orxonox
 {

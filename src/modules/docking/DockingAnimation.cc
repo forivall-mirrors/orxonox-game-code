@@ -34,6 +34,7 @@
 #include "DockingAnimation.h"
 
 #include "DockingEffect.h"  // For DockingEffect::findTarget
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

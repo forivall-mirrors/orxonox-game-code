@@ -33,6 +33,7 @@
 #include "infos/PlayerInfo.h"
 #include "worldentities/ControllableEntity.h"
 #include "Dock.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

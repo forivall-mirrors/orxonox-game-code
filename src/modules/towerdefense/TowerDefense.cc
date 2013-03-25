@@ -86,6 +86,7 @@
 #include "infos/PlayerInfo.h"
 
 #include "chat/ChatManager.h"
+#include "core/CoreIncludes.h"
 
 /* Part of a temporary hack to allow the player to add towers */
 #include "core/command/ConsoleCommand.h"

@@ -39,7 +39,6 @@
 
 #include <set>
 
-#include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 
