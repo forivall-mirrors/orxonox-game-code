@@ -72,12 +72,26 @@
 	            <Template link=spaceshipswallow /> 
 	        </templates>
 	        <controller>
+	            <AIController team=0/>
+	        </controller>
+	    </SpaceShip>
+	<?lua end ?>
+	
+	
+	<!-- ADDING ENEMY FORMATION: 5 Swallows -->
+	<!--
+	<?lua for i=0,4,1 do
+	?>
+	    <SpaceShip position="<?lua print(5000+i*200) ?>,-200,1000" lookat="-1300,-600,900" visible="true">
+	        <templates>
+	            <Template link=spaceshipswallow /> 
+	        </templates>
+	        <controller>
 	            <AIController team=1/>
 	        </controller>
 	    </SpaceShip>
 	<?lua end ?>
-
-
+	-->
   </Scene>
 </Level>
 

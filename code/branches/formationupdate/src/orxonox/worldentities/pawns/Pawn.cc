@@ -310,7 +310,7 @@ namespace orxonox
     void Pawn::death()
     {
         /* TEST TEST This is used to find out if the current pawn is also 
-         * the master of the formulation.
+         * the master of the formation.
          *
          * NOTE: This does not yet check if the current pawn is actually 
          *       the humanplayer or not!
