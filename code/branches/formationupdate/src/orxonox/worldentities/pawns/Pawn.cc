@@ -46,6 +46,8 @@
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSet.h"
 
+#include "controllers/FormationController.h"
+
 namespace orxonox
 {
     CreateFactory(Pawn);
@@ -307,6 +309,24 @@ namespace orxonox
 
     void Pawn::death()
     {
+        /* TEST TEST This is used to find out if the current pawn is also 
+         * the master of the formulation.
+         *
+         * NOTE: This does not yet check if the current pawn is actually 
+         *       the humanplayer or not!
+         */
+        for (ObjectList<FormationController>::iterator it = 
+          ObjectList<FormationController>::begin(); 
+          it != ObjectList<FormationController>::end(); ++it )
+        {
+          orxout(user_warning) << "Test! Master: " << it->getMaster() 
+            << " My controller: " << this->getPlayer()->getController() << endl;
+        }
+        /* TEST TEST */
+
+            
+
+
         this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {

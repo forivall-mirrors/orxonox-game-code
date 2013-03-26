@@ -97,6 +97,9 @@ namespace orxonox {
 
       virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
 
+      /* Just for testing purposes: report the master. */
+      FormationController* getMaster( void ) { return myMaster_; }
+
   protected:
       bool formationFlight_;
       bool passive_;
@@ -158,6 +161,7 @@ namespace orxonox {
 
 
       void setTarget(Pawn* target);
+
       void searchNewTarget();
       void forgetTarget();
 
