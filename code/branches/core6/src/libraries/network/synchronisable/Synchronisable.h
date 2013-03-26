@@ -40,7 +40,7 @@
 
 #include "util/mbool.h"
 #include "util/Output.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 #include "SynchronisableVariable.h"
 #include "NetworkCallback.h"
 
@@ -143,7 +143,7 @@ namespace orxonox
   * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
   * @author Oliver Scheuss
   */
-  class _NetworkExport Synchronisable : virtual public OrxonoxClass{
+  class _NetworkExport Synchronisable : virtual public OrxonoxInterface {
   public:
     friend class packet::Gamestate;
     virtual ~Synchronisable();
