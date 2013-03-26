@@ -288,6 +288,9 @@ namespace orxonox
 
             bool initialiseObject(T* object, const std::string& className, bool bRootClass);
 
+            void setConfigValues(T* object, Configurable*) const;
+            void setConfigValues(T* object, Identifiable*) const;
+
             void addObjectToList(T* object, Listable*);
             void addObjectToList(T* object, Identifiable*);
 
@@ -389,7 +392,7 @@ namespace orxonox
                 object->parents_->insert(object->parents_->end(), this);
             }
 
-            object->setConfigValues();
+            this->setConfigValues(object, object);
             return true;
         }
         else
@@ -400,6 +403,21 @@ namespace orxonox
             object->objectPointers_.push_back(std::make_pair(this->getClassID(), static_cast<void*>(object)));
             return false;
         }
+    }
+
+    /**
+     * @brief Only configures the object if is a @ref Configurable
+     */
+    template <class T>
+    void ClassIdentifier<T>::setConfigValues(T* object, Configurable*) const
+    {
+        object->setConfigValues();
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::setConfigValues(T*, Identifiable*) const
+    {
+        // no action
     }
 
     /**
@@ -428,7 +446,7 @@ namespace orxonox
             return;
 
         for (ObjectListIterator<T> it = ObjectList<T>::begin(); it; ++it)
-            it->setConfigValues();
+            this->setConfigValues(*it, *it);
 
         if (updateChildren)
             for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
