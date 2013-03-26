@@ -45,6 +45,8 @@
 #include "command/Functor.h"
 #include "object/Iterator.h"
 
+#include "class/OrxonoxInterface.h" // we include this only to include OrxonoxInterface.h at least once in core to keep MSVC happy...
+
 namespace orxonox
 {
     CreateFactory(BaseObject);
