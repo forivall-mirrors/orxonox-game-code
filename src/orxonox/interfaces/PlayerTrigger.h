@@ -37,7 +37,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 #include "core/object/WeakPtr.h"
 
 namespace orxonox
@@ -51,7 +51,7 @@ namespace orxonox
 
     @ingroup Triggers
     */
-    class _OrxonoxExport PlayerTrigger : virtual public OrxonoxClass
+    class _OrxonoxExport PlayerTrigger : virtual public OrxonoxInterface
     {
     public:
         PlayerTrigger();

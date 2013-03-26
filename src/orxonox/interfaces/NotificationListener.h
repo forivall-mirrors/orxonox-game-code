@@ -43,7 +43,7 @@
 
 #include "util/StringUtils.h"
 
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
@@ -89,7 +89,7 @@ namespace orxonox
     @ingroup Notifications
     @todo Consistent terminology between message, notification and command.
     */
-    class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
+    class _OrxonoxExport NotificationListener : virtual public OrxonoxInterface
     {
         public:
             NotificationListener();

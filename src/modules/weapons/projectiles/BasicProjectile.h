@@ -38,7 +38,7 @@
 
 #include "worldentities/pawns/Pawn.h"
 
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
@@ -51,7 +51,7 @@ namespace orxonox
         Simon Miescher
     @ingroup WeaponsProjectiles
     */
-    class _WeaponsExport BasicProjectile : public virtual OrxonoxClass
+    class _WeaponsExport BasicProjectile : public virtual OrxonoxInterface
     {
         public:
             BasicProjectile();

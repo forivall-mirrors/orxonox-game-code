@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup Class OrxonoxClass
-    @brief Declaration of OrxonoxClass, the base class of all objects and interfaces in Orxonox.
+    @brief Declaration of OrxonoxClass, the base class of all objects in Orxonox.
 */
 
 #ifndef _OrxonoxClass_H__
@@ -48,9 +48,9 @@
 namespace orxonox
 {
     /**
-        @brief This is the class from which all objects and interfaces of the game-logic (not the engine) are derived from.
+        @brief This is the class from which all objects of the game-logic (not the engine) are derived from.
 
-        The BaseObject and Interfaces are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
+        The BaseObject and other classes are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
     */
     class _CoreExport OrxonoxClass : virtual public Configurable, virtual public Destroyable
     {
