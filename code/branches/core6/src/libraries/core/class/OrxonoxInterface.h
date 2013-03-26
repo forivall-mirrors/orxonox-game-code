@@ -20,32 +20,36 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _RadarListener_H__
-#define _RadarListener_H__
+/**
+    @file
+    @ingroup Class OrxonoxClass
+    @brief Declaration of OrxonoxInterface, the base class of all interfaces in Orxonox.
+*/
 
-#include "OrxonoxPrereqs.h"
-#include "core/class/OrxonoxInterface.h"
+#ifndef _OrxonoxInterface_H__
+#define _OrxonoxInterface_H__
+
+#include "core/CorePrereqs.h"
+
+#include "core/config/Configurable.h"
+#include "core/object/Destroyable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarListener : virtual public OrxonoxInterface
-    {
-    public:
-        RadarListener();
-        virtual ~RadarListener() { }
+    /**
+        @brief This is the class from which all interfaces of the game-logic (not the engine) are derived from.
 
-        virtual void addObject(RadarViewable* viewable) = 0;
-        virtual void removeObject(RadarViewable* viewable) = 0;
-        virtual void objectChanged(RadarViewable* viewable) = 0;
-        virtual float getRadarSensitivity() const = 0;
-        virtual void radarTick(float dt) = 0;
+        Interfaces are derived with @c virtual @c public @c OrxonoxInterface from OrxonoxInterface.
+    */
+    class _CoreExport OrxonoxInterface : virtual public Configurable, virtual public Destroyable
+    {
     };
 }
 
-#endif /* _RadarListener_H__ */
+#endif /* _OrxonoxInterface_H__ */

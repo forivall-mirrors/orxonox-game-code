@@ -180,6 +180,7 @@ namespace orxonox
     class ObjectListIterator;
     class OgreWindowEventListener;
     class OrxonoxClass;
+    class OrxonoxInterface;
     class PathConfig;
     struct ResourceInfo;
     class SettingsConfigFile;

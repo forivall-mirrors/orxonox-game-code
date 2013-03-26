@@ -38,7 +38,7 @@
 
 #include "Pickupable.h"
 
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
@@ -54,7 +54,7 @@ namespace orxonox
 
     @ingroup Pickup
     */
-    class _OrxonoxExport PickupListener : virtual public OrxonoxClass
+    class _OrxonoxExport PickupListener : virtual public OrxonoxInterface
     {
         public:
             PickupListener();

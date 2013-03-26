@@ -44,7 +44,7 @@
 #include "core/BaseObject.h"
 #include <iostream>
 #include <fstream>
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -60,7 +60,7 @@ namespace orxonox // tolua_export
     @ingroup Orxonox
     */
     class _OrxonoxExport LevelInfoItem // tolua_export
-        : virtual public OrxonoxClass
+        : virtual public OrxonoxInterface
     { // tolua_export
         public:
             LevelInfoItem(); //!< Default constructor.

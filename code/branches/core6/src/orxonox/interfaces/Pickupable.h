@@ -40,7 +40,7 @@
 #include <list>
 #include "core/class/Super.h"
 
-#include "core/class/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 #include "Rewardable.h"
 
 namespace orxonox
@@ -57,7 +57,7 @@ namespace orxonox
 
     @ingroup Pickup
     */
-    class _OrxonoxExport Pickupable : virtual public OrxonoxClass, public Rewardable
+    class _OrxonoxExport Pickupable : virtual public OrxonoxInterface, public Rewardable
     {
         friend class PickupCarrier;
 

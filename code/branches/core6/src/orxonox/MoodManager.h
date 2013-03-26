@@ -33,7 +33,7 @@
 
 #include <string>
 #include "util/Singleton.h"
-#include "core/config/Configurable.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
@@ -41,7 +41,7 @@ namespace orxonox
     @brief
         The MoodListener class is aware of a change in themes and directs that info to dependent classes.
     */
-    class _OrxonoxExport MoodListener : virtual public OrxonoxClass
+    class _OrxonoxExport MoodListener : virtual public OrxonoxInterface
     {
         friend class MoodManager;
 
