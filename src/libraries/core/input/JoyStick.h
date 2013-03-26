@@ -35,6 +35,7 @@
 #include <vector>
 #include <ois/OISJoyStick.h>
 #include "InputDevice.h"
+#include "core/config/Configurable.h"
 
 namespace orxonox
 {
@@ -57,7 +58,7 @@ namespace orxonox
         in an ini-file.
     */
     class _CoreExport JoyStick
-        : public OrxonoxClass
+        : public Configurable
         , public InputDeviceTemplated<JoyStickTraits>
         , public OIS::JoyStickListener
     {
