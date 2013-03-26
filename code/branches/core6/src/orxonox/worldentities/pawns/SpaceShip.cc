@@ -95,7 +95,7 @@ namespace orxonox
             this->removeAllEngines();
 
             if (this->boostBlur_)
-                this->boostBlur_->destroy();
+                delete this->boostBlur_;
         }
     }
 
@@ -446,7 +446,7 @@ namespace orxonox
     {
         if (!this->bEnableMotionBlur_ && this->boostBlur_ != NULL)
         {
-            this->boostBlur_->destroy();
+            delete this->boostBlur_;
             this->boostBlur_ = NULL;
         }
     }

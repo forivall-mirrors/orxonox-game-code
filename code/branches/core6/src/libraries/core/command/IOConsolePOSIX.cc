@@ -98,7 +98,7 @@ namespace orxonox
         this->cout_ << "\033[" << this->statusLineWidths_.size() << 'T';
 
         resetTerminalMode();
-        this->shell_->destroy();
+        delete this->shell_;
 
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());

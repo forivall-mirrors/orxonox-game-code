@@ -30,11 +30,11 @@
 #define _TimeFactorListener_H__
 
 #include "tools/ToolsPrereqs.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
-    class _ToolsExport TimeFactorListener : virtual public OrxonoxClass
+    class _ToolsExport TimeFactorListener : virtual public Listable
     {
         public:
             TimeFactorListener();

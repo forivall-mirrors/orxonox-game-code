@@ -112,7 +112,7 @@ namespace orxonox
         OutputManager::getInstance().getConsoleWriter()->enable();
 
         resetTerminalMode();
-        this->shell_->destroy();
+        delete this->shell_;
     }
 
     //! Processes the pending input key strokes, refreshes the status lines and handles std::cout (redirected)

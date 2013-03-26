@@ -109,7 +109,7 @@ namespace orxonox
         InputManager::getInstance().destroyState("console");
 
         // destroy the underlaying shell
-        this->shell_->destroy();
+        delete this->shell_;
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)

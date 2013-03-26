@@ -56,7 +56,7 @@ namespace orxonox
     std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
     std::map<std::string, NetworkFunctionBase*>::iterator it;
     for( it=map.begin(); it!=map.end(); ++it )
-      it->second->destroy();
+      delete it->second;
   }
 
 

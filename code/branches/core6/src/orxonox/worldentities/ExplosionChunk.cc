@@ -91,12 +91,12 @@ namespace orxonox
             if (this->fire_)
             {
                 this->detachOgreObject(this->fire_->getParticleSystem());
-                this->fire_->destroy();
+                delete this->fire_;
             }
             if (this->smoke_)
             {
                 this->detachOgreObject(this->smoke_->getParticleSystem());
-                this->smoke_->destroy();
+                delete this->smoke_;
             }
         }
     }
