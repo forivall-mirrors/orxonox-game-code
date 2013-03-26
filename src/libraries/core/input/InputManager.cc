@@ -641,7 +641,7 @@ namespace orxonox
     {
         assert(state && this->activeStates_.find(state->getPriority()) == this->activeStates_.end());
         statesByName_.erase(state->getName());
-        state->destroy();
+        delete state;
     }
 
     bool InputManager::setMouseExclusive(const std::string& name, tribool value)

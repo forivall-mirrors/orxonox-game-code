@@ -30,11 +30,11 @@
 #define _ClientConnectionListener_H__
 
 #include "NetworkPrereqs.h"
-#include "core/class/OrxonoxClass.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
-    class _NetworkExport ClientConnectionListener : virtual public OrxonoxClass
+    class _NetworkExport ClientConnectionListener : virtual public Listable
     {
         public:
             ClientConnectionListener();

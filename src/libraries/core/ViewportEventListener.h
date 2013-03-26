@@ -32,11 +32,11 @@
 #include "CorePrereqs.h"
 
 #include "util/OgreForwardRefs.h"
-#include "class/OrxonoxClass.h"
+#include "object/Listable.h"
 
 namespace orxonox
 {
-    class _CoreExport ViewportEventListener : virtual public OrxonoxClass
+    class _CoreExport ViewportEventListener : virtual public Listable
     {
         public:
             virtual void cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera) {}

@@ -35,11 +35,11 @@
 #define _XMLNameListener_H__
 
 #include "CorePrereqs.h"
-#include "class/OrxonoxClass.h"
+#include "object/Listable.h"
 
 namespace orxonox
 {
-    class _CoreExport XMLNameListener : virtual public OrxonoxClass
+    class _CoreExport XMLNameListener : virtual public Listable
     {
         public:
             XMLNameListener();

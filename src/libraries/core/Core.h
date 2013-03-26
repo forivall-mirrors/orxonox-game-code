@@ -46,12 +46,12 @@
 #include <string>
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "class/OrxonoxClass.h"
+#include "config/Configurable.h"
 
 namespace orxonox
 {
     //! Informs about changes in the Development Mode.
-    class DevModeListener : virtual public OrxonoxClass
+    class DevModeListener : virtual public Listable
     {
     public:
         DevModeListener();

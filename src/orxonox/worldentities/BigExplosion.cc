@@ -224,45 +224,45 @@ namespace orxonox
             if (this->debrisFire1_)
             {
                 this->debris1_->detachOgreObject(this->debrisFire1_->getParticleSystem());
-                this->debrisFire1_->destroy();
+                delete this->debrisFire1_;
             }
             if (this->debrisSmoke1_)
             {
                 this->debris1_->detachOgreObject(this->debrisSmoke1_->getParticleSystem());
-                this->debrisSmoke1_->destroy();
+                delete this->debrisSmoke1_;
             }
 
             if (this->debrisFire2_)
             {
                 this->debris2_->detachOgreObject(this->debrisFire2_->getParticleSystem());
-                this->debrisFire2_->destroy();
+                delete this->debrisFire2_;
             }
             if (this->debrisSmoke2_)
             {
                 this->debris2_->detachOgreObject(this->debrisSmoke2_->getParticleSystem());
-                this->debrisSmoke2_->destroy();
+                delete this->debrisSmoke2_;
             }
 
             if (this->debrisFire3_)
             {
                 this->debris3_->detachOgreObject(this->debrisFire3_->getParticleSystem());
-                this->debrisFire3_->destroy();
+                delete this->debrisFire3_;
             }
             if (this->debrisSmoke3_)
             {
                 this->debris3_->detachOgreObject(this->debrisSmoke3_->getParticleSystem());
-                this->debrisSmoke3_->destroy();
+                delete this->debrisSmoke3_;
             }
 
             if (this->debrisFire4_)
             {
                 this->debris4_->detachOgreObject(this->debrisFire4_->getParticleSystem());
-                this->debrisFire4_->destroy();
+                delete this->debrisFire4_;
             }
             if (this->debrisSmoke4_)
             {
                 this->debris4_->detachOgreObject(this->debrisSmoke4_->getParticleSystem());
-                this->debrisSmoke4_->destroy();
+                delete this->debrisSmoke4_;
             }
         }
     }
