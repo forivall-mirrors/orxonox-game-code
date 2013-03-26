@@ -1,0 +1,73 @@
+<LevelInfo
+ name = "Maxim's Test"
+ description = "Intelligent Formation"
+ tags = "test"
+ screenshot = "presentationxi.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+?>
+
+<?lua
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
+?>
+
+<Level
+ gametype = "TeamDeathmatch"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+    <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow >
+    	<controller>
+          <HumanController formationFlight=true team=0 name=formation state_=MASTER />
+        </controller>
+    </SpawnPoint>
+
+
+    <?lua
+      for i = 1, 10, 1 do
+        ?>
+      <SpaceShip position="<?lua print(500 + math.random() * 4000 - 2000) ?>,<?lua print(math.random() * 2000 - 1000) ?>,<?lua print(math.random() * 2000 - 1000) ?>">
+        <templates>
+          <Template link=spaceshippirate />
+        </templates>
+        <controller>
+          <AIController formationFlight=true passive=false team=0 name=formation active=true />
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+<!--
+    <?lua
+      for i = 1, 10, 1 do
+        ?>
+      <SpaceShip position="<?lua print(math.random() * 4000 - 2000) ?>,<?lua print(0 + math.random() * 2000 - 1000) ?>,<?lua print(math.random() * 2000 - 1000) ?>">
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <AIController formationFlight=true passive=false team=1 name=formation active=true/>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+-->
+   
+  </Scene>
+</Level>
