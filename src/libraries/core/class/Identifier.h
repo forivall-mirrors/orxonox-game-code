@@ -427,7 +427,7 @@ namespace orxonox
     void ClassIdentifier<T>::addObjectToList(T* object, Listable*)
     {
         orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
-        object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+        object->metaList_->add(this->objects_, this->objects_->add(object));
     }
 
     template <class T>

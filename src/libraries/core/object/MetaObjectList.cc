@@ -47,19 +47,7 @@ namespace orxonox
     */
     MetaObjectListElement::~MetaObjectListElement()
     {
-        orxout(verbose, context::object_list) << "Removing Object from " << this->list_->getIdentifier()->getName() << "-list." << endl;
-        this->list_->notifyIterators(this->element_->objectBase_);
-
-        if (this->element_->next_)
-            this->element_->next_->prev_ = this->element_->prev_;
-        else
-            this->list_->last_ = this->element_->prev_; // If there is no next_, we deleted the last object and have to update the last_ pointer of the list
-
-        if (this->element_->prev_)
-            this->element_->prev_->next_ = this->element_->next_;
-        else
-            this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
-
+        this->list_->removeElement(this->element_);
         delete this->element_;
     }
 

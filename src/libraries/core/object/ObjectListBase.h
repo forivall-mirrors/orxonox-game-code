@@ -92,13 +92,16 @@ namespace orxonox
     */
     class _CoreExport ObjectListBase
     {
-        friend class MetaObjectListElement;
-
         public:
-            ObjectListBase(Identifier* identifier);
+            ObjectListBase();
             ~ObjectListBase();
 
-            ObjectListBaseElement* add(ObjectListBaseElement* element);
+            template <class T>
+            inline ObjectListBaseElement* add(T* object)
+                { return this->addElement(new ObjectListElement<T>(object)); }
+
+            ObjectListBaseElement* addElement(ObjectListBaseElement* element);
+            void removeElement(ObjectListBaseElement* element);
 
             /// Helper struct, used to export an element and the list to an instance of Iterator.
             struct Export
@@ -143,10 +146,7 @@ namespace orxonox
             }
             void notifyIterators(Listable* object) const;
 
-            inline Identifier* getIdentifier() const { return this->identifier_; }
-
         private:
-            Identifier* identifier_;                 //!< The Iterator owning this list
             ObjectListBaseElement* first_;           //!< The first element in the list
             ObjectListBaseElement* last_;            //!< The last element in the list
             std::vector<void*> iterators_;           //!< A list of Iterators pointing on an element in this list
