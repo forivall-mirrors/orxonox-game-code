@@ -32,13 +32,11 @@
 */
 
 #include "Context.h"
-#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    Context::Context(Context* context) : ContextObject(this), parentContext_(context)
+    Context::Context(Context* context) : parentContext_(context)
     {
-        RegisterRootObject(Context);
     }
 
     Context::~Context()
