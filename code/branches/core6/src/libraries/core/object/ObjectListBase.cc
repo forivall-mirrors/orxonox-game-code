@@ -35,6 +35,7 @@
 
 #include <set>
 #include "Iterator.h"
+#include "Listable.h"
 #include "ObjectListIterator.h"
 
 namespace orxonox
@@ -42,9 +43,8 @@ namespace orxonox
     /**
         @brief Constructor: Sets default values.
     */
-    ObjectListBase::ObjectListBase(Identifier* identifier)
+    ObjectListBase::ObjectListBase()
     {
-        this->identifier_ = identifier;
         this->first_ = 0;
         this->last_ = 0;
     }
@@ -80,7 +80,7 @@ namespace orxonox
         @param element The element to add
         @return The pointer to the new ObjectListBaseElement, needed by the MetaObjectList of the added object
     */
-    ObjectListBaseElement* ObjectListBase::add(ObjectListBaseElement* element)
+    ObjectListBaseElement* ObjectListBase::addElement(ObjectListBaseElement* element)
     {
         if (!this->last_)
         {
@@ -98,5 +98,21 @@ namespace orxonox
         }
 
         return this->last_;
+    }
+
+    void ObjectListBase::removeElement(ObjectListBaseElement* element)
+    {
+        orxout(verbose, context::object_list) << "Removing Object from " << element->objectBase_->getIdentifier()->getName() << "-list." << endl;
+        this->notifyIterators(element->objectBase_);
+
+        if (element->next_)
+            element->next_->prev_ = element->prev_;
+        else
+            this->last_ = element->prev_; // If there is no next_, we deleted the last object and have to update the last_ pointer of the list
+
+        if (element->prev_)
+            element->prev_->next_ = element->next_;
+        else
+            this->first_ = element->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
     }
 }
