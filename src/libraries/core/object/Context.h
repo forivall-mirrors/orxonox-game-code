@@ -36,11 +36,9 @@
 
 #include "core/CorePrereqs.h"
 
-#include "ContextObject.h"
-
 namespace orxonox
 {
-    class _CoreExport Context : public ContextObject
+    class _CoreExport Context
     {
         public:
             Context(Context* context);
