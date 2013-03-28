@@ -77,14 +77,6 @@ GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
 SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
 
 
-IF(MSVC)
-  IF(CMAKE_CL_64)
-    SET(MSVC_PLATFORM "x64")
-  ELSE()
-    SET(MSVC_PLATFORM "Win32")
-  ENDIF()
-ENDIF(MSVC)
-
 # Apple Mac OS X specific build settings
 IF(APPLE)
   # On Apple we need to link to AppKit and Foundation frameworks
