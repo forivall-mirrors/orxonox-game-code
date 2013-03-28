@@ -40,6 +40,11 @@
 
 namespace orxonox
 {
+    ObjectListBaseElement::~ObjectListBaseElement()
+    {
+        this->list_->removeElement(this);
+    }
+
     /**
         @brief Constructor: Sets default values.
     */

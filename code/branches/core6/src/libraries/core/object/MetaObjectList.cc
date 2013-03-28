@@ -47,7 +47,6 @@ namespace orxonox
     */
     MetaObjectListElement::~MetaObjectListElement()
     {
-        this->list_->removeElement(this->element_);
         delete this->element_;
     }
 

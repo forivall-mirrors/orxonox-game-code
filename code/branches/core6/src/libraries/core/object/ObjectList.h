@@ -71,28 +71,28 @@ namespace orxonox
             inline static ObjectListElement<T>* begin()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
-                return static_cast<ObjectListElement<T>*>(list->begin().element_);
+                return static_cast<ObjectListElement<T>*>(list->begin());
             }
 
             /// Returns an Iterator to the element after the last element in the list.
             inline static ObjectListElement<T>* end()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
-                return static_cast<ObjectListElement<T>*>(list->end().element_);
+                return static_cast<ObjectListElement<T>*>(list->end());
             }
 
             /// Returns an Iterator to the last element in the list.
             inline static ObjectListElement<T>* rbegin()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
-                return static_cast<ObjectListElement<T>*>(list->rbegin().element_);
+                return static_cast<ObjectListElement<T>*>(list->rbegin());
             }
 
             /// Returns an Iterator to the element before the first element in the list.
             inline static ObjectListElement<T>* rend()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
-                return static_cast<ObjectListElement<T>*>(list->rend().element_);
+                return static_cast<ObjectListElement<T>*>(list->rend());
             }
     };
 }

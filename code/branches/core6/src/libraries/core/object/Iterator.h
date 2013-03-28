@@ -55,7 +55,6 @@
 
 #include "core/CorePrereqs.h"
 
-#include "core/class/Identifier.h"
 #include "ObjectListBase.h"
 
 namespace orxonox
@@ -77,19 +76,8 @@ namespace orxonox
             */
             inline Iterator()
             {
-                this->element_ = 0;
-                this->list_ = 0;
-            }
-
-            /**
-                @brief Constructor: Sets this element to the exported element.
-                @param exp The exported element
-            */
-            inline Iterator(const ObjectListBase::Export& exp)
-            {
-                this->element_ = exp.element_;
-                this->list_ = exp.list_;
-                this->list_->registerIterator(this);
+                this->element_ = NULL;
+                this->list_ = NULL;
             }
 
             /**
@@ -99,20 +87,17 @@ namespace orxonox
             inline Iterator(const Iterator<T>& other)
             {
                 this->element_ = other.element_;
-                this->list_ = other.list_;
-                this->list_->registerIterator(this);
+                this->registerIterator();
             }
 
             /**
                 @brief Constructor: Sets this element to a given element
                 @param element The element
             */
-            template <class O>
-            inline Iterator(ObjectListElement<O>* element)
+            inline Iterator(ObjectListBaseElement* element)
             {
                 this->element_ = element;
-                this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->list_->registerIterator(this);
+                this->registerIterator();
             }
 
             /**
@@ -123,8 +108,7 @@ namespace orxonox
             inline Iterator(const ObjectListIterator<O>& other)
             {
                 this->element_ = other.element_;
-                this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->list_->registerIterator(this);
+                this->registerIterator();
             }
 
             /**
@@ -132,23 +116,7 @@ namespace orxonox
             */
             inline ~Iterator()
             {
-                this->list_->unregisterIterator(this);
-            }
-
-            /**
-                @brief Assigns an exported element.
-                @param exp The exported element
-            */
-            inline Iterator<T>& operator=(const ObjectListBase::Export& exp)
-            {
-                if (this->list_)
-                    this->list_->unregisterIterator(this);
-
-                this->element_ = exp.element_;
-                this->list_ = exp.list_;
-                this->list_->registerIterator(this);
-
-                return (*this);
+                this->unregisterIterator();
             }
 
             /**
@@ -157,12 +125,9 @@ namespace orxonox
             */
             inline Iterator<T>& operator=(const Iterator<T>& other)
             {
-                if (this->list_)
-                    this->list_->unregisterIterator(this);
-
+                this->unregisterIterator();
                 this->element_ = other.element_;
-                this->list_ = other.list_;
-                this->list_->registerIterator(this);
+                this->registerIterator();
 
                 return (*this);
             }
@@ -171,15 +136,11 @@ namespace orxonox
                 @brief Assigns a given element.
                 @param element The element
             */
-            template <class O>
-            inline Iterator<T>& operator=(ObjectListElement<O>* element)
+            inline Iterator<T>& operator=(ObjectListBaseElement* element)
             {
-                if (this->list_)
-                    this->list_->unregisterIterator(this);
-
+                this->unregisterIterator();
                 this->element_ = element;
-                this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->list_->registerIterator(this);
+                this->registerIterator();
 
                 return (*this);
             }
@@ -191,12 +152,9 @@ namespace orxonox
             template <class O>
             inline Iterator<T>& operator=(const ObjectListIterator<O>& other)
             {
-                if (this->list_)
-                    this->list_->unregisterIterator(this);
-
+                this->unregisterIterator();
                 this->element_ = other.element_;
-                this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
-                this->list_->registerIterator(this);
+                this->registerIterator();
 
                 return (*this);
             }
@@ -267,7 +225,7 @@ namespace orxonox
             */
             inline operator bool() const
             {
-                return (this->element_ != 0);
+                return (this->element_ != NULL);
             }
 
             /**
@@ -300,9 +258,32 @@ namespace orxonox
                     this->operator++();
             }
 
-        protected:
-            ObjectListBaseElement* element_;       //!< The element the Iterator points at
-            ObjectListBase* list_;                 //!< The list wherein the element is
+        private:
+            /**
+             * @brief Registers the Iterator at the list to which it belongs
+             */
+            inline void registerIterator()
+            {
+                if (this->element_)
+                {
+                    this->list_ = this->element_->list_;
+                    this->list_->registerIterator(this);
+                }
+                else
+                    this->list_ = NULL;
+            }
+
+            /**
+             * @brief Unregisters the Iterator from the list (if any)
+             */
+            inline void unregisterIterator()
+            {
+                if (this->list_)
+                    this->list_->unregisterIterator(this);
+            }
+
+            ObjectListBaseElement* element_;    //!< The element the Iterator points at
+            ObjectListBase* list_;              //!< The list in which the Iterator registered itself
     };
 }
 
