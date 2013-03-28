@@ -55,11 +55,13 @@ namespace orxonox
                 @brief Constructor: Creates the list-element with an object.
                 @param objectBase The object to store
             */
-            ObjectListBaseElement(Listable* objectBase) : next_(0), prev_(0), objectBase_(objectBase) {}
+            ObjectListBaseElement(Listable* object, ObjectListBase* list) : next_(0), prev_(0), objectBase_(object), list_(list) {}
+            ~ObjectListBaseElement();
 
             ObjectListBaseElement* next_;       //!< The next element in the list
             ObjectListBaseElement* prev_;       //!< The previous element in the list
-            Listable* objectBase_;
+            Listable* objectBase_;              //!< The object
+            ObjectListBase* list_;              //!< The list
     };
 
 
@@ -71,7 +73,7 @@ namespace orxonox
     class ObjectListElement : public ObjectListBaseElement
     {
         public:
-            ObjectListElement(T* object) : ObjectListBaseElement(static_cast<Listable*>(object)), object_(object) {}
+            ObjectListElement(T* object, ObjectListBase* list) : ObjectListBaseElement(static_cast<Listable*>(object), list), object_(object) {}
             T* object_;              //!< The object
     };
 
@@ -98,27 +100,19 @@ namespace orxonox
 
             template <class T>
             inline ObjectListBaseElement* add(T* object)
-                { return this->addElement(new ObjectListElement<T>(object)); }
+                { return this->addElement(new ObjectListElement<T>(object, this)); }
 
             ObjectListBaseElement* addElement(ObjectListBaseElement* element);
             void removeElement(ObjectListBaseElement* element);
 
-            /// Helper struct, used to export an element and the list to an instance of Iterator.
-            struct Export
-            {
-                Export(ObjectListBase* list, ObjectListBaseElement* element) : list_(list), element_(element) {}
-                ObjectListBase* list_;
-                ObjectListBaseElement* element_;
-            };
-
             /// Returns a pointer to the first element in the list. Works only with Iterator.
-            inline Export begin() { return ObjectListBase::Export(this, this->first_); }
+            inline ObjectListBaseElement* begin() { return this->first_; }
             /// Returns a pointer to the element after the last element in the list. Works only with Iterator.
-            inline Export end() { return ObjectListBase::Export(this, 0); }
+            inline ObjectListBaseElement* end() { return 0; }
             /// Returns a pointer to the last element in the list. Works only with Iterator.
-            inline Export rbegin() { return ObjectListBase::Export(this, this->last_); }
+            inline ObjectListBaseElement* rbegin() { return this->last_; }
             /// Returns a pointer to the element in front of the first element in the list. Works only with Iterator.
-            inline Export rend() { return ObjectListBase::Export(this, 0); }
+            inline ObjectListBaseElement* rend() { return 0; }
 
             inline void registerIterator(void* iterator) { this->iterators_.push_back(iterator); }
             inline void unregisterIterator(void* iterator)
