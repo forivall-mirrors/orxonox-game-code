@@ -90,6 +90,11 @@ MACRO(ORXONOX_ADD_EXECUTABLE _target_name)
   # right values. When starting the solution for the first time,
   # these get written to the *vcproj.yourPCname.yourname.user
   IF(MSVC)
+    IF(CMAKE_CL_64)
+      SET(MSVC_PLATFORM "x64")
+    ELSE()
+      SET(MSVC_PLATFORM "Win32")
+    ENDIF()
     IF(MSVC10)
       CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/template.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}.vcxproj.user")
     ELSE()
