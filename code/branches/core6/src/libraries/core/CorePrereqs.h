@@ -166,8 +166,6 @@ namespace orxonox
     class LuaState;
     class MemoryArchive;
     class MemoryArchiveFactory;
-    class MetaObjectList;
-    class MetaObjectListElement;
     class Namespace;
     class NamespaceNode;
     template <class T>

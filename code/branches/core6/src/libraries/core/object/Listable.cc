@@ -32,17 +32,16 @@
 */
 
 #include "Listable.h"
-
-#include "core/object/MetaObjectList.h"
+#include "ObjectListBase.h"
 
 namespace orxonox
 {
     /**
-        @brief Constructor: creates the meta-object-list.
+        @brief Constructor: Allocates space in the element list.
     */
     Listable::Listable()
     {
-        this->metaList_ = new MetaObjectList();
+        this->elements_.reserve(6);
     }
 
     /**
@@ -58,8 +57,8 @@ namespace orxonox
     */
     void Listable::unregisterObject()
     {
-        if (this->metaList_)
-            delete this->metaList_;
-        this->metaList_ = 0;
+        for (size_t i = 0; i < this->elements_.size(); ++i)
+            delete this->elements_[i];
+        this->elements_.clear();
     }
 }

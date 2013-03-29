@@ -36,12 +36,15 @@
 #define _Listable_H__
 
 #include "core/CorePrereqs.h"
+
+#include <vector>
+
 #include "core/class/Identifiable.h"
 
 namespace orxonox
 {
     /**
-        @brief Listable stores the MetaObjectList which is used when storing instances in object lists.
+        @brief Listable stores the entries of all object lists pointing to this instance.
     */
     class _CoreExport Listable : virtual public Identifiable
     {
@@ -55,7 +58,7 @@ namespace orxonox
             void unregisterObject();
 
         private:
-            MetaObjectList* metaList_; //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
+            std::vector<ObjectListBaseElement*> elements_; //!< The corresponding ObjectListElements in all object lists the object is registered in
     };
 }
 

@@ -83,9 +83,8 @@ namespace orxonox
     /**
         @brief Adds a new object to the end of the list.
         @param element The element to add
-        @return The pointer to the new ObjectListBaseElement, needed by the MetaObjectList of the added object
     */
-    ObjectListBaseElement* ObjectListBase::addElement(ObjectListBaseElement* element)
+    void ObjectListBase::addElement(ObjectListBaseElement* element)
     {
         if (!this->last_)
         {
@@ -101,10 +100,11 @@ namespace orxonox
             this->last_->prev_ = temp;
             temp->next_ = this->last_;
         }
-
-        return this->last_;
     }
 
+    /**
+     * @brief Removes the element from the list
+     */
     void ObjectListBase::removeElement(ObjectListBaseElement* element)
     {
         orxout(verbose, context::object_list) << "Removing Object from " << element->objectBase_->getIdentifier()->getName() << "-list." << endl;

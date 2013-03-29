@@ -89,7 +89,6 @@
 #include <loki/TypeTraits.h>
 
 #include "util/Output.h"
-#include "core/object/MetaObjectList.h"
 #include "core/object/ObjectList.h"
 #include "core/object/ObjectListBase.h"
 #include "IdentifierManager.h"
@@ -427,7 +426,7 @@ namespace orxonox
     void ClassIdentifier<T>::addObjectToList(T* object, Listable*)
     {
         orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
-        object->metaList_->add(this->objects_, this->objects_->add(object));
+        object->elements_.push_back(this->objects_->add(object));
     }
 
     template <class T>
