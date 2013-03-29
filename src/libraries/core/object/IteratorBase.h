@@ -46,7 +46,7 @@ namespace orxonox
         It serves as base class for @ref ObjectListIterator and @ref Iterator
     */
     template <class T, class I>
-    class IteratorBase
+    class IteratorBase : public ObjectListElementRemovalListener
     {
         public:
             /**
@@ -168,12 +168,12 @@ namespace orxonox
             }
 
             /**
-                @brief Increments the Iterator if it points at the given object.
+                @brief Increments the Iterator if it points at the given element.
                 @param object The object to compare with
             */
-            inline void incrementIfEqual(Listable* object)
+            virtual void removedElement(ObjectListBaseElement* element)
             {
-                if (this->element_ && this->element_->objectBase_ == object)
+                if (this->element_ == element)
                     this->operator++();
             }
 
@@ -193,7 +193,7 @@ namespace orxonox
                 if (this->element_)
                 {
                     this->list_ = this->element_->list_;
-                    this->list_->registerIterator(this);
+                    this->list_->registerRemovalListener(this);
                 }
                 else
                     this->list_ = NULL;
@@ -205,7 +205,7 @@ namespace orxonox
             inline void unregisterIterator()
             {
                 if (this->list_)
-                    this->list_->unregisterIterator(this);
+                    this->list_->unregisterRemovalListener(this);
             }
 
             ObjectListBaseElement* element_;    //!< The element the Iterator points at

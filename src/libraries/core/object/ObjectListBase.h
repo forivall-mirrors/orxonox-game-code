@@ -78,6 +78,17 @@ namespace orxonox
     };
 
 
+    // ########################################
+    // ### ObjectListElementRemovalListener ###
+    // ########################################
+    /// Gets called by the object list if an element is removed
+    class _CoreExport ObjectListElementRemovalListener
+    {
+        public:
+            virtual ~ObjectListElementRemovalListener() {}
+            virtual void removedElement(ObjectListBaseElement* element) = 0;
+    };
+
     // ###############################
     // ###     ObjectListBase      ###
     // ###############################
@@ -118,37 +129,25 @@ namespace orxonox
             /// Returns a pointer to the element in front of the first element in the list. Works only with Iterator.
             inline ObjectListBaseElement* rend() { return 0; }
 
-            inline void registerIterator(void* iterator) { this->iterators_.push_back(iterator); }
-            inline void unregisterIterator(void* iterator)
+            inline void registerRemovalListener(ObjectListElementRemovalListener* listener) { this->listeners_.push_back(listener); }
+            inline void unregisterRemovalListener(ObjectListElementRemovalListener* listener)
             {
-                for (unsigned int i = 0; i < this->iterators_.size(); ++i)
+                for (unsigned int i = 0; i < this->listeners_.size(); ++i)
                 {
-                    if (iterators_[i] == iterator)
+                    if (listeners_[i] == listener)
                     {
-                        iterators_.erase(iterators_.begin() + i);
+                        listeners_.erase(listeners_.begin() + i);
                         break;
                     }
                 }
             }
-            inline void registerObjectListIterator(void* iterator) { this->objectListIterators_.push_back(iterator); }
-            inline void unregisterObjectListIterator(void* iterator)
-            {
-                for (unsigned int i = 0; i < this->objectListIterators_.size(); ++i)
-                {
-                    if (objectListIterators_[i] == iterator)
-                    {
-                        objectListIterators_.erase(objectListIterators_.begin() + i);
-                        break;
-                    }
-                }
-            }
-            void notifyIterators(Listable* object) const;
 
         private:
-            ObjectListBaseElement* first_;           //!< The first element in the list
-            ObjectListBaseElement* last_;            //!< The last element in the list
-            std::vector<void*> iterators_;           //!< A list of Iterators pointing on an element in this list
-            std::vector<void*> objectListIterators_; //!< A list of ObjectListIterators pointing on an element in this list
+            void notifyRemovalListeners(ObjectListBaseElement* element) const;
+
+            ObjectListBaseElement* first_;                              //!< The first element in the list
+            ObjectListBaseElement* last_;                               //!< The last element in the list
+            std::vector<ObjectListElementRemovalListener*> listeners_;  //!< A list of Iterators pointing on an element in this list
     };
 }
 
