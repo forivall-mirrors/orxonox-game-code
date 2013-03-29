@@ -72,7 +72,7 @@ namespace orxonox
     void SpaceBoundaries::checkWhoIsIn()
     {
         pawnsIn_.clear();
-        for(ObjectListIterator<Pawn> current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
+        for(ObjectList<Pawn>::iterator current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
         {
             Pawn* currentPawn = *current;
             if( this->reaction_ == 0 )
