@@ -57,6 +57,7 @@
 #include "core/CorePrereqs.h"
 #include "core/class/Identifier.h"
 #include "ObjectList.h"
+#include "IteratorBase.h"
 
 namespace orxonox
 {
@@ -66,7 +67,7 @@ namespace orxonox
         @see See @ref ObjectListIteratorExample "ObjectListIterator.h" for more information an example.
     */
     template <class T>
-    class ObjectListIterator
+    class ObjectListIterator : public IteratorBase<T, ObjectListIterator<T> >
     {
         template <class I>
         friend class Iterator;
@@ -75,101 +76,19 @@ namespace orxonox
             /**
                 @brief Constructor: Sets the element, whereon the ObjectListIterator points, to zero.
             */
-            inline ObjectListIterator()
-            {
-                this->element_ = 0;
-                ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
-            }
+            inline ObjectListIterator() : IteratorBase<T, ObjectListIterator<T> >(NULL) {}
 
             /**
                 @brief Constructor: Sets this element to a given element.
                 @param element The element to start with
             */
-            inline ObjectListIterator(ObjectListElement<T>* element)
-            {
-                this->element_ = element;
-                ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
-            }
+            inline ObjectListIterator(ObjectListElement<T>* element) : IteratorBase<T, ObjectListIterator<T> >(element) {}
 
             /**
                 @brief Constructor: Sets this element to the element of another ObjectListIterator.
                 @param other The other ObjectListIterator
             */
-            inline ObjectListIterator(const ObjectListIterator<T>& other)
-            {
-                this->element_ = other.element_;
-                ClassIdentifier<T>::getIdentifier()->getObjects()->registerObjectListIterator(this);
-            }
-
-            /**
-                @brief Unregisters the ObjectListIterator from the ObjectList.
-            */
-            inline ~ObjectListIterator()
-            {
-                ClassIdentifier<T>::getIdentifier()->getObjects()->unregisterObjectListIterator(this);
-            }
-
-            /**
-                @brief Assigns an ObjectListElement.
-                @param element The ObjectListElement
-            */
-            inline ObjectListIterator<T>& operator=(ObjectListElement<T>* element)
-            {
-                this->element_ = element;
-                return (*this);
-            }
-
-            /**
-                @brief Assigns the element of another ObjectListIterator.
-                @param other The other ObjectListIterator
-            */
-            inline ObjectListIterator<T>& operator=(const ObjectListIterator<T>& other)
-            {
-                this->element_ = other.element_;
-                return (*this);
-            }
-
-            /**
-                @brief Overloading of the ++it operator: ObjectListIterator points to the next object in the list.
-                @return The ObjectListIterator itself
-            */
-            inline const ObjectListIterator<T>& operator++()
-            {
-                this->element_ = static_cast<ObjectListElement<T>*>(this->element_->next_);
-                return *this;
-            }
-
-            /**
-                @brief Overloading of the it++ operator: ObjectListIterator points to the next object in the list.
-                @return The ObjectListIterator itself
-            */
-            inline ObjectListIterator<T> operator++(int)
-            {
-                ObjectListIterator<T> copy = *this;
-                this->element_ = static_cast<ObjectListElement<T>*>(this->element_->next_);
-                return copy;
-            }
-
-            /**
-                @brief Overloading of the --it operator: ObjectListIterator points to the previous object in the list.
-                @return The ObjectListIterator itself
-            */
-            inline const ObjectListIterator<T>& operator--()
-            {
-                this->element_ = static_cast<ObjectListElement<T>*>(this->element_->prev_);
-                return *this;
-            }
-
-            /**
-                @brief Overloading of the it-- operator: ObjectListIterator points to the previous object in the list.
-                @return The ObjectListIterator itself
-            */
-            inline ObjectListIterator<T> operator--(int i)
-            {
-                ObjectListIterator<T> copy = *this;
-                this->element_ = static_cast<ObjectListElement<T>*>(this->element_->prev_);
-                return copy;
-            }
+            inline ObjectListIterator(const IteratorBase<T, ObjectListIterator<T> >& other) : IteratorBase<T, ObjectListIterator<T> >(other) {}
 
             /**
                 @brief Overloading of the *it operator: returns the pointer to the object.
@@ -177,7 +96,7 @@ namespace orxonox
             */
             inline T* operator*() const
             {
-                return this->element_->object_;
+                return static_cast<ObjectListElement<T>*>(this->element_)->object_;
             }
 
             /**
@@ -186,50 +105,8 @@ namespace orxonox
             */
             inline T* operator->() const
             {
-                return this->element_->object_;
+                return static_cast<ObjectListElement<T>*>(this->element_)->object_;
             }
-
-            /**
-                @brief Overloading of the typecast-operator to bool: returns true if the ObjectListIterator points to an existing object.
-                @return True if the ObjectListIterator points to an existing object.
-            */
-            inline operator bool() const
-            {
-                return (this->element_ != 0);
-            }
-
-            /**
-                @brief Overloading of the == operator to compare with another ObjectListIterator.
-                @param compare The other ObjectListIterator
-                @return True if the ObjectListIterator point to the same element
-            */
-            inline bool operator==(const ObjectListIterator<T>& compare) const
-            {
-                return (this->element_ == compare.element_);
-            }
-
-            /**
-                @brief Overloading of the != operator to compare with another ObjectListIterator.
-                @param compare The other ObjectListIterator
-                @return True if the ObjectListIterator point to different elements
-            */
-            inline bool operator!=(const ObjectListIterator<T>& compare) const
-            {
-                return (this->element_ != compare.element_);
-            }
-
-            /**
-                @brief Increments the ObjectListIterator if it points at the given object.
-                @param object The object to compare with
-            */
-            inline void incrementIfEqual(Listable* object)
-            {
-                if (this->element_ && this->element_->objectBase_ == object)
-                    this->operator++();
-            }
-
-        private:
-            ObjectListElement<T>* element_;        //!< The element the iterator points at
     };
 }
 

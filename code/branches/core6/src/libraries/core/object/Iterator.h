@@ -56,6 +56,7 @@
 #include "core/CorePrereqs.h"
 
 #include "ObjectListBase.h"
+#include "IteratorBase.h"
 
 namespace orxonox
 {
@@ -68,69 +69,25 @@ namespace orxonox
         @see See @ref IteratorExample "Iterator.h" for more information an example.
     */
     template <class T>
-    class Iterator
+    class Iterator : public IteratorBase<T, Iterator<T> >
     {
         public:
             /**
                 @brief Constructor: Sets the element, whereon the iterator points, to zero.
             */
-            inline Iterator()
-            {
-                this->element_ = NULL;
-                this->list_ = NULL;
-            }
-
-            /**
-                @brief Constructor: Sets this element to the element of another Iterator.
-                @param other The other Iterator
-            */
-            inline Iterator(const Iterator<T>& other)
-            {
-                this->element_ = other.element_;
-                this->registerIterator();
-            }
+            inline Iterator() : IteratorBase<T, Iterator<T> >(NULL) {}
 
             /**
                 @brief Constructor: Sets this element to a given element
                 @param element The element
             */
-            inline Iterator(ObjectListBaseElement* element)
-            {
-                this->element_ = element;
-                this->registerIterator();
-            }
+            inline Iterator(ObjectListBaseElement* element) : IteratorBase<T, Iterator<T> >(element) {}
 
             /**
-                @brief Constructor: Sets this element to the element an ObjectListIterator.
-                @param other The ObjectListIterator
-            */
-            template <class O>
-            inline Iterator(const ObjectListIterator<O>& other)
-            {
-                this->element_ = other.element_;
-                this->registerIterator();
-            }
-
-            /**
-                @brief Unregisters the Iterator from the ObjectList.
-            */
-            inline ~Iterator()
-            {
-                this->unregisterIterator();
-            }
-
-            /**
-                @brief Assigns the element of another Iterator.
+                @brief Constructor: Sets this element to the element of another Iterator.
                 @param other The other Iterator
             */
-            inline Iterator<T>& operator=(const Iterator<T>& other)
-            {
-                this->unregisterIterator();
-                this->element_ = other.element_;
-                this->registerIterator();
-
-                return (*this);
-            }
+            inline Iterator(const Iterator<T>& other) : IteratorBase<T, Iterator<T> >(other) {}
 
             /**
                 @brief Assigns a given element.
@@ -138,67 +95,8 @@ namespace orxonox
             */
             inline Iterator<T>& operator=(ObjectListBaseElement* element)
             {
-                this->unregisterIterator();
-                this->element_ = element;
-                this->registerIterator();
-
+                this->setElement(element);
                 return (*this);
-            }
-
-            /**
-                @brief Assigns the element of an ObjectListIterator.
-                @param other The ObjectListIterator
-            */
-            template <class O>
-            inline Iterator<T>& operator=(const ObjectListIterator<O>& other)
-            {
-                this->unregisterIterator();
-                this->element_ = other.element_;
-                this->registerIterator();
-
-                return (*this);
-            }
-
-            /**
-                @brief Overloading of the ++it operator: Iterator points to the next object in the list.
-                @return The Iterator itself
-            */
-            inline const Iterator<T>& operator++()
-            {
-                this->element_ = this->element_->next_;
-                return *this;
-            }
-
-            /**
-                @brief Overloading of the it++ operator: Iterator points to the next object in the list.
-                @return The Iterator itself
-            */
-            inline Iterator<T> operator++(int)
-            {
-                Iterator<T> copy = *this;
-                this->element_ = this->element_->next_;
-                return copy;
-            }
-
-            /**
-                @brief Overloading of the --it operator: Iterator points to the previous object in the list.
-                @return The Iterator itself
-            */
-            inline const Iterator<T>& operator--()
-            {
-                this->element_ = this->element_->prev_;
-                return *this;
-            }
-
-            /**
-                @brief Overloading of the it-- operator: Iterator points to the previous object in the list.
-                @return The Iterator itself
-            */
-            inline Iterator<T> operator--(int i)
-            {
-                Iterator<T> copy = *this;
-                this->element_ = this->element_->prev_;
-                return copy;
             }
 
             /**
@@ -218,72 +116,6 @@ namespace orxonox
             {
                 return orxonox_cast<T*>(this->element_->objectBase_);
             }
-
-            /**
-                @brief Overloading of the typecast-operator to bool: returns true if the iterator points to an existing object.
-                @return True if the Iterator points to an existing object.
-            */
-            inline operator bool() const
-            {
-                return (this->element_ != NULL);
-            }
-
-            /**
-                @brief Overloading of the == operator to compare with another Iterator.
-                @param compare The other Iterator
-                @return True if the iterators point to the same element
-            */
-            inline bool operator==(const Iterator<T>& compare) const
-            {
-                return (this->element_ == compare.element_);
-            }
-
-            /**
-                @brief Overloading of the != operator to compare with another Iterator.
-                @param compare The other Iterator
-                @return True if the iterators point to different elements
-            */
-            inline bool operator!=(const Iterator<T>& compare) const
-            {
-                return (this->element_ != compare.element_);
-            }
-
-            /**
-                @brief Increments the Iterator if it points at the given object.
-                @param object The object to compare with
-            */
-            inline void incrementIfEqual(Listable* object)
-            {
-                if (this->element_ && this->element_->objectBase_ == object)
-                    this->operator++();
-            }
-
-        private:
-            /**
-             * @brief Registers the Iterator at the list to which it belongs
-             */
-            inline void registerIterator()
-            {
-                if (this->element_)
-                {
-                    this->list_ = this->element_->list_;
-                    this->list_->registerIterator(this);
-                }
-                else
-                    this->list_ = NULL;
-            }
-
-            /**
-             * @brief Unregisters the Iterator from the list (if any)
-             */
-            inline void unregisterIterator()
-            {
-                if (this->list_)
-                    this->list_->unregisterIterator(this);
-            }
-
-            ObjectListBaseElement* element_;    //!< The element the Iterator points at
-            ObjectListBase* list_;              //!< The list in which the Iterator registered itself
     };
 }
 
