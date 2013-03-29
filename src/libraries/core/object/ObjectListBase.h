@@ -100,9 +100,13 @@ namespace orxonox
 
             template <class T>
             inline ObjectListBaseElement* add(T* object)
-                { return this->addElement(new ObjectListElement<T>(object, this)); }
+            {
+                ObjectListBaseElement* element = new ObjectListElement<T>(object, this);
+                this->addElement(element);
+                return element;
+            }
 
-            ObjectListBaseElement* addElement(ObjectListBaseElement* element);
+            void addElement(ObjectListBaseElement* element);
             void removeElement(ObjectListBaseElement* element);
 
             /// Returns a pointer to the first element in the list. Works only with Iterator.
