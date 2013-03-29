@@ -164,6 +164,15 @@ namespace orxonox
         }
     }
 
+    void Identifier::setFactory(Factory* factory)
+    {
+        if (this->factory_)
+            delete this->factory_;
+
+        this->factory_ = factory;
+    }
+
+
     /**
         @brief Creates an object of the type the Identifier belongs to.
         @return The new object

@@ -130,7 +130,7 @@ namespace orxonox
             inline ObjectListBase* getObjects() const { return this->objects_; }
 
             /// Sets the Factory.
-            inline void addFactory(Factory* factory) { this->factory_ = factory; }
+            void setFactory(Factory* factory);
             /// Returns true if the Identifier has a Factory.
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
