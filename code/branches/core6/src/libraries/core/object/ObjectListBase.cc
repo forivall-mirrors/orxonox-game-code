@@ -69,15 +69,14 @@ namespace orxonox
     }
 
     /**
-        @brief Increases all Iterators that currently point on the given element (because it gets removed).
-        @param object The object that gets removed
+        @brief Notifies all listeners that the given element is about to get removed.
+        @param element The element that gets removed
+        This is mainly used for iterators which point at the removed element
     */
-    void ObjectListBase::notifyIterators(Listable* object) const
+    void ObjectListBase::notifyRemovalListeners(ObjectListBaseElement* element) const
     {
-        for (std::vector<void*>::const_iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
-            ((Iterator<Listable>*)(*it))->incrementIfEqual(object);
-        for (std::vector<void*>::const_iterator it = this->objectListIterators_.begin(); it != this->objectListIterators_.end(); ++it)
-            ((ObjectListIterator<Listable>*)(*it))->incrementIfEqual(object);
+        for (std::vector<ObjectListElementRemovalListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+            (*it)->removedElement(element);
     }
 
     /**
@@ -108,7 +107,7 @@ namespace orxonox
     void ObjectListBase::removeElement(ObjectListBaseElement* element)
     {
         orxout(verbose, context::object_list) << "Removing Object from " << element->objectBase_->getIdentifier()->getName() << "-list." << endl;
-        this->notifyIterators(element->objectBase_);
+        this->notifyRemovalListeners(element);
 
         if (element->next_)
             element->next_->prev_ = element->prev_;
