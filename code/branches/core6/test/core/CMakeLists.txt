@@ -13,6 +13,11 @@ ORXONOX_ADD_EXECUTABLE(
     class/OrxonoxInterfaceTest.cc
     class/SubclassIdentifierTest.cc
     class/SuperTest.cc
+    command/CommandTest.cc
+    object/ClassFactoryTest.cc
+    object/DestroyableTest.cc
+    object/SmartPtrTest.cc
+    object/WeakPtrTest.cc
 )
 ADD_DEPENDENCIES(test core_test)
 
