@@ -52,3 +52,4 @@ INCLUDE_DIRECTORIES(
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(util)
+ADD_SUBDIRECTORY(core)
