@@ -16,6 +16,10 @@ ORXONOX_ADD_EXECUTABLE(
     command/CommandTest.cc
     object/ClassFactoryTest.cc
     object/DestroyableTest.cc
+    object/IteratorTest.cc
+    object/ListableTest.cc
+    object/ObjectListBaseTest.cc
+    object/ObjectListIteratorTest.cc
     object/SmartPtrTest.cc
     object/WeakPtrTest.cc
 )
