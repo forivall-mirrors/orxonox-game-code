@@ -42,7 +42,8 @@ namespace orxonox
 {
     ObjectListBaseElement::~ObjectListBaseElement()
     {
-        this->list_->removeElement(this);
+        if (this->list_)
+            this->list_->removeElement(this);
     }
 
     /**
@@ -52,6 +53,7 @@ namespace orxonox
     {
         this->first_ = 0;
         this->last_ = 0;
+        this->size_ = 0;
     }
 
     /**
@@ -59,13 +61,8 @@ namespace orxonox
     */
     ObjectListBase::~ObjectListBase()
     {
-        ObjectListBaseElement* temp;
         while (this->first_)
-        {
-            temp = this->first_->next_;
             delete this->first_;
-            this->first_ = temp;
-        }
     }
 
     /**
@@ -85,20 +82,29 @@ namespace orxonox
     */
     void ObjectListBase::addElement(ObjectListBaseElement* element)
     {
+        if (element->list_)
+        {
+            orxout(internal_error) << "Element is already registered in another list" << endl;
+            return;
+        }
+
         if (!this->last_)
         {
             // If the list is empty
             this->last_ = element;
-            this->first_ = this->last_; // There's only one object in the list now
+            this->first_ = element; // There's only one object in the list now
         }
         else
         {
             // If the list isn't empty
             ObjectListBaseElement* temp = this->last_;
             this->last_ = element;
-            this->last_->prev_ = temp;
-            temp->next_ = this->last_;
+            element->prev_ = temp;
+            temp->next_ = element;
         }
+
+        element->list_ = this;
+        ++this->size_;
     }
 
     /**
@@ -106,7 +112,14 @@ namespace orxonox
      */
     void ObjectListBase::removeElement(ObjectListBaseElement* element)
     {
-        orxout(verbose, context::object_list) << "Removing Object from " << element->objectBase_->getIdentifier()->getName() << "-list." << endl;
+        if (element->list_ != this)
+        {
+            orxout(internal_error) << "Element is not registered in this list" << endl;
+            return;
+        }
+
+        if (element->objectBase_)
+            orxout(verbose, context::object_list) << "Removing Object from " << element->objectBase_->getIdentifier()->getName() << "-list." << endl;
         this->notifyRemovalListeners(element);
 
         if (element->next_)
@@ -118,5 +131,10 @@ namespace orxonox
             element->prev_->next_ = element->next_;
         else
             this->first_ = element->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
+
+        element->list_ = 0;
+        element->next_ = 0;
+        element->prev_ = 0;
+        --this->size_;
     }
 }

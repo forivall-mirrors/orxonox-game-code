@@ -69,9 +69,6 @@ namespace orxonox
     template <class T>
     class ObjectListIterator : public IteratorBase<T, ObjectListIterator<T> >
     {
-        template <class I>
-        friend class Iterator;
-
         public:
             /**
                 @brief Constructor: Sets the element, whereon the ObjectListIterator points, to zero.
