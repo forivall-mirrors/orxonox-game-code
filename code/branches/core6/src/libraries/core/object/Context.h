@@ -38,8 +38,6 @@
 
 #include <vector>
 
-#include "ObjectListBase.h"
-
 namespace orxonox
 {
     class _CoreExport Context
@@ -47,7 +45,7 @@ namespace orxonox
         public:
             static Context* getRootContext();
 
-            Context(Context* context);
+            Context(Context* context = NULL);
             virtual ~Context();
 
             inline Context* getParentContext() const

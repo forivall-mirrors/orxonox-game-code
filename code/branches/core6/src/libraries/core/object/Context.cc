@@ -46,7 +46,7 @@ namespace orxonox
 
     /*static*/ Context* Context::getRootContext()
     {
-        static Context rootContext(NULL);
+        static Context rootContext;
         return &rootContext;
     }
 

@@ -41,6 +41,7 @@
 
 #include "core/CorePrereqs.h"
 #include <vector>
+#include "Context.h"
 
 namespace orxonox
 {
@@ -56,12 +57,17 @@ namespace orxonox
                 @param objectBase The object to store
             */
             ObjectListBaseElement(Listable* object) : next_(0), prev_(0), objectBase_(object), list_(0) {}
-            ~ObjectListBaseElement();
+            virtual ~ObjectListBaseElement() { this->removeFromList(); }
+
+            virtual void changeContext(Context* context) = 0;
 
             ObjectListBaseElement* next_;       //!< The next element in the list
             ObjectListBaseElement* prev_;       //!< The previous element in the list
             Listable* objectBase_;              //!< The object
             ObjectListBase* list_;              //!< The list
+
+        protected:
+            void removeFromList();
     };
 
 
@@ -74,6 +80,13 @@ namespace orxonox
     {
         public:
             ObjectListElement(T* object) : ObjectListBaseElement(static_cast<Listable*>(object)), object_(object) {}
+
+            virtual void changeContext(Context* context)
+            {
+                this->removeFromList();
+                context->getObjectList<T>()->addElement(this);
+            }
+
             T* object_;              //!< The object
     };
 

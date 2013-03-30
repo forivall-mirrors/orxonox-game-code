@@ -63,4 +63,16 @@ namespace orxonox
             delete this->elements_[i];
         this->elements_.clear();
     }
+
+    /**
+     * @brief Changes the context.
+     * The object is removed from the current context and added to the new one. This also applies to all object lists the object is registered in.
+     */
+    void Listable::setContext(Context* context)
+    {
+        this->context_ = context;
+        for (size_t i = 0; i < this->elements_.size(); ++i)
+            this->elements_[i]->changeContext(context);
+    }
+
 }
