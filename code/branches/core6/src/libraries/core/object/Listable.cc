@@ -33,6 +33,7 @@
 
 #include "Listable.h"
 #include "ObjectListBase.h"
+#include "Context.h"
 
 namespace orxonox
 {
@@ -41,6 +42,7 @@ namespace orxonox
     */
     Listable::Listable()
     {
+        this->context_ = Context::getRootContext();
         this->elements_.reserve(6);
     }
 

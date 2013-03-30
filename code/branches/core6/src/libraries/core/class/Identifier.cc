@@ -51,8 +51,6 @@ namespace orxonox
     Identifier::Identifier()
         : classID_(IdentifierManager::classIDCounter_s++)
     {
-        this->objects_ = new ObjectListBase();
-
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
         this->factory_ = 0;
@@ -69,8 +67,6 @@ namespace orxonox
     */
     Identifier::~Identifier()
     {
-        delete this->objects_;
-
         if (this->factory_)
             delete this->factory_;
 

@@ -53,6 +53,7 @@ namespace orxonox
 
     TEST(ListableTest, RemovesFromObjectList)
     {
+        EXPECT_EQ(0u, ObjectList<ListableTest>::size());
         {
             ListableTest test;
             EXPECT_EQ(1u, ObjectList<ListableTest>::size());
@@ -63,6 +64,8 @@ namespace orxonox
 
     TEST(ListableTest, RemovesFromAllObjectLists)
     {
+        EXPECT_EQ(0u, ObjectList<ListableTest>::size());
+        EXPECT_EQ(0u, ObjectList<ListableSubclassTest>::size());
         {
             ListableSubclassTest test;
             EXPECT_EQ(1u, ObjectList<ListableTest>::size());

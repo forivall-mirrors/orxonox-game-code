@@ -48,6 +48,7 @@
 
 #include "ObjectListBase.h"
 #include "ObjectListIterator.h"
+#include "Context.h"
 
 namespace orxonox
 {
@@ -70,34 +71,34 @@ namespace orxonox
             /// Returns the size of the list
             inline static size_t size()
             {
-                return ClassIdentifier<T>::getIdentifier()->getObjects()->size();
+                return Context::getRootContext()->getObjectList<T>()->size();
             }
 
             /// Returns an Iterator to the first element in the list.
             inline static ObjectListElement<T>* begin()
             {
-                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                ObjectListBase* list = Context::getRootContext()->getObjectList<T>();
                 return static_cast<ObjectListElement<T>*>(list->begin());
             }
 
             /// Returns an Iterator to the element after the last element in the list.
             inline static ObjectListElement<T>* end()
             {
-                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                ObjectListBase* list = Context::getRootContext()->getObjectList<T>();
                 return static_cast<ObjectListElement<T>*>(list->end());
             }
 
             /// Returns an Iterator to the last element in the list.
             inline static ObjectListElement<T>* rbegin()
             {
-                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                ObjectListBase* list = Context::getRootContext()->getObjectList<T>();
                 return static_cast<ObjectListElement<T>*>(list->rbegin());
             }
 
             /// Returns an Iterator to the element before the first element in the list.
             inline static ObjectListElement<T>* rend()
             {
-                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                ObjectListBase* list = Context::getRootContext()->getObjectList<T>();
                 return static_cast<ObjectListElement<T>*>(list->rend());
             }
     };

@@ -36,21 +36,41 @@
 
 #include "core/CorePrereqs.h"
 
+#include <vector>
+
+#include "ObjectListBase.h"
+
 namespace orxonox
 {
     class _CoreExport Context
     {
         public:
+            static Context* getRootContext();
+
             Context(Context* context);
             virtual ~Context();
 
             inline Context* getParentContext() const
                 { return this->parentContext_; }
 
-            static Context* getRootContext();
+            ObjectListBase* getObjectList(const Identifier* identifier);
+
+            template <class T>
+            inline ObjectListBase* getObjectList()
+                { return this->getObjectList(ClassIdentifier<T>::getIdentifier()); }
+
+            template <class T>
+            inline void addObject(T* object)
+            {
+                ObjectListBaseElement* element = this->getObjectList<T>()->add(object);
+                object->elements_.push_back(element);
+                if (this->getParentContext())
+                    this->getParentContext()->addObject(object);
+            }
 
         private:
             Context* parentContext_;
+            std::vector<ObjectListBase*> objectLists_;
     };
 }
 

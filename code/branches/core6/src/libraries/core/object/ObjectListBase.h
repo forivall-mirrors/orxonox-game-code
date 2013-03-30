@@ -123,13 +123,13 @@ namespace orxonox
             size_t size() const { return this->size_; }
 
             /// Returns a pointer to the first element in the list. Works only with Iterator.
-            inline ObjectListBaseElement* begin() { return this->first_; }
+            inline ObjectListBaseElement* begin() const { return this->first_; }
             /// Returns a pointer to the element after the last element in the list. Works only with Iterator.
-            inline ObjectListBaseElement* end() { return 0; }
+            inline ObjectListBaseElement* end() const { return 0; }
             /// Returns a pointer to the last element in the list. Works only with Iterator.
-            inline ObjectListBaseElement* rbegin() { return this->last_; }
+            inline ObjectListBaseElement* rbegin() const { return this->last_; }
             /// Returns a pointer to the element in front of the first element in the list. Works only with Iterator.
-            inline ObjectListBaseElement* rend() { return 0; }
+            inline ObjectListBaseElement* rend() const { return 0; }
 
             inline void registerRemovalListener(ObjectListElementRemovalListener* listener) { this->listeners_.push_back(listener); }
             inline void unregisterRemovalListener(ObjectListElementRemovalListener* listener)
