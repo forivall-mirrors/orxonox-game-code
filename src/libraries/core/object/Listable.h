@@ -56,8 +56,7 @@ namespace orxonox
 
             void unregisterObject();
 
-            inline void setContext(Context* context)
-                { this->context_ = context; }
+            void setContext(Context* context);
             inline Context* getContext() const
                 { return this->context_; }
 

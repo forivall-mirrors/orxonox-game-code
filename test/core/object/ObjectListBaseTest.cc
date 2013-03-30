@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "core/object/ObjectListBase.h"
+#include "core/class/Identifier.h"
 
 namespace orxonox
 {
@@ -22,7 +23,7 @@ namespace orxonox
     TEST(ObjectListBaseTest, CanAddElement)
     {
         ObjectListBase list;
-        ObjectListBaseElement* element = new ObjectListBaseElement(NULL);
+        ObjectListBaseElement* element = new ObjectListElement<Listable>(NULL);
         list.addElement(element);
         EXPECT_EQ(1u, list.size());
     }
@@ -30,7 +31,7 @@ namespace orxonox
     TEST(ObjectListBaseTest, CanRemoveElement)
     {
         ObjectListBase list;
-        ObjectListBaseElement* element = new ObjectListBaseElement(NULL);
+        ObjectListBaseElement* element = new ObjectListElement<Listable>(NULL);
         list.addElement(element);
         EXPECT_EQ(1u, list.size());
         list.removeElement(element);
@@ -50,15 +51,15 @@ namespace orxonox
         ObjectListBase list;
         EXPECT_EQ(0u, list.size());
         {
-            ObjectListBaseElement element1(NULL);
+            ObjectListElement<Listable> element1(NULL);
             list.addElement(&element1);
             EXPECT_EQ(1u, list.size());
             {
-                ObjectListBaseElement element1(NULL);
+                ObjectListElement<Listable> element1(NULL);
                 list.addElement(&element1);
                 EXPECT_EQ(2u, list.size());
                 {
-                    ObjectListBaseElement element1(NULL);
+                    ObjectListElement<Listable> element1(NULL);
                     list.addElement(&element1);
                     EXPECT_EQ(3u, list.size());
                 }
@@ -74,7 +75,7 @@ namespace orxonox
         ObjectListBase list;
         ObjectListElementRemovalListenerMock listener;
         list.registerRemovalListener(&listener);
-        ObjectListBaseElement* element = new ObjectListBaseElement(NULL);
+        ObjectListBaseElement* element = new ObjectListElement<Listable>(NULL);
         list.addElement(element);
         EXPECT_CALL(listener, removedElement(element));
         list.removeElement(element);

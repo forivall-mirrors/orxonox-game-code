@@ -19,9 +19,10 @@ namespace orxonox
         };
 
         template <class T>
-        bool objectListContains(T* element)
+        bool objectListContains(T* element, Context* context = Context::getRootContext())
         {
-            for (typename ObjectList<T>::iterator it = ObjectList<T>::begin(); it != ObjectList<T>::end(); ++it)
+            for (typename ObjectList<T>::iterator it = static_cast<ObjectListElement<T>*>(context->getObjectList<T>()->begin());
+                    it != static_cast<ObjectListElement<T>*>(context->getObjectList<T>()->end()); ++it)
                 if (*it == element)
                     return true;
             return false;
@@ -75,5 +76,34 @@ namespace orxonox
         }
         EXPECT_EQ(0u, ObjectList<ListableTest>::size());
         EXPECT_EQ(0u, ObjectList<ListableSubclassTest>::size());
+    }
+
+    TEST(ListableTest, CanChangeContext)
+    {
+        Context* rootContext = Context::getRootContext();
+        Context newContext;
+        ListableSubclassTest test;
+
+        EXPECT_EQ(1u, rootContext->getObjectList<ListableTest>()->size());
+        EXPECT_TRUE(objectListContains<ListableTest>(&test, rootContext));
+        EXPECT_EQ(1u, rootContext->getObjectList<ListableSubclassTest>()->size());
+        EXPECT_TRUE(objectListContains<ListableSubclassTest>(&test, rootContext));
+
+        EXPECT_EQ(0u, newContext.getObjectList<ListableTest>()->size());
+        EXPECT_FALSE(objectListContains<ListableTest>(&test, &newContext));
+        EXPECT_EQ(0u, newContext.getObjectList<ListableSubclassTest>()->size());
+        EXPECT_FALSE(objectListContains<ListableSubclassTest>(&test, &newContext));
+
+        test.setContext(&newContext);
+
+        EXPECT_EQ(0u, rootContext->getObjectList<ListableTest>()->size());
+        EXPECT_FALSE(objectListContains<ListableTest>(&test, rootContext));
+        EXPECT_EQ(0u, rootContext->getObjectList<ListableSubclassTest>()->size());
+        EXPECT_FALSE(objectListContains<ListableSubclassTest>(&test, rootContext));
+
+        EXPECT_EQ(1u, newContext.getObjectList<ListableTest>()->size());
+        EXPECT_TRUE(objectListContains<ListableTest>(&test, &newContext));
+        EXPECT_EQ(1u, newContext.getObjectList<ListableSubclassTest>()->size());
+        EXPECT_TRUE(objectListContains<ListableSubclassTest>(&test, &newContext));
     }
 }
