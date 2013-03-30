@@ -49,8 +49,6 @@ namespace orxonox
 {
     /**
         @brief This is the class from which all objects of the game-logic (not the engine) are derived from.
-
-        The BaseObject and other classes are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
     */
     class _CoreExport OrxonoxClass : virtual public Configurable, virtual public Destroyable
     {
