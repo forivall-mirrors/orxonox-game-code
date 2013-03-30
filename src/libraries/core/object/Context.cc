@@ -32,6 +32,7 @@
 */
 
 #include "Context.h"
+#include "core/class/Identifier.h"
 
 namespace orxonox
 {
@@ -47,5 +48,15 @@ namespace orxonox
     {
         static Context rootContext(NULL);
         return &rootContext;
+    }
+
+    ObjectListBase* Context::getObjectList(const Identifier* identifier)
+    {
+        unsigned int classID = identifier->getClassID();
+        if (classID >= this->objectLists_.size())
+            this->objectLists_.resize(classID + 1);
+        if (!this->objectLists_[classID])
+            this->objectLists_[classID] = new ObjectListBase();
+        return this->objectLists_[classID];
     }
 }

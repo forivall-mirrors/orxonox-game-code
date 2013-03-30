@@ -48,8 +48,7 @@ namespace orxonox
     */
     class _CoreExport Listable : virtual public Identifiable
     {
-        template <class T>
-        friend class ClassIdentifier;
+        friend class Context;
 
         public:
             Listable();
@@ -57,7 +56,13 @@ namespace orxonox
 
             void unregisterObject();
 
+            inline void setContext(Context* context)
+                { this->context_ = context; }
+            inline Context* getContext() const
+                { return this->context_; }
+
         private:
+            Context* context_;                             //!< The object will register itself in the object lists of this context
             std::vector<ObjectListBaseElement*> elements_; //!< The corresponding ObjectListElements in all object lists the object is registered in
     };
 }

@@ -58,14 +58,6 @@
     OrxonoxClass* other = object->getIdentifier()->fabricate(0);                // fabricates a new instance of MyClass
 
 
-    // iterate through all objects of type MyClass:
-    ObjectListBase* objects = object->getIdentifier()->getObjects();            // get a pointer to the object-list
-    int count;
-    for (Iterator<MyClass> it = objects.begin(); it != objects.end(); ++it)     // iterate through the objects
-        ++count;
-    orxout() << count << endl;                                                  // prints "2" because we created 2 instances of MyClass so far
-
-
     // test the class hierarchy
     object->getIdentifier()->isA(Class(MyClass));                               // returns true
     object->isA(Class(MyClass));                                                // returns true (short version)
@@ -90,7 +82,8 @@
 
 #include "util/Output.h"
 #include "core/object/ObjectList.h"
-#include "core/object/ObjectListBase.h"
+#include "core/object/Listable.h"
+#include "core/object/Context.h"
 #include "IdentifierManager.h"
 #include "Super.h"
 
@@ -125,9 +118,6 @@ namespace orxonox
 
             /// Returns the unique ID of the class.
             ORX_FORCEINLINE unsigned int getClassID() const { return this->classID_; }
-
-            /// Returns the list of all existing objects of this class.
-            inline ObjectListBase* getObjects() const { return this->objects_; }
 
             /// Sets the Factory.
             void setFactory(Factory* factory);
@@ -230,8 +220,6 @@ namespace orxonox
             inline std::set<const Identifier*>& getChildrenIntern() const { return this->children_; }
             /// Returns the direct children of the class the Identifier belongs to.
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return this->directChildren_; }
-
-            ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
         private:
             void initialize(std::set<const Identifier*>* parents);
@@ -423,10 +411,9 @@ namespace orxonox
      * @brief Only adds the object to the object list if is a @ref Listable
      */
     template <class T>
-    void ClassIdentifier<T>::addObjectToList(T* object, Listable*)
+    void ClassIdentifier<T>::addObjectToList(T* object, Listable* listable)
     {
-        orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
-        object->elements_.push_back(this->objects_->add(object));
+        listable->getContext()->addObject(object);
     }
 
     template <class T>

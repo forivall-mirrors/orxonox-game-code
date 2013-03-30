@@ -88,6 +88,9 @@ namespace orxonox
             return;
         }
 
+        if (element->objectBase_)
+            orxout(verbose, context::object_list) << "Added object to " << element->objectBase_->getIdentifier()->getName() << "-list." << endl;
+
         if (!this->last_)
         {
             // If the list is empty
