@@ -10,7 +10,7 @@ namespace orxonox
 {
     namespace
     {
-        class TestInterface : public OrxonoxInterface
+        class TestInterface : virtual public OrxonoxInterface
         {
             public:
             TestInterface() { RegisterRootObject(TestInterface); }
