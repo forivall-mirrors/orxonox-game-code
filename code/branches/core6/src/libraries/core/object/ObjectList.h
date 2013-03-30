@@ -67,6 +67,12 @@ namespace orxonox
         public:
             typedef ObjectListIterator<T> iterator;
 
+            /// Returns the size of the list
+            inline static size_t size()
+            {
+                return ClassIdentifier<T>::getIdentifier()->getObjects()->size();
+            }
+
             /// Returns an Iterator to the first element in the list.
             inline static ObjectListElement<T>* begin()
             {

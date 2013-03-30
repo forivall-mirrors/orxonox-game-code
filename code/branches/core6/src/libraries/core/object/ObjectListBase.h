@@ -55,7 +55,7 @@ namespace orxonox
                 @brief Constructor: Creates the list-element with an object.
                 @param objectBase The object to store
             */
-            ObjectListBaseElement(Listable* object, ObjectListBase* list) : next_(0), prev_(0), objectBase_(object), list_(list) {}
+            ObjectListBaseElement(Listable* object) : next_(0), prev_(0), objectBase_(object), list_(0) {}
             ~ObjectListBaseElement();
 
             ObjectListBaseElement* next_;       //!< The next element in the list
@@ -73,7 +73,7 @@ namespace orxonox
     class ObjectListElement : public ObjectListBaseElement
     {
         public:
-            ObjectListElement(T* object, ObjectListBase* list) : ObjectListBaseElement(static_cast<Listable*>(object), list), object_(object) {}
+            ObjectListElement(T* object) : ObjectListBaseElement(static_cast<Listable*>(object)), object_(object) {}
             T* object_;              //!< The object
     };
 
@@ -112,13 +112,15 @@ namespace orxonox
             template <class T>
             inline ObjectListBaseElement* add(T* object)
             {
-                ObjectListBaseElement* element = new ObjectListElement<T>(object, this);
+                ObjectListBaseElement* element = new ObjectListElement<T>(object);
                 this->addElement(element);
                 return element;
             }
 
             void addElement(ObjectListBaseElement* element);
             void removeElement(ObjectListBaseElement* element);
+
+            size_t size() const { return this->size_; }
 
             /// Returns a pointer to the first element in the list. Works only with Iterator.
             inline ObjectListBaseElement* begin() { return this->first_; }
@@ -147,6 +149,7 @@ namespace orxonox
 
             ObjectListBaseElement* first_;                              //!< The first element in the list
             ObjectListBaseElement* last_;                               //!< The last element in the list
+            size_t size_;                                               //!< The number of elements in the list
             std::vector<ObjectListElementRemovalListener*> listeners_;  //!< A list of Iterators pointing on an element in this list
     };
 }
