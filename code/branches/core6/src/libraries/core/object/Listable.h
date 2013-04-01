@@ -52,6 +52,7 @@ namespace orxonox
 
         public:
             Listable();
+            Listable(Context* context);
             virtual ~Listable();
 
             void unregisterObject();

@@ -15,6 +15,7 @@ ORXONOX_ADD_EXECUTABLE(
     class/SuperTest.cc
     command/CommandTest.cc
     object/ClassFactoryTest.cc
+    object/ContextTest.cc
     object/DestroyableTest.cc
     object/IteratorTest.cc
     object/ListableTest.cc
