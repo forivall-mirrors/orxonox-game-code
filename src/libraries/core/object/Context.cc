@@ -36,12 +36,19 @@
 
 namespace orxonox
 {
-    Context::Context(Context* context) : parentContext_(context)
+    Context::Context(Context* context) : Listable(this), parentContext_(context)
     {
+        // we have to call Listable(this) to avoid circular initialization when creating a Context because Listable calls Context::getRootContext() by
+        // default AND we have to set the context again in the constructor because of other classes inheriting from Context (Listable is a virtual base
+        // and each subclass must call its constructor individually, so either all subclasses add Listable(this) to their initialization list or we call
+        // setContext(this) here).
+        this->setContext(this);
     }
 
     Context::~Context()
     {
+        // unregister context from object lists before object lists are destroyed
+        this->unregisterObject();
         for (size_t i = 0; i < this->objectLists_.size(); ++i)
             delete this->objectLists_[i];
     }

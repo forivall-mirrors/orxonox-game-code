@@ -47,6 +47,15 @@ namespace orxonox
     }
 
     /**
+        @brief Constructor: Allocates space in the element list and assignes the context
+    */
+    Listable::Listable(Context* context)
+    {
+        this->context_ = context;
+        this->elements_.reserve(6);
+    }
+
+    /**
         @brief Destructor: Removes the object from the object-lists
     */
     Listable::~Listable()

@@ -38,9 +38,11 @@
 
 #include <vector>
 
+#include "Listable.h"
+
 namespace orxonox
 {
-    class _CoreExport Context
+    class _CoreExport Context : virtual public Listable
     {
         public:
             static Context* getRootContext();
