@@ -92,6 +92,7 @@ namespace orxonox
         this->bPhysicsActiveSynchronised_    = false;
         this->bPhysicsActiveBeforeAttaching_ = false;
         this->collisionShape_ = new WorldEntityCollisionShape(this);
+        this->collisionShape_->setWorldEntityOwner(this);
         this->collisionType_             = None;
         this->collisionTypeSynchronised_ = None;
         this->mass_           = 1.0f;

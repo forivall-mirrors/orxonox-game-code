@@ -36,11 +36,11 @@
 
 namespace orxonox
 {
-    WorldEntityCollisionShape::WorldEntityCollisionShape(WorldEntity* creator) : CompoundCollisionShape(creator)
+    WorldEntityCollisionShape::WorldEntityCollisionShape(BaseObject* creator) : CompoundCollisionShape(creator)
     {
         RegisterObject(WorldEntityCollisionShape);
 
-        this->worldEntityOwner_ = creator;
+        this->worldEntityOwner_ = NULL;
         // suppress synchronisation
         this->setSyncMode(ObjectDirection::None);
     }
