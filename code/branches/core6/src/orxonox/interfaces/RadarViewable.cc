@@ -44,7 +44,6 @@ namespace orxonox
         : isHumanShip_(false)
         , bVisibility_(true)
         , bInitialized_(false)
-        , creator_(creator)
         , wePtr_(wePtr)
         , radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
@@ -56,7 +55,7 @@ namespace orxonox
         this->uniqueId_=getUniqueNumberString();
         if( GameMode::showsGraphics() )
         {
-            this->radar_ = this->creator_->getScene()->getRadar();
+            this->radar_ = creator->getScene()->getRadar();
             this->radar_->addRadarObject(this);
         }
         this->bInitialized_ = true;

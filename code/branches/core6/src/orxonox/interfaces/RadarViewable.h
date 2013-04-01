@@ -152,7 +152,6 @@ namespace orxonox
         bool bInitialized_;
         //Map
         std::string uniqueId_;
-        BaseObject* creator_;
 
 
         //Radar
