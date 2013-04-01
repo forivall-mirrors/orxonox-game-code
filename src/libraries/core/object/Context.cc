@@ -42,6 +42,8 @@ namespace orxonox
 
     Context::~Context()
     {
+        for (size_t i = 0; i < this->objectLists_.size(); ++i)
+            delete this->objectLists_[i];
     }
 
     /*static*/ Context* Context::getRootContext()
