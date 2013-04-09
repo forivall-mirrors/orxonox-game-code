@@ -307,26 +307,42 @@ namespace orxonox
         }
     }
 
+    // Two functions to find the slaves of a Pawn
+    bool Pawn::hasSlaves()
+    {
+    	/* TEST TEST This is used to find out if the current pawn is also
+		 * the master of the formation and to find his slaves.
+		 *
+		 */
+		for (ObjectList<FormationController>::iterator it =
+			 ObjectList<FormationController>::begin();
+			 it != ObjectList<FormationController>::end(); ++it )
+		{
+			// checks if the dying Pawn has a slave
+			if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
+			{
+				orxout(user_warning) << "This is a Slave of the HumanController: " << it->getThis() << endl;
+				return true;
+			}
+		}
+		return false;
+		/* TEST TEST */
+    }
+
+    Controller* Pawn::getSlave(){
+    	for (ObjectList<FormationController>::iterator it =
+    				 ObjectList<FormationController>::begin();
+    				 it != ObjectList<FormationController>::end(); ++it )
+    	{
+    		if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
+    			return it->getThis();
+    	}
+    	return 0;
+    }
+
+
     void Pawn::death()
     {
-        /* TEST TEST This is used to find out if the current pawn is also 
-         * the master of the formation.
-         *
-         * NOTE: This does not yet check if the current pawn is actually 
-         *       the humanplayer or not!
-         */
-        for (ObjectList<FormationController>::iterator it = 
-          ObjectList<FormationController>::begin(); 
-          it != ObjectList<FormationController>::end(); ++it )
-        {
-          orxout(user_warning) << "Test! Master: " << it->getMaster() 
-            << " My controller: " << this->getPlayer()->getController() << endl;
-        }
-        /* TEST TEST */
-
-            
-
-
         this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
@@ -338,14 +354,21 @@ namespace orxonox
             if (this->getGametype())
                 this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
 
-            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
-                this->getPlayer()->stopControl();
 
-            if (GameMode::isMaster())
+            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
+            {
+            	if(this->hasSlaves())
+            	{
+    				// start to control a slave
+    				this->getPlayer()->startControl(this->getSlave()->getControllableEntity());
+            	}
+                this->getPlayer()->stopControl();
+            }
+            /*if (GameMode::isMaster())
             {
 //                this->deathEffect();
                 this->goWithStyle();
-            }
+            }*/
         }
     }
     void Pawn::goWithStyle()

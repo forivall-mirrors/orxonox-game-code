@@ -2,7 +2,6 @@
  name = "Maxim's Test"
  description = "Intelligent Formation"
  tags = "test"
- screenshot = "presentationxi.png"
 />
 
 <?lua

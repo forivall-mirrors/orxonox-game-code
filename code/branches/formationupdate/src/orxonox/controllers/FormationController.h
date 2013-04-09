@@ -99,6 +99,7 @@ namespace orxonox {
 
       /* Just for testing purposes: report the master. */
       FormationController* getMaster( void ) { return myMaster_; }
+      FormationController* getThis( void ) { return this; }
 
   protected:
       bool formationFlight_;
