@@ -64,9 +64,9 @@
 
 
 	<!-- ADDING FORMATION: 5 Swallows -->
-	<?lua for i=0,4,1 do
+	<?lua for i=0,1,1 do
 	?>
-	    <SpaceShip position="<?lua print(400+i*200) ?>,-200,1000" lookat="-1300,-600,900" visible="true">
+	    <SpaceShip position="<?lua print(800+i*200) ?>,700,600" lookat="-1300,-600,900" visible="true">
 	        <templates>
 	            <Template link=spaceshipswallow /> 
 	        </templates>
@@ -78,8 +78,8 @@
 	
 	
 	<!-- ADDING ENEMY FORMATION: 5 Swallows -->
-	<!--
-	<?lua for i=0,4,1 do
+
+	<?lua for i=0,1,1 do
 	?>
 	    <SpaceShip position="<?lua print(5000+i*200) ?>,-200,1000" lookat="-1300,-600,900" visible="true">
 	        <templates>
@@ -90,7 +90,6 @@
 	        </controller>
 	    </SpaceShip>
 	<?lua end ?>
-	-->
   </Scene>
 </Level>
 

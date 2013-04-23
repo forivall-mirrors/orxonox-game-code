@@ -324,6 +324,7 @@ namespace orxonox
 				return true;
 			}
 		}
+		orxout(user_warning) << "The HumanController has no slaves!" << endl;
 		return false;
     }
 
@@ -358,12 +359,14 @@ namespace orxonox
             	/* Do different things if Pawn is the Master of a Formation
             	 * Doesn't work yet
             	 *
-            	 * if(this->hasSlaves())
+            	 */ if(this->hasSlaves())
             	{
     				// start to control a slave
     				this->getPlayer()->startControl(this->getSlave()->getControllableEntity());
-            	}*/
-                this->getPlayer()->stopControl();
+            	}
+            	 else{
+            		 this->getPlayer()->stopControl();
+            	 }
             }
             if (GameMode::isMaster())
             {
