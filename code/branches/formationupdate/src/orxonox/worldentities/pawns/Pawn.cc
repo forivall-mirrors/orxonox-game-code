@@ -317,14 +317,10 @@ namespace orxonox
 			 ObjectList<FormationController>::begin();
 			 it != ObjectList<FormationController>::end(); ++it )
 		{
-			// checks if the dying Pawn has a slave
+			// checks if the Pawn has a slave
 			if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
-			{
-				orxout(user_warning) << "This is a Slave of the HumanController: " << it->getThis() << endl;
 				return true;
-			}
 		}
-		orxout(user_warning) << "The HumanController has no slaves!" << endl;
 		return false;
     }
 
@@ -356,17 +352,30 @@ namespace orxonox
 
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
             {
-            	/* Do different things if Pawn is the Master of a Formation
-            	 * Doesn't work yet
-            	 *
-            	 */ if(this->hasSlaves())
+
+            	// Do different things if Pawn is the Master of a Formation
+            	if(this->hasSlaves())
             	{
-    				// start to control a slave
-    				this->getPlayer()->startControl(this->getSlave()->getControllableEntity());
+            		Controller* slave = this->getSlave();
+            		ControllableEntity* entity = slave->getControllableEntity();
+
+            		// set new Master
+					orxonox_cast<FormationController*>(slave)->takeLeadOfFormation();
+
+
+            		/* TO DO: - new Master is not set right
+            		 * 		  - The slave still has a AIController
+            		 *
+            		 */
+					//slave->getPlayer()->stopControl();
+
+					// start to control a slave
+    				this->getPlayer()->startControl(entity);
             	}
-            	 else{
-            		 this->getPlayer()->stopControl();
-            	 }
+            	else
+            	{
+            		this->getPlayer()->stopControl();
+            	}
             }
             if (GameMode::isMaster())
             {
