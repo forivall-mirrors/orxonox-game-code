@@ -364,19 +364,18 @@ namespace orxonox
 
 
             		// set new Master
-					orxonox_cast<FormationController*>(this->getController())->loseMasterState();
+					//orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
+            		orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation();
 
 
-
-            		/* TO DO: - new Master is not set right
-            		 * 		  - The slave still has a AIController
+            		/* TO DO: - setNewMasterWithinFormation() with an argument.
+            		 * 		  - set slave as the new master within the formation
             		 *
             		 */
 
 					// start to control a slave
     				this->getPlayer()->startControl(entity);
 
-					//orxonox_cast<FormationController*>(this->getController())->takeLeadOfFormation();
 
             	}
             	else

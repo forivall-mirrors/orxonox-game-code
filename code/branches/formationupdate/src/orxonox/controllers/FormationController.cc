@@ -533,6 +533,29 @@ namespace orxonox
         this->state_ = FREE;
     }
 
+    /*
+    void FormationController::setNewMasterWithinFormation(FormationController* newMaster)
+        {
+            if(this->state_ != MASTER) return;
+
+            if (!this->slaves_.empty())
+            {
+                newMaster->state_ = MASTER;
+                newMaster->slaves_ = this->slaves_;
+                newMaster->myMaster_ = 0;
+
+                for(std::vector<FormationController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
+                {
+                    (*it)->myMaster_ = newMaster;
+                }
+            }
+
+            this->slaves_.clear();
+            this->specificMasterAction_ = NONE;
+            this->state_ = FREE;
+        }
+     */
+
 
   /**
         @brief Frees all slaves form a master. Initiated by a master.
