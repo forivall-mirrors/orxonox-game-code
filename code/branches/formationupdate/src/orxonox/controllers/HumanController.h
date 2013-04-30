@@ -101,9 +101,9 @@ namespace orxonox
             static Pawn* getLocalControllerEntityAsPawn();
             //friend class, for mouselook
             friend class Map;
+            static HumanController* localController_s;
 
         protected:
-            static HumanController* localController_s;
             bool controlPaused_;
 
         private:

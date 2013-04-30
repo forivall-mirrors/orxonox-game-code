@@ -313,7 +313,7 @@ namespace orxonox
      */
     bool Pawn::hasSlaves()
     {
-		for (ObjectList<FormationController>::iterator it =
+    	for (ObjectList<FormationController>::iterator it =
 			 ObjectList<FormationController>::begin();
 			 it != ObjectList<FormationController>::end(); ++it )
 		{
@@ -326,8 +326,8 @@ namespace orxonox
 
     Controller* Pawn::getSlave(){
     	for (ObjectList<FormationController>::iterator it =
-    				 ObjectList<FormationController>::begin();
-    				 it != ObjectList<FormationController>::end(); ++it )
+    			ObjectList<FormationController>::begin();
+    			it != ObjectList<FormationController>::end(); ++it )
     	{
     		if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
     			return it->getThis();
@@ -359,18 +359,25 @@ namespace orxonox
             		Controller* slave = this->getSlave();
             		ControllableEntity* entity = slave->getControllableEntity();
 
+            		// delete the AIController
+            		slave->setControllableEntity(0);
+
+
             		// set new Master
-					orxonox_cast<FormationController*>(slave)->takeLeadOfFormation();
+					orxonox_cast<FormationController*>(this->getController())->loseMasterState();
+
 
 
             		/* TO DO: - new Master is not set right
             		 * 		  - The slave still has a AIController
             		 *
             		 */
-					//slave->getPlayer()->stopControl();
 
 					// start to control a slave
     				this->getPlayer()->startControl(entity);
+
+					//orxonox_cast<FormationController*>(this->getController())->takeLeadOfFormation();
+
             	}
             	else
             	{

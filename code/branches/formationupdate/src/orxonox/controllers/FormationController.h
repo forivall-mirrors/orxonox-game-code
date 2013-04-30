@@ -59,6 +59,7 @@ namespace orxonox {
       static void passivebehaviour(const bool passive);
       static void formationsize(const int size);
       void takeLeadOfFormation();
+      void loseMasterState();
 
       inline void setFormationFlight(bool formation)
            { this->formationFlight_ = formation; }
@@ -135,7 +136,6 @@ namespace orxonox {
 
       void freeSlaves();
       void forceFreeSlaves();
-      void loseMasterState();
       void forceFreedom();
       bool forcedFree();
 
