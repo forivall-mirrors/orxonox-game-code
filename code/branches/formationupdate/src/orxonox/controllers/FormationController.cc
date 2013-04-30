@@ -533,13 +533,19 @@ namespace orxonox
         this->state_ = FREE;
     }
 
-    /*
+
     void FormationController::setNewMasterWithinFormation(FormationController* newMaster)
         {
-            if(this->state_ != MASTER) return;
+            if(this->state_ != MASTER || newMaster->myMaster_ != this) return;
 
             if (!this->slaves_.empty())
             {
+				std::vector<FormationController*>::iterator it2 = std::find(this->slaves_.begin(), this->slaves_.end(), newMaster);
+				if (it2 != this->slaves_.end())
+				{
+					 this->slaves_.erase(it2);
+				}
+
                 newMaster->state_ = MASTER;
                 newMaster->slaves_ = this->slaves_;
                 newMaster->myMaster_ = 0;
@@ -554,7 +560,7 @@ namespace orxonox
             this->specificMasterAction_ = NONE;
             this->state_ = FREE;
         }
-     */
+
 
 
   /**

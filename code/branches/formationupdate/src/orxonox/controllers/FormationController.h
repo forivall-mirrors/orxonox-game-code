@@ -59,7 +59,7 @@ namespace orxonox {
       static void passivebehaviour(const bool passive);
       static void formationsize(const int size);
       void setNewMasterWithinFormation();
-      //void setNewMasterWithinFormation(FormationController* newMaster);
+      void setNewMasterWithinFormation(FormationController* newMaster);
 
       inline void setFormationFlight(bool formation)
            { this->formationFlight_ = formation; }

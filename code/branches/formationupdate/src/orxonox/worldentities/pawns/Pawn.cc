@@ -364,8 +364,8 @@ namespace orxonox
 
 
             		// set new Master
-					//orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
-            		orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation();
+					orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
+            		//orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation();
 
 
             		/* TO DO: - setNewMasterWithinFormation() with an argument.
