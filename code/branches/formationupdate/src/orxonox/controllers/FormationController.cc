@@ -534,6 +534,7 @@ namespace orxonox
     }
 
 
+    // Sets newMaster as the new master within the formation. Called by the master.
     void FormationController::setNewMasterWithinFormation(FormationController* newMaster)
         {
             if(this->state_ != MASTER || newMaster->myMaster_ != this) return;
@@ -564,7 +565,7 @@ namespace orxonox
 
 
   /**
-        @brief Frees all slaves form a master. Initiated by a master.
+        @brief Frees all slaves from a master. Initiated by a master.
     */
     void FormationController::freeSlaves()
     {

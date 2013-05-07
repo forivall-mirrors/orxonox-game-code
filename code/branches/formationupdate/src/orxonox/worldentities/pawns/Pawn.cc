@@ -308,29 +308,28 @@ namespace orxonox
     }
 
 
-    /* Two functions to find the slaves of a Pawn
-     *
-     */
+    // A function to check if this pawn's controller is the master of any formationcontroller
     bool Pawn::hasSlaves()
     {
     	for (ObjectList<FormationController>::iterator it =
 			 ObjectList<FormationController>::begin();
 			 it != ObjectList<FormationController>::end(); ++it )
 		{
-			// checks if the Pawn has a slave
+			// checks if the pawn's controller has a slave
 			if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
 				return true;
 		}
 		return false;
     }
 
+    // A function that returns a slave of the pawn's controller
     Controller* Pawn::getSlave(){
     	for (ObjectList<FormationController>::iterator it =
     			ObjectList<FormationController>::begin();
     			it != ObjectList<FormationController>::end(); ++it )
     	{
     		if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
-    			return it->getThis();
+    			return it->getController();
     	}
     	return 0;
     }
@@ -352,8 +351,7 @@ namespace orxonox
 
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
             {
-
-            	// Do different things if Pawn is the Master of a Formation
+            	// Start to control a new entity if you're the master of a formation
             	if(this->hasSlaves())
             	{
             		Controller* slave = this->getSlave();
@@ -362,21 +360,11 @@ namespace orxonox
             		// delete the AIController
             		slave->setControllableEntity(0);
 
-
-            		// set new Master
+            		// set a new master within the formation
 					orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
-            		//orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation();
-
-
-            		/* TO DO: - setNewMasterWithinFormation() with an argument.
-            		 * 		  - set slave as the new master within the formation
-            		 *
-            		 */
 
 					// start to control a slave
     				this->getPlayer()->startControl(entity);
-
-
             	}
             	else
             	{
