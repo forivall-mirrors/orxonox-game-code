@@ -49,11 +49,9 @@
   <!-- TRIGGERS -->
     <DistanceTrigger name="FormationInit" position="800,700,600"  target="Pawn" distance=60 stayActive="true" delay=0.1 />
     <DistanceTrigger name="LetsGo"        position="200,-200,1000" target="Pawn" distance=180 stayActive="true" delay=0.1 />
-      <BlinkingBillboard colour="1,1,0.05"position="200,-200,1000" frequency=0.6 amplitude=3 material="Flares/lensflare" >
-      </BlinkingBillboard>
+    <BlinkingBillboard colour="1,1,0.05" position="200,-200,1000" frequency=0.6 amplitude=3 material="Flares/lensflare" />
 	<DistanceTrigger name="Fight"        position="-600,3000,-2000" target="Pawn" distance=180 stayActive="true" delay=0.1 />
-      <BlinkingBillboard colour="0,0,1"position="-600,3000,-2000" frequency=0.6 amplitude=3 material="Flares/lensflare" >
-      </BlinkingBillboard>
+    <BlinkingBillboard colour="0,0,1" position="-600,3000,-2000" frequency=0.6 amplitude=3 material="Flares/lensflare" />
 
 
 
@@ -65,7 +63,7 @@
         </events>
     </Script> <!-- !!! activates formation behaviour !!! -->
 
-    <Script code="artificialcontroller setbotlevel 3" onLoad="false">
+    <Script code="artificialcontroller setbotlevel 5" onLoad="false">
         <events>
             <trigger>
                 <EventListener event=FormationInit />
@@ -88,11 +86,6 @@
 <?lua for i=0,1,1 do
 ?>
     <SpaceShip position="<?lua print(400+i*200) ?>,-200,1000" lookat="-1300,-600,900" visible="true">
-        <!--events>
-            <visibility>
-                <EventListener event="ondock" />
-            </visibility>
-        </events-->
         <templates>
             <Template link=spaceshipswallow /> <!--spaceshipTransporter spaceshippirate-->
         </templates>
