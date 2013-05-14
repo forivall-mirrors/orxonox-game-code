@@ -308,33 +308,6 @@ namespace orxonox
     }
 
 
-    // A function to check if this pawn's controller is the master of any formationcontroller
-    bool Pawn::hasSlaves()
-    {
-    	for (ObjectList<FormationController>::iterator it =
-			 ObjectList<FormationController>::begin();
-			 it != ObjectList<FormationController>::end(); ++it )
-		{
-			// checks if the pawn's controller has a slave
-			if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
-				return true;
-		}
-		return false;
-    }
-
-    // A function that returns a slave of the pawn's controller
-    Controller* Pawn::getSlave(){
-    	for (ObjectList<FormationController>::iterator it =
-    			ObjectList<FormationController>::begin();
-    			it != ObjectList<FormationController>::end(); ++it )
-    	{
-    		if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
-    			return it->getController();
-    	}
-    	return 0;
-    }
-
-
     void Pawn::death()
     {
         this->setHealth(1);
@@ -347,7 +320,6 @@ namespace orxonox
 
             if (this->getGametype())
                 this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
-
 
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
             {
@@ -525,5 +497,34 @@ namespace orxonox
         // enable proper radarviewability when the visibility is changed
         this->RadarViewable::settingsChanged();
     }
+
+
+    // A function to check if this pawn's controller is the master of any formationcontroller
+    bool Pawn::hasSlaves()
+    {
+    	for (ObjectList<FormationController>::iterator it =
+			 ObjectList<FormationController>::begin();
+			 it != ObjectList<FormationController>::end(); ++it )
+		{
+			// checks if the pawn's controller has a slave
+			if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
+				return true;
+		}
+		return false;
+    }
+
+    // A function that returns a slave of the pawn's controller
+    Controller* Pawn::getSlave(){
+    	for (ObjectList<FormationController>::iterator it =
+    			ObjectList<FormationController>::begin();
+    			it != ObjectList<FormationController>::end(); ++it )
+    	{
+    		if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
+    			return it->getController();
+    	}
+    	return 0;
+    }
+
+
 
 }
