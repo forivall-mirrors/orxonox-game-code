@@ -357,14 +357,23 @@ namespace orxonox
             		Controller* slave = this->getSlave();
             		ControllableEntity* entity = slave->getControllableEntity();
 
-            		// delete the AIController
-            		slave->setControllableEntity(0);
 
-            		// set a new master within the formation
-					orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
+            		if(!entity->hasHumanController())
+            		{
+            			// delete the AIController
+            			slave->setControllableEntity(0);
 
-					// start to control a slave
-    				this->getPlayer()->startControl(entity);
+						// set a new master within the formation
+						orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
+
+						// start to control a slave
+						this->getPlayer()->startControl(entity);
+            		}
+            		else
+                	{
+                		this->getPlayer()->stopControl();
+                	}
+
             	}
             	else
             	{
