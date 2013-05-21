@@ -58,6 +58,7 @@ namespace orxonox {
       static void followme();
       static void passivebehaviour(const bool passive);
       static void formationsize(const int size);
+      void setNewMasterWithinFormation(FormationController* newMaster);
 
       inline void setFormationFlight(bool formation)
            { this->formationFlight_ = formation; }
@@ -97,6 +98,10 @@ namespace orxonox {
 
       virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
 
+      FormationController* getMaster( void ) { return myMaster_; }
+      FormationController* getController( void ) { return this; }
+      FormationController* getSlave( void ) { return this->slaves_.back(); }
+
   protected:
       bool formationFlight_;
       bool passive_;
@@ -126,15 +131,15 @@ namespace orxonox {
       void unregisterSlave();
       void searchNewMaster();
       void commandSlaves();
+      void takeLeadOfFormation();
+      void loseMasterState();
       void setNewMasterWithinFormation();
 
       void freeSlaves();
       void forceFreeSlaves();
-      void loseMasterState();
       void forceFreedom();
       bool forcedFree();
 
-      void takeLeadOfFormation();
       void masterAttacked(Pawn* originator);
 
       void specificMasterActionHold();
@@ -158,6 +163,7 @@ namespace orxonox {
 
 
       void setTarget(Pawn* target);
+
       void searchNewTarget();
       void forgetTarget();
 

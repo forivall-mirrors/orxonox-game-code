@@ -64,7 +64,6 @@ namespace orxonox
                 { return this->controllableEntity_; }
             virtual void changedControllableEntity() {}
 
-        protected:
             // don't use this directly, use getPlayer()->startControl(entity) (unless you know exactly what you do)
             inline void setControllableEntity(ControllableEntity* entity)
             {

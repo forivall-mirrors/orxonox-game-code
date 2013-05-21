@@ -101,7 +101,7 @@ namespace orxonox
         }
 
         // commandslaves when Master of a formation
-        if (HumanController::localController_s && HumanController::localController_s->state_==MASTER)
+        if (HumanController::localController_s && HumanController::localController_s->state_==MASTER && FormationController::slaves_.size() > 0)
         {
             if (HumanController::localController_s->formationMode_ != ATTACK)
                 HumanController::localController_s->commandSlaves();

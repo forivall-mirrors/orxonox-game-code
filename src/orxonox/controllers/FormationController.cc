@@ -534,8 +534,38 @@ namespace orxonox
     }
 
 
+    // Sets newMaster as the new master within the formation. Called by the master.
+    void FormationController::setNewMasterWithinFormation(FormationController* newMaster)
+        {
+            if(this->state_ != MASTER || newMaster->myMaster_ != this) return;
+
+            if (!this->slaves_.empty())
+            {
+				std::vector<FormationController*>::iterator it2 = std::find(this->slaves_.begin(), this->slaves_.end(), newMaster);
+				if (it2 != this->slaves_.end())
+				{
+					 this->slaves_.erase(it2);
+				}
+
+                newMaster->state_ = MASTER;
+                newMaster->slaves_ = this->slaves_;
+                newMaster->myMaster_ = 0;
+
+                for(std::vector<FormationController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
+                {
+                    (*it)->myMaster_ = newMaster;
+                }
+            }
+
+            this->slaves_.clear();
+            this->specificMasterAction_ = NONE;
+            this->state_ = FREE;
+        }
+
+
+
   /**
-        @brief Frees all slaves form a master. Initiated by a master.
+        @brief Frees all slaves from a master. Initiated by a master.
     */
     void FormationController::freeSlaves()
     {
