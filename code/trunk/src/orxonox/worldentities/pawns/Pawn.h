@@ -184,6 +184,8 @@ namespace orxonox // tolua_export
             virtual void removePlayer();
 
             virtual void death();
+            virtual bool hasSlaves();
+            virtual Controller* getSlave();
             virtual void goWithStyle();
             virtual void deatheffect();
             virtual void spawneffect();
