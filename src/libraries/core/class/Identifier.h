@@ -295,6 +295,9 @@ namespace orxonox
                 SuperFunctionDestruction<0, T>::destroy(this);
             }
 
+            void updateConfigValues(bool updateChildren, Listable*) const;
+            void updateConfigValues(bool updateChildren, Identifiable*) const;
+
             static ClassIdentifier<T>* classIdentifier_s;
     };
 
@@ -428,6 +431,12 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::updateConfigValues(bool updateChildren) const
     {
+        this->updateConfigValues(updateChildren, static_cast<T*>(NULL));
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::updateConfigValues(bool updateChildren, Listable*) const
+    {
         if (!this->hasConfigValues())
             return;
 
@@ -437,6 +446,12 @@ namespace orxonox
         if (updateChildren)
             for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
                 (*it)->updateConfigValues(false);
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::updateConfigValues(bool updateChildren, Identifiable*) const
+    {
+        // no action
     }
 
 
