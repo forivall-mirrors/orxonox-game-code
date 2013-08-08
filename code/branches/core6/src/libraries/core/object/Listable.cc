@@ -79,9 +79,16 @@ namespace orxonox
      */
     void Listable::setContext(Context* context)
     {
+        std::vector<ObjectListBaseElement*> copy = this->elements_;
+        this->elements_.clear();
+
+        for (size_t i = 0; i < copy.size(); ++i)
+        {
+            copy[i]->changeContext(this->context_, context);
+            delete copy[i];
+        }
+
         this->context_ = context;
-        for (size_t i = 0; i < this->elements_.size(); ++i)
-            this->elements_[i]->changeContext(context);
     }
 
 }

@@ -59,7 +59,7 @@ namespace orxonox
             ObjectListBaseElement(Listable* object) : next_(0), prev_(0), objectBase_(object), list_(0) {}
             virtual ~ObjectListBaseElement() { this->removeFromList(); }
 
-            virtual void changeContext(Context* context) = 0;
+            virtual void changeContext(Context* oldContext, Context* newContext) = 0;
 
             ObjectListBaseElement* next_;       //!< The next element in the list
             ObjectListBaseElement* prev_;       //!< The previous element in the list
@@ -81,10 +81,15 @@ namespace orxonox
         public:
             ObjectListElement(T* object) : ObjectListBaseElement(static_cast<Listable*>(object)), object_(object) {}
 
-            virtual void changeContext(Context* context)
+            virtual void changeContext(Context* oldContext, Context* newContext)
             {
+                // add object to new context, but only if this element belongs exactly to the old context (and not to a sub-context to avoid re-adding objects
+                // multiple times if they are in multiple contexts)
+                if (oldContext->getObjectList<T>() == this->list_)
+                    newContext->addObject(this->object_);
+
+                // remove from old list
                 this->removeFromList();
-                context->getObjectList<T>()->addElement(this);
             }
 
             T* object_;              //!< The object
