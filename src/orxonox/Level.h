@@ -40,10 +40,10 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Level : public BaseObject, public Synchronisable
+    class _OrxonoxExport Level : public BaseObject, public Synchronisable, public Context
     {
         public:
-            Level(BaseObject* creator);
+            Level(Context* context);
             virtual ~Level();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

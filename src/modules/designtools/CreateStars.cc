@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateFactory(CreateStars);
 
-    CreateStars::CreateStars(BaseObject* creator) : BaseObject(creator)
+    CreateStars::CreateStars(Context* context) : BaseObject(context)
     {
         RegisterObject(CreateStars);
         this->material_ = "Examples/Flare";
@@ -68,7 +68,7 @@ namespace orxonox
 
         for(int i=0; i < numStars_; i++)
         {
-            Billboard* bb = new Billboard(this);
+            Billboard* bb = new Billboard(this->getContext());
 
             float r = rnd(-colourDiff_,colourDiff_);
             float g = rnd(-colourDiff_,colourDiff_);

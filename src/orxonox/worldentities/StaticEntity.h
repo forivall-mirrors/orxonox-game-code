@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport StaticEntity : public WorldEntity
     {
         public:
-            StaticEntity(BaseObject* creator);
+            StaticEntity(Context* context);
             virtual ~StaticEntity();
 
             using WorldEntity::setPosition;

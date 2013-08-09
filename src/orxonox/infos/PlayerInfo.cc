@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    PlayerInfo::PlayerInfo(BaseObject* creator) : Info(creator)
+    PlayerInfo::PlayerInfo(Context* context) : Info(context)
     {
         RegisterObject(PlayerInfo);
 
@@ -135,7 +135,7 @@ namespace orxonox
             this->controller_->destroy();
             this->controller_ = 0;
         }
-        this->controller_ = this->defaultController_.fabricate(this);
+        this->controller_ = this->defaultController_.fabricate(this->getContext());
         assert(this->controller_);
         this->controller_->setPlayer(this);
         if (this->controllableEntity_)

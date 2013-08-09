@@ -83,7 +83,7 @@ namespace orxonox
     class _QuestsystemExport LocalQuest : public Quest
     {
         public:
-            LocalQuest(BaseObject* creator);
+            LocalQuest(Context* context);
             virtual ~LocalQuest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a LocalQuest object through XML.

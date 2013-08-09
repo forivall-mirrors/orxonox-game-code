@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateFactory(WeaponPack);
 
-    WeaponPack::WeaponPack(BaseObject* creator) : BaseObject(creator)
+    WeaponPack::WeaponPack(Context* context) : BaseObject(context)
     {
         RegisterObject(WeaponPack);
 

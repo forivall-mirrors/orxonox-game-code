@@ -41,8 +41,8 @@ namespace orxonox
 {
     CreateFactory(EffectContainer);
 
-    EffectContainer::EffectContainer(BaseObject* creator)
-        : BaseObject(creator)
+    EffectContainer::EffectContainer(Context* context)
+        : BaseObject(context)
         , lua_(NULL)
     {
         RegisterObject(EffectContainer);

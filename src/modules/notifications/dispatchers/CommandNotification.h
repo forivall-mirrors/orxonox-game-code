@@ -69,7 +69,7 @@ namespace orxonox {
     {
 
         public:
-            CommandNotification(BaseObject* creator); //!< Default Constructor.
+            CommandNotification(Context* context); //!< Default Constructor.
             virtual ~CommandNotification(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CommandNotification object through XML.

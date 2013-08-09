@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport Backlight : public FadingBillboard, public TimeFactorListener
     {
         public:
-            Backlight(BaseObject* creator);
+            Backlight(Context* context);
             virtual ~Backlight();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

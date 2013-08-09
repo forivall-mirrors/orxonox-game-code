@@ -88,7 +88,7 @@ namespace orxonox {
     {
 
         public:
-            MetaPickup(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            MetaPickup(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~MetaPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a MetaPickup object through XML.

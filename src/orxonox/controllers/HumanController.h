@@ -43,7 +43,7 @@ namespace orxonox
         : public FormationController, public Tickable
     { // tolua_export
         public:
-            HumanController(BaseObject* creator);
+            HumanController(Context* context);
             virtual ~HumanController();
 
             virtual void tick(float dt);

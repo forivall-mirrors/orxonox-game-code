@@ -50,9 +50,9 @@ namespace orxonox
 {
     CreateFactory(Pawn);
 
-    Pawn::Pawn(BaseObject* creator)
-        : ControllableEntity(creator)
-        , RadarViewable(creator, static_cast<WorldEntity*>(this))
+    Pawn::Pawn(Context* context)
+        : ControllableEntity(context)
+        , RadarViewable(this, static_cast<WorldEntity*>(this))
     {
         RegisterObject(Pawn);
 
@@ -83,7 +83,7 @@ namespace orxonox
 
         if (GameMode::isMaster())
         {
-            this->weaponSystem_ = new WeaponSystem(this);
+            this->weaponSystem_ = new WeaponSystem(this->getContext());
             this->weaponSystem_->setPawn(this);
         }
         else
@@ -296,7 +296,7 @@ namespace orxonox
         // play spawn effect
         if (!this->spawnparticlesource_.empty())
         {
-            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -333,7 +333,7 @@ namespace orxonox
         this->bAlive_ = false;
         this->setDestroyWhenPlayerLeft(false);
 
-        BigExplosion* chunk = new BigExplosion(this->getCreator());
+        BigExplosion* chunk = new BigExplosion(this->getContext());
         chunk->setPosition(this->getPosition());
 
     }
@@ -341,7 +341,7 @@ namespace orxonox
     {
         // play death effect
         {
-            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -349,7 +349,7 @@ namespace orxonox
             effect->setLifetime(4.0f);
         }
         {
-            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -357,7 +357,7 @@ namespace orxonox
             effect->setLifetime(4.0f);
         }
         {
-            ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
             effect->setDestroyAfterLife(true);
@@ -366,7 +366,7 @@ namespace orxonox
         }
         for (unsigned int i = 0; i < this->numexplosionchunks_; ++i)
         {
-            ExplosionChunk* chunk = new ExplosionChunk(this->getCreator());
+            ExplosionChunk* chunk = new ExplosionChunk(this->getContext());
             chunk->setPosition(this->getPosition());
         }
     }

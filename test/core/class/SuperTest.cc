@@ -12,7 +12,7 @@ namespace orxonox
         class TestClass : public BaseObject
         {
             public:
-                TestClass(BaseObject* creator = NULL) : BaseObject(NULL), changedNameBase_(false), xmlPortBase_(false), modeBase_(XMLPort::NOP)
+                TestClass(Context* context = NULL) : BaseObject(context), changedNameBase_(false), xmlPortBase_(false), modeBase_(XMLPort::NOP)
                 {
                     RegisterRootObject(TestClass);
                 }
@@ -36,7 +36,7 @@ namespace orxonox
         class TestSubclass : public TestClass
         {
             public:
-                TestSubclass(BaseObject* creator = NULL) : changedNameSubclass_(false), xmlPortSubclass_(false), modeSubclass_(XMLPort::NOP)
+                TestSubclass(Context* context = NULL) : TestClass(context), changedNameSubclass_(false), xmlPortSubclass_(false), modeSubclass_(XMLPort::NOP)
                 {
                     RegisterObject(TestSubclass);
                 }

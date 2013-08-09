@@ -58,7 +58,7 @@ namespace orxonox
     class _PongExport PongBall : public MovableEntity
     {
         public:
-            PongBall(BaseObject* creator);
+            PongBall(Context* context);
             virtual ~PongBall();
 
             virtual void tick(float dt);

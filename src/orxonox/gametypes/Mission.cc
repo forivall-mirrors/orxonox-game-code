@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(Mission);
 
-    Mission::Mission(BaseObject* creator) : TeamGametype(creator)
+    Mission::Mission(Context* context) : TeamGametype(context)
     {
         RegisterObject(Mission);
         this->missionAccomplished_ = false;

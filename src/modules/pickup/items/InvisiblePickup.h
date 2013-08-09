@@ -69,7 +69,7 @@ namespace orxonox {
     {
         public:
 
-            InvisiblePickup(BaseObject* creator); //!< Constructor.
+            InvisiblePickup(Context* context); //!< Constructor.
             virtual ~InvisiblePickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.

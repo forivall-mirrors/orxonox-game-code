@@ -89,7 +89,7 @@ namespace orxonox
     class _QuestsystemExport GlobalQuest : public Quest
     {
         public:
-            GlobalQuest(BaseObject* creator);
+            GlobalQuest(Context* context);
             virtual ~GlobalQuest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a GlobalQuest object through XML.

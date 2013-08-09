@@ -54,7 +54,7 @@ namespace orxonox
     class _ObjectsExport CheckPoint : public DistanceTrigger, public RadarViewable
     {
     public:
-        CheckPoint(BaseObject* creator);
+        CheckPoint(Context* context);
         virtual ~CheckPoint();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CheckPoint object through XML.

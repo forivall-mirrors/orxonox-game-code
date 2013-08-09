@@ -47,7 +47,7 @@ namespace orxonox
     class _TowerDefenseExport TowerDefense : public Deathmatch
     {
     public:
-        TowerDefense(BaseObject* creator);
+        TowerDefense(Context* context);
         virtual ~TowerDefense();
 
         virtual void start(); //<! The function is called when the gametype starts

@@ -35,7 +35,7 @@ namespace orxonox
 {
     CreateFactory(FadingBillboard);
 
-    FadingBillboard::FadingBillboard(BaseObject* creator) : Billboard(creator)
+    FadingBillboard::FadingBillboard(Context* context) : Billboard(context)
     {
         RegisterObject(FadingBillboard);
 

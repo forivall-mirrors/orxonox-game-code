@@ -58,7 +58,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    Pong::Pong(BaseObject* creator) : Deathmatch(creator)
+    Pong::Pong(Context* context) : Deathmatch(context)
     {
         RegisterObject(Pong);
 
@@ -128,7 +128,7 @@ namespace orxonox
         {
             if (this->ball_ == NULL) // If there is no ball, create a new ball.
             {
-                this->ball_ = new PongBall(this->center_);
+                this->ball_ = new PongBall(this->center_->getContext());
                 // Apply the template for the ball specified by the centerpoint.
                 this->ball_->addTemplate(this->center_->getBalltemplate());
             }
@@ -146,7 +146,7 @@ namespace orxonox
             {
                 if (this->bat_[i] == NULL)
                 {
-                    this->bat_[i] = new PongBat(this->center_);
+                    this->bat_[i] = new PongBat(this->center_->getContext());
                     this->bat_[i]->addTemplate(this->center_->getBattemplate());
                 }
             }

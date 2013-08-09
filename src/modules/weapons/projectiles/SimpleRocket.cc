@@ -55,10 +55,10 @@ namespace orxonox
 
     const float SimpleRocket::FUEL_PERCENTAGE = 0.8f;
 
-    SimpleRocket::SimpleRocket(BaseObject* creator)
-        : ControllableEntity(creator)
+    SimpleRocket::SimpleRocket(Context* context)
+        : ControllableEntity(context)
         , BasicProjectile()
-        , RadarViewable(creator, static_cast<WorldEntity*>(this))
+        , RadarViewable(this, static_cast<WorldEntity*>(this))
     {
         RegisterObject(SimpleRocket);// Register the SimpleRocket class to the core
 
@@ -73,13 +73,13 @@ namespace orxonox
             this->fuel_ = true;
 
             // Create rocket model.
-            Model* model = new Model(this);
+            Model* model = new Model(this->getContext());
             model->setMeshSource("rocket.mesh");
             model->scale(0.7f);
             this->attach(model);
 
             // Add effects.
-            this->fire_ = new ParticleEmitter(this);
+            this->fire_ = new ParticleEmitter(this->getContext());
             this->attach(this->fire_);
 
             this->fire_->setOrientation(this->getOrientation());
@@ -90,7 +90,7 @@ namespace orxonox
 
             // Add collision shape.
             // TODO: fix the orientation and size of this collision shape to match the rocket
-            ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
+            ConeCollisionShape* collisionShape = new ConeCollisionShape(this->getContext());
             collisionShape->setOrientation(this->getOrientation());
             collisionShape->setRadius(1.5f);
             collisionShape->setHeight(5);

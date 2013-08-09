@@ -46,7 +46,7 @@ namespace orxonox
     /**
      * @brief Constructor
      */
-    Planet::Planet(BaseObject* creator) : MovableEntity(creator)
+    Planet::Planet(Context* context) : MovableEntity(context)
     {
         RegisterObject(Planet);
         this->registerVariables();

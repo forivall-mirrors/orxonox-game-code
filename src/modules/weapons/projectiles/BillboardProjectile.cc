@@ -41,7 +41,7 @@ namespace orxonox
 {
     CreateFactory(BillboardProjectile);
 
-    BillboardProjectile::BillboardProjectile(BaseObject* creator) : Projectile(creator)
+    BillboardProjectile::BillboardProjectile(Context* context) : Projectile(context)
     {
         RegisterObject(BillboardProjectile);
 

@@ -54,7 +54,7 @@ namespace orxonox
         friend class RaceCheckPoint;
 
         public:
-            SpaceRaceManager(BaseObject* creator);
+            SpaceRaceManager(Context* context);
             virtual ~SpaceRaceManager() ;
 
             void XMLPort(Element& xmlelement, XMLPort::Mode mode);

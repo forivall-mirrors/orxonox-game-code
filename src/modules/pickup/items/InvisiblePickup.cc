@@ -50,7 +50,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes the member variables.
     */
-    InvisiblePickup::InvisiblePickup(BaseObject* creator) : Pickup(creator)
+    InvisiblePickup::InvisiblePickup(Context* context) : Pickup(context)
     {
         RegisterObject(InvisiblePickup);
         this->initialize();

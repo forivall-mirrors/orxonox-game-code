@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateFactory(LastManStandingInfos);
 
-    LastManStandingInfos::LastManStandingInfos(BaseObject* creator) : OverlayText(creator)
+    LastManStandingInfos::LastManStandingInfos(Context* context) : OverlayText(context)
     {
         RegisterObject(LastManStandingInfos);
 

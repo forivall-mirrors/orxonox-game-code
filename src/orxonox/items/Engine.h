@@ -55,7 +55,7 @@ namespace orxonox
     class _OrxonoxExport Engine : public Item
     {
         public:
-            Engine(BaseObject* creator);
+            Engine(Context* context);
             virtual ~Engine();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

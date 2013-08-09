@@ -38,14 +38,14 @@ namespace orxonox
 {
     CreateFactory(HUDHealthBar);
 
-    HUDHealthBar::HUDHealthBar(BaseObject* creator) : HUDBar(creator)
+    HUDHealthBar::HUDHealthBar(Context* context) : HUDBar(context)
     {
         RegisterObject(HUDHealthBar);
 
         this->owner_ = 0;
         this->bUseBarColour_ = false;
 
-        this->textoverlay_ = new OverlayText(this);
+        this->textoverlay_ = new OverlayText(this->getContext());
 
         assert(this->textoverlay_.get());
 

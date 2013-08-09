@@ -208,7 +208,7 @@ namespace orxonox
                 rootElement.InsertEndChild(*child);
 
             orxout(verbose, context::loader) << "  creating root-namespace..." << endl;
-            Namespace* rootNamespace = new Namespace(0);
+            Namespace* rootNamespace = new Namespace(Context::getRootContext());
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setFile(file);
             rootNamespace->setNamespace(rootNamespace);

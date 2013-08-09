@@ -44,7 +44,7 @@ namespace orxonox {
     @brief
         Default Constructor. Registers the object and initializes variables.
     */
-    SimpleNotification::SimpleNotification(BaseObject* creator) : NotificationDispatcher(creator)
+    SimpleNotification::SimpleNotification(Context* context) : NotificationDispatcher(context)
     {
         RegisterObject(SimpleNotification);
 

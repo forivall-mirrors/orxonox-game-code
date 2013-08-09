@@ -52,7 +52,7 @@ namespace orxonox
 
     registerStaticNetworkFunction(Dock::showDockingDialog);
 
-    Dock::Dock(BaseObject* creator) : StaticEntity(creator)
+    Dock::Dock(Context* context) : StaticEntity(context)
     {
         RegisterObject(Dock);
     }

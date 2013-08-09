@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport TeamGametype : public Gametype
     {
         public:
-            TeamGametype(BaseObject* creator);
+            TeamGametype(Context* context);
             virtual ~TeamGametype() {}
 
             void setConfigValues();

@@ -56,7 +56,7 @@ namespace orxonox
     {
 
         public:
-            DistanceTriggerBeacon(BaseObject* creator); //!< Constructor.
+            DistanceTriggerBeacon(Context* context); //!< Constructor.
             virtual ~DistanceTriggerBeacon() {} //!< Destructor.
 
     };

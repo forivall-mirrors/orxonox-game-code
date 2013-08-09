@@ -47,7 +47,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object.
     */
-    CompleteQuest::CompleteQuest(BaseObject* creator) : ChangeQuestStatus(creator)
+    CompleteQuest::CompleteQuest(Context* context) : ChangeQuestStatus(context)
     {
         RegisterObject(CompleteQuest);
     }

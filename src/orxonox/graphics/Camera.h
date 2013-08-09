@@ -45,7 +45,7 @@ namespace orxonox
         friend class CameraManager;
 
         public:
-            Camera(BaseObject* creator);
+            Camera(Context* context);
             virtual ~Camera();
 
             void setConfigValues();

@@ -57,8 +57,8 @@ namespace orxonox
     {
 
         public:
-            MultiTriggerContainer(BaseObject* creator); //!< Default constructor. Registers the object and creates an empty container.
-            MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data); //!< Constructor. Registers the object and sets the input values.
+            MultiTriggerContainer(Context* context); //!< Default constructor. Registers the object and creates an empty container.
+            MultiTriggerContainer(Context* context, MultiTrigger* originator, BaseObject* data); //!< Constructor. Registers the object and sets the input values.
             virtual ~MultiTriggerContainer(); //!< Destructor.
 
             /**

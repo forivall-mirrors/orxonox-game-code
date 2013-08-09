@@ -70,7 +70,7 @@ namespace orxonox
     HumanController* HumanController::localController_s = 0;
     /*static*/ const float HumanController::BOOSTING_TIME = 0.1f;
 
-    HumanController::HumanController(BaseObject* creator) : FormationController(creator)
+    HumanController::HumanController(Context* context) : FormationController(context)
     {
         RegisterObject(HumanController);
 

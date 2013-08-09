@@ -49,7 +49,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    PongScore::PongScore(BaseObject* creator) : OverlayText(creator)
+    PongScore::PongScore(Context* context) : OverlayText(context)
     {
         RegisterObject(PongScore);
 

@@ -54,7 +54,7 @@ namespace orxonox
     @param creator
         The creator of the Trigger.
     */
-    Trigger::Trigger(BaseObject* creator) : TriggerBase(creator)
+    Trigger::Trigger(Context* context) : TriggerBase(context)
     {
         RegisterObject(Trigger);
 

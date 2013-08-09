@@ -64,7 +64,7 @@ namespace orxonox
             //void computeVirtualCheckpoint(RaceCheckPoint*, RaceCheckPoint*, std::vector<StaticEntity*>);
 
         public:
-            SpaceRaceController(BaseObject* creator);
+            SpaceRaceController(Context* context);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual ~SpaceRaceController();
             virtual void tick(float dt);

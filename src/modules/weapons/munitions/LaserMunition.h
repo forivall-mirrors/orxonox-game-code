@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport LaserMunition : public ReplenishingMunition
     {
         public:
-            LaserMunition(BaseObject* creator);
+            LaserMunition(Context* context);
             virtual ~LaserMunition() {}
     };
 }

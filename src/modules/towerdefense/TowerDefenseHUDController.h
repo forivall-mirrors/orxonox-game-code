@@ -48,7 +48,7 @@ namespace orxonox
     class _TowerDefenseExport TowerDefenseHUDController : public OverlayText, public Tickable
     {
     public:
-        TowerDefenseHUDController(BaseObject* creator);
+        TowerDefenseHUDController(Context* context);
         virtual ~TowerDefenseHUDController();
 
         virtual void tick(float dt);

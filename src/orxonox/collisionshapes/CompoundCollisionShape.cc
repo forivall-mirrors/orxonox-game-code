@@ -47,7 +47,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    CompoundCollisionShape::CompoundCollisionShape(BaseObject* creator) : CollisionShape(creator)
+    CompoundCollisionShape::CompoundCollisionShape(Context* context) : CollisionShape(context)
     {
         RegisterObject(CompoundCollisionShape);
 

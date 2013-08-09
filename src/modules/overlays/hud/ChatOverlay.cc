@@ -45,8 +45,8 @@ namespace orxonox
 {
     CreateFactory(ChatOverlay);
 
-    ChatOverlay::ChatOverlay(BaseObject* creator)
-        : OverlayText(creator)
+    ChatOverlay::ChatOverlay(Context* context)
+        : OverlayText(context)
     {
         RegisterObject(ChatOverlay);
 

@@ -40,7 +40,7 @@ namespace orxonox
 {
     CreateFactory(MuzzleFlash);
 
-    MuzzleFlash::MuzzleFlash(BaseObject* creator) : Billboard(creator)
+    MuzzleFlash::MuzzleFlash(Context* context) : Billboard(context)
     {
         RegisterObject(MuzzleFlash);
         this->setScale(0.1f);

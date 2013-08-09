@@ -51,7 +51,7 @@ namespace orxonox
     @param creator
         The creator of the NotificationQueue.
     */
-    NotificationQueue::NotificationQueue(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), registered_(false)
+    NotificationQueue::NotificationQueue(Context* context) : BaseObject(context), Synchronisable(context), registered_(false)
     {
         RegisterObject(NotificationQueue);
 

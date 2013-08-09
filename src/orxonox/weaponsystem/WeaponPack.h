@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport WeaponPack : public BaseObject
     {
         public:
-            WeaponPack(BaseObject* creator);
+            WeaponPack(Context* context);
             virtual ~WeaponPack();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

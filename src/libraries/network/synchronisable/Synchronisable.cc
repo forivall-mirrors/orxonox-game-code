@@ -48,7 +48,7 @@ namespace orxonox
   * Constructor:
   * Initializes all Variables and sets the right objectID_
   */
-  Synchronisable::Synchronisable(BaseObject* creator )
+  Synchronisable::Synchronisable(Context* context)
   {
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
@@ -68,11 +68,8 @@ namespace orxonox
     // set standard priority
     this->setPriority( Priority::Normal );
 
-    // get creator id
-    if( creator )
-      this->creatorID_ = creator->getSceneID();
-    else
-      this->creatorID_ = OBJECTID_UNKNOWN;
+    // get context id
+    this->contextID_ = this->findContextID(context);
   }
 
   /**
@@ -99,6 +96,21 @@ namespace orxonox
 
   }
 
+  /**
+   * @brief Returns the id of the context.
+   * If the context is not Synchronisable, it moves on to its parent, recursively.
+   */
+  uint32_t Synchronisable::findContextID(Context* context)
+  {
+      if (context == NULL)
+          return OBJECTID_UNKNOWN;
+
+      Synchronisable* synchronisableContext = orxonox_cast<Synchronisable*>(context);
+      if (synchronisableContext != NULL)
+          return synchronisableContext->getObjectID();
+      else
+          return this->findContextID(context->getParentContext());
+  }
 
   /**
    * This function sets the internal mode for synchronisation
@@ -141,31 +153,35 @@ namespace orxonox
         abort();
     }
     assert(id);
-    BaseObject* creator = 0;
-    if (header.getCreatorID() != OBJECTID_UNKNOWN)
+    Context* context = 0;
+    if (header.getContextID() != OBJECTID_UNKNOWN)
     {
-      Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header.getCreatorID());
-      if (!synchronisable_creator)
+      Synchronisable* synchronisable_context = Synchronisable::getSynchronisable(header.getContextID());
+      if (!synchronisable_context)
       {
         mem += header.getDataSize()+SynchronisableHeader::getSize(); //.TODO: this suckz.... remove size from header
         assert(0); // TODO: uncomment this if we have a clean objecthierarchy (with destruction of children of objects) ^^
         return 0;
       }
       else
-        creator = orxonox_cast<BaseObject*>(synchronisable_creator);
+        context = orxonox_cast<Context*>(synchronisable_context);
     }
     assert(getSynchronisable(header.getObjectID())==0);   //make sure no object with this id exists
-    BaseObject *bo = orxonox_cast<BaseObject*>(id->fabricate(creator));
+    BaseObject *bo = orxonox_cast<BaseObject*>(id->fabricate(context));
     assert(bo);
     Synchronisable *no = orxonox_cast<Synchronisable*>(bo);
     assert(no);
     assert( Synchronisable::objectMap_.find(header.getObjectID()) == Synchronisable::objectMap_.end() );
     no->setObjectID(header.getObjectID());
-    //no->creatorID=header.getCreatorID(); //TODO: remove this
+    //no->contextID=header.getContextID(); //TODO: remove this
     no->setClassID(header.getClassID());
-    assert(no->creatorID_ == header.getCreatorID());
-    if( creator )
-      bo->setLevel(creator->getLevel());          // Note: this ensures that the level is known on the client for child objects of the scene (and the scene itself)
+    assert(no->contextID_ == header.getContextID());
+    if( context )
+    {
+      BaseObject* boContext = orxonox_cast<BaseObject*>(context);
+      if (boContext)
+          bo->setLevel(boContext->getLevel()); // Note: this ensures that the level is known on the client for child objects of the scene (and the scene itself)
+    }
     //assert(no->classID_ == header.getClassID());
     orxout(verbose, context::network) << "fabricate objectID_: " << no->objectID_ << " classID_: " << no->classID_ << endl;
           // update data and create object/entity...
@@ -273,7 +289,7 @@ namespace orxonox
 //     orxout(verbose, context::network) << endl;
 
     header.setObjectID( this->objectID_ );
-    header.setCreatorID( this->creatorID_ );
+    header.setContextID( this->contextID_ );
     header.setClassID( this->classID_ );
     header.setDataSize( tempsize );
     assert( tempsize == mem-oldmem-SynchronisableHeader::getSize() );
@@ -330,7 +346,7 @@ namespace orxonox
     {
       SynchronisableHeader syncHeader2(mem);
       assert( this->getClassID() == syncHeader2.getClassID() );
-      assert( this->getCreatorID() == syncHeader2.getCreatorID() );
+      assert( this->getContextID() == syncHeader2.getContextID() );
       mem += SynchronisableHeader::getSize();
       std::vector<SynchronisableVariableBase *>::iterator i;
       for(i=syncList_.begin(); i!=syncList_.end(); ++i)

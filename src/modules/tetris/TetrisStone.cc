@@ -47,7 +47,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    TetrisStone::TetrisStone(BaseObject* creator) : MovableEntity(creator)
+    TetrisStone::TetrisStone(Context* context) : MovableEntity(context)
     {
         RegisterObject(TetrisStone);
 

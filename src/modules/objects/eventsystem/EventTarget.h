@@ -45,7 +45,7 @@ namespace orxonox
     class _ObjectsExport EventTarget : public BaseObject, public XMLNameListener
     {
         public:
-            EventTarget(BaseObject* creator);
+            EventTarget(Context* context);
             virtual ~EventTarget();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

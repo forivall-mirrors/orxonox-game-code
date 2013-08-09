@@ -56,7 +56,7 @@ namespace orxonox
     class _TetrisExport TetrisScore : public OverlayText, public Tickable
     {
         public:
-            TetrisScore(BaseObject* creator);
+            TetrisScore(Context* context);
             virtual ~TetrisScore();
 
             virtual void tick(float dt); //!< Creates and sets the caption to be displayed by the TetrisScore.

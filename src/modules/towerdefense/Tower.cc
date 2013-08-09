@@ -21,7 +21,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    Tower::Tower(BaseObject* creator) : Pawn(creator)
+    Tower::Tower(Context* context) : Pawn(context)
     {
         RegisterObject(Tower);
 

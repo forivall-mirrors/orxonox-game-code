@@ -81,7 +81,7 @@ namespace orxonox // tolua_export
     { // tolua_export
 
         public:
-            QuestHint(BaseObject* creator);
+            QuestHint(Context* context);
             virtual ~QuestHint();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestHint object through XML.

@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    WorldEntityCollisionShape::WorldEntityCollisionShape(BaseObject* creator) : CompoundCollisionShape(creator)
+    WorldEntityCollisionShape::WorldEntityCollisionShape(Context* context) : CompoundCollisionShape(context)
     {
         RegisterObject(WorldEntityCollisionShape);
 

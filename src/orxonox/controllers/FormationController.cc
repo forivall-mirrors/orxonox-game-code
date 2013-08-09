@@ -68,7 +68,7 @@ namespace orxonox
     static const float SPEED_FREE = 0.8f;
     static const float ROTATEFACTOR_FREE = 0.8f;
 
-    FormationController::FormationController(BaseObject* creator) : Controller(creator)
+    FormationController::FormationController(Context* context) : Controller(context)
     {
         RegisterObject(FormationController);
 

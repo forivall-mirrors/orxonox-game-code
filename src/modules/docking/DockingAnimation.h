@@ -62,7 +62,7 @@ namespace orxonox
     class _DockingExport DockingAnimation : public BaseObject
     {
         public:
-            DockingAnimation(BaseObject* creator);
+            DockingAnimation(Context* context);
             virtual ~DockingAnimation();
 
             virtual bool docking(PlayerInfo* player) = 0; //!< Called when a player starts docking

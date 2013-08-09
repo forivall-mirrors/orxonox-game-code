@@ -56,7 +56,7 @@ namespace orxonox
     class _DockingExport DockToShip : public DockingEffect
     {
         public:
-            DockToShip(BaseObject* creator);
+            DockToShip(Context* context);
             virtual ~DockToShip();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

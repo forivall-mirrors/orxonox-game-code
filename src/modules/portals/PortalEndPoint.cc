@@ -47,11 +47,11 @@ namespace orxonox
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
-    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), RadarViewable(creator, static_cast<WorldEntity*>(this)), id_(0), trigger_(NULL), reenterDelay_(0)
+    PortalEndPoint::PortalEndPoint(Context* context) : StaticEntity(context), RadarViewable(this, static_cast<WorldEntity*>(this)), id_(0), trigger_(NULL), reenterDelay_(0)
     {
         RegisterObject(PortalEndPoint);
 
-        this->trigger_ = new DistanceMultiTrigger(this);
+        this->trigger_ = new DistanceMultiTrigger(this->getContext());
         this->trigger_->setName("portal");
         this->attach(this->trigger_);
 
@@ -60,7 +60,7 @@ namespace orxonox
         this->setRadarVisibility(true);
         if( GameMode::isMaster() )
         {
-            this->portalSound_ = new WorldSound(this);
+            this->portalSound_ = new WorldSound(this->getContext());
             this->portalSound_->setLooping(false);
             this->attach(this->portalSound_);
             this->portalSound_->setSource("sounds/Weapon_HsW01.ogg"); //TODO: change sound file

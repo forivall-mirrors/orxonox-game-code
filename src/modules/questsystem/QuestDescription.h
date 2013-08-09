@@ -63,7 +63,7 @@ namespace orxonox
     {
 // tolua_end
         public:
-            QuestDescription(BaseObject* creator);
+            QuestDescription(Context* context);
             virtual ~QuestDescription();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestDescription object through XML.

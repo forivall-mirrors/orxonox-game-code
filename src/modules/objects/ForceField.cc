@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some values.
     */
-    ForceField::ForceField(BaseObject* creator) : StaticEntity(creator)
+    ForceField::ForceField(Context* context) : StaticEntity(context)
     {
         RegisterObject(ForceField);
 

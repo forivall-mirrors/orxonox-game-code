@@ -51,7 +51,7 @@ namespace orxonox
 {
     CreateFactory(HsW01);
 
-    HsW01::HsW01(BaseObject* creator) : WeaponMode(creator)
+    HsW01::HsW01(Context* context) : WeaponMode(context)
     {
         RegisterObject(HsW01);
 
@@ -110,8 +110,8 @@ namespace orxonox
         assert( this->getWeapon() && this->getWeapon()->getWeaponPack() && this->getWeapon()->getWeaponPack()->getWeaponSystem() && this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn() );
 
         // Create the projectile.
-        Projectile* projectile = new Projectile(this);
-        Model* model = new Model(projectile);
+        Projectile* projectile = new Projectile(this->getContext());
+        Model* model = new Model(projectile->getContext());
         model->setMeshSource(mesh_);
         model->setCastShadows(false);
         projectile->attach(model);
@@ -137,7 +137,7 @@ namespace orxonox
     */
     void HsW01::muzzleflash()
     {
-        MuzzleFlash *muzzleFlash = new MuzzleFlash(this);
+        MuzzleFlash *muzzleFlash = new MuzzleFlash(this->getContext());
         this->getWeapon()->attach(muzzleFlash);
         muzzleFlash->setPosition(this->getMuzzleOffset());
         muzzleFlash->setMaterial(this->material_);

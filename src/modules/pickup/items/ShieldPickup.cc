@@ -47,7 +47,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes the member variables.
     */
-    ShieldPickup::ShieldPickup(BaseObject* creator) : Pickup(creator)
+    ShieldPickup::ShieldPickup(Context* context) : Pickup(context)
     {
         RegisterObject(ShieldPickup);
 

@@ -43,7 +43,7 @@ namespace orxonox
     class _OrxonoxExport WorldAmbientSound : public BaseObject, public Synchronisable
     {
         public:
-            WorldAmbientSound(BaseObject* creator);
+            WorldAmbientSound(Context* context);
             virtual ~WorldAmbientSound();
 
             void XMLPort(Element& xmlelement, XMLPort::Mode mode);

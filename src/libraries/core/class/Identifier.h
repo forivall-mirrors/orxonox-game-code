@@ -124,7 +124,7 @@ namespace orxonox
             /// Returns true if the Identifier has a Factory.
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
-            OrxonoxClass* fabricate(BaseObject* creator);
+            OrxonoxClass* fabricate(Context* context);
 
             /// Returns true if the class can be loaded through XML.
             inline bool isLoadable() const { return this->bLoadable_; }

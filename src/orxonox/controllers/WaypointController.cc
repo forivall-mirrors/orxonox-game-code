@@ -35,7 +35,7 @@ namespace orxonox
 {
     CreateFactory(WaypointController);
 
-    WaypointController::WaypointController(BaseObject* creator) : ArtificialController(creator)
+    WaypointController::WaypointController(Context* context) : ArtificialController(context)
     {
         RegisterObject(WaypointController);
         this->setAccuracy(100);

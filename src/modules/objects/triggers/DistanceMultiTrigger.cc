@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Default Constructor. Registers the object and initializes default values.
     */
-    DistanceMultiTrigger::DistanceMultiTrigger(BaseObject* creator) : MultiTrigger(creator)
+    DistanceMultiTrigger::DistanceMultiTrigger(Context* context) : MultiTrigger(context)
     {
         RegisterObject(DistanceMultiTrigger);
 

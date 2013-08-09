@@ -66,7 +66,7 @@ namespace orxonox
         friend class PlayerInfo;
 
         public:
-            Gametype(BaseObject* creator);
+            Gametype(Context* context);
             virtual ~Gametype();
 
             void setConfigValues();

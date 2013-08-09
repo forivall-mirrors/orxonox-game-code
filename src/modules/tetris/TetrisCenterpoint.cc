@@ -47,7 +47,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object and checks whether the gametype is actually Tetris.
     */
-    TetrisCenterpoint::TetrisCenterpoint(BaseObject* creator) : StaticEntity(creator)
+    TetrisCenterpoint::TetrisCenterpoint(Context* context) : StaticEntity(context)
     {
         RegisterObject(TetrisCenterpoint);
 

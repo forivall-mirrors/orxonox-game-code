@@ -66,7 +66,7 @@ namespace orxonox {
     class _NotificationsExport SimpleNotification : public NotificationDispatcher
     {
         public:
-            SimpleNotification(BaseObject* creator); //!< Default Constructor.
+            SimpleNotification(Context* context); //!< Default Constructor.
             virtual ~SimpleNotification(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a SimpleNotification object through XML.

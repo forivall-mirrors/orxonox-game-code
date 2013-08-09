@@ -94,7 +94,7 @@ namespace orxonox
     class _ObjectsExport Script : public BaseObject, public ClientConnectionListener
     {
         public:
-            Script(BaseObject* creator);
+            Script(Context* context);
             virtual ~Script();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Script object through XML.

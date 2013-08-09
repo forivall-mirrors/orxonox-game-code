@@ -45,7 +45,7 @@ namespace orxonox
 {
     CreateFactory(Projectile);
 
-    Projectile::Projectile(BaseObject* creator) : MovableEntity(creator), BasicProjectile()
+    Projectile::Projectile(Context* context) : MovableEntity(context), BasicProjectile()
     {
         RegisterObject(Projectile);
 
@@ -59,7 +59,7 @@ namespace orxonox
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
-            SphereCollisionShape* shape = new SphereCollisionShape(this);
+            SphereCollisionShape* shape = new SphereCollisionShape(this->getContext());
             shape->setRadius(20.0f);
             this->attachCollisionShape(shape);
 

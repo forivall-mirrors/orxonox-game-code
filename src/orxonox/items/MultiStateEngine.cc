@@ -50,14 +50,14 @@ namespace orxonox
 
     CreateFactory(MultiStateEngine);
 
-    MultiStateEngine::MultiStateEngine(BaseObject* creator) : Engine(creator)
+    MultiStateEngine::MultiStateEngine(Context* context) : Engine(context)
     {
         RegisterObject(MultiStateEngine);
 
         if (GameMode::isMaster())
         {
-            this->defEngineSndNormal_ = new WorldSound(this);
-            this->defEngineSndBoost_  = new WorldSound(this);
+            this->defEngineSndNormal_ = new WorldSound(this->getContext());
+            this->defEngineSndBoost_  = new WorldSound(this->getContext());
             this->defEngineSndNormal_->setLooping(true);
             this->defEngineSndBoost_->setLooping(true);
             this->lua_ = new LuaState();

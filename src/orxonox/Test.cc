@@ -55,7 +55,7 @@ namespace orxonox
 
     Test* Test::instance_ = 0;
 
-    Test::Test(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    Test::Test(Context* context) : BaseObject(context), Synchronisable(context)
     {
         assert(instance_==0);
         instance_=this;

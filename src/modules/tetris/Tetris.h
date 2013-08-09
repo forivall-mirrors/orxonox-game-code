@@ -54,7 +54,7 @@ namespace orxonox
     class _TetrisExport Tetris : public Deathmatch
     {
         public:
-            Tetris(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            Tetris(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.
 
             virtual void start(void); //!< Starts the Tetris minigame.

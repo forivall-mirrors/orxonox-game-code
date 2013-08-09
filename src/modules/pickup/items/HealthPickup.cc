@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes the member variables.
     */
-    HealthPickup::HealthPickup(BaseObject* creator) : Pickup(creator)
+    HealthPickup::HealthPickup(Context* context) : Pickup(context)
     {
         RegisterObject(HealthPickup);
 

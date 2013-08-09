@@ -95,7 +95,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(TowerDefense);
 
-    TowerDefense::TowerDefense(BaseObject* creator) : Deathmatch(creator)
+    TowerDefense::TowerDefense(Context* context) : Deathmatch(context)
     {
         RegisterObject(TowerDefense);
 
@@ -189,7 +189,7 @@ namespace orxonox
         this->stats_->buyTower(towerCost);
 
         // Create tower
-        Tower* newTower = new Tower(this->center_);
+        Tower* newTower = new Tower(this->center_->getContext());
         newTower->addTemplate(this->center_->getTowerTemplate());
 
         newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);

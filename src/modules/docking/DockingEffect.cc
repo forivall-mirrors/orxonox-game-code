@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    DockingEffect::DockingEffect(BaseObject* creator) : BaseObject(creator)
+    DockingEffect::DockingEffect(Context* context) : BaseObject(context)
     {
         RegisterObject(DockingEffect);
     }

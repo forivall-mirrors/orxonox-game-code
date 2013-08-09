@@ -36,7 +36,7 @@ namespace orxonox
 {
     CreateFactory(DebugRTRText);
 
-    DebugRTRText::DebugRTRText(BaseObject* creator) : OverlayText(creator)
+    DebugRTRText::DebugRTRText(Context* context) : OverlayText(context)
     {
         RegisterObject(DebugRTRText);
     }

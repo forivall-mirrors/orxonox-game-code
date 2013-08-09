@@ -41,8 +41,8 @@ namespace orxonox
 {
     CreateFactory(SpaceRaceManager);
 
-    SpaceRaceManager::SpaceRaceManager(BaseObject* creator) :
-        BaseObject(creator)
+    SpaceRaceManager::SpaceRaceManager(Context* context) :
+        BaseObject(context)
     {
         RegisterObject(SpaceRaceManager);
         this->race_ = orxonox_cast<SpaceRace*>(this->getGametype().get());

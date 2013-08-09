@@ -51,7 +51,7 @@ namespace orxonox {
     @brief
         Constructor. Registers the object and initializes some values.
     */
-    TriggerBase::TriggerBase(BaseObject* creator) : StaticEntity(creator)
+    TriggerBase::TriggerBase(Context* context) : StaticEntity(context)
     {
         RegisterObject(TriggerBase);
 

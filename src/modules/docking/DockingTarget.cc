@@ -40,7 +40,7 @@ namespace orxonox
 {
     CreateFactory(DockingTarget);
 
-    DockingTarget::DockingTarget(BaseObject* creator) : StaticEntity(creator)
+    DockingTarget::DockingTarget(Context* context) : StaticEntity(context)
     {
         RegisterObject(DockingTarget);
     }

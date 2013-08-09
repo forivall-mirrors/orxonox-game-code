@@ -69,7 +69,7 @@ namespace orxonox
     {
 
         public:
-            PickupCollection(BaseObject* creator); //!< Default Constructor.
+            PickupCollection(Context* context); //!< Default Constructor.
             virtual ~PickupCollection(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates an instance of this Class through XML.

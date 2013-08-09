@@ -46,8 +46,8 @@ namespace orxonox
 {
     CreateFactory(BarColour);
 
-    BarColour::BarColour(BaseObject* creator)
-        : BaseObject(creator)
+    BarColour::BarColour(Context* context)
+        : BaseObject(context)
     {
         RegisterObject(BarColour);
 
@@ -66,8 +66,8 @@ namespace orxonox
 
     unsigned int HUDBar::materialcount_s = 0;
 
-    HUDBar::HUDBar(BaseObject* creator)
-        : OrxonoxOverlay(creator), right2Left_(false), autoColour_(false)
+    HUDBar::HUDBar(Context* context)
+        : OrxonoxOverlay(context), right2Left_(false), autoColour_(false)
     {
         RegisterObject(HUDBar);
 

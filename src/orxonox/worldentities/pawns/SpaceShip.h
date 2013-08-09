@@ -87,7 +87,7 @@ namespace orxonox
     class _OrxonoxExport SpaceShip : public Pawn
     {
         public:
-            SpaceShip(BaseObject* creator);
+            SpaceShip(Context* context);
             virtual ~SpaceShip();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

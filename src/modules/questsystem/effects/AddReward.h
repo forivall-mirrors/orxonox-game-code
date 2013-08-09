@@ -64,7 +64,7 @@ namespace orxonox
     class _QuestsystemExport AddReward : public QuestEffect
     {
         public:
-            AddReward(BaseObject* creator);
+            AddReward(Context* context);
             virtual ~AddReward();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddReward object through XML.

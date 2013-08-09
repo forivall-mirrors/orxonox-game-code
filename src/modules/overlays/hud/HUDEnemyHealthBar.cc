@@ -35,7 +35,7 @@ namespace orxonox
 {
     CreateFactory(HUDEnemyHealthBar);
 
-    HUDEnemyHealthBar::HUDEnemyHealthBar(BaseObject* creator) : HUDHealthBar(creator)
+    HUDEnemyHealthBar::HUDEnemyHealthBar(Context* context) : HUDHealthBar(context)
     {
         RegisterObject(HUDEnemyHealthBar);
 

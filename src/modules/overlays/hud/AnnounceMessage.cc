@@ -35,7 +35,7 @@ namespace orxonox
 {
     CreateFactory(AnnounceMessage);
 
-    AnnounceMessage::AnnounceMessage(BaseObject* creator) : FadeoutText(creator)
+    AnnounceMessage::AnnounceMessage(Context* context) : FadeoutText(context)
     {
         RegisterObject(AnnounceMessage);
 

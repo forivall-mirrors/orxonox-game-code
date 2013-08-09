@@ -58,7 +58,7 @@ namespace orxonox
     class _TetrisExport TetrisCenterpoint : public StaticEntity
     {
         public:
-            TetrisCenterpoint(BaseObject* creator); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Tetris.
+            TetrisCenterpoint(Context* context); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Tetris.
             virtual ~TetrisCenterpoint() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method to create a TetrisCenterpoint through XML.

@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(GlobalShader);
 
-    GlobalShader::GlobalShader(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    GlobalShader::GlobalShader(Context* context) : BaseObject(context), Synchronisable(context)
     {
         RegisterObject(GlobalShader);
 

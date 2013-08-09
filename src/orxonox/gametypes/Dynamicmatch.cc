@@ -63,7 +63,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(Dynamicmatch);
 
-    Dynamicmatch::Dynamicmatch(BaseObject* creator) : Gametype(creator)
+    Dynamicmatch::Dynamicmatch(Context* context) : Gametype(context)
     {
         RegisterObject(Dynamicmatch);
         this->gameTime_ = 180;

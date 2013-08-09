@@ -41,7 +41,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(SpaceRace);
 
-    SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
+    SpaceRace::SpaceRace(Context* context) : Gametype(context)
     {
         RegisterObject(SpaceRace);
 

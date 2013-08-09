@@ -46,8 +46,8 @@ namespace orxonox
     BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Center == (int)OverlayText::Center);
     BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Right  == (int)OverlayText::Right);
 
-    OverlayText::OverlayText(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+    OverlayText::OverlayText(Context* context)
+        : OrxonoxOverlay(context)
     {
         RegisterObject(OverlayText);
 

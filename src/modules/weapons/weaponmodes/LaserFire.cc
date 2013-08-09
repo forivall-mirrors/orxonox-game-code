@@ -46,7 +46,7 @@ namespace orxonox
 {
     CreateFactory(LaserFire);
 
-    LaserFire::LaserFire(BaseObject* creator) : WeaponMode(creator)
+    LaserFire::LaserFire(Context* context) : WeaponMode(context)
     {
         RegisterObject(LaserFire);
 
@@ -63,7 +63,7 @@ namespace orxonox
     */
     void LaserFire::fire()
     {
-        ParticleProjectile* projectile = new ParticleProjectile(this);
+        ParticleProjectile* projectile = new ParticleProjectile(this->getContext());
 
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());

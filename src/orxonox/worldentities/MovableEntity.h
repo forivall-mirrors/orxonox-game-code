@@ -42,7 +42,7 @@ namespace orxonox
     class _OrxonoxExport MovableEntity : public MobileEntity, public ClientConnectionListener
     {
         public:
-            MovableEntity(BaseObject* creator);
+            MovableEntity(Context* context);
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

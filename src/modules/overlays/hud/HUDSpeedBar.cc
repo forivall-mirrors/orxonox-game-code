@@ -37,8 +37,8 @@ namespace orxonox
 {
     CreateFactory(HUDSpeedBar);
 
-    HUDSpeedBar::HUDSpeedBar(BaseObject* creator)
-        : HUDBar(creator)
+    HUDSpeedBar::HUDSpeedBar(Context* context)
+        : HUDBar(context)
     {
         RegisterObject(HUDSpeedBar);
 

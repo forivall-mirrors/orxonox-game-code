@@ -55,7 +55,7 @@ namespace orxonox
     class _PongExport PongBot : public Bot
     {
         public:
-            PongBot(BaseObject* creator);
+            PongBot(Context* context);
             virtual ~PongBot() {}
     };
 }

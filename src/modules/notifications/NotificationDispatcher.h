@@ -75,7 +75,7 @@ namespace orxonox
     class _NotificationsExport NotificationDispatcher : public BaseObject, public Synchronisable
     {
         public:
-            NotificationDispatcher(BaseObject* creator); //!< Default constructor. Initializes the object.
+            NotificationDispatcher(Context* context); //!< Default constructor. Initializes the object.
             virtual ~NotificationDispatcher(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a NotificationDispatcher object through XML.

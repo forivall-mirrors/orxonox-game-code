@@ -56,7 +56,7 @@ namespace orxonox
     @param creator
         The creator of this trigger.
     */
-    DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
+    DistanceTrigger::DistanceTrigger(Context* context) : Trigger(context)
     {
         RegisterObject(DistanceTrigger);
 

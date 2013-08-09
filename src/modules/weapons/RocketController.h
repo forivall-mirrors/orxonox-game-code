@@ -51,7 +51,7 @@ namespace orxonox
     class _WeaponsExport RocketController : public Controller, public Tickable
     {
         public:
-            RocketController(BaseObject* creator);
+            RocketController(Context* context);
             virtual ~RocketController();
 
             virtual void tick(float dt);

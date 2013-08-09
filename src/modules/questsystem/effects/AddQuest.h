@@ -58,7 +58,7 @@ namespace orxonox
     class _QuestsystemExport AddQuest : public ChangeQuestStatus
     {
         public:
-        AddQuest(BaseObject* creator);
+        AddQuest(Context* context);
         virtual ~AddQuest();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuest object through XML.

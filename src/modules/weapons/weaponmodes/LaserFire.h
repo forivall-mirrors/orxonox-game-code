@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport LaserFire : public WeaponMode
     {
         public:
-            LaserFire(BaseObject* creator);
+            LaserFire(Context* context);
             virtual ~LaserFire() {}
 
             virtual void fire();

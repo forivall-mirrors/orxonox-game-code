@@ -55,7 +55,7 @@ namespace orxonox
         };
 
         public:
-            Munition(BaseObject* creator);
+            Munition(Context* context);
             virtual ~Munition();
 
             unsigned int getNumMunition(WeaponMode* user) const;

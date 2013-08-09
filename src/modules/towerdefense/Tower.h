@@ -26,7 +26,7 @@ namespace orxonox
     class _TowerDefenseExport Tower : public Pawn
     {
     public:
-        Tower(BaseObject* creator);
+        Tower(Context* context);
         virtual ~Tower() {};
 
         // Maybe later override these to move towers with cursor keys

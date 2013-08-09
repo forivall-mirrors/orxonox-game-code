@@ -44,7 +44,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    PongBat::PongBat(BaseObject* creator) : ControllableEntity(creator)
+    PongBat::PongBat(Context* context) : ControllableEntity(context)
     {
         RegisterObject(PongBat);
 

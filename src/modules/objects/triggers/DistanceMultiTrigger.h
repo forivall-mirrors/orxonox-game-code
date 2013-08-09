@@ -94,7 +94,7 @@ namespace orxonox
     {
 
         public:
-            DistanceMultiTrigger(BaseObject* creator); // Default Constructor. Registers the object and initializes default values.
+            DistanceMultiTrigger(Context* context); // Default Constructor. Registers the object and initializes default values.
             virtual ~DistanceMultiTrigger(); // Destructor.
 
             void XMLPort(Element& xmlelement, XMLPort::Mode mode); // Method for creating a DistanceMultiTrigger object through XML.

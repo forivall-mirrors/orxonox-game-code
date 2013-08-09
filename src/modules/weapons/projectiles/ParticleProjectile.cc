@@ -42,7 +42,7 @@ namespace orxonox
 {
     CreateFactory(ParticleProjectile);
 
-    ParticleProjectile::ParticleProjectile(BaseObject* creator) : BillboardProjectile(creator)
+    ParticleProjectile::ParticleProjectile(Context* context) : BillboardProjectile(context)
     {
         RegisterObject(ParticleProjectile);
 

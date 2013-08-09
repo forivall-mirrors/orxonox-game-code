@@ -89,7 +89,7 @@ namespace orxonox {
     {
         public:
 
-            HealthPickup(BaseObject* creator); //!< Constructor.
+            HealthPickup(Context* context); //!< Constructor.
             virtual ~HealthPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.

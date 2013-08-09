@@ -41,7 +41,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(TeamGametype);
 
-    TeamGametype::TeamGametype(BaseObject* creator) : Gametype(creator)
+    TeamGametype::TeamGametype(Context* context) : Gametype(context)
     {
         RegisterObject(TeamGametype);
 

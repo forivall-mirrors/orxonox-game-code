@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateFactory(OldRaceCheckPoint);
 
-    OldRaceCheckPoint::OldRaceCheckPoint(BaseObject* creator): DistanceTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
+    OldRaceCheckPoint::OldRaceCheckPoint(Context* context): DistanceTrigger(context), RadarViewable(this, static_cast<WorldEntity*>(this))
     {
         RegisterObject(OldRaceCheckPoint);
 
