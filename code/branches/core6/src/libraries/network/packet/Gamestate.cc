@@ -132,7 +132,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
 
     tempsize = it->getData(mem, this->sizes_, id, mode);
     if ( tempsize != 0 )
-      dataVector_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
+      dataVector_.push_back( obj(it->getObjectID(), it->getContextID(), tempsize, mem-data_) );
 
 #ifndef NDEBUG
     if(currentsize+tempsize > size)
@@ -468,7 +468,7 @@ inline bool findObject(uint8_t*& dataPtr, uint8_t* endPtr, SynchronisableHeader&
     if ( htemp.getObjectID() == objectID )
     {
       assert( objectHeader.getClassID() == htemp.getClassID() );
-      assert( objectHeader.getCreatorID() == htemp.getCreatorID() );
+      assert( objectHeader.getContextID() == htemp.getContextID() );
       return true;
     }
     {

@@ -70,7 +70,7 @@ namespace orxonox
             virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped;
 
         public:
-            LastTeamStanding(BaseObject* creator); //!< Default Constructor.
+            LastTeamStanding(Context* context); //!< Default Constructor.
             virtual ~LastTeamStanding(); //!< Default Destructor.
 
             virtual void playerEntered(PlayerInfo* player); //!< Initializes values.

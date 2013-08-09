@@ -64,7 +64,7 @@ namespace orxonox
     @brief
         Registers and initializes the object.
     */
-    GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
+    GametypeInfo::GametypeInfo(Context* context) : Info(context)
     {
         RegisterObject(GametypeInfo);
 

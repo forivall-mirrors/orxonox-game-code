@@ -69,7 +69,7 @@ namespace orxonox // tolua_export
     { // tolua_export
 
         public:
-            NotificationQueueCEGUI(BaseObject* creator);
+            NotificationQueueCEGUI(Context* context);
             virtual ~NotificationQueueCEGUI();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

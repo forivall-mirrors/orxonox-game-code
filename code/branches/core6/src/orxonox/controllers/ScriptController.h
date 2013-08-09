@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport ScriptController : public ArtificialController
     {
         public:
-            ScriptController(BaseObject* creator);
+            ScriptController(Context* context);
             virtual ~ScriptController() { }
 
         private:

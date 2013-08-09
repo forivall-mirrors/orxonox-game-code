@@ -72,7 +72,7 @@ namespace orxonox
     {
 
         public:
-            EventMultiTrigger(BaseObject* creator); //!< Constructor. Registers the object.
+            EventMultiTrigger(Context* context); //!< Constructor. Registers the object.
             virtual ~EventMultiTrigger(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating an EventMultiTrigger object through XML.

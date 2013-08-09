@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateFactory(DockingController);
 
-    DockingController::DockingController(BaseObject* creator) : ArtificialController(creator)
+    DockingController::DockingController(Context* context) : ArtificialController(context)
     {
         RegisterObject(DockingController);
 

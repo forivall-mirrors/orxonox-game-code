@@ -85,7 +85,7 @@ namespace orxonox
     class _ObjectsExport ForceField : public StaticEntity, public Tickable
     {
         public:
-            ForceField(BaseObject* creator);
+            ForceField(Context* context);
             virtual ~ForceField();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a ForceField object through XML.

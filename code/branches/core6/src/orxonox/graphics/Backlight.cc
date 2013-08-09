@@ -46,7 +46,7 @@ namespace orxonox
 {
     CreateFactory(Backlight);
 
-    Backlight::Backlight(BaseObject* creator) : FadingBillboard(creator)
+    Backlight::Backlight(Context* context) : FadingBillboard(context)
     {
         RegisterObject(Backlight);
 

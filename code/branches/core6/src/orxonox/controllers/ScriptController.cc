@@ -33,7 +33,7 @@ namespace orxonox
 {
     CreateFactory(ScriptController);
 
-    ScriptController::ScriptController(BaseObject* creator) : ArtificialController(creator)
+    ScriptController::ScriptController(Context* context) : ArtificialController(context)
     {
         RegisterObject(ScriptController);
     }

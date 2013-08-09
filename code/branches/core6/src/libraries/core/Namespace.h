@@ -39,13 +39,14 @@
 #include <set>
 #include <string>
 #include "BaseObject.h"
+#include "object/Context.h"
 
 namespace orxonox
 {
-    class Namespace : public BaseObject
+    class Namespace : public BaseObject, public Context
     {
         public:
-            Namespace(BaseObject* creator);
+            Namespace(Context* context);
             virtual ~Namespace();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

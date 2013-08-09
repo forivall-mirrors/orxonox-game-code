@@ -60,7 +60,7 @@ namespace orxonox
     class _DockingExport DockingEffect : public BaseObject
     {
         public:
-            DockingEffect(BaseObject* creator);
+            DockingEffect(Context* context);
             virtual ~DockingEffect();
 
             virtual bool docking(PlayerInfo* player) = 0; //!< Called when player docked

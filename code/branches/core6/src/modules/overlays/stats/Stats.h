@@ -40,7 +40,7 @@ namespace orxonox
     class _OverlaysExport Stats : public OrxonoxOverlay, public Tickable
     {
     public: // functions
-        Stats(BaseObject* creator);
+        Stats(Context* context);
         virtual ~Stats();
 
         void setConfigValues();

@@ -47,7 +47,7 @@ namespace orxonox
         public:
             static Context* getRootContext();
 
-            Context(Context* context = NULL);
+            Context(Context* context);
             virtual ~Context();
 
             inline Context* getParentContext() const

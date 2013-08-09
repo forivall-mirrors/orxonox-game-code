@@ -39,8 +39,8 @@ namespace orxonox
     /**
         @brief Constructor: Creates the scoreboard.
     */
-    Scoreboard::Scoreboard(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+    Scoreboard::Scoreboard(Context* context)
+        : OrxonoxOverlay(context)
     {
         RegisterObject(Scoreboard);
     }

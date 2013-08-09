@@ -50,7 +50,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes the member variables.
     */
-    DronePickup::DronePickup(BaseObject* creator) : Pickup(creator)
+    DronePickup::DronePickup(Context* context) : Pickup(context)
     {
         RegisterObject(DronePickup);
 
@@ -125,7 +125,7 @@ namespace orxonox
                     this->Pickupable::destroy();
 
                 //Attach to pawn
-                Drone* drone = new Drone(pawn->getCreator()); // this is neccessary because the projectiles fired need a valid creator for the particlespawner (when colliding against something)
+                Drone* drone = new Drone(pawn->getContext()); // this is neccessary because the projectiles fired need a valid creator for the particlespawner (when colliding against something)
                 drone->addTemplate(this->getDroneTemplate());
 
                 Controller* controller = drone->getController();

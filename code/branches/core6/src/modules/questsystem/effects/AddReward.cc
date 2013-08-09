@@ -46,7 +46,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object.
     */
-    AddReward::AddReward(BaseObject* creator) : QuestEffect(creator)
+    AddReward::AddReward(Context* context) : QuestEffect(context)
     {
         RegisterObject(AddReward);
     }

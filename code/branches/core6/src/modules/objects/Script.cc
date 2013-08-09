@@ -60,7 +60,7 @@ namespace orxonox
     @param creator
         The creator of this object.
     */
-    Script::Script(BaseObject* creator) : BaseObject(creator)
+    Script::Script(Context* context) : BaseObject(context)
     {
         RegisterObject(Script);
 

@@ -47,8 +47,8 @@ namespace orxonox
     SetConsoleCommand("OverlayGroup", "scaleGroup",       &OverlayGroup::scaleGroup);
     SetConsoleCommand("OverlayGroup", "scrollGroup",      &OverlayGroup::scrollGroup);
 
-    OverlayGroup::OverlayGroup(BaseObject* creator)
-        : BaseObject(creator)
+    OverlayGroup::OverlayGroup(Context* context)
+        : BaseObject(context)
     {
         RegisterObject(OverlayGroup);
 

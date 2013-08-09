@@ -173,11 +173,11 @@ namespace orxonox
         @brief Creates an object of the type the Identifier belongs to.
         @return The new object
     */
-    OrxonoxClass* Identifier::fabricate(BaseObject* creator)
+    OrxonoxClass* Identifier::fabricate(Context* context)
     {
         if (this->factory_)
         {
-            return this->factory_->fabricate(creator);
+            return this->factory_->fabricate(context);
         }
         else
         {

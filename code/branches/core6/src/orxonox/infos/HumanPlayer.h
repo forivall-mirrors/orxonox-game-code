@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport HumanPlayer : public PlayerInfo
     {
         public:
-            HumanPlayer(BaseObject* creator);
+            HumanPlayer(Context* context);
             virtual ~HumanPlayer();
 
             void setConfigValues();

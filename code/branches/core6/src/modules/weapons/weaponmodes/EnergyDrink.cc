@@ -50,7 +50,7 @@ namespace orxonox
 {
     CreateFactory(EnergyDrink);
 
-    EnergyDrink::EnergyDrink(BaseObject* creator) : WeaponMode(creator)
+    EnergyDrink::EnergyDrink(Context* context) : WeaponMode(context)
     {
         RegisterObject(EnergyDrink);
 
@@ -100,8 +100,8 @@ namespace orxonox
     void EnergyDrink::shot()
     {
         // Create the projectile
-        Projectile* projectile = new Projectile(this);
-        Model* model = new Model(projectile);
+        Projectile* projectile = new Projectile(this->getContext());
+        Model* model = new Model(projectile->getContext());
         model->setMeshSource("can.mesh");
         model->setCastShadows(false);
         projectile->attach(model);
@@ -126,7 +126,7 @@ namespace orxonox
     */
     void EnergyDrink::muzzleflash()
     {
-        MuzzleFlash *muzzleFlash = new MuzzleFlash(this);
+        MuzzleFlash *muzzleFlash = new MuzzleFlash(this->getContext());
         this->getWeapon()->attach(muzzleFlash);
         muzzleFlash->setPosition(this->getMuzzleOffset());
         muzzleFlash->setMaterial(this->material_);

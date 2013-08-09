@@ -105,7 +105,7 @@ namespace orxonox
                 if (!victim || (victim && !victim->hasShield() && victim->getHealth() > 0.0f && (this->getDamage() > 0.0f || this->getHealthDamage() > 0.0f)))
                 {
                     {
-                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getCreator());
+                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getContext());
                         effect->setPosition(entity->getPosition());
                         effect->setOrientation(entity->getOrientation());
                         effect->setDestroyAfterLife(true);
@@ -114,7 +114,7 @@ namespace orxonox
                     }
                     // Second effect with same condition
                     {
-                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getCreator());
+                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getContext());
                         effect->setPosition(entity->getPosition());
                         effect->setOrientation(entity->getOrientation());
                         effect->setDestroyAfterLife(true);
@@ -126,7 +126,7 @@ namespace orxonox
                 // victim->isAlive() is not false until the next tick, so getHealth() > 0 is used instead
                 if (victim && victim->hasShield() && (this->getDamage() > 0.0f || this->getShieldDamage() > 0.0f) && victim->getHealth() > 0.0f)
                 {
-                    ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getCreator());
+                    ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getContext());
                     effect->setDestroyAfterLife(true);
                     effect->setSource("Orxonox/Shield");
                     effect->setLifetime(0.5f);

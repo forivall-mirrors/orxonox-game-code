@@ -51,7 +51,7 @@ namespace orxonox
     @brief
         Constructor: Initializes the Pickup.
     */
-    ShrinkPickup::ShrinkPickup(BaseObject* creator) : Pickup(creator)
+    ShrinkPickup::ShrinkPickup(Context* context) : Pickup(context)
     {
         RegisterObject(ShrinkPickup);
 

@@ -51,7 +51,7 @@ namespace orxonox
         Constructor. Registers and initializes the object.
     @ingroup Tetris
     */
-    TetrisScore::TetrisScore(BaseObject* creator) : OverlayText(creator)
+    TetrisScore::TetrisScore(Context* context) : OverlayText(context)
     {
         RegisterObject(TetrisScore);
 

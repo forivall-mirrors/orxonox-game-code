@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateFactory(WeaponSet);
 
-    WeaponSet::WeaponSet(BaseObject* creator) : BaseObject(creator)
+    WeaponSet::WeaponSet(Context* context) : BaseObject(context)
     {
         RegisterObject(WeaponSet);
 

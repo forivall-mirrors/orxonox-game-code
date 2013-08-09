@@ -45,7 +45,7 @@ namespace orxonox
     class _ObjectsExport EventDispatcher : public BaseObject
     {
         public:
-            EventDispatcher(BaseObject* creator);
+            EventDispatcher(Context* context);
             virtual ~EventDispatcher();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

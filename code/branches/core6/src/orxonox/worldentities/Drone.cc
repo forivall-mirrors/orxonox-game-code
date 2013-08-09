@@ -38,7 +38,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    Drone::Drone(BaseObject* creator) : Pawn(creator)
+    Drone::Drone(Context* context) : Pawn(context)
     {
         RegisterObject(Drone);
 
@@ -49,7 +49,7 @@ namespace orxonox
         this->setRadarVisibility(false);
         this->setCollisionType(WorldEntity::Dynamic);
 
-        myController_ = new DroneController(static_cast<BaseObject*>(this)); //!< Creates a new controller and passes our this pointer to it as creator.
+        myController_ = new DroneController(this->getContext()); //!< Creates a new controller and passes our this pointer to it as creator.
         myController_->setDrone(this);
 
         this->setController(myController_);

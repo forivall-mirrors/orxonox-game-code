@@ -51,8 +51,8 @@ namespace orxonox
     /*
      * Idea: Find static Point (checkpoints the spaceship has to reach)
      */
-    SpaceRaceController::SpaceRaceController(BaseObject* creator) :
-        ArtificialController(creator)
+    SpaceRaceController::SpaceRaceController(Context* context) :
+        ArtificialController(context)
     {
         RegisterObject(SpaceRaceController)
 ;        std::vector<RaceCheckPoint*> checkpoints;

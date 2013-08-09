@@ -43,8 +43,8 @@ namespace orxonox
     /**
         @brief Constructor: Creates and initializes the Stats panel.
     */
-    Stats::Stats(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+    Stats::Stats(Context* context)
+        : OrxonoxOverlay(context)
         , statsOverlayNoise_(0)
         , statsOverlayBorder_(0)
     {

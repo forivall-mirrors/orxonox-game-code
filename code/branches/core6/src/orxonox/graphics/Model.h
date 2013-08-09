@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport Model : public StaticEntity
     {
         public:
-            Model(BaseObject* creator);
+            Model(Context* context);
             virtual ~Model();
 
             void setConfigValues();

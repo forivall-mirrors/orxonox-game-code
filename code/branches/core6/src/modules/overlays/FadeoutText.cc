@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(FadeoutText);
 
-    FadeoutText::FadeoutText(BaseObject* creator) : OverlayText(creator)
+    FadeoutText::FadeoutText(Context* context) : OverlayText(context)
     {
         RegisterObject(FadeoutText);
 

@@ -38,7 +38,7 @@ namespace orxonox
 {
     CreateFactory(StaticEntity);
 
-    StaticEntity::StaticEntity(BaseObject* creator) : WorldEntity(creator)
+    StaticEntity::StaticEntity(Context* context) : WorldEntity(context)
     {
         RegisterObject(StaticEntity);
 

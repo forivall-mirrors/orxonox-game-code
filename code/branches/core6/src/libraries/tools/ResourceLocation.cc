@@ -42,8 +42,8 @@ namespace orxonox
 {
     CreateFactory(ResourceLocation);
 
-    ResourceLocation::ResourceLocation(BaseObject* creator)
-        : BaseObject(creator)
+    ResourceLocation::ResourceLocation(Context* context)
+        : BaseObject(context)
     {
         RegisterObject(ResourceLocation);
 

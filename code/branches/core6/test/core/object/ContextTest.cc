@@ -10,13 +10,13 @@ namespace orxonox
         class SubclassContext : public OrxonoxClass, public Context
         {
             public:
-                SubclassContext() { RegisterRootObject(SubclassContext); }
+                SubclassContext() : Context(NULL) { RegisterRootObject(SubclassContext); }
         };
     }
 
     TEST(ContextTest, CanCreateContext)
     {
-        Context context;
+        Context context(NULL);
     }
 
     TEST(ContextTest, CanCreateSubclassContext)
@@ -26,7 +26,7 @@ namespace orxonox
 
     TEST(ContextTest, ContextIsItsOwnContext)
     {
-        Context context;
+        Context context(NULL);
         EXPECT_EQ(&context, context.getContext());
     }
 

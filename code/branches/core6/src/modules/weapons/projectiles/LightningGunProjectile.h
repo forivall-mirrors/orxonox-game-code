@@ -54,7 +54,7 @@ namespace orxonox
     class _WeaponsExport LightningGunProjectile : public BillboardProjectile
     {
         public:
-            LightningGunProjectile(BaseObject* creator);
+            LightningGunProjectile(Context* context);
             virtual ~LightningGunProjectile() {}
 
             virtual void setMaterial(const std::string& material);

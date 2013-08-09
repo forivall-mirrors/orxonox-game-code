@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateFactory(Template);
 
-    Template::Template(BaseObject* creator) : BaseObject(creator)
+    Template::Template(Context* context) : BaseObject(context)
     {
         this->xmlelement_ = new TiXmlElement("");
 

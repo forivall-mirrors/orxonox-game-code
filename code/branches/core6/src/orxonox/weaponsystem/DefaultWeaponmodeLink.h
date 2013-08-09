@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport DefaultWeaponmodeLink : public BaseObject
     {
         public:
-            DefaultWeaponmodeLink(BaseObject* creator);
+            DefaultWeaponmodeLink(Context* context);
             virtual ~DefaultWeaponmodeLink();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

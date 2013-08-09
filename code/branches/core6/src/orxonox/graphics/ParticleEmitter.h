@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport ParticleEmitter : public StaticEntity
     {
         public:
-            ParticleEmitter(BaseObject* creator);
+            ParticleEmitter(Context* context);
             virtual ~ParticleEmitter();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

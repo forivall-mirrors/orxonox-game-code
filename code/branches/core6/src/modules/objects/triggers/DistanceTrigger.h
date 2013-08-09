@@ -96,7 +96,7 @@ namespace orxonox
     class _ObjectsExport DistanceTrigger : public Trigger, public PlayerTrigger
     {
         public:
-            DistanceTrigger(BaseObject* creator); // Constructor. Registers and initializes the object.
+            DistanceTrigger(Context* context); // Constructor. Registers and initializes the object.
             virtual ~DistanceTrigger();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); // Method for creating a DistanceTrigger object through XML.

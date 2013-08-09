@@ -41,7 +41,7 @@ namespace orxonox
 {
     CreateFactory(LightningGunProjectile);
 
-    LightningGunProjectile::LightningGunProjectile(BaseObject* creator) : BillboardProjectile(creator)
+    LightningGunProjectile::LightningGunProjectile(Context* context) : BillboardProjectile(context)
     {
         RegisterObject(LightningGunProjectile);
 

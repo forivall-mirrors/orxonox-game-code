@@ -93,7 +93,7 @@ namespace orxonox
     {
 
         public:
-            NotificationQueue(BaseObject* creator);
+            NotificationQueue(Context* context);
             virtual ~NotificationQueue();
 
             virtual void tick(float dt); // To update from time to time.

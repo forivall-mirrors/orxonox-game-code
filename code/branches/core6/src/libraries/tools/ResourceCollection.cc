@@ -38,8 +38,8 @@ namespace orxonox
 {
     CreateFactory(ResourceCollection);
 
-    ResourceCollection::ResourceCollection(BaseObject* creator)
-        : BaseObject(creator)
+    ResourceCollection::ResourceCollection(Context* context)
+        : BaseObject(context)
     {
         RegisterObject(ResourceCollection);
 

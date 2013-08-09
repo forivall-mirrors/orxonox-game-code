@@ -60,7 +60,7 @@ namespace orxonox
     class _PongExport PongAI : public Controller, public Tickable
     {
         public:
-            PongAI(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            PongAI(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~PongAI();
 
             void setConfigValues();

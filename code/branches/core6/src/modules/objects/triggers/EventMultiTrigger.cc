@@ -48,7 +48,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object.
     */
-    EventMultiTrigger::EventMultiTrigger(BaseObject* creator) : MultiTrigger(creator)
+    EventMultiTrigger::EventMultiTrigger(Context* context) : MultiTrigger(context)
     {
         RegisterObject(EventMultiTrigger);
     }

@@ -64,7 +64,7 @@ namespace orxonox
         template <class T> friend class XMLPortClassParamContainer;
 
         public:
-            BaseObject(BaseObject* creator);
+            BaseObject(Context* context);
             virtual ~BaseObject();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);

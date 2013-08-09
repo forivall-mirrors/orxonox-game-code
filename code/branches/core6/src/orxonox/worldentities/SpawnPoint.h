@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport SpawnPoint : public StaticEntity
     {
         public:
-            SpawnPoint(BaseObject* creator);
+            SpawnPoint(Context* context);
             virtual ~SpawnPoint() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

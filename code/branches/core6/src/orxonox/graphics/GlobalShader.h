@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport GlobalShader : public BaseObject, public Synchronisable
     {
         public:
-            GlobalShader(BaseObject* creator);
+            GlobalShader(Context* context);
             virtual ~GlobalShader();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

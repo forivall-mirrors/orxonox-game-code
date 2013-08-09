@@ -74,7 +74,7 @@ namespace orxonox
     class _ObjectsExport SpaceBoundaries : public StaticEntity, public Tickable
     {
         public:
-            SpaceBoundaries(BaseObject* creator);
+            SpaceBoundaries(Context* context);
             ~SpaceBoundaries();
 
             void setMaxDistance(float r);

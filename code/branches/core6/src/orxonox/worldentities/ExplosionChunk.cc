@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateFactory(ExplosionChunk);
 
-    ExplosionChunk::ExplosionChunk(BaseObject* creator) : MovableEntity(creator)
+    ExplosionChunk::ExplosionChunk(Context* context) : MovableEntity(context)
     {
         RegisterObject(ExplosionChunk);
 

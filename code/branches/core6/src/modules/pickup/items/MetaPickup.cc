@@ -54,7 +54,7 @@ namespace orxonox {
     @brief
         Constructor. Registers and initializes the object.
     */
-    MetaPickup::MetaPickup(BaseObject* creator) : Pickup(creator)
+    MetaPickup::MetaPickup(Context* context) : Pickup(context)
     {
         RegisterObject(MetaPickup);
 

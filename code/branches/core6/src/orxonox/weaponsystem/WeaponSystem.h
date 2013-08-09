@@ -42,7 +42,7 @@ namespace orxonox
     class _OrxonoxExport WeaponSystem : public BaseObject
     {
         public:
-            WeaponSystem(BaseObject* creator);
+            WeaponSystem(Context* context);
             virtual ~WeaponSystem();
 
             // adding and removing WeaponSlots

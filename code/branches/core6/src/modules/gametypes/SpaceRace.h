@@ -53,7 +53,7 @@ namespace orxonox
 
 
         public:
-            SpaceRace(BaseObject* creator);
+            SpaceRace(Context* context);
             virtual ~SpaceRace() {}
 
             void tick(float dt);

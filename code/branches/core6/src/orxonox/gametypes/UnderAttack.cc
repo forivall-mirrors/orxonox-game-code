@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(UnderAttack);
 
-    UnderAttack::UnderAttack(BaseObject* creator) : TeamDeathmatch(creator)
+    UnderAttack::UnderAttack(Context* context) : TeamDeathmatch(context)
     {
         RegisterObject(UnderAttack);
         this->gameTime_ = 180;

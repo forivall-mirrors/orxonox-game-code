@@ -49,7 +49,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object.
     */
-    AddQuestHint::AddQuestHint(BaseObject* creator) : QuestEffect(creator)
+    AddQuestHint::AddQuestHint(Context* context) : QuestEffect(context)
     {
         RegisterObject(AddQuestHint);
     }

@@ -76,10 +76,10 @@ namespace orxonox
     class _PickupExport PickupSpawner : public StaticEntity, public Tickable
     {
         public:
-            PickupSpawner(BaseObject* creator); //!< Default Constructor.
+            PickupSpawner(Context* context); //!< Default Constructor.
             virtual ~PickupSpawner(); //!< Destructor.
 
-            static PickupSpawner* createDroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance = 10.0);
+            static PickupSpawner* createDroppedPickup(Context* context, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance = 10.0);
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a PickupSpawner through XML.
             virtual void tick(float dt); //!< Tick, checks if any Pawn is close enough to trigger.

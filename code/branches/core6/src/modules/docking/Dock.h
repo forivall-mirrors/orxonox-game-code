@@ -56,7 +56,7 @@ namespace orxonox // tolua_export
         : public StaticEntity
     { // tolua_export
         public:
-            Dock(BaseObject* creator);
+            Dock(Context* context);
             virtual ~Dock();
 
             // Trigger interface

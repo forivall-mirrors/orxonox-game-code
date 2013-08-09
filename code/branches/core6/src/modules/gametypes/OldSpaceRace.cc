@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(OldSpaceRace);
 
-    OldSpaceRace::OldSpaceRace(BaseObject* creator) : Gametype(creator)
+    OldSpaceRace::OldSpaceRace(Context* context) : Gametype(context)
     {
         RegisterObject(OldSpaceRace);
         this->checkpointsReached_ = 0;

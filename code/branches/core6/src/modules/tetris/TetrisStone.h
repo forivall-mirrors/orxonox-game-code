@@ -53,7 +53,7 @@ namespace orxonox
     class _TetrisExport TetrisStone : public MovableEntity
     {
         public:
-            TetrisStone(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            TetrisStone(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~TetrisStone() {}
 
             virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.

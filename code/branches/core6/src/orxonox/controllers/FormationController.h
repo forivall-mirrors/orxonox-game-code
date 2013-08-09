@@ -45,7 +45,7 @@ namespace orxonox {
   {
 
       public:
-      FormationController(BaseObject* creator);
+      FormationController(Context* context);
 
       virtual ~FormationController();
 

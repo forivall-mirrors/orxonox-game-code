@@ -203,7 +203,7 @@ namespace orxonox // tolua_export
     class _OrxonoxExport LevelInfo : public BaseObject, public LevelInfoItem
     {
         public:
-            LevelInfo(BaseObject* creator);
+            LevelInfo(Context* context);
             virtual ~LevelInfo();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a LevelInfo object through XML.

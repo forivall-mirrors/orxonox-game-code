@@ -59,7 +59,7 @@ namespace orxonox
     class _PortalsExport PortalEndPoint : public StaticEntity, public RadarViewable
     {
         public:
-            PortalEndPoint(BaseObject* creator);
+            PortalEndPoint(Context* context);
             virtual ~PortalEndPoint();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

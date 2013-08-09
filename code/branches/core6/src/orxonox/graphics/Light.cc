@@ -48,7 +48,7 @@ namespace orxonox
     BOOST_STATIC_ASSERT((int)Ogre::Light::LT_DIRECTIONAL == (int)Light::Directional);
     BOOST_STATIC_ASSERT((int)Ogre::Light::LT_SPOTLIGHT   == (int)Light::Spotlight);
 
-    Light::Light(BaseObject* creator) : StaticEntity(creator)
+    Light::Light(Context* context) : StaticEntity(context)
     {
         RegisterObject(Light);
 

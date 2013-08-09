@@ -63,7 +63,7 @@ namespace orxonox {
     {
         public:
 
-            DronePickup(BaseObject* creator); //!< Constructor.
+            DronePickup(Context* context); //!< Constructor.
             virtual ~DronePickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a DronePickup object through XML.

@@ -37,8 +37,8 @@ namespace orxonox
 {
     CreateFactory(GUISheet);
 
-    GUISheet::GUISheet(BaseObject* creator)
-        : BaseObject(creator)
+    GUISheet::GUISheet(Context* context)
+        : BaseObject(context)
         , bShowOnLoad_(false)
         , bHidePrevious_(false)
         , bHidePreviousSet_(false)

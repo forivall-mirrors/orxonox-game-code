@@ -54,7 +54,7 @@ namespace orxonox
     class _WeaponsExport MuzzleFlash : public Billboard
     {
         public:
-            MuzzleFlash(BaseObject* creator);
+            MuzzleFlash(Context* context);
             virtual ~MuzzleFlash() {}
 
         private:

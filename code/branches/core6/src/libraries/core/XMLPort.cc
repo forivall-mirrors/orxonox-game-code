@@ -88,7 +88,7 @@ namespace orxonox
                     {
                         orxout(verbose, context::xml) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << endl;
 
-                        BaseObject* newObject = orxonox_cast<BaseObject*>(identifier->fabricate(object));
+                        BaseObject* newObject = orxonox_cast<BaseObject*>(identifier->fabricate(object->getContext()));
                         newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
 
                         if (this->bLoadBefore_)

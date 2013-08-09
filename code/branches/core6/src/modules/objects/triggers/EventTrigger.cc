@@ -47,7 +47,7 @@ namespace orxonox
     @param creator
         The creator of the EventTrigger.
     */
-    EventTrigger::EventTrigger(BaseObject* creator) : Trigger(creator)
+    EventTrigger::EventTrigger(Context* context) : Trigger(context)
     {
         RegisterObject(EventTrigger);
 

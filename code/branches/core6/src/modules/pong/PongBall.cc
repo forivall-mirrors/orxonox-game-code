@@ -50,8 +50,8 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    PongBall::PongBall(BaseObject* creator)
-        : MovableEntity(creator)
+    PongBall::PongBall(Context* context)
+        : MovableEntity(context)
     {
         RegisterObject(PongBall);
 

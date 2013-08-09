@@ -34,7 +34,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(Controller);
 
-    Controller::Controller(BaseObject* creator) : BaseObject(creator)
+    Controller::Controller(Context* context) : BaseObject(context)
     {
         RegisterObject(Controller);
 

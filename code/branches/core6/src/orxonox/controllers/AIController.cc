@@ -40,7 +40,7 @@ namespace orxonox
 
     CreateFactory(AIController);
 
-    AIController::AIController(BaseObject* creator) : ArtificialController(creator)
+    AIController::AIController(Context* context) : ArtificialController(context)
     {
         RegisterObject(AIController);
 

@@ -54,7 +54,7 @@ namespace orxonox
     const float jumpValue_ = 300;
     CreateFactory(FpsPlayer);
 
-    FpsPlayer::FpsPlayer(BaseObject* creator) : Pawn(creator)
+    FpsPlayer::FpsPlayer(Context* context) : Pawn(context)
     {
         RegisterObject(FpsPlayer);
         this->speed_ = 200;

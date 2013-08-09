@@ -53,7 +53,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes variables.
     */
-    QuestListener::QuestListener(BaseObject* creator) : BaseObject(creator)
+    QuestListener::QuestListener(Context* context) : BaseObject(context)
     {
         RegisterObject(QuestListener);
 

@@ -57,7 +57,7 @@ namespace orxonox
     class _WeaponsExport Projectile : public MovableEntity, public BasicProjectile
     {
         public:
-            Projectile(BaseObject* creator);
+            Projectile(Context* context);
             virtual ~Projectile();
 
             void setConfigValues();

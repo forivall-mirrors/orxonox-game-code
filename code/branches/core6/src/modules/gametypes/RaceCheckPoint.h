@@ -44,7 +44,7 @@ namespace orxonox
             public RadarViewable
     {
         public:
-            RaceCheckPoint(BaseObject* creator);
+            RaceCheckPoint(Context* context);
             virtual ~RaceCheckPoint();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

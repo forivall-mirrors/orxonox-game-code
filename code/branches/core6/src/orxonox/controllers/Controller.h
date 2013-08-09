@@ -41,7 +41,7 @@ namespace orxonox
         friend class ControllableEntity;
 
         public:
-            Controller(BaseObject* creator);
+            Controller(Context* context);
             virtual ~Controller();
 
             inline void setPlayer(PlayerInfo* player)

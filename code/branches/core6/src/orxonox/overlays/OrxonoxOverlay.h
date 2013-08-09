@@ -86,7 +86,7 @@ namespace orxonox
         };
 
     public:
-        OrxonoxOverlay(BaseObject* creator);
+        OrxonoxOverlay(Context* context);
         virtual ~OrxonoxOverlay();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

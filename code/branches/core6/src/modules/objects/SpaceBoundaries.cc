@@ -43,7 +43,7 @@ namespace orxonox
 {
     CreateFactory(SpaceBoundaries);
 
-    SpaceBoundaries::SpaceBoundaries(BaseObject* creator) : StaticEntity(creator)
+    SpaceBoundaries::SpaceBoundaries(Context* context) : StaticEntity(context)
     {
         RegisterObject(SpaceBoundaries);
 
@@ -103,7 +103,7 @@ namespace orxonox
 
         if (current == this->billboards_.size())
         {
-            Billboard* billboard = new Billboard(this);
+            Billboard* billboard = new Billboard(this->getContext());
             billboard->setPosition(position);
             billboard->setSyncMode(ObjectDirection::None);
             this->setBillboardOptions(billboard);

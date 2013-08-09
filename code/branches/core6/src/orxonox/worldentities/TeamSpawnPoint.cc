@@ -35,7 +35,7 @@ namespace orxonox
 {
     CreateFactory(TeamSpawnPoint);
 
-    TeamSpawnPoint::TeamSpawnPoint(BaseObject* creator) : SpawnPoint(creator)
+    TeamSpawnPoint::TeamSpawnPoint(Context* context) : SpawnPoint(context)
     {
         RegisterObject(TeamSpawnPoint);
 

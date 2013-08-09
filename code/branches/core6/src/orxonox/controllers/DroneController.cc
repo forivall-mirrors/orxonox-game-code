@@ -44,7 +44,7 @@ namespace orxonox
 
     const float DroneController::ACTION_INTERVAL = 1.0f;
 
-    DroneController::DroneController(BaseObject* creator) : ArtificialController(creator)
+    DroneController::DroneController(Context* context) : ArtificialController(context)
     {
         RegisterObject(DroneController);
 

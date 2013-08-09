@@ -46,7 +46,7 @@ namespace orxonox
 
     CreateFactory(Spectator);
 
-    Spectator::Spectator(BaseObject* creator) : ControllableEntity(creator)
+    Spectator::Spectator(Context* context) : ControllableEntity(context)
     {
         RegisterObject(Spectator);
 

@@ -71,7 +71,7 @@ namespace orxonox {
     class _PickupExport ShrinkPickup : public Pickup, public Tickable
     {
         public:
-            ShrinkPickup(BaseObject* creator); // Constructor.
+            ShrinkPickup(Context* context); // Constructor.
             virtual ~ShrinkPickup(); // Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode);

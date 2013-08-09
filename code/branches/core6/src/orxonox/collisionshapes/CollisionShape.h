@@ -57,7 +57,7 @@ namespace orxonox
     class _OrxonoxExport CollisionShape : public BaseObject, public Synchronisable
     {
         public:
-            CollisionShape(BaseObject* creator);
+            CollisionShape(Context* context);
             virtual ~CollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

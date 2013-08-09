@@ -75,7 +75,7 @@ namespace orxonox {
     {
         public:
 
-            ShieldPickup(BaseObject* creator); //!< Constructor.
+            ShieldPickup(Context* context); //!< Constructor.
             virtual ~ShieldPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.

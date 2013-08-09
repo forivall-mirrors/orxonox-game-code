@@ -49,7 +49,7 @@ namespace orxonox
     @param creator
         The creator.
     */
-    MultiTriggerContainer::MultiTriggerContainer(BaseObject* creator) : BaseObject(creator), originator_(NULL), data_(NULL)
+    MultiTriggerContainer::MultiTriggerContainer(Context* context) : BaseObject(context), originator_(NULL), data_(NULL)
     {
         RegisterObject(MultiTriggerContainer);
     }
@@ -64,7 +64,7 @@ namespace orxonox
     @param data
         A pointer to the data that should be sent with the container.
     */
-    MultiTriggerContainer::MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data) : BaseObject(creator), originator_(originator), data_(data)
+    MultiTriggerContainer::MultiTriggerContainer(Context* context, MultiTrigger* originator, BaseObject* data) : BaseObject(context), originator_(originator), data_(data)
     {
         RegisterObject(MultiTriggerContainer);
 

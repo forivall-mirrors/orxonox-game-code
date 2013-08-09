@@ -45,7 +45,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    Engine::Engine(BaseObject* creator) : Item(creator)
+    Engine::Engine(Context* context) : Item(context)
     {
         RegisterObject(Engine);
 

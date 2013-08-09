@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    DockingAnimation::DockingAnimation(BaseObject* creator) : BaseObject(creator)
+    DockingAnimation::DockingAnimation(Context* context) : BaseObject(context)
     {
         RegisterObject(DockingAnimation);
 

@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    WeaponMode::WeaponMode(BaseObject* creator) : BaseObject(creator)
+    WeaponMode::WeaponMode(Context* context) : BaseObject(context)
     {
         RegisterObject(WeaponMode);
 
@@ -74,7 +74,7 @@ namespace orxonox
 
         if( GameMode::isMaster() )
         {
-            this->defSndWpnFire_ = new WorldSound(this);
+            this->defSndWpnFire_ = new WorldSound(this->getContext());
             this->defSndWpnFire_->setLooping(false);
             this->bSoundAttached_ = false;
         }

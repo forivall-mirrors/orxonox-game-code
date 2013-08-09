@@ -54,7 +54,7 @@ namespace orxonox
     /**
         @brief Constructor: Registers the object in the BaseObject-list.
     */
-    BaseObject::BaseObject(BaseObject* creator) : bInitialized_(false)
+    BaseObject::BaseObject(Context* context) : bInitialized_(false)
     {
         RegisterRootObject(BaseObject);
 
@@ -69,6 +69,10 @@ namespace orxonox
 
         this->mainStateFunctor_ = 0;
 
+        if (context)
+            this->setContext(context);
+
+        BaseObject* creator = orxonox_cast<BaseObject*>(context);
         this->setCreator(creator);
         if (this->creator_)
         {
@@ -200,7 +204,7 @@ namespace orxonox
         if (temp->isLink())
         {
             this->networkTemplateNames_.insert(temp->getLink());
-            
+
             Template* link;
             assert(!(link = Template::getTemplate(temp->getLink())) || !link->isLink());
             link = NULL;

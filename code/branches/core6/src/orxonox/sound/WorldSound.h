@@ -44,7 +44,7 @@ namespace orxonox
     class _OrxonoxExport WorldSound : public StaticEntity, public BaseSound, public Tickable
     {
     public:
-        WorldSound(BaseObject* creator);
+        WorldSound(Context* context);
 
         void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);

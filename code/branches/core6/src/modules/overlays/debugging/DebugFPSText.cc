@@ -36,7 +36,7 @@ namespace orxonox
 {
     CreateFactory(DebugFPSText);
 
-    DebugFPSText::DebugFPSText(BaseObject* creator) : OverlayText(creator)
+    DebugFPSText::DebugFPSText(Context* context) : OverlayText(context)
     {
         RegisterObject(DebugFPSText);
     }

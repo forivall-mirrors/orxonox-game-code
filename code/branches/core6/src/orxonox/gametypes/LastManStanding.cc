@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(LastManStanding);
 
-    LastManStanding::LastManStanding(BaseObject* creator) : Deathmatch(creator)
+    LastManStanding::LastManStanding(Context* context) : Deathmatch(context)
     {
         RegisterObject(LastManStanding);
         this->bForceSpawn_=true;

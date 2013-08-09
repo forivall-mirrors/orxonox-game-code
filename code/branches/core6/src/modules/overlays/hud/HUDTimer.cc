@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(HUDTimer);
 
-    HUDTimer::HUDTimer(BaseObject* creator) : OverlayText(creator)
+    HUDTimer::HUDTimer(Context* context) : OverlayText(context)
     {
         RegisterObject(HUDTimer);
 

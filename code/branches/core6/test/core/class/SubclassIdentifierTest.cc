@@ -11,13 +11,13 @@ namespace orxonox
         class TestClass : public OrxonoxClass
         {
             public:
-                TestClass(BaseObject* creator = NULL) { RegisterRootObject(TestClass); }
+                TestClass(Context* context = NULL) { RegisterRootObject(TestClass); }
         };
 
         class TestSubclass : public TestClass
         {
             public:
-                TestSubclass(BaseObject* creator = NULL) { RegisterObject(TestSubclass); }
+                TestSubclass(Context* context = NULL) { RegisterObject(TestSubclass); }
         };
 
         CreateFactory(TestClass);

@@ -47,7 +47,7 @@ namespace orxonox
 {
     CreateFactory(RocketFire);
 
-    RocketFire::RocketFire(BaseObject* creator) : WeaponMode(creator)
+    RocketFire::RocketFire(Context* context) : WeaponMode(context)
     {
         RegisterObject(RocketFire);
 
@@ -70,7 +70,7 @@ namespace orxonox
     */
     void RocketFire::fire()
     {
-        Rocket* rocket = new Rocket(this);
+        Rocket* rocket = new Rocket(this->getContext());
 
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getMuzzleOrientation());

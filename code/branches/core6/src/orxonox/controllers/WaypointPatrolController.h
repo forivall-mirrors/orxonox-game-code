@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport WaypointPatrolController : public WaypointController
     {
         public:
-            WaypointPatrolController(BaseObject* creator);
+            WaypointPatrolController(Context* context);
             virtual ~WaypointPatrolController() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

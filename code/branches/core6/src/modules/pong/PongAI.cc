@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    PongAI::PongAI(BaseObject* creator) : Controller(creator)
+    PongAI::PongAI(Context* context) : Controller(context)
     {
         RegisterObject(PongAI);
 

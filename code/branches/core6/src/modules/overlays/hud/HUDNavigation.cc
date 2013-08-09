@@ -70,8 +70,8 @@ namespace orxonox
 
     HUDNavigation* HUDNavigation::localHUD_s = 0;
 
-    HUDNavigation::HUDNavigation(BaseObject* creator) :
-        OrxonoxOverlay(creator)
+    HUDNavigation::HUDNavigation(Context* context) :
+        OrxonoxOverlay(context)
     {
         RegisterObject(HUDNavigation)
 ;        this->setConfigValues();

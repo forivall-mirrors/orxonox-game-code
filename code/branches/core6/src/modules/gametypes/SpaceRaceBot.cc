@@ -30,7 +30,7 @@ namespace orxonox
 {
     CreateFactory(SpaceRaceBot);
 
-    SpaceRaceBot::SpaceRaceBot(BaseObject* creator) : Bot(creator){
+    SpaceRaceBot::SpaceRaceBot(Context* context) : Bot(context){
         RegisterObject(SpaceRaceBot);
         this->defaultController_ = Class(SpaceRaceController);// ClassByString("")
         this->createController();

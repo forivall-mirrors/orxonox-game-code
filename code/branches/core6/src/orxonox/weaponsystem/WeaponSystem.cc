@@ -47,7 +47,7 @@ namespace orxonox
 {
     CreateFactory(WeaponSystem);
 
-    WeaponSystem::WeaponSystem(BaseObject* creator) : BaseObject(creator)
+    WeaponSystem::WeaponSystem(Context* context) : BaseObject(context)
     {
         RegisterObject(WeaponSystem);
 
@@ -307,7 +307,7 @@ namespace orxonox
         }
         else if (identifier->getIdentifier()->isA(Class(Munition)))
         {
-            Munition* munition = identifier->fabricate(this);
+            Munition* munition = identifier->fabricate(this->getContext());
             this->munitions_[identifier->getIdentifier()] = munition;
             return munition;
         }
