@@ -67,8 +67,17 @@ namespace orxonox
     */
     ObjectListBase::~ObjectListBase()
     {
-        while (this->first_)
-            delete this->first_;
+        ObjectListBaseElement* current = this->first_;
+        while (current)
+        {
+            ObjectListBaseElement* next = current->next_;
+
+            current->list_ = 0;
+            current->next_ = 0;
+            current->prev_ = 0;
+
+            current = next;
+        }
     }
 
     /**
