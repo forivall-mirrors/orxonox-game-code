@@ -149,6 +149,15 @@ namespace orxonox
             (*it)->changedVisibility(); //inform all Child Overlays that our visibility has changed
     }
 
+    //! Changes the gametype of all elements
+    void OverlayGroup::changedGametype()
+    {
+        SUPER( OverlayGroup, changedGametype );
+
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it)->setGametype(this->getGametype());
+    }
+
     void OverlayGroup::setOwner(BaseObject* owner)
     {
         this->owner_ = owner;
