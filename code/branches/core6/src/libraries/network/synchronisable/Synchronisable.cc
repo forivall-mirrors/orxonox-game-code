@@ -166,6 +166,9 @@ namespace orxonox
       else
         context = orxonox_cast<Context*>(synchronisable_context);
     }
+    else
+      context = Context::getRootContext();
+
     assert(getSynchronisable(header.getObjectID())==0);   //make sure no object with this id exists
     BaseObject *bo = orxonox_cast<BaseObject*>(id->fabricate(context));
     assert(bo);
