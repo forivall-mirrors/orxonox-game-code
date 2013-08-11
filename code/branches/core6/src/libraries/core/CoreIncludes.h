@@ -112,18 +112,25 @@
     InternRegisterObject(ClassName, true)
 
 /**
-    @brief Creates the Factory.
+    @brief Creates and registers the Factory.
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, true)
+    RegisterFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(#ClassName, true))
 
 /**
-    @brief Creates the Factory for classes which should not be loaded through XML.
+    @brief Creates and registers the Factory for classes which should not be loaded through XML.
     @param ClassName The name of the class
 */
 #define CreateUnloadableFactory(ClassName) \
-    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, false)
+    RegisterFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(#ClassName, false))
+
+/**
+    @brief Registers a given Factory.
+    @param ClassName The name of the class
+*/
+#define RegisterFactory(ClassName, FactoryInstance) \
+    Factory* _##ClassName##Factory = FactoryInstance
 
 /**
     @brief Returns the Identifier of the given class.
