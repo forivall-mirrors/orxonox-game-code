@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(BarColour);
+    RegisterClass(BarColour);
 
     BarColour::BarColour(Context* context)
         : BaseObject(context)

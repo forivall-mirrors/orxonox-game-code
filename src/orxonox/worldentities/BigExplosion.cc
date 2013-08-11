@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(BigExplosion);
+    RegisterClass(BigExplosion);
 
     BigExplosion::BigExplosion(Context* context) : StaticEntity(context)
     {

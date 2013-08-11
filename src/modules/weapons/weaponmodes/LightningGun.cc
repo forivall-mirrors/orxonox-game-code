@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(LightningGun);
+    RegisterClass(LightningGun);
 
     LightningGun::LightningGun(Context* context) : WeaponMode(context)
     {

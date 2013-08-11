@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceRaceController);
+    RegisterClass(SpaceRaceController);
 
     const int ADJUSTDISTANCE = 500;
     const int MINDISTANCE = 5;

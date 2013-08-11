@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(LaserFire);
+    RegisterClass(LaserFire);
 
     LaserFire::LaserFire(Context* context) : WeaponMode(context)
     {

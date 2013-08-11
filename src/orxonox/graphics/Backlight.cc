@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Backlight);
+    RegisterClass(Backlight);
 
     Backlight::Backlight(Context* context) : FadingBillboard(context)
     {

@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(AnnounceMessage);
+    RegisterClass(AnnounceMessage);
 
     AnnounceMessage::AnnounceMessage(Context* context) : FadeoutText(context)
     {

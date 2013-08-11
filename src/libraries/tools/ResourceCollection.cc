@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ResourceCollection);
+    RegisterClass(ResourceCollection);
 
     ResourceCollection::ResourceCollection(Context* context)
         : BaseObject(context)

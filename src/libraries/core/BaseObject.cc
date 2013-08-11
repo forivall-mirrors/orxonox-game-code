@@ -49,7 +49,7 @@
 
 namespace orxonox
 {
-    CreateFactory(BaseObject);
+    RegisterClass(BaseObject);
 
     /**
         @brief Constructor: Registers the object in the BaseObject-list.

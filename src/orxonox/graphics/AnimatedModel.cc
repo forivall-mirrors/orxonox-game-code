@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    CreateFactory(AnimatedModel);
+    RegisterClass(AnimatedModel);
 
     AnimatedModel::AnimatedModel(Context* context) : Model(context)
     {

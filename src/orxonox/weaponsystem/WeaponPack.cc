@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(WeaponPack);
+    RegisterClass(WeaponPack);
 
     WeaponPack::WeaponPack(Context* context) : BaseObject(context)
     {

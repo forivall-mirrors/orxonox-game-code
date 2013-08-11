@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TeamBaseMatchBase);
+    RegisterClass(TeamBaseMatchBase);
 
     TeamBaseMatchBase::TeamBaseMatchBase(Context* context) : Pawn(context)
     {

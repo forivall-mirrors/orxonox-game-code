@@ -48,7 +48,7 @@ namespace orxonox
     static const float MAX_VELOCITY_NORMAL = 111;
     static const float MAX_VELOCITY_BOOST = 221;
 
-    CreateFactory(MultiStateEngine);
+    RegisterClass(MultiStateEngine);
 
     MultiStateEngine::MultiStateEngine(Context* context) : Engine(context)
     {

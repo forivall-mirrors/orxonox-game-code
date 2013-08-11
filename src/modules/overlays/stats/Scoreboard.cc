@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Scoreboard);
+    RegisterClass(Scoreboard);
 
     /**
         @brief Constructor: Creates the scoreboard.

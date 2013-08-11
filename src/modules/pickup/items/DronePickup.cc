@@ -44,7 +44,7 @@
 namespace orxonox
 {
 
-    CreateFactory(DronePickup);
+    RegisterClass(DronePickup);
 
     /**
     @brief

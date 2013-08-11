@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(FusionFire);
+    RegisterClass(FusionFire);
 
     FusionFire::FusionFire(Context* context) : WeaponMode(context)
     {

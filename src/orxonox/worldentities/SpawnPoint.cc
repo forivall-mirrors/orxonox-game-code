@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpawnPoint);
+    RegisterClass(SpawnPoint);
 
     SpawnPoint::SpawnPoint(Context* context) : StaticEntity(context)
     {

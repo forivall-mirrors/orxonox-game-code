@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ChatOverlay);
+    RegisterClass(ChatOverlay);
 
     ChatOverlay::ChatOverlay(Context* context)
         : OverlayText(context)

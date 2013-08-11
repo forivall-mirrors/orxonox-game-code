@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(AddQuestHint);
+    RegisterClass(AddQuestHint);
 
     /**
     @brief

@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TowerDefenseCenterpoint);
+    RegisterClass(TowerDefenseCenterpoint);
 
     /**
     @brief

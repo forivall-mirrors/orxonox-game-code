@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(RaceCheckPoint);
+    RegisterClass(RaceCheckPoint);
 
     RaceCheckPoint::RaceCheckPoint(Context* context) : DistanceMultiTrigger(context),
             RadarViewable(this, static_cast<WorldEntity*> (this))

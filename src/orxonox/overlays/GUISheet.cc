@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateFactory(GUISheet);
+    RegisterClass(GUISheet);
 
     GUISheet::GUISheet(Context* context)
         : BaseObject(context)

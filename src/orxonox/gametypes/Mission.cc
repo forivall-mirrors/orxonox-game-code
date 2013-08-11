@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Mission);
+    RegisterUnloadableClass(Mission);
 
     Mission::Mission(Context* context) : TeamGametype(context)
     {

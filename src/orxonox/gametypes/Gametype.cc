@@ -46,7 +46,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Gametype);
+    RegisterUnloadableClass(Gametype);
 
     Gametype::Gametype(Context* context) : BaseObject(context)
     {

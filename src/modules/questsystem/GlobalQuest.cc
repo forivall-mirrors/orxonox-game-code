@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(GlobalQuest);
+    RegisterClass(GlobalQuest);
 
     /**
     @brief

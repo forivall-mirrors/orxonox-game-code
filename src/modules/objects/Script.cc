@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Script);
+    RegisterClass(Script);
 
     registerStaticNetworkFunction(Script::executeHelper);
 

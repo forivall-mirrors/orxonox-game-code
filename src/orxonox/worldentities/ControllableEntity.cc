@@ -46,7 +46,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ControllableEntity);
+    RegisterClass(ControllableEntity);
 
     registerMemberNetworkFunction( ControllableEntity, fire );
     registerMemberNetworkFunction( ControllableEntity, setTargetInternal );

@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(TeamGametype);
+    RegisterUnloadableClass(TeamGametype);
 
     TeamGametype::TeamGametype(Context* context) : Gametype(context)
     {

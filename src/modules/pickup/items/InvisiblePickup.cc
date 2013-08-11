@@ -44,7 +44,7 @@
 namespace orxonox
 {
 
-    CreateFactory(InvisiblePickup);
+    RegisterClass(InvisiblePickup);
 
     /**
     @brief

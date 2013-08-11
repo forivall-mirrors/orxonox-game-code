@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceShip);
+    RegisterClass(SpaceShip);
 
     SpaceShip::SpaceShip(Context* context) : Pawn(context), boostBlur_(NULL)
     {

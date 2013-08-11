@@ -40,7 +40,7 @@ namespace orxonox
     @brief
         Constructor.
     */
-    CreateFactory(DroneController);
+    RegisterClass(DroneController);
 
     const float DroneController::ACTION_INTERVAL = 1.0f;
 

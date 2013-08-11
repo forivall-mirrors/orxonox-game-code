@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    CreateFactory(EventDispatcher);
+    RegisterClass(EventDispatcher);
 
     EventDispatcher::EventDispatcher(Context* context) : BaseObject(context)
     {

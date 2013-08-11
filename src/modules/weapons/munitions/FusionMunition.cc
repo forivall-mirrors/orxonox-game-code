@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(FusionMunition);
+    RegisterClass(FusionMunition);
 
     FusionMunition::FusionMunition(Context* context) : Munition(context)
     {

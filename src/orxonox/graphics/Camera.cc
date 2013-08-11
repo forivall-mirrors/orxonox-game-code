@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Camera);
+    RegisterClass(Camera);
 
     Camera::Camera(Context* context) : StaticEntity(context)
     {

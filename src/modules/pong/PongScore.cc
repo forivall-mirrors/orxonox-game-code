@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PongScore);
+    RegisterClass(PongScore);
 
     /**
     @brief

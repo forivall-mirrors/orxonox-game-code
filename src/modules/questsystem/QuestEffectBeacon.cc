@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(QuestEffectBeacon);
+    RegisterClass(QuestEffectBeacon);
 
     /**
     @brief

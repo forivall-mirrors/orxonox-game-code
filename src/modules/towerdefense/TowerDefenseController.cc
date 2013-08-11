@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TowerDefenseController);
+    RegisterClass(TowerDefenseController);
 
     TowerDefenseController::TowerDefenseController(Context* context) : WaypointController(context)
     {

@@ -45,7 +45,7 @@
 namespace orxonox
 {
 
-    CreateFactory(NotificationQueueCEGUI);
+    RegisterClass(NotificationQueueCEGUI);
 
     /*static*/ const std::string NotificationQueueCEGUI::NOTIFICATION_LAYER("NotificationLayer");
 

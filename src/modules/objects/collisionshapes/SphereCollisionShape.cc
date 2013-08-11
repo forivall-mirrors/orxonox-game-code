@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SphereCollisionShape);
+    RegisterClass(SphereCollisionShape);
 
     /**
     @brief

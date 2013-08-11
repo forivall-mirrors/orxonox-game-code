@@ -46,7 +46,7 @@ namespace orxonox
     /*static*/ const std::string DistanceMultiTrigger::beaconModeIdentify_s = "identify";
     /*static*/ const std::string DistanceMultiTrigger::beaconModeExlcude_s = "exclude";
     
-    CreateFactory(DistanceMultiTrigger);
+    RegisterClass(DistanceMultiTrigger);
 
     /**
     @brief

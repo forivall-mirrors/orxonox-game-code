@@ -48,7 +48,7 @@
 
 namespace orxonox
 {
-    CreateFactory(EnergyDrink);
+    RegisterClass(EnergyDrink);
 
     EnergyDrink::EnergyDrink(Context* context) : WeaponMode(context)
     {

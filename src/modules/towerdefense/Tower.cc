@@ -15,7 +15,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Tower);
+    RegisterClass(Tower);
 
     /**
     @brief

@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PongBat);
+    RegisterClass(PongBat);
 
     /**
     @brief

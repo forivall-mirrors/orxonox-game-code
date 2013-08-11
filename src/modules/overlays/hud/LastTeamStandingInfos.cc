@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(LastTeamStandingInfos);
+    RegisterClass(LastTeamStandingInfos);
 
     LastTeamStandingInfos::LastTeamStandingInfos(Context* context) : OverlayText(context)
     {

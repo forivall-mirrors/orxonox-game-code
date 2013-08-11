@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(CheckPoint);
+    RegisterClass(CheckPoint);
 
     CheckPoint::CheckPoint(Context* context)
         : DistanceTrigger(context)

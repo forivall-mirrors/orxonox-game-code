@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(LightningGunProjectile);
+    RegisterClass(LightningGunProjectile);
 
     LightningGunProjectile::LightningGunProjectile(Context* context) : BillboardProjectile(context)
     {

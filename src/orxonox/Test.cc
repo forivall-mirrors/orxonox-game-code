@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateFactory ( Test );
+    RegisterClass ( Test );
 
     SetConsoleCommand("Test", "printV1", &Test::printV1).addShortcut();
     SetConsoleCommand("Test", "printV2", &Test::printV2).addShortcut();

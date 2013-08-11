@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDEnemyHealthBar);
+    RegisterClass(HUDEnemyHealthBar);
 
     HUDEnemyHealthBar::HUDEnemyHealthBar(Context* context) : HUDHealthBar(context)
     {

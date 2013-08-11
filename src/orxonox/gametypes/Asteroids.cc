@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Asteroids);
+    RegisterUnloadableClass(Asteroids);
 
     Asteroids::Asteroids(Context* context) : Gametype(context)
     {

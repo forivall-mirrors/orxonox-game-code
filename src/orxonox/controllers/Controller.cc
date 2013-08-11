@@ -32,7 +32,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Controller);
+    RegisterUnloadableClass(Controller);
 
     Controller::Controller(Context* context) : BaseObject(context)
     {

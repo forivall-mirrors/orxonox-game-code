@@ -38,7 +38,7 @@ namespace orxonox
 {
     const float AIController::ACTION_INTERVAL = 1.0f;
 
-    CreateFactory(AIController);
+    RegisterClass(AIController);
 
     AIController::AIController(Context* context) : ArtificialController(context)
     {

@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(MeshLodInformation);
+    RegisterClass(MeshLodInformation);
 
     MeshLodInformation::MeshLodInformation(Context* context)
     : BaseObject(context), lodLevel_(5), bEnabled_(true), numLevels_(10), reductionRate_(0.15f)

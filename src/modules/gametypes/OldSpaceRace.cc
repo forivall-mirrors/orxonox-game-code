@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(OldSpaceRace);
+    RegisterUnloadableClass(OldSpaceRace);
 
     OldSpaceRace::OldSpaceRace(Context* context) : Gametype(context)
     {

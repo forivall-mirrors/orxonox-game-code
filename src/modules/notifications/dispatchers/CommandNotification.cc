@@ -43,7 +43,7 @@
 
 namespace orxonox {
 
-    CreateFactory(CommandNotification);
+    RegisterClass(CommandNotification);
 
     /**
     @brief

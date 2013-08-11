@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(BillboardProjectile);
+    RegisterClass(BillboardProjectile);
 
     BillboardProjectile::BillboardProjectile(Context* context) : Projectile(context)
     {

@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Light);
+    RegisterClass(Light);
 
     // Be sure we don't do bad conversions
     BOOST_STATIC_ASSERT((int)Ogre::Light::LT_POINT       == (int)Light::Point);

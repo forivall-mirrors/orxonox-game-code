@@ -50,7 +50,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Scene);
+    RegisterClass(Scene);
 
     Scene::Scene(Context* context) : BaseObject(context), Synchronisable(context), Context(context)
     {

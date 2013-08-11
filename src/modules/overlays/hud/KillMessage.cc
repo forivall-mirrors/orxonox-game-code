@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(KillMessage);
+    RegisterClass(KillMessage);
 
     KillMessage::KillMessage(Context* context) : FadeoutText(context)
     {

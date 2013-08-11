@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TetrisCenterpoint);
+    RegisterClass(TetrisCenterpoint);
 
     /**
     @brief

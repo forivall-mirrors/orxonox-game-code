@@ -28,7 +28,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceRaceBot);
+    RegisterClass(SpaceRaceBot);
 
     SpaceRaceBot::SpaceRaceBot(Context* context) : Bot(context){
         RegisterObject(SpaceRaceBot);

@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ExplosionChunk);
+    RegisterClass(ExplosionChunk);
 
     ExplosionChunk::ExplosionChunk(Context* context) : MovableEntity(context)
     {

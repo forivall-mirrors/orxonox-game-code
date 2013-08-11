@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(OverlayGroup);
+    RegisterClass(OverlayGroup);
 
     SetConsoleCommand("OverlayGroup", "toggleVisibility", &OverlayGroup::toggleVisibility);
     SetConsoleCommand("OverlayGroup", "show", &OverlayGroup::show);

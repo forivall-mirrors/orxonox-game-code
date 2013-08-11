@@ -39,7 +39,7 @@
 namespace orxonox
 {
 
-    CreateFactory(DistanceTriggerBeacon);
+    RegisterClass(DistanceTriggerBeacon);
 
     /**
     @brief

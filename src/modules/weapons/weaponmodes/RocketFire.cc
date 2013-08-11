@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(RocketFire);
+    RegisterClass(RocketFire);
 
     RocketFire::RocketFire(Context* context) : WeaponMode(context)
     {

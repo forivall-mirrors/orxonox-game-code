@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(QuestListener);
+    RegisterClass(QuestListener);
 
     // Initialization of the static variables for the modes as strings.
     /*static*/ const std::string QuestListener::ALL = "all";

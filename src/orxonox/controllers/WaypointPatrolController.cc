@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateFactory(WaypointPatrolController);
+    RegisterClass(WaypointPatrolController);
 
     WaypointPatrolController::WaypointPatrolController(Context* context) : WaypointController(context)
     {

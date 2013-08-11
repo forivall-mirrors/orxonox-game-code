@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(WeaponSystem);
+    RegisterClass(WeaponSystem);
 
     WeaponSystem::WeaponSystem(Context* context) : BaseObject(context)
     {

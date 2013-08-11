@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(EventTrigger);
+    RegisterClass(EventTrigger);
 
     /**
     @brief

@@ -49,7 +49,7 @@
 
 namespace orxonox
 {
-    CreateFactory(HsW01);
+    RegisterClass(HsW01);
 
     HsW01::HsW01(Context* context) : WeaponMode(context)
     {

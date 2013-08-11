@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(OverlayText);
+    RegisterClass(OverlayText);
 
     BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Left   == (int)OverlayText::Left);
     BOOST_STATIC_ASSERT((int)Ogre::TextAreaOverlayElement::Center == (int)OverlayText::Center);

@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    CreateFactory(DockingTarget);
+    RegisterClass(DockingTarget);
 
     DockingTarget::DockingTarget(Context* context) : StaticEntity(context)
     {

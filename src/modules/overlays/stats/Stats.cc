@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Stats);
+    RegisterClass(Stats);
 
     /**
         @brief Constructor: Creates and initializes the Stats panel.

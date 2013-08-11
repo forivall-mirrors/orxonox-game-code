@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(CompleteQuest);
+    RegisterClass(CompleteQuest);
 
     /**
     @brief

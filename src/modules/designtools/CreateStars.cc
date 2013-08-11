@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(CreateStars);
+    RegisterClass(CreateStars);
 
     CreateStars::CreateStars(Context* context) : BaseObject(context)
     {

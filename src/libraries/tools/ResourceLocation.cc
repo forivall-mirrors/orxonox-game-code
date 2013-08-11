@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ResourceLocation);
+    RegisterClass(ResourceLocation);
 
     ResourceLocation::ResourceLocation(Context* context)
         : BaseObject(context)

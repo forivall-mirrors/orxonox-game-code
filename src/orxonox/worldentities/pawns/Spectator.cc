@@ -44,7 +44,7 @@ namespace orxonox
     extern const std::string __CC_fire_name;
     extern const std::string __CC_suicide_name;
 
-    CreateFactory(Spectator);
+    RegisterClass(Spectator);
 
     Spectator::Spectator(Context* context) : ControllableEntity(context)
     {

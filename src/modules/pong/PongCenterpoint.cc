@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PongCenterpoint);
+    RegisterClass(PongCenterpoint);
 
     /**
     @brief

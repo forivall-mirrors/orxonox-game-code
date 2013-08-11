@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(FadingBillboard);
+    RegisterClass(FadingBillboard);
 
     FadingBillboard::FadingBillboard(Context* context) : Billboard(context)
     {

@@ -47,7 +47,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(GametypeInfo);
+    RegisterUnloadableClass(GametypeInfo);
 
     registerMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage);
     registerMemberNetworkFunction(GametypeInfo, dispatchKillMessage);

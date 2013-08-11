@@ -47,7 +47,7 @@ namespace orxonox
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
 
-    CreateUnloadableFactory(Pickup);
+    RegisterUnloadableClass(Pickup);
 
     /**
     @brief
