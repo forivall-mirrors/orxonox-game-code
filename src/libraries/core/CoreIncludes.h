@@ -94,7 +94,7 @@
     @param bRootClass True if the class is directly derived from orxonox::OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initialiseObject(this, #ClassName, bRootClass)) \
+    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this, #ClassName, bRootClass)) \
         return; \
     else \
         ((void)0)

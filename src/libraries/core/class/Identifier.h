@@ -114,6 +114,9 @@ namespace orxonox
             inline const std::string& getName() const { return this->name_; }
             void setName(const std::string& name);
 
+            /// Returns the name of the class as it is returned by typeid(T).name()
+            virtual const std::string& getTypeidName() = 0;
+
             /// Returns the network ID to identify a class through the network.
             inline uint32_t getNetworkID() const { return this->networkID_; }
             void setNetworkID(uint32_t id);
@@ -271,7 +274,7 @@ namespace orxonox
             static ClassIdentifier<T>* getIdentifier();
             static ClassIdentifier<T>* getIdentifier(const std::string& name);
 
-            bool initialiseObject(T* object, const std::string& className, bool bRootClass);
+            bool initializeObject(T* object, const std::string& className, bool bRootClass);
 
             void setConfigValues(T* object, Configurable*) const;
             void setConfigValues(T* object, Identifiable*) const;
@@ -279,13 +282,18 @@ namespace orxonox
             void addObjectToList(T* object, Listable*);
             void addObjectToList(T* object, Identifiable*);
 
-            void updateConfigValues(bool updateChildren = true) const;
+            virtual void updateConfigValues(bool updateChildren = true) const;
+
+            virtual const std::string& getTypeidName()
+                { return this->typeidName_; }
 
         private:
-            static void initialiseIdentifier();
+            static void initializeIdentifier();
+
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
             {
+                this->typeidName_ = typeid(T).name();
                 SuperFunctionInitialization<0, T>::initialize(this);
             }
             ~ClassIdentifier()
@@ -298,6 +306,7 @@ namespace orxonox
             void updateConfigValues(bool updateChildren, Listable*) const;
             void updateConfigValues(bool updateChildren, Identifiable*) const;
 
+            std::string typeidName_;
             static ClassIdentifier<T>* classIdentifier_s;
     };
 
@@ -313,7 +322,7 @@ namespace orxonox
     {
         // check if the Identifier already exists
         if (!ClassIdentifier<T>::classIdentifier_s)
-            ClassIdentifier<T>::initialiseIdentifier();
+            ClassIdentifier<T>::initializeIdentifier();
 
         return ClassIdentifier<T>::classIdentifier_s;
     }
@@ -335,24 +344,20 @@ namespace orxonox
         @brief Assigns the static field for the identifier singleton.
     */
     template <class T>
-    void ClassIdentifier<T>::initialiseIdentifier()
+    /*static */ void ClassIdentifier<T>::initializeIdentifier()
     {
-        // Get the name of the class
-        std::string name = typeid(T).name();
-
-        // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
+        // create a new identifier anyway. Will be deleted if not used.
         ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
 
         // Get the entry from the map
-        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getInstance().getIdentifierSingleton(name, proposal);
+        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getInstance().getIdentifierSingleton(proposal);
 
         if (ClassIdentifier<T>::classIdentifier_s == proposal)
-        {
-            orxout(verbose, context::identifier) << "Requested Identifier for " << name << " was not yet existing and got created." << endl;
-        }
+            orxout(verbose, context::identifier) << "Requested Identifier for " << proposal->getTypeidName() << " was not yet existing and got created." << endl;
         else
         {
-            orxout(verbose, context::identifier) << "Requested Identifier for " << name << " was already existing and got assigned." << endl;
+            orxout(verbose, context::identifier) << "Requested Identifier for " << proposal->getTypeidName() << " was already existing and got assigned." << endl;
+            delete proposal; // delete proposal (it is not used anymore)
         }
     }
 
@@ -363,7 +368,7 @@ namespace orxonox
         @param bRootClass True if this is a root class (i.e. it inherits directly from OrxonoxClass)
     */
     template <class T>
-    bool ClassIdentifier<T>::initialiseObject(T* object, const std::string& className, bool bRootClass)
+    bool ClassIdentifier<T>::initializeObject(T* object, const std::string& className, bool bRootClass)
     {
         if (bRootClass)
             orxout(verbose, context::object_list) << "Register Root-Object: " << className << endl;
