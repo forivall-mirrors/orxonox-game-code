@@ -21,9 +21,9 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
-                    new ClassFactory<Interface>("Interface");
-                    new ClassFactory<BaseClass>("BaseClass");
-                    new ClassFactory<RealClass>("RealClass");
+                    registerClass("Interface", new ClassFactoryNoArgs<Interface>());
+                    registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
+                    registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());
                     IdentifierManager::createClassHierarchy();
                 }
 
