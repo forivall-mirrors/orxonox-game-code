@@ -46,17 +46,18 @@ namespace orxonox
         public:
             static IdentifierManager& getInstance();
 
-            /////////////////////////////
-            ////// Class Hierarchy //////
-            /////////////////////////////
             Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
+            void registerIdentifier(Identifier* identifier);
 
             unsigned int getUniqueClassId()
                 { return this->classIDCounter_s++; }
 
-            void registerIdentifier(Identifier* identifier);
 
+            /////////////////////////////
+            ////// Class Hierarchy //////
+            /////////////////////////////
             void createClassHierarchy();
+            void destroyAllIdentifiers();
 
             /// Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents.
             inline bool isCreatingHierarchy()
@@ -66,8 +67,6 @@ namespace orxonox
             //////////////////////////
             ///// Identifier Map /////
             //////////////////////////
-            void destroyAllIdentifiers();
-
             Identifier* getIdentifierByString(const std::string& name);
             Identifier* getIdentifierByLowercaseString(const std::string& name);
             Identifier* getIdentifierByID(uint32_t id);
@@ -75,34 +74,14 @@ namespace orxonox
             void clearNetworkIDs();
 
             /// Returns the map that stores all Identifiers with their names.
-            inline const std::map<std::string, Identifier*>& getStringIdentifierMap()
+            inline const std::map<std::string, Identifier*>& getIdentifierByStringMap()
                 { return this->identifierByString_; }
-            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names.
-            inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapBegin()
-                { return this->identifierByString_.begin(); }
-            /// Returns a const_iterator to the end of the map that stores all Identifiers with their names.
-            inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapEnd()
-                { return this->identifierByString_.end(); }
-
             /// Returns the map that stores all Identifiers with their names in lowercase.
-            inline const std::map<std::string, Identifier*>& getLowercaseStringIdentifierMap()
+            inline const std::map<std::string, Identifier*>& getIdentifierByLowercaseStringMap()
                 { return this->identifierByLowercaseString_; }
-            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase.
-            inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapBegin()
-                { return this->identifierByLowercaseString_.begin(); }
-            /// Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase.
-            inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapEnd()
-                { return this->identifierByLowercaseString_.end(); }
-
             /// Returns the map that stores all Identifiers with their IDs.
-            inline const std::map<uint32_t, Identifier*>& getIDIdentifierMap()
+            inline const std::map<uint32_t, Identifier*>& getIdentifierByNetworkIdMap()
                 { return this->identifierByNetworkId_; }
-            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their IDs.
-            inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapBegin()
-                { return this->identifierByNetworkId_.begin(); }
-            /// Returns a const_iterator to the end of the map that stores all Identifiers with their IDs.
-            inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd()
-                { return this->identifierByNetworkId_.end(); }
 
         private:
             IdentifierManager();

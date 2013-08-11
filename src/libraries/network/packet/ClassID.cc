@@ -54,8 +54,8 @@ ClassID::ClassID( ) : Packet(){
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
 
   //calculate total needed size (for all strings and integers)
-  std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getInstance().getStringIdentifierMapBegin();
-  for(;it != IdentifierManager::getInstance().getStringIdentifierMapEnd();++it){
+  std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getInstance().getIdentifierByStringMap().begin();
+  for(;it != IdentifierManager::getInstance().getIdentifierByStringMap().end();++it){
     id = it->second;
     if(id == NULL || !id->hasFactory())
       continue;
