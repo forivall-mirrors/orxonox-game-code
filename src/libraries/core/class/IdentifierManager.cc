@@ -90,8 +90,8 @@ namespace orxonox
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             if (it->second->hasFactory())
             {
-                OrxonoxClass* temp = it->second->fabricate(0);
-                temp->destroy();
+                Identifiable* temp = it->second->fabricate(0);
+                delete temp;
             }
         }
         IdentifierManager::stopCreatingHierarchy();

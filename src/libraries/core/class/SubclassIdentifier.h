@@ -164,7 +164,7 @@ namespace orxonox
             /// Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
             T* fabricate(Context* context) const
             {
-                OrxonoxClass* newObject = this->identifier_->fabricate(context);
+                Identifiable* newObject = this->identifier_->fabricate(context);
 
                 // Check if the creation was successful
                 if (newObject)
