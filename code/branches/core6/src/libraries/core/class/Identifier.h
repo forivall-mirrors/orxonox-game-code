@@ -293,6 +293,7 @@ namespace orxonox
             ~ClassIdentifier()
             {
                 SuperFunctionDestruction<0, T>::destroy(this);
+                classIdentifier_s = 0;
             }
 
             void updateConfigValues(bool updateChildren, Listable*) const;

@@ -85,7 +85,7 @@ namespace orxonox
     {
         orxout(internal_status) << "Create class-hierarchy" << endl;
         IdentifierManager::startCreatingHierarchy();
-        for (std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getStringIdentifierMap().begin(); it != IdentifierManager::getStringIdentifierMap().end(); ++it)
+        for (std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getTypeIDIdentifierMap().begin(); it != IdentifierManager::getTypeIDIdentifierMap().end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             if (it->second->hasFactory())
@@ -105,6 +105,11 @@ namespace orxonox
     {
         for (std::map<std::string, Identifier*>::iterator it = IdentifierManager::getTypeIDIdentifierMap().begin(); it != IdentifierManager::getTypeIDIdentifierMap().end(); ++it)
             delete (it->second);
+
+        IdentifierManager::getTypeIDIdentifierMap().clear();
+        IdentifierManager::getStringIdentifierMapIntern().clear();
+        IdentifierManager::getLowercaseStringIdentifierMapIntern().clear();
+        IdentifierManager::getIDIdentifierMapIntern().clear();
     }
 
     /**
