@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(HumanPlayer);
+    RegisterUnloadableClass(HumanPlayer);
 
     HumanPlayer::HumanPlayer(Context* context) : PlayerInfo(context)
     {

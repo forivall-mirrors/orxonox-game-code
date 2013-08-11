@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PauseNotice);
+    RegisterClass(PauseNotice);
 
     PauseNotice::PauseNotice(Context* context) : OverlayText(context)
     {

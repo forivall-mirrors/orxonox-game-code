@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Billboard);
+    RegisterClass(Billboard);
 
     Billboard::Billboard(Context* context) : StaticEntity(context)
     {

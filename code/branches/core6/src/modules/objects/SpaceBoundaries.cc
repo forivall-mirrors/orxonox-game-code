@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceBoundaries);
+    RegisterClass(SpaceBoundaries);
 
     SpaceBoundaries::SpaceBoundaries(Context* context) : StaticEntity(context)
     {

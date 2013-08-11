@@ -241,7 +241,7 @@ namespace orxonox
 
     // LevelInfo
 
-    CreateFactory(LevelInfo);
+    RegisterClass(LevelInfo);
 
     /**
     @brief

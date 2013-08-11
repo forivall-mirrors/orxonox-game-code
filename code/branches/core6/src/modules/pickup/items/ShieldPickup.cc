@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ShieldPickup);
+    RegisterClass(ShieldPickup);
 
     /**
     @brief

@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Deathmatch);
+    RegisterUnloadableClass(Deathmatch);
 
     Deathmatch::Deathmatch(Context* context) : Gametype(context)
     {

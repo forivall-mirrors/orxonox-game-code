@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TetrisBrick);
+    RegisterClass(TetrisBrick);
 
     /**
     @brief

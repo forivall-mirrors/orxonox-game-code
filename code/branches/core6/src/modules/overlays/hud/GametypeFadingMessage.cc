@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(GametypeFadingMessage);
+    RegisterClass(GametypeFadingMessage);
 
     GametypeFadingMessage::GametypeFadingMessage(Context* context) : FadeoutText(context)
     {

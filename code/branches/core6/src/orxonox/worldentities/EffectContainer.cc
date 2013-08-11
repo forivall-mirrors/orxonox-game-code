@@ -39,7 +39,7 @@ extern "C" {
 
 namespace orxonox
 {
-    CreateFactory(EffectContainer);
+    RegisterClass(EffectContainer);
 
     EffectContainer::EffectContainer(Context* context)
         : BaseObject(context)

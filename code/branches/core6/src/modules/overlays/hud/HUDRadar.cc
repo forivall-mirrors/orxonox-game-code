@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDRadar);
+    RegisterClass(HUDRadar);
 
     HUDRadar::HUDRadar(Context* context)
         : OrxonoxOverlay(context)

@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(LastManStanding);
+    RegisterUnloadableClass(LastManStanding);
 
     LastManStanding::LastManStanding(Context* context) : Deathmatch(context)
     {

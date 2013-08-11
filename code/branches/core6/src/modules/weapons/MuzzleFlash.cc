@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    CreateFactory(MuzzleFlash);
+    RegisterClass(MuzzleFlash);
 
     MuzzleFlash::MuzzleFlash(Context* context) : Billboard(context)
     {

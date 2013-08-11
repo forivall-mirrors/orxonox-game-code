@@ -93,7 +93,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(TowerDefense);
+    RegisterUnloadableClass(TowerDefense);
 
     TowerDefense::TowerDefense(Context* context) : Deathmatch(context)
     {

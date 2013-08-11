@@ -51,7 +51,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SimpleRocket);
+    RegisterClass(SimpleRocket);
 
     const float SimpleRocket::FUEL_PERCENTAGE = 0.8f;
 

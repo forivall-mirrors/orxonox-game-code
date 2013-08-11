@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ShrinkPickup);
+    RegisterClass(ShrinkPickup);
 
     /**
     @brief

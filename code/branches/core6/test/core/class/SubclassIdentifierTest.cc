@@ -20,8 +20,8 @@ namespace orxonox
                 TestSubclass(Context* context = NULL) { RegisterObject(TestSubclass); }
         };
 
-        CreateFactory(TestClass);
-        CreateFactory(TestSubclass);
+        RegisterClass(TestClass);
+        RegisterClass(TestSubclass);
     }
 
     TEST(SubclassIdentifierTest, CanCreateIdentifier)

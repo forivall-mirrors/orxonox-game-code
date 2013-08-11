@@ -52,7 +52,7 @@ namespace orxonox
     CreateEventName(PongCenterpoint, right);
     CreateEventName(PongCenterpoint, left);
 
-    CreateUnloadableFactory(Pong);
+    RegisterUnloadableClass(Pong);
 
     /**
     @brief

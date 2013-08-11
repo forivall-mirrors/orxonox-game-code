@@ -47,7 +47,7 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(NotificationDispatcher);
+    RegisterUnloadableClass(NotificationDispatcher);
 
     registerMemberNetworkFunction(NotificationDispatcher, broadcastHelper);
     registerMemberNetworkFunction(NotificationDispatcher, dispatch);

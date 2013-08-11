@@ -31,7 +31,7 @@
 
 namespace orxonox
 {
-    CreateFactory(EventName);
+    RegisterClass(EventName);
 
     EventName::EventName(Context* context) : BaseObject(context)
     {

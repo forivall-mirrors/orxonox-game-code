@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    CreateFactory(QuestHint);
+    RegisterClass(QuestHint);
 
     /**
     @brief

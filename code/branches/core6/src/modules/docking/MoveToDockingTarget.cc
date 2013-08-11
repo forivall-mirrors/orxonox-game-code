@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(MoveToDockingTarget);
+    RegisterClass(MoveToDockingTarget);
 
     MoveToDockingTarget::MoveToDockingTarget(Context* context) : DockingAnimation(context)
     {

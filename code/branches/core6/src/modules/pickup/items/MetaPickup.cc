@@ -41,7 +41,7 @@
 
 namespace orxonox {
 
-    CreateFactory(MetaPickup);
+    RegisterClass(MetaPickup);
 
     //! Setting the static variables to their values.
     /*static*/ const std::string MetaPickup::metaTypeNone_s = "none";

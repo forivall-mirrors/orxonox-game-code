@@ -46,7 +46,7 @@ namespace orxonox
     /*static*/ const std::string HealthPickup::healthTypeTemporary_s = "temporary";
     /*static*/ const std::string HealthPickup::healthTypePermanent_s = "permanent";
 
-    CreateFactory(HealthPickup);
+    RegisterClass(HealthPickup);
 
     /**
     @brief

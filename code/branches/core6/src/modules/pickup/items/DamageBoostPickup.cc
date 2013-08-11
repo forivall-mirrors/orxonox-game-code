@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(DamageBoostPickup);
+    RegisterClass(DamageBoostPickup);
 
     /**
     @brief

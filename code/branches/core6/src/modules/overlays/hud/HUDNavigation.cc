@@ -66,7 +66,7 @@ namespace orxonox
     {
         return a.second < b.second;
     }
-    CreateFactory ( HUDNavigation );
+    RegisterClass ( HUDNavigation );
 
     HUDNavigation* HUDNavigation::localHUD_s = 0;
 

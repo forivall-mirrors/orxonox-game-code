@@ -32,7 +32,7 @@
 
 namespace orxonox
 {
-    CreateFactory(EventTarget);
+    RegisterClass(EventTarget);
 
     EventTarget::EventTarget(Context* context) : BaseObject(context)
     {

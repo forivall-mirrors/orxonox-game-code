@@ -38,7 +38,7 @@
 
 namespace orxonox {
 
-    CreateFactory(SimpleNotification);
+    RegisterClass(SimpleNotification);
 
     /**
     @brief

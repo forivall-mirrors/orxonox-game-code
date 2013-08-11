@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(WaypointController);
+    RegisterClass(WaypointController);
 
     WaypointController::WaypointController(Context* context) : ArtificialController(context)
     {

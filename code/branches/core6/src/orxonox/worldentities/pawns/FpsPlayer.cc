@@ -52,7 +52,7 @@ namespace orxonox
 {
     const float orientationGain_ = 100;
     const float jumpValue_ = 300;
-    CreateFactory(FpsPlayer);
+    RegisterClass(FpsPlayer);
 
     FpsPlayer::FpsPlayer(Context* context) : Pawn(context)
     {

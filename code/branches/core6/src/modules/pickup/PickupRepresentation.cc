@@ -44,7 +44,7 @@
 namespace orxonox
 {
 
-    CreateFactory(PickupRepresentation);
+    RegisterClass(PickupRepresentation);
 
     /**
     @brief

@@ -50,7 +50,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Rocket);
+    RegisterClass(Rocket);
 
     /**
     @brief

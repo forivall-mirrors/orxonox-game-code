@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Planet);
+    RegisterClass(Planet);
 
     /**
      * @brief Constructor

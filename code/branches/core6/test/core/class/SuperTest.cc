@@ -61,8 +61,8 @@ namespace orxonox
                 XMLPort::Mode modeSubclass_;
         };
 
-        CreateFactory(TestClass);
-        CreateFactory(TestSubclass);
+        RegisterClass(TestClass);
+        RegisterClass(TestSubclass);
     }
 
     TEST(SuberTest, SuperCallWithoutArguments)

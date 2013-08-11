@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(DockToShip);
+    RegisterClass(DockToShip);
 
     DockToShip::DockToShip(Context* context) : DockingEffect(context)
     {

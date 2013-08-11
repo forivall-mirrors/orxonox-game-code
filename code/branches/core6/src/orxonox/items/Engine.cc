@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Engine);
+    RegisterClass(Engine);
 
     /**
     @brief

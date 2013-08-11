@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TeamSpawnPoint);
+    RegisterClass(TeamSpawnPoint);
 
     TeamSpawnPoint::TeamSpawnPoint(Context* context) : SpawnPoint(context)
     {

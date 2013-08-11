@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ForceField);
+    RegisterClass(ForceField);
 
     /*static*/ const std::string ForceField::modeTube_s = "tube";
     /*static*/ const std::string ForceField::modeSphere_s = "sphere";

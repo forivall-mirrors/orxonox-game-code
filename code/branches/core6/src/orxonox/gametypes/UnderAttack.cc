@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(UnderAttack);
+    RegisterUnloadableClass(UnderAttack);
 
     UnderAttack::UnderAttack(Context* context) : TeamDeathmatch(context)
     {

@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(TeamBaseMatch);
+    RegisterUnloadableClass(TeamBaseMatch);
 
     TeamBaseMatch::TeamBaseMatch(Context* context) : TeamDeathmatch(context)
     {

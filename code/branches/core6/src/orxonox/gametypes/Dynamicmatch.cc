@@ -61,7 +61,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Dynamicmatch);
+    RegisterUnloadableClass(Dynamicmatch);
 
     Dynamicmatch::Dynamicmatch(Context* context) : Gametype(context)
     {

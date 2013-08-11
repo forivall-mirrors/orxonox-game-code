@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Template);
+    RegisterClass(Template);
 
     Template::Template(Context* context) : BaseObject(context)
     {

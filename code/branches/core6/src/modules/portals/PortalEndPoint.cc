@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PortalEndPoint);
+    RegisterClass(PortalEndPoint);
 
     /*static*/ const std::string PortalEndPoint::EVENTFUNCTIONNAME = "execute";
 

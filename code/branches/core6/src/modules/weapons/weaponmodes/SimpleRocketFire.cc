@@ -49,7 +49,7 @@
 namespace orxonox
 {
 
-    CreateFactory(SimpleRocketFire);
+    RegisterClass(SimpleRocketFire);
 
     SimpleRocketFire::SimpleRocketFire(Context* context) : WeaponMode(context)
     {

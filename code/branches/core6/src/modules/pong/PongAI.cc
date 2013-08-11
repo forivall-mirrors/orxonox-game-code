@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(PongAI);
+    RegisterUnloadableClass(PongAI);
 
     const static float MAX_REACTION_TIME = 0.4f;
 

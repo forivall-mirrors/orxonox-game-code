@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDHealthBar);
+    RegisterClass(HUDHealthBar);
 
     HUDHealthBar::HUDHealthBar(Context* context) : HUDBar(context)
     {

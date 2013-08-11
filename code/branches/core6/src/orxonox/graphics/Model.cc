@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Model);
+    RegisterClass(Model);
 
     Model::Model(Context* context) :
         StaticEntity(context), bCastShadows_(true), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)

@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    CreateFactory(DebugRTRText);
+    RegisterClass(DebugRTRText);
 
     DebugRTRText::DebugRTRText(Context* context) : OverlayText(context)
     {

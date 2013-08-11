@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PongBall);
+    RegisterClass(PongBall);
 
     const float PongBall::MAX_REL_Z_VELOCITY = 1.5;
 

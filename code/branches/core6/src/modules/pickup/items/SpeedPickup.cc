@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpeedPickup);
+    RegisterClass(SpeedPickup);
 
     /**
     @brief

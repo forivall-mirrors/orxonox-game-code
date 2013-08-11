@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ConeCollisionShape);
+    RegisterClass(ConeCollisionShape);
 
     /**
     @brief

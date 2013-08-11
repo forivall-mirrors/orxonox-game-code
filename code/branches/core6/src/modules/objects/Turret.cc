@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Turret);
+    RegisterClass(Turret);
 
     /**
      * @brief Constructor

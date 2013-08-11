@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceRaceManager);
+    RegisterClass(SpaceRaceManager);
 
     SpaceRaceManager::SpaceRaceManager(Context* context) :
         BaseObject(context)

@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(TetrisScore);
+    RegisterClass(TetrisScore);
 
     /**
     @brief

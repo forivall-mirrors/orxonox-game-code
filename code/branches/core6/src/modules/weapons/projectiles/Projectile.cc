@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Projectile);
+    RegisterClass(Projectile);
 
     Projectile::Projectile(Context* context) : MovableEntity(context), BasicProjectile()
     {

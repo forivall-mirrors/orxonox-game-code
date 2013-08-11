@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Bot);
+    RegisterClass(Bot);
 
     Bot::Bot(Context* context) : PlayerInfo(context)
     {

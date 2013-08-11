@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Attacher);
+    RegisterClass(Attacher);
 
     Attacher::Attacher(Context* context) : StaticEntity(context)
     {

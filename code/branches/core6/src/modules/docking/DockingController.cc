@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    CreateFactory(DockingController);
+    RegisterClass(DockingController);
 
     DockingController::DockingController(Context* context) : ArtificialController(context)
     {

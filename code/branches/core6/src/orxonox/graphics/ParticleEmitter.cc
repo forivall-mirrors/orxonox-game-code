@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ParticleEmitter);
+    RegisterClass(ParticleEmitter);
 
     ParticleEmitter::ParticleEmitter(Context* context) : StaticEntity(context)
     {

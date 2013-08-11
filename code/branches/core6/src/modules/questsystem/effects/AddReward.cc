@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(AddReward);
+    RegisterClass(AddReward);
 
     /**
     @brief

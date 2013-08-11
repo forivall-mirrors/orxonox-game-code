@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PortalLink);
+    RegisterClass(PortalLink);
 
     std::map<PortalEndPoint *, PortalEndPoint *> PortalLink::links_s;
 

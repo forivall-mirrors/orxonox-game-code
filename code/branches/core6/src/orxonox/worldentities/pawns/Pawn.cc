@@ -48,7 +48,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Pawn);
+    RegisterClass(Pawn);
 
     Pawn::Pawn(Context* context)
         : ControllableEntity(context)

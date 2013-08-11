@@ -55,7 +55,7 @@ namespace orxonox
     SetConsoleCommand("NewHumanController", "decelerate", &NewHumanController::decelerate).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("NewHumanController", "unfire",     &NewHumanController::unfire    ).keybindMode(KeybindMode::OnRelease).addShortcut();
 
-    CreateUnloadableFactory(NewHumanController);
+    RegisterUnloadableClass(NewHumanController);
 
     NewHumanController* NewHumanController::localController_s = 0;
 

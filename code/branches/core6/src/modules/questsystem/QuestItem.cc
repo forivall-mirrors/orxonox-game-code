@@ -41,7 +41,7 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(QuestItem);
+    RegisterUnloadableClass(QuestItem);
 
     /**
     @brief

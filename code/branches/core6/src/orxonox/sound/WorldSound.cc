@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    CreateFactory(WorldSound);
+    RegisterClass(WorldSound);
 
     WorldSound::WorldSound(Context* context)
         : StaticEntity(context)

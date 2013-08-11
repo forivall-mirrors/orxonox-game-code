@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Destroyer);
+    RegisterClass(Destroyer);
 
     Destroyer::Destroyer(Context* context) : SpaceShip(context)
     {

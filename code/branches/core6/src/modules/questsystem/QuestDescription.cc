@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    CreateFactory(QuestDescription);
+    RegisterClass(QuestDescription);
 
     /*static*/ const std::string QuestDescription::SENDER = "questsystem";
 

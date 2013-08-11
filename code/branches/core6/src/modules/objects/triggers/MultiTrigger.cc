@@ -42,7 +42,7 @@
 namespace orxonox
 {
 
-    CreateFactory(MultiTrigger);
+    RegisterClass(MultiTrigger);
 
     /**
     @brief

@@ -45,7 +45,7 @@ namespace orxonox {
     /*static*/ const std::string TriggerBase::or_s = "or";
     /*static*/ const std::string TriggerBase::xor_s = "xor";
 
-    CreateFactory(TriggerBase);
+    RegisterClass(TriggerBase);
 
     /**
     @brief

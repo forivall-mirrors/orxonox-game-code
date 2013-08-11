@@ -53,7 +53,7 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(Tetris);
+    RegisterUnloadableClass(Tetris);
 
     /**
     @brief

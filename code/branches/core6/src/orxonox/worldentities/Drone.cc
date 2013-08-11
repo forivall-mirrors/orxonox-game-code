@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    CreateFactory(Drone);
+    RegisterClass(Drone);
     /**
     @brief
         Constructor. Registers the object and initializes some default values.
