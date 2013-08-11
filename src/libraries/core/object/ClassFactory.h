@@ -83,7 +83,7 @@ namespace orxonox
             */
             inline Identifiable* fabricate(Context* context)
             {
-                return static_cast<OrxonoxClass*>(new T(context));
+                return static_cast<Identifiable*>(new T(context));
             }
     };
 }
