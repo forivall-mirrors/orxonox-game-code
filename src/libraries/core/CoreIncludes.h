@@ -116,21 +116,21 @@
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    RegisterFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(#ClassName, true))
+    RegisterFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), true)
 
 /**
     @brief Creates and registers the Factory for classes which should not be loaded through XML.
     @param ClassName The name of the class
 */
 #define CreateUnloadableFactory(ClassName) \
-    RegisterFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(#ClassName, false))
+    RegisterFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), false)
 
 /**
     @brief Registers a given Factory.
     @param ClassName The name of the class
 */
-#define RegisterFactory(ClassName, FactoryInstance) \
-    Factory* _##ClassName##Factory = FactoryInstance
+#define RegisterFactory(ClassName, FactoryInstance, bLoadable) \
+    Identifier* _##ClassName##Identifier = orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)
 
 /**
     @brief Returns the Identifier of the given class.
@@ -142,6 +142,31 @@
 
 namespace orxonox
 {
+    /**
+     * @brief Overload of registerClass() which determines T implicitly by the template argument of the ClassFactory.
+     */
+    template <class T>
+    inline Identifier* registerClass(const std::string& name, ClassFactory<T>* factory, bool bLoadable = true)
+    {
+        return registerClass<T>(name, static_cast<Factory*>(factory), bLoadable);
+    }
+
+    /**
+     * @brief Registers a class in the framework.
+     * @param name The name of the class
+     * @param factory The factory which is able to create new instances of this class
+     * @param bLoadable Whether the class is allowed to be loaded through XML
+     */
+    template <class T>
+    inline Identifier* registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
+    {
+        orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
+        Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
+        identifier->setFactory(factory);
+        identifier->setLoadable(bLoadable);
+        return identifier;
+    }
+
     /**
         @brief Returns the Identifier with a given name.
         @param name The name of the class

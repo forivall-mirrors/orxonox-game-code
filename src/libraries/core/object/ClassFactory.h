@@ -42,7 +42,6 @@
 #include <string>
 
 #include "util/Output.h"
-#include "core/class/Identifier.h"
 
 namespace orxonox
 {
@@ -53,30 +52,27 @@ namespace orxonox
     class _CoreExport Factory
     {
         public:
-            virtual ~Factory() {};
+            virtual ~Factory() {}
             virtual Identifiable* fabricate(Context* context) = 0;
     };
 
     // ###############################
     // ###      ClassFactory       ###
     // ###############################
-    /// The ClassFactory is able to create new objects of a specific class that require no constructor arguments.
+    /// The ClassFactory is the base-class of all class-spezific factories
     template <class T>
     class ClassFactory : public Factory
     {
-        public:
-            /**
-                @brief Constructor: Adds the ClassFactory to the Identifier of the same type.
-                @param name The name of the class
-                @param bLoadable True if the class can be loaded through XML
-            */
-            ClassFactory(const std::string& name, bool bLoadable = true)
-            {
-                orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
-                ClassIdentifier<T>::getIdentifier(name)->setFactory(this);
-                ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
-            }
+    };
 
+    // ###############################
+    // ###   ClassFactoryNoArgs    ###
+    // ###############################
+    /// The ClassFactoryNoArgs is able to create new objects of a specific class that require no constructor arguments.
+    template <class T>
+    class ClassFactoryNoArgs : public ClassFactory<T>
+    {
+        public:
             /**
                 @brief Creates and returns a new object of class T.
                 @return The new object
@@ -92,21 +88,9 @@ namespace orxonox
     // ###############################
     /// The ClassFactoryWithContext is able to create new objects of a specific class that require a context as constructor argument
     template <class T>
-    class ClassFactoryWithContext : public Factory
+    class ClassFactoryWithContext : public ClassFactory<T>
     {
         public:
-            /**
-                @brief Constructor: Adds the ClassFactory to the Identifier of the same type.
-                @param name The name of the class
-                @param bLoadable True if the class can be loaded through XML
-            */
-            ClassFactoryWithContext(const std::string& name, bool bLoadable = true)
-            {
-                orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
-                ClassIdentifier<T>::getIdentifier(name)->setFactory(this);
-                ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
-            }
-
             /**
                 @brief Creates and returns a new object of class T.
                 @return The new object
