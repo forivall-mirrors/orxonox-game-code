@@ -7,7 +7,7 @@ namespace orxonox
     TEST(ClassFactoryTest, CanFabricateObject)
     {
         Factory* factory = new ClassFactory<BaseObject>("BaseObject");
-        OrxonoxClass* object = factory->fabricate(NULL);
+        Identifiable* object = factory->fabricate(NULL);
         ASSERT_TRUE(object != NULL);
         BaseObject* baseObject = dynamic_cast<BaseObject*>(object);
         EXPECT_TRUE(baseObject != NULL);

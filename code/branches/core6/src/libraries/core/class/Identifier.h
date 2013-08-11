@@ -55,7 +55,7 @@
 
     object->getIdentifier()->getName();                                         // returns "MyClass"
 
-    OrxonoxClass* other = object->getIdentifier()->fabricate(0);                // fabricates a new instance of MyClass
+    Identifiable* other = object->getIdentifier()->fabricate(0);                // fabricates a new instance of MyClass
 
 
     // test the class hierarchy
@@ -124,7 +124,7 @@ namespace orxonox
             /// Returns true if the Identifier has a Factory.
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
-            OrxonoxClass* fabricate(Context* context);
+            Identifiable* fabricate(Context* context);
 
             /// Returns true if the class can be loaded through XML.
             inline bool isLoadable() const { return this->bLoadable_; }

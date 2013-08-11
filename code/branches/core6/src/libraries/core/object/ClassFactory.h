@@ -54,7 +54,7 @@ namespace orxonox
     {
         public:
             virtual ~Factory() {};
-            virtual OrxonoxClass* fabricate(Context* context) = 0;
+            virtual Identifiable* fabricate(Context* context) = 0;
     };
 
     // ###############################
@@ -81,7 +81,7 @@ namespace orxonox
                 @brief Creates and returns a new object of class T.
                 @return The new object
             */
-            inline OrxonoxClass* fabricate(Context* context)
+            inline Identifiable* fabricate(Context* context)
             {
                 return static_cast<OrxonoxClass*>(new T(context));
             }
