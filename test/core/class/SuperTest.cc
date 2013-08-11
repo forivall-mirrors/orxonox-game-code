@@ -68,7 +68,7 @@ namespace orxonox
     TEST(SuberTest, SuperCallWithoutArguments)
     {
         TestSubclass test;
-        IdentifierManager::createClassHierarchy();
+        IdentifierManager::getInstance().createClassHierarchy();
 
         EXPECT_FALSE(test.changedNameBase_);
         EXPECT_FALSE(test.changedNameSubclass_);
@@ -82,7 +82,7 @@ namespace orxonox
     TEST(SuberTest, SuperCallWithArguments)
     {
         TestSubclass test;
-        IdentifierManager::createClassHierarchy();
+        IdentifierManager::getInstance().createClassHierarchy();
 
         EXPECT_FALSE(test.xmlPortBase_);
         EXPECT_FALSE(test.xmlPortSubclass_);

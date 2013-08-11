@@ -27,12 +27,12 @@ namespace orxonox
                     registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
                     registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());
 
-                    IdentifierManager::createClassHierarchy();
+                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
-                    IdentifierManager::destroyAllIdentifiers();
+                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
     }

@@ -178,7 +178,7 @@ namespace orxonox
     */
     inline Identifier* ClassByString(const std::string& name)
     {
-        return IdentifierManager::getIdentifierByString(name);
+        return IdentifierManager::getInstance().getIdentifierByString(name);
     }
 
     /**
@@ -187,7 +187,7 @@ namespace orxonox
     */
     inline Identifier* ClassByLowercaseString(const std::string& name)
     {
-        return IdentifierManager::getIdentifierByLowercaseString(name);
+        return IdentifierManager::getInstance().getIdentifierByLowercaseString(name);
     }
 
     /**
@@ -196,7 +196,7 @@ namespace orxonox
     */
     inline Identifier* ClassByID(uint32_t id)
     {
-        return IdentifierManager::getIdentifierByID(id);
+        return IdentifierManager::getInstance().getIdentifierByID(id);
     }
 
     /**

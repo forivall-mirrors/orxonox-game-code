@@ -345,7 +345,7 @@ namespace orxonox
         ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
 
         // Get the entry from the map
-        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getIdentifierSingleton(name, proposal);
+        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getInstance().getIdentifierSingleton(name, proposal);
 
         if (ClassIdentifier<T>::classIdentifier_s == proposal)
         {
@@ -372,7 +372,7 @@ namespace orxonox
             orxout(verbose, context::object_list) << "Register Object: " << className << endl;
 
         object->identifier_ = this;
-        if (IdentifierManager::isCreatingHierarchy())
+        if (IdentifierManager::getInstance().isCreatingHierarchy())
         {
             if (bRootClass && !object->parents_)
                 object->parents_ = new std::set<const Identifier*>();

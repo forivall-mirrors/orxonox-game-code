@@ -54,8 +54,8 @@ ClassID::ClassID( ) : Packet(){
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
 
   //calculate total needed size (for all strings and integers)
-  std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getStringIdentifierMapBegin();
-  for(;it != IdentifierManager::getStringIdentifierMapEnd();++it){
+  std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getInstance().getStringIdentifierMapBegin();
+  for(;it != IdentifierManager::getInstance().getStringIdentifierMapEnd();++it){
     id = it->second;
     if(id == NULL || !id->hasFactory())
       continue;
@@ -128,7 +128,7 @@ bool ClassID::process(orxonox::Host* host){
 
 
   //clear the map of network ids
-  IdentifierManager::clearNetworkIDs();
+  IdentifierManager::getInstance().clearNetworkIDs();
 
   orxout(verbose, context::packets) << "=== processing classids: " << endl;
   std::pair<uint32_t, std::string> tempPair;

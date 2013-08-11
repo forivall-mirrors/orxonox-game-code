@@ -65,12 +65,12 @@ namespace orxonox
                     registerClass("Class2b", new ClassFactoryNoArgs<Class2b>());
                     registerClass("Class3", new ClassFactoryNoArgs<Class3>());
 
-                    IdentifierManager::createClassHierarchy();
+                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
-                    IdentifierManager::destroyAllIdentifiers();
+                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
     }
