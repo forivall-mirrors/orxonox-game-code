@@ -24,6 +24,7 @@ namespace orxonox
                     registerClass("Interface", new ClassFactoryNoArgs<Interface>());
                     registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
                     registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());
+
                     IdentifierManager::createClassHierarchy();
                 }
 
