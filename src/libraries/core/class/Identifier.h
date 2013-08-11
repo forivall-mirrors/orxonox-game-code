@@ -105,9 +105,11 @@ namespace orxonox
     */
     class _CoreExport Identifier
     {
-        friend class IdentifierManager;
-
         public:
+            Identifier();
+            Identifier(const Identifier& identifier); // don't copy
+            virtual ~Identifier();
+
             /// Returns the name of the class the Identifier belongs to.
             inline const std::string& getName() const { return this->name_; }
             void setName(const std::string& name);
@@ -208,10 +210,6 @@ namespace orxonox
 
 
         protected:
-            Identifier();
-            Identifier(const Identifier& identifier); // don't copy
-            virtual ~Identifier();
-
             virtual void createSuperFunctionCaller() const = 0;
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
