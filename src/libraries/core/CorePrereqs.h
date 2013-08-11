@@ -126,6 +126,8 @@ namespace orxonox
     template <class T>
     class ClassFactory;
     template <class T>
+    class ClassFactoryWithContext;
+    template <class T>
     class ClassIdentifier;
     class ClassTreeMask;
     class ClassTreeMaskIterator;

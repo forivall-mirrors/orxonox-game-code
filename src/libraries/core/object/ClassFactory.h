@@ -49,7 +49,7 @@ namespace orxonox
     // ###########################
     // ###       Factory       ###
     // ###########################
-    /// Base-class of ClassFactory.
+    /// Base-class of all factories.
     class _CoreExport Factory
     {
         public:
@@ -60,7 +60,7 @@ namespace orxonox
     // ###############################
     // ###      ClassFactory       ###
     // ###############################
-    /// The ClassFactory is able to create new objects of a specific class.
+    /// The ClassFactory is able to create new objects of a specific class that require no constructor arguments.
     template <class T>
     class ClassFactory : public Factory
     {
@@ -71,6 +71,36 @@ namespace orxonox
                 @param bLoadable True if the class can be loaded through XML
             */
             ClassFactory(const std::string& name, bool bLoadable = true)
+            {
+                orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
+                ClassIdentifier<T>::getIdentifier(name)->setFactory(this);
+                ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
+            }
+
+            /**
+                @brief Creates and returns a new object of class T.
+                @return The new object
+            */
+            inline Identifiable* fabricate(Context* context)
+            {
+                return static_cast<Identifiable*>(new T());
+            }
+    };
+
+    // ###############################
+    // ### ClassFactoryWithContext ###
+    // ###############################
+    /// The ClassFactoryWithContext is able to create new objects of a specific class that require a context as constructor argument
+    template <class T>
+    class ClassFactoryWithContext : public Factory
+    {
+        public:
+            /**
+                @brief Constructor: Adds the ClassFactory to the Identifier of the same type.
+                @param name The name of the class
+                @param bLoadable True if the class can be loaded through XML
+            */
+            ClassFactoryWithContext(const std::string& name, bool bLoadable = true)
             {
                 orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
                 ClassIdentifier<T>::getIdentifier(name)->setFactory(this);
