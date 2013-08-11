@@ -9,6 +9,8 @@ ORXONOX_ADD_EXECUTABLE(
     ${GMOCK_MAIN}
     class/IdentifiableTest.cc
     class/IdentifierTest.cc
+    class/IdentifierSimpleClassHierarchyTest.cc
+    class/IdentifierExternalClassHierarchyTest.cc
     class/OrxonoxClassTest.cc
     class/OrxonoxInterfaceTest.cc
     class/SubclassIdentifierTest.cc
