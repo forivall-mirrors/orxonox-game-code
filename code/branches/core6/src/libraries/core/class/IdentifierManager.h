@@ -46,7 +46,7 @@ namespace orxonox
         public:
             static IdentifierManager& getInstance();
 
-            Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
+            Identifier* getIdentifierSingleton(Identifier* proposal);
             void registerIdentifier(Identifier* identifier);
 
             unsigned int getUniqueClassId()
@@ -95,7 +95,7 @@ namespace orxonox
             inline void stopCreatingHierarchy()
                 { hierarchyCreatingCounter_s--; }
 
-            std::map<std::string, Identifier*> identifierByTypeId_;          //!< Map with the names as received by typeid(). This is only used internally.
+            std::map<std::string, Identifier*> identifierByTypeidName_;      //!< Map with the names as received by typeid(). This is only used internally.
 
             std::map<std::string, Identifier*> identifierByString_;          //!< Map that stores all Identifiers with their names.
             std::map<std::string, Identifier*> identifierByLowercaseString_; //!< Map that stores all Identifiers with their names in lowercase.

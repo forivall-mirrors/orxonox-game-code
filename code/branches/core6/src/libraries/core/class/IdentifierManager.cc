@@ -56,24 +56,23 @@ namespace orxonox
 
     /**
         @brief Returns an identifier by name and adds it if not available
-        @param name The name of the identifier as typeid().name() suggests
         @param proposal A pointer to a newly created identifier for the case of non existence in the map
         @return The identifier (unique instance)
     */
-    Identifier* IdentifierManager::getIdentifierSingleton(const std::string& name, Identifier* proposal)
+    Identifier* IdentifierManager::getIdentifierSingleton(Identifier* proposal)
     {
-        std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeId_.find(name);
+        const std::string& typeidName = proposal->getTypeidName();
+        std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.find(typeidName);
 
-        if (it != this->identifierByTypeId_.end())
+        if (it != this->identifierByTypeidName_.end())
         {
-            // There is already an entry: return it and delete the proposal
-            delete proposal;
+            // There is already an entry: return it
             return it->second;
         }
         else
         {
             // There is no entry: put the proposal into the map and return it
-            this->identifierByTypeId_[name] = proposal;
+            this->identifierByTypeidName_[typeidName] = proposal;
             return proposal;
         }
     }
@@ -95,7 +94,7 @@ namespace orxonox
     {
         orxout(internal_status) << "Create class-hierarchy" << endl;
         this->startCreatingHierarchy();
-        for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeId_.begin(); it != this->identifierByTypeId_.end(); ++it)
+        for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             if (it->second->hasFactory())
@@ -113,10 +112,10 @@ namespace orxonox
     */
     void IdentifierManager::destroyAllIdentifiers()
     {
-        for (std::map<std::string, Identifier*>::iterator it = this->identifierByTypeId_.begin(); it != this->identifierByTypeId_.end(); ++it)
+        for (std::map<std::string, Identifier*>::iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
             delete (it->second);
 
-        this->identifierByTypeId_.clear();
+        this->identifierByTypeidName_.clear();
         this->identifierByString_.clear();
         this->identifierByLowercaseString_.clear();
         this->identifierByNetworkId_.clear();
