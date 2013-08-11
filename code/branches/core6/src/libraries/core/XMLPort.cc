@@ -28,6 +28,7 @@
 
 #include "XMLPort.h"
 
+#include "CoreIncludes.h"
 #include "Loader.h"
 #include "Namespace.h"
 
@@ -58,7 +59,7 @@ namespace orxonox
 
                 for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                 {
-                    Identifier* identifier = IdentifierManager::getIdentifierByString(child->Value());
+                    Identifier* identifier = ClassByString(child->Value());
                     if (!identifier)
                     {
                         if (!this->sectionname_.empty())

@@ -42,7 +42,7 @@ namespace orxonox
     TEST(SubclassIdentifierTest, CanAssignIdentifierOfSubclass)
     {
         TestSubclass test;
-        IdentifierManager::createClassHierarchy();
+        IdentifierManager::getInstance().createClassHierarchy();
 
         SubclassIdentifier<TestClass> subclassIdentifier;
         subclassIdentifier = Class(TestSubclass);
@@ -52,7 +52,7 @@ namespace orxonox
     TEST(SubclassIdentifierTest, CanCreateSubclass)
     {
         TestSubclass test;
-        IdentifierManager::createClassHierarchy();
+        IdentifierManager::getInstance().createClassHierarchy();
 
         SubclassIdentifier<TestClass> subclassIdentifier;
         subclassIdentifier = Class(TestSubclass);

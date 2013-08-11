@@ -47,79 +47,82 @@ namespace orxonox
         template <class T> friend class ClassIdentifier;
 
         public:
+            static IdentifierManager& getInstance();
+
             /////////////////////////////
             ////// Class Hierarchy //////
             /////////////////////////////
-            static void createClassHierarchy();
+            void createClassHierarchy();
 
             /// Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents.
-            inline static bool isCreatingHierarchy()
+            inline bool isCreatingHierarchy()
                 { return (hierarchyCreatingCounter_s > 0); }
 
 
             //////////////////////////
             ///// Identifier Map /////
             //////////////////////////
-            static void destroyAllIdentifiers();
+            void destroyAllIdentifiers();
 
-            static Identifier* getIdentifierByString(const std::string& name);
-            static Identifier* getIdentifierByLowercaseString(const std::string& name);
-            static Identifier* getIdentifierByID(uint32_t id);
+            Identifier* getIdentifierByString(const std::string& name);
+            Identifier* getIdentifierByLowercaseString(const std::string& name);
+            Identifier* getIdentifierByID(uint32_t id);
 
-            static void clearNetworkIDs();
+            void clearNetworkIDs();
 
             /// Returns the map that stores all Identifiers with their names.
-            static inline const std::map<std::string, Identifier*>& getStringIdentifierMap()
-                { return IdentifierManager::getStringIdentifierMapIntern(); }
+            inline const std::map<std::string, Identifier*>& getStringIdentifierMap()
+                { return this->identifierByString_; }
             /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names.
-            static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapBegin()
-                { return IdentifierManager::getStringIdentifierMap().begin(); }
+            inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapBegin()
+                { return this->identifierByString_.begin(); }
             /// Returns a const_iterator to the end of the map that stores all Identifiers with their names.
-            static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapEnd()
-                { return IdentifierManager::getStringIdentifierMap().end(); }
+            inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapEnd()
+                { return this->identifierByString_.end(); }
 
             /// Returns the map that stores all Identifiers with their names in lowercase.
-            static inline const std::map<std::string, Identifier*>& getLowercaseStringIdentifierMap()
-                { return IdentifierManager::getLowercaseStringIdentifierMapIntern(); }
+            inline const std::map<std::string, Identifier*>& getLowercaseStringIdentifierMap()
+                { return this->identifierByLowercaseString_; }
             /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase.
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapBegin()
-                { return IdentifierManager::getLowercaseStringIdentifierMap().begin(); }
+            inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapBegin()
+                { return this->identifierByLowercaseString_.begin(); }
             /// Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase.
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapEnd()
-                { return IdentifierManager::getLowercaseStringIdentifierMap().end(); }
+            inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapEnd()
+                { return this->identifierByLowercaseString_.end(); }
 
             /// Returns the map that stores all Identifiers with their IDs.
-            static inline const std::map<uint32_t, Identifier*>& getIDIdentifierMap()
-                { return IdentifierManager::getIDIdentifierMapIntern(); }
+            inline const std::map<uint32_t, Identifier*>& getIDIdentifierMap()
+                { return this->identifierByNetworkId_; }
             /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their IDs.
-            static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapBegin()
-                { return IdentifierManager::getIDIdentifierMap().begin(); }
+            inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapBegin()
+                { return this->identifierByNetworkId_.begin(); }
             /// Returns a const_iterator to the end of the map that stores all Identifiers with their IDs.
-            static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd()
-                { return IdentifierManager::getIDIdentifierMap().end(); }
+            inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd()
+                { return this->identifierByNetworkId_.end(); }
 
         protected:
-            static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
-
-            /// Returns the map that stores all Identifiers with their names.
-            static std::map<std::string, Identifier*>& getStringIdentifierMapIntern();
-            /// Returns the map that stores all Identifiers with their names in lowercase.
-            static std::map<std::string, Identifier*>& getLowercaseStringIdentifierMapIntern();
-            /// Returns the map that stores all Identifiers with their network IDs.
-            static std::map<uint32_t, Identifier*>& getIDIdentifierMapIntern();
+            Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
 
         private:
+            IdentifierManager();
+            IdentifierManager(const IdentifierManager&);
+            ~IdentifierManager() {}
+
             /// Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
-            inline static void startCreatingHierarchy()
+            inline void startCreatingHierarchy()
                 { hierarchyCreatingCounter_s++; }
             /// Decreases the hierarchyCreatingCounter_s variable, causing the objects to stop storing their parents.
-            inline static void stopCreatingHierarchy()
+            inline void stopCreatingHierarchy()
                 { hierarchyCreatingCounter_s--; }
 
-            static std::map<std::string, Identifier*>& getTypeIDIdentifierMap();
+            std::map<std::string, Identifier*> identifierByTypeId_;          //!< Map with the names as received by typeid(). This is only used internally.
 
-            static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            static unsigned int classIDCounter_s;                          //!< Static counter for the unique classIDs
+            std::map<std::string, Identifier*> identifierByString_;          //!< Map that stores all Identifiers with their names.
+            std::map<std::string, Identifier*> identifierByLowercaseString_; //!< Map that stores all Identifiers with their names in lowercase.
+            std::map<uint32_t, Identifier*> identifierByNetworkId_;          //!< Returns the map that stores all Identifiers with their network IDs.
+
+            int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
+            unsigned int classIDCounter_s;                          //!< counter for the unique classIDs
     };
 }
 

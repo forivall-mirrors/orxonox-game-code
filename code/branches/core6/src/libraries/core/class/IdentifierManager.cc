@@ -42,16 +42,16 @@
 
 namespace orxonox
 {
-    int IdentifierManager::hierarchyCreatingCounter_s = 0;
-    unsigned int IdentifierManager::classIDCounter_s = 0;
-
-    /**
-        @brief Returns the identifier map with the names as received by typeid(). This is only used internally.
-    */
-    std::map<std::string, Identifier*>& IdentifierManager::getTypeIDIdentifierMap()
+    /* static */ IdentifierManager& IdentifierManager::getInstance()
     {
-        static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
-        return identifiers;
+        static IdentifierManager instance;
+        return instance;
+    }
+
+    IdentifierManager::IdentifierManager()
+    {
+        this->hierarchyCreatingCounter_s = 0;
+        this->classIDCounter_s = 0;
     }
 
     /**
@@ -62,9 +62,9 @@ namespace orxonox
     */
     Identifier* IdentifierManager::getIdentifierSingleton(const std::string& name, Identifier* proposal)
     {
-        std::map<std::string, Identifier*>::const_iterator it = getTypeIDIdentifierMap().find(name);
+        std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeId_.find(name);
 
-        if (it != getTypeIDIdentifierMap().end())
+        if (it != this->identifierByTypeId_.end())
         {
             // There is already an entry: return it and delete the proposal
             delete proposal;
@@ -73,7 +73,7 @@ namespace orxonox
         else
         {
             // There is no entry: put the proposal into the map and return it
-            getTypeIDIdentifierMap()[name] = proposal;
+            this->identifierByTypeId_[name] = proposal;
             return proposal;
         }
     }
@@ -84,8 +84,8 @@ namespace orxonox
     void IdentifierManager::createClassHierarchy()
     {
         orxout(internal_status) << "Create class-hierarchy" << endl;
-        IdentifierManager::startCreatingHierarchy();
-        for (std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getTypeIDIdentifierMap().begin(); it != IdentifierManager::getTypeIDIdentifierMap().end(); ++it)
+        this->startCreatingHierarchy();
+        for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeId_.begin(); it != this->identifierByTypeId_.end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             if (it->second->hasFactory())
@@ -94,7 +94,7 @@ namespace orxonox
                 delete temp;
             }
         }
-        IdentifierManager::stopCreatingHierarchy();
+        this->stopCreatingHierarchy();
         orxout(internal_status) << "Finished class-hierarchy creation" << endl;
     }
 
@@ -103,43 +103,13 @@ namespace orxonox
     */
     void IdentifierManager::destroyAllIdentifiers()
     {
-        for (std::map<std::string, Identifier*>::iterator it = IdentifierManager::getTypeIDIdentifierMap().begin(); it != IdentifierManager::getTypeIDIdentifierMap().end(); ++it)
+        for (std::map<std::string, Identifier*>::iterator it = this->identifierByTypeId_.begin(); it != this->identifierByTypeId_.end(); ++it)
             delete (it->second);
 
-        IdentifierManager::getTypeIDIdentifierMap().clear();
-        IdentifierManager::getStringIdentifierMapIntern().clear();
-        IdentifierManager::getLowercaseStringIdentifierMapIntern().clear();
-        IdentifierManager::getIDIdentifierMapIntern().clear();
-    }
-
-    /**
-        @brief Returns the map that stores all Identifiers with their names.
-        @return The map
-    */
-    std::map<std::string, Identifier*>& IdentifierManager::getStringIdentifierMapIntern()
-    {
-        static std::map<std::string, Identifier*> identifierMap;
-        return identifierMap;
-    }
-
-    /**
-        @brief Returns the map that stores all Identifiers with their names in lowercase.
-        @return The map
-    */
-    std::map<std::string, Identifier*>& IdentifierManager::getLowercaseStringIdentifierMapIntern()
-    {
-        static std::map<std::string, Identifier*> lowercaseIdentifierMap;
-        return lowercaseIdentifierMap;
-    }
-
-    /**
-        @brief Returns the map that stores all Identifiers with their network IDs.
-        @return The map
-    */
-    std::map<uint32_t, Identifier*>& IdentifierManager::getIDIdentifierMapIntern()
-    {
-        static std::map<uint32_t, Identifier*> identifierMap;
-        return identifierMap;
+        this->identifierByTypeId_.clear();
+        this->identifierByString_.clear();
+        this->identifierByLowercaseString_.clear();
+        this->identifierByNetworkId_.clear();
     }
 
     /**
@@ -149,8 +119,8 @@ namespace orxonox
     */
     Identifier* IdentifierManager::getIdentifierByString(const std::string& name)
     {
-        std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getStringIdentifierMapIntern().find(name);
-        if (it != IdentifierManager::getStringIdentifierMapIntern().end())
+        std::map<std::string, Identifier*>::const_iterator it = this->identifierByString_.find(name);
+        if (it != this->identifierByString_.end())
             return it->second;
         else
             return 0;
@@ -163,8 +133,8 @@ namespace orxonox
     */
     Identifier* IdentifierManager::getIdentifierByLowercaseString(const std::string& name)
     {
-        std::map<std::string, Identifier*>::const_iterator it = IdentifierManager::getLowercaseStringIdentifierMapIntern().find(name);
-        if (it != IdentifierManager::getLowercaseStringIdentifierMapIntern().end())
+        std::map<std::string, Identifier*>::const_iterator it = this->identifierByLowercaseString_.find(name);
+        if (it != this->identifierByLowercaseString_.end())
             return it->second;
         else
             return 0;
@@ -177,8 +147,8 @@ namespace orxonox
     */
     Identifier* IdentifierManager::getIdentifierByID(const uint32_t id)
     {
-        std::map<uint32_t, Identifier*>::const_iterator it = IdentifierManager::getIDIdentifierMapIntern().find(id);
-        if (it != IdentifierManager::getIDIdentifierMapIntern().end())
+        std::map<uint32_t, Identifier*>::const_iterator it = this->identifierByNetworkId_.find(id);
+        if (it != this->identifierByNetworkId_.end())
             return it->second;
         else
             return 0;
@@ -189,6 +159,6 @@ namespace orxonox
     */
     void IdentifierManager::clearNetworkIDs()
     {
-        IdentifierManager::getIDIdentifierMapIntern().clear();
+        this->identifierByNetworkId_.clear();
     }
 }

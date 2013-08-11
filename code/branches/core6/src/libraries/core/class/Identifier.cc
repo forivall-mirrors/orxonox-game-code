@@ -49,7 +49,7 @@ namespace orxonox
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
     */
     Identifier::Identifier()
-        : classID_(IdentifierManager::classIDCounter_s++)
+        : classID_(IdentifierManager::getInstance().classIDCounter_s++)
     {
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
@@ -86,7 +86,7 @@ namespace orxonox
     void Identifier::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
     {
         // Check if at least one object of the given type was created
-        if (!this->bCreatedOneObject_ && IdentifierManager::isCreatingHierarchy())
+        if (!this->bCreatedOneObject_ && IdentifierManager::getInstance().isCreatingHierarchy())
         {
             // If no: We have to store the information and initialize the Identifier
             orxout(verbose, context::identifier) << "Register Class in ClassIdentifier<" << this->getName() << ">-Singleton -> Initialize Singleton." << endl;
@@ -154,9 +154,9 @@ namespace orxonox
         {
             this->name_ = name;
             this->bSetName_ = true;
-            IdentifierManager::getStringIdentifierMapIntern()[name] = this;
-            IdentifierManager::getLowercaseStringIdentifierMapIntern()[getLowercase(name)] = this;
-            IdentifierManager::getIDIdentifierMapIntern()[this->networkID_] = this;
+            IdentifierManager::getInstance().identifierByString_[name] = this;
+            IdentifierManager::getInstance().identifierByLowercaseString_[getLowercase(name)] = this;
+            IdentifierManager::getInstance().identifierByNetworkId_[this->networkID_] = this;
         }
     }
 
@@ -195,7 +195,7 @@ namespace orxonox
     void Identifier::setNetworkID(uint32_t id)
     {
 //        Identifier::getIDIdentifierMapIntern().erase(this->networkID_);
-        IdentifierManager::getIDIdentifierMapIntern()[id] = this;
+        IdentifierManager::getInstance().identifierByNetworkId_[id] = this;
         this->networkID_ = id;
     }
 
