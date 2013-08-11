@@ -49,7 +49,7 @@ namespace orxonox
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
     */
     Identifier::Identifier()
-        : classID_(IdentifierManager::getInstance().classIDCounter_s++)
+        : classID_(IdentifierManager::getInstance().getUniqueClassId())
     {
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
@@ -154,9 +154,7 @@ namespace orxonox
         {
             this->name_ = name;
             this->bSetName_ = true;
-            IdentifierManager::getInstance().identifierByString_[name] = this;
-            IdentifierManager::getInstance().identifierByLowercaseString_[getLowercase(name)] = this;
-            IdentifierManager::getInstance().identifierByNetworkId_[this->networkID_] = this;
+            IdentifierManager::getInstance().registerIdentifier(this);
         }
     }
 
@@ -194,9 +192,8 @@ namespace orxonox
     */
     void Identifier::setNetworkID(uint32_t id)
     {
-//        Identifier::getIDIdentifierMapIntern().erase(this->networkID_);
-        IdentifierManager::getInstance().identifierByNetworkId_[id] = this;
         this->networkID_ = id;
+        IdentifierManager::getInstance().registerIdentifier(this);
     }
 
     /**

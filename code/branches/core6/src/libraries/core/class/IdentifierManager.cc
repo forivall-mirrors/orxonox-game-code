@@ -79,6 +79,16 @@ namespace orxonox
     }
 
     /**
+     * Registers the identifier in all maps of the IdentifierManager.
+     */
+    void IdentifierManager::registerIdentifier(Identifier* identifier)
+    {
+        IdentifierManager::getInstance().identifierByString_[identifier->getName()] = identifier;
+        IdentifierManager::getInstance().identifierByLowercaseString_[getLowercase(identifier->getName())] = identifier;
+        IdentifierManager::getInstance().identifierByNetworkId_[identifier->getNetworkID()] = identifier;
+    }
+
+    /**
         @brief Creates the class-hierarchy by creating and destroying one object of each type.
     */
     void IdentifierManager::createClassHierarchy()

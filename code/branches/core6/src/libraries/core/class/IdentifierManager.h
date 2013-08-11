@@ -43,15 +43,19 @@ namespace orxonox
 {
     class _CoreExport IdentifierManager
     {
-        friend class Identifier;
-        template <class T> friend class ClassIdentifier;
-
         public:
             static IdentifierManager& getInstance();
 
             /////////////////////////////
             ////// Class Hierarchy //////
             /////////////////////////////
+            Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
+
+            unsigned int getUniqueClassId()
+                { return this->classIDCounter_s++; }
+
+            void registerIdentifier(Identifier* identifier);
+
             void createClassHierarchy();
 
             /// Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents.
@@ -99,9 +103,6 @@ namespace orxonox
             /// Returns a const_iterator to the end of the map that stores all Identifiers with their IDs.
             inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd()
                 { return this->identifierByNetworkId_.end(); }
-
-        protected:
-            Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
 
         private:
             IdentifierManager();
