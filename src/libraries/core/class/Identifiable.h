@@ -54,7 +54,7 @@ namespace orxonox
 
         public:
             Identifiable();
-            virtual ~Identifiable();
+            virtual ~Identifiable() {}
 
             /// Returns the Identifier of the object.
             inline Identifier* getIdentifier() const { return this->identifier_; }
@@ -118,7 +118,6 @@ namespace orxonox
 
         private:
             Identifier* identifier_;               //!< The Identifier of the object
-            std::set<const Identifier*>* parents_; //!< List of all parents of the object
 
             /// 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;

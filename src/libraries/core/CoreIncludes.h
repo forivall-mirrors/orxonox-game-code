@@ -89,39 +89,18 @@
 
 
 /**
-    @brief Intern macro, containing the common parts of @c RegisterObject and @c RegisterRootObject.
-    @param ClassName The name of the class
-    @param bRootClass True if the class is directly derived from orxonox::OrxonoxClass
-*/
-#define InternRegisterObject(ClassName, bRootClass) \
-    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this, #ClassName, bRootClass)) \
-        return; \
-    else \
-        ((void)0)
-
-/**
-    @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
-    @param ClassName The name of the class
-*/
-#define RegisterObject(ClassName) \
-    InternRegisterObject(ClassName, false)
-
-/**
-    @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
-    @param ClassName The name of the class
-
-    In contrast to RegisterObject, this is used for classes that inherit directly from
-    orxonox::OrxonoxClass, namely all interfaces and orxonox::BaseObject.
-*/
-#define RegisterRootObject(ClassName) \
-    InternRegisterObject(ClassName, true)
-
-/**
     @brief Registers the class in the framework.
     @param ClassName The name of the class
 */
 #define RegisterClass(ClassName) \
     RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), true)
+
+/**
+    @brief Registers the class in the framework (for classes without arguments in their constructor).
+    @param ClassName The name of the class
+*/
+#define RegisterClassNoArgs(ClassName) \
+    RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryNoArgs<ClassName>(), true)
 
 /**
     @brief Registers the class in the framework (for classes which should not be loaded through XML).
@@ -131,11 +110,46 @@
     RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), false)
 
 /**
+    @brief Registers an abstract class in the framework.
+    @param ClassName The name of the class
+*/
+#define RegisterAbstractClass(ClassName) \
+    RegisterClassWithFactory(ClassName, static_cast<ClassFactory<ClassName>*>(NULL), false)
+
+/**
     @brief Registers the class in the framework with a given Factory.
     @param ClassName The name of the class
 */
 #define RegisterClassWithFactory(ClassName, FactoryInstance, bLoadable) \
-    Identifier* _##ClassName##Identifier = orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)
+    Identifier& _##ClassName##Identifier = orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)
+
+/**
+    @brief Intern macro, containing the common parts of @c RegisterObject and @c RegisterRootObject.
+    @param ClassName The name of the class
+    @param bRootClass True if the class is directly derived from orxonox::OrxonoxClass
+*/
+#define InternRegisterObject(ClassName) \
+    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this)) \
+        return; \
+    else \
+        ((void)0)
+
+/**
+    @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
+    @param ClassName The name of the class
+*/
+#define RegisterObject(ClassName) \
+    InternRegisterObject(ClassName)
+
+/**
+    @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
+    @param ClassName The name of the class
+
+    In contrast to RegisterObject, this is used for classes that inherit directly from
+    orxonox::OrxonoxClass, namely all interfaces and orxonox::BaseObject.
+*/
+#define RegisterRootObject(ClassName) \
+    InternRegisterObject(ClassName)
 
 /**
     @brief Returns the Identifier of the given class.
@@ -151,7 +165,7 @@ namespace orxonox
      * @brief Overload of registerClass() which determines T implicitly by the template argument of the ClassFactory.
      */
     template <class T>
-    inline Identifier* registerClass(const std::string& name, ClassFactory<T>* factory, bool bLoadable = true)
+    inline Identifier& registerClass(const std::string& name, ClassFactory<T>* factory, bool bLoadable = true)
     {
         return registerClass<T>(name, static_cast<Factory*>(factory), bLoadable);
     }
@@ -163,13 +177,13 @@ namespace orxonox
      * @param bLoadable Whether the class is allowed to be loaded through XML
      */
     template <class T>
-    inline Identifier* registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
+    inline Identifier& registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
     {
         orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
         Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
         identifier->setFactory(factory);
         identifier->setLoadable(bLoadable);
-        return identifier;
+        return *identifier;
     }
 
     /**

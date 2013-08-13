@@ -37,6 +37,7 @@
 #include "core/CorePrereqs.h"
 
 #include <map>
+#include <set>
 #include <string>
 
 namespace orxonox
@@ -46,8 +47,8 @@ namespace orxonox
         public:
             static IdentifierManager& getInstance();
 
-            Identifier* getIdentifierSingleton(Identifier* proposal);
-            void registerIdentifier(Identifier* identifier);
+            Identifier* getGloballyUniqueIdentifier(Identifier* proposal);
+            void addIdentifierToLookupMaps(Identifier* identifier);
 
             unsigned int getUniqueClassId()
                 { return this->classIDCounter_s++; }
@@ -58,6 +59,8 @@ namespace orxonox
             /////////////////////////////
             void createClassHierarchy();
             void destroyAllIdentifiers();
+
+            void createdObject(Identifiable* identifiable);
 
             /// Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents.
             inline bool isCreatingHierarchy()
@@ -102,6 +105,7 @@ namespace orxonox
             std::map<uint32_t, Identifier*> identifierByNetworkId_;          //!< Returns the map that stores all Identifiers with their network IDs.
 
             int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
+            std::set<const Identifier*> identifiersOfNewObject_;    //!< Used while creating the object hierarchy to keep track of the identifiers of a newly created object
             unsigned int classIDCounter_s;                          //!< counter for the unique classIDs
     };
 }

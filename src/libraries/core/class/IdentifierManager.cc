@@ -36,6 +36,7 @@
 #include <ostream>
 
 #include "util/StringUtils.h"
+#include "core/CoreIncludes.h"
 #include "core/config/ConfigValueContainer.h"
 #include "core/XMLPort.h"
 #include "core/object/ClassFactory.h"
@@ -59,7 +60,7 @@ namespace orxonox
         @param proposal A pointer to a newly created identifier for the case of non existence in the map
         @return The identifier (unique instance)
     */
-    Identifier* IdentifierManager::getIdentifierSingleton(Identifier* proposal)
+    Identifier* IdentifierManager::getGloballyUniqueIdentifier(Identifier* proposal)
     {
         const std::string& typeidName = proposal->getTypeidName();
         std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.find(typeidName);
@@ -80,11 +81,17 @@ namespace orxonox
     /**
      * Registers the identifier in all maps of the IdentifierManager.
      */
-    void IdentifierManager::registerIdentifier(Identifier* identifier)
+    void IdentifierManager::addIdentifierToLookupMaps(Identifier* identifier)
     {
-        IdentifierManager::getInstance().identifierByString_[identifier->getName()] = identifier;
-        IdentifierManager::getInstance().identifierByLowercaseString_[getLowercase(identifier->getName())] = identifier;
-        IdentifierManager::getInstance().identifierByNetworkId_[identifier->getNetworkID()] = identifier;
+        const std::string& typeidName = identifier->getTypeidName();
+        if (this->identifierByTypeidName_.find(typeidName) != this->identifierByTypeidName_.end())
+        {
+            this->identifierByString_[identifier->getName()] = identifier;
+            this->identifierByLowercaseString_[getLowercase(identifier->getName())] = identifier;
+            this->identifierByNetworkId_[identifier->getNetworkID()] = identifier;
+        }
+        else
+            orxout(internal_warning) << "Trying to add an identifier to lookup maps which is not known to IdentifierManager" << endl;
     }
 
     /**
@@ -94,15 +101,42 @@ namespace orxonox
     {
         orxout(internal_status) << "Create class-hierarchy" << endl;
         this->startCreatingHierarchy();
-        for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
+
+        std::set<Identifier*> initializedIdentifiers;
+
+        // iterate over all identifiers, create one instance of each class and initialize the identifiers
         {
-            // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
-            if (it->second->hasFactory())
+            Context temporaryContext(NULL);
+            for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
             {
-                Identifiable* temp = it->second->fabricate(0);
-                delete temp;
+                orxout(verbose, context::identifier) << "Initialize ClassIdentifier<" << it->second->getName() << ">-Singleton." << endl;
+                // To initialize the identifier, we create a new object and delete it afterwards.
+                if (it->second->hasFactory())
+                {
+                    this->identifiersOfNewObject_.clear();
+                    Identifiable* temp = it->second->fabricate(&temporaryContext);
+                    if (temp->getIdentifier() != it->second)
+                        orxout(internal_error) << "Newly created object has unexpected identifier" << endl;
+                    delete temp;
+
+                    it->second->initializeParents(this->identifiersOfNewObject_);
+                }
+                else
+                    it->second->initializeDirectParentsOfAbstractClass();
+
+                initializedIdentifiers.insert(it->second);
             }
         }
+
+        // finish the initialization of all identifiers
+        for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
+        {
+            if (initializedIdentifiers.find(it->second) != initializedIdentifiers.end())
+                it->second->finishInitialization();
+            else
+                orxout(internal_error) << "Identifier was registered late and is not initialized: " << it->second->getName() << " / " << it->second->getTypeidName() << endl;
+        }
+
         this->stopCreatingHierarchy();
         orxout(internal_status) << "Finished class-hierarchy creation" << endl;
     }
@@ -119,6 +153,17 @@ namespace orxonox
         this->identifierByString_.clear();
         this->identifierByLowercaseString_.clear();
         this->identifierByNetworkId_.clear();
+    }
+
+    /**
+     * @brief Notifies the IdentifierManager about a newly created object while creating the class hierarchy.
+     */
+    void IdentifierManager::createdObject(Identifiable* identifiable)
+    {
+        if (this->isCreatingHierarchy())
+            this->identifiersOfNewObject_.insert(identifiable->getIdentifier());
+        else
+            orxout(internal_warning) << "createdObject() called outside of class hierarchy creation" << endl;
     }
 
     /**
