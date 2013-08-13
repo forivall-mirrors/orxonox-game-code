@@ -138,6 +138,19 @@ namespace orxonox
             /// Set the class to be loadable through XML or not.
             inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
+            /// Returns true if the Identifier was completely initialized.
+            inline bool isInitialized() const { return this->bInitialized_; }
+
+
+            /////////////////////////////
+            ////// Class Hierarchy //////
+            /////////////////////////////
+            Identifier& inheritsFrom(Identifier* directParent);
+
+            void initializeParents(const std::set<const Identifier*>& identifiers);
+            void initializeDirectParentsOfAbstractClass();
+            void finishInitialization();
+
             bool isA(const Identifier* identifier) const;
             bool isExactlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
@@ -145,10 +158,6 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
-
-            /////////////////////////////
-            ////// Class Hierarchy //////
-            /////////////////////////////
             /// Returns the parents of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
             /// Returns the begin-iterator of the parents-list.
@@ -217,24 +226,14 @@ namespace orxonox
         protected:
             virtual void createSuperFunctionCaller() const = 0;
 
-            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
-
-            /// Returns the children of the class the Identifier belongs to.
-            inline std::set<const Identifier*>& getChildrenIntern() const { return this->children_; }
-            /// Returns the direct children of the class the Identifier belongs to.
-            inline std::set<const Identifier*>& getDirectChildrenIntern() const { return this->directChildren_; }
-
         private:
-            void initialize(std::set<const Identifier*>* parents);
-
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
-            mutable std::set<const Identifier*> children_;                 //!< The children of the class the Identifier belongs to
+            std::set<const Identifier*> children_;                         //!< The children of the class the Identifier belongs to
 
             std::set<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to
-            mutable std::set<const Identifier*> directChildren_;           //!< The direct children of the class the Identifier belongs to
+            std::set<const Identifier*> directChildren_;                   //!< The direct children of the class the Identifier belongs to
 
-            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
-            bool bSetName_;                                                //!< True if the name is set
+            bool bInitialized_;                                            //!< Is true if the Identifier was completely initialized
             bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             Factory* factory_;                                             //!< The Factory, able to create new objects of the given class (if available)
@@ -276,7 +275,7 @@ namespace orxonox
             static ClassIdentifier<T>* getIdentifier();
             static ClassIdentifier<T>* getIdentifier(const std::string& name);
 
-            bool initializeObject(T* object, const std::string& className, bool bRootClass);
+            bool initializeObject(T* object);
 
             void setConfigValues(T* object, Configurable*) const;
             void setConfigValues(T* object, Identifiable*) const;
@@ -350,7 +349,7 @@ namespace orxonox
         ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
 
         // Get the entry from the map
-        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getInstance().getIdentifierSingleton(proposal);
+        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getInstance().getGloballyUniqueIdentifier(proposal);
 
         if (ClassIdentifier<T>::classIdentifier_s == proposal)
             orxout(verbose, context::identifier) << "Requested Identifier for " << proposal->getTypeidName() << " was not yet existing and got created." << endl;
@@ -364,28 +363,16 @@ namespace orxonox
     /**
         @brief Adds an object of the given type to the ObjectList.
         @param object The object to add
-        @param className The name of the class T
-        @param bRootClass True if this is a root class (i.e. it inherits directly from OrxonoxClass)
     */
     template <class T>
-    bool ClassIdentifier<T>::initializeObject(T* object, const std::string& className, bool bRootClass)
+    bool ClassIdentifier<T>::initializeObject(T* object)
     {
-        if (bRootClass)
-            orxout(verbose, context::object_list) << "Register Root-Object: " << className << endl;
-        else
-            orxout(verbose, context::object_list) << "Register Object: " << className << endl;
+        orxout(verbose, context::object_list) << "Register Object: " << this->getName() << endl;
 
         object->identifier_ = this;
         if (IdentifierManager::getInstance().isCreatingHierarchy())
         {
-            if (bRootClass && !object->parents_)
-                object->parents_ = new std::set<const Identifier*>();
-
-            if (object->parents_)
-            {
-                this->initializeClassHierarchy(object->parents_, bRootClass);
-                object->parents_->insert(object->parents_->end(), this);
-            }
+            IdentifierManager::getInstance().createdObject(object);
 
             this->setConfigValues(object, object);
             return true;

@@ -36,6 +36,7 @@
 #include <ostream>
 
 #include "util/StringUtils.h"
+#include "core/CoreIncludes.h"
 #include "core/config/ConfigValueContainer.h"
 #include "core/XMLPort.h"
 #include "core/object/ClassFactory.h"
@@ -51,9 +52,8 @@ namespace orxonox
     Identifier::Identifier()
         : classID_(IdentifierManager::getInstance().getUniqueClassId())
     {
-        this->bCreatedOneObject_ = false;
-        this->bSetName_ = false;
         this->factory_ = 0;
+        this->bInitialized_ = false;
         this->bLoadable_ = false;
 
         this->bHasConfigValues_ = false;
@@ -79,82 +79,14 @@ namespace orxonox
     }
 
     /**
-        @brief Registers a class, which means that the name and the parents get stored.
-        @param parents A list, containing the Identifiers of all parents of the class
-        @param bRootClass True if the class is either an Interface or the BaseObject itself
-    */
-    void Identifier::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
-    {
-        // Check if at least one object of the given type was created
-        if (!this->bCreatedOneObject_ && IdentifierManager::getInstance().isCreatingHierarchy())
-        {
-            // If no: We have to store the information and initialize the Identifier
-            orxout(verbose, context::identifier) << "Register Class in ClassIdentifier<" << this->getName() << ">-Singleton -> Initialize Singleton." << endl;
-            if (bRootClass)
-                this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
-            else
-                this->initialize(parents);
-        }
-    }
-
-    /**
-        @brief Initializes the Identifier with a list containing all parents of the class the Identifier belongs to.
-        @param parents A list containing all parents
-    */
-    void Identifier::initialize(std::set<const Identifier*>* parents)
-    {
-        orxout(verbose, context::identifier) << "Initialize ClassIdentifier<" << this->name_ << ">-Singleton." << endl;
-        this->bCreatedOneObject_ = true;
-
-        if (parents)
-        {
-            this->parents_ = (*parents);
-            this->directParents_ = (*parents);
-
-            // Iterate through all parents
-            for (std::set<const Identifier*>::iterator it = parents->begin(); it != parents->end(); ++it)
-            {
-                // Tell the parent we're one of it's children
-                (*it)->children_.insert((*it)->children_.end(), this);
-
-                // Erase all parents of our parent from our direct-parent-list
-                for (std::set<const Identifier*>::const_iterator it1 = (*it)->getParents().begin(); it1 != (*it)->getParents().end(); ++it1)
-                {
-                    // Search for the parent's parent in our direct-parent-list
-                    for (std::set<const Identifier*>::iterator it2 = this->directParents_.begin(); it2 != this->directParents_.end(); ++it2)
-                    {
-                        if ((*it1) == (*it2))
-                        {
-                            // We've found a non-direct parent in our list: Erase it
-                            this->directParents_.erase(it2);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Now iterate through all direct parents
-            for (std::set<const Identifier*>::iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
-            {
-                // Tell the parent we're one of it's direct children
-                (*it)->directChildren_.insert((*it)->directChildren_.end(), this);
-
-                // Create the super-function dependencies
-                (*it)->createSuperFunctionCaller();
-            }
-        }
-    }
-
-    /**
         @brief Sets the name of the class.
     */
     void Identifier::setName(const std::string& name)
     {
-        if (!this->bSetName_)
+        if (name != this->name_)
         {
             this->name_ = name;
-            this->bSetName_ = true;
-            IdentifierManager::getInstance().registerIdentifier(this);
+            IdentifierManager::getInstance().addIdentifierToLookupMaps(this);
         }
     }
 
@@ -193,7 +125,105 @@ namespace orxonox
     void Identifier::setNetworkID(uint32_t id)
     {
         this->networkID_ = id;
-        IdentifierManager::getInstance().registerIdentifier(this);
+        IdentifierManager::getInstance().addIdentifierToLookupMaps(this);
+    }
+
+    /**
+     * @brief Used to define the direct parents of an Identifier of an abstract class.
+     */
+    Identifier& Identifier::inheritsFrom(Identifier* directParent)
+    {
+        if (this->parents_.empty())
+            this->directParents_.insert(directParent);
+        else
+            orxout(internal_error) << "Trying to add " << directParent->getName() << " as a direct parent of " << this->getName() << " after the latter was already initialized" << endl;
+
+        return *this;
+    }
+
+    /**
+     * @brief Initializes the parents of this Identifier while creating the class hierarchy.
+     * @param identifiers All identifiers that were used to create an instance of this class (including this identifier itself)
+     */
+    void Identifier::initializeParents(const std::set<const Identifier*>& identifiers)
+    {
+        if (!IdentifierManager::getInstance().isCreatingHierarchy())
+        {
+            orxout(internal_warning) << "Identifier::initializeParents() created outside of class hierarchy creation" << endl;
+            return;
+        }
+
+        for (std::set<const Identifier*>::const_iterator it = identifiers.begin(); it != identifiers.end(); ++it)
+            if (*it != this)
+                this->parents_.insert(*it);
+    }
+
+    /**
+     * @brief Initializes the direct parents of this Identifier while creating the class hierarchy. This is only intended for abstract classes.
+     */
+    void Identifier::initializeDirectParentsOfAbstractClass()
+    {
+        if (!IdentifierManager::getInstance().isCreatingHierarchy())
+        {
+            orxout(internal_warning) << "Identifier::initializeDirectParentsOfAbstractClass() created outside of class hierarchy creation" << endl;
+            return;
+        }
+
+        // only Identifiable is allowed to have no parents (even tough it's currently not abstract)
+        if (this->directParents_.empty() && !this->isExactlyA(Class(Identifiable)))
+        {
+            orxout(internal_error) << "Identifier " << this->getName() << " / " << this->getTypeidName() << " is marked as abstract but has no direct parents defined" << endl;
+            orxout(internal_error) << "  If this class is not abstract, use RegisterClass(ThisClass);" << endl;
+            orxout(internal_error) << "  If this class is abstract, use RegisterAbstractClass(ThisClass).inheritsFrom(Class(BaseClass));" << endl;
+        }
+    }
+
+    /**
+     * @brief Finishes the initialization of this Identifier after creating the class hierarchy by wiring the (direct) parent/child references correctly.
+     */
+    void Identifier::finishInitialization()
+    {
+        if (!IdentifierManager::getInstance().isCreatingHierarchy())
+        {
+            orxout(internal_warning) << "Identifier::finishInitialization() created outside of class hierarchy creation" << endl;
+            return;
+        }
+
+        if (this->isInitialized())
+            return;
+
+        // if no direct parents were defined, initialize them with the set of all parents
+        if (this->directParents_.empty())
+            this->directParents_ = this->parents_;
+
+        // initialize all parents before continuing to initialize this identifier
+        for (std::set<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+        {
+            Identifier* directParent = const_cast<Identifier*>(*it);
+            directParent->finishInitialization(); // initialize parent
+            this->parents_.insert(directParent);  // direct parent is also a parent
+            this->parents_.insert(directParent->parents_.begin(), directParent->parents_.end()); // parents of direct parent are also parents
+        }
+
+        // parents of parents are no direct parents of this identifier
+        for (std::set<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
+            for (std::set<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+                this->directParents_.erase(*it_parent_parent);
+
+        // tell all parents that this identifier is a child
+        for (std::set<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
+            const_cast<Identifier*>(*it)->children_.insert(this);
+
+        // tell all direct parents that this identifier is a direct child
+        for (std::set<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+        {
+            const_cast<Identifier*>(*it)->directChildren_.insert(this);
+
+            // Create the super-function dependencies
+            (*it)->createSuperFunctionCaller();
+        }
+
+        this->bInitialized_ = true;
     }
 
     /**

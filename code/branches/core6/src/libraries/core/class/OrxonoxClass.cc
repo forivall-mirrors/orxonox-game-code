@@ -26,35 +26,15 @@
  *
  */
 
-/**
-    @defgroup OrxonoxClass OrxonoxClass
-    @ingroup Class
-*/
-
-/**
-    @file
-    @ingroup Class OrxonoxClass
-    @brief Declaration of OrxonoxClass, the base class of all objects in Orxonox.
-*/
-
-#ifndef _OrxonoxClass_H__
-#define _OrxonoxClass_H__
-
-#include "core/CorePrereqs.h"
-
-#include "core/config/Configurable.h"
-#include "core/object/Destroyable.h"
+#include "OrxonoxClass.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    /**
-        @brief This is the class from which all objects of the game-logic (not the engine) are derived from.
-    */
-    class _CoreExport OrxonoxClass : virtual public Configurable, virtual public Destroyable
-    {
-        public:
-            OrxonoxClass();
-    };
-}
+    RegisterClassNoArgs(OrxonoxClass);
 
-#endif /* _OrxonoxClass_H__ */
+    OrxonoxClass::OrxonoxClass()
+    {
+        RegisterObject(OrxonoxClass);
+    }
+}

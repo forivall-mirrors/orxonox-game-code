@@ -34,30 +34,23 @@
 #include "Identifiable.h"
 
 #include <cassert>
+#include "core/CoreIncludes.h"
 #include "core/object/Context.h"
 #include "Identifier.h"
 
 namespace orxonox
 {
+    RegisterClassNoArgs(Identifiable);
+
     /**
         @brief Constructor: Sets the default values.
     */
     Identifiable::Identifiable()
     {
         this->identifier_ = 0;
-        this->parents_ = 0;
-        // Optimisation
-        this->objectPointers_.reserve(6);
-    }
+        this->objectPointers_.reserve(6); // Optimisation
 
-    /**
-        @brief Destructor: Removes the object from the object-lists
-    */
-    Identifiable::~Identifiable()
-    {
-        // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
-        if (this->parents_)
-            delete this->parents_;
+        RegisterObject(Identifiable);
     }
 
     /// Returns true if the object's class is of the given type or a derivative.

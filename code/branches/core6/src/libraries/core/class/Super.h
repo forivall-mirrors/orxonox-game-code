@@ -102,7 +102,7 @@
             static void apply(baseclass*) \
             { \
                 ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier(); \
-                for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it) \
+                for (std::set<const Identifier*>::iterator it = identifier->getDirectChildren().begin(); it != identifier->getDirectChildren().end(); ++it) \
                 { \
                     if (((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_##functionname##_isFallback_ && ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_) \
                     { \
@@ -170,7 +170,7 @@
                 ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
 
                 // Iterate through all children
-                for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it)
+                for (std::set<const Identifier*>::iterator it = identifier->getDirectChildren().begin(); it != identifier->getDirectChildren().end(); ++it)
                 {
                     // Check if the caller is a fallback-caller
                     if (((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_##functionname##_isFallback_ && ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_)

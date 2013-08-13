@@ -49,6 +49,8 @@ namespace orxonox
     */
     class _CoreExport OrxonoxInterface : virtual public Configurable, virtual public Destroyable
     {
+        public:
+            OrxonoxInterface();
     };
 }
 
