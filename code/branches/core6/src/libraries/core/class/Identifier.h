@@ -84,6 +84,8 @@
 #include "core/object/ObjectList.h"
 #include "core/object/Listable.h"
 #include "core/object/Context.h"
+#include "core/object/Destroyable.h"
+#include "core/object/WeakPtr.h"
 #include "IdentifierManager.h"
 #include "Super.h"
 
@@ -103,7 +105,7 @@ namespace orxonox
 
         @note You can't directly create an Identifier, it's just the base-class of ClassIdentifier<T>.
     */
-    class _CoreExport Identifier
+    class _CoreExport Identifier : public Destroyable
     {
         public:
             Identifier();
@@ -299,19 +301,17 @@ namespace orxonox
             ~ClassIdentifier()
             {
                 SuperFunctionDestruction<0, T>::destroy(this);
-                if (classIdentifier_s == this)
-                    classIdentifier_s = 0;
             }
 
             void updateConfigValues(bool updateChildren, Listable*) const;
             void updateConfigValues(bool updateChildren, Identifiable*) const;
 
             std::string typeidName_;
-            static ClassIdentifier<T>* classIdentifier_s;
+            static WeakPtr<ClassIdentifier<T> > classIdentifier_s;
     };
 
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::classIdentifier_s = 0;
+    WeakPtr<ClassIdentifier<T> > ClassIdentifier<T>::classIdentifier_s;
 
     /**
         @brief Returns the only instance of this class.
