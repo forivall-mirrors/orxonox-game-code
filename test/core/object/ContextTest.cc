@@ -57,4 +57,24 @@ namespace orxonox
         EXPECT_EQ(&context, context.getContext());
         EXPECT_EQ(1u, context.getObjectList<SubclassContext>()->size());
     }
+
+    TEST_F(ContextTest, ContextIsAddedToItsOwnObjectList)
+    {
+        Context context(NULL);
+        ASSERT_EQ(1u, context.getObjectList<Context>()->size());
+        EXPECT_TRUE(context.getObjectList<Context>()->begin()->objectBase_ == static_cast<Listable*>(&context));
+    }
+
+    TEST_F(ContextTest, ContextIsAddedToObjectListOfBaseContext)
+    {
+        Context baseContext(NULL);
+        Context subContext(&baseContext);
+
+        ASSERT_EQ(1u, subContext.getObjectList<Context>()->size());
+        EXPECT_TRUE(subContext.getObjectList<Context>()->begin()->objectBase_ == static_cast<Listable*>(&subContext));
+
+        ASSERT_EQ(2u, baseContext.getObjectList<Context>()->size());
+        EXPECT_TRUE(baseContext.getObjectList<Context>()->begin()->objectBase_ == static_cast<Listable*>(&baseContext));
+        EXPECT_TRUE(baseContext.getObjectList<Context>()->begin()->next_->objectBase_ == static_cast<Listable*>(&subContext));
+    }
 }
