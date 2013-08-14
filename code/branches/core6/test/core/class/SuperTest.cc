@@ -61,14 +61,30 @@ namespace orxonox
                 XMLPort::Mode modeSubclass_;
         };
 
-        RegisterClass(TestClass);
-        RegisterClass(TestSubclass);
+        // Fixture
+        class SuperTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
+                    registerClass("BaseObject", new ClassFactoryWithContext<BaseObject>());
+                    registerClass("TestClass", new ClassFactoryWithContext<TestClass>());
+                    registerClass("TestSubclass", new ClassFactoryWithContext<TestSubclass>());
+
+                    IdentifierManager::getInstance().createClassHierarchy();
+                }
+
+                virtual void TearDown()
+                {
+                    IdentifierManager::getInstance().destroyAllIdentifiers();
+                }
+        };
     }
 
-    TEST(SuberTest, SuperCallWithoutArguments)
+    TEST_F(SuperTest, SuperCallWithoutArguments)
     {
         TestSubclass test;
-        IdentifierManager::getInstance().createClassHierarchy();
 
         EXPECT_FALSE(test.changedNameBase_);
         EXPECT_FALSE(test.changedNameSubclass_);
@@ -79,10 +95,9 @@ namespace orxonox
         EXPECT_TRUE(test.changedNameSubclass_);
     }
 
-    TEST(SuberTest, SuperCallWithArguments)
+    TEST_F(SuperTest, SuperCallWithArguments)
     {
         TestSubclass test;
-        IdentifierManager::getInstance().createClassHierarchy();
 
         EXPECT_FALSE(test.xmlPortBase_);
         EXPECT_FALSE(test.xmlPortSubclass_);
