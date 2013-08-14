@@ -12,31 +12,46 @@ namespace orxonox
             public:
                 SubclassContext() : Context(NULL) { RegisterRootObject(SubclassContext); }
         };
+
+        // Fixture
+        class ContextTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    Context::setRootContext(new Context(NULL));
+                }
+
+                virtual void TearDown()
+                {
+                    Context::setRootContext(NULL);
+                }
+        };
     }
 
-    TEST(ContextTest, CanCreateContext)
+    TEST_F(ContextTest, CanCreateContext)
     {
         Context context(NULL);
     }
 
-    TEST(ContextTest, CanCreateSubclassContext)
+    TEST_F(ContextTest, CanCreateSubclassContext)
     {
         SubclassContext context;
     }
 
-    TEST(ContextTest, ContextIsItsOwnContext)
+    TEST_F(ContextTest, ContextIsItsOwnContext)
     {
         Context context(NULL);
         EXPECT_EQ(&context, context.getContext());
     }
 
-    TEST(ContextTest, SubclassContextIsItsOwnContext)
+    TEST_F(ContextTest, SubclassContextIsItsOwnContext)
     {
         SubclassContext context;
         EXPECT_EQ(&context, context.getContext());
     }
 
-    TEST(ContextTest, SubclassAddsToItsOwnObjectList)
+    TEST_F(ContextTest, SubclassAddsToItsOwnObjectList)
     {
         SubclassContext context;
         EXPECT_EQ(&context, context.getContext());

@@ -61,7 +61,7 @@ namespace orxonox
                 XMLPort::Mode modeSubclass_;
         };
 
-        // Fixture
+       // Fixture
         class SuperTest : public ::testing::Test
         {
             public:
@@ -75,10 +75,14 @@ namespace orxonox
                     registerClass("TestSubclass", new ClassFactoryWithContext<TestSubclass>());
 
                     IdentifierManager::getInstance().createClassHierarchy();
+
+                    Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
+                    Context::setRootContext(NULL);
+
                     IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };

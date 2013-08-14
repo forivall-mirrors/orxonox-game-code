@@ -1,10 +1,29 @@
 #include <gtest/gtest.h>
 #include "core/object/ClassFactory.h"
 #include "core/BaseObject.h"
+#include "core/object/Context.h"
 
 namespace orxonox
 {
-    TEST(ClassFactoryTest, CanFabricateObject)
+    namespace
+    {
+        // Fixture
+        class ClassFactoryTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    Context::setRootContext(new Context(NULL));
+                }
+
+                virtual void TearDown()
+                {
+                    Context::setRootContext(NULL);
+                }
+        };
+    }
+
+    TEST_F(ClassFactoryTest, CanFabricateObject)
     {
         Factory* factory = new ClassFactoryWithContext<BaseObject>();
         Identifiable* object = factory->fabricate(NULL);

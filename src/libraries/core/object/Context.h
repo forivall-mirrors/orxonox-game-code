@@ -45,6 +45,7 @@ namespace orxonox
     class _CoreExport Context : virtual public Listable
     {
         public:
+            static void setRootContext(Context* context);
             static Context* getRootContext();
 
             Context(Context* context);
@@ -71,6 +72,8 @@ namespace orxonox
         private:
             Context* parentContext_;
             std::vector<ObjectListBase*> objectLists_;
+
+            static Context* rootContext_s;
     };
 }
 

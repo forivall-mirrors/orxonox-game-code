@@ -36,6 +36,8 @@
 
 namespace orxonox
 {
+    Context* Context::rootContext_s = 0;
+
     Context::Context(Context* context) : Listable(this), parentContext_(context)
     {
         // we have to call Listable(this) to avoid circular initialization when creating a Context because Listable calls Context::getRootContext() by
@@ -53,10 +55,18 @@ namespace orxonox
             delete this->objectLists_[i];
     }
 
+    /*static*/ void Context::setRootContext(Context* context)
+    {
+        if (Context::rootContext_s)
+            delete Context::rootContext_s;
+        Context::rootContext_s = context;
+    }
+
     /*static*/ Context* Context::getRootContext()
     {
-        static Context rootContext(NULL);
-        return &rootContext;
+        if (!Context::rootContext_s)
+            Context::rootContext_s = new Context(NULL);
+        return Context::rootContext_s;
     }
 
     ObjectListBase* Context::getObjectList(const Identifier* identifier)

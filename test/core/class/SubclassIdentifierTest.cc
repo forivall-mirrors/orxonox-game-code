@@ -31,10 +31,14 @@ namespace orxonox
                     registerClass("TestSubclass", new ClassFactoryWithContext<TestSubclass>());
 
                     IdentifierManager::getInstance().createClassHierarchy();
+
+                    Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
+                    Context::setRootContext(NULL);
+
                     IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };

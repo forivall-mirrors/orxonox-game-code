@@ -22,19 +22,34 @@ namespace orxonox
                 TestClass() { RegisterRootObject(TestClass); }
                 MOCK_METHOD0(test, void());
         };
+
+        // Fixture
+        class IteratorTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    Context::setRootContext(new Context(NULL));
+                }
+
+                virtual void TearDown()
+                {
+                    Context::setRootContext(NULL);
+                }
+        };
     }
 
-    TEST(IteratorTest, CanCreateIterator)
+    TEST_F(IteratorTest, CanCreateIterator)
     {
         Iterator<TestInterface> it;
     }
 
-    TEST(IteratorTest, CanAssignIterator)
+    TEST_F(IteratorTest, CanAssignIterator)
     {
         Iterator<TestInterface> it = ObjectList<TestInterface>::begin();
     }
 
-    TEST(IteratorTest, CanIterateOverEmptyList)
+    TEST_F(IteratorTest, CanIterateOverEmptyList)
     {
         size_t i = 0;
         for (Iterator<TestInterface> it = ObjectList<TestInterface>::begin(); it != ObjectList<TestInterface>::end(); ++it)
@@ -42,7 +57,7 @@ namespace orxonox
         EXPECT_EQ(0u, i);
     }
 
-    TEST(IteratorTest, CanCallObjects)
+    TEST_F(IteratorTest, CanCallObjects)
     {
         TestClass test1;
         TestClass test2;

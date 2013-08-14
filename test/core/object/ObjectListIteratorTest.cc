@@ -15,19 +15,34 @@ namespace orxonox
                 ListableTest() { RegisterRootObject(ListableTest); }
                 MOCK_METHOD0(test, void());
         };
+
+        // Fixture
+        class ObjectListIteratorTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    Context::setRootContext(new Context(NULL));
+                }
+
+                virtual void TearDown()
+                {
+                    Context::setRootContext(NULL);
+                }
+        };
     }
 
-    TEST(ObjectListIteratorTest, CanCreateIterator)
+    TEST_F(ObjectListIteratorTest, CanCreateIterator)
     {
         ObjectListIterator<ListableTest> it;
     }
 
-    TEST(ObjectListIteratorTest, CanAssignIterator)
+    TEST_F(ObjectListIteratorTest, CanAssignIterator)
     {
         ObjectListIterator<ListableTest> it = ObjectList<ListableTest>::begin();
     }
 
-    TEST(ObjectListIteratorTest, CanIterateOverEmptyList)
+    TEST_F(ObjectListIteratorTest, CanIterateOverEmptyList)
     {
         size_t i = 0;
         for (ObjectListIterator<ListableTest> it = ObjectList<ListableTest>::begin(); it != ObjectList<ListableTest>::end(); ++it)
@@ -35,7 +50,7 @@ namespace orxonox
         EXPECT_EQ(0u, i);
     }
 
-    TEST(ObjectListIteratorTest, CanIterateOverFullList)
+    TEST_F(ObjectListIteratorTest, CanIterateOverFullList)
     {
         ListableTest test1;
         ListableTest test2;
@@ -52,7 +67,7 @@ namespace orxonox
         EXPECT_EQ(3u, i);
     }
 
-    TEST(ObjectListIteratorTest, CanIterateReverseOverFullList)
+    TEST_F(ObjectListIteratorTest, CanIterateReverseOverFullList)
     {
         ListableTest test1;
         ListableTest test2;
@@ -69,7 +84,7 @@ namespace orxonox
         EXPECT_EQ(3u, i);
     }
 
-    TEST(ObjectListIteratorTest, CanCallObjects)
+    TEST_F(ObjectListIteratorTest, CanCallObjects)
     {
         ListableTest test1;
         ListableTest test2;
