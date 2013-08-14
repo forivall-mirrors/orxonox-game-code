@@ -33,9 +33,12 @@
 
 #include "Context.h"
 #include "core/class/Identifier.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
+    RegisterClass(Context);
+
     Context* Context::rootContext_s = 0;
 
     Context::Context(Context* context) : Listable(this), parentContext_(context)
@@ -45,6 +48,8 @@ namespace orxonox
         // and each subclass must call its constructor individually, so either all subclasses add Listable(this) to their initialization list or we call
         // setContext(this) here).
         this->setContext(this);
+
+        RegisterObject(Context);
     }
 
     Context::~Context()
