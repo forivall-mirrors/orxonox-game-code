@@ -20,18 +20,34 @@ namespace orxonox
                 TestSubclass(Context* context = NULL) { RegisterObject(TestSubclass); }
         };
 
-        RegisterClass(TestClass);
-        RegisterClass(TestSubclass);
+        // Fixture
+        class SubclassIdentifierTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
+                    registerClass("TestClass", new ClassFactoryWithContext<TestClass>());
+                    registerClass("TestSubclass", new ClassFactoryWithContext<TestSubclass>());
+
+                    IdentifierManager::getInstance().createClassHierarchy();
+                }
+
+                virtual void TearDown()
+                {
+                    IdentifierManager::getInstance().destroyAllIdentifiers();
+                }
+        };
     }
 
-    TEST(SubclassIdentifierTest, CanCreateIdentifier)
+    TEST_F(SubclassIdentifierTest, CanCreateIdentifier)
     {
         TestSubclass test;
 
         SubclassIdentifier<TestClass> subclassIdentifier;
     }
 
-    TEST(SubclassIdentifierTest, DefaultsToNormalIdentifier)
+    TEST_F(SubclassIdentifierTest, DefaultsToNormalIdentifier)
     {
         TestSubclass test;
 
@@ -39,21 +55,17 @@ namespace orxonox
         EXPECT_EQ(Class(TestClass), subclassIdentifier.getIdentifier());
     }
 
-    TEST(SubclassIdentifierTest, CanAssignIdentifierOfSubclass)
+    TEST_F(SubclassIdentifierTest, CanAssignIdentifierOfSubclass)
     {
         TestSubclass test;
-        IdentifierManager::getInstance().createClassHierarchy();
-
         SubclassIdentifier<TestClass> subclassIdentifier;
         subclassIdentifier = Class(TestSubclass);
         EXPECT_EQ(Class(TestSubclass), subclassIdentifier.getIdentifier());
     }
 
-    TEST(SubclassIdentifierTest, CanCreateSubclass)
+    TEST_F(SubclassIdentifierTest, CanCreateSubclass)
     {
         TestSubclass test;
-        IdentifierManager::getInstance().createClassHierarchy();
-
         SubclassIdentifier<TestClass> subclassIdentifier;
         subclassIdentifier = Class(TestSubclass);
 
