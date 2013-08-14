@@ -67,6 +67,8 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    IdentifierManager::getInstance().destroyAllIdentifiers();
+
                     registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
                     registerClass("BaseObject", new ClassFactoryWithContext<BaseObject>());
                     registerClass("TestClass", new ClassFactoryWithContext<TestClass>());
@@ -80,6 +82,27 @@ namespace orxonox
                     IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
+    }
+
+    TEST_F(SuperTest, ClassHierarchyIsCorrect)
+    {
+        {
+            Identifier* identifier = Class(TestSubclass);
+
+            EXPECT_EQ(0u, identifier->getDirectChildren().size());
+
+            EXPECT_EQ(1u, identifier->getDirectParents().size());
+            EXPECT_TRUE(identifier->getDirectParents().find(Class(TestClass)) != identifier->getDirectParents().end());
+        }
+        {
+            Identifier* identifier = Class(TestClass);
+
+            EXPECT_EQ(1u, identifier->getDirectChildren().size());
+            EXPECT_TRUE(identifier->getDirectChildren().find(Class(TestSubclass)) != identifier->getDirectChildren().end());
+
+            EXPECT_EQ(1u, identifier->getDirectParents().size());
+            EXPECT_TRUE(identifier->getDirectParents().find(Class(BaseObject)) != identifier->getDirectParents().end());
+        }
     }
 
     TEST_F(SuperTest, SuperCallWithoutArguments)
