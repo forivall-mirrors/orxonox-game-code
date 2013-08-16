@@ -5,6 +5,7 @@ ADD_SOURCE_FILES(CORE_SRC_FILES
   ConfigFileEntryVectorValue.cc
   ConfigFileManager.cc
   ConfigFileSection.cc
+  Configurable.cc
   ConfigValueContainer.cc
   SettingsConfigFile.cc
 )

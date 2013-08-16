@@ -26,32 +26,15 @@
  *
  */
 
-/**
-    @file
-    @ingroup Config ConfigFile
-    @brief Declaration of Configurable, the base class of all objects which may contain config values.
-*/
-
-#ifndef _Configurable_H__
-#define _Configurable_H__
-
-#include "core/CorePrereqs.h"
-
-#include "core/object/Listable.h"
+#include "Configurable.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    /**
-        @brief This is the base class of all objects which may contain config values
-    */
-    class _CoreExport Configurable : virtual public Listable
+    RegisterClassNoArgs(Configurable);
+
+    Configurable::Configurable()
     {
-        public:
-            Configurable();
-
-            /// Function to collect the SetConfigValue-macro calls.
-            void setConfigValues() {};
-    };
+        RegisterObject(Configurable);
+    }
 }
-
-#endif /* _Configurable_H__ */
