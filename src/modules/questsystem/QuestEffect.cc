@@ -36,6 +36,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(QuestEffect).inheritsFrom(Class(BaseObject));
+
     /**
     @brief
         Constructor. Creates a new QuestEffect.
