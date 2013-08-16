@@ -43,6 +43,8 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    registerClass("Context", new ClassFactoryWithContext<Context>());
+                    registerClass("Listable", new ClassFactoryWithContext<Listable>());
                     registerClass("Interface", static_cast<ClassFactory<Interface>*>(NULL), false).inheritsFrom(Class(Identifiable));
                     registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
                     registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());

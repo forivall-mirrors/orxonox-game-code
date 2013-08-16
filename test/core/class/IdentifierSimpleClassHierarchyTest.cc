@@ -47,6 +47,7 @@ namespace orxonox
                 {
                     registerClass("Context", new ClassFactoryWithContext<Context>());
                     registerClass("Listable", new ClassFactoryWithContext<Listable>());
+                    registerClass("Configurable", new ClassFactoryNoArgs<Configurable>());
                     registerClass("OrxonoxInterface", new ClassFactoryNoArgs<OrxonoxInterface>());
                     registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
                     registerClass("Interface", static_cast<ClassFactory<Interface>*>(NULL), false).inheritsFrom(Class(OrxonoxInterface));
@@ -100,9 +101,10 @@ namespace orxonox
         EXPECT_EQ(1u, identifier->getDirectParents().size());
         EXPECT_TRUE(contains(identifier->getDirectParents(), Class(OrxonoxInterface)));
 
-        EXPECT_EQ(3u, identifier->getParents().size());
+        EXPECT_EQ(4u, identifier->getParents().size());
         EXPECT_TRUE(contains(identifier->getParents(), Class(Identifiable)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(Listable)));
+        EXPECT_TRUE(contains(identifier->getParents(), Class(Configurable)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(OrxonoxInterface)));
     }
 
@@ -119,9 +121,10 @@ namespace orxonox
         EXPECT_EQ(1u, identifier->getDirectParents().size());
         EXPECT_TRUE(contains(identifier->getDirectParents(), Class(OrxonoxClass)));
 
-        EXPECT_EQ(3u, identifier->getParents().size());
+        EXPECT_EQ(4u, identifier->getParents().size());
         EXPECT_TRUE(contains(identifier->getParents(), Class(Identifiable)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(Listable)));
+        EXPECT_TRUE(contains(identifier->getParents(), Class(Configurable)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(OrxonoxClass)));
     }
 
@@ -137,9 +140,10 @@ namespace orxonox
         EXPECT_TRUE(contains(identifier->getDirectParents(), Class(Interface)));
         EXPECT_TRUE(contains(identifier->getDirectParents(), Class(BaseClass)));
 
-        EXPECT_EQ(6u, identifier->getParents().size());
+        EXPECT_EQ(7u, identifier->getParents().size());
         EXPECT_TRUE(contains(identifier->getParents(), Class(Identifiable)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(Listable)));
+        EXPECT_TRUE(contains(identifier->getParents(), Class(Configurable)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(OrxonoxInterface)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(OrxonoxClass)));
         EXPECT_TRUE(contains(identifier->getParents(), Class(Interface)));
