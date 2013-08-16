@@ -126,6 +126,10 @@ namespace orxonox
 
                 initializedIdentifiers.insert(it->second);
             }
+
+            size_t numberOfObjects = temporaryContext.getObjectList<Listable>()->size();
+            if (numberOfObjects > 0)
+                orxout(internal_warning) << "There are still " << numberOfObjects << " listables left after creating the class hierarchy" << endl;
         }
 
         // finish the initialization of all identifiers
