@@ -508,6 +508,8 @@ namespace orxonox
     }
 
 
+    RegisterAbstractClass(DevModeListener).inheritsFrom(Class(Listable));
+
     DevModeListener::DevModeListener()
     {
         RegisterRootObject(DevModeListener);
