@@ -408,7 +408,8 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addObjectToList(T* object, Listable* listable)
     {
-        listable->getContext()->addObject(object);
+        if (listable->getContext())
+            listable->getContext()->addObject(object);
     }
 
     template <class T>

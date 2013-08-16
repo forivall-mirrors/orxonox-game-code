@@ -32,11 +32,14 @@
 */
 
 #include "Listable.h"
+#include "core/CoreIncludes.h"
 #include "ObjectListBase.h"
 #include "Context.h"
 
 namespace orxonox
 {
+    RegisterClass(Listable);
+
     /**
         @brief Constructor: Allocates space in the element list.
     */
@@ -44,15 +47,19 @@ namespace orxonox
     {
         this->context_ = Context::getRootContext();
         this->elements_.reserve(6);
+
+        RegisterObject(Listable);
     }
 
     /**
-        @brief Constructor: Allocates space in the element list and assignes the context
+        @brief Constructor: Allocates space in the element list and assigns the context
     */
     Listable::Listable(Context* context)
     {
         this->context_ = context;
         this->elements_.reserve(6);
+
+        RegisterObject(Listable);
     }
 
     /**
@@ -79,6 +86,7 @@ namespace orxonox
      */
     void Listable::setContext(Context* context)
     {
+        assert(context);
         std::vector<ObjectListBaseElement*> copy = this->elements_;
         this->elements_.clear();
 

@@ -41,15 +41,28 @@ namespace orxonox
 
     Context* Context::rootContext_s = 0;
 
-    Context::Context(Context* context) : Listable(this), parentContext_(context)
+    Context* getContextForInitializationOfOtherContexts()
     {
-        // we have to call Listable(this) to avoid circular initialization when creating a Context because Listable calls Context::getRootContext() by
-        // default AND we have to set the context again in the constructor because of other classes inheriting from Context (Listable is a virtual base
-        // and each subclass must call its constructor individually, so either all subclasses add Listable(this) to their initialization list or we call
-        // setContext(this) here).
-        this->setContext(this);
+        static size_t count = 0;
+        // the first time this is called, ++count returns 1 and the context is created
+        // the second time this is called, ++count returns 2 and NULL is returned because we're in the constructor of the context itself
+        // for each future call the context (now completely created) is returned
+        if (++count == 2)
+            return NULL;
+        else
+        {
+            static Context context(NULL);
+            return &context;
+        }
+    }
 
+    // Initialize Listable(*) with a special context, only used to initialize other contexts. Later in the constructor we change the context
+    Context::Context(Context* context) : Listable(getContextForInitializationOfOtherContexts()), parentContext_(context)
+    {
         RegisterObject(Context);
+
+        // the context is its own context
+        this->setContext(this);
     }
 
     Context::~Context()
