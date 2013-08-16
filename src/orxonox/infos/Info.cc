@@ -31,6 +31,8 @@
 
 namespace orxonox
 {
+    RegisterClass(Info);
+
     Info::Info(Context* context) : BaseObject(context), Synchronisable(context)
     {
         RegisterObject(Info);
