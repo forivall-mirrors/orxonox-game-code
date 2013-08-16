@@ -66,6 +66,8 @@ namespace orxonox
 
     unsigned int HUDBar::materialcount_s = 0;
 
+    RegisterClass(HUDBar);
+
     HUDBar::HUDBar(Context* context)
         : OrxonoxOverlay(context), right2Left_(false), autoColour_(false)
     {
