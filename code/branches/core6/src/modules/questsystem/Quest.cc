@@ -44,6 +44,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(Quest).inheritsFrom(Class(QuestItem));
+
     /**
     @brief
         Constructor. Registers and initializes object.
