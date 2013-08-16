@@ -45,6 +45,7 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(Pickupable).inheritsFrom(Class(OrxonoxInterface)).inheritsFrom(Class(Rewardable));
 
     /**
     @brief

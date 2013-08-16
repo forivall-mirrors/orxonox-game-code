@@ -44,6 +44,8 @@ namespace orxonox
 
   uint8_t Synchronisable::state_=0x1; // detemines wheter we are server (default) or client
 
+  RegisterAbstractClass(Synchronisable).inheritsFrom(Class(OrxonoxInterface));
+
   /**
   * Constructor:
   * Initializes all Variables and sets the right objectID_

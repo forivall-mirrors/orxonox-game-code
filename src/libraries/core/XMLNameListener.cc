@@ -31,6 +31,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(XMLNameListener).inheritsFrom(Class(Listable));
+
     XMLNameListener::XMLNameListener()
     {
         RegisterRootObject(XMLNameListener);

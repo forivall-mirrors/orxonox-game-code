@@ -38,7 +38,9 @@
 
 #include "Pickupable.h"
 
-namespace orxonox {
+namespace orxonox
+{
+    RegisterAbstractClass(PickupCarrier).inheritsFrom(Class(OrxonoxInterface));
 
     /**
     @brief
