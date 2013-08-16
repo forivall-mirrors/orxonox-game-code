@@ -41,6 +41,8 @@
 
 namespace orxonox
 {
+    RegisterClassNoArgs(BasicProjectile);
+
     /**
     @brief
         Constructor. Registers the object and initializes some default values.

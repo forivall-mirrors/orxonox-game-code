@@ -38,6 +38,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(DockingAnimation).inheritsFrom(Class(BaseObject));
+
     DockingAnimation::DockingAnimation(Context* context) : BaseObject(context)
     {
         RegisterObject(DockingAnimation);
