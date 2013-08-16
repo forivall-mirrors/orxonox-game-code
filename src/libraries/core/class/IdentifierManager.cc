@@ -104,6 +104,10 @@ namespace orxonox
 
         std::set<Identifier*> initializedIdentifiers;
 
+        // ensure root context exists before starting to create objects. if the root context is dynamically created while creating the class hierarchy, we
+        // would mistakenly assume the class of the currently created object inherits from Context
+        Context::getRootContext();
+
         // iterate over all identifiers, create one instance of each class and initialize the identifiers
         {
             Context temporaryContext(NULL);
