@@ -31,6 +31,8 @@
 
 namespace orxonox
 {
+    RegisterClass(Item);
+
     Item::Item(Context* context) : BaseObject(context), Synchronisable(context)
     {
         RegisterObject(Item);
