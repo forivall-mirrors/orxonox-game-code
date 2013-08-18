@@ -108,7 +108,7 @@ namespace orxonox
                 Hint
             };
 
-            Shell(const std::string& consoleName, bool bScrollable);
+            Shell(const std::string& consoleName = "", bool bScrollable = true);
             ~Shell();
 
             void setConfigValues();

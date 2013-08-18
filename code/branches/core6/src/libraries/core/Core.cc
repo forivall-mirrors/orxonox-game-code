@@ -91,6 +91,9 @@ namespace orxonox
     SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is off = 0.");
 #endif
 
+    // register Core as an abstract class to avoid problems if the class hierarchy is created within Core-constructor
+    RegisterAbstractClass(Core).inheritsFrom(Class(Configurable));
+
     Core::Core(const std::string& cmdLine)
         : pathConfig_(NULL)
         , dynLibManager_(NULL)
