@@ -120,7 +120,7 @@ namespace orxonox
                     this->identifiersOfNewObject_.clear();
                     Identifiable* temp = it->second->fabricate(&temporaryContext);
                     if (temp->getIdentifier() != it->second)
-                        orxout(internal_error) << "Newly created object has unexpected identifier" << endl;
+                        orxout(internal_error) << "Newly created object of type " << it->second->getName() << " has unexpected identifier. Did you forget to use RegisterObject(classname)?" << endl;
                     delete temp;
 
                     it->second->initializeParents(this->identifiersOfNewObject_);
