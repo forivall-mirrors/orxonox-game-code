@@ -49,7 +49,7 @@ namespace orxonox
     */
     BasicProjectile::BasicProjectile()
     {
-        RegisterRootObject(BasicProjectile);// Register the BasicProjectile class to the core
+        RegisterObject(BasicProjectile);// Register the BasicProjectile class to the core
 
         this->bDestroy_ = false;
 

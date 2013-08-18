@@ -139,7 +139,7 @@ namespace orxonox
     Timer::Timer()
     {
         this->init();
-        RegisterRootObject(Timer);
+        RegisterObject(Timer);
     }
 
     /**
@@ -152,7 +152,7 @@ namespace orxonox
     Timer::Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall)
     {
         this->init();
-        RegisterRootObject(Timer);
+        RegisterObject(Timer);
 
         this->setTimer(interval, bLoop, executor, bKillAfterCall);
     }

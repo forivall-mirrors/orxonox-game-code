@@ -68,7 +68,7 @@ namespace orxonox
     SoundManager::SoundManager()
         : effectsPoolSize_(0)
     {
-        RegisterRootObject(SoundManager);
+        RegisterObject(SoundManager);
 
         orxout(user_status) << "Loading sound" << endl;
 

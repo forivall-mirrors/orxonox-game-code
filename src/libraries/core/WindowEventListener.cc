@@ -38,7 +38,7 @@ namespace orxonox
 
     WindowEventListener::WindowEventListener()
     {
-        RegisterRootObject(WindowEventListener);
+        RegisterObject(WindowEventListener);
     }
 
     //! Calls all registered objects

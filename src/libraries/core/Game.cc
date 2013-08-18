@@ -111,7 +111,7 @@ namespace orxonox
         this->core_ = new Core(cmdLine);
 
         // Do this after the Core creation!
-        RegisterRootObject(Game);
+        RegisterObject(Game);
         this->setConfigValues();
 
         // After the core has been created, we can safely instantiate the GameStates that don't require graphics

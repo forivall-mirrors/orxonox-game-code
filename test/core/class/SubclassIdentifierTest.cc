@@ -11,7 +11,7 @@ namespace orxonox
         class TestClass : public OrxonoxClass
         {
             public:
-                TestClass(Context* context = NULL) { RegisterRootObject(TestClass); }
+                TestClass(Context* context = NULL) { RegisterObject(TestClass); }
         };
 
         class TestSubclass : public TestClass

@@ -9,7 +9,7 @@ namespace orxonox
         class ListableClassTest : public Listable
         {
             public:
-            ListableClassTest() { RegisterRootObject(ListableClassTest); }
+            ListableClassTest() { RegisterObject(ListableClassTest); }
         };
 
         class ListableSubclassTest : public ListableClassTest

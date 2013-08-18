@@ -65,7 +65,7 @@ namespace orxonox
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
         : GameState(info)
     {
-        RegisterRootObject(GSMainMenu);
+        RegisterObject(GSMainMenu);
 
         InputManager::getInstance().createInputState("MainMenuHackery", true, true)->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
 

@@ -35,6 +35,6 @@ namespace orxonox
 
     XMLNameListener::XMLNameListener()
     {
-        RegisterRootObject(XMLNameListener);
+        RegisterObject(XMLNameListener);
     }
 }

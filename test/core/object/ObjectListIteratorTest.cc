@@ -12,7 +12,7 @@ namespace orxonox
         class ListableTest : public Listable
         {
             public:
-                ListableTest() { RegisterRootObject(ListableTest); }
+                ListableTest() { RegisterObject(ListableTest); }
                 MOCK_METHOD0(test, void());
         };
 

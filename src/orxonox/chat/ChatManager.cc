@@ -116,6 +116,6 @@ namespace orxonox
 
     ChatListener::ChatListener()
     {
-        RegisterRootObject(ChatListener);
+        RegisterObject(ChatListener);
     }
 }

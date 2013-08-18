@@ -35,6 +35,6 @@ namespace orxonox
 
     ViewportEventListener::ViewportEventListener()
     {
-        RegisterRootObject(ViewportEventListener);
+        RegisterObject(ViewportEventListener);
     }
 }

@@ -42,7 +42,7 @@ namespace orxonox
 
     MoodManager::MoodManager()
     {
-        RegisterRootObject(MoodManager);
+        RegisterObject(MoodManager);
         this->setConfigValues();
 
         // Need to use a variable to store old data because ResetConfigValues() doesn't seem to work.
@@ -94,7 +94,7 @@ namespace orxonox
 
     MoodListener::MoodListener()
     {
-        RegisterRootObject(MoodListener);
+        RegisterObject(MoodListener);
     }
 
     /*static*/ void MoodListener::changedMood(const std::string& mood)

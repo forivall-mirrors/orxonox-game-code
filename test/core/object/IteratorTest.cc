@@ -13,13 +13,13 @@ namespace orxonox
         class TestInterface : virtual public OrxonoxInterface
         {
             public:
-            TestInterface() { RegisterRootObject(TestInterface); }
+            TestInterface() { RegisterObject(TestInterface); }
         };
 
         class TestClass : public OrxonoxClass, public TestInterface
         {
             public:
-                TestClass() { RegisterRootObject(TestClass); }
+                TestClass() { RegisterObject(TestClass); }
                 MOCK_METHOD0(test, void());
         };
 

@@ -97,7 +97,7 @@ namespace orxonox
         , emptyState_(0)
         , calibratorCallbackHandler_(0)
     {
-        RegisterRootObject(InputManager);
+        RegisterObject(InputManager);
 
         orxout(internal_status, context::input) << "InputManager: Constructing..." << endl;
 

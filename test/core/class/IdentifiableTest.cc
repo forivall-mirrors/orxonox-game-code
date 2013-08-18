@@ -9,7 +9,7 @@ namespace orxonox
         class IdentifiableTest : public Identifiable
         {
             public:
-                IdentifiableTest() { RegisterRootObject(IdentifiableTest); }
+                IdentifiableTest() { RegisterObject(IdentifiableTest); }
         };
     }
 

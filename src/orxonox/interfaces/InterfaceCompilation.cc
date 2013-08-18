@@ -53,7 +53,7 @@ namespace orxonox
 
     GametypeMessageListener::GametypeMessageListener()
     {
-        RegisterRootObject(GametypeMessageListener);
+        RegisterObject(GametypeMessageListener);
     }
 
     //----------------------------
@@ -63,7 +63,7 @@ namespace orxonox
 
     PlayerTrigger::PlayerTrigger()
     {
-        RegisterRootObject(PlayerTrigger);
+        RegisterObject(PlayerTrigger);
 
         this->isForPlayer_ = false;
     }
@@ -83,7 +83,7 @@ namespace orxonox
 
     RadarListener::RadarListener()
     {
-        RegisterRootObject(RadarListener);
+        RegisterObject(RadarListener);
     }
 
     //----------------------------
@@ -93,7 +93,7 @@ namespace orxonox
 
     TeamColourable::TeamColourable()
     {
-        RegisterRootObject(TeamColourable);
+        RegisterObject(TeamColourable);
     }
 
     //----------------------------
@@ -103,6 +103,6 @@ namespace orxonox
 
     Rewardable::Rewardable()
     {
-        RegisterRootObject(Rewardable);
+        RegisterObject(Rewardable);
     }
 }

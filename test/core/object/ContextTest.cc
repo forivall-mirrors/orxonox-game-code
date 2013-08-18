@@ -10,7 +10,7 @@ namespace orxonox
         class SubclassContext : public OrxonoxClass, public Context
         {
             public:
-                SubclassContext() : Context(NULL) { RegisterRootObject(SubclassContext); }
+                SubclassContext() : Context(NULL) { RegisterObject(SubclassContext); }
         };
 
         // Fixture

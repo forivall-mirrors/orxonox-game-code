@@ -53,7 +53,7 @@ namespace orxonox
     Mouse::Mouse(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
     {
-        RegisterRootObject(Mouse);
+        RegisterObject(Mouse);
         this->windowResized(this->getWindowWidth(), this->getWindowHeight());
 
 #ifdef ORXONOX_PLATFORM_LINUX

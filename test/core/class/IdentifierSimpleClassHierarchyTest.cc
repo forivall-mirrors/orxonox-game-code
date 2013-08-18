@@ -13,7 +13,7 @@ namespace orxonox
             public:
                 Interface()
                 {
-                    RegisterRootObject(Interface);
+                    RegisterObject(Interface);
                 }
 
                 virtual void test() = 0;
@@ -24,7 +24,7 @@ namespace orxonox
             public:
                 BaseClass()
                 {
-                    RegisterRootObject(BaseClass);
+                    RegisterObject(BaseClass);
                 }
         };
 

@@ -52,7 +52,7 @@ namespace orxonox
         , radarObjectDescription_("staticObject")
         , scale_(1.0f)
     {
-        RegisterRootObject(RadarViewable);
+        RegisterObject(RadarViewable);
 
         this->uniqueId_=getUniqueNumberString();
         if( GameMode::showsGraphics() )

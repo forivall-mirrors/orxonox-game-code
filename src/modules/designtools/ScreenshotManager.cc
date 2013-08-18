@@ -68,7 +68,7 @@ namespace orxonox
     */
     ScreenshotManager::ScreenshotManager() : finalPicturePB_(NULL), data_(NULL)
     {
-        RegisterRootObject(ScreenshotManager);
+        RegisterObject(ScreenshotManager);
         
         this->setConfigValues();
 

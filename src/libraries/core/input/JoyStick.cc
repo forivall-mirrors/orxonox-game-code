@@ -50,7 +50,7 @@ namespace orxonox
     JoyStick::JoyStick(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
     {
-        RegisterRootObject(JoyStick);
+        RegisterObject(JoyStick);
         this->setConfigValues();
         // Initialise POV and Slider states
         this->clearBuffersImpl();
