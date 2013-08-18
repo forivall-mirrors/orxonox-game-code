@@ -54,7 +54,7 @@ namespace orxonox
     */
     NotificationManager::NotificationManager()
     {
-        RegisterRootObject(NotificationManager);
+        RegisterObject(NotificationManager);
 
         orxout(internal_info, context::notifications) << "NotificatioManager created." << endl;
     }

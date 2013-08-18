@@ -48,7 +48,7 @@ namespace orxonox
     */
     PickupCarrier::PickupCarrier()
     {
-        RegisterRootObject(PickupCarrier);
+        RegisterObject(PickupCarrier);
     }
 
     /**

@@ -58,7 +58,7 @@ namespace orxonox
     */
     LevelManager::LevelManager()
     {
-        RegisterRootObject(LevelManager);
+        RegisterObject(LevelManager);
         this->setConfigValues();
 
         // check override

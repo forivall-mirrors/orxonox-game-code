@@ -43,7 +43,7 @@ namespace orxonox
 
   NetworkFunctionBase::NetworkFunctionBase(const std::string& name)
   {
-    RegisterRootObject(NetworkFunctionBase);
+      RegisterObject(NetworkFunctionBase);
 
     static uint32_t networkID = 0;
     this->networkID_ = networkID++;

@@ -255,7 +255,7 @@ namespace orxonox
         , camera_(NULL)
         , destructionHelper_(this)
     {
-        RegisterRootObject(GUIManager);
+        RegisterObject(GUIManager);
 
         orxout(internal_status) << "initializing GUIManager..." << endl;
 

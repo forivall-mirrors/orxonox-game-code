@@ -67,7 +67,7 @@ namespace orxonox
         , inputBuffer_(new InputBuffer())
         , bScrollable_(bScrollable)
     {
-        RegisterRootObject(Shell);
+        RegisterObject(Shell);
 
         OutputManager::getInstance().registerListener(this);
 

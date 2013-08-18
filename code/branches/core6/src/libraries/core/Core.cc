@@ -178,7 +178,7 @@ namespace orxonox
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
-        RegisterRootObject(Core);
+        RegisterObject(Core);
         orxout(internal_info) << "configuring Core" << endl;
         this->setConfigValues();
 
@@ -515,6 +515,6 @@ namespace orxonox
 
     DevModeListener::DevModeListener()
     {
-        RegisterRootObject(DevModeListener);
+        RegisterObject(DevModeListener);
     }
 }

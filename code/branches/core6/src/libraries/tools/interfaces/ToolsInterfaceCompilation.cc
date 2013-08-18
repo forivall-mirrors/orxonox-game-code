@@ -49,7 +49,7 @@ namespace orxonox
 
     TimeFactorListener::TimeFactorListener()
     {
-        RegisterRootObject(TimeFactorListener);
+        RegisterObject(TimeFactorListener);
     }
 
     /*static*/ void TimeFactorListener::setTimeFactor(float factor)
@@ -73,6 +73,6 @@ namespace orxonox
     */
     Tickable::Tickable()
     {
-        RegisterRootObject(Tickable);
+        RegisterObject(Tickable);
     }
 }

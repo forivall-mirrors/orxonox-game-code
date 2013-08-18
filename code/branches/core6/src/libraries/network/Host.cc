@@ -144,7 +144,7 @@ namespace orxonox {
 
   NetworkChatListener::NetworkChatListener()
   {
-      RegisterRootObject(NetworkChatListener);
+      RegisterObject(NetworkChatListener);
   }
 
 }//namespace orxonox

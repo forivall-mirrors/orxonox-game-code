@@ -36,12 +36,15 @@
     @ingroup Object Factory Class Identifier
     @brief Defines several very important macros used to register objects, register classes, and to work with identifiers.
 
-    Every class needs the @c RegisterObject(class) macro in its constructor. If the class is an interface
-    or the @c BaseObject itself, it needs the macro @c RegisterRootObject(class) instead.
+    Every class needs the @c RegisterObject(class) macro in its constructor.
 
     To register @a class in the class-hierarchy, use the @c RegisterClass(class) macro outside of the class implementation,
     so it gets executed statically before @c main(). If you don't want @a class to be loadable, but still register it, call
     @c RegisterUnloadableClass(class).
+
+    Abstract classes are registered with @c RegisterAbstractClass(class). For abstract classes, the inheritance must be
+    defined manually with @c RegisterAbstractClass(class).inheritsFrom(Class(parent)). Multiple parent classes can be defined
+    by chaining the above command.
 
     Example:
     @code
@@ -124,32 +127,14 @@
     Identifier& _##ClassName##Identifier = orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)
 
 /**
-    @brief Intern macro, containing the common parts of @c RegisterObject and @c RegisterRootObject.
-    @param ClassName The name of the class
-    @param bRootClass True if the class is directly derived from orxonox::OrxonoxClass
-*/
-#define InternRegisterObject(ClassName) \
-    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this)) \
-        return; \
-    else \
-        ((void)0)
-
-/**
     @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    InternRegisterObject(ClassName)
-
-/**
-    @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
-    @param ClassName The name of the class
-
-    In contrast to RegisterObject, this is used for classes that inherit directly from
-    orxonox::OrxonoxClass, namely all interfaces and orxonox::BaseObject.
-*/
-#define RegisterRootObject(ClassName) \
-    InternRegisterObject(ClassName)
+    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this)) \
+        return; \
+    else \
+        ((void)0)
 
 /**
     @brief Returns the Identifier of the given class.

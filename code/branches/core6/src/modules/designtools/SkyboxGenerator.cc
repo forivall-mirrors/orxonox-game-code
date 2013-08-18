@@ -67,7 +67,7 @@ namespace orxonox
     */
     SkyboxGenerator::SkyboxGenerator()
     {
-        RegisterRootObject(SkyboxGenerator);
+        RegisterObject(SkyboxGenerator);
 
         this->setConfigValues();
         

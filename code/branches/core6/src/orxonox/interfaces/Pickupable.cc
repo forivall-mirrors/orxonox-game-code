@@ -53,7 +53,7 @@ namespace orxonox
     */
     Pickupable::Pickupable() : used_(false), pickedUp_(false)
     {
-        RegisterRootObject(Pickupable);
+        RegisterObject(Pickupable);
 
         this->carrier_ = NULL;
 

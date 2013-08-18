@@ -42,7 +42,7 @@ namespace orxonox
 
     PlayerManager::PlayerManager()
     {
-        RegisterRootObject(PlayerManager);
+        RegisterObject(PlayerManager);
 
 //         this->getConnectedClients();
     }

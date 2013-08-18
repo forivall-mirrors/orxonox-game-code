@@ -57,7 +57,7 @@ namespace orxonox
         mousePosition_[0] = 0.0;
         mousePosition_[1] = 0.0;
 
-        RegisterRootObject(KeyBinder);
+        RegisterObject(KeyBinder);
 
         // initialise all buttons and half axes to avoid creating everything with 'new'
         // keys

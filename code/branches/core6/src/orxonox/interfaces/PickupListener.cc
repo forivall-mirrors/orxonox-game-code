@@ -46,7 +46,7 @@ namespace orxonox
     */
     PickupListener::PickupListener()
     {
-        RegisterRootObject(PickupListener);
+        RegisterObject(PickupListener);
     }
 
     /**

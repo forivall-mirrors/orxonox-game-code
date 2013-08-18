@@ -56,7 +56,7 @@ namespace orxonox
     */
     BaseObject::BaseObject(Context* context) : bInitialized_(false)
     {
-        RegisterRootObject(BaseObject);
+        RegisterObject(BaseObject);
 
         this->bInitialized_ = true;
 

@@ -14,7 +14,7 @@ namespace orxonox
             public:
                 TestClass(Context* context = NULL) : BaseObject(context), changedNameBase_(false), xmlPortBase_(false), modeBase_(XMLPort::NOP)
                 {
-                    RegisterRootObject(TestClass);
+                    RegisterObject(TestClass);
                 }
 
                 virtual void changedName()
