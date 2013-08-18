@@ -55,6 +55,8 @@ namespace orxonox
         const OutputLevel User = level::user_info;
     }
 
+    RegisterClassNoArgs(Shell);
+
     /**
         @brief Constructor: Initializes the values.
         @param consoleName The name of the shell - used to define the name of the soft-debug-level config-value

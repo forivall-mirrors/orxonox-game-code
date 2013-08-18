@@ -131,6 +131,8 @@ namespace orxonox
         }
     }
 
+    RegisterClassNoArgs(Timer);
+
     /**
         @brief Constructor: Sets the default-values.
     */

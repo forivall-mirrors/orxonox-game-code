@@ -34,6 +34,8 @@
 
 namespace orxonox
 {
+    RegisterClassNoArgs(InputBuffer);
+
     InputBuffer::InputBuffer()
     {
         RegisterRootObject(InputBuffer);

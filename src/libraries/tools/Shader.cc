@@ -38,6 +38,8 @@
 
 namespace orxonox
 {
+    RegisterClassNoArgs(Shader);
+
     /**
         @brief Initializes the values and sets the scene manager.
     */
