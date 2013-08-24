@@ -62,10 +62,13 @@ namespace orxonox
                 { return this->context_; }
 
         private:
+            static SmallObjectAllocator& getObjectListElementAllocator();
+
             template <class T>
             static ObjectListElement<T>* createObjectListElement(T* object)
             {
-                return new ObjectListElement<T>(object);
+                void* chunk = Listable::getObjectListElementAllocator().alloc();
+                return new (chunk) ObjectListElement<T>(object);
             }
 
             static void deleteObjectListElement(ObjectListBaseElement* element);
