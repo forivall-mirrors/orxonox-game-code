@@ -99,8 +99,15 @@ namespace orxonox
         this->context_ = context;
     }
 
+    /* static */ SmallObjectAllocator& Listable::getObjectListElementAllocator()
+    {
+        static SmallObjectAllocator allocator(sizeof(ObjectListElement<Listable>), 1024);
+        return allocator;
+    }
+
     /* static */ void Listable::deleteObjectListElement(ObjectListBaseElement* element)
     {
-        delete element;
+        element->~ObjectListBaseElement();
+        Listable::getObjectListElementAllocator().free(element);
     }
 }
