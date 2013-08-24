@@ -63,7 +63,8 @@ namespace orxonox
             template <class T>
             inline void addObject(T* object)
             {
-                ObjectListBaseElement* element = this->getObjectList<T>()->add(object);
+                ObjectListBaseElement* element = Listable::createObjectListElement(object);
+                this->getObjectList<T>()->addElement(element);
                 object->elements_.push_back(element);
                 if (this->getParentContext())
                     this->getParentContext()->addObject(object);

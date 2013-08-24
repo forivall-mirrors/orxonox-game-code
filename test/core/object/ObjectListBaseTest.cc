@@ -42,7 +42,7 @@ namespace orxonox
     TEST(ObjectListBaseTest, CanAddObject)
     {
         ObjectListBase list;
-        list.add(static_cast<Listable*>(NULL));
+        list.addElement(new ObjectListElement<Listable>(NULL));
         EXPECT_EQ(1u, list.size());
     }
 
