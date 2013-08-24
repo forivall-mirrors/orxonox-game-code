@@ -127,14 +127,6 @@ namespace orxonox
             ObjectListBase();
             ~ObjectListBase();
 
-            template <class T>
-            inline ObjectListBaseElement* add(T* object)
-            {
-                ObjectListBaseElement* element = new ObjectListElement<T>(object);
-                this->addElement(element);
-                return element;
-            }
-
             void addElement(ObjectListBaseElement* element);
             void removeElement(ObjectListBaseElement* element);
 

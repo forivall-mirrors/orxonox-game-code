@@ -62,6 +62,14 @@ namespace orxonox
                 { return this->context_; }
 
         private:
+            template <class T>
+            static ObjectListElement<T>* createObjectListElement(T* object)
+            {
+                return new ObjectListElement<T>(object);
+            }
+
+            static void deleteObjectListElement(ObjectListBaseElement* element);
+
             Context* context_;                             //!< The object will register itself in the object lists of this context
             std::vector<ObjectListBaseElement*> elements_; //!< The corresponding ObjectListElements in all object lists the object is registered in
     };

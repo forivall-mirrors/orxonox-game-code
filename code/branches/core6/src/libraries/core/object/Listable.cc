@@ -76,7 +76,7 @@ namespace orxonox
     void Listable::unregisterObject()
     {
         for (size_t i = 0; i < this->elements_.size(); ++i)
-            delete this->elements_[i];
+            Listable::deleteObjectListElement(this->elements_[i]);
         this->elements_.clear();
     }
 
@@ -93,10 +93,14 @@ namespace orxonox
         for (size_t i = 0; i < copy.size(); ++i)
         {
             copy[i]->changeContext(this->context_, context);
-            delete copy[i];
+            Listable::deleteObjectListElement(copy[i]);
         }
 
         this->context_ = context;
     }
 
+    /* static */ void Listable::deleteObjectListElement(ObjectListBaseElement* element)
+    {
+        delete element;
+    }
 }
