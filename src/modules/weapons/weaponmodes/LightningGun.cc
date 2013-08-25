@@ -43,9 +43,9 @@
 
 namespace orxonox
 {
-    CreateFactory(LightningGun);
+    RegisterClass(LightningGun);
 
-    LightningGun::LightningGun(BaseObject* creator) : WeaponMode(creator)
+    LightningGun::LightningGun(Context* context) : WeaponMode(context)
     {
         RegisterObject(LightningGun);
 
@@ -67,7 +67,7 @@ namespace orxonox
     */
     void LightningGun::fire()
     {
-        LightningGunProjectile* projectile = new LightningGunProjectile(this);
+        LightningGunProjectile* projectile = new LightningGunProjectile(this->getContext());
         projectile->setMaterial("Flares/LightningBall_");
 
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());

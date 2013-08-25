@@ -35,11 +35,11 @@
 
 namespace orxonox
 {
-    CreateFactory(PortalLink);
+    RegisterClass(PortalLink);
 
     std::map<PortalEndPoint *, PortalEndPoint *> PortalLink::links_s;
 
-    PortalLink::PortalLink(BaseObject* creator) : BaseObject(creator), fromID_(0), toID_(0), from_(0), to_(0)
+    PortalLink::PortalLink(Context* context) : BaseObject(context), fromID_(0), toID_(0), from_(0), to_(0)
     {
         RegisterObject(PortalLink);
     }

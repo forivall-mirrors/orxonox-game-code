@@ -34,9 +34,9 @@
 
 namespace orxonox
 {
-    CreateFactory(BlinkingBillboard);
+    RegisterClass(BlinkingBillboard);
 
-    BlinkingBillboard::BlinkingBillboard(BaseObject* creator) : Billboard(creator)
+    BlinkingBillboard::BlinkingBillboard(Context* context) : Billboard(context)
     {
         RegisterObject(BlinkingBillboard);
 

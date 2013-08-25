@@ -29,7 +29,7 @@
 #include "WeaponSystem.h"
 
 #include "core/CoreIncludes.h"
-#include "core/SubclassIdentifier.h"
+#include "core/class/SubclassIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "WeaponSlot.h"
@@ -45,9 +45,9 @@
 
 namespace orxonox
 {
-    CreateFactory(WeaponSystem);
+    RegisterClass(WeaponSystem);
 
-    WeaponSystem::WeaponSystem(BaseObject* creator) : BaseObject(creator)
+    WeaponSystem::WeaponSystem(Context* context) : BaseObject(context)
     {
         RegisterObject(WeaponSystem);
 
@@ -307,7 +307,7 @@ namespace orxonox
         }
         else if (identifier->getIdentifier()->isA(Class(Munition)))
         {
-            Munition* munition = identifier->fabricate(this);
+            Munition* munition = identifier->fabricate(this->getContext());
             this->munitions_[identifier->getIdentifier()] = munition;
             return munition;
         }

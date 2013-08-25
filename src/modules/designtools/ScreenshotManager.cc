@@ -41,7 +41,8 @@
 #include <OgreRoot.h>
 #include <OgreViewport.h>
 
-#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
 #include "core/Resource.h"
@@ -67,7 +68,7 @@ namespace orxonox
     */
     ScreenshotManager::ScreenshotManager() : finalPicturePB_(NULL), data_(NULL)
     {
-        RegisterRootObject(ScreenshotManager);
+        RegisterObject(ScreenshotManager);
         
         this->setConfigValues();
 

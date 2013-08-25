@@ -35,9 +35,9 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(TeamDeathmatch);
+    RegisterUnloadableClass(TeamDeathmatch);
 
-    TeamDeathmatch::TeamDeathmatch(BaseObject* creator) : TeamGametype(creator)
+    TeamDeathmatch::TeamDeathmatch(Context* context) : TeamGametype(context)
     {
         RegisterObject(TeamDeathmatch);
     }

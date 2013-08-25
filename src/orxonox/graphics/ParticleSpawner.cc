@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-    CreateFactory(ParticleSpawner);
+    RegisterClass(ParticleSpawner);
 
-    ParticleSpawner::ParticleSpawner(BaseObject* creator) : ParticleEmitter(creator)
+    ParticleSpawner::ParticleSpawner(Context* context) : ParticleEmitter(context)
     {
         RegisterObject(ParticleSpawner);
 

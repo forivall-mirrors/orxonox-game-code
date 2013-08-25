@@ -38,13 +38,13 @@
 
 namespace orxonox
 {
-    CreateFactory(PongBot);
+    RegisterClass(PongBot);
 
     /**
     @brief
         Constructor. Registers the object and creates a PongAI controller.
     */
-    PongBot::PongBot(BaseObject* creator) : Bot(creator)
+    PongBot::PongBot(Context* context) : Bot(context)
     {
         RegisterObject(PongBot);
 

@@ -44,7 +44,7 @@
 namespace orxonox
 {
 
-    CreateFactory(PickupCollection);
+    RegisterClass(PickupCollection);
 
     /**
     @brief
@@ -52,7 +52,7 @@ namespace orxonox
     @param creator
         The creator of the object.
     */
-    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
+    PickupCollection::PickupCollection(Context* context) : BaseObject(context)
     {
         RegisterObject(PickupCollection);
 
@@ -327,7 +327,7 @@ namespace orxonox
     */
     bool PickupCollection::createSpawner(void)
     {
-        PickupSpawner::createDroppedPickup(this, this, this->getCarrier());
+        PickupSpawner::createDroppedPickup(this->getContext(), this, this->getCarrier());
         return true;
     }
 

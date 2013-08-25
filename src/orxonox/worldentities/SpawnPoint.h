@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "core/SubclassIdentifier.h"
+#include "core/class/SubclassIdentifier.h"
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox
@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport SpawnPoint : public StaticEntity
     {
         public:
-            SpawnPoint(BaseObject* creator);
+            SpawnPoint(Context* context);
             virtual ~SpawnPoint() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

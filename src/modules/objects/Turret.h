@@ -44,7 +44,7 @@ namespace orxonox
     class _ObjectsExport Turret : public SpaceShip
     {
         public:
-            Turret(BaseObject* creator);
+            Turret(Context* context);
             virtual ~Turret();
 
             //virtual void tick(float dt);

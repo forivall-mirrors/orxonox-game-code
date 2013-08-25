@@ -43,13 +43,13 @@
 
 namespace orxonox {
 
-    CreateFactory(CommandNotification);
+    RegisterClass(CommandNotification);
 
     /**
     @brief
         Default Constructor. Registers the object and initializes variables.
     */
-    CommandNotification::CommandNotification(BaseObject* creator) : NotificationDispatcher(creator)
+    CommandNotification::CommandNotification(Context* context) : NotificationDispatcher(context)
     {
         RegisterObject(CommandNotification);
 

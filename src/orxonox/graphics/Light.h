@@ -52,7 +52,7 @@ namespace orxonox
             };
 
         public:
-            Light(BaseObject* creator);
+            Light(Context* context);
             virtual ~Light();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

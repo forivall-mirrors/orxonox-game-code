@@ -55,7 +55,7 @@ namespace orxonox
     class _QuestsystemExport ChangeQuestStatus : public QuestEffect
     {
         public:
-            ChangeQuestStatus(BaseObject* creator);
+            ChangeQuestStatus(Context* context);
             virtual ~ChangeQuestStatus();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a ChangeQuestStatus object through XML.

@@ -42,7 +42,7 @@ namespace orxonox
     class _OrxonoxExport FpsPlayer : public Pawn
     {
         public:
-            FpsPlayer(BaseObject* creator);
+            FpsPlayer(Context* context);
             virtual ~FpsPlayer();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

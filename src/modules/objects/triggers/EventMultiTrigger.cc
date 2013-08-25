@@ -42,13 +42,13 @@
 namespace orxonox
 {
 
-    CreateFactory(EventMultiTrigger);
+    RegisterClass(EventMultiTrigger);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    EventMultiTrigger::EventMultiTrigger(BaseObject* creator) : MultiTrigger(creator)
+    EventMultiTrigger::EventMultiTrigger(Context* context) : MultiTrigger(context)
     {
         RegisterObject(EventMultiTrigger);
     }

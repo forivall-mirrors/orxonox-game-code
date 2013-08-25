@@ -98,10 +98,10 @@ INCLUDE_DIRECTORIES(
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts
-  ${CMAKE_CURRENT_SOURCE_DIR}/external
+  ../src/external
   # Include directories needed even if only included by Orxonox
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
+  ../src/external/bullet
+  ../src/external/ois
 
   # External
   ${OGRE_INCLUDE_DIR}

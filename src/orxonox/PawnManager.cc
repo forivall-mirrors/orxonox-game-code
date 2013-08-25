@@ -38,7 +38,7 @@ namespace orxonox
 
     PawnManager::PawnManager()
     {
-        RegisterRootObject(PawnManager);
+        RegisterObject(PawnManager);
     }
 
     PawnManager::~PawnManager()

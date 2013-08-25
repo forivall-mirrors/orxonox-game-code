@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport ArtificialController : public FormationController
     {
         public:
-            ArtificialController(BaseObject* creator);
+            ArtificialController(Context* context);
             virtual ~ArtificialController();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

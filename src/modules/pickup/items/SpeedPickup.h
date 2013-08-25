@@ -74,7 +74,7 @@ namespace orxonox {
     {
         public:
 
-            SpeedPickup(BaseObject* creator); //!< Constructor.
+            SpeedPickup(Context* context); //!< Constructor.
             virtual ~SpeedPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.

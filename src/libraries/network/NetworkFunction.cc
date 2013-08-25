@@ -36,9 +36,14 @@ namespace orxonox
   std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
   std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
 
+  // no suitable factory for NetworkFunctionBase (and children), so we declare it abstract
+  RegisterAbstractClass(NetworkFunctionBase).inheritsFrom(Class(Listable));
+  RegisterAbstractClass(NetworkFunctionStatic).inheritsFrom(Class(NetworkFunctionBase));
+  RegisterAbstractClass(NetworkMemberFunctionBase).inheritsFrom(Class(NetworkFunctionBase));
+
   NetworkFunctionBase::NetworkFunctionBase(const std::string& name)
   {
-    RegisterRootObject(NetworkFunctionBase);
+      RegisterObject(NetworkFunctionBase);
 
     static uint32_t networkID = 0;
     this->networkID_ = networkID++;
@@ -56,7 +61,7 @@ namespace orxonox
     std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
     std::map<std::string, NetworkFunctionBase*>::iterator it;
     for( it=map.begin(); it!=map.end(); ++it )
-      it->second->destroy();
+      delete it->second;
   }
 
 

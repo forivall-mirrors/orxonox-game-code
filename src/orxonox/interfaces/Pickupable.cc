@@ -33,7 +33,7 @@
 
 #include "Pickupable.h"
 
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 
@@ -45,6 +45,7 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(Pickupable).inheritsFrom(Class(OrxonoxInterface)).inheritsFrom(Class(Rewardable));
 
     /**
     @brief
@@ -52,7 +53,7 @@ namespace orxonox
     */
     Pickupable::Pickupable() : used_(false), pickedUp_(false)
     {
-        RegisterRootObject(Pickupable);
+        RegisterObject(Pickupable);
 
         this->carrier_ = NULL;
 
@@ -70,7 +71,7 @@ namespace orxonox
 
     /**
     @brief
-        A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
+        A method that is called by Destroyable::destroy() before the object is actually destroyed.
     */
     void Pickupable::preDestroy(void)
     {
@@ -97,7 +98,7 @@ namespace orxonox
     void Pickupable::destroyPickup(void)
     {
         if(!this->isBeingDestroyed())
-            this->OrxonoxClass::destroy();
+            this->Destroyable::destroy();
         else
             orxout(internal_warning, context::pickups) << this->getIdentifier()->getName() << " may be unsafe. " << endl;
     }

@@ -32,7 +32,7 @@
 #include <string>
 
 #include "core/CoreIncludes.h"
-#include "core/ObjectList.h"
+#include "core/object/ObjectList.h"
 #include "core/command/ConsoleCommand.h"
 #include "NetworkChatListener.h"
 
@@ -144,7 +144,7 @@ namespace orxonox {
 
   NetworkChatListener::NetworkChatListener()
   {
-      RegisterRootObject(NetworkChatListener);
+      RegisterObject(NetworkChatListener);
   }
 
 }//namespace orxonox

@@ -32,10 +32,13 @@
 */
 
 #include "DockingEffect.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    DockingEffect::DockingEffect(BaseObject* creator) : BaseObject(creator)
+    RegisterAbstractClass(DockingEffect).inheritsFrom(Class(BaseObject));
+
+    DockingEffect::DockingEffect(Context* context) : BaseObject(context)
     {
         RegisterObject(DockingEffect);
     }

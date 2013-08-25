@@ -42,6 +42,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(BaseSound).inheritsFrom(Class(Listable));
+
     BaseSound::BaseSound()
         : bPooling_(false)
         , volume_(1.0)
@@ -49,7 +51,7 @@ namespace orxonox
         , state_(Stopped)
         , pitch_ (1.0)
     {
-        RegisterRootObject(BaseSound);
+        RegisterObject(BaseSound);
 
         // Initialise audioSource_ to a value that is not a source
         // 0 is unfortunately not guaranteed to be no source ID.

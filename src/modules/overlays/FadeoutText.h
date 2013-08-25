@@ -40,7 +40,7 @@ namespace orxonox
     class _OverlaysExport FadeoutText : public OverlayText, public Tickable
     {
         public:
-            FadeoutText(BaseObject* creator);
+            FadeoutText(Context* context);
             virtual ~FadeoutText() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

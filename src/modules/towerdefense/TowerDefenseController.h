@@ -39,7 +39,7 @@ namespace orxonox
     class _TowerDefenseExport TowerDefenseController : public WaypointController
     {
         public:
-            TowerDefenseController(BaseObject* creator);
+            TowerDefenseController(Context* context);
             virtual ~TowerDefenseController() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

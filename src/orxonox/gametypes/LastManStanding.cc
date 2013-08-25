@@ -32,14 +32,14 @@
 #include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "util/Convert.h"
 
 namespace orxonox
 {
-    CreateUnloadableFactory(LastManStanding);
+    RegisterUnloadableClass(LastManStanding);
 
-    LastManStanding::LastManStanding(BaseObject* creator) : Deathmatch(creator)
+    LastManStanding::LastManStanding(Context* context) : Deathmatch(context)
     {
         RegisterObject(LastManStanding);
         this->bForceSpawn_=true;

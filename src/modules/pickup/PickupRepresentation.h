@@ -94,7 +94,7 @@ namespace orxonox // tolua_export
 
         public:
             PickupRepresentation(); //!< Constructor
-            PickupRepresentation(BaseObject* creator); //!< Default constructor.
+            PickupRepresentation(Context* context); //!< Default constructor.
             virtual ~PickupRepresentation(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PickupRepresentation object through XML.

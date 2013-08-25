@@ -32,11 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/UtilPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport TeamColourable : virtual public OrxonoxClass
+    class _OrxonoxExport TeamColourable : virtual public OrxonoxInterface
     {
         public:
             virtual void setTeamColour(const ColourValue& colour) = 0;

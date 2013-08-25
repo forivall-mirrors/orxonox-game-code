@@ -40,10 +40,10 @@
 
 namespace orxonox
 {
-    CreateFactory(WorldSound);
+    RegisterClass(WorldSound);
 
-    WorldSound::WorldSound(BaseObject* creator)
-        : StaticEntity(creator)
+    WorldSound::WorldSound(Context* context)
+        : StaticEntity(context)
     {
         RegisterObject(WorldSound);
         // WorldSound buffers should be pooled when they're not used anymore

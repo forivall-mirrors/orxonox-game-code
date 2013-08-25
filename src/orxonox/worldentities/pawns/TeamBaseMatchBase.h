@@ -49,7 +49,7 @@ namespace orxonox
     class _OrxonoxExport TeamBaseMatchBase : public Pawn
     {
         public:
-            TeamBaseMatchBase(BaseObject* creator);
+            TeamBaseMatchBase(Context* context);
 
             // if class closes, close everything
             virtual ~TeamBaseMatchBase() {}

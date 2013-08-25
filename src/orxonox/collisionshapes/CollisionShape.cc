@@ -43,14 +43,15 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(CollisionShape).inheritsFrom(Class(BaseObject)).inheritsFrom(Class(Synchronisable));
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    CollisionShape::CollisionShape(BaseObject* creator)
-        : BaseObject(creator)
-        , Synchronisable(creator)
+    CollisionShape::CollisionShape(Context* context)
+        : BaseObject(context)
+        , Synchronisable(context)
     {
         RegisterObject(CollisionShape);
 

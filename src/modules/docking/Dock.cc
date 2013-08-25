@@ -45,14 +45,14 @@
 
 namespace orxonox
 {
-    CreateFactory(Dock);
+    RegisterClass(Dock);
 
     SetConsoleCommand("Dock", "dock",    &Dock::cmdDock).addShortcut().setAsInputCommand();
     SetConsoleCommand("Dock", "undock",  &Dock::cmdUndock).addShortcut().setAsInputCommand();
 
     registerStaticNetworkFunction(Dock::showDockingDialog);
 
-    Dock::Dock(BaseObject* creator) : StaticEntity(creator)
+    Dock::Dock(Context* context) : StaticEntity(context)
     {
         RegisterObject(Dock);
     }

@@ -50,8 +50,8 @@
 #include "packet/Gamestate.h"
 #include "FunctionCallManager.h"
 #include "core/CoreIncludes.h"
-#include "core/CommandLineParser.h"
 #include "core/Game.h"
+#include "core/config/CommandLineParser.h"
 
 namespace orxonox
 {

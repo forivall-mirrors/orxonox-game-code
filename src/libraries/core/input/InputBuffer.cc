@@ -30,13 +30,15 @@
 
 #include "util/Clipboard.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 
 namespace orxonox
 {
+    RegisterClassNoArgs(InputBuffer);
+
     InputBuffer::InputBuffer()
     {
-        RegisterRootObject(InputBuffer);
+        RegisterObject(InputBuffer);
 
         this->cursor_ = 0;
         this->maxLength_ = 1024;
@@ -56,7 +58,7 @@ namespace orxonox
 
     InputBuffer::InputBuffer(const std::string& allowedChars)
     {
-        RegisterRootObject(InputBuffer);
+        RegisterObject(InputBuffer);
 
         this->maxLength_ = 1024;
         this->allowedChars_ = allowedChars;

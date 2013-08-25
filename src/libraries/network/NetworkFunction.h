@@ -38,7 +38,8 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/static_assert.hpp>
 
-#include "core/Identifier.h"
+#include "core/object/Listable.h"
+#include "core/class/Identifier.h"
 #include "core/command/Functor.h"
 #include "FunctionCallManager.h"
 #include "synchronisable/Synchronisable.h"
@@ -69,7 +70,7 @@ struct _NetworkExport NetworkFunctionPointer {
 
 
 
-class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
+class _NetworkExport NetworkFunctionBase: virtual public Listable {
   public:
     NetworkFunctionBase(const std::string& name);
     ~NetworkFunctionBase();

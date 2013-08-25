@@ -53,7 +53,7 @@ namespace orxonox
     class _OrxonoxExport OverlayGroup : public BaseObject
     {
     public:
-        OverlayGroup(BaseObject* creator);
+        OverlayGroup(Context* context);
         //! Empty destructor.
         ~OverlayGroup();
 
@@ -67,7 +67,8 @@ namespace orxonox
         inline const std::set< SmartPtr<OrxonoxOverlay> >& getOverlays() const
             { return this->hudElements_; }
 
-        void changedVisibility();
+        virtual void changedVisibility();
+        virtual void changedGametype();
 
         void setOwner(BaseObject* owner);
         inline BaseObject* getOwner() const

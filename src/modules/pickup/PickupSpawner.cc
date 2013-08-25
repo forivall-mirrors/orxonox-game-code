@@ -46,7 +46,7 @@
 namespace orxonox
 {
 
-    CreateFactory(PickupSpawner);
+    RegisterClass(PickupSpawner);
 
     /**
     @brief
@@ -54,7 +54,7 @@ namespace orxonox
     @param creator
         Pointer to the object which created this item.
     */
-    PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator), pickup_(NULL), representation_(NULL), pickupTemplate_(NULL)
+    PickupSpawner::PickupSpawner(Context* context) : StaticEntity(context), pickup_(NULL), representation_(NULL), pickupTemplate_(NULL)
     {
         RegisterObject(PickupSpawner);
 
@@ -98,9 +98,9 @@ namespace orxonox
     @param triggerDistance
         The distance at which the PickupSpawner will trigger.
     */
-    /*static*/ PickupSpawner* PickupSpawner::createDroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance)
+    /*static*/ PickupSpawner* PickupSpawner::createDroppedPickup(Context* context, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance)
     {
-        PickupSpawner* spawner = new PickupSpawner(creator);
+        PickupSpawner* spawner = new PickupSpawner(context);
 
         spawner->setPickupable(pickup);
         spawner->setTriggerDistance(triggerDistance);
@@ -288,7 +288,7 @@ namespace orxonox
             Identifier* identifier = this->pickupTemplate_->getBaseclassIdentifier();
             if (identifier != NULL)
             {
-                Pickupable* pickup = orxonox_cast<Pickupable*>(identifier->fabricate(this));
+                Pickupable* pickup = orxonox_cast<Pickupable*>(identifier->fabricate(this->getContext()));
                 orxonox_cast<BaseObject*>(pickup)->addTemplate(this->pickupTemplate_);
                 return pickup;
             }

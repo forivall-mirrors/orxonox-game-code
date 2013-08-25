@@ -53,7 +53,7 @@ namespace orxonox
     class _WeaponsExport EnergyDrink : public WeaponMode
     {
         public:
-            EnergyDrink(BaseObject* creator);
+            EnergyDrink(Context* context);
             virtual ~EnergyDrink() {}
 
             virtual void fire();

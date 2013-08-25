@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport AnimatedModel : public Model, public Tickable
     {
         public:
-            AnimatedModel(BaseObject* creator);
+            AnimatedModel(Context* context);
             virtual ~AnimatedModel();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

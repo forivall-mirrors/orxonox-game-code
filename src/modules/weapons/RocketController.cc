@@ -44,13 +44,13 @@ namespace orxonox
     @brief
         Constructor.
     */
-    RocketController::RocketController(BaseObject* creator) : Controller(creator)
+    RocketController::RocketController(Context* context) : Controller(context)
     {
         RegisterObject(RocketController);
 //        orxout() << "RocketController constructed" << endl;
 
         // Create a rocket for the controller.
-        this->rocket_ = new SimpleRocket(this);
+        this->rocket_ = new SimpleRocket(this->getContext());
         this->rocket_->setController(this);
         this->setControllableEntity(orxonox_cast<ControllableEntity*>(this->rocket_));
     }

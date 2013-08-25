@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport BigExplosion : public StaticEntity
     {
         public:
-            BigExplosion(BaseObject* creator);
+            BigExplosion(Context* context);
             virtual ~BigExplosion();
 
             inline void setLOD(LODParticle::Value level)

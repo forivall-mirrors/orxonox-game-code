@@ -48,9 +48,9 @@
 #include <list>
 
 #include "util/mbool.h"
-#include "OrxonoxClass.h"
-#include "Super.h"
-#include "SmartPtr.h"
+#include "class/OrxonoxClass.h"
+#include "class/Super.h"
+#include "object/SmartPtr.h"
 
 namespace orxonox
 {
@@ -59,12 +59,12 @@ namespace orxonox
     class Level;
 
     /// The BaseObject is the parent of all classes representing an instance in the game.
-    class _CoreExport BaseObject : virtual public OrxonoxClass
+    class _CoreExport BaseObject : public OrxonoxClass
     {
         template <class T> friend class XMLPortClassParamContainer;
 
         public:
-            BaseObject(BaseObject* creator);
+            BaseObject(Context* context);
             virtual ~BaseObject();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);

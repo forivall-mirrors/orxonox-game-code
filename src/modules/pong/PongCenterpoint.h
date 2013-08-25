@@ -120,7 +120,7 @@ namespace orxonox
     class _PongExport PongCenterpoint : public StaticEntity
     {
         public:
-            PongCenterpoint(BaseObject* creator); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Pong.
+            PongCenterpoint(Context* context); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Pong.
             virtual ~PongCenterpoint() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method to create a PongCenterpoint through XML.

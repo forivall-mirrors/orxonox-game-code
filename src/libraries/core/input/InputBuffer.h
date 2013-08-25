@@ -33,7 +33,7 @@
 
 #include <list>
 #include <string>
-#include "core/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 #include "InputHandler.h"
 
 namespace orxonox
@@ -73,7 +73,7 @@ namespace orxonox
         void (T::*function_)();
     };
 
-    class _CoreExport InputBuffer : public InputHandler, public OrxonoxClass
+    class _CoreExport InputBuffer : public InputHandler, public Configurable
     {
         public:
             InputBuffer();

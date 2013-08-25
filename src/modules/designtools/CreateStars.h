@@ -37,7 +37,7 @@ namespace orxonox
     class CreateStars : public BaseObject
     {
         public:
-            CreateStars(orxonox::BaseObject* creator);
+            CreateStars(Context* context);
             virtual ~CreateStars();
 
             void createBillboards();

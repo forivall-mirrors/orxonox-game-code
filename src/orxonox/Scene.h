@@ -44,10 +44,10 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Scene : public BaseObject, public Synchronisable, public Tickable
+    class _OrxonoxExport Scene : public BaseObject, public Synchronisable, public Tickable, public Context
     {
         public:
-            Scene(BaseObject* creator);
+            Scene(Context* context);
             virtual ~Scene();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

@@ -31,7 +31,7 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "tools/Shader.h"
@@ -45,9 +45,9 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceShip);
+    RegisterClass(SpaceShip);
 
-    SpaceShip::SpaceShip(BaseObject* creator) : Pawn(creator), boostBlur_(NULL)
+    SpaceShip::SpaceShip(Context* context) : Pawn(context), boostBlur_(NULL)
     {
         RegisterObject(SpaceShip);
 
@@ -95,7 +95,7 @@ namespace orxonox
             this->removeAllEngines();
 
             if (this->boostBlur_)
-                this->boostBlur_->destroy();
+                delete this->boostBlur_;
         }
     }
 
@@ -446,7 +446,7 @@ namespace orxonox
     {
         if (!this->bEnableMotionBlur_ && this->boostBlur_ != NULL)
         {
-            this->boostBlur_->destroy();
+            delete this->boostBlur_;
             this->boostBlur_ = NULL;
         }
     }

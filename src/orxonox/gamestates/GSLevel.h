@@ -33,7 +33,6 @@
 
 #include <string>
 #include <set>
-#include "core/OrxonoxClass.h"
 #include "core/GameState.h"
 
 namespace orxonox

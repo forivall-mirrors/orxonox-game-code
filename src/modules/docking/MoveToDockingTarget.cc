@@ -35,12 +35,13 @@
 #include "MoveToDockingTarget.h"
 
 #include "core/XMLPort.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    CreateFactory(MoveToDockingTarget);
+    RegisterClass(MoveToDockingTarget);
 
-    MoveToDockingTarget::MoveToDockingTarget(BaseObject *creator) : DockingAnimation(creator)
+    MoveToDockingTarget::MoveToDockingTarget(Context* context) : DockingAnimation(context)
     {
         RegisterObject(MoveToDockingTarget);
     }
@@ -53,7 +54,7 @@ namespace orxonox
     {
         assert(this->parent_);
 
-        DockingController *dockingController = new DockingController(this);
+        DockingController *dockingController = new DockingController(this->getContext());
         dockingController->setDock(this->parent_);
         dockingController->setPlayer(player);
         dockingController->takeControl(true);

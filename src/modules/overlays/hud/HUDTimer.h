@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport HUDTimer : public OverlayText, public Tickable
     {
     public:
-        HUDTimer(BaseObject* creator);
+        HUDTimer(Context* context);
         virtual ~HUDTimer();
 
         virtual void tick(float dt);

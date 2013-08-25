@@ -57,7 +57,7 @@ namespace orxonox
         friend class Gametype;
 
         public:
-            GametypeInfo(BaseObject* creator);
+            GametypeInfo(Context* context);
             virtual ~GametypeInfo();
 
             /**

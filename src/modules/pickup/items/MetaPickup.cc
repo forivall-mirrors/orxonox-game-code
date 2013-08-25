@@ -41,7 +41,7 @@
 
 namespace orxonox {
 
-    CreateFactory(MetaPickup);
+    RegisterClass(MetaPickup);
 
     //! Setting the static variables to their values.
     /*static*/ const std::string MetaPickup::metaTypeNone_s = "none";
@@ -54,7 +54,7 @@ namespace orxonox {
     @brief
         Constructor. Registers and initializes the object.
     */
-    MetaPickup::MetaPickup(BaseObject* creator) : Pickup(creator)
+    MetaPickup::MetaPickup(Context* context) : Pickup(context)
     {
         RegisterObject(MetaPickup);
 

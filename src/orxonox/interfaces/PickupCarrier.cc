@@ -34,11 +34,13 @@
 #include "PickupCarrier.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Identifier.h"
+#include "core/class/Identifier.h"
 
 #include "Pickupable.h"
 
-namespace orxonox {
+namespace orxonox
+{
+    RegisterAbstractClass(PickupCarrier).inheritsFrom(Class(OrxonoxInterface));
 
     /**
     @brief
@@ -46,7 +48,7 @@ namespace orxonox {
     */
     PickupCarrier::PickupCarrier()
     {
-        RegisterRootObject(PickupCarrier);
+        RegisterObject(PickupCarrier);
     }
 
     /**

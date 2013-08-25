@@ -241,7 +241,7 @@ namespace orxonox
 
     // LevelInfo
 
-    CreateFactory(LevelInfo);
+    RegisterClass(LevelInfo);
 
     /**
     @brief
@@ -249,7 +249,7 @@ namespace orxonox
     @param creator
         The creator of this object.
     */
-    LevelInfo::LevelInfo(BaseObject* creator) : BaseObject(creator)
+    LevelInfo::LevelInfo(Context* context) : BaseObject(context)
     {
         RegisterObject(LevelInfo);
 

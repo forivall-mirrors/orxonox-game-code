@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport Mission : public TeamGametype
     {
         public:
-            Mission(BaseObject* creator);
+            Mission(Context* context);
             virtual ~Mission() {}
 
             virtual void tick(float dt);

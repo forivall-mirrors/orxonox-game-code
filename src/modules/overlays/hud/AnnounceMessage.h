@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport AnnounceMessage : public FadeoutText, public GametypeMessageListener
     {
         public:
-            AnnounceMessage(BaseObject* creator);
+            AnnounceMessage(Context* context);
             virtual ~AnnounceMessage() {}
 
             virtual void changedOwner();

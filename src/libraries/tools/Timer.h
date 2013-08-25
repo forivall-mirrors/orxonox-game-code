@@ -78,7 +78,7 @@
 
 #include "tools/ToolsPrereqs.h"
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxClass.h"
 #include "core/command/ExecutorPtr.h"
 
 namespace orxonox
@@ -101,7 +101,7 @@ namespace orxonox
         slower/faster if the game-speed is modified. See RealTimer for a timer class which doesn't depend
         on the game time.
     */
-    class _ToolsExport Timer : virtual public OrxonoxClass
+    class _ToolsExport Timer : public OrxonoxClass
     {
         public:
             Timer();

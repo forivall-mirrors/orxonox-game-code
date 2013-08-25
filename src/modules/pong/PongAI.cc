@@ -34,7 +34,7 @@
 #include "PongAI.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/command/Executor.h"
 #include "tools/Timer.h"
 
@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(PongAI);
+    RegisterUnloadableClass(PongAI);
 
     const static float MAX_REACTION_TIME = 0.4f;
 
@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    PongAI::PongAI(BaseObject* creator) : Controller(creator)
+    PongAI::PongAI(Context* context) : Controller(context)
     {
         RegisterObject(PongAI);
 

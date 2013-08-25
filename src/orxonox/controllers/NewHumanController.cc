@@ -55,12 +55,12 @@ namespace orxonox
     SetConsoleCommand("NewHumanController", "decelerate", &NewHumanController::decelerate).keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("NewHumanController", "unfire",     &NewHumanController::unfire    ).keybindMode(KeybindMode::OnRelease).addShortcut();
 
-    CreateUnloadableFactory(NewHumanController);
+    RegisterUnloadableClass(NewHumanController);
 
     NewHumanController* NewHumanController::localController_s = 0;
 
-    NewHumanController::NewHumanController(BaseObject* creator)
-        : HumanController(creator)
+    NewHumanController::NewHumanController(Context* context)
+        : HumanController(context)
         , crossHairOverlay_(NULL)
         , centerOverlay_(NULL)
         , damageOverlayTop_(NULL)
@@ -97,13 +97,13 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
-            crossHairOverlay_ = new OrxonoxOverlay(this);
+            crossHairOverlay_ = new OrxonoxOverlay(this->getContext());
             crossHairOverlay_->setBackgroundMaterial("Orxonox/Crosshair3");
             crossHairOverlay_->setSize(Vector2(overlaySize_, overlaySize_));
             crossHairOverlay_->hide();
             //crossHairOverlay_->setAspectCorrection(true); not working
 
-            centerOverlay_ = new OrxonoxOverlay(this);
+            centerOverlay_ = new OrxonoxOverlay(this->getContext());
             centerOverlay_->setBackgroundMaterial("Orxonox/CenterOverlay");
             centerOverlay_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
             centerOverlay_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
@@ -111,25 +111,25 @@ namespace orxonox
 
             if (showDamageOverlay_)
             {
-                damageOverlayTop_ = new OrxonoxOverlay(this);
+                damageOverlayTop_ = new OrxonoxOverlay(this->getContext());
                 damageOverlayTop_->setBackgroundMaterial("Orxonox/DamageOverlayTop");
                 damageOverlayTop_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
                 damageOverlayTop_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayTop_->hide();
 
-                damageOverlayRight_ = new OrxonoxOverlay(this);
+                damageOverlayRight_ = new OrxonoxOverlay(this->getContext());
                 damageOverlayRight_->setBackgroundMaterial("Orxonox/DamageOverlayRight");
                 damageOverlayRight_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
                 damageOverlayRight_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayRight_->hide();
 
-                damageOverlayBottom_ = new OrxonoxOverlay(this);
+                damageOverlayBottom_ = new OrxonoxOverlay(this->getContext());
                 damageOverlayBottom_->setBackgroundMaterial("Orxonox/DamageOverlayBottom");
                 damageOverlayBottom_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
                 damageOverlayBottom_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayBottom_->hide();
 
-                damageOverlayLeft_ = new OrxonoxOverlay(this);
+                damageOverlayLeft_ = new OrxonoxOverlay(this->getContext());
                 damageOverlayLeft_->setBackgroundMaterial("Orxonox/DamageOverlayLeft");
                 damageOverlayLeft_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
                 damageOverlayLeft_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
@@ -138,28 +138,28 @@ namespace orxonox
 
             if (showArrows_)
             {
-                arrowsOverlay1_ = new OrxonoxOverlay(this);
+                arrowsOverlay1_ = new OrxonoxOverlay(this->getContext());
                 arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
                 arrowsOverlay1_->setSize(Vector2(0.02727f, 0.36f * arrowsSize_));
                 arrowsOverlay1_->setPickPoint(Vector2(0.5f, 0.5f));
                 arrowsOverlay1_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay1_->hide();
 
-                arrowsOverlay2_ = new OrxonoxOverlay(this);
+                arrowsOverlay2_ = new OrxonoxOverlay(this->getContext());
                 arrowsOverlay2_->setBackgroundMaterial("Orxonox/DirectionArrows2");
                 arrowsOverlay2_->setSize(Vector2(0.02727f, 0.59f * arrowsSize_));
                 arrowsOverlay2_->setPickPoint(Vector2(0.5f, 0.5f));
                 arrowsOverlay2_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay2_->hide();
 
-                arrowsOverlay3_ = new OrxonoxOverlay(this);
+                arrowsOverlay3_ = new OrxonoxOverlay(this->getContext());
                 arrowsOverlay3_->setBackgroundMaterial("Orxonox/DirectionArrows3");
                 arrowsOverlay3_->setSize(Vector2(0.02727f, 0.77f * arrowsSize_));
                 arrowsOverlay3_->setPickPoint(Vector2(0.5f, 0.5f));
                 arrowsOverlay3_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay3_->hide();
 
-                arrowsOverlay4_ = new OrxonoxOverlay(this);
+                arrowsOverlay4_ = new OrxonoxOverlay(this->getContext());
                 arrowsOverlay4_->setBackgroundMaterial("Orxonox/DirectionArrows4");
                 arrowsOverlay4_->setSize(Vector2(0.02727f, arrowsSize_));
                 arrowsOverlay4_->setPickPoint(Vector2(0.5f, 0.5f));

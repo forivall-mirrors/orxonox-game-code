@@ -40,7 +40,7 @@ namespace orxonox
     class _GametypesExport SpaceRaceBot: public Bot
     {
         public:
-        SpaceRaceBot(BaseObject* creator);
+        SpaceRaceBot(Context* context);
             virtual ~SpaceRaceBot() {}
     };
 }

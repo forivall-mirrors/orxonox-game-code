@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport LastManStandingInfos : public OverlayText, public Tickable
     {
         public:
-            LastManStandingInfos(BaseObject* creator);
+            LastManStandingInfos(Context* context);
             virtual ~LastManStandingInfos();
 
             virtual void tick(float dt);

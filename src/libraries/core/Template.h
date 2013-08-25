@@ -50,7 +50,7 @@ namespace orxonox
     class _CoreExport Template : public BaseObject
     {
         public:
-            Template(BaseObject* creator);
+            Template(Context* context);
             virtual ~Template();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

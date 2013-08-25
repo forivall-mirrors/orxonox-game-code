@@ -34,9 +34,11 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(ClientConnectionListener).inheritsFrom(Class(Listable));
+
     ClientConnectionListener::ClientConnectionListener()
     {
-        RegisterRootObject(ClientConnectionListener);
+        RegisterObject(ClientConnectionListener);
     }
 
     void ClientConnectionListener::broadcastClientConnected(unsigned int clientID)

@@ -34,9 +34,9 @@
 
 namespace orxonox
 {
-    CreateFactory(DefaultWeaponmodeLink);
+    RegisterClass(DefaultWeaponmodeLink);
 
-    DefaultWeaponmodeLink::DefaultWeaponmodeLink(BaseObject* creator) : BaseObject(creator)
+    DefaultWeaponmodeLink::DefaultWeaponmodeLink(Context* context) : BaseObject(context)
     {
         RegisterObject(DefaultWeaponmodeLink);
 

@@ -92,7 +92,7 @@ namespace orxonox
     class _QuestsystemExport QuestEffectBeacon : public StaticEntity
     {
         public:
-            QuestEffectBeacon(BaseObject* creator);
+            QuestEffectBeacon(Context* context);
             virtual ~QuestEffectBeacon();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.

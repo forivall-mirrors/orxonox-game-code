@@ -47,7 +47,6 @@
 
 #include "util/Clock.h"
 #include "util/Output.h"
-#include "core/ObjectList.h"
 #include "core/command/Executor.h"
 #include "packet/Chat.h"
 #include "packet/ClassID.h"

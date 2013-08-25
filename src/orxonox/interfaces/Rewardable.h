@@ -35,7 +35,7 @@
 #define _Rewardable_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
@@ -47,7 +47,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Rewardable : virtual public OrxonoxClass
+    class _OrxonoxExport Rewardable : virtual public OrxonoxInterface
     {
         public:
             Rewardable();

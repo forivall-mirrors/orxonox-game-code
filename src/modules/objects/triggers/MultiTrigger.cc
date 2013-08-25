@@ -42,7 +42,7 @@
 namespace orxonox
 {
 
-    CreateFactory(MultiTrigger);
+    RegisterClass(MultiTrigger);
 
     /**
     @brief
@@ -50,7 +50,7 @@ namespace orxonox
     @param creator
         The creator.
     */
-    MultiTrigger::MultiTrigger(BaseObject* creator) : TriggerBase(creator)
+    MultiTrigger::MultiTrigger(Context* context) : TriggerBase(context)
     {
         RegisterObject(MultiTrigger);
 
@@ -450,7 +450,7 @@ namespace orxonox
             return;
         }
 
-        MultiTriggerContainer* container = new MultiTriggerContainer(this, this, originator);
+        MultiTriggerContainer* container = new MultiTriggerContainer(this->getContext(), this, originator);
         this->fireEvent(status, container);
         orxout(verbose, context::triggers) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), status: " << status << "." << endl;
         delete container;

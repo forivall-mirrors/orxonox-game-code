@@ -34,9 +34,9 @@
 
 namespace orxonox
 {
-    CreateFactory(EventListener);
+    RegisterClass(EventListener);
 
-    EventListener::EventListener(BaseObject* creator) : BaseObject(creator)
+    EventListener::EventListener(Context* context) : BaseObject(context)
     {
         RegisterObject(EventListener);
 

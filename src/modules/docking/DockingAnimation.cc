@@ -34,10 +34,13 @@
 #include "DockingAnimation.h"
 
 #include "DockingEffect.h"  // For DockingEffect::findTarget
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    DockingAnimation::DockingAnimation(BaseObject* creator) : BaseObject(creator)
+    RegisterAbstractClass(DockingAnimation).inheritsFrom(Class(BaseObject));
+
+    DockingAnimation::DockingAnimation(Context* context) : BaseObject(context)
     {
         RegisterObject(DockingAnimation);
 

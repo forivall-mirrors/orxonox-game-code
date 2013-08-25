@@ -46,7 +46,7 @@ namespace orxonox
 
     SetConsoleCommand("Trigger", "debugFlares", &Trigger::debugFlares).defaultValues(false);
 
-    CreateFactory(Trigger);
+    RegisterClass(Trigger);
 
     /**
     @brief
@@ -54,7 +54,7 @@ namespace orxonox
     @param creator
         The creator of the Trigger.
     */
-    Trigger::Trigger(BaseObject* creator) : TriggerBase(creator)
+    Trigger::Trigger(Context* context) : TriggerBase(context)
     {
         RegisterObject(Trigger);
 

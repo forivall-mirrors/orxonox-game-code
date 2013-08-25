@@ -36,7 +36,7 @@
 #include <string>
 
 #include "core/BaseObject.h"
-#include "core/SubclassIdentifier.h"
+#include "core/class/SubclassIdentifier.h"
 #include "tools/interfaces/Tickable.h"
 #include "infos/GametypeInfo.h"
 
@@ -66,7 +66,7 @@ namespace orxonox
         friend class PlayerInfo;
 
         public:
-            Gametype(BaseObject* creator);
+            Gametype(Context* context);
             virtual ~Gametype();
 
             void setConfigValues();

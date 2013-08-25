@@ -36,7 +36,7 @@ namespace orxonox
     class _OverlaysExport HUDEnemyHealthBar : public HUDHealthBar
     {
         public:
-            HUDEnemyHealthBar(BaseObject* creator);
+            HUDEnemyHealthBar(Context* context);
             virtual ~HUDEnemyHealthBar();
 
             void setConfigValues();

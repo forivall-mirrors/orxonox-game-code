@@ -42,7 +42,6 @@
 #include <string>
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
 
 namespace orxonox  // tolua_export
 {  // tolua_export
@@ -58,7 +57,7 @@ namespace orxonox  // tolua_export
     @ingroup Questsystem
     */
     class _QuestsystemExport QuestManager  // tolua_export
-        : public Singleton<QuestManager>, public orxonox::OrxonoxClass
+        : public Singleton<QuestManager>
     { // tolua_export
 
             friend class Singleton<QuestManager>;

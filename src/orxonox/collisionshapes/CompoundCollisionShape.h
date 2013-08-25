@@ -57,7 +57,7 @@ namespace orxonox
     class _OrxonoxExport CompoundCollisionShape : public CollisionShape
     {
         public:
-            CompoundCollisionShape(BaseObject* creator);
+            CompoundCollisionShape(Context* context);
             virtual ~CompoundCollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

@@ -41,7 +41,7 @@ namespace orxonox
     class _OverlaysExport HUDHealthBar : public HUDBar, public Tickable
     {
         public:
-            HUDHealthBar(BaseObject* creator);
+            HUDHealthBar(Context* context);
             virtual ~HUDHealthBar();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

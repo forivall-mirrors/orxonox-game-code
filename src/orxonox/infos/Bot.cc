@@ -31,15 +31,15 @@
 #include "util/Math.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "gametypes/Gametype.h"
 #include "controllers/AIController.h"
 
 namespace orxonox
 {
-    CreateFactory(Bot);
+    RegisterClass(Bot);
 
-    Bot::Bot(BaseObject* creator) : PlayerInfo(creator)
+    Bot::Bot(Context* context) : PlayerInfo(context)
     {
         RegisterObject(Bot);
 

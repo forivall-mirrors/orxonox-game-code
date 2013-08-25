@@ -31,7 +31,7 @@
 #include <OgreBillboardSet.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ObjectListIterator.h"
+#include "core/object/ObjectListIterator.h"
 #include "core/XMLPort.h"
 
 #include "graphics/Billboard.h"
@@ -41,9 +41,9 @@
 
 namespace orxonox
 {
-    CreateFactory(SpaceBoundaries);
+    RegisterClass(SpaceBoundaries);
 
-    SpaceBoundaries::SpaceBoundaries(BaseObject* creator) : StaticEntity(creator)
+    SpaceBoundaries::SpaceBoundaries(Context* context) : StaticEntity(context)
     {
         RegisterObject(SpaceBoundaries);
 
@@ -72,7 +72,7 @@ namespace orxonox
     void SpaceBoundaries::checkWhoIsIn()
     {
         pawnsIn_.clear();
-        for(ObjectListIterator<Pawn> current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
+        for(ObjectList<Pawn>::iterator current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
         {
             Pawn* currentPawn = *current;
             if( this->reaction_ == 0 )
@@ -103,7 +103,7 @@ namespace orxonox
 
         if (current == this->billboards_.size())
         {
-            Billboard* billboard = new Billboard(this);
+            Billboard* billboard = new Billboard(this->getContext());
             billboard->setPosition(position);
             billboard->setSyncMode(ObjectDirection::None);
             this->setBillboardOptions(billboard);

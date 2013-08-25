@@ -32,7 +32,7 @@
 */
 
 #include "ClassTreeMask.h"
-#include "Identifier.h"
+#include "class/Identifier.h"
 
 namespace orxonox
 {
@@ -848,7 +848,7 @@ namespace orxonox
 
         // If there is a first subclass, move the object-iterator to the first object of this class. Else go to the end
         if (this->subclassIterator_ != this->subclasses_.end())
-            this->objectIterator_ = this->subclassIterator_->first->getObjects()->begin();
+            this->objectIterator_ = Context::getRootContext()->getObjectList(this->subclassIterator_->first)->begin();
         else
             this->objectIterator_ = ObjectList<BaseObject>::end();
 
@@ -880,7 +880,7 @@ namespace orxonox
 
                     // Check if there really is a next class. If yes, move the object-iterator to the first object
                     if (this->subclassIterator_ != this->subclasses_.end())
-                        this->objectIterator_ = this->subclassIterator_->first->getObjects()->begin();
+                        this->objectIterator_ = Context::getRootContext()->getObjectList(this->subclassIterator_->first)->begin();
                     else
                         return (*this);
                 }

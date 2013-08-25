@@ -32,7 +32,7 @@
 #include <OgreSceneNode.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "network/NetworkFunction.h"
@@ -46,12 +46,12 @@
 
 namespace orxonox
 {
-    CreateFactory(ControllableEntity);
+    RegisterClass(ControllableEntity);
 
     registerMemberNetworkFunction( ControllableEntity, fire );
     registerMemberNetworkFunction( ControllableEntity, setTargetInternal );
 
-    ControllableEntity::ControllableEntity(BaseObject* creator) : MobileEntity(creator)
+    ControllableEntity::ControllableEntity(Context* context) : MobileEntity(context)
     {
         RegisterObject(ControllableEntity);
 
@@ -396,7 +396,7 @@ namespace orxonox
     {
         if (!this->camera_ && GameMode::showsGraphics())
         {
-            this->camera_ = new Camera(this);
+            this->camera_ = new Camera(this->getContext());
             this->camera_->requestFocus();
             if (!this->cameraPositionTemplate_.empty())
                 this->addTemplate(this->cameraPositionTemplate_);
@@ -422,7 +422,7 @@ namespace orxonox
         {
             if (!this->hudtemplate_.empty())
             {
-                this->hud_ = new OverlayGroup(this);
+                this->hud_ = new OverlayGroup(this->getContext());
                 this->hud_->addTemplate(this->hudtemplate_);
                 this->hud_->setOwner(this);
             }

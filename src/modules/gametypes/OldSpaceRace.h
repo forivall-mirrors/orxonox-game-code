@@ -51,7 +51,7 @@ namespace orxonox
         friend class OldRaceCheckPoint;
 
         public:
-            OldSpaceRace(BaseObject* creator);
+            OldSpaceRace(Context* context);
             virtual ~OldSpaceRace() {}
 
             virtual void start();

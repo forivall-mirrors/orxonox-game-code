@@ -48,7 +48,7 @@ namespace orxonox
                 Boost   = 8
             };
 
-            MultiStateEngine(BaseObject* creator);
+            MultiStateEngine(Context* context);
             virtual ~MultiStateEngine();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

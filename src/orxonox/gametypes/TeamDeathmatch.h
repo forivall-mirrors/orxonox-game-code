@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport TeamDeathmatch : public TeamGametype
     {
         public:
-            TeamDeathmatch(BaseObject* creator);
+            TeamDeathmatch(Context* context);
             virtual ~TeamDeathmatch() {}
 
             virtual void start();

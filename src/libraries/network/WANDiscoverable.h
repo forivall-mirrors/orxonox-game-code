@@ -29,14 +29,13 @@
 #define _WANDiscoverable_H__
 
 #include "NetworkPrereqs.h"
-#include "core/OrxonoxClass.h"
-#include "core/CoreIncludes.h"
+#include "core/config/Configurable.h"
 #include "MasterServerComm.h"
 
 namespace orxonox
 {
 
-  class _NetworkExport WANDiscoverable: public OrxonoxClass
+  class _NetworkExport WANDiscoverable: public Configurable
   {
     public:
       /** constructor */

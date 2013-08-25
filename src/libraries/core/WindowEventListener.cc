@@ -34,9 +34,11 @@ namespace orxonox
     unsigned int WindowEventListener::windowWidth_s  = 0;
     unsigned int WindowEventListener::windowHeight_s = 0;
 
+    RegisterAbstractClass(WindowEventListener).inheritsFrom(Class(Listable));
+
     WindowEventListener::WindowEventListener()
     {
-        RegisterRootObject(WindowEventListener);
+        RegisterObject(WindowEventListener);
     }
 
     //! Calls all registered objects

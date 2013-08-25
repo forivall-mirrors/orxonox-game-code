@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport KillMessage : public FadeoutText, public GametypeMessageListener
     {
         public:
-            KillMessage(BaseObject* creator);
+            KillMessage(Context* context);
             virtual ~KillMessage() {}
 
             virtual void changedOwner();

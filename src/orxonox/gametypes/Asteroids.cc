@@ -34,9 +34,9 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Asteroids);
+    RegisterUnloadableClass(Asteroids);
 
-    Asteroids::Asteroids(BaseObject* creator) : Gametype(creator)
+    Asteroids::Asteroids(Context* context) : Gametype(context)
     {
         RegisterObject(Asteroids);
         this->firstCheckpointReached_ = false;

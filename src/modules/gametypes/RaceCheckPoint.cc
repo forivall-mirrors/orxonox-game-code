@@ -40,10 +40,10 @@
 
 namespace orxonox
 {
-    CreateFactory(RaceCheckPoint);
+    RegisterClass(RaceCheckPoint);
 
-    RaceCheckPoint::RaceCheckPoint(BaseObject* creator) : DistanceMultiTrigger(creator),
-            RadarViewable(creator, static_cast<WorldEntity*> (this))
+    RaceCheckPoint::RaceCheckPoint(Context* context) : DistanceMultiTrigger(context),
+            RadarViewable(this, static_cast<WorldEntity*> (this))
     {
         RegisterObject(RaceCheckPoint);
         this->setDistance(100);
@@ -156,7 +156,7 @@ namespace orxonox
     {
         if (players_.size() > 0)
         {
-            for (int i = 0; i < players_.size(); i++)
+            for (size_t i = 0; i < players_.size(); i++)
             {
                 if (this->players_[i]->getClientID() == clientID)
                 {
@@ -171,7 +171,7 @@ namespace orxonox
     {
         if (players_.size() > 0)
         {
-            for (int i = 0; i < players_.size(); i++)
+            for (size_t i = 0; i < players_.size(); i++)
             {
                 if (this->players_[i] == player)
                 {

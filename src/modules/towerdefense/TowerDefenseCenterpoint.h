@@ -48,7 +48,7 @@ namespace orxonox
     class _TowerDefenseExport TowerDefenseCenterpoint : public MobileEntity
     {
         public:
-            TowerDefenseCenterpoint(BaseObject* creator);
+            TowerDefenseCenterpoint(Context* context);
             virtual ~TowerDefenseCenterpoint() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

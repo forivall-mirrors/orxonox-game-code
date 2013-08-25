@@ -36,7 +36,7 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
 #include "Scene.h"
@@ -45,9 +45,9 @@
 
 namespace orxonox
 {
-    CreateFactory(Camera);
+    RegisterClass(Camera);
 
-    Camera::Camera(BaseObject* creator) : StaticEntity(creator)
+    Camera::Camera(Context* context) : StaticEntity(context)
     {
         RegisterObject(Camera);
 

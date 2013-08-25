@@ -40,7 +40,7 @@ namespace orxonox
     class _OverlaysExport Scoreboard : public OrxonoxOverlay, public Tickable
     {
     public: // functions
-        Scoreboard(BaseObject* creator);
+        Scoreboard(Context* context);
         virtual ~Scoreboard();
 
         virtual void tick(float dt);

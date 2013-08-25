@@ -59,7 +59,7 @@ namespace orxonox
     {
 
         public:
-            QuestItem(BaseObject* creator);
+            QuestItem(Context* context);
             virtual ~QuestItem();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestItem object through XML.

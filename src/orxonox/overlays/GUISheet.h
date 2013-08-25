@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport GUISheet : public BaseObject
     {
     public:
-        GUISheet(BaseObject* creator);
+        GUISheet(Context* context);
         ~GUISheet();
 
         void XMLPort(Element& xmlelement, XMLPort::Mode mode);

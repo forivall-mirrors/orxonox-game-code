@@ -39,7 +39,8 @@
 #include <set>
 
 #include "util/mbool.h"
-#include "core/OrxonoxClass.h"
+#include "util/Output.h"
+#include "core/class/OrxonoxInterface.h"
 #include "SynchronisableVariable.h"
 #include "NetworkCallback.h"
 
@@ -105,13 +106,13 @@ namespace orxonox
   /**
    * @brief: stores information about a Synchronisable
    *
-   * This class stores the information about a Synchronisable (objectID_, classID_, creatorID_, dataSize)
+   * This class stores the information about a Synchronisable (objectID_, classID_, contextID_, dataSize)
    * in an emulated bitset.
    * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream
    * Bit 32 is a bool and defines whether the variables are stored in diff mode
    * Byte 5 to 8: objectID_
    * Byte 9 to 12: classID_
-   * Byte 13 to 16: creatorID_
+   * Byte 13 to 16: contextID_
    */
   class _NetworkExport SynchronisableHeader: public SynchronisableHeaderLight
   {
@@ -124,10 +125,10 @@ namespace orxonox
         { return *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()); }
       inline void setClassID(uint32_t classID_)
         { *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()) = classID_; }
-      inline uint32_t getCreatorID() const
+      inline uint32_t getContextID() const
         { return *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()+4); }
-      inline void setCreatorID(uint32_t creatorID_)
-        { *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()+4) = creatorID_; }
+      inline void setContextID(uint32_t contextID_)
+        { *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()+4) = contextID_; }
       inline void operator=(SynchronisableHeader& h)
         { memcpy(data_, h.data_, getSize()); }
   };
@@ -142,7 +143,7 @@ namespace orxonox
   * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
   * @author Oliver Scheuss
   */
-  class _NetworkExport Synchronisable : virtual public OrxonoxClass{
+  class _NetworkExport Synchronisable : virtual public OrxonoxInterface {
   public:
     friend class packet::Gamestate;
     virtual ~Synchronisable();
@@ -156,7 +157,7 @@ namespace orxonox
     static uint32_t popDeletedObject(){ uint32_t i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
 
     inline uint32_t getObjectID() const {return this->objectID_;}
-    inline unsigned int getCreatorID() const {return this->creatorID_;}
+    inline unsigned int getContextID() const {return this->contextID_;}
     inline uint32_t getClassID() const {return this->classID_;}
     inline unsigned int getPriority() const { return this->objectFrequency_;}
     inline uint8_t getSyncMode() const { return this->objectMode_; }
@@ -168,13 +169,13 @@ namespace orxonox
     { return this->syncList_[ID]->getSize(state_); }
 
   protected:
-    Synchronisable(BaseObject* creator);
+    Synchronisable(Context* context);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
     template <class T> void registerVariable(std::set<T>& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
     template <class T> void unregisterVariable(T& var);
 
     void setPriority(unsigned int freq){ objectFrequency_ = freq; }
-
+    uint32_t findContextID(Context* context);
 
   private:
     uint32_t getData(uint8_t*& mem, std::vector<uint32_t>& sizes, int32_t id, uint8_t mode);
@@ -187,7 +188,7 @@ namespace orxonox
     inline void setClassID(uint32_t id){ this->classID_ = id; }
 
     uint32_t objectID_;
-    uint32_t creatorID_;
+    uint32_t contextID_;
     uint32_t classID_;
 
     std::vector<SynchronisableVariableBase*> syncList_;

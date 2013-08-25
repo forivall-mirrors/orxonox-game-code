@@ -47,7 +47,7 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(NotificationDispatcher);
+    RegisterUnloadableClass(NotificationDispatcher);
 
     registerMemberNetworkFunction(NotificationDispatcher, broadcastHelper);
     registerMemberNetworkFunction(NotificationDispatcher, dispatch);
@@ -56,7 +56,7 @@ namespace orxonox
     @brief
         Default constructor. Initializes the object.
     */
-    NotificationDispatcher::NotificationDispatcher(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    NotificationDispatcher::NotificationDispatcher(Context* context) : BaseObject(context), Synchronisable(context)
     {
         RegisterObject(NotificationDispatcher);
 

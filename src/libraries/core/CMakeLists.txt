@@ -21,23 +21,17 @@ SET_SOURCE_FILES(CORE_SRC_FILES
 
 #BUILD_UNIT CoreStableBuildUnit.cc
   ClassTreeMask.cc
-  CommandLineParser.cc
-  ConfigValueContainer.cc
   DynLib.cc
   DynLibManager.cc
   Event.cc
   Game.cc
   GameMode.cc
   GameState.cc
-  Identifier.cc
   Language.cc
   Loader.cc
   LuaState.cc
-  MetaObjectList.cc
   Namespace.cc
   NamespaceNode.cc
-  ObjectListBase.cc
-  OrxonoxClass.cc
   Template.cc
   ViewportEventListener.cc
   WindowEventListener.cc
@@ -56,7 +50,7 @@ END_BUILD_UNIT
 
 BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
-  ConfigFileManager.cc
+  config/ConfigFile.cc
   PathConfig.cc
 END_BUILD_UNIT
 
@@ -67,14 +61,17 @@ BUILD_UNIT ThreadBuildUnit.cc
 END_BUILD_UNIT
 )
 
+ADD_SUBDIRECTORY(class)
 ADD_SUBDIRECTORY(command)
+ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(input)
+ADD_SUBDIRECTORY(object)
 
 ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     command/CommandExecutor.h
-    ConfigFileManager.h
+    config/SettingsConfigFile.h
     Game.h
     GameMode.h
     GraphicsManager.h

@@ -53,7 +53,7 @@ namespace orxonox
     class _TetrisExport TetrisBrick : public ControllableEntity
     {
         public:
-            TetrisBrick(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            TetrisBrick(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~TetrisBrick() {}
 
             virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.

@@ -50,7 +50,7 @@
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "tools/TextureGenerator.h"
 // #include <boost/bind/bind_template.hpp>
 
@@ -66,12 +66,12 @@ namespace orxonox
     {
         return a.second < b.second;
     }
-    CreateFactory ( HUDNavigation );
+    RegisterClass ( HUDNavigation );
 
     HUDNavigation* HUDNavigation::localHUD_s = 0;
 
-    HUDNavigation::HUDNavigation(BaseObject* creator) :
-        OrxonoxOverlay(creator)
+    HUDNavigation::HUDNavigation(Context* context) :
+        OrxonoxOverlay(context)
     {
         RegisterObject(HUDNavigation)
 ;        this->setConfigValues();

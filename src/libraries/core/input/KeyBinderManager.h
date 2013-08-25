@@ -35,7 +35,7 @@
 #include <string>
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "core/config/Configurable.h"
 
 namespace orxonox //tolua_export
 { //tolua_export
@@ -52,7 +52,7 @@ namespace orxonox //tolua_export
         will not work as expected!
     */
     class _CoreExport KeyBinderManager //tolua_export
-        : public Singleton<KeyBinderManager>, public OrxonoxClass
+        : public Singleton<KeyBinderManager>, public Configurable
     { //tolua_export
         friend class Singleton<KeyBinderManager>;
     public:

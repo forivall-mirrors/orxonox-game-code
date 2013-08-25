@@ -40,9 +40,9 @@
 
 namespace orxonox
 {
-    CreateFactory(BigExplosion);
+    RegisterClass(BigExplosion);
 
-    BigExplosion::BigExplosion(BaseObject* creator) : StaticEntity(creator)
+    BigExplosion::BigExplosion(Context* context) : StaticEntity(context)
     {
         RegisterObject(BigExplosion);
 
@@ -79,27 +79,27 @@ namespace orxonox
 
     void BigExplosion::init()
     {
-        this->debrisEntity1_ = new MovableEntity(this);
-        this->debrisEntity2_ = new MovableEntity(this);
-        this->debrisEntity3_ = new MovableEntity(this);
-        this->debrisEntity4_ = new MovableEntity(this);
+        this->debrisEntity1_ = new MovableEntity(this->getContext());
+        this->debrisEntity2_ = new MovableEntity(this->getContext());
+        this->debrisEntity3_ = new MovableEntity(this->getContext());
+        this->debrisEntity4_ = new MovableEntity(this->getContext());
 
         this->debrisEntity1_->setSyncMode(0);
         this->debrisEntity2_->setSyncMode(0);
         this->debrisEntity3_->setSyncMode(0);
         this->debrisEntity4_->setSyncMode(0);
 
-        this->debris1_ = new Model(this);
-        this->debris2_ = new Model(this);
-        this->debris3_ = new Model(this);
-        this->debris4_ = new Model(this);
+        this->debris1_ = new Model(this->getContext());
+        this->debris2_ = new Model(this->getContext());
+        this->debris3_ = new Model(this->getContext());
+        this->debris4_ = new Model(this->getContext());
 
         this->debris1_->setSyncMode(0);
         this->debris2_->setSyncMode(0);
         this->debris3_->setSyncMode(0);
         this->debris4_->setSyncMode(0);
 
-        this->explosion_ = new StaticEntity(this);
+        this->explosion_ = new StaticEntity(this->getContext());
         this->explosion_->setSyncMode(0);
 
         this->debrisSmoke1_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
@@ -147,13 +147,13 @@ namespace orxonox
         this->debrisEntity3_->attach(debris3_);
         this->debrisEntity4_->attach(debris4_);
 
-        ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
+        ParticleSpawner* effect = new ParticleSpawner(this->getContext());
         effect->setDestroyAfterLife(true);
         effect->setSource("Orxonox/explosion2b");
         effect->setLifetime(4.0f);
         effect->setSyncMode(0);
 
-        ParticleSpawner* effect2 = new ParticleSpawner(this->getCreator());
+        ParticleSpawner* effect2 = new ParticleSpawner(this->getContext());
         effect2->setDestroyAfterLife(true);
         effect2->setSource("Orxonox/smoke6");
         effect2->setLifetime(4.0f);
@@ -171,11 +171,11 @@ namespace orxonox
 
         for(int i=0;i<10;i++)
         {
-            Model* part1 = new Model(this);
-            Model* part2 = new Model(this);
+            Model* part1 = new Model(this->getContext());
+            Model* part2 = new Model(this->getContext());
 
-            MovableEntity* partEntity1 = new MovableEntity(this);
-            MovableEntity* partEntity2 = new MovableEntity(this);
+            MovableEntity* partEntity1 = new MovableEntity(this->getContext());
+            MovableEntity* partEntity2 = new MovableEntity(this->getContext());
 
             part1->setSyncMode(0);
             part2->setSyncMode(0);
@@ -224,45 +224,45 @@ namespace orxonox
             if (this->debrisFire1_)
             {
                 this->debris1_->detachOgreObject(this->debrisFire1_->getParticleSystem());
-                this->debrisFire1_->destroy();
+                delete this->debrisFire1_;
             }
             if (this->debrisSmoke1_)
             {
                 this->debris1_->detachOgreObject(this->debrisSmoke1_->getParticleSystem());
-                this->debrisSmoke1_->destroy();
+                delete this->debrisSmoke1_;
             }
 
             if (this->debrisFire2_)
             {
                 this->debris2_->detachOgreObject(this->debrisFire2_->getParticleSystem());
-                this->debrisFire2_->destroy();
+                delete this->debrisFire2_;
             }
             if (this->debrisSmoke2_)
             {
                 this->debris2_->detachOgreObject(this->debrisSmoke2_->getParticleSystem());
-                this->debrisSmoke2_->destroy();
+                delete this->debrisSmoke2_;
             }
 
             if (this->debrisFire3_)
             {
                 this->debris3_->detachOgreObject(this->debrisFire3_->getParticleSystem());
-                this->debrisFire3_->destroy();
+                delete this->debrisFire3_;
             }
             if (this->debrisSmoke3_)
             {
                 this->debris3_->detachOgreObject(this->debrisSmoke3_->getParticleSystem());
-                this->debrisSmoke3_->destroy();
+                delete this->debrisSmoke3_;
             }
 
             if (this->debrisFire4_)
             {
                 this->debris4_->detachOgreObject(this->debrisFire4_->getParticleSystem());
-                this->debrisFire4_->destroy();
+                delete this->debrisFire4_;
             }
             if (this->debrisSmoke4_)
             {
                 this->debris4_->detachOgreObject(this->debrisSmoke4_->getParticleSystem());
-                this->debrisSmoke4_->destroy();
+                delete this->debrisSmoke4_;
             }
         }
     }

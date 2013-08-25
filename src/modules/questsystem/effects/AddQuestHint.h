@@ -60,7 +60,7 @@ namespace orxonox
     class _QuestsystemExport AddQuestHint : public QuestEffect
     {
         public:
-            AddQuestHint(BaseObject* creator);
+            AddQuestHint(Context* context);
             virtual ~AddQuestHint();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a AddQuestHint object through XML.

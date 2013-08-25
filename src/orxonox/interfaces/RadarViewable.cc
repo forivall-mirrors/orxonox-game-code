@@ -37,6 +37,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(RadarViewable).inheritsFrom(Class(OrxonoxInterface));
+
     /**
         @brief Constructor.
     */
@@ -44,19 +46,18 @@ namespace orxonox
         : isHumanShip_(false)
         , bVisibility_(true)
         , bInitialized_(false)
-        , creator_(creator)
         , wePtr_(wePtr)
         , radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")
         , scale_(1.0f)
     {
-        RegisterRootObject(RadarViewable);
+        RegisterObject(RadarViewable);
 
         this->uniqueId_=getUniqueNumberString();
         if( GameMode::showsGraphics() )
         {
-            this->radar_ = this->creator_->getScene()->getRadar();
+            this->radar_ = creator->getScene()->getRadar();
             this->radar_->addRadarObject(this);
         }
         this->bInitialized_ = true;

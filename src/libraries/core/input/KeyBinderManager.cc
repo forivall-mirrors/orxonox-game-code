@@ -31,7 +31,7 @@
 #include "util/Output.h"
 #include "util/Exception.h"
 #include "util/ScopedSingletonManager.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
 #include "core/command/ConsoleCommand.h"

@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-    CreateFactory(TeamBaseMatchScore);
+    RegisterClass(TeamBaseMatchScore);
 
-    TeamBaseMatchScore::TeamBaseMatchScore(BaseObject* creator) : OverlayText(creator)
+    TeamBaseMatchScore::TeamBaseMatchScore(Context* context) : OverlayText(context)
     {
         RegisterObject(TeamBaseMatchScore);
 

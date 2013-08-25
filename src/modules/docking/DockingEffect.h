@@ -35,7 +35,6 @@
 #ifndef _DockingEffect_H__
 #define _DockingEffect_H__
 
-#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
 #include "infos/PlayerInfo.h"
@@ -61,7 +60,7 @@ namespace orxonox
     class _DockingExport DockingEffect : public BaseObject
     {
         public:
-            DockingEffect(BaseObject* creator);
+            DockingEffect(Context* context);
             virtual ~DockingEffect();
 
             virtual bool docking(PlayerInfo* player) = 0; //!< Called when player docked

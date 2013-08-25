@@ -43,10 +43,10 @@
 #include "util/Exception.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"
-#include "CommandLineParser.h"
 #include "Core.h"
 #include "CoreIncludes.h"
-#include "ConfigValueIncludes.h"
+#include "config/CommandLineParser.h"
+#include "config/ConfigValueIncludes.h"
 #include "GameMode.h"
 #include "GameState.h"
 #include "GraphicsManager.h"
@@ -111,7 +111,7 @@ namespace orxonox
         this->core_ = new Core(cmdLine);
 
         // Do this after the Core creation!
-        RegisterRootObject(Game);
+        RegisterObject(Game);
         this->setConfigValues();
 
         // After the core has been created, we can safely instantiate the GameStates that don't require graphics

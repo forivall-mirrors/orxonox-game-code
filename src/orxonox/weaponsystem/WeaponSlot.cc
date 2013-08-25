@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-    CreateFactory(WeaponSlot);
+    RegisterClass(WeaponSlot);
 
-    WeaponSlot::WeaponSlot(BaseObject* creator) : StaticEntity(creator)
+    WeaponSlot::WeaponSlot(Context* context) : StaticEntity(context)
     {
         RegisterObject(WeaponSlot);
 

@@ -42,7 +42,7 @@ namespace orxonox
         friend class ResourceCollection;
 
     public:
-        ResourceLocation(BaseObject* creator);
+        ResourceLocation(Context* context);
         virtual ~ResourceLocation();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

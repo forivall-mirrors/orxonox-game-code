@@ -38,9 +38,9 @@
 #include "OrxonoxPrereqs.h"
 
 #include <list>
-#include "core/Super.h"
+#include "core/class/Super.h"
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 #include "Rewardable.h"
 
 namespace orxonox
@@ -57,7 +57,7 @@ namespace orxonox
 
     @ingroup Pickup
     */
-    class _OrxonoxExport Pickupable : virtual public OrxonoxClass, public Rewardable
+    class _OrxonoxExport Pickupable : virtual public OrxonoxInterface, public Rewardable
     {
         friend class PickupCarrier;
 
@@ -143,7 +143,7 @@ namespace orxonox
             void destroy(void); //!< Is called internally within the Pickupable module to destroy pickups.
 
         protected:
-            virtual void preDestroy(void); //!< A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
+            virtual void preDestroy(void); //!< A method that is called by Destroyable::destroy() before the object is actually destroyed.
             virtual void destroyPickup(void); //!< Destroys a Pickupable.
             virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
 

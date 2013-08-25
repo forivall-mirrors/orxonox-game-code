@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport WaypointController : public ArtificialController, public Tickable
     {
         public:
-            WaypointController(BaseObject* creator);
+            WaypointController(Context* context);
             virtual ~WaypointController();
 
             virtual void tick(float dt);

@@ -33,12 +33,13 @@
 #include "infos/PlayerInfo.h"
 #include "worldentities/ControllableEntity.h"
 #include "Dock.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    CreateFactory(DockingController);
+    RegisterClass(DockingController);
 
-    DockingController::DockingController(BaseObject* creator) : ArtificialController(creator)
+    DockingController::DockingController(Context* context) : ArtificialController(context)
     {
         RegisterObject(DockingController);
 

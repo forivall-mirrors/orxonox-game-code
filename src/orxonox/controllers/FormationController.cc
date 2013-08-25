@@ -55,8 +55,7 @@ namespace orxonox
     SetConsoleCommand("FormationController", "passivebehaviour", &FormationController::passivebehaviour);
     SetConsoleCommand("FormationController", "formationsize",    &FormationController::formationsize);
 
-
-
+    RegisterClass(FormationController);
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 9;
     static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
@@ -68,7 +67,7 @@ namespace orxonox
     static const float SPEED_FREE = 0.8f;
     static const float ROTATEFACTOR_FREE = 0.8f;
 
-    FormationController::FormationController(BaseObject* creator) : Controller(creator)
+    FormationController::FormationController(Context* context) : Controller(context)
     {
         RegisterObject(FormationController);
 

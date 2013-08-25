@@ -38,7 +38,7 @@
 #include "PickupPrereqs.h"
 
 #include <map>
-#include "core/WeakPtr.h"
+#include "core/object/WeakPtr.h"
 
 #include "PickupRepresentation.h"
 

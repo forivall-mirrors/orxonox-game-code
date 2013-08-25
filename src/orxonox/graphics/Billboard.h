@@ -43,7 +43,7 @@ namespace orxonox
     class _OrxonoxExport Billboard : public StaticEntity, public TeamColourable
     {
         public:
-            Billboard(BaseObject* creator);
+            Billboard(Context* context);
             virtual ~Billboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

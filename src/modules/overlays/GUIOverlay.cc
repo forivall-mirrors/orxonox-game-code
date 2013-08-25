@@ -40,9 +40,9 @@
 
 namespace orxonox
 {
-    CreateFactory(GUIOverlay);
+    RegisterClass(GUIOverlay);
 
-    GUIOverlay::GUIOverlay(BaseObject* creator) : OrxonoxOverlay(creator)
+    GUIOverlay::GUIOverlay(Context* context) : OrxonoxOverlay(context)
     {
         RegisterObject(GUIOverlay);
     }

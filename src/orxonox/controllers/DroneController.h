@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "AIController.h"
-#include "core/WeakPtr.h"
+#include "core/object/WeakPtr.h"
 #include "tools/interfaces/Tickable.h"
 
 #include "tools/Timer.h"
@@ -49,7 +49,7 @@ namespace orxonox
     class _OrxonoxExport DroneController : public ArtificialController, public Tickable
     {
         public:
-            DroneController(BaseObject* creator);
+            DroneController(Context* context);
             virtual ~DroneController();
 
             virtual void tick(float dt); //!< The controlling happens here. This method defines what the controller has to do each tick.

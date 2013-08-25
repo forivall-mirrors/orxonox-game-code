@@ -33,8 +33,9 @@
 #include <boost/foreach.hpp>
 
 #include "util/StringUtils.h"
-#include "core/ConfigFileManager.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigFile.h"
+#include "core/config/ConfigFileManager.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 #include "InputState.h"
@@ -49,7 +50,7 @@ namespace orxonox
     JoyStick::JoyStick(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
     {
-        RegisterRootObject(JoyStick);
+        RegisterObject(JoyStick);
         this->setConfigValues();
         // Initialise POV and Slider states
         this->clearBuffersImpl();

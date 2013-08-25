@@ -29,7 +29,7 @@
 #include "TeamGametype.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "infos/PlayerInfo.h"
 #include "interfaces/TeamColourable.h"
 #include "worldentities/TeamSpawnPoint.h"
@@ -39,9 +39,9 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(TeamGametype);
+    RegisterUnloadableClass(TeamGametype);
 
-    TeamGametype::TeamGametype(BaseObject* creator) : Gametype(creator)
+    TeamGametype::TeamGametype(Context* context) : Gametype(context)
     {
         RegisterObject(TeamGametype);
 

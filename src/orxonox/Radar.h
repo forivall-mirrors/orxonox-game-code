@@ -40,7 +40,7 @@
 #include <set>
 #include <string>
 
-#include "core/ObjectListIterator.h"
+#include "core/object/ObjectListIterator.h"
 #include "interfaces/RadarViewable.h"
 #include "tools/interfaces/Tickable.h"
 
@@ -73,7 +73,7 @@ namespace orxonox
         void removeRadarObject(RadarViewable* rv);
         void radarObjectChanged(RadarViewable* rv);
 
-        ObjectListIterator<RadarViewable> itFocus_;
+        ObjectList<RadarViewable>::iterator itFocus_;
         RadarViewable* focus_;
         std::map<std::string, RadarViewable::Shape> objectTypes_;
         std::set<RadarViewable*> radarObjects_;

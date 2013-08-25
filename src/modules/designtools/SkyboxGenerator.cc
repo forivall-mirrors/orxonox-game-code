@@ -39,7 +39,7 @@
 
 #include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
 #include "core/Resource.h"
@@ -67,7 +67,7 @@ namespace orxonox
     */
     SkyboxGenerator::SkyboxGenerator()
     {
-        RegisterRootObject(SkyboxGenerator);
+        RegisterObject(SkyboxGenerator);
 
         this->setConfigValues();
         

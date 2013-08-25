@@ -46,7 +46,7 @@ namespace orxonox
     class _OrxonoxExport Drone : public Pawn
     {
         public:
-            Drone(BaseObject* creator);
+            Drone(Context* context);
             virtual ~Drone();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Drone through XML.

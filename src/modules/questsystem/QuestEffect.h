@@ -56,7 +56,7 @@ namespace orxonox
     class _QuestsystemExport QuestEffect : public BaseObject
     {
         public:
-            QuestEffect(BaseObject* creator);
+            QuestEffect(Context* context);
             virtual ~QuestEffect();
 
             virtual bool invoke(PlayerInfo* player) = 0; //!< Invokes the QuestEffect.

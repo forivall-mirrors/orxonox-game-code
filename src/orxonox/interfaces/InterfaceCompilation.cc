@@ -49,17 +49,21 @@ namespace orxonox
     //----------------------------
     // GametypeMessageListener
     //----------------------------
+    RegisterAbstractClass(GametypeMessageListener).inheritsFrom(Class(OrxonoxInterface));
+
     GametypeMessageListener::GametypeMessageListener()
     {
-        RegisterRootObject(GametypeMessageListener);
+        RegisterObject(GametypeMessageListener);
     }
 
     //----------------------------
     // PlayerTrigger
     //----------------------------
+    RegisterAbstractClass(PlayerTrigger).inheritsFrom(Class(OrxonoxInterface));
+
     PlayerTrigger::PlayerTrigger()
     {
-        RegisterRootObject(PlayerTrigger);
+        RegisterObject(PlayerTrigger);
 
         this->isForPlayer_ = false;
     }
@@ -75,24 +79,30 @@ namespace orxonox
     //----------------------------
     // RadarListener
     //----------------------------
+    RegisterAbstractClass(RadarListener).inheritsFrom(Class(OrxonoxInterface));
+
     RadarListener::RadarListener()
     {
-        RegisterRootObject(RadarListener);
+        RegisterObject(RadarListener);
     }
 
     //----------------------------
     // TeamColourable
     //----------------------------
+    RegisterAbstractClass(TeamColourable).inheritsFrom(Class(OrxonoxInterface));
+
     TeamColourable::TeamColourable()
     {
-        RegisterRootObject(TeamColourable);
+        RegisterObject(TeamColourable);
     }
 
     //----------------------------
     // Rewardable
     //----------------------------
+    RegisterAbstractClass(Rewardable).inheritsFrom(Class(OrxonoxInterface));
+
     Rewardable::Rewardable()
     {
-        RegisterRootObject(Rewardable);
+        RegisterObject(Rewardable);
     }
 }

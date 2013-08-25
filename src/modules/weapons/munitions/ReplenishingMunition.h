@@ -52,7 +52,7 @@ namespace orxonox
     class _WeaponsExport ReplenishingMunition : public Munition
     {
         public:
-            ReplenishingMunition(BaseObject* creator);
+            ReplenishingMunition(Context* context);
             virtual ~ReplenishingMunition() {}
 
         protected:

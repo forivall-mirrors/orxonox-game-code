@@ -40,9 +40,9 @@ namespace orxonox
     static const float MAX_RESYNCHRONIZE_TIME = 3.0f;
     static const float CONTINUOUS_SYNCHRONIZATION_TIME = 10.0f;
 
-    CreateFactory(MovableEntity);
+    RegisterClass(MovableEntity);
 
-    MovableEntity::MovableEntity(BaseObject* creator) : MobileEntity(creator)
+    MovableEntity::MovableEntity(Context* context) : MobileEntity(context)
     {
         RegisterObject(MovableEntity);
 

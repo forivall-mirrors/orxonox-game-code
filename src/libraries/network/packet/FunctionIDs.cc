@@ -34,7 +34,7 @@
 #include <string>
 
 #include "util/Output.h"
-#include "core/ObjectList.h"
+#include "core/object/ObjectList.h"
 #include "network/NetworkFunction.h"
 
 namespace orxonox {

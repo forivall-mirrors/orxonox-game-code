@@ -38,23 +38,25 @@
 #include "CoreIncludes.h"
 #include "Event.h"
 #include "EventIncludes.h"
-#include "Iterator.h"
 #include "Template.h"
 #include "XMLFile.h"
 #include "XMLNameListener.h"
 #include "XMLPort.h"
 #include "command/Functor.h"
+#include "object/Iterator.h"
+
+#include "class/OrxonoxInterface.h" // we include this only to include OrxonoxInterface.h at least once in core to keep MSVC happy...
 
 namespace orxonox
 {
-    CreateFactory(BaseObject);
+    RegisterClass(BaseObject);
 
     /**
         @brief Constructor: Registers the object in the BaseObject-list.
     */
-    BaseObject::BaseObject(BaseObject* creator) : bInitialized_(false)
+    BaseObject::BaseObject(Context* context) : bInitialized_(false)
     {
-        RegisterRootObject(BaseObject);
+        RegisterObject(BaseObject);
 
         this->bInitialized_ = true;
 
@@ -67,6 +69,10 @@ namespace orxonox
 
         this->mainStateFunctor_ = 0;
 
+        if (context)
+            this->setContext(context);
+
+        BaseObject* creator = orxonox_cast<BaseObject*>(context);
         this->setCreator(creator);
         if (this->creator_)
         {
@@ -198,7 +204,7 @@ namespace orxonox
         if (temp->isLink())
         {
             this->networkTemplateNames_.insert(temp->getLink());
-            
+
             Template* link;
             assert(!(link = Template::getTemplate(temp->getLink())) || !link->isLink());
             link = NULL;

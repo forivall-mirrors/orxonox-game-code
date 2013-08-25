@@ -73,7 +73,7 @@ namespace orxonox {
     class _ObjectsExport TriggerBase : public StaticEntity, public Tickable
     {
         public:
-            TriggerBase(BaseObject* creator);
+            TriggerBase(Context* context);
             virtual ~TriggerBase();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a TriggerBase object through XML.

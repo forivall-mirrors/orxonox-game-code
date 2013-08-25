@@ -58,7 +58,7 @@ namespace orxonox
     class _QuestsystemExport FailQuest : public ChangeQuestStatus
     {
         public:
-            FailQuest(BaseObject* creator);
+            FailQuest(Context* context);
             virtual ~FailQuest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a FailQuest object through XML.

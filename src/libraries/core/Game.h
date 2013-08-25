@@ -49,7 +49,7 @@
 #include "util/Output.h"
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
+#include "config/Configurable.h"
 
 /**
 @brief
@@ -81,7 +81,7 @@ namespace orxonox
 // tolua_begin
     class _CoreExport Game
 // tolua_end
-        : public Singleton<Game>, public OrxonoxClass
+        : public Singleton<Game>, public Configurable
     { // tolua_export
         friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;

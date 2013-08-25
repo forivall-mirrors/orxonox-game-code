@@ -44,7 +44,9 @@ namespace orxonox
 {
     SetConsoleCommand("ArtificialController", "setbotlevel",      &ArtificialController::setAllBotLevel);
 
-    ArtificialController::ArtificialController(BaseObject* creator) : FormationController(creator)
+    RegisterClass(ArtificialController);
+
+    ArtificialController::ArtificialController(Context* context) : FormationController(context)
     {
         RegisterObject(ArtificialController);
 

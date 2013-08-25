@@ -42,13 +42,13 @@
 
 namespace orxonox
 {
-    CreateFactory(QuestHint);
+    RegisterClass(QuestHint);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    QuestHint::QuestHint(BaseObject* creator) : QuestItem(creator)
+    QuestHint::QuestHint(Context* context) : QuestItem(context)
     {
         RegisterObject(QuestHint);
     }

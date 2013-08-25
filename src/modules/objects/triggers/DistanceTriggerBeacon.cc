@@ -39,7 +39,7 @@
 namespace orxonox
 {
 
-    CreateFactory(DistanceTriggerBeacon);
+    RegisterClass(DistanceTriggerBeacon);
 
     /**
     @brief
@@ -47,7 +47,7 @@ namespace orxonox
     @param creator
         The creator of this object.
     */
-    DistanceTriggerBeacon::DistanceTriggerBeacon(BaseObject* creator) : StaticEntity(creator)
+    DistanceTriggerBeacon::DistanceTriggerBeacon(Context* context) : StaticEntity(context)
     {
         RegisterObject(DistanceTriggerBeacon);
     }

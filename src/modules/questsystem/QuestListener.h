@@ -86,7 +86,7 @@ namespace orxonox
     {
 
         public:
-            QuestListener(BaseObject* creator);
+            QuestListener(Context* context);
             virtual ~QuestListener();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestListener object through XML.

@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport MeshLodInformation : public BaseObject
     {
         public:
-            MeshLodInformation(BaseObject* creator);
+            MeshLodInformation(Context* context);
             virtual ~MeshLodInformation();
 
             float getLodLevel();

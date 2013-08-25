@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport UnderAttack : public TeamDeathmatch
     {
         public:
-            UnderAttack(BaseObject* creator);
+            UnderAttack(Context* context);
             virtual ~UnderAttack() {}
 
             void setConfigValues();

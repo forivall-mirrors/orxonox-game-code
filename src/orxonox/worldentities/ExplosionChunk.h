@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport ExplosionChunk : public MovableEntity
     {
         public:
-            ExplosionChunk(BaseObject* creator);
+            ExplosionChunk(Context* context);
             virtual ~ExplosionChunk();
 
             virtual void tick(float dt);

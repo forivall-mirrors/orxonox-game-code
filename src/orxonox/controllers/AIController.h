@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport AIController : public ArtificialController, public Tickable
     {
         public:
-            AIController(BaseObject* creator);
+            AIController(Context* context);
             virtual ~AIController();
 
             virtual void tick(float dt); //<! Carrying out the targets set in action().

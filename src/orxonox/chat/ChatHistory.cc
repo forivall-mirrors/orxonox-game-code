@@ -38,7 +38,6 @@ namespace orxonox
 
   /* constructor */
 #ifndef CHATTEST
-  //ChatHistory::ChatHistory( BaseObject* creator ) : BaseObject(creator)
   ChatHistory::ChatHistory()
 #else
   ChatHistory::ChatHistory()

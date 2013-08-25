@@ -32,14 +32,15 @@
 */
 
 #include "DockingTarget.h"
+#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
 
 namespace orxonox
 {
-    CreateFactory(DockingTarget);
+    RegisterClass(DockingTarget);
 
-    DockingTarget::DockingTarget(BaseObject* creator) : StaticEntity(creator)
+    DockingTarget::DockingTarget(Context* context) : StaticEntity(context)
     {
         RegisterObject(DockingTarget);
     }

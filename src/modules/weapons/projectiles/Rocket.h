@@ -58,7 +58,7 @@ namespace orxonox
     class _WeaponsExport Rocket : public ControllableEntity, public BasicProjectile, public RadarViewable
     {
         public:
-            Rocket(BaseObject* creator);
+            Rocket(Context* context);
             virtual ~Rocket();
 
             virtual void tick(float dt); //!< Defines which actions the Rocket has to take in each tick.

@@ -44,7 +44,7 @@ namespace orxonox // tolua_export
         friend class WeaponSystem;
 
         public:
-            Pawn(BaseObject* creator);
+            Pawn(Context* context);
             virtual ~Pawn();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

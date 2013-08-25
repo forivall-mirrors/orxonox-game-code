@@ -37,10 +37,12 @@ namespace orxonox
     class _OrxonoxExport WorldEntityCollisionShape : public CompoundCollisionShape
     {
         public:
-            WorldEntityCollisionShape(WorldEntity* creator);
+            WorldEntityCollisionShape(Context* context);
             virtual ~WorldEntityCollisionShape();
 
-            inline WorldEntity* getWorldEntityOwner()
+            inline void setWorldEntityOwner(WorldEntity* worldEntityOwner)
+                { this->worldEntityOwner_ = worldEntityOwner; }
+            inline WorldEntity* getWorldEntityOwner() const
                 { return this->worldEntityOwner_; }
 
         protected:

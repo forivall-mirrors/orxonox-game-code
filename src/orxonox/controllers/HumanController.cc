@@ -65,12 +65,12 @@ namespace orxonox
     SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
     SetConsoleCommand("HumanController", "myposition",             &HumanController::myposition    ).addShortcut();
 
-    CreateUnloadableFactory(HumanController);
+    RegisterUnloadableClass(HumanController);
 
     HumanController* HumanController::localController_s = 0;
     /*static*/ const float HumanController::BOOSTING_TIME = 0.1f;
 
-    HumanController::HumanController(BaseObject* creator) : FormationController(creator)
+    HumanController::HumanController(Context* context) : FormationController(context)
     {
         RegisterObject(HumanController);
 

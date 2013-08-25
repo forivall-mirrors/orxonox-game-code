@@ -34,15 +34,15 @@
 
 namespace orxonox
 {
-    CreateFactory(Turret);
+    RegisterClass(Turret);
 
     /**
      * @brief Constructor
      */
-    Turret::Turret(BaseObject* creator) : SpaceShip(creator)
+    Turret::Turret(Context* context) : SpaceShip(context)
     {
         RegisterObject(Turret);
-        this->controller_ = new WaypointPatrolController(this);
+        this->controller_ = new WaypointPatrolController(this->getContext());
     }
 
     /**

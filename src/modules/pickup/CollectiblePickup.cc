@@ -37,7 +37,9 @@
 
 #include "PickupCollection.h"
 
-namespace orxonox {
+namespace orxonox
+{
+    RegisterAbstractClass(CollectiblePickup).inheritsFrom(Class(Pickupable));
 
     /**
     @brief

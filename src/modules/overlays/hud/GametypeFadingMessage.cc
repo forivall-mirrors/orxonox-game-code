@@ -33,9 +33,9 @@
 
 namespace orxonox
 {
-    CreateFactory(GametypeFadingMessage);
+    RegisterClass(GametypeFadingMessage);
 
-    GametypeFadingMessage::GametypeFadingMessage(BaseObject* creator) : FadeoutText(creator)
+    GametypeFadingMessage::GametypeFadingMessage(Context* context) : FadeoutText(context)
     {
         RegisterObject(GametypeFadingMessage);
 

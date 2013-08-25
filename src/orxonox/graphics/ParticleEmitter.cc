@@ -42,9 +42,9 @@
 
 namespace orxonox
 {
-    CreateFactory(ParticleEmitter);
+    RegisterClass(ParticleEmitter);
 
-    ParticleEmitter::ParticleEmitter(BaseObject* creator) : StaticEntity(creator)
+    ParticleEmitter::ParticleEmitter(Context* context) : StaticEntity(context)
     {
         RegisterObject(ParticleEmitter);
 
@@ -62,7 +62,7 @@ namespace orxonox
         if (this->isInitialized() && this->particles_)
         {
             this->detachOgreObject(this->particles_->getParticleSystem());
-            this->particles_->destroy();
+            delete this->particles_;
         }
     }
 
@@ -100,7 +100,7 @@ namespace orxonox
     {
         if (this->particles_)
         {
-            this->particles_->destroy();
+            delete this->particles_;
             this->particles_ = 0;
         }
 

@@ -41,13 +41,13 @@
 
 namespace orxonox
 {
-    CreateFactory(DamageBoostPickup);
+    RegisterClass(DamageBoostPickup);
 
     /**
     @brief
         Constructor. Registers the object and initializes the member variables.
     */
-    DamageBoostPickup::DamageBoostPickup(BaseObject* creator) : Pickup(creator)
+    DamageBoostPickup::DamageBoostPickup(Context* context) : Pickup(context)
     {
         RegisterObject(DamageBoostPickup);
 

@@ -35,7 +35,7 @@
 #include <string>
 #include "util/Math.h"
 #include "core/BaseObject.h"
-#include "core/SubclassIdentifier.h"
+#include "core/class/SubclassIdentifier.h"
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -43,7 +43,7 @@ namespace orxonox
     class _OrxonoxExport WeaponMode : public BaseObject
     {
         public:
-            WeaponMode(BaseObject* creator);
+            WeaponMode(Context* context);
             virtual ~WeaponMode();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

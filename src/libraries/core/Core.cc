@@ -59,23 +59,23 @@
 #include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
-#include "CommandLineParser.h"
-#include "ConfigFileManager.h"
-#include "ConfigValueIncludes.h"
+#include "config/CommandLineParser.h"
+#include "config/ConfigFileManager.h"
+#include "config/ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "DynLibManager.h"
 #include "GameMode.h"
 #include "GraphicsManager.h"
 #include "GUIManager.h"
-#include "Identifier.h"
+#include "class/Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
-#include "ObjectList.h"
 #include "command/ConsoleCommand.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
 #include "command/TclThreadManager.h"
 #include "input/InputManager.h"
+#include "object/ObjectList.h"
 
 namespace orxonox
 {
@@ -90,6 +90,9 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is off = 0.");
 #endif
+
+    // register Core as an abstract class to avoid problems if the class hierarchy is created within Core-constructor
+    RegisterAbstractClass(Core).inheritsFrom(Class(Configurable));
 
     Core::Core(const std::string& cmdLine)
         : pathConfig_(NULL)
@@ -175,7 +178,7 @@ namespace orxonox
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
-        RegisterRootObject(Core);
+        RegisterObject(Core);
         orxout(internal_info) << "configuring Core" << endl;
         this->setConfigValues();
 
@@ -197,7 +200,7 @@ namespace orxonox
 
         // creates the class hierarchy for all classes with factories
         orxout(internal_info) << "creating class hierarchy" << endl;
-        Identifier::createClassHierarchy();
+        IdentifierManager::getInstance().createClassHierarchy();
 
         // Load OGRE excluding the renderer and the render window
         orxout(internal_info) << "creating GraphicsManager:" << endl;
@@ -247,7 +250,8 @@ namespace orxonox
         safeObjectDelete(&languageInstance_);
         safeObjectDelete(&configFileManager_);
         ConsoleCommand::destroyAll();
-        Identifier::destroyAllIdentifiers();
+        Context::setRootContext(NULL);
+        IdentifierManager::getInstance().destroyAllIdentifiers();
         safeObjectDelete(&signalHandler_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&pathConfig_);
@@ -507,8 +511,10 @@ namespace orxonox
     }
 
 
+    RegisterAbstractClass(DevModeListener).inheritsFrom(Class(Listable));
+
     DevModeListener::DevModeListener()
     {
-        RegisterRootObject(DevModeListener);
+        RegisterObject(DevModeListener);
     }
 }

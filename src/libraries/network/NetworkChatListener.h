@@ -31,7 +31,7 @@
 
 #include "NetworkPrereqs.h"
 
-#include "core/OrxonoxClass.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
@@ -42,7 +42,7 @@ namespace orxonox
         This interface exists mostly to resolve circular dependencies between the chat functions
         in Host and ChatManager. ChatManager is the main derivative of this interface.
     */
-    class _NetworkExport NetworkChatListener : virtual public OrxonoxClass
+    class _NetworkExport NetworkChatListener : virtual public Listable
     {
         friend class Host;
 

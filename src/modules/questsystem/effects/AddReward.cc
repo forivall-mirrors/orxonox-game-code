@@ -40,13 +40,13 @@
 
 namespace orxonox
 {
-    CreateFactory(AddReward);
+    RegisterClass(AddReward);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    AddReward::AddReward(BaseObject* creator) : QuestEffect(creator)
+    AddReward::AddReward(Context* context) : QuestEffect(context)
     {
         RegisterObject(AddReward);
     }

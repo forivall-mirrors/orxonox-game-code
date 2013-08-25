@@ -37,12 +37,12 @@
 #include "InputPrereqs.h"
 
 #include <vector>
-#include "core/OrxonoxClass.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
     //! Derive from this class to get informed when joy sticks get added/removed
-    class _CoreExport JoyStickQuantityListener : virtual public OrxonoxClass
+    class _CoreExport JoyStickQuantityListener : virtual public Listable
     {
         friend class InputManager;
     protected:

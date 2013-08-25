@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport EffectContainer : public BaseObject
     {
         public:
-            EffectContainer(BaseObject* creator);
+            EffectContainer(Context* context);
             virtual ~EffectContainer();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
