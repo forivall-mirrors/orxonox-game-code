@@ -332,7 +332,7 @@ namespace orxonox
 
                     if(!entity->hasHumanController())
                     {
-                        // delete the AIController
+                        // delete the AIController // <-- TODO: delete? nothing is deleted here... should we delete the controller?
                         slave->setControllableEntity(0);
 
                         // set a new master within the formation
