@@ -323,34 +323,34 @@ namespace orxonox
 
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
             {
-            	// Start to control a new entity if you're the master of a formation
-            	if(this->hasSlaves())
-            	{
-            		Controller* slave = this->getSlave();
-            		ControllableEntity* entity = slave->getControllableEntity();
+                // Start to control a new entity if you're the master of a formation
+                if(this->hasSlaves())
+                {
+                    Controller* slave = this->getSlave();
+                    ControllableEntity* entity = slave->getControllableEntity();
 
 
-            		if(!entity->hasHumanController())
-            		{
-            			// delete the AIController
-            			slave->setControllableEntity(0);
+                    if(!entity->hasHumanController())
+                    {
+                        // delete the AIController
+                        slave->setControllableEntity(0);
 
-						// set a new master within the formation
-						orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
+                        // set a new master within the formation
+                        orxonox_cast<FormationController*>(this->getController())->setNewMasterWithinFormation(orxonox_cast<FormationController*>(slave));
 
-						// start to control a slave
-						this->getPlayer()->startControl(entity);
-            		}
-            		else
-                	{
-                		this->getPlayer()->stopControl();
-                	}
+                        // start to control a slave
+                        this->getPlayer()->startControl(entity);
+                    }
+                    else
+                    {
+                        this->getPlayer()->stopControl();
+                    }
 
-            	}
-            	else
-            	{
-            		this->getPlayer()->stopControl();
-            	}
+                }
+                else
+                {
+                    this->getPlayer()->stopControl();
+                }
             }
             if (GameMode::isMaster())
             {
@@ -502,27 +502,27 @@ namespace orxonox
     // A function to check if this pawn's controller is the master of any formationcontroller
     bool Pawn::hasSlaves()
     {
-    	for (ObjectList<FormationController>::iterator it =
-			 ObjectList<FormationController>::begin();
-			 it != ObjectList<FormationController>::end(); ++it )
-		{
-			// checks if the pawn's controller has a slave
-			if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
-				return true;
-		}
-		return false;
+        for (ObjectList<FormationController>::iterator it =
+             ObjectList<FormationController>::begin();
+             it != ObjectList<FormationController>::end(); ++it )
+        {
+            // checks if the pawn's controller has a slave
+            if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
+                return true;
+        }
+        return false;
     }
 
     // A function that returns a slave of the pawn's controller
     Controller* Pawn::getSlave(){
-    	for (ObjectList<FormationController>::iterator it =
-    			ObjectList<FormationController>::begin();
-    			it != ObjectList<FormationController>::end(); ++it )
-    	{
-    		if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
-    			return it->getController();
-    	}
-    	return 0;
+        for (ObjectList<FormationController>::iterator it =
+                ObjectList<FormationController>::begin();
+                it != ObjectList<FormationController>::end(); ++it )
+        {
+            if (this->hasHumanController() && it->getMaster() == this->getPlayer()->getController())
+                return it->getController();
+        }
+        return 0;
     }
 
 
