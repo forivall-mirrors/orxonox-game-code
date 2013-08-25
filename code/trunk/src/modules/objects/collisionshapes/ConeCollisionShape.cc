@@ -41,13 +41,13 @@
 
 namespace orxonox
 {
-    CreateFactory(ConeCollisionShape);
+    RegisterClass(ConeCollisionShape);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    ConeCollisionShape::ConeCollisionShape(BaseObject* creator) : CollisionShape(creator)
+    ConeCollisionShape::ConeCollisionShape(Context* context) : CollisionShape(context)
     {
         RegisterObject(ConeCollisionShape);
 

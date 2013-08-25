@@ -64,7 +64,7 @@ namespace orxonox
             virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped; 
 
         public:
-            LastManStanding(BaseObject* creator); //!< Default Constructor.
+            LastManStanding(Context* context); //!< Default Constructor.
             virtual ~LastManStanding() {} //!< Default Destructor.
             void setConfigValues(); //!< Makes values configurable.
 

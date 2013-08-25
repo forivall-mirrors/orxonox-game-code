@@ -37,7 +37,7 @@
 #include "util/ScopedSingletonManager.h"
 #include "core/GameMode.h"
 #include "core/GraphicsManager.h"
-#include "core/ObjectList.h"
+#include "core/object/ObjectList.h"
 #include "tools/Shader.h"
 #include "graphics/Camera.h"
 
@@ -47,8 +47,6 @@ namespace orxonox
 
     CameraManager::CameraManager()
     {
-        RegisterRootObject(CameraManager);
-
         assert(GameMode::showsGraphics());
     }
 

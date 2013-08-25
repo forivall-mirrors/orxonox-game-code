@@ -40,13 +40,13 @@
 
 namespace orxonox
 {
-    CreateFactory(GlobalQuest);
+    RegisterClass(GlobalQuest);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    GlobalQuest::GlobalQuest(BaseObject* creator) : Quest(creator)
+    GlobalQuest::GlobalQuest(Context* context) : Quest(context)
     {
         RegisterObject(GlobalQuest);
     }

@@ -43,10 +43,10 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDRadar);
+    RegisterClass(HUDRadar);
 
-    HUDRadar::HUDRadar(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+    HUDRadar::HUDRadar(Context* context)
+        : OrxonoxOverlay(context)
     {
         RegisterObject(HUDRadar);
 

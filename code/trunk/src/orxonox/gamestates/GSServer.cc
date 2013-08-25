@@ -29,7 +29,7 @@
 #include "GSServer.h"
 
 #include "util/Output.h"
-#include "core/CommandLineParser.h"
+#include "core/config/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Server.h"

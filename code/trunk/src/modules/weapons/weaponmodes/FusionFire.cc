@@ -45,9 +45,9 @@
 
 namespace orxonox
 {
-    CreateFactory(FusionFire);
+    RegisterClass(FusionFire);
 
-    FusionFire::FusionFire(BaseObject* creator) : WeaponMode(creator)
+    FusionFire::FusionFire(Context* context) : WeaponMode(context)
     {
         RegisterObject(FusionFire);
 
@@ -65,7 +65,7 @@ namespace orxonox
     */
     void FusionFire::fire()
     {
-        BillboardProjectile* projectile = new BillboardProjectile(this);
+        BillboardProjectile* projectile = new BillboardProjectile(this->getContext());
 
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());

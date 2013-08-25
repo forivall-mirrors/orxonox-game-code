@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "Info.h"
-#include "core/SubclassIdentifier.h"
+#include "core/class/SubclassIdentifier.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -40,7 +40,7 @@ namespace orxonox // tolua_export
         : public Info
     { // tolua_export
         public:
-            PlayerInfo(BaseObject* creator);
+            PlayerInfo(Context* context);
             virtual ~PlayerInfo();
 
             virtual void changedName();

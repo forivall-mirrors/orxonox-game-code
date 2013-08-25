@@ -62,8 +62,10 @@ namespace orxonox
     SetConsoleCommand("OrxonoxOverlay", "show",     &OrxonoxOverlay::showOverlay);
     SetConsoleCommand("OrxonoxOverlay", "rotateOverlay",    &OrxonoxOverlay::rotateOverlay);
 
-    OrxonoxOverlay::OrxonoxOverlay(BaseObject* creator)
-        : BaseObject(creator)
+    RegisterClass(OrxonoxOverlay);
+
+    OrxonoxOverlay::OrxonoxOverlay(Context* context)
+        : BaseObject(context)
     {
         RegisterObject(OrxonoxOverlay);
 

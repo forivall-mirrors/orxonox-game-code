@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport Destroyer : public SpaceShip
     {
         public:
-            Destroyer(BaseObject* creator);
+            Destroyer(Context* context);
             virtual ~Destroyer() {};
 
     };

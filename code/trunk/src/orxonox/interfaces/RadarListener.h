@@ -30,11 +30,11 @@
 #define _RadarListener_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarListener : virtual public OrxonoxClass
+    class _OrxonoxExport RadarListener : virtual public OrxonoxInterface
     {
     public:
         RadarListener();

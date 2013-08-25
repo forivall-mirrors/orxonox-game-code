@@ -52,7 +52,7 @@ namespace orxonox
     class _WeaponsExport HsW01 : public WeaponMode
     {
         public:
-            HsW01(BaseObject* creator);
+            HsW01(Context* context);
             virtual ~HsW01();
 
             virtual void fire();

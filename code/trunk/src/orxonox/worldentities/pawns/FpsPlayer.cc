@@ -37,7 +37,7 @@
 #include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "items/Engine.h"
@@ -52,9 +52,9 @@ namespace orxonox
 {
     const float orientationGain_ = 100;
     const float jumpValue_ = 300;
-    CreateFactory(FpsPlayer);
+    RegisterClass(FpsPlayer);
 
-    FpsPlayer::FpsPlayer(BaseObject* creator) : Pawn(creator)
+    FpsPlayer::FpsPlayer(Context* context) : Pawn(context)
     {
         RegisterObject(FpsPlayer);
         this->speed_ = 200;

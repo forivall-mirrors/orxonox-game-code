@@ -29,7 +29,7 @@
 #include "Engine.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "util/Math.h"
@@ -39,13 +39,13 @@
 
 namespace orxonox
 {
-    CreateFactory(Engine);
+    RegisterClass(Engine);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    Engine::Engine(BaseObject* creator) : Item(creator)
+    Engine::Engine(Context* context) : Item(context)
     {
         RegisterObject(Engine);
 

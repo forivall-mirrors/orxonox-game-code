@@ -38,9 +38,9 @@
 
 namespace orxonox
 {
-    CreateFactory(ReplenishingMunition);
+    RegisterClass(ReplenishingMunition);
 
-    ReplenishingMunition::ReplenishingMunition(BaseObject* creator) : Munition(creator)
+    ReplenishingMunition::ReplenishingMunition(Context* context) : Munition(context)
     {
         RegisterObject(ReplenishingMunition);
 

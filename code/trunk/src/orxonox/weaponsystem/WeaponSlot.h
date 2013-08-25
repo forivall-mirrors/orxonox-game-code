@@ -56,7 +56,7 @@ namespace orxonox
     class _OrxonoxExport WeaponSlot : public StaticEntity
     {
         public:
-            WeaponSlot(BaseObject* creator);
+            WeaponSlot(Context* context);
             virtual ~WeaponSlot();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

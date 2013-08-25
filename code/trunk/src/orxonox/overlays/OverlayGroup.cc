@@ -40,15 +40,15 @@
 
 namespace orxonox
 {
-    CreateFactory(OverlayGroup);
+    RegisterClass(OverlayGroup);
 
     SetConsoleCommand("OverlayGroup", "toggleVisibility", &OverlayGroup::toggleVisibility);
     SetConsoleCommand("OverlayGroup", "show", &OverlayGroup::show);
     SetConsoleCommand("OverlayGroup", "scaleGroup",       &OverlayGroup::scaleGroup);
     SetConsoleCommand("OverlayGroup", "scrollGroup",      &OverlayGroup::scrollGroup);
 
-    OverlayGroup::OverlayGroup(BaseObject* creator)
-        : BaseObject(creator)
+    OverlayGroup::OverlayGroup(Context* context)
+        : BaseObject(context)
     {
         RegisterObject(OverlayGroup);
 
@@ -147,6 +147,15 @@ namespace orxonox
 
         for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->changedVisibility(); //inform all Child Overlays that our visibility has changed
+    }
+
+    //! Changes the gametype of all elements
+    void OverlayGroup::changedGametype()
+    {
+        SUPER( OverlayGroup, changedGametype );
+
+        for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it)->setGametype(this->getGametype());
     }
 
     void OverlayGroup::setOwner(BaseObject* owner)

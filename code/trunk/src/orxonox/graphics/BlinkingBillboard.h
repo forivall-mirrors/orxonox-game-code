@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport BlinkingBillboard : public Billboard, public Tickable
     {
         public:
-            BlinkingBillboard(BaseObject* creator);
+            BlinkingBillboard(Context* context);
             virtual ~BlinkingBillboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

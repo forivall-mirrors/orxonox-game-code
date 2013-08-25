@@ -41,13 +41,13 @@
 
 namespace orxonox
 {
-    CreateFactory(SpeedPickup);
+    RegisterClass(SpeedPickup);
 
     /**
     @brief
         Constructor. Registers the object and initializes the member variables.
     */
-    SpeedPickup::SpeedPickup(BaseObject* creator) : Pickup(creator)
+    SpeedPickup::SpeedPickup(Context* context) : Pickup(context)
     {
         RegisterObject(SpeedPickup);
 

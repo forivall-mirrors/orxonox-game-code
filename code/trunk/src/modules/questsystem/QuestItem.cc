@@ -41,13 +41,13 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(QuestItem);
+    RegisterUnloadableClass(QuestItem);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
+    QuestItem::QuestItem(Context* context) : BaseObject(context)
     {
         this->registered_ = false;
 

@@ -43,7 +43,7 @@ namespace orxonox
     class _OrxonoxExport Dynamicmatch : public Gametype
     {
         public:
-            Dynamicmatch(BaseObject* creator);
+            Dynamicmatch(Context* context);
             virtual ~Dynamicmatch() {}
 
             bool notEnoughPigs;

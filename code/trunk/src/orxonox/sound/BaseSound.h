@@ -34,7 +34,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <OgreDataStream.h>
-#include "core/OrxonoxClass.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
@@ -42,7 +42,7 @@ namespace orxonox
      * The BaseSound class is the base class for all sound file loader classes.
      * It serves as main interface to the OpenAL library.
      */
-    class _OrxonoxExport BaseSound : virtual public OrxonoxClass
+    class _OrxonoxExport BaseSound : virtual public Listable
     {
     public:
         BaseSound();

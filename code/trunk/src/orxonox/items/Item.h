@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport Item : public BaseObject, public Synchronisable
     {
         public:
-            Item(BaseObject* creator);
+            Item(Context* context);
             virtual ~Item() {}
     };
 }

@@ -36,12 +36,14 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(QuestEffect).inheritsFrom(Class(BaseObject));
+
     /**
     @brief
         Constructor. Creates a new QuestEffect.
         Is not meant to be invoked directly, since this is only an interface.
     */
-    QuestEffect::QuestEffect(BaseObject* creator) : BaseObject(creator)
+    QuestEffect::QuestEffect(Context* context) : BaseObject(context)
     {
         RegisterObject(QuestEffect);
     }

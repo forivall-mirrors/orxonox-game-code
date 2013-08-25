@@ -54,7 +54,7 @@ namespace orxonox
     class _ObjectsExport ConeCollisionShape : public CollisionShape
     {
         public:
-            ConeCollisionShape(BaseObject* creator);
+            ConeCollisionShape(Context* context);
             virtual ~ConeCollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

@@ -42,7 +42,7 @@ namespace orxonox
     class _OverlaysExport GametypeStaticMessage : public OverlayText, GametypeMessageListener
     {
         public:
-            GametypeStaticMessage(BaseObject* creator);
+            GametypeStaticMessage(Context* context);
             virtual ~GametypeStaticMessage();
 
             virtual void changedOwner();

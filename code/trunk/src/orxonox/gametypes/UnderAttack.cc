@@ -30,16 +30,16 @@
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "chat/ChatManager.h"
 #include "worldentities/pawns/Destroyer.h"
 #include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
-    CreateUnloadableFactory(UnderAttack);
+    RegisterUnloadableClass(UnderAttack);
 
-    UnderAttack::UnderAttack(BaseObject* creator) : TeamDeathmatch(creator)
+    UnderAttack::UnderAttack(Context* context) : TeamDeathmatch(context)
     {
         RegisterObject(UnderAttack);
         this->gameTime_ = 180;

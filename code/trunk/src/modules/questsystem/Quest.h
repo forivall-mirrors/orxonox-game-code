@@ -81,7 +81,7 @@ namespace orxonox // tolua_export
         : public QuestItem
     { // tolua_export
         public:
-            Quest(BaseObject* creator);
+            Quest(Context* context);
             virtual ~Quest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Quest object through XML.

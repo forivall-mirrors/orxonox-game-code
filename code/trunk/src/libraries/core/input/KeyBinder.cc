@@ -33,9 +33,9 @@
 #include "util/Convert.h"
 #include "util/Output.h"
 #include "util/Exception.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigFileManager.h"
+#include "core/config/ConfigValueIncludes.h"
+#include "core/config/ConfigFile.h"
 #include "core/PathConfig.h"
 #include "InputCommands.h"
 #include "JoyStick.h"
@@ -57,7 +57,7 @@ namespace orxonox
         mousePosition_[0] = 0.0;
         mousePosition_[1] = 0.0;
 
-        RegisterRootObject(KeyBinder);
+        RegisterObject(KeyBinder);
 
         // initialise all buttons and half axes to avoid creating everything with 'new'
         // keys

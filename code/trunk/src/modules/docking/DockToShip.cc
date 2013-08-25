@@ -37,9 +37,9 @@
 
 namespace orxonox
 {
-    CreateFactory(DockToShip);
+    RegisterClass(DockToShip);
 
-    DockToShip::DockToShip(BaseObject* creator) : DockingEffect(creator)
+    DockToShip::DockToShip(Context* context) : DockingEffect(context)
     {
         RegisterObject(DockToShip);
         orxout(verbose, context::docking) << "DockToShip instance created.." << endl;

@@ -30,7 +30,7 @@
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/CommandExecutor.h"
 #include "core/command/ConsoleCommand.h"
@@ -44,9 +44,9 @@ namespace orxonox
     extern const std::string __CC_fire_name;
     extern const std::string __CC_suicide_name;
 
-    CreateFactory(Spectator);
+    RegisterClass(Spectator);
 
-    Spectator::Spectator(BaseObject* creator) : ControllableEntity(creator)
+    Spectator::Spectator(Context* context) : ControllableEntity(context)
     {
         RegisterObject(Spectator);
 

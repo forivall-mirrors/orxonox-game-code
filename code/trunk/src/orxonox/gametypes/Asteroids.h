@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport Asteroids : public Gametype
     {
         public:
-            Asteroids(BaseObject* creator);
+            Asteroids(Context* context);
             virtual ~Asteroids() {}
 
             virtual void tick(float dt);

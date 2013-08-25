@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport TeamBaseMatch : public TeamDeathmatch
     {
         public:
-            TeamBaseMatch(BaseObject* creator);
+            TeamBaseMatch(Context* context);
             virtual ~TeamBaseMatch() {}
 
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);

@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport MobileEntity : public WorldEntity, public Tickable
     {
         public:
-            MobileEntity(BaseObject* creator);
+            MobileEntity(Context* context);
             virtual ~MobileEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

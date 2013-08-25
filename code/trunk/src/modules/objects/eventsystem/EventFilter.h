@@ -45,7 +45,7 @@ namespace orxonox
     class _ObjectsExport EventFilter : public BaseObject
     {
         public:
-            EventFilter(BaseObject* creator);
+            EventFilter(Context* context);
             virtual ~EventFilter();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

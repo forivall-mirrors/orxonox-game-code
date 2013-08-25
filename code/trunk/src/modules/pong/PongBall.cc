@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    CreateFactory(PongBall);
+    RegisterClass(PongBall);
 
     const float PongBall::MAX_REL_Z_VELOCITY = 1.5;
 
@@ -50,8 +50,8 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    PongBall::PongBall(BaseObject* creator)
-        : MovableEntity(creator)
+    PongBall::PongBall(Context* context)
+        : MovableEntity(context)
     {
         RegisterObject(PongBall);
 

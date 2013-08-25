@@ -36,12 +36,12 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "BaseObject.h"
-#include "Iterator.h"
-#include "ObjectList.h"
 #include "LuaState.h"
 #include "Namespace.h"
 #include "Resource.h"
 #include "XMLFile.h"
+#include "object/Iterator.h"
+#include "object/ObjectList.h"
 
 namespace orxonox
 {
@@ -208,7 +208,7 @@ namespace orxonox
                 rootElement.InsertEndChild(*child);
 
             orxout(verbose, context::loader) << "  creating root-namespace..." << endl;
-            Namespace* rootNamespace = new Namespace(0);
+            Namespace* rootNamespace = new Namespace(Context::getRootContext());
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setFile(file);
             rootNamespace->setNamespace(rootNamespace);

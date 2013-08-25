@@ -40,9 +40,6 @@
 
 #include "util/Serialise.h"
 #include "core/CorePrereqs.h"
-#include "core/CoreIncludes.h"
-#include "core/BaseObject.h" // remove this if circular dependencies in BaseObject/SmartPtr are fixed
-//#include "core/SmartPtr.h"
 
 namespace orxonox{
 

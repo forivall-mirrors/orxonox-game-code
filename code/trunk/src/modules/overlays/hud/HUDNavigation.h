@@ -45,7 +45,7 @@ namespace orxonox
     class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
     {
         public:
-            HUDNavigation(BaseObject* creator);
+            HUDNavigation(Context* context);
             virtual ~HUDNavigation();
 
             void setConfigValues();

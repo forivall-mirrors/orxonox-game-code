@@ -50,16 +50,16 @@
 
 namespace orxonox
 {
-    CreateFactory(Rocket);
+    RegisterClass(Rocket);
 
     /**
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    Rocket::Rocket(BaseObject* creator)
-        : ControllableEntity(creator)
+    Rocket::Rocket(Context* context)
+        : ControllableEntity(context)
         , BasicProjectile()
-        , RadarViewable(creator, static_cast<WorldEntity*>(this))
+        , RadarViewable(this, static_cast<WorldEntity*>(this))
     {
         RegisterObject(Rocket);// Register the Rocket class to the core
 
@@ -72,13 +72,13 @@ namespace orxonox
             this->setVelocity(0,0,-100);
 
             // Create rocket model
-            Model* model = new Model(this);
+            Model* model = new Model(this->getContext());
             model->setMeshSource("rocket.mesh");
             model->scale(0.7f);
             this->attach(model);
 
             // Add effects.
-            ParticleEmitter* fire = new ParticleEmitter(this);
+            ParticleEmitter* fire = new ParticleEmitter(this->getContext());
             this->attach(fire);
             fire->setOrientation(this->getOrientation());
             fire->setSource("Orxonox/rocketfire");
@@ -88,7 +88,7 @@ namespace orxonox
             this->setCollisionType(Kinematic);
 
             // Add collision shape
-            ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
+            ConeCollisionShape* collisionShape = new ConeCollisionShape(this->getContext());
             collisionShape->setRadius(3);
             collisionShape->setHeight(500);
             this->attachCollisionShape(collisionShape);
@@ -96,13 +96,13 @@ namespace orxonox
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&BasicProjectile::destroyObject, this)));
 
             // Add sound
-            this->defSndWpnEngine_ = new WorldSound(this);
+            this->defSndWpnEngine_ = new WorldSound(this->getContext());
             this->defSndWpnEngine_->setLooping(true);
             this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
             this->defSndWpnEngine_->setVolume(1.0f);
             this->attach(defSndWpnEngine_);
 
-            this->defSndWpnLaunch_ = new WorldSound(this);
+            this->defSndWpnLaunch_ = new WorldSound(this->getContext());
             this->defSndWpnLaunch_->setLooping(false);
             this->defSndWpnLaunch_->setSource("sounds/Rocket_launch.ogg");
             this->defSndWpnLaunch_->setVolume(1.0f);
@@ -115,7 +115,7 @@ namespace orxonox
         }
 
         // Add camera
-        CameraPosition* camPosition = new CameraPosition(this);
+        CameraPosition* camPosition = new CameraPosition(this->getContext());
         camPosition->setPosition(0,4,15);
         camPosition->setAllowMouseLook(true);
         this->addCameraPosition(camPosition);
@@ -225,13 +225,13 @@ namespace orxonox
         ParticleSpawner *effect1, *effect2;
         if(this->getShooter())
         {
-            effect1 = new ParticleSpawner(this->getShooter()->getCreator());
-            effect2 = new ParticleSpawner(this->getShooter()->getCreator());
+            effect1 = new ParticleSpawner(this->getShooter()->getContext());
+            effect2 = new ParticleSpawner(this->getShooter()->getContext());
         }
         else
         {
-            effect1 = new ParticleSpawner(static_cast<BaseObject*>(this->getScene().get()));
-            effect2 = new ParticleSpawner(static_cast<BaseObject*>(this->getScene().get()));
+            effect1 = new ParticleSpawner(this->getContext());
+            effect2 = new ParticleSpawner(this->getContext());
         }
 
         effect1->setPosition(this->getPosition());

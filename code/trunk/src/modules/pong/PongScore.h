@@ -56,7 +56,7 @@ namespace orxonox
     class _PongExport PongScore : public OverlayText, public Tickable
     {
         public:
-            PongScore(BaseObject* creator);
+            PongScore(Context* context);
             virtual ~PongScore();
 
             virtual void tick(float dt); //!< Creates and sets the caption to be displayed by the PongScore.

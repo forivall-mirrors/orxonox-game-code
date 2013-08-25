@@ -48,7 +48,7 @@ namespace orxonox {
     {
         public:
 
-            DamageBoostPickup(BaseObject* creator); //!< Constructor.
+            DamageBoostPickup(Context* context); //!< Constructor.
             virtual ~DamageBoostPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a DamageBoostPickup object through XML.

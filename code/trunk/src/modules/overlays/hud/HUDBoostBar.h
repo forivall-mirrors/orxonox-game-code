@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport HUDBoostBar : public HUDBar, public Tickable
     {
     public:
-        HUDBoostBar(BaseObject* creator);
+        HUDBoostBar(Context* context);
         virtual ~HUDBoostBar();
 
         virtual void tick(float dt);

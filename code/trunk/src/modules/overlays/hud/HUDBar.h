@@ -47,7 +47,7 @@ namespace orxonox
     class _OverlaysExport BarColour : public BaseObject
     {
     public:
-        BarColour(BaseObject* creator);
+        BarColour(Context* context);
         virtual ~BarColour() { }
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -67,7 +67,7 @@ namespace orxonox
     class _OverlaysExport HUDBar : public OrxonoxOverlay
     {
     public:
-        HUDBar(BaseObject* creator);
+        HUDBar(Context* context);
         virtual ~HUDBar();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

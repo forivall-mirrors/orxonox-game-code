@@ -45,7 +45,7 @@ namespace orxonox
   class _OrxonoxExport Test: public BaseObject, public Synchronisable, public Tickable
   {
     public:
-      Test(BaseObject* creator);
+      Test(Context* context);
       virtual ~Test();
 
       void setConfigValues();

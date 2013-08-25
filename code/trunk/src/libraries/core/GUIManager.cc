@@ -77,7 +77,7 @@ extern "C" {
 #include "util/Math.h"
 #include "util/OrxAssert.h"
 #include "util/output/BaseWriter.h"
-#include "ConfigValueIncludes.h"
+#include "config/ConfigValueIncludes.h"
 #include "Core.h"
 #include "CoreIncludes.h"
 #include "Game.h"
@@ -255,7 +255,7 @@ namespace orxonox
         , camera_(NULL)
         , destructionHelper_(this)
     {
-        RegisterRootObject(GUIManager);
+        RegisterObject(GUIManager);
 
         orxout(internal_status) << "initializing GUIManager..." << endl;
 

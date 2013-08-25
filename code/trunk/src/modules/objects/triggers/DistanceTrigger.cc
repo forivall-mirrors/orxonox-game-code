@@ -48,7 +48,7 @@ namespace orxonox
     /*static*/ const std::string DistanceTrigger::beaconModeIdentify_s = "identify";
     /*static*/ const std::string DistanceTrigger::beaconModeExlcude_s = "exclude";
 
-    CreateFactory(DistanceTrigger);
+    RegisterClass(DistanceTrigger);
 
     /**
     @brief
@@ -56,7 +56,7 @@ namespace orxonox
     @param creator
         The creator of this trigger.
     */
-    DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
+    DistanceTrigger::DistanceTrigger(Context* context) : Trigger(context)
     {
         RegisterObject(DistanceTrigger);
 

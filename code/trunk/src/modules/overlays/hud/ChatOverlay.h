@@ -42,7 +42,7 @@ namespace orxonox
     class _OverlaysExport ChatOverlay : public OverlayText, public ChatListener
     {
         public:
-            ChatOverlay(BaseObject* creator);
+            ChatOverlay(Context* context);
             virtual ~ChatOverlay();
 
             void setConfigValues();

@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-    CreateFactory(RocketMunition);
+    RegisterClass(RocketMunition);
 
-    RocketMunition::RocketMunition(BaseObject* creator) : Munition(creator)
+    RocketMunition::RocketMunition(Context* context) : Munition(context)
     {
         RegisterObject(RocketMunition);
 

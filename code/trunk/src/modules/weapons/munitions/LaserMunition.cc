@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-    CreateFactory(LaserMunition);
+    RegisterClass(LaserMunition);
 
-    LaserMunition::LaserMunition(BaseObject* creator) : ReplenishingMunition(creator)
+    LaserMunition::LaserMunition(Context* context) : ReplenishingMunition(context)
     {
         RegisterObject(LaserMunition);
 

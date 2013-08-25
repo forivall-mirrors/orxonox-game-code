@@ -89,7 +89,7 @@ namespace orxonox
             };
 
         public:
-            WorldEntity(BaseObject* creator);
+            WorldEntity(Context* context);
             virtual ~WorldEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

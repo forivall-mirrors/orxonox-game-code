@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-    CreateFactory(SpawnPoint);
+    RegisterClass(SpawnPoint);
 
-    SpawnPoint::SpawnPoint(BaseObject* creator) : StaticEntity(creator)
+    SpawnPoint::SpawnPoint(Context* context) : StaticEntity(context)
     {
         RegisterObject(SpawnPoint);
 
@@ -80,7 +80,7 @@ namespace orxonox
 
     Pawn* SpawnPoint::spawn()
     {
-        Pawn* entity = this->spawnclass_.fabricate(this);
+        Pawn* entity = this->spawnclass_.fabricate(this->getContext());
         if (entity)
         {
             this->getGametype()->pawnPreSpawn(entity);

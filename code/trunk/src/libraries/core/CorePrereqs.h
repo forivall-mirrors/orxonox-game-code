@@ -126,6 +126,8 @@ namespace orxonox
     template <class T>
     class ClassFactory;
     template <class T>
+    class ClassFactoryWithContext;
+    template <class T>
     class ClassIdentifier;
     class ClassTreeMask;
     class ClassTreeMaskIterator;
@@ -139,8 +141,11 @@ namespace orxonox
     class ConfigFileEntryValue;
     class ConfigFileManager;
     class ConfigFileSection;
+    class Configurable;
     class ConfigValueContainer;
+    class Context;
     class Core;
+    class Destroyable;
     class DestructionListener;
     class DynLib;
     class DynLibManager;
@@ -153,16 +158,16 @@ namespace orxonox
     struct GameStateTreeNode;
     class GraphicsManager;
     class GUIManager;
+    class Identifiable;
     class Identifier;
     template <class T>
     class Iterator;
     class Language;
+    class Listable;
     class LuaFunctor;
     class LuaState;
     class MemoryArchive;
     class MemoryArchiveFactory;
-    class MetaObjectList;
-    class MetaObjectListElement;
     class Namespace;
     class NamespaceNode;
     template <class T>
@@ -175,6 +180,7 @@ namespace orxonox
     class ObjectListIterator;
     class OgreWindowEventListener;
     class OrxonoxClass;
+    class OrxonoxInterface;
     class PathConfig;
     struct ResourceInfo;
     class SettingsConfigFile;

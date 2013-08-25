@@ -39,7 +39,6 @@
 
 #include <set>
 
-#include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 
@@ -57,7 +56,7 @@ namespace orxonox // tolua_export
         : public StaticEntity
     { // tolua_export
         public:
-            Dock(BaseObject* creator);
+            Dock(Context* context);
             virtual ~Dock();
 
             // Trigger interface

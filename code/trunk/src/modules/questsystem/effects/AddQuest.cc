@@ -42,13 +42,13 @@
 
 namespace orxonox
 {
-    CreateFactory(AddQuest);
+    RegisterClass(AddQuest);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    AddQuest::AddQuest(BaseObject* creator) : ChangeQuestStatus(creator)
+    AddQuest::AddQuest(Context* context) : ChangeQuestStatus(context)
     {
         RegisterObject(AddQuest);
     }

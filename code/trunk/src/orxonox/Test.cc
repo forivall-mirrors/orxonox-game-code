@@ -27,7 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "network/NetworkFunction.h"
 #include "Test.h"
@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    CreateFactory ( Test );
+    RegisterClass ( Test );
 
     SetConsoleCommand("Test", "printV1", &Test::printV1).addShortcut();
     SetConsoleCommand("Test", "printV2", &Test::printV2).addShortcut();
@@ -55,7 +55,7 @@ namespace orxonox
 
     Test* Test::instance_ = 0;
 
-    Test::Test(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    Test::Test(Context* context) : BaseObject(context), Synchronisable(context)
     {
         assert(instance_==0);
         instance_=this;

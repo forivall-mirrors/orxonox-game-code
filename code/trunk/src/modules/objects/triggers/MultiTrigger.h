@@ -98,7 +98,7 @@ namespace orxonox
     class _ObjectsExport MultiTrigger : public TriggerBase
     {
         public:
-            MultiTrigger(BaseObject* creator); //!< Constructor. Registers the objects and initializes default values.
+            MultiTrigger(Context* context); //!< Constructor. Registers the objects and initializes default values.
             virtual ~MultiTrigger(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a MultiTrigger object through XML.

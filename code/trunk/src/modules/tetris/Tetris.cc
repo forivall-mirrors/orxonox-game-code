@@ -53,14 +53,14 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(Tetris);
+    RegisterUnloadableClass(Tetris);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     @ingroup Tetris
     */
-    Tetris::Tetris(BaseObject* creator) : Deathmatch(creator)
+    Tetris::Tetris(Context* context) : Deathmatch(context)
     {
         RegisterObject(Tetris);
 
@@ -378,7 +378,7 @@ namespace orxonox
     void Tetris::createBrick(void)             //TODO: random rotation offset between 0 and 3 (times 90°)
     {
         // create new futureBrick_
-        this->futureBrick_ = new TetrisBrick(this->center_);
+        this->futureBrick_ = new TetrisBrick(this->center_->getContext());
 
 
         // Apply the stone template to the stone.

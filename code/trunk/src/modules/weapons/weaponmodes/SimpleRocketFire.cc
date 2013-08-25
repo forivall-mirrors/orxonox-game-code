@@ -49,9 +49,9 @@
 namespace orxonox
 {
 
-    CreateFactory(SimpleRocketFire);
+    RegisterClass(SimpleRocketFire);
 
-    SimpleRocketFire::SimpleRocketFire(BaseObject* creator) : WeaponMode(creator)
+    SimpleRocketFire::SimpleRocketFire(Context* context) : WeaponMode(context)
     {
         RegisterObject(SimpleRocketFire);
 
@@ -75,7 +75,7 @@ namespace orxonox
     */
     void SimpleRocketFire::fire()
     {
-        RocketController* controller = new RocketController(this);
+        RocketController* controller = new RocketController(this->getContext());
         SimpleRocket* rocket = controller->getRocket();
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getWorldOrientation());

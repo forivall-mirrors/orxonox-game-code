@@ -41,11 +41,13 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(ChangeQuestStatus).inheritsFrom(Class(QuestEffect));
+
     /**
     @brief
         Constructor. Registers the object.
     */
-    ChangeQuestStatus::ChangeQuestStatus(BaseObject* creator) : QuestEffect(creator)
+    ChangeQuestStatus::ChangeQuestStatus(Context* context) : QuestEffect(context)
     {
         RegisterObject(ChangeQuestStatus);
     }

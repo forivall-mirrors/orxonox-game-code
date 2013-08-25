@@ -39,8 +39,8 @@
 #include "util/output/OutputManager.h"
 #include "util/output/MemoryWriter.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigFileManager.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigFileManager.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/PathConfig.h"
 #include "core/input/InputBuffer.h"
 #include "CommandExecutor.h"
@@ -55,6 +55,8 @@ namespace orxonox
         const OutputLevel User = level::user_info;
     }
 
+    RegisterClassNoArgs(Shell);
+
     /**
         @brief Constructor: Initializes the values.
         @param consoleName The name of the shell - used to define the name of the soft-debug-level config-value
@@ -65,7 +67,7 @@ namespace orxonox
         , inputBuffer_(new InputBuffer())
         , bScrollable_(bScrollable)
     {
-        RegisterRootObject(Shell);
+        RegisterObject(Shell);
 
         OutputManager::getInstance().registerListener(this);
 
@@ -95,7 +97,7 @@ namespace orxonox
     */
     Shell::~Shell()
     {
-        this->inputBuffer_->destroy();
+        delete this->inputBuffer_;
 
         OutputManager::getInstance().unregisterListener(this);
     }

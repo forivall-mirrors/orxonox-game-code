@@ -47,7 +47,7 @@ namespace orxonox
     class _ObjectsExport Attacher : public StaticEntity, public XMLNameListener
     {
         public:
-            Attacher(BaseObject* creator);
+            Attacher(Context* context);
             virtual ~Attacher() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

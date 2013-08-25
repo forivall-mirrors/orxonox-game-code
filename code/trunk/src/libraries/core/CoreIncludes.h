@@ -27,27 +27,29 @@
  */
 
 /**
-    @defgroup Factory RegisterObject() and CreateFactory()
+    @defgroup Factory RegisterObject() and RegisterClass()
     @ingroup Object
 */
 
 /**
     @file
     @ingroup Object Factory Class Identifier
-    @brief Defines several very important macros used to register objects, create factories, and to work with identifiers.
+    @brief Defines several very important macros used to register objects, register classes, and to work with identifiers.
 
-    Every class needs the @c RegisterObject(class) macro in its constructor. If the class is an interface
-    or the @c BaseObject itself, it needs the macro @c RegisterRootObject(class) instead.
+    Every class needs the @c RegisterObject(class) macro in its constructor.
 
-    To allow the object being created through the factory, use the @c CreateFactory(class) macro outside
-    of the class implementation, so it gets executed statically before @c main(). This will at the same time
-    register @a class in the class-hierarchy. If you don't want @a class to be loadable, but still
-    register it, call @c CreateUnloadableFactory(class).
+    To register @a class in the class-hierarchy, use the @c RegisterClass(class) macro outside of the class implementation,
+    so it gets executed statically before @c main(). If you don't want @a class to be loadable, but still register it, call
+    @c RegisterUnloadableClass(class).
+
+    Abstract classes are registered with @c RegisterAbstractClass(class). For abstract classes, the inheritance must be
+    defined manually with @c RegisterAbstractClass(class).inheritsFrom(Class(parent)). Multiple parent classes can be defined
+    by chaining the above command.
 
     Example:
     @code
-    // Create the factory for MyClass
-    CreateFactory(MyClass);
+    // register MyClass
+    RegisterClass(MyClass);
 
     // Constructor:
     MyClass::MyClass()
@@ -78,52 +80,61 @@
 #include "CorePrereqs.h"
 
 #include "util/Output.h"
-#include "Identifier.h"
-#include "ClassFactory.h"
-#include "ObjectList.h"
+#include "class/IdentifierManager.h"
+#include "object/ClassFactory.h"
+#include "object/ObjectList.h"
+
+// resolve macro conflict on windows
+#if defined(ORXONOX_PLATFORM_WINDOWS)
+#   include <windows.h>
+#   undef RegisterClass
+#endif
 
 
 /**
-    @brief Intern macro, containing the common parts of @c RegisterObject and @c RegisterRootObject.
+    @brief Registers the class in the framework.
     @param ClassName The name of the class
-    @param bRootClass True if the class is directly derived from orxonox::OrxonoxClass
 */
-#define InternRegisterObject(ClassName, bRootClass) \
-    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initialiseObject(this, #ClassName, bRootClass)) \
-        return; \
-    else \
-        ((void)0)
+#define RegisterClass(ClassName) \
+    RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), true)
 
 /**
-    @brief Registers a newly created object in the core. Has to be called at the beginning of the constructor of @a ClassName.
+    @brief Registers the class in the framework (for classes without arguments in their constructor).
+    @param ClassName The name of the class
+*/
+#define RegisterClassNoArgs(ClassName) \
+    RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryNoArgs<ClassName>(), true)
+
+/**
+    @brief Registers the class in the framework (for classes which should not be loaded through XML).
+    @param ClassName The name of the class
+*/
+#define RegisterUnloadableClass(ClassName) \
+    RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), false)
+
+/**
+    @brief Registers an abstract class in the framework.
+    @param ClassName The name of the class
+*/
+#define RegisterAbstractClass(ClassName) \
+    RegisterClassWithFactory(ClassName, static_cast<ClassFactory<ClassName>*>(NULL), false)
+
+/**
+    @brief Registers the class in the framework with a given Factory.
+    @param ClassName The name of the class
+*/
+#define RegisterClassWithFactory(ClassName, FactoryInstance, bLoadable) \
+    Identifier& _##ClassName##Identifier = orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)
+
+/**
+    @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    InternRegisterObject(ClassName, false)
-
-/**
-    @brief Registers a newly created object in the core. Has to be called at the beginning of the constructor of @a ClassName.
-    @param ClassName The name of the class
-
-    In contrast to RegisterObject, this is used for classes that inherit directly from
-    orxonox::OrxonoxClass, namely all interfaces and orxonox::BaseObject.
-*/
-#define RegisterRootObject(ClassName) \
-    InternRegisterObject(ClassName, true)
-
-/**
-    @brief Creates the Factory.
-    @param ClassName The name of the class
-*/
-#define CreateFactory(ClassName) \
-    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, true)
-
-/**
-    @brief Creates the Factory for classes which should not be loaded through XML.
-    @param ClassName The name of the class
-*/
-#define CreateUnloadableFactory(ClassName) \
-    Factory* _##ClassName##Factory = new orxonox::ClassFactory<ClassName>(#ClassName, false)
+    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this)) \
+        return; \
+    else \
+        ((void)0)
 
 /**
     @brief Returns the Identifier of the given class.
@@ -136,12 +147,37 @@
 namespace orxonox
 {
     /**
+     * @brief Overload of registerClass() which determines T implicitly by the template argument of the ClassFactory.
+     */
+    template <class T>
+    inline Identifier& registerClass(const std::string& name, ClassFactory<T>* factory, bool bLoadable = true)
+    {
+        return registerClass<T>(name, static_cast<Factory*>(factory), bLoadable);
+    }
+
+    /**
+     * @brief Registers a class in the framework.
+     * @param name The name of the class
+     * @param factory The factory which is able to create new instances of this class
+     * @param bLoadable Whether the class is allowed to be loaded through XML
+     */
+    template <class T>
+    inline Identifier& registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
+    {
+        orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
+        Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
+        identifier->setFactory(factory);
+        identifier->setLoadable(bLoadable);
+        return *identifier;
+    }
+
+    /**
         @brief Returns the Identifier with a given name.
         @param name The name of the class
     */
     inline Identifier* ClassByString(const std::string& name)
     {
-        return Identifier::getIdentifierByString(name);
+        return IdentifierManager::getInstance().getIdentifierByString(name);
     }
 
     /**
@@ -150,7 +186,7 @@ namespace orxonox
     */
     inline Identifier* ClassByLowercaseString(const std::string& name)
     {
-        return Identifier::getIdentifierByLowercaseString(name);
+        return IdentifierManager::getInstance().getIdentifierByLowercaseString(name);
     }
 
     /**
@@ -159,14 +195,14 @@ namespace orxonox
     */
     inline Identifier* ClassByID(uint32_t id)
     {
-        return Identifier::getIdentifierByID(id);
+        return IdentifierManager::getInstance().getIdentifierByID(id);
     }
 
     /**
         @brief Returns the Identifier with a given 'this' pointer.
-        @note This of course only works with OrxonoxClasses.
+        @note This of course only works with Identifiables.
               The only use is in conjunction with macros that don't know the class type.
-        @param object Pointer to an OrxonoxClass
+        @param object Pointer to an Identifiable
     */
     template <class T>
     inline Identifier* ClassByObjectType(const T*)

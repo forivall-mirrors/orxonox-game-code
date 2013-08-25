@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport TeamBaseMatchScore : public OverlayText, public Tickable
     {
         public:
-            TeamBaseMatchScore(BaseObject* creator);
+            TeamBaseMatchScore(Context* context);
             virtual ~TeamBaseMatchScore();
 
             virtual void tick(float dt);

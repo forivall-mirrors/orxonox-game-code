@@ -38,8 +38,8 @@
 #include <boost/shared_ptr.hpp>
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
-#include "core/SmartPtr.h"
+#include "core/config/Configurable.h"
+#include "core/object/SmartPtr.h"
 
 // tolua_begin
 namespace orxonox
@@ -58,7 +58,7 @@ namespace orxonox
     //! The SoundManager class manages the OpenAL device, context and listener position.
     class _OrxonoxExport SoundManager
     // tolua_end
-        : public Singleton<SoundManager>, public OrxonoxClass
+        : public Singleton<SoundManager>, public Configurable
     { // tolua_export
         friend class Singleton<SoundManager>;
 

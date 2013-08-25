@@ -52,7 +52,7 @@ namespace orxonox
     
     NotificationListener::NotificationListener()
     {
-        RegisterRootObject(NotificationListener);
+        RegisterObject(NotificationListener);
     }
 
     /**

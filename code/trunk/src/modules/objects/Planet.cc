@@ -41,12 +41,12 @@
 
 namespace orxonox
 {
-    CreateFactory(Planet);
+    RegisterClass(Planet);
 
     /**
      * @brief Constructor
      */
-    Planet::Planet(BaseObject* creator) : MovableEntity(creator)
+    Planet::Planet(Context* context) : MovableEntity(context)
     {
         RegisterObject(Planet);
         this->registerVariables();

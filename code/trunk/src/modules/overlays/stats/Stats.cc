@@ -34,17 +34,17 @@
 
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 
 namespace orxonox
 {
-    CreateFactory(Stats);
+    RegisterClass(Stats);
 
     /**
         @brief Constructor: Creates and initializes the Stats panel.
     */
-    Stats::Stats(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+    Stats::Stats(Context* context)
+        : OrxonoxOverlay(context)
         , statsOverlayNoise_(0)
         , statsOverlayBorder_(0)
     {

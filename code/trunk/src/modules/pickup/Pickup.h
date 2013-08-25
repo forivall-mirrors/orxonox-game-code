@@ -99,7 +99,7 @@ namespace orxonox
     {
 
         public:
-            Pickup(BaseObject* creator); //!< Constructor.
+            Pickup(Context* context); //!< Constructor.
             virtual ~Pickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

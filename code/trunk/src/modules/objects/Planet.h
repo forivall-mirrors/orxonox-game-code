@@ -47,7 +47,7 @@ namespace orxonox
     class _ObjectsExport Planet : public MovableEntity
     {
         public:
-            Planet(BaseObject* creator);
+            Planet(Context* context);
 
             virtual ~Planet();
 

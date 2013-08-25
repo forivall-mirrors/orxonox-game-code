@@ -53,7 +53,7 @@ namespace orxonox
     class _PortalsExport PortalLink : public BaseObject
     {
         public:
-            PortalLink(BaseObject* creator);
+            PortalLink(Context* context);
             virtual ~PortalLink();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 

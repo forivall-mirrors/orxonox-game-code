@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport NewHumanController : public HumanController
     {
         public:
-            NewHumanController(BaseObject* creator);
+            NewHumanController(Context* context);
             virtual ~NewHumanController();
 
             virtual void tick(float dt);

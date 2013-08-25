@@ -45,9 +45,9 @@
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/CommandLineParser.h"
 #include "core/GraphicsManager.h"
+#include "core/config/ConfigValueIncludes.h"
+#include "core/config/CommandLineParser.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/command/Functor.h"
 
@@ -97,7 +97,7 @@ namespace orxonox
         , emptyState_(0)
         , calibratorCallbackHandler_(0)
     {
-        RegisterRootObject(InputManager);
+        RegisterObject(InputManager);
 
         orxout(internal_status, context::input) << "InputManager: Constructing..." << endl;
 
@@ -279,7 +279,7 @@ namespace orxonox
         // Destroy calibrator helper handler and state
         this->destroyState("calibrator");
         // Destroy KeyDetector and state
-        calibratorCallbackHandler_->destroy();
+        delete calibratorCallbackHandler_;
         // Destroy the empty InputState
         this->destroyStateInternal(this->emptyState_);
 
@@ -641,7 +641,7 @@ namespace orxonox
     {
         assert(state && this->activeStates_.find(state->getPriority()) == this->activeStates_.end());
         statesByName_.erase(state->getName());
-        state->destroy();
+        delete state;
     }
 
     bool InputManager::setMouseExclusive(const std::string& name, tribool value)

@@ -33,9 +33,9 @@
 
 namespace orxonox
 {
-    CreateFactory(DeathMessage);
+    RegisterClass(DeathMessage);
 
-    DeathMessage::DeathMessage(BaseObject* creator) : FadeoutText(creator)
+    DeathMessage::DeathMessage(Context* context) : FadeoutText(context)
     {
         RegisterObject(DeathMessage);
 

@@ -35,9 +35,9 @@
 
 namespace orxonox
 {
-    CreateFactory(EventFilter);
+    RegisterClass(EventFilter);
 
-    EventFilter::EventFilter(BaseObject* creator) : BaseObject(creator)
+    EventFilter::EventFilter(Context* context) : BaseObject(context)
     {
         RegisterObject(EventFilter);
 

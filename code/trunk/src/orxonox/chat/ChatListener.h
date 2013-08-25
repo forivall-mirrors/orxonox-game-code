@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/OrxonoxClass.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
@@ -39,7 +39,7 @@ namespace orxonox
         @brief Classes inheriting from this interface get a notification whenever a chat
         message was sent through ChatManager.
     */
-    class _OrxonoxExport ChatListener : virtual public OrxonoxClass
+    class _OrxonoxExport ChatListener : virtual public Listable
     {
         friend class ChatManager;
 

@@ -34,9 +34,9 @@
 
 namespace orxonox
 {
-    CreateFactory(TowerDefenseHUDController);
+    RegisterClass(TowerDefenseHUDController);
 
-    TowerDefenseHUDController::TowerDefenseHUDController(BaseObject* creator) : OverlayText(creator)
+    TowerDefenseHUDController::TowerDefenseHUDController(Context* context) : OverlayText(context)
     {
         RegisterObject(TowerDefenseHUDController);
     }

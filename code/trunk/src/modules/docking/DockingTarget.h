@@ -54,7 +54,7 @@ namespace orxonox
     class _DockingExport DockingTarget : public StaticEntity
     {
         public:
-            DockingTarget(BaseObject* creator);
+            DockingTarget(Context* context);
             virtual ~DockingTarget();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

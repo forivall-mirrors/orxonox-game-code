@@ -44,7 +44,6 @@
 ///////////////////////////////////////////
 
 #include "core/BaseObject.h"
-#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
 

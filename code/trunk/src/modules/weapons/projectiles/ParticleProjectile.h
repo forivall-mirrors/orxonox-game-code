@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport ParticleProjectile : public BillboardProjectile
     {
         public:
-            ParticleProjectile(BaseObject* creator);
+            ParticleProjectile(Context* context);
             virtual ~ParticleProjectile();
             virtual void changedVisibility();
 

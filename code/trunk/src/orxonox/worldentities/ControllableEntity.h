@@ -43,7 +43,7 @@ namespace orxonox
         friend class PlayerInfo; // PlayerInfo uses setPlayer and removePlayer
 
         public:
-            ControllableEntity(BaseObject* creator);
+            ControllableEntity(Context* context);
             virtual ~ControllableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

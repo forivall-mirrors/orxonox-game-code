@@ -42,9 +42,9 @@
 
 namespace orxonox
 {
-    CreateFactory(Level);
+    RegisterClass(Level);
 
-    Level::Level(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    Level::Level(Context* context) : BaseObject(context), Synchronisable(context), Context(context)
     {
         RegisterObject(Level);
 

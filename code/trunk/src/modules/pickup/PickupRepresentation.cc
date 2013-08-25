@@ -44,7 +44,7 @@
 namespace orxonox
 {
 
-    CreateFactory(PickupRepresentation);
+    RegisterClass(PickupRepresentation);
 
     /**
     @brief
@@ -63,7 +63,7 @@ namespace orxonox
     @brief
         Default Constructor. Registers the object and initializes its member variables.
     */
-    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), spawnerRepresentation_(NULL)
+    PickupRepresentation::PickupRepresentation(Context* context) : BaseObject(context), Synchronisable(context), spawnerRepresentation_(NULL)
     {
         RegisterObject(PickupRepresentation);
 
@@ -179,12 +179,12 @@ namespace orxonox
     //TODO: Possibility to define default representation through XML?
     StaticEntity* PickupRepresentation::getDefaultSpawnerRepresentation(PickupSpawner* spawner)
     {
-        StaticEntity* representation = new StaticEntity(spawner);
-        Billboard* sphere = new Billboard(spawner);
+        StaticEntity* representation = new StaticEntity(spawner->getContext());
+        Billboard* sphere = new Billboard(spawner->getContext());
         sphere->setColour(ColourValue(0.95f, 0.85f, 0.27f));
         sphere->setMaterial("Sphere2");
         sphere->setScale(0.1f);
-        Billboard* icon = new Billboard(spawner);
+        Billboard* icon = new Billboard(spawner->getContext());
         icon->setColour(ColourValue(0.89f, 0.79f, 0.08f));
         icon->setMaterial("asterisk");
         icon->setScale(0.5);

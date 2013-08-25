@@ -30,11 +30,11 @@
 #define _GametypeMessageListener_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxClass
+    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxInterface
     {
         public:
             GametypeMessageListener();

@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport LightningGun : public WeaponMode
     {
         public:
-            LightningGun(BaseObject* creator);
+            LightningGun(Context* context);
             virtual ~LightningGun();
 
             virtual void fire();

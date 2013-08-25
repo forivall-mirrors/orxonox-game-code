@@ -31,7 +31,7 @@
 #include "util/Math.h"
 #include "core/Core.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/ConsoleCommand.h"
 
@@ -46,13 +46,13 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(Gametype);
+    RegisterUnloadableClass(Gametype);
 
-    Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
+    Gametype::Gametype(Context* context) : BaseObject(context)
     {
         RegisterObject(Gametype);
 
-        this->gtinfo_ = new GametypeInfo(creator);
+        this->gtinfo_ = new GametypeInfo(context);
 
         this->setGametype(SmartPtr<Gametype>(this, false));
 
@@ -73,7 +73,7 @@ namespace orxonox
         // load the corresponding score board
         if (GameMode::showsGraphics() && !this->scoreboardTemplate_.empty())
         {
-            this->scoreboard_ = new OverlayGroup(this);
+            this->scoreboard_ = new OverlayGroup(context);
             this->scoreboard_->addTemplate(this->scoreboardTemplate_);
             this->scoreboard_->setGametype(this);
         }
@@ -159,7 +159,7 @@ namespace orxonox
             {
                 ControllableEntity* oldentity = it->first->getControllableEntity();
 
-                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity);
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity->getContext());
                 if (oldentity->getCamera())
                 {
                     entity->setPosition(oldentity->getCamera()->getWorldPosition());
@@ -282,7 +282,7 @@ namespace orxonox
                 if(victim->getPlayer()->isHumanPlayer())
                     this->gtinfo_->pawnKilled(victim->getPlayer());
 
-                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getContext());
                 if (victim->getCamera())
                 {
                     entity->setPosition(victim->getCamera()->getWorldPosition());
@@ -457,7 +457,7 @@ namespace orxonox
         if (spawn)
         {
             // force spawn at spawnpoint with default pawn
-            ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn);
+            ControllableEntity* entity = this->defaultControllableEntity_.fabricate(spawn->getContext());
             spawn->spawn(entity);
             player->startControl(entity);
         }
@@ -471,7 +471,7 @@ namespace orxonox
     void Gametype::addBots(unsigned int amount)
     {
         for (unsigned int i = 0; i < amount; ++i)
-            this->botclass_.fabricate(this);
+            this->botclass_.fabricate(this->getContext());
     }
 
     void Gametype::killBots(unsigned int amount)

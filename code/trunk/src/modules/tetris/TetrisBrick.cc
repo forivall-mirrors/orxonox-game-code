@@ -43,14 +43,14 @@
 
 namespace orxonox
 {
-    CreateFactory(TetrisBrick);
+    RegisterClass(TetrisBrick);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     @ingroup Tetris
     */
-    TetrisBrick::TetrisBrick(BaseObject* creator): ControllableEntity(creator)
+    TetrisBrick::TetrisBrick(Context* context): ControllableEntity(context)
     {
         RegisterObject(TetrisBrick);
         this->shapeIndex_ = static_cast<unsigned int>(rnd(7.0f)); //<! random number between 0 and 7
@@ -76,7 +76,7 @@ namespace orxonox
         for (unsigned int i = 0; i < this->stonesPerBrick_; i++)
         {
             // Create a new stone and add it to the brick.
-            TetrisStone* stone = new TetrisStone(this);
+            TetrisStone* stone = new TetrisStone(this->getContext());
             this->brickStones_.push_back(stone);
             this->attach(stone);
             this->formBrick(stone, i);

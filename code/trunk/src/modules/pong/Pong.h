@@ -64,7 +64,7 @@ namespace orxonox
     class _PongExport Pong : public Deathmatch
     {
         public:
-            Pong(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            Pong(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~Pong(); //!< Destructor. Cleans up, if initialized.
 
             virtual void start(); //!< Starts the Pong minigame.

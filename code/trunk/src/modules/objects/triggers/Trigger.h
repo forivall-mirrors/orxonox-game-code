@@ -79,7 +79,7 @@ namespace orxonox
     class _ObjectsExport Trigger : public TriggerBase
     {
         public:
-            Trigger(BaseObject* creator); // Constructor. Registers and initializes the object.
+            Trigger(Context* context); // Constructor. Registers and initializes the object.
             virtual ~Trigger();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); // Method for creating a Trigger object through XML.

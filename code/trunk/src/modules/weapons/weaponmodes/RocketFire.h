@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport RocketFire : public WeaponMode
     {
         public:
-            RocketFire(BaseObject* creator);
+            RocketFire(Context* context);
             virtual ~RocketFire();
 
             virtual void fire();

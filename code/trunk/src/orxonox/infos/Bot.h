@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport Bot : public PlayerInfo
     {
         public:
-            Bot(BaseObject* creator);
+            Bot(Context* context);
             virtual ~Bot();
 
             void setConfigValues();

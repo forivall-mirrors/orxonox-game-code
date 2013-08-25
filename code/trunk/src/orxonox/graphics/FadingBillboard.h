@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport FadingBillboard : public Billboard, public Tickable
     {
         public:
-            FadingBillboard(BaseObject* creator);
+            FadingBillboard(Context* context);
             virtual ~FadingBillboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

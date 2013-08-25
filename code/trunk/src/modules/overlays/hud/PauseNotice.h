@@ -39,7 +39,7 @@ namespace orxonox
     class _OverlaysExport PauseNotice : public OverlayText, public TimeFactorListener
     {
         public:
-            PauseNotice(BaseObject* creator);
+            PauseNotice(Context* context);
 
             virtual void changedOwner();
 

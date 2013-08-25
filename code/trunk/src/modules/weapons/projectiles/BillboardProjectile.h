@@ -54,7 +54,7 @@ namespace orxonox
     class _WeaponsExport BillboardProjectile : public Projectile
     {
         public:
-            BillboardProjectile(BaseObject* creator);
+            BillboardProjectile(Context* context);
             virtual ~BillboardProjectile();
 
             virtual void setColour(const ColourValue& colour);

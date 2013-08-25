@@ -29,7 +29,7 @@
 #include "HumanPlayer.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 // #include "network/ClientInformation.h"
 #include "network/Host.h"
@@ -40,9 +40,9 @@
 
 namespace orxonox
 {
-    CreateUnloadableFactory(HumanPlayer);
+    RegisterUnloadableClass(HumanPlayer);
 
-    HumanPlayer::HumanPlayer(BaseObject* creator) : PlayerInfo(creator)
+    HumanPlayer::HumanPlayer(Context* context) : PlayerInfo(context)
     {
         RegisterObject(HumanPlayer);
 
@@ -182,7 +182,7 @@ namespace orxonox
 
         if (this->isLocalPlayer() && !this->humanHudTemplate_.empty() && GameMode::showsGraphics())
         {
-            this->humanHud_ = new OverlayGroup(this);
+            this->humanHud_ = new OverlayGroup(this->getContext());
             this->humanHud_->addTemplate(this->humanHudTemplate_);
             this->humanHud_->setOwner(this);
         }
@@ -198,7 +198,7 @@ namespace orxonox
 
         if (this->isLocalPlayer() && !this->gametypeHudTemplate_.empty())
         {
-            this->gametypeHud_ = new OverlayGroup(this);
+            this->gametypeHud_ = new OverlayGroup(this->getContext());
             this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);
             this->gametypeHud_->setOwner(this);
         }

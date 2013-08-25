@@ -56,7 +56,7 @@ namespace orxonox
     class _PongExport PongBat : public ControllableEntity
     {
         public:
-            PongBat(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            PongBat(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~PongBat() {}
 
             virtual void tick(float dt);

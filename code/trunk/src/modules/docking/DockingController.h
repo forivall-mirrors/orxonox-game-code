@@ -41,7 +41,7 @@ namespace orxonox
     class _DockingExport DockingController : public ArtificialController, public Tickable
     {
         public:
-            DockingController(BaseObject* creator);
+            DockingController(Context* context);
             virtual ~DockingController();
 
             virtual void tick(float dt);

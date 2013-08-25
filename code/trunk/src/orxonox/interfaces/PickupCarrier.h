@@ -40,7 +40,7 @@
 #include <set>
 #include <vector>
 
-#include "core/OrxonoxClass.h"
+#include "core/class/OrxonoxInterface.h"
 
 namespace orxonox
 {
@@ -65,7 +65,7 @@ namespace orxonox
 
     @ingroup Pickup
     */
-    class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
+    class _OrxonoxExport PickupCarrier : virtual public OrxonoxInterface
     {
         // So that the different Pickupables have full access to their PickupCarrier.
         friend class Pickupable;

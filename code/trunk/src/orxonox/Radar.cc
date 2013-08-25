@@ -36,7 +36,7 @@
 #include <cassert>
 
 //#include "util/Math.h"
-#include "core/ObjectList.h"
+#include "core/object/ObjectList.h"
 #include "core/command/ConsoleCommand.h"
 #include "interfaces/RadarListener.h"
 #include "controllers/HumanController.h"

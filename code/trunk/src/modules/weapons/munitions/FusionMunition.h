@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport FusionMunition : public Munition
     {
         public:
-            FusionMunition(BaseObject* creator);
+            FusionMunition(Context* context);
             virtual ~FusionMunition() {}
     };
 }

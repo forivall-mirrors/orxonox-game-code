@@ -34,10 +34,10 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDBoostBar);
+    RegisterClass(HUDBoostBar);
 
-    HUDBoostBar::HUDBoostBar(BaseObject* creator)
-        : HUDBar(creator)
+    HUDBoostBar::HUDBoostBar(Context* context)
+        : HUDBar(context)
     {
         RegisterObject(HUDBoostBar);
 

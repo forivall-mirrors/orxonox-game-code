@@ -50,7 +50,7 @@ namespace orxonox
     class _WeaponsExport RocketMunition : public Munition
     {
         public:
-            RocketMunition(BaseObject* creator);
+            RocketMunition(Context* context);
             virtual ~RocketMunition() {}
     };
 }

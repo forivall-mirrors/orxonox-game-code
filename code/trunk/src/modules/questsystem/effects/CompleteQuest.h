@@ -58,7 +58,7 @@ namespace orxonox
     class _QuestsystemExport CompleteQuest : public ChangeQuestStatus
     {
         public:
-            CompleteQuest(BaseObject* creator);
+            CompleteQuest(Context* context);
             virtual ~CompleteQuest();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CompleteQuest object through XML.

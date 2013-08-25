@@ -48,7 +48,7 @@ namespace orxonox
             Center
         };
 
-        OverlayText(BaseObject* creator);
+        OverlayText(Context* context);
         virtual ~OverlayText();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

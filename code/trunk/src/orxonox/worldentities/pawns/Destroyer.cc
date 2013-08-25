@@ -33,9 +33,9 @@
 
 namespace orxonox
 {
-    CreateFactory(Destroyer);
+    RegisterClass(Destroyer);
 
-    Destroyer::Destroyer(BaseObject* creator) : SpaceShip(creator)
+    Destroyer::Destroyer(Context* context) : SpaceShip(context)
     {
         RegisterObject(Destroyer);
 

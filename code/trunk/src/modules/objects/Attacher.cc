@@ -33,9 +33,9 @@
 
 namespace orxonox
 {
-    CreateFactory(Attacher);
+    RegisterClass(Attacher);
 
-    Attacher::Attacher(BaseObject* creator) : StaticEntity(creator)
+    Attacher::Attacher(Context* context) : StaticEntity(context)
     {
         RegisterObject(Attacher);
 

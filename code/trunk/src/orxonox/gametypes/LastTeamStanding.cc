@@ -32,14 +32,14 @@
 #include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "util/Convert.h"
 
 namespace orxonox
 {
-    CreateUnloadableFactory(LastTeamStanding);
+    RegisterUnloadableClass(LastTeamStanding);
 
-    LastTeamStanding::LastTeamStanding(BaseObject* creator) : TeamDeathmatch(creator)
+    LastTeamStanding::LastTeamStanding(Context* context) : TeamDeathmatch(context)
     {
         RegisterObject(LastTeamStanding);
         this->bForceSpawn_ = true;

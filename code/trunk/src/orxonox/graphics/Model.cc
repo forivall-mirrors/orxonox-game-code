@@ -31,7 +31,7 @@
 #include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "Scene.h"
@@ -40,10 +40,10 @@
 
 namespace orxonox
 {
-    CreateFactory(Model);
+    RegisterClass(Model);
 
-    Model::Model(BaseObject* creator) :
-        StaticEntity(creator), bCastShadows_(true), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)
+    Model::Model(Context* context) :
+        StaticEntity(context), bCastShadows_(true), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15f)
     {
         RegisterObject(Model);
 

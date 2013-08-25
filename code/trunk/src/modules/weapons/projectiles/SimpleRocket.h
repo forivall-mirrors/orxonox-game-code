@@ -59,7 +59,7 @@ namespace orxonox
     class _WeaponsExport SimpleRocket : public ControllableEntity, public BasicProjectile, public RadarViewable
     {
         public:
-            SimpleRocket(BaseObject* creator);
+            SimpleRocket(Context* context);
             virtual ~SimpleRocket();
             virtual void tick(float dt);
 

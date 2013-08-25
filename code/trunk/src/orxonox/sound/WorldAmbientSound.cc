@@ -35,9 +35,9 @@
 
 namespace orxonox
 {
-    CreateFactory(WorldAmbientSound);
+    RegisterClass(WorldAmbientSound);
 
-    WorldAmbientSound::WorldAmbientSound(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    WorldAmbientSound::WorldAmbientSound(Context* context) : BaseObject(context), Synchronisable(context)
     {
         RegisterObject(WorldAmbientSound);
 

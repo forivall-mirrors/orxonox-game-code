@@ -44,7 +44,7 @@ namespace orxonox
     class _GametypesExport OldRaceCheckPoint : public DistanceTrigger, public RadarViewable
     {
         public:
-            OldRaceCheckPoint(BaseObject* creator);
+            OldRaceCheckPoint(Context* context);
             virtual ~OldRaceCheckPoint();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

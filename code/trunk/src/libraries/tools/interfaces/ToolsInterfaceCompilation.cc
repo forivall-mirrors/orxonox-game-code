@@ -45,9 +45,11 @@ namespace orxonox
     //----------------------------
     float TimeFactorListener::timefactor_s = 1.0f;
 
+    RegisterAbstractClass(TimeFactorListener).inheritsFrom(Class(Listable));
+
     TimeFactorListener::TimeFactorListener()
     {
-        RegisterRootObject(TimeFactorListener);
+        RegisterObject(TimeFactorListener);
     }
 
     /*static*/ void TimeFactorListener::setTimeFactor(float factor)
@@ -64,11 +66,13 @@ namespace orxonox
     //----------------------------
     // Tickable
     //----------------------------
+    RegisterAbstractClass(Tickable).inheritsFrom(Class(OrxonoxInterface));
+
     /**
         @brief Constructor: Registers the object in the Tickable-list
     */
     Tickable::Tickable()
     {
-        RegisterRootObject(Tickable);
+        RegisterObject(Tickable);
     }
 }

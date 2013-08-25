@@ -40,7 +40,7 @@ namespace orxonox
     class _ToolsExport ResourceCollection : public BaseObject
     {
     public:
-        ResourceCollection(BaseObject* creator);
+        ResourceCollection(Context* context);
         virtual ~ResourceCollection();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

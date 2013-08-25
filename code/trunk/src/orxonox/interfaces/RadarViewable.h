@@ -35,8 +35,8 @@
 #include <cassert>
 
 #include "util/Math.h"
-#include "core/OrxonoxClass.h"
-#include "core/SmartPtr.h"
+#include "core/class/OrxonoxInterface.h"
+#include "core/object/SmartPtr.h"
 
 namespace orxonox
 {
@@ -45,7 +45,7 @@ namespace orxonox
     /**
     @brief Interface for receiving window events.
     */
-    class _OrxonoxExport RadarViewable : virtual public OrxonoxClass
+    class _OrxonoxExport RadarViewable : virtual public OrxonoxInterface
     {
     public:
         enum Shape
@@ -152,7 +152,6 @@ namespace orxonox
         bool bInitialized_;
         //Map
         std::string uniqueId_;
-        BaseObject* creator_;
 
 
         //Radar

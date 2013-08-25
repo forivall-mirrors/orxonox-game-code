@@ -40,9 +40,9 @@
 
 namespace orxonox
 {
-    CreateFactory(ParticleProjectile);
+    RegisterClass(ParticleProjectile);
 
-    ParticleProjectile::ParticleProjectile(BaseObject* creator) : BillboardProjectile(creator)
+    ParticleProjectile::ParticleProjectile(Context* context) : BillboardProjectile(context)
     {
         RegisterObject(ParticleProjectile);
 
@@ -64,7 +64,7 @@ namespace orxonox
         if (this->isInitialized() && this->particles_)
         {
             this->detachOgreObject(this->particles_->getParticleSystem());
-            this->particles_->destroy();
+            delete this->particles_;
         }
     }
 

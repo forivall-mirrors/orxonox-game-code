@@ -47,7 +47,7 @@ namespace orxonox
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
 
-    CreateUnloadableFactory(Pickup);
+    RegisterUnloadableClass(Pickup);
 
     /**
     @brief
@@ -55,7 +55,7 @@ namespace orxonox
     @param creator
         The objects creator.
     */
-    Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
+    Pickup::Pickup(Context* context) : BaseObject(context)
     {
         RegisterObject(Pickup);
 
@@ -186,7 +186,7 @@ namespace orxonox
     */
     bool Pickup::createSpawner(void)
     {
-        PickupSpawner::createDroppedPickup(this, this, this->getCarrier());
+        PickupSpawner::createDroppedPickup(this->getContext(), this, this->getCarrier());
         return true;
     }
 

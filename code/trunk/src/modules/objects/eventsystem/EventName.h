@@ -44,7 +44,7 @@ namespace orxonox
     class _ObjectsExport EventName : public BaseObject
     {
         public:
-            EventName(BaseObject* creator);
+            EventName(Context* context);
             virtual ~EventName() {}
     };
 }

@@ -60,12 +60,14 @@ namespace orxonox
     BOOST_STATIC_ASSERT((int)Ogre::Node::TS_PARENT == (int)WorldEntity::Parent);
     BOOST_STATIC_ASSERT((int)Ogre::Node::TS_WORLD  == (int)WorldEntity::World);
 
+    RegisterAbstractClass(WorldEntity).inheritsFrom(Class(BaseObject)).inheritsFrom(Class(Synchronisable));
+
     /**
     @brief
         Creates a new WorldEntity that may immediately be used.
         All the default values are being set here.
     */
-    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    WorldEntity::WorldEntity(Context* context) : BaseObject(context), Synchronisable(context)
     {
         RegisterObject(WorldEntity);
 
@@ -91,7 +93,8 @@ namespace orxonox
         this->bPhysicsActive_ = false;
         this->bPhysicsActiveSynchronised_    = false;
         this->bPhysicsActiveBeforeAttaching_ = false;
-        this->collisionShape_ = new WorldEntityCollisionShape(this);
+        this->collisionShape_ = new WorldEntityCollisionShape(this->getContext());
+        this->collisionShape_->setWorldEntityOwner(this);
         this->collisionType_             = None;
         this->collisionTypeSynchronised_ = None;
         this->mass_           = 1.0f;

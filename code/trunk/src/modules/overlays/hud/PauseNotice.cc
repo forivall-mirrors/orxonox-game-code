@@ -33,9 +33,9 @@
 
 namespace orxonox
 {
-    CreateFactory(PauseNotice);
+    RegisterClass(PauseNotice);
 
-    PauseNotice::PauseNotice(BaseObject* creator) : OverlayText(creator)
+    PauseNotice::PauseNotice(Context* context) : OverlayText(context)
     {
         RegisterObject(PauseNotice);
 

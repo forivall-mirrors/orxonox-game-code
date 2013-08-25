@@ -37,9 +37,9 @@
 
 namespace orxonox
 {
-    CreateFactory(Billboard);
+    RegisterClass(Billboard);
 
-    Billboard::Billboard(BaseObject* creator) : StaticEntity(creator)
+    Billboard::Billboard(Context* context) : StaticEntity(context)
     {
         RegisterObject(Billboard);
 

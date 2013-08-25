@@ -46,12 +46,12 @@
 #include <string>
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
+#include "config/Configurable.h"
 
 namespace orxonox
 {
     //! Informs about changes in the Development Mode.
-    class DevModeListener : virtual public OrxonoxClass
+    class DevModeListener : virtual public Listable
     {
     public:
         DevModeListener();
@@ -65,7 +65,7 @@ namespace orxonox
     @remark
         You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core : public Singleton<Core>, public OrxonoxClass
+    class _CoreExport Core : public Singleton<Core>, public Configurable
     {
         friend class Singleton<Core>;
         friend class Game;

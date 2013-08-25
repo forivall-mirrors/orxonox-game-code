@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport TeamSpawnPoint : public SpawnPoint
     {
         public:
-            TeamSpawnPoint(BaseObject* creator);
+            TeamSpawnPoint(Context* context);
             virtual ~TeamSpawnPoint() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

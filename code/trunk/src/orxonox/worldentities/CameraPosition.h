@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport CameraPosition : public StaticEntity
     {
         public:
-            CameraPosition(BaseObject* creator);
+            CameraPosition(Context* context);
             virtual ~CameraPosition();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

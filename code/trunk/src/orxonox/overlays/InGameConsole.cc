@@ -48,7 +48,7 @@
 #include "util/output/MemoryWriter.h"
 #include "util/output/OutputManager.h"
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"
@@ -109,7 +109,7 @@ namespace orxonox
         InputManager::getInstance().destroyState("console");
 
         // destroy the underlaying shell
-        this->shell_->destroy();
+        delete this->shell_;
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)

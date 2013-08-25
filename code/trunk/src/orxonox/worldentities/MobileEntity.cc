@@ -38,7 +38,9 @@
 
 namespace orxonox
 {
-    MobileEntity::MobileEntity(BaseObject* creator) : WorldEntity(creator)
+    RegisterClass(MobileEntity);
+
+    MobileEntity::MobileEntity(Context* context) : WorldEntity(context)
     {
         RegisterObject(MobileEntity);
 

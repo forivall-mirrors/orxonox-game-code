@@ -40,13 +40,13 @@
 
 namespace orxonox
 {
-    CreateFactory(PongCenterpoint);
+    RegisterClass(PongCenterpoint);
 
     /**
     @brief
         Constructor. Registers and initializes the object and checks whether the gametype is actually Pong.
     */
-    PongCenterpoint::PongCenterpoint(BaseObject* creator) : StaticEntity(creator)
+    PongCenterpoint::PongCenterpoint(Context* context) : StaticEntity(context)
     {
         RegisterObject(PongCenterpoint);
 

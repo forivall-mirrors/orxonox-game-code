@@ -28,6 +28,7 @@
 
 #include "XMLPort.h"
 
+#include "CoreIncludes.h"
 #include "Loader.h"
 #include "Namespace.h"
 
@@ -58,7 +59,7 @@ namespace orxonox
 
                 for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                 {
-                    Identifier* identifier = Identifier::getIdentifierByString(child->Value());
+                    Identifier* identifier = ClassByString(child->Value());
                     if (!identifier)
                     {
                         if (!this->sectionname_.empty())
@@ -88,7 +89,7 @@ namespace orxonox
                     {
                         orxout(verbose, context::xml) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << endl;
 
-                        BaseObject* newObject = identifier->fabricate(object);
+                        BaseObject* newObject = orxonox_cast<BaseObject*>(identifier->fabricate(object->getContext()));
                         newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
 
                         if (this->bLoadBefore_)

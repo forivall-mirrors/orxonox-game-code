@@ -35,8 +35,7 @@
 #include <list>
 #include <vector>
 
-#include "core/CoreIncludes.h"
-#include "core/WeakPtr.h"
+#include "core/object/WeakPtr.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "worldentities/StaticEntity.h"
@@ -75,7 +74,7 @@ namespace orxonox
     class _ObjectsExport SpaceBoundaries : public StaticEntity, public Tickable
     {
         public:
-            SpaceBoundaries(BaseObject* creator);
+            SpaceBoundaries(Context* context);
             ~SpaceBoundaries();
 
             void setMaxDistance(float r);

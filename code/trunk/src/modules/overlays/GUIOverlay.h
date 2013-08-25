@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
 
-            GUIOverlay(BaseObject* creator);
+            GUIOverlay(Context* context);
             virtual ~GUIOverlay();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport Spectator : public ControllableEntity
     {
         public:
-            Spectator(BaseObject* creator);
+            Spectator(Context* context);
             virtual ~Spectator();
 
             void setConfigValues();

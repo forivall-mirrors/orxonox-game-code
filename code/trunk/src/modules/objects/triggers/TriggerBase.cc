@@ -45,13 +45,13 @@ namespace orxonox {
     /*static*/ const std::string TriggerBase::or_s = "or";
     /*static*/ const std::string TriggerBase::xor_s = "xor";
 
-    CreateFactory(TriggerBase);
+    RegisterClass(TriggerBase);
 
     /**
     @brief
         Constructor. Registers the object and initializes some values.
     */
-    TriggerBase::TriggerBase(BaseObject* creator) : StaticEntity(creator)
+    TriggerBase::TriggerBase(Context* context) : StaticEntity(context)
     {
         RegisterObject(TriggerBase);
 

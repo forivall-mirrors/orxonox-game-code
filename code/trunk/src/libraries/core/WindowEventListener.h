@@ -35,12 +35,12 @@
 #define _WindowEventListener_H__
 
 #include "CorePrereqs.h"
-#include "OrxonoxClass.h"
+#include "object/Listable.h"
 
 namespace orxonox
 {
     //! Interface for receiving window events like resize, moved and focusChanged
-    class _CoreExport WindowEventListener : virtual public OrxonoxClass
+    class _CoreExport WindowEventListener : virtual public Listable
     {
         friend class OgreWindowEventListener;
 

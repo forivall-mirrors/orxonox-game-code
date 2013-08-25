@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    CreateFactory(ForceField);
+    RegisterClass(ForceField);
 
     /*static*/ const std::string ForceField::modeTube_s = "tube";
     /*static*/ const std::string ForceField::modeSphere_s = "sphere";
@@ -52,7 +52,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some values.
     */
-    ForceField::ForceField(BaseObject* creator) : StaticEntity(creator)
+    ForceField::ForceField(Context* context) : StaticEntity(context)
     {
         RegisterObject(ForceField);
 

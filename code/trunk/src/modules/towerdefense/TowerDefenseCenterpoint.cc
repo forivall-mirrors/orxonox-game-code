@@ -40,13 +40,13 @@
 
 namespace orxonox
 {
-    CreateFactory(TowerDefenseCenterpoint);
+    RegisterClass(TowerDefenseCenterpoint);
 
     /**
     @brief
         Constructor. Registers and initializes the object and checks whether the gametype is actually TowerDefense.
     */
-    TowerDefenseCenterpoint::TowerDefenseCenterpoint(BaseObject* creator) : MobileEntity(creator)
+    TowerDefenseCenterpoint::TowerDefenseCenterpoint(Context* context) : MobileEntity(context)
     {
         RegisterObject(TowerDefenseCenterpoint);
 
