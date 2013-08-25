@@ -541,11 +541,11 @@ namespace orxonox
 
             if (!this->slaves_.empty())
             {
-				std::vector<FormationController*>::iterator it2 = std::find(this->slaves_.begin(), this->slaves_.end(), newMaster);
-				if (it2 != this->slaves_.end())
-				{
-					 this->slaves_.erase(it2);
-				}
+                std::vector<FormationController*>::iterator it2 = std::find(this->slaves_.begin(), this->slaves_.end(), newMaster);
+                if (it2 != this->slaves_.end())
+                {
+                    this->slaves_.erase(it2);
+                }
 
                 newMaster->state_ = MASTER;
                 newMaster->slaves_ = this->slaves_;
