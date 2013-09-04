@@ -1,0 +1,87 @@
+<Template name=spaceshipassff>
+  <SpaceShip
+   camerapositiontemplate = spaceshipassffcameras
+
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   primaryThrust     = 100;
+   auxilaryThrust    = 30;
+   rotationThrust    = 10;
+
+   collisionType     = "dynamic"
+   mass              = 100
+   linearDamping     = 0.7
+   angularDamping    = 0.999
+   name              = "blubbbeliblubb"
+  >
+    <attached>
+      <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
+      <!--Light position="0,0,20" diffuse="0,0,1" specular="0,0,1" type=point /-->
+      <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />
+      <BlinkingBillboard position="-17,-1.5,0" material="Examples/Flare" colour="0.5, 1.0, 0.3" amplitude=0.1 frequency=0.5 phase=180 quadratic=1 />
+      <!--ParticleEmitter position="0,0,-100" source="Orxonox/smoke5" /-->
+    </attached>
+    <collisionShapes>
+      <!--SphereCollisionShape position="0,0,0"      radius=20 /-->
+      <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />
+      <BoxCollisionShape position="13,-1.3,0"  halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="-13,-1.3,0" halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="0,0,7"      halfExtents="3, 2, 2" />
+      <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
+      <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
+    </collisionShapes>
+  </SpaceShip>
+</Template>
+
+<Template name=spaceshipassffcameras>
+  <SpaceShip>
+    <camerapositions>
+      <CameraPosition position="0,10,40" />
+      <CameraPosition position="0,150,-25" pitch=-90 />
+      <CameraPosition position="0,0,-30" yaw=180 />
+      <CameraPosition position="0,3,-14" yaw=0 />
+      <CameraPosition position="-50,5,-8" yaw=-90 />
+      <CameraPosition position="50,5,-8" yaw=90 />
+    </camerapositions>
+  </SpaceShip>
+</Template>
+
+<!--Template name=spaceshippirate>
+  <SpaceShip
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   maxspeed          = 250
+   maxsecondaryspeed = 50
+   maxrotation       = 100
+   transacc          = 200
+   rotacc            = 140
+   transdamp         = 75
+  >
+    <attached>
+      <Model position="0,-10,-45" yaw=90 pitch=-90 roll=0 scale=4 mesh="pirate.mesh" />
+    </attached>
+  </SpaceShip>
+</Template>
+
+<Template name=spaceshipspacecruiser>
+  <SpaceShip
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   maxspeed          = 250
+   maxsecondaryspeed = 50
+   maxrotation       = 100
+   transacc          = 200
+   rotacc            = 140
+   transdamp         = 75
+  >
+    <attached>
+      <Model position="8,-30,-120" yaw=90 pitch=-90 roll=0 scale=4 mesh="spacecruiser.mesh" />
+    </attached>
+  </SpaceShip>
+</Template-->
