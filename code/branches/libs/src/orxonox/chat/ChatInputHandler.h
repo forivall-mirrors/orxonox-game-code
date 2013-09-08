@@ -32,14 +32,27 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <CEGUIForwardRefs.h>
-#include <CEGUIcolour.h>
+
+#if CEGUI_VERSION >= 0x000800
+#   include <CEGUI/ForwardRefs.h>
+#   include <CEGUI/Colour.h>
+#else
+#   include <CEGUIForwardRefs.h>
+#   include <CEGUIcolour.h>
+#endif
 
 #include "util/Singleton.h"
 #include "chat/ChatListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
+
+#if CEGUI_VERSION >= 0x000800
+  typedef CEGUI::Colour CEGUIColour;
+#else
+  typedef CEGUI::colour CEGUIColour;
+#endif
+
   /* class to handle chat using an InputBuffer */
   class _OrxonoxExport ChatInputHandler  // tolua_export
     : public Singleton<ChatInputHandler>, public ChatListener
@@ -54,7 +67,7 @@ namespace orxonox // tolua_export
 
       /* colors for nickname coloring */
       static const int NumberOfColors = 10;
-      CEGUI::colour text_colors[ NumberOfColors ];
+      CEGUIColour text_colors[ NumberOfColors ];
 
       /** input state */
       InputState *inputState;

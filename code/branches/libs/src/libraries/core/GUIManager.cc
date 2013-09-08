@@ -229,7 +229,11 @@ namespace orxonox
         {
             if (id == Ogre::RENDER_QUEUE_OVERLAY && invocation.empty())
             {
+#if CEGUI_VERSION >= 0x000800
+                CEGUI::System::getSingleton().renderAllGUIContexts();
+#else
                 CEGUI::System::getSingleton().renderGUI();
+#endif
 
                 // Important workaround! (at least required by CEGUI 0.7.5)
                 // If we don't reset the scissor test, OGRE will only render overlays
@@ -353,7 +357,11 @@ namespace orxonox
         }
 
         // Align CEGUI mouse with OIS mouse
+#if CEGUI_VERSION >= 0x000800
+        guiSystem_->getDefaultGUIContext().injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
+#else
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
+#endif
 
         // Initialise the Lua framework and load the schemes
         orxout(user_info) << "Loading user interface..." << endl;
@@ -365,9 +373,15 @@ namespace orxonox
         this->hudRootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "HUDRootWindow");
         this->menuRootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "MenuRootWindow");
         // And connect them
+#if CEGUI_VERSION >= 0x000800
+        CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(this->rootWindow_);
+        this->rootWindow_->addChild(this->hudRootWindow_);
+        this->rootWindow_->addChild(this->menuRootWindow_);
+#else
         CEGUI::System::getSingleton().setGUISheet(this->rootWindow_);
         this->rootWindow_->addChildWindow(this->hudRootWindow_);
         this->rootWindow_->addChildWindow(this->menuRootWindow_);
+#endif
 
         // No background to start with (sets the alpha value to 0)
         this->setBackgroundImage("");
@@ -434,7 +448,7 @@ namespace orxonox
     void GUIManager::preUpdate(const Clock& time)
     {
         assert(guiSystem_);
-        this->protectedCall(boost::bind(&CEGUI::System::injectTimePulse, _1, time.getDeltaTime()));
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectTimePulse, _1, time.getDeltaTime()));
     }
 
     /**
@@ -609,13 +623,22 @@ namespace orxonox
 
     void GUIManager::buttonPressed(const KeyEvent& evt)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectKeyDown, _1, evt.getKeyCode()));
-        this->protectedCall(boost::bind(&CEGUI::System::injectChar, _1, evt.getText()));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectKeyDown, _1, (CEGUI::Key::Scan) evt.getKeyCode())); // TODO: will this cast always work?
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectChar, _1, evt.getText()));
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectKeyDown, _1, evt.getKeyCode()));
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectChar, _1, evt.getText()));
+#endif
     }
 
     void GUIManager::buttonReleased(const KeyEvent& evt)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectKeyUp, _1, evt.getKeyCode()));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectKeyUp, _1, (CEGUI::Key::Scan) evt.getKeyCode())); // TODO: will this cast always work?
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectKeyUp, _1, evt.getKeyCode()));
+#endif
     }
 
     /**
@@ -629,7 +652,11 @@ namespace orxonox
     */
     void GUIManager::buttonPressed(MouseButtonCode::ByEnum id)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonDown, _1, convertButton(id)));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectMouseButtonDown, _1, convertButton(id)));
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectMouseButtonDown, _1, convertButton(id)));
+#endif
     }
 
     /**
@@ -643,17 +670,29 @@ namespace orxonox
     */
     void GUIManager::buttonReleased(MouseButtonCode::ByEnum id)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonUp, _1, convertButton(id)));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectMouseButtonUp, _1, convertButton(id)));
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectMouseButtonUp, _1, convertButton(id)));
+#endif
     }
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectMousePosition, _1, (float)abs.x, (float)abs.y));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectMousePosition, _1, (float)abs.x, (float)abs.y));
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectMousePosition, _1, (float)abs.x, (float)abs.y));
+#endif
     }
 
     void GUIManager::mouseScrolled(int abs, int rel)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectMouseWheelChange, _1, (float)sgn(rel) * this->numScrollLines_));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectMouseWheelChange, _1, (float)sgn(rel) * this->numScrollLines_));
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectMouseWheelChange, _1, (float)sgn(rel) * this->numScrollLines_));
+#endif
     }
 
     /**
@@ -661,7 +700,11 @@ namespace orxonox
     */
     void GUIManager::mouseLeft()
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectMouseLeaves, _1));
+#if CEGUI_VERSION >= 0x000800
+        this->protectedCeguiContextCall(boost::bind(&CEGUI::GUIContext::injectMouseLeaves, _1));
+#else
+        this->protectedCeguiSystemCall(boost::bind(&CEGUI::System::injectMouseLeaves, _1));
+#endif
     }
 
     /**
@@ -713,12 +756,12 @@ namespace orxonox
     @return
         True if input was handled, false otherwise. A caught exception yields true.
     */
-    template <typename FunctionType>
-    bool GUIManager::protectedCall(FunctionType function)
+    template <typename FunctionType, typename ObjectType>
+    bool GUIManager::protectedCall(FunctionType function, ObjectType object)
     {
         try
         {
-            return function(this->guiSystem_);
+            return function(object);
         }
         catch (CEGUI::ScriptException& ex)
         {
@@ -727,6 +770,20 @@ namespace orxonox
             return true;
         }
     }
+
+    template <typename FunctionType>
+    bool GUIManager::protectedCeguiSystemCall(FunctionType function)
+    {
+        return this->protectedCall(function, this->guiSystem_);
+    }
+
+#if CEGUI_VERSION >= 0x000800
+    template <typename FunctionType>
+    bool GUIManager::protectedCeguiContextCall(FunctionType function)
+    {
+        return this->protectedCall(function, this->guiSystem_->getDefaultGUIContext());
+    }
+#endif
 
     /**
     @brief
@@ -783,7 +840,11 @@ namespace orxonox
     */
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
+#if CEGUI_VERSION >= 0x000800
+        this->guiRenderer_->setDisplaySize(CEGUI::Sizef((float)newWidth, (float)newHeight));
+#else
         this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
+#endif
     }
 
     /**
@@ -833,7 +894,11 @@ namespace orxonox
         if(CEGUI::FontManager::getSingleton().isDefined(name)) // If a font with that name already exists.
             return;
 
+    #if CEGUI_VERSION >= 0x000800
+        CEGUI::FontManager::getSingleton().createFreeTypeFont(name, (float)size, true, fontName, "", CEGUI::ASM_Both, CEGUI::Sizef(800.0f, 600.0f));
+    #else
         CEGUI::FontManager::getSingleton().createFreeTypeFont(name, (float)size, true, fontName, "", true, 800.0f, 600.0f);
+    #endif
 #endif
     }
 

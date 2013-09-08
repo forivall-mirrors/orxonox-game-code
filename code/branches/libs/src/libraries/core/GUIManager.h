@@ -155,8 +155,16 @@ namespace orxonox // tolua_export
 
         void executeCode(const std::string& str);
 
+        template <typename FunctionType, typename ObjectType>
+        bool protectedCall(FunctionType function, ObjectType object);
+
         template <typename FunctionType>
-        bool protectedCall(FunctionType function);
+        bool protectedCeguiSystemCall(FunctionType function);
+
+#if CEGUI_VERSION >= 0x000800
+        template <typename FunctionType>
+        bool protectedCeguiContextCall(FunctionType function);
+#endif
 
         void changedCeguiOutputLevel();
 
