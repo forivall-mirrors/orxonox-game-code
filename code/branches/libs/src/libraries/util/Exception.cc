@@ -35,7 +35,13 @@
 #include "Exception.h"
 
 #include <cstddef>
-#include <CEGUIExceptions.h>
+
+#if CEGUI_VERSION >= 0x000800
+#   include <CEGUI/Exceptions.h>
+#else
+#   include <CEGUIExceptions.h>
+#endif
+
 #include "Output.h"
 
 namespace orxonox

@@ -39,8 +39,15 @@
 
 #include <map>
 #include <string>
-#include <CEGUIForwardRefs.h>
-#include <CEGUIVersion.h>
+
+#if CEGUI_VERSION >= 0x000800
+#   include <CEGUI/ForwardRefs.h>
+#   include <CEGUI/Version.h>
+#else
+#   include <CEGUIForwardRefs.h>
+#   include <CEGUIVersion.h>
+#endif
+
 #include <boost/shared_ptr.hpp>
 
 #include "util/DestructionHelper.h"

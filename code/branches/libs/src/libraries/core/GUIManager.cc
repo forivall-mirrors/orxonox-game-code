@@ -35,35 +35,57 @@
 #include <OgreRenderQueue.h>
 #include <OgreRenderWindow.h>
 
-#include <CEGUIDefaultLogger.h>
-#include <CEGUIExceptions.h>
-#include <CEGUIFontManager.h>
-#include <CEGUIInputEvent.h>
-#include <CEGUIMouseCursor.h>
-#include <CEGUIResourceProvider.h>
-#include <CEGUISystem.h>
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
-#include <CEGUIXMLAttributes.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
+#if CEGUI_VERSION >= 0x000800
+#   include <CEGUI/DefaultLogger.h>
+#   include <CEGUI/Exceptions.h>
+#   include <CEGUI/FontManager.h>
+#   include <CEGUI/InputEvent.h>
+#   include <CEGUI/MouseCursor.h>
+#   include <CEGUI/ResourceProvider.h>
+#   include <CEGUI/System.h>
+#   include <CEGUI/Window.h>
+#   include <CEGUI/WindowManager.h>
+#   include <CEGUI/XMLAttributes.h>
+#   include <CEGUI/widgets/Listbox.h>
+#   include <CEGUI/widgets/ListboxItem.h>
+#else
+#   include <CEGUIDefaultLogger.h>
+#   include <CEGUIExceptions.h>
+#   include <CEGUIFontManager.h>
+#   include <CEGUIInputEvent.h>
+#   include <CEGUIMouseCursor.h>
+#   include <CEGUIResourceProvider.h>
+#   include <CEGUISystem.h>
+#   include <CEGUIWindow.h>
+#   include <CEGUIWindowManager.h>
+#   include <CEGUIXMLAttributes.h>
+#   include <elements/CEGUIListbox.h>
+#   include <elements/CEGUIListboxItem.h>
+#endif
 
 #ifdef ORXONOX_OLD_CEGUI
-#  include <CEGUILua.h>
-#  include <ogreceguirenderer/OgreCEGUIRenderer.h>
+#   include <CEGUILua.h>
+#   include <ogreceguirenderer/OgreCEGUIRenderer.h>
 extern "C" {
-#  include <lauxlib.h>
+#   include <lauxlib.h>
 }
 #else
-#  include <ScriptingModules/LuaScriptModule/CEGUILua.h>
-#  include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
-#  include <RendererModules/Ogre/CEGUIOgreRenderer.h>
-#  include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
-#  include <OgreCamera.h>
-#  include <OgreRenderQueueListener.h>
-#  include <OgreRenderSystem.h>
-#  include <OgreRoot.h>
-#  include <OgreSceneManager.h>
+#   if CEGUI_VERSION >= 0x000800
+#       include <CEGUI/ScriptModules/Lua/ScriptModule.h>
+#       include <CEGUI/RendererModules/Ogre/ImageCodec.h>
+#       include <CEGUI/RendererModules/Ogre/Renderer.h>
+#       include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
+#   else
+#       include <ScriptingModules/LuaScriptModule/CEGUILua.h>
+#       include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
+#       include <RendererModules/Ogre/CEGUIOgreRenderer.h>
+#       include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+#   endif
+#   include <OgreCamera.h>
+#   include <OgreRenderQueueListener.h>
+#   include <OgreRenderSystem.h>
+#   include <OgreRoot.h>
+#   include <OgreSceneManager.h>
 #endif
 
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_COMPILER_MINGW)
