@@ -39,6 +39,7 @@
 #include <cstring>
 #include <cstdio>
 
+#include <unistd.h>
 #include "Output.h"
 
 namespace orxonox

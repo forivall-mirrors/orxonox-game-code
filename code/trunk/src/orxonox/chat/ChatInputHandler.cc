@@ -29,6 +29,7 @@
 #include "ChatInputHandler.h"
 
 #include <cassert>
+#include <cstddef>
 #include <string>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
