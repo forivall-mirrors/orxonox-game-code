@@ -123,3 +123,10 @@ IF (MINGW)
 
   ADD_LINKER_FLAGS("-enable-auto-import" CACHE)
 ENDIF()
+
+
+# Sandro fix: add flag that re-enables boost threads. This makes the combination
+#             of GCC version > 4.7 and older libboost work. See 
+# http://stackoverflow.com/questions/5389853/doesnt-compile-if-included-boost-thread-in-linux-ubuntu10-10
+#             for more information.
+ADD_COMPILER_FLAGS("-D_GLIBCXX__PTHREADS=1" CXX CACHE)
