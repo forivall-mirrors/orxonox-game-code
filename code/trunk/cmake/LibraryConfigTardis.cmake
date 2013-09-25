@@ -78,4 +78,11 @@ IF(TARDIS)
   #SET(ENV{OGRE_HOME}   "/usr/pack/ogre-1.4.9-sd;/usr/pack/ogre-1.4.9-sd/i686-debian-linux4.0")
   #SET(ENV{OPENALDIR}   "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
   #SET(TCL_INCLUDE_PATH "/usr/pack/tcltk-8.4.9.linux-mo/include")
+
+
+  # Sandro fix: add flag that re-enables boost threads. This makes the combination
+  #             of GCC version > 4.7 and older libboost work. See 
+  # http://stackoverflow.com/questions/5389853/doesnt-compile-if-included-boost-thread-in-linux-ubuntu10-10
+  #             for more information.
+  ADD_COMPILER_FLAGS("-D_GLIBCXX__PTHREADS=1" CXX CACHE)
 ENDIF(TARDIS)
