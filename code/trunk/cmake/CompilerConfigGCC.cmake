@@ -121,5 +121,5 @@ ENDIF()
 IF (MINGW)
   ADD_COMPILER_FLAGS("-gstabs+" Debug RelForDevs RelWithDebInfo CACHE)
 
-  ADD_LINKER_FLAGS("-enable-auto-import" CACHE)
+  ADD_LINKER_FLAGS("-Wl,--enable-auto-import" CACHE)
 ENDIF()

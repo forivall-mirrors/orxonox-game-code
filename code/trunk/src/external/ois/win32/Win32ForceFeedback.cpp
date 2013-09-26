@@ -23,6 +23,7 @@ restrictions:
 #include "win32/Win32ForceFeedback.h"
 #include "OISException.h"
 #include <math.h>
+#include <cstddef>
 
 // 0 = No trace; 1 = Important traces; 2 = Debug traces
 #define OIS_WIN32_JOYFF_DEBUG 0
