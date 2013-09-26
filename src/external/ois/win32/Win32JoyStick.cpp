@@ -35,6 +35,7 @@ restrictions:
 #endif
 
 #include <cassert>
+#include <cstddef>
 #include <wbemidl.h>
 #include <oleauto.h>
 //#include <wmsstd.h>

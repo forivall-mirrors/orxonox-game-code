@@ -24,6 +24,7 @@ restrictions:
 #include "win32/Win32InputManager.h"
 #include "OISException.h"
 #include "OISEvents.h"
+#include <cstddef>
 
 using namespace OIS;
 
