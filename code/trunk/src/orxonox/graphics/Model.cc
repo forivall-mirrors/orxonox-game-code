@@ -29,6 +29,7 @@
 #include "Model.h"
 
 #include <OgreEntity.h>
+#include <OgreProgressiveMesh.h>
 
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
@@ -161,7 +162,9 @@ namespace orxonox
 */
                 orxout(verbose, context::lod) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << endl;
 
-#if OGRE_VERSION >= 0x010700
+#if OGRE_VERSION >= 0x010800
+                Ogre::ProgressiveMesh::LodValueList distList;
+#elif OGRE_VERSION >= 0x010700
                 Ogre::Mesh::LodValueList distList;
 #else
                 Ogre::Mesh::LodDistanceList distList;
@@ -189,7 +192,12 @@ namespace orxonox
 
 
                     //Generiert LOD-Levels
+#if OGRE_VERSION >= 0x010800
+                    Ogre::ProgressiveMesh::generateLodLevels(this->mesh_.getEntity()->getMesh().get(), distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL,
+                        this->lodReductionRate_);
+#else
                     this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, this->lodReductionRate_);
+#endif
                 }
                 else
                 {

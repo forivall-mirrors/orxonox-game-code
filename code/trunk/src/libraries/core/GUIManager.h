@@ -39,8 +39,15 @@
 
 #include <map>
 #include <string>
-#include <CEGUIForwardRefs.h>
-#include <CEGUIVersion.h>
+
+#if CEGUI_VERSION >= 0x000800
+#   include <CEGUI/ForwardRefs.h>
+#   include <CEGUI/Version.h>
+#else
+#   include <CEGUIForwardRefs.h>
+#   include <CEGUIVersion.h>
+#endif
+
 #include <boost/shared_ptr.hpp>
 
 #include "util/DestructionHelper.h"
@@ -148,8 +155,16 @@ namespace orxonox // tolua_export
 
         void executeCode(const std::string& str);
 
+        template <typename FunctionType, typename ObjectType>
+        bool protectedCall(FunctionType function, ObjectType object);
+
         template <typename FunctionType>
-        bool protectedCall(FunctionType function);
+        bool protectedCeguiSystemCall(FunctionType function);
+
+#if CEGUI_VERSION >= 0x000800
+        template <typename FunctionType>
+        bool protectedCeguiContextCall(FunctionType function);
+#endif
 
         void changedCeguiOutputLevel();
 
