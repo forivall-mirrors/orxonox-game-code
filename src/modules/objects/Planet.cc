@@ -107,11 +107,13 @@ namespace orxonox
 
                 float scaleFactor = this->getScale();
 
-    #if OGRE_VERSION >= 0x010700
+#if OGRE_VERSION >= 0x010800
+                Ogre::ProgressiveMesh::LodValueList distList;
+#elif OGRE_VERSION >= 0x010700
                 Ogre::Mesh::LodValueList distList;
-    #else
+#else
                 Ogre::Mesh::LodDistanceList distList;
-    #endif
+#endif
 
                 distList.push_back(10.0f*scaleFactor);
                 distList.push_back(19.0f*scaleFactor);
@@ -126,7 +128,12 @@ namespace orxonox
 
                 float reductionValue = 0.2f;
 
+#if OGRE_VERSION >= 0x010800
+                Ogre::ProgressiveMesh::generateLodLevels(this->mesh_.getEntity()->getMesh().get(), distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL,
+                    reductionValue);
+#else
                 this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+#endif
                 billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));
 
                 this->attachOgreObject(this->billboard_.getBillboardSet());

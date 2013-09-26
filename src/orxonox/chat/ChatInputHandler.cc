@@ -31,11 +31,20 @@
 #include <cassert>
 #include <cstddef>
 #include <string>
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
-#include <elements/CEGUIListboxTextItem.h>
+
+#if CEGUI_VERSION >= 0x000800
+#   include <CEGUI/Window.h>
+#   include <CEGUI/WindowManager.h>
+#   include <CEGUI/widgets/Listbox.h>
+#   include <CEGUI/widgets/ListboxItem.h>
+#   include <CEGUI/widgets/ListboxTextItem.h>
+#else
+#   include <CEGUIWindow.h>
+#   include <CEGUIWindowManager.h>
+#   include <elements/CEGUIListbox.h>
+#   include <elements/CEGUIListboxItem.h>
+#   include <elements/CEGUIListboxTextItem.h>
+#endif
 
 #include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
@@ -118,11 +127,15 @@ namespace orxonox
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
 
     /* GET WINDOW POINTERS */
+#if CEGUI_VERSION >= 0x000800
+    input = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChild( "orxonox/ChatBox/input" );
+    inputonly = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChild( "orxonox/ChatBox-inputonly/input" );
+    CEGUI::Window *history = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChild( "orxonox/ChatBox/history" );
+#else
     input = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/input" );
     inputonly = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox-inputonly/input" );
-
-    /* get pointer to the history window */
     CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/history" );
+#endif
 
     /* cast it to a listbox */
     lb_history = dynamic_cast<CEGUI::Listbox*>(history);
@@ -141,21 +154,21 @@ namespace orxonox
     // three loops: red tones, blue tones and green tones
     // reds
     for( i = 0; i < NumberOfColors/3; ++i )
-    { this->text_colors[ i ] = CEGUI::colour( red, green, blue );
+    { this->text_colors[ i ] = CEGUIColour( red, green, blue );
       green += 0.2f, blue += 0.2f;
     }
 
     // greens
     red = 0.5, green = 1, blue = 0.5;
     for( ; i < NumberOfColors*2/3; ++i )
-    { this->text_colors[ i ] = CEGUI::colour( red, green, blue );
+    { this->text_colors[ i ] = CEGUIColour( red, green, blue );
       red += 0.2f, blue += 0.2f;
     }
 
     // blues
     red = 0.5, green = 0.5, blue = 1;
     for( ; i < NumberOfColors; ++i )
-    { this->text_colors[ i ] = CEGUI::colour( red, green, blue );
+    { this->text_colors[ i ] = CEGUIColour( red, green, blue );
       red += 0.2f, green += 0.2f;
     }
   }
@@ -272,15 +285,21 @@ namespace orxonox
     if( this->fullchat )
     {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (int)(this->input->getUnclippedInnerRect().getWidth()/6),
-        cursorpos, assembled.length() );
+#if CEGUI_VERSION >= 0x000800
+      sub_adjust_dispoffset( (int)(this->input->getUnclippedInnerRect().get().getWidth()/6), cursorpos, assembled.length() );
+#else
+      sub_adjust_dispoffset( (int)(this->input->getUnclippedInnerRect().getWidth()/6), cursorpos, assembled.length() );
+#endif
       this->input->setProperty( "Text", assembled.substr( disp_offset ) );
     }
     else
     {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (int)(this->inputonly->getUnclippedInnerRect().getWidth()/6),
-        cursorpos, assembled.length() );
+#if CEGUI_VERSION >= 0x000800
+      sub_adjust_dispoffset( (int)(this->inputonly->getUnclippedInnerRect().get().getWidth()/6), cursorpos, assembled.length() );
+#else
+      sub_adjust_dispoffset( (int)(this->inputonly->getUnclippedInnerRect().getWidth()/6), cursorpos, assembled.length() );
+#endif
       this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
     }
 

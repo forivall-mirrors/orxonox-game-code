@@ -245,4 +245,8 @@ namespace orxonox
 #  endif
 #endif
 
+// CEGUI changed its file naming convention in version 0.8 thus we cannot even include CEGUI's Version.h file before knowing its version
+#include <@CEGUI_VERSION_FILE@>
+#define CEGUI_VERSION ((CEGUI_VERSION_MAJOR << 16) | (CEGUI_VERSION_MINOR << 8) | CEGUI_VERSION_PATCH)
+
 #endif /* _OrxonoxConfig_H__ */

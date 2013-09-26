@@ -37,7 +37,6 @@
 
 #include "OrxonoxConfig.h"
 #include <boost/version.hpp>
-#include <CEGUIVersion.h>
 
 //-----------------------------------------------------------------------
 // Shared library settings

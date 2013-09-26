@@ -107,8 +107,11 @@ namespace orxonox
         void loadRenderer();
 
         // event from Ogre::LogListener
-        void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
-        bool maskDebug, const std::string& logName);
+#if OGRE_VERSION >= 0x010800
+        void messageLogged(const std::string& message, Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName, bool& skipThisMessage);
+#else
+        void messageLogged(const std::string& message, Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName);
+#endif
 
         // console commands
         void printScreen();

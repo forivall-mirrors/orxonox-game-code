@@ -401,9 +401,17 @@ namespace orxonox
     @param logName
         The name of this log (so you can have several listeners
         for different logs, and identify them)
+    @param skipThisMessage
+        If set to true by the messageLogged() implementation message will not be logged
     */
+#if OGRE_VERSION >= 0x010800
+    void GraphicsManager::messageLogged(const std::string& message,
+        Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName, bool& skipThisMessage)
+        // TODO: do we have to ignore the message if skipThisMessage is set?
+#else
     void GraphicsManager::messageLogged(const std::string& message,
         Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName)
+#endif
     {
         OutputLevel orxonoxLevel;
         std::string introduction;
