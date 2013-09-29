@@ -101,7 +101,7 @@ namespace orxonox
         this->shell_->unregisterListener(this);
 
         // Erase input and status lines
-        COORD pos = {0, this->inputLineRow_};
+        COORD pos = makeCOORD(0, this->inputLineRow_);
         this->writeText(std::string((this->inputLineHeight_ + this->statusLines_) * this->terminalWidth_, ' '), pos);
         // Move cursor to the beginning of the line
         SetConsoleCursorPosition(stdOutHandle_, pos);
@@ -296,12 +296,12 @@ namespace orxonox
         if (linesDown > 0)
         {
             // Scroll input and status lines down
-            SMALL_RECT oldRect = {0, this->inputLineRow_,
-                this->terminalWidth_ - 1, this->inputLineRow_ + this->inputLineHeight_ + this->statusLines_ - 1};
+            SMALL_RECT oldRect = makeSMALL_RECT(0, this->inputLineRow_,
+                this->terminalWidth_ - 1, this->inputLineRow_ + this->inputLineHeight_ + this->statusLines_ - 1);
             this->inputLineRow_ += linesDown;
             ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, makeCOORD(0, this->inputLineRow_), &fillChar);
             // Move cursor down to the new bottom so the user can see the status lines
-            COORD pos = {0, this->inputLineRow_ + this->inputLineHeight_ - 1 + this->statusLines_};
+            COORD pos = makeCOORD(0, this->inputLineRow_ + this->inputLineHeight_ - 1 + this->statusLines_);
             SetConsoleCursorPosition(stdOutHandle_, pos);
             // Get cursor back to the right position
             this->cursorChanged();
@@ -310,7 +310,7 @@ namespace orxonox
         if (lines - linesDown > 0)
         {
             // Scroll output up
-            SMALL_RECT oldRect = {0, lines - linesDown, this->terminalWidth_ - 1, this->inputLineRow_ - 1};
+            SMALL_RECT oldRect = makeSMALL_RECT(0, lines - linesDown, this->terminalWidth_ - 1, this->inputLineRow_ - 1);
             ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, makeCOORD(0, 0), &fillChar);
         }
     }
@@ -357,13 +357,13 @@ namespace orxonox
         {
             // Scroll status lines up
             int statusLineRow = this->inputLineRow_ + this->inputLineHeight_;
-            SMALL_RECT oldRect = {0, statusLineRow, this->terminalWidth_ - 1, statusLineRow + this->statusLines_};
+            SMALL_RECT oldRect = makeSMALL_RECT(0, statusLineRow, this->terminalWidth_ - 1, statusLineRow + this->statusLines_);
             CHAR_INFO fillChar = {{' '}, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED};
             ScrollConsoleScreenBuffer(stdOutHandle_, &oldRect, NULL, makeCOORD(0, statusLineRow + newLines), &fillChar);
             // Clear potential leftovers
             if (-newLines - this->statusLines_ > 0)
             {
-                COORD pos = {0, this->inputLineRow_ + newInputLineHeight + this->statusLines_};
+                COORD pos = makeCOORD(0, this->inputLineRow_ + newInputLineHeight + this->statusLines_);
                 this->writeText(std::string((-newLines - this->statusLines_) * this->terminalWidth_, ' '), pos);
             }
         }
@@ -397,7 +397,7 @@ namespace orxonox
         this->lastOutputLineHeight_ = 1 + it->first.size() / this->terminalWidth_;
         this->createNewOutputLines(this->lastOutputLineHeight_);
         // Write the text
-        COORD pos = {0, this->inputLineRow_ - this->lastOutputLineHeight_};
+        COORD pos = makeCOORD(0, this->inputLineRow_ - this->lastOutputLineHeight_);
         this->printOutputLine(it->first, it->second, pos);
     }
 }

@@ -79,9 +79,15 @@ namespace orxonox
         void createNewOutputLines(int lines);
         void printOutputLine(const std::string& line, Shell::LineType type, const COORD& pos);
 
-        static inline COORD makeCOORD(int x, int y)
+        static inline COORD makeCOORD(SHORT x, SHORT y)
         {
             COORD val = {x, y};
+            return val;
+        }
+
+        static inline SMALL_RECT makeSMALL_RECT(SHORT left, SHORT top, SHORT right, SHORT bottom)
+        {
+            SMALL_RECT val = {left, top, right, bottom};
             return val;
         }
 
