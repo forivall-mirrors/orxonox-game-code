@@ -82,7 +82,7 @@ namespace orxonox
 
 
         protected:
-            inline int getPlayerCount() const
+            inline unsigned int getPlayerCount() const
                  { return this->numberOf[chaser] + numberOf[piggy] + this->numberOf[killer]; }
 
             std::map< PlayerInfo*, int > playerParty_; //player's parties are recorded here
