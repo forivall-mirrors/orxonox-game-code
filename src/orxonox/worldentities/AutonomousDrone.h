@@ -48,7 +48,7 @@ namespace orxonox {
     class _OrxonoxExport AutonomousDrone : public ControllableEntity
     {
         public:
-            AutonomousDrone(BaseObject* creator);
+            AutonomousDrone(Context* context);
             virtual ~AutonomousDrone();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating an AutonomousDrone through XML.

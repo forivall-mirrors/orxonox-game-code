@@ -45,7 +45,7 @@ namespace orxonox
     class _OrxonoxExport AutonomousDroneController : public Controller, public Tickable
     {
         public:
-            AutonomousDroneController(BaseObject* creator);
+            AutonomousDroneController(Context* context);
             virtual ~AutonomousDroneController();
 
             virtual void tick(float dt); //!< The controlling happens here. This method defines what the controller has to do each tick.
