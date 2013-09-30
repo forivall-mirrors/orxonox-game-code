@@ -47,9 +47,10 @@ namespace orxonox
 
         // This checks that our context really is a drone
         // and saves the pointer to the drone for the controlling commands
-        AutonomousDrone* drone = dynamic_cast<AutonomousDrone*>(context);
-        assert(drone != NULL);
-        this->setControllableEntity(drone);
+        /* NOTE from Sandro: This is currently broken */
+        //AutonomousDrone* drone = dynamic_cast<AutonomousDrone*>(context);
+        //assert(drone != NULL);
+        //this->setControllableEntity(drone);
     }
 
     /**
@@ -69,7 +70,12 @@ namespace orxonox
     */
     void AutonomousDroneController::tick(float dt)
     {
-        AutonomousDrone *myDrone = static_cast<AutonomousDrone*>(this->getControllableEntity());
+        /* NOTE: Ugly hack by Sandro to make the tutorial work for the moment.
+         * This will be reverted once the framework update is complete
+         */
+        //AutonomousDrone *myDrone = static_cast<AutonomousDrone*>(this->getControllableEntity());
+        ObjectList<AutonomousDrone>::iterator it = ObjectList<AutonomousDrone>::begin();
+
         //TODO: Place your code here:
         // Steering commands
         // You can use the commands provided by the AutonomousDrone to steer it:

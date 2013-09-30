@@ -57,7 +57,7 @@ namespace orxonox
 
         this->setCollisionType(WorldEntity::Dynamic);
 
-        this->myController_ = new AutonomousDroneController(this); // Creates a new controller and passes our this pointer to it as creator.
+        //this->myController_ = new AutonomousDroneController(this); // Creates a new controller and passes our this pointer to it as creator.
     }
 
     /**
