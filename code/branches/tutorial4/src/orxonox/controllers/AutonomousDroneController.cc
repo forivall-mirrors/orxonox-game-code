@@ -37,17 +37,17 @@ namespace orxonox
     /**
     @brief
         Constructor.
-    @param creator
-        The creator of this object.
+    @param context
+        The context of this object.
     */
-    AutonomousDroneController::AutonomousDroneController(BaseObject* creator) : Controller(creator)
+    AutonomousDroneController::AutonomousDroneController(Context* context) : Controller(context)
     {
         //TODO: Place your code here:
         // Make sure to register the object and create the factory.
 
-        // This checks that our creator really is a drone
+        // This checks that our context really is a drone
         // and saves the pointer to the drone for the controlling commands
-        AutonomousDrone* drone = dynamic_cast<AutonomousDrone*>(creator);
+        AutonomousDrone* drone = dynamic_cast<AutonomousDrone*>(context);
         assert(drone != NULL);
         this->setControllableEntity(drone);
     }

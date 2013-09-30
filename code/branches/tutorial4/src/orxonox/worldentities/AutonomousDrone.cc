@@ -42,7 +42,7 @@ namespace orxonox
     @param creator
         The creator of this object.
     */
-    AutonomousDrone::AutonomousDrone(BaseObject* creator) : ControllableEntity(creator)
+    AutonomousDrone::AutonomousDrone(Context* context) : ControllableEntity(context)
     {
         //TODO: Put your code in here:
         // Register the drone class to the core.
