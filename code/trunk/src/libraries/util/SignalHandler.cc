@@ -39,7 +39,6 @@
 #include <cstring>
 #include <cstdio>
 
-#include <unistd.h>
 #include "Output.h"
 
 namespace orxonox
@@ -54,6 +53,7 @@ namespace orxonox
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 #include <sys/prctl.h>
+#include <unistd.h>
 
 namespace orxonox
 {
@@ -71,7 +71,7 @@ namespace orxonox
       assert( sigRecList.size() == 0 );
 
       catchSignal( SIGSEGV );
-      catchSignal( SIGABRT );  
+      catchSignal( SIGABRT );
       catchSignal( SIGILL );
     }
 
