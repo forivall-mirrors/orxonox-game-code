@@ -121,7 +121,7 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
           SET(_old_flags "")
         ENDIF()
         SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES
-          COMPILE_FLAGS "${_old_flags} -include ${_pch_header_filename}"
+          COMPILE_FLAGS "${_old_flags} -I ${CMAKE_CURRENT_SOURCE_DIR} -include ${_pch_header_filename}"
           OBJECT_DEPENDS "${_pch_header_file}"
         )
       ENDIF(NOT _is_header)
