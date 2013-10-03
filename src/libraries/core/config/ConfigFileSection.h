@@ -36,6 +36,8 @@
 
 #include "core/CorePrereqs.h"
 
+#include <string>
+#include <list>
 #include "ConfigFileEntry.h"
 
 namespace orxonox

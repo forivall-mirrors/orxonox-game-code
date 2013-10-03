@@ -36,6 +36,8 @@
 
 #include "core/CorePrereqs.h"
 
+#include <set>
+#include <map>
 #include "ConfigFile.h"
 #include "util/Singleton.h"
 
