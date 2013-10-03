@@ -100,6 +100,10 @@ ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
 # messages. Other versions don't seem to show any such warnings at all.
 ADD_COMPILER_FLAGS("-Wno-deprecated" CXX CACHE)
 
+# Since GCC 4.8 -Wall includes -Wunused-local-typedefs which triggers lots of warnings
+# in Boost headers, hence we disable it
+ADD_COMPILER_FLAGS("-Wno-unused-local-typedefs" CXX CACHE)
+
 # Always show why a precompiled header file could not be used
 ADD_COMPILER_FLAGS("-Winvalid-pch" CXX CACHE)
 
