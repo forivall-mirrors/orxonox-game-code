@@ -69,6 +69,9 @@ IF(TARDIS)
   LIST(APPEND CMAKE_INCLUDE_PATH "/usr/pack/ogre-1.6.1-sd")
   LIST(APPEND CMAKE_LIBRARY_PATH "/usr/pack/ogre-1.6.1-sd/amd64-debian-linux5.0")
 
+  #Solution to the problem that on the new tardis machines, we needed to run Orxonox with the command
+  # bash && LD_LIBRARY_PATH=/usr/pack/libcg-1.5-sd/amd64-debian-linux3.1/lib/ ./run
+  link_directories(/usr/pack/libcg-1.5-sd/amd64-debian-linux3.1/lib/)
   #SET(ENV{CEGUIDIR}    "/usr/pack/cegui-0.6.2-sd;/usr/pack/cegui-0.6.2-sd/i686-debian-linux5.0")
   #SET(ENV{ENETDIR}     "/usr/pack/enet-1.2-sd;/usr/pack/enet-1.2-sd/i686-debian-linux4.0")
   #SET(ENV{ALUTDIR}     "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
