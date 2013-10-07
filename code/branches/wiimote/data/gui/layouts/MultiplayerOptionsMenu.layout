@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="MenuWidgets/StaticImage" Name="orxonox/MultiplayerOptionsBackground" >
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="BackgroundEnabled" Value="False" />
+        <Window Type="MenuWidgets/StaticText" Name="orxonox/MultiplayerOptionsWindow" >
+            <Property Name="Text" Value="Multiplayer options" />
+            <Property Name="Alpha" Value="0.8" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="HorzFormatting" Value="HorzCentred" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="VertFormatting" Value="TopAligned" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.3625,0},{0.75,0},{0.6375,0}}" />
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerOptionsBackButton" >
+            <Property Name="Text" Value="Back" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.625,0},{0.6,0},{0.675,0}}" />
+            <Event Name="Clicked" Function="MultiplayerOptionsMenu.MultiplayerOptionsBackButton_clicked"/>
+        </Window>
+    </Window>
+</GUILayout>
