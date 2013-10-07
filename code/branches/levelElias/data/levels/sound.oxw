@@ -1,0 +1,59 @@
+<LevelInfo
+ name = "Sound showcase"
+ description = "Level to test and showcase sound."
+ tags = "test, showcase"
+ screenshot = "soundshowcase.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+<Level>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+  <WorldAmbientSound source="Earth.ogg" looping="true" playOnLoad="true" />
+  <WorldAmbientSound source="Mars.ogg" looping="true">
+    <events>
+      <activity>
+        <DistanceTrigger position="400,0,0" distance=200 target="Camera">
+          <attached>
+            <ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
+          </attached>
+        </DistanceTrigger>
+      </activity>
+    </events>
+  </WorldAmbientSound>
+  <WorldAmbientSound source="Jupiter.ogg" looping="true">
+    <events>
+      <activity>
+        <DistanceTrigger position="400,150,0" distance=200 target="Camera">
+          <attached>
+            <ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
+          </attached>
+        </DistanceTrigger>
+      </activity>
+    </events>
+  </WorldAmbientSound>
+
+
+  <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+  <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+  
+  </Scene>
+</Level>

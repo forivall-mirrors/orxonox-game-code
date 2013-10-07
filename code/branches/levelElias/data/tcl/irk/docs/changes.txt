@@ -1,0 +1,22 @@
+IRK 0.01, 02/07/2002
+    This is the first release of IRK.
+
+    What's implemented:
+
+    * Connection management.
+    * Integrated support for SOCKS5 to get through firewalls.
+    * Rudimentary flow control and queueing. Needs more work.
+    * Ping, MOTD, and informational messages management.
+    * Channel and nick management.
+    * Users on channels tracking.
+    * CTCP and all its subcommands.
+    * Special CTCP TCL protocol for communication between IRKs. All Tcl code
+      received from remote IRKs is run in a safe interpreter.
+    * Generalized persistent authorization and password management mechanism.
+    * Two usage examples:
+      + tontalou.tcl: a "bot" modelled after SmallSaints on DalNet. This
+        bot is unfinished.
+      + fortunebot.tcl: a "bot" that demonstrates grabbing a page from
+        the web and presenting its information in IRC.
+      Unfortunately no documentation is provided for these bots but they do
+      provide excellent examples on how you can use IRK to write Tcl "bots".

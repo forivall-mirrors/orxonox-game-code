@@ -1,0 +1,12 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  Controller.cc
+  HumanController.cc
+  NewHumanController.cc
+  ArtificialController.cc
+  AIController.cc
+  ScriptController.cc
+  WaypointController.cc
+  WaypointPatrolController.cc
+  DroneController.cc
+  FormationController.cc
+)
