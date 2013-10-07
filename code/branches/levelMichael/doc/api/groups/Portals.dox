@@ -1,0 +1,281 @@
+/**
+    @addtogroup Portals Portals
+    @ingroup Modules
+
+    This module allows you to place @ref orxonox::PortalEndPoint "PortalEndPoints" in space and connect pairs of them with a @ref orxonox::PortalLink "PortalLink" in order to allow fast travelling from A to B.
+
+    @section FastHowTo Fast HowTo: Including portals in a level
+    The simplest way to use portals is show by the following piece of xml-code
+    @code
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="0,0,0" id="1" design="PortalDefault"/>
+    <PortalEndPoint position="-100,0,0" id="2" design="PortalDefault"/>
+    <PortalLink fromID="1" toID="2" />
+    @endcode
+    This
+     - creates two @ref orxonox::PortalEndPoint "PortalEndPoints", one at 0,0,0 and the other at -100,0,0
+     - makes them visible by attaching a Billboard made of the "Portals/Default" material to each of them and
+     - connects them, meaning that any @ref orxonox::Pawn "Pawn" which gets near 0,0,0 is immediately "warped" to -100,0,0 (but not the other way round)
+
+    @section IncludePortals Detailed HowTo: Including portals in a level
+    In the example above some default values are used. The full possibilities are shown below
+    @code
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <Template name=PortalBig>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Big" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <PortalEndPoint position="-100,0,0" id="2" distance="40" target="MobileEntity" design="PortalBig"/>
+    <PortalLink fromID="1" toID="2" />
+    <PortalLink fromID="2" toID="1" />
+    @endcode
+
+    step by step
+    @subsection Templates "Templates"
+    In order to make @ref orxonox::PortalEndPoint "PortalEndPoints" visible in the game there must be something visible.
+    The idea (as shown above) is to define or include arbitrary Templates which make a PortalEndPoint visible and use them later by setting the design attribute of a @ref orxonox::PortalEndPoint "PortalEndPoint" to the template name
+    @subsection Parameters "Parameters"
+     - position: 3d-coordinate in space
+     - distance (default: 50): distance at which a valid entity gets pulled in (if the end point is an entrance).
+     - target (default: "Pawn"): the class which is able to enter this end point (if it is an entrance)
+     - design: the name of the @ref orxonox::Template "design template"
+*/
+
+/**
+    @addtogroup Pickup Pickup
+    @ingroup Modules
+
+    The Pickup module adds a special type of object to Orxonox, the so-called @ref orxonox::Pickupable "Pickupables". @ref orxonox::Pickupable "Pickupables" are objects that can be picked up (by virtually any entity, but commonly by the @ref orxonox::Pawn "Pawn") and have some kind of effect on the entity that picked the @ref orxonox::Pickupable "Pickupable" up.
+
+    @section IncludingPickups Including pickups in a level
+    @ref orxonox::Pickupable "Pickupables" are designed so that they can be included in levels fairly easily, while also ensuring, that the pickup itself (its game-logic component) and how it is represented (e.g. in the PickupInventory (the GUI that displays @ref orxonox::Pickupable "Pickupables") or in the game) are neatly seperated.
+    To be able to use @ref orxonox::Pickupable "Pickupables" in a level one must understand some basic concepts.
+    - @ref orxonox::Pickupable "Pickupables" are entities which (by itself) have no physical (or graphical) dimension. The simply represent the effect they will have on a @ref orxonox::PickupCarrier "PickupCarrier" (the entity that can pick up @ref orxonox::Pickupable "Pickupables", @ref orxonox::Pawn "Pawn" for example inherits from @ref orxonox::PickupSpawner "PickupSpawner" and thus is able to pick up and carry @ref orxonox::Pickupable "Pickupables"), when used and the mechanism that leads to that.
+    - The physical (or graphical) dimension of a pickup is called a @ref orxonox::PickupRepresentation "PickupRepresentation".
+    - The @ref orxonox::PickupRepresentation "PickupRepresentation" of a @ref orxonox::Pickupable "Pickupable" and the @ref orxonox::Pickupable "Pickupable" itself are linked to each other, in such a way that a @ref orxonox::PickupRepresentation "PickupRepresentation" can only represent one type of @ref orxonox::Pickupable "Pickupable".
+    - A type of @ref orxonox::Pickupable "Pickupable" is a specific pickup class (inheriting from @ref orxonox::Pickupable "Pickupable") with specific values for all its relevant parameters. This means, that a pickup of the same class with the same values for all parameters except for one is a different type of pickup and will therefore have a different @ref orxonox::PickupRepresentation "PickupRepresentation". Which parameters are the ones relevant to destinguish between two types of pickups can be defined in the class description of the specific pickup.
+    - The entity that actually gives a @ref orxonox::Pickupable "Pickupable" to a @ref orxonox::PickupCarrier "PickupCarrier" is called a @ref orxonox::PickupSpawner "PickupSpawner". A @ref orxonox::PickupSpawner "PickupSpawner" creates (based on some parameters) @ref orxonox::Pickupable "Pickupables" which then is picked up by the @ref orxonox::PickupCarrier "PickupCarrier", that caused the @ref orxonox::PickupSpawner "PickupSpawner" to spawn a new pickup. How the spawner looks in the game is defined by the @ref orxonox::PickupRepresentation "PickupRepresentation" of the @ref orxonox::Pickupable "Pickupable" it spawns.
+
+    @subsection UsingPredifinedPickups Using predefined pickups
+    There is a file called <code>pickupRepresentationTemplates.oxt</code> in <code>levels/templates</code>, which holds the templates for the @ref orxonox::PickupRepresentation "PickupRepresentations" and also templates for @ref orxonox::Pickupable "Pickupables". The templates for the @ref orxonox::PickupRepresentation "PickupRepresentations" define the @ref orxonox::StaticEntity "StaticEntities" that are attached to the @ref orxonox::PickupSpawner "PickupSpawners" to make them look like the @ref orxonox::Pickupable "Pickupable" they are spawning. The templates for the @ref orxonox::Pickupable "Pickupables" can be added just for ease of use.
+    If you want to use pickups you will have to include this file in your level file, somewhere above the Level-tag.
+    @code
+    <?lua
+        include("templates/pickupRepresentationTemplates.oxt")
+    ?>
+    ...
+    <Level>
+    ...
+    @endcode
+    There is another file called <code>pickups.oxi</code> in <code>level/includes</code> which creates all @ref orxonox::PickupRepresentation "PickupRepresentations" needed for the @ref orxonox::Pickupable "Pickupable" supplied by the <code>pickupRepresentationTemplates.oxt</code> file. This file will have to be included as well. It has to be somewhere after the opening Scene-tag and your first use of a pickup.
+    @code
+    <Scene>
+    ...
+    <?lua
+        include("includes/pickups.oxi")
+    ?>
+    @endcode
+    After that all the predefined pickups specified in those two files can be used just by creating a @ref orxonox::PickupSpawner "PickupSpawner" for them in the respective level.
+    For example:
+    @code
+    <PickupSpawner position="-100,0,-100" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <HealthPickup
+                health = 10
+                healthType = "limited"
+                activationType = "immediate"
+                durationType = "once"
+            />
+        </pickup>
+    </PickupSpawner>
+    @endcode
+    Please be aware, that the @ref orxonox::Pickupable "Pickupable" specified for the @ref orxonox::PickupSpawner "PickupSpawner", has to be exactly the same (including all parameters) to the one specified in the <code>pickups.oxi</code> file.
+    To make things simpler, one could just use the templates specified in the <code>pickupRepresentationTemplates.oxt</code> file. Which, following the previous example, would look like this:
+    @code
+    <PickupSpawner position="-100,0,-100" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <HealthPickup template="smallhealthpickup" />
+        </pickup>
+    </PickupSpawner>
+    @endcode
+
+    @subsection UnsingNon-PredefinedPickups Using non-predefined pickups
+    To include a type of pickup (which, as we remember, is the class of the @ref orxonox::Pickupable "Pickupable" with specific values for all the relevant parameters) in a level file, you can just create a new @ref orxonox::PickupSpawner "PickupSpawner" and specify the @ref orxonox::Pickupable "Pickupable".
+    @code
+    <PickupSpawner position="-100,0,-100" respawnTime="30" maxSpawnedItems="10">
+    <pickup>
+        <HealthPickup
+            health = 33
+            healthType = "limited"
+            activationType = "immediate"
+            durationType = "once"
+        />
+    </pickup>
+    </PickupSpawner>
+    @endcode
+    As can be seen in the <code>pickupRepresentationTemplates.oxt</code> file and the <code>pickups.oxi</code> file there is no @ref orxonox::PickupRepresentation "PickupRepresentation" defined for this type of pickup. Thus the default representation will be used.
+
+    To create an appropriate @ref orxonox::PickupRepresentation "PickupRepresentation" for the inserted pickup above, you can just create a @ref orxonox::PickupRepresentation "PickupRepresentation" within the scene (Within the Scene-tags).
+    @code
+    <PickupRepresentation
+        name = "My new health pickup"
+        description = "This is an awesome new health pickup."
+        spawnerTemplate = "mediumhealthpickupRepresentation"
+        inventoryRepresentation = "MediumHealth"
+    >
+        <pickup>
+            <HealthPickup
+            health = 33
+            healthType = "limited"
+            activationType = "immediate"
+            durationType = "once"
+        />
+        </pickup>
+    </PickupRepresentation>
+    @endcode
+    Notice, that the type of pickup specified for the @ref orxonox::PickupRepresentation "PickupRepresentation", naturally, needs to be the same (this is the way they can be connected). Also, we just used an existing <em>spawnerTemplate</em>, to make things simpler.
+
+    The next step is to create a <em>spawnerRepresentation</em> uniquely for our new type of pickup. Lets call it <code>newhealthpickupRepresentation</code>. Thus the parameter <em>spawnerTemplate</em> of the @ref orxonox::PickupRepresentation "PickupRepresentation" has to be changed to that value.
+    @code
+    spawnerTemplate = "newhealthpickupRepresentation"
+    @endcode
+    The <em>spawnerTemplate</em> defines how the @ref orxonox::PickupSpawner "PickupSpawner" is displayed in a level.
+    In our example case it could look like this:
+    @code
+    <Template name=newhealthpickupRepresentation>
+        <PickupRepresentation>
+            <spawner-representation>
+                <StaticEntity>
+                    <attached>
+                        -- Here you can put all the objects which define the look of the spawner. --
+                    </attached>
+                </StaticEntity>
+            </spawner-representation>
+        </PickupRepresentation>
+    </Template>
+    @endcode
+    Please refer to the <code>pickupRepresentationTemplates.oxt</code> for more examples.
+
+    The @ref orxonox::PickupRepresentation "PickupRepresentation" also needs another parameter the <em>inventoryRepresentation</em>. This parameter defined how the @ref orxonox::Pickupable "Pickupable" is displayed in the PickupInventory (a menu to browse the currently equipped pickups).
+    @code
+    inventoryRepresentation = "MediumHealth"
+    @endcode
+    This is the name of an image defined in the PickupInventory imageset (<code>PickupInventory.imageset</code>), which can be found in <code>data_extern/gui/imagesets</code>.
+
+    This is all that has to be done. Now you have a new pickup type with an appropriate @ref orxonox::PickupRepresentation "PickupRepresentation" for your use. If you feel that your pickup is useful in general, please don't hesitate to create a template for the pickup and add your pickup to the <code>pickupRepresentationTemplates.oxt</code> file and the <code>pickups.oxi</code> file, so that anyone who wants to use it can do so quite easily.
+
+    There is also an additional way to create new types of pickups to be used in a level (without having to do any coding). There is a @ref orxonox::Pickupable "Pickupable" called the @ref orxonox::PickupCollection "PickupCollection", which is just a collection (hence the name) of @ref orxonox::Pickupable "Pickupables" (more precisely of @ref orxonox::CollectiblePickup "CollectiblePickups"), behaving as if it was just one @ref orxonox::Pickupable "Pickupable".
+    A @ref orxonox::PickupCollection "PickupCollection" can be created as follows:
+    @code
+    <PickupCollection>
+        <pickupables>
+            -- some pickups you want to have in your collection, e.g. --
+            <HealthPickup template=smallhealthpickup />
+            <HealthPickup health=50 healthRate=5 durationType=continuous activationType=immediate healthType=limited />
+        </pickupables>
+    </PickupCollection>
+    @endcode
+    Of which types of pickups a collection is made up is entirely up to the one creating the @ref orxonox::PickupCollection "PickupCollection", they can be mixed freely.
+
+    @section CreatingAPickup Creating a new pickup
+    Things have been fairly straightforward so far. Creating a @ref orxonox::Pickupable "Pickupable" form scratch isn't as easy. Therefore I'm just going to supply you with a recipe, or a set of steps you have to take, without which your pickup won't work and point out some common pitfalls.
+
+    @subsection CreatingAPickupClass Creating the class
+    For a new @ref orxonox::Pickupable "Pickupable" you need to create a new class in <code>>modules/pickup/items</code>. Your class needs to be derived from another pickup class, normally this would either be @ref orxonox::Pickupable "Pickupable", @ref orxonox::CollectiblePickup "CollectiblePickup" or @ref orxonox::Pickup "Pickup". @ref orxonox::Pickupable "Pickupable" is (as mentioned earlier) the base class of all things that can be picked up, thus of all pickups. @ref orxonox::CollectiblePickup "CollectiblePickup" is a (directly) derived class of @ref orxonox::Pickupable  "Pickupable" and provides the additional functionality of enabling your pickup to be used in a @ref orxonox::PickupCollection "PickupCollection". However you are probably going to want to derive your class form @ref orxonox::Pickup "Pickup", because it is a @ref orxonox::CollectiblePickup "CollectiblePickup" and provides some useful methods. So have a look at @ref orxonox::Pickup "Pickup".
+    Once you have created your new pickup class you have to insert it in the <code>PickupPrereqs.h</code> file in the <code>modules/pickup</code> folder and in the <code>CMakeList.txt</code> file in the <code>modules/pickup/items</code> folder. Also have a look at other pickups to make sure you include all the necessary files in your class.
+
+    @subsection ChoosingTheCarriers Coosing the carriers
+    You also have to choose the entities that are allowed to pick your pickup up. After you have chosen the entity that carries your pickup, you need to do the following.
+    - The enity that carries your pickup needs to be derived from the @ref orxonox::PickupCarrier "PickupCarrier" interface. And you need to implement the @ref orxonox::PickupCarrier "PickupCarriers'" virtual functions <code>getCarrierChildren()</code> and <code>getCarrierParent()</code>. These tow methods are needed, because all pickups are initially picked up by a @ref orxonox::Pawn "Pawn" and then handed down to the entity that effectively carries them. With the above mentioned two function just that is accomplished. A hierarchical structure is established with one parent and a set of children, where the @ref orxonox::Pawn "Pawn" is the root node of this hierarchical structure, the only entity with no parent.
+    - Once you have done that you will also want to specify in your pickup which carriers can pick it up, this is done via the <code>addTarget()</code> function. So you have to make sure the target is added whenever one of your pickups is created (so, most conveniently somewhere in the constructor), with the following command.
+    @code
+    this->addTarget(ClassIdentifier<MyCarrierClass>::getIdentifier());
+    @endcode
+
+    @subsection CreatingTheInnerWorkings Creating the inner workings of your pickup
+    Now that we have the skeleton of a pickup and we have defined which carriers are allowed to pick our pickup up we are going to take a look at all the methods we can (or sometimes have to) overload from @ref orxonox::Pickupable "Pickupable", for our pickup to work properly. But first I will introduce some more concepts to make the need for these methods more obvious.
+    - Since one pickup class can by itself be many pickup types, we need a way to find out whether a particular instance of a pickup is of the same type as another instance of a pickup. To that end the @ref orxonox::PickupIdentifier "PickupIdentifier" was created. The @ref orxonox::PickupIdentifier "PickupIdentifier" accounts for the type of class your pickup is of and also for the parameters (and their values) that distinguish different types of pickups of the same class. Much of the functionality of the pickup module relies on this identifier being correct, thus it is very important to initialize it correctly. (We will see, how that is done in a short while.)
+    - Every @ref orxonox::Pickupable "Pickupable" has at least two states which are very important. The first is, whether the @ref orxonox::Pickupable "Pickupable" is currently in use or not and the second is whether the pickup is currently picked up or not.
+
+    Let's have a look at the important methods.
+    - <b>changedUsed()</b> The <code>changedUsed()</code> method is called whenever the state of the @ref orxonox::Pickupable "Pickupable" transits from being used to not being used or the other way around. Which means this method is probably the most important method you have at your fingertips, since it enables you to apply the effect of your pickup when it gets used and remove the effect as soon as it is no longer in use.
+    - <b>changedPickedUp()</b> The <code>changedPickedUp()</code> method is called whenever the state of the @ref orxonox::Pickupable "Pickupable" changes from being picked up to not being picked up or the other way around. For example if you want your pickup to be used as soon as it is picked up, this is the method you have to overload to achieve that behavior (or just let your pickup be derived from @ref orxonox::Pickup "Pickup", which implements exactly that behavior, if the <em>activationType</em> is set to <em>immediate</em>). You don't have to concern yourself with destroying the pickup or creating a spawner when it changes to not picked up, since that is already implemented with the @ref orxonox::Pickupable "Pickupable" and @ref orxonox::PickupCarrier "PickupCarrier" classes. If you want a different behavior, however, once again, this is the method.
+    - <b>changedCarrier()</b> The <code>changedCarrier()</code> method is called whenever the carrier of the @ref orxonox::Pickupable "Pickupable" changes. And by that I don't mean the class that is allowed to carry the pickup, but the object that actually carries (or carried) the pickup. Please do not overload this class to implement behavior for picked up -> not picked up transitions, use <code>changedPickedUp()</code> for that. For most pickup classes this method doesn't need to be overloaded. Where it is used, however is in the @ref orxonox::PickupCollection "PickupCollection" class, where the new carrier needed to be communicated to all pickups the collection consists of, whenever the carrier was changed.
+
+    Please be aware, that these three methods are methods registered with @ref Super.h "Super", meaning, that whenever overloading them, don't forget to call <code>SUPER(MyClass, myMethod);</code>.
+    Also when implementing the above methods you should think of what should happen in unexpected situations, e.g. when your pickup is unused manually and set to used again.
+    Additionally you should use the <code>destroy()</code> method of Pickupable instead of the method provided by @ref orxonox::OrxonoxClass "OrxonoxClass", meaning <code>Pickupable::destroy()</code> instead of plain <code>destroy()</code>.
+
+    - <b>clone()</b> The <code>clone()</code> method creates a new pickup of the same type as the pickup it is cloned from. So the cloned pickup is not exactly the same, as it doesn't necessarily completely reflect the status of the pickup it is cloned from, but it reflects all the parameters and their values, that distinguish different types of this pickup class. It needs to be implemented by every pickup class. And it is best if this is done in a very specific way. Below is shown how:
+    @code
+    void MyPickup::clone(OrxonoxClass*& item)
+    {
+        if(item == NULL)
+            item = new MyPickup(this);
+
+        SUPER(MyPickup, clone, item);
+
+        MyPickup* pickup = dynamic_cast<MyPickup*>(item);
+        // Here you should set all the important parameters (that distinguish the different types of this pickup), e.g.
+        pickup->setSomeParameter(this->getSomeParameter());
+        // You must also initialize the identifier of the new pickup, this is normally done in a member function called in
+        pickup->initializeIdentifier();
+    }
+    @endcode
+    - <b>initializeIdentifier()</b> The <code>initializeIdentifier()</code> method initializes (or more simply put, creates) the @ref orxonox::PickupIdentifier "PickupIdentifier" of the instance of your pickup. Since the important values of the parameters are not yet available in the constructor of your pickup this <code>initializeIdentifier()</code> method must be called as soon as they are available, which normally is in the <code>XMLPort()</code> method, and the <code>clone()</code> method, as seen above. In the <code>initializeIdentifier()</code> method you need to register each parameter that is important for the type of your pickup to its identifier, this is normally done as follows:
+    @code
+    void Pickup::initializeIdentifier(void)
+    {
+        // If the get method returns a string.
+        std::string val1 = this->getSomeParameter();
+        std::string type1 = "someParameter";
+        this->pickupIdentifier_->addParameter(type1, val1);
+        // If the get method doesn't return a string
+        std::stringstream stream;
+        stream << this->getSomeOtherParameter();
+        std::string type2 = "someOtherParameter";
+        std::string val2 = stream.str();
+        this->pickupIdentifier_->addParameter(type2, val2);
+    }
+    @endcode
+
+    Be aware, this only works for parameters that are simple enough, meaning with pointers for example it will, naturally, not work, and other ways must be found (this is for example done in @ref orxonox::PickupCollection "PickupCollection" with a derived class of the @ref orxonox::PickupIdentifier "PickupIdentifier", the @ref orxonox::PickupCollectionIdentifier "PickupCollectionIdentifier") or in the @ref orxonox::DronePickup "DronePickup" class by using a @ref orxonox::Template "Template".
+    - <b>createSpawner()</b> The <code>createSpawner()</code> method needs to be implemented by any pickup directly inheriting from @ref orxonox::Pickupable "Pickupable" (or directly from @ref orxonox::CollectiblePickup "CollectiblePickup"), so if you inherit from @ref orxonox::Pickup "Pickup", you don't need to implement this. It is used to create a @ref orxonox::PickupSpawner "PickupSpawner", when the pickup is dropped. A standard implementation would look like this.
+    @code
+    bool MyPickup::createSpawner(void)
+    {
+        new DroppedPickup(this, this, this->getCarrier());
+        return true;
+    }
+    @endcode
+
+    @section PickupTechnicalDetails Technical details
+
+    @image html pickupmodule.png
+*/
+
+/**
+    @defgroup PickupItems Items
+    @ingroup Pickup
+
+    The actual pickups can be found here.
+*/ 
