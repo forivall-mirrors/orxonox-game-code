@@ -1,6 +1,6 @@
 <LevelInfo
- name = "Empty level"
- description = "A level with absolutely nothing in it."
+ name = "Invader Test"
+ description = "Invader Test"
  tags = "test"
  screenshot = "emptylevel.png"
 />
@@ -14,10 +14,10 @@
 <?lua
   include("templates/spaceshipAssff2.oxt")
   include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipInvader.oxt")
 ?>
 
-<Level>
+<Level gametype = Invader>
   <templates>
     <Template link=lodtemplate_default />
   </templates>
@@ -29,7 +29,7 @@
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipinvader />
     
   </Scene>
 </Level>
