@@ -1,0 +1,14 @@
+SET_SOURCE_FILES(Invader_SRC_FILES
+BUILD_UNIT InvaderBuildUnit.cc
+  Invader.cc
+END_BUILD_UNIT
+)
+
+ORXONOX_ADD_LIBRARY(Invader
+  MODULE
+  FIND_HEADER_FILES
+  LINK_LIBRARIES
+    orxonox
+    overlays
+  SOURCE_FILES ${Invader_SRC_FILES}
+)
