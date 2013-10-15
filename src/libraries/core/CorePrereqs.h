@@ -275,7 +275,7 @@ namespace boost
         typedef basic_path<std::string, path_traits> path;
     }
 
-#elif (BOOST_VERSION < 104800)
+#elif (BOOST_VERSION < 105000)
 
 # if BOOST_FILESYSTEM_VERSION == 2
     namespace filesystem2
@@ -303,7 +303,6 @@ namespace boost
 
 #else
 
-    // TODO: Check this once boost 1.48 is released
     namespace filesystem
     {
         class path;
