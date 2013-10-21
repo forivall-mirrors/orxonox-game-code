@@ -11,6 +11,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraPosition.cc
   SpawnPoint.cc
   TeamSpawnPoint.cc
+  AutonomousDrone.cc
 )
 
 ADD_SUBDIRECTORY(pawns)
