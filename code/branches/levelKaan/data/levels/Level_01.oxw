@@ -1,0 +1,235 @@
+<!-- -->
+
+<LevelInfo
+	 name = "Level_01"
+	 description = "A level with absolutely nothing in it."
+	 tags = "mission"
+	 screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipSpacecruiser.oxt")
+?>
+
+<Level gametype="Mission">
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+  <Scene
+    ambientlight = "0.5, 0.5, 0.5"
+    skybox       = "Orxonox/Starbox"
+    hasPhysics   = true
+
+  >
+
+   <?lua
+      include("includes/pickups.oxi")
+  ?>
+
+ 
+<?lua
+    dofile("includes/CuboidSpaceStation.lua")
+?>
+
+
+<<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
+
+<SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+
+
+
+<!-- <?lua
+      for i = 1, 250, 1
+      do
+      j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(math.random()* 6000 - 3000) ?>,<?lua print(math.random() * 10000 + 3000) ?>,<?lua print(math.random() * 6000 - 3000) ?>"
+      collisionType = dynamic
+      linearDamping = 0.8
+      angularDamping = 0
+      scale = "<?lua print(j * 150)?>"
+      collisiondamage = 0.05
+      enablecollisiondamage = true
+    >
+      <attached>
+        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+
+    <?lua
+      end
+    ?>-->
+
+
+<!----------------------------------------------------------------------------------------------------->
+<!-------------------------------------- PART ZERO: Docking on  --------------------------------------->
+<!----------------------------------------------------------------------------------------------------->
+
+<!-- OBJECTS IN THIS PART
+
+<!-- @Objects: HYDROGEN FARMER & DOCKING -->
+    <SpaceShip
+        team      = 0
+        position  = "-4000,4000,4000"
+        roll      = 90   yaw=0  pitch=20
+        mass      = 10000
+        health    = 100000 initialhealth=100000 maxhealth="100000"
+        name      = "HydroFarmer"
+        radarname = "Hydrogen Farmer" >
+	visible = true
+      <attached>
+        <!-- Docking -->
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+   <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
+        <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
+        <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
+        <Model mesh="cube.mesh" mass=10 position="-280,0,0" scale3D="163,50,50" />
+        <Model mesh="cube.mesh" mass=10 position="140,0,-240" scale3D="163,50,50"  yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="163,50,50" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,400,0" scale3D="43,110,26" yaw=-30 />
+        <Model mesh="cube.mesh" mass=10 position="-200,100,0" scale3D="26,50,43" />
+        <Model mesh="cube.mesh" mass=10 position="100,100,-173" scale3D="43,50,26" yaw=-30/>
+        <Model mesh="cube.mesh" mass=10 position="100,100,173" scale3D="43,50,26" yaw=30/>
+        <Model mesh="cube.mesh" mass=10 position="-100,264,0" scale3D="26,105,43" roll=-49/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,-87" scale3D="26,105,43" roll=-49 yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/>     -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
+        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections -->
+        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
+        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower -->
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one-->
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs -->
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs -->
+        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
+      </collisionShapes>
+    </SpaceShip>
+
+<!--@Objects: SpaceCruiser as docking target -->
+    <SpaceShip
+        template            = "spaceshipassff"
+        team                = "0"
+        position            = "-4000,3900,4000"
+        orientation         = "-0.14, 0.68, 0.68, 0.223"
+        health              = "400"
+        initialhealth       = "400"
+        maxhealth           = "500"
+        shieldhealth        = "80"
+        initialshieldhealth = "80"
+        maxshieldhealth     = "120"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "cruiser"
+        radarname           = "Spaceship Assff" >
+	visible		    = true 	
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip>
+
+<MovableEntity position="-500,500, 500">
+    <attached>
+        <Billboard position="0,0,0" material="Examples/Flare" colour="1, 0, 0" scale=0.5/>
+    </attached>
+</MovableEntity>
+
+
+  <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=4/>
+    <SimpleNotification message="Hey Rookie.. We got a new mission for you.">
+        <events>
+            <trigger>
+                <EventListener event="flying1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+  <DistanceTrigger name="flying2" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=8/>
+    <SimpleNotification message="Go to the main station for more information.">
+        <events>
+            <trigger>
+                <EventListener event="flying2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+ <DistanceTrigger name="flying3" position="-500,500,500" target="Pawn" distance=50 stayActive="true" delay=3/>
+    <SimpleNotification message="Our friends from District 69 are under attack">
+        <events>
+            <trigger>
+                <EventListener event="flying3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+ <DistanceTrigger name="flying4" position="-500,500,500" target="Pawn" distance=50 stayActive="true" delay=7/>
+    <SimpleNotification message="We need you to help them.">
+        <events>
+            <trigger>
+                <EventListener event="flying4" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<DistanceTrigger name="flying5" position="-500,500,500" target="Pawn" distance=50 stayActive="true" delay=11/>
+    <SimpleNotification message="Dock on the station to get a better ship.">
+        <events>
+            <trigger>
+                <EventListener event="flying5" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<!----------------------------------------------------------------------------------------------------->
+<!-------------------------------- PART ONE: Passing throug wormhole  --------------------------------->
+<!----------------------------------------------------------------------------------------------------->
+
+    
+  </Scene>
+</Level>
+
