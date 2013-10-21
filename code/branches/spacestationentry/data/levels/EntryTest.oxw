@@ -1,0 +1,816 @@
+<LevelInfo
+ name = "EntryTest"
+ description = "Test suite for Entry"
+ screenshot = "missionOne.png"
+ tags = "mission"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipSpacecruiser.oxt")
+  include("templates/spaceshipTransporter.oxt")
+?>
+
+<?lua
+include("templates/pickupRepresentationTemplates.oxt")
+?>
+
+<Level
+ gametype     = "Mission"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+
+    <WorldAmbientSound source="Earth.ogg" looping="true" playOnLoad="true" /> <!-- AlphaCentauri.ogg, Mars.ogg-->
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+<!-- END OF INCLUDES & NECESSARITIES -->
+
+<!-- SPAWNPOINT & START OF QUESTS via spawntrigger -->
+    <EventMultiTrigger name=spawntrigger>
+        <events>
+            <trigger>
+                <TeamSpawnPoint team=0 position="-47000,-1000,1300" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event="attack" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </TeamSpawnPoint>
+            </trigger>
+        </events>
+    </EventMultiTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <AddQuest questId="missionOne.basicFlying" />
+                <!--AddQuestHint hintId ="quest1hint3" /-->
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=spawntrigger />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.basicFlying" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="flying4" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.navigation" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="navigationend" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!--helper trigger to end the weaponsystemI quest -->
+    <DistanceTrigger name="boxend" position="0,0,0" distance=950 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="boxtrigger4" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.weaponsystemI" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="boxend" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!--helper trigger to end the weaponsystemII quest -->
+    <DistanceTrigger name="piratesend" position="0,0,0" distance=2000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="movingpirates2" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.weaponsystemII" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=piratesend />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!--helper trigger to end the DuBallStation quest -->
+    <DistanceTrigger name="duballend" position="-1000,-300,700" distance=2000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="duball3" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.DuballStation" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=duballend />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1> <!--  alternative quest end  -->
+            <effects>
+                <CompleteQuest questId="missionOne.DuballStation" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=toHydroFarmer />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!--helper trigger to end the getHelp quest -->
+    <DistanceTrigger name="getHelpEnd" position="-47000,-1000,1300" distance=1400 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="ondock" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.getHelp" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=getHelpEnd />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!--helper trigger to end the getHome quest -->
+    <DistanceTrigger name="getHomeEnd" position="0,0,0" distance=4000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="attack" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.getHome" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=getHomeEnd />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!--helper trigger to end the defence quest -->
+    <DistanceTrigger name="defenceEnd" position="0,0,0" distance=4000 target="SpaceShip" stayActive="false" delay=0.1>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="attacktrigger6" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+    </DistanceTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="missionOne.defence" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=defenceEnd />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!-- End the quest after own destruction of spacecruiser -->
+        <QuestEffectBeacon position="-100,0,0" times=1>
+            <effects>
+                <FailQuest questId="missionOne.getHelp" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="failQuest" />
+                </execute>
+            </events>
+            <attached>
+                <DistanceTrigger name="failQuest" position="-47000,-1000,1300" distance=2300 target="SpaceShip">
+                  <EventTrigger>
+                    <events>
+                      <trigger>
+                        <EventListener event="gameEnd" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </DistanceTrigger>
+            </attached>
+        </QuestEffectBeacon>
+
+
+
+
+    <LocalQuest id="missionOne.basicFlying">
+        <QuestDescription title="Flying" description="Can you see the blinking light straight ahead? Your goal is to fly through it.
+Use (W) to accelerate and steer with your mouse.
+
+Further flying moves:
+break (S)
+roll     (Q) and (E)
+boost (Space)
+
+Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="missionOne.navigation" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.navigation">
+        <QuestDescription title="Navigation" description="The next goal is to find and move towards the test targets for your weaponsystem. The three arrows that just appeared down in the right corner of your screen indicate in which direction you have to turn your spacefighter to find your next targets.
+
+Alternative navigation: There's a green circle in the left corner - the radar. The red dots on the radar represent your targets. If you manage to move your spaceship in a way such that a dot is at the center of the radar, you will be able to see the concerning object straight ahead." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="missionOne.weaponsystemI" />
+        </complete-effects>
+    </LocalQuest>
+
+            <LocalQuest id ="missionOne.weaponsystemI">
+                <QuestDescription title="Destroy the Boxes" description="Test your four different weapons on the four boxes:
+1. laser (left click)
+2. plasma (right click)
+3. target seeking rockets (middle click)
+4. manual rockets (T)
+
+Attention if you use manual rockets: Press (T) only once to start the rocket. If you miss your target you can get out of the rocket, by clicking or pressing (T) once more." failmessage="" completeMessage="" />
+                    <hints>
+                        <QuestHint id="missionOne.weaponsystem.laser">
+                            <QuestDescription title="Laser" description="The laser is a standard weapon. It is fast and precise but does not deal much damage." />
+                        </QuestHint>
+                        <QuestHint id="missionOne.weaponsystem.lightningGun">
+                            <QuestDescription title="Lightninggun" description="That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That could be your favourite weapon for close range combat or if you want to hit a really slow enemy." />
+                        </QuestHint>
+                        <QuestHint id="missionOne.weaponsystem.targetSeekingRocket">
+                            <QuestDescription title="Target Seeking Rocket" description="The target seeking rockets follow slow targets on their own." />
+                        </QuestHint>
+                        <QuestHint id="missionOne.weaponsystem.manualrocket">
+                            <QuestDescription title="Manual Rocket" description="Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. The total amount of both manual and target seeking rockets is limited to 10." />
+                        </QuestHint>
+                    </hints>
+                <complete-effects>
+                    <AddQuest questId="missionOne.weaponsystemII" />
+                </complete-effects>
+            </LocalQuest>
+
+            <LocalQuest id="missionOne.weaponsystemII">
+                <QuestDescription title="Kill the pirates" description="Get rid of the patrolling pirates.
+Find out which weapon is best to tackle moving targets. Get close enough." failmessage="" completeMessage="" />
+                <complete-effects>
+                    <AddQuest questId="missionOne.DuballStation" />
+                </complete-effects>
+            </LocalQuest>
+
+    <LocalQuest id="missionOne.DuballStation">
+        <QuestDescription title="Duball Space Station" description="Fly towards the Duball Space Station. The grey radar marker will lead you to its position." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="missionOne.getHelp" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.getHelp">
+        <QuestDescription title="Get Help" description="There are several enemies approaching. You can't handle it on your own. Fortunately there's a shortcut to the next friendly unit. Use the portal (grey dot) to get near the Hydrogen Farmer.
+The Hydrogen Farmer is a large spaceship with three legs.
+There you might get help - as far as we know there should be a strong spaceruiser docked to the Hydrogen Farmer. In order to be able to use that stronger spaceship, you have to dock to the Hydrogen Farmer.
+Simply fly to the center of the Hydrogen Farmer, which is between its three legs.
+
+How to dock: Accept the dialogue, take your hands off the keyboard and watch." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="missionOne.getHome" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.getHome">
+        <QuestDescription title="Return ASAP" description="So you managed to get the spacecruiser. Use the portal to return to the DuBall Space Station.
+Hurry! Your help is desperately needed." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="missionOne.defence" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="missionOne.defence">
+        <QuestDescription title="Defence" description="Seven enemies were detected that seem to launch a coordinated attack.
+Do not hesitate to fight or you will be the target.
+
+Always take care of the enemy that is the closest to you." failmessage="" completeMessage="Yeah! You did it." />
+    </LocalQuest>
+<!-- --------------------- END OF QUESTS -------------------------- -->
+
+
+    <DistanceTrigger name="spawndelaytrigger0" position="800,700,600" target="Pawn" distance=10 stayActive="true" delay=2/>
+    <SimpleNotification message="Press (F3) to see your mission briefing.">
+        <events>
+            <trigger>
+                <EventListener event="spawndelaytrigger0" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Dock to the Hydrogen Farmer." broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=toHydroFarmer />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<!-------------------------------------- PART FOUR : Get Help --------------------------------------->
+
+    <Trigger name="famer1" mode="and" stayActive="true">
+        <DistanceTrigger position="-48200,100,0" target="Pawn" distance=650 stayActive="true" delay=0 />
+        <EventTrigger name="notGameEnd" activations="1" invert="true">
+          <events>
+            <trigger>
+              <EventListener event="gameEnd" />
+            </trigger>
+          </events>
+        </EventTrigger>
+    </Trigger>
+
+    <Trigger name="famer2" mode="and" stayActive="true">
+        <DistanceTrigger position="-48200,100,0" target="Pawn" distance=650 stayActive="true" delay=4 />
+        <EventTrigger activations="1" invert="true">
+          <events>
+            <trigger>
+              <EventListener event="gameEnd" />
+            </trigger>
+          </events>
+        </EventTrigger>
+    </Trigger>
+
+<!-- @Objects: HYDROGEN FARMER & DOCKING -->
+    <SpaceShip
+        team      = 0
+        position  = "-48900,100,0"
+        roll      = 90   yaw=0  pitch=20
+        mass      = 10000
+        health    = 100000 initialhealth=100000 maxhealth="100000"
+        name      = "HydroFarmer"
+        radarname = "Hydrogen Farmer" >
+      <attached>
+        <!-- Docking -->
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+   <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
+        <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
+        <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
+        <Model mesh="cube.mesh" mass=10 position="-280,0,0" scale3D="163,50,50" />
+        <Model mesh="cube.mesh" mass=10 position="140,0,-240" scale3D="163,50,50"  yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="163,50,50" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,400,0" scale3D="43,110,26" yaw=-30 />
+        <Model mesh="cube.mesh" mass=10 position="-200,100,0" scale3D="26,50,43" />
+        <Model mesh="cube.mesh" mass=10 position="100,100,-173" scale3D="43,50,26" yaw=-30/>
+        <Model mesh="cube.mesh" mass=10 position="100,100,173" scale3D="43,50,26" yaw=30/>
+        <Model mesh="cube.mesh" mass=10 position="-100,264,0" scale3D="26,105,43" roll=-49/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,-87" scale3D="26,105,43" roll=-49 yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/>     -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
+        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections -->
+        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
+        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower -->
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one-->
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs -->
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs -->
+        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
+      </collisionShapes>
+    </SpaceShip>
+
+<!-- @Objects: Test Station Cube -->
+
+
+
+
+    <Dock position="-48900,0,0" roll=90 yaw=180 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+            <activity>
+                <EventListener event=notGameEnd />
+            </activity>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+        </attached>
+
+    </Dock>
+
+<!--@Objects: SpaceCruiser as docking target -->
+    <SpaceShip
+        template            = "spaceshipspacecruiser"
+        team                = "0"
+        position            = "-48900,800,0"
+        orientation         = "-0.14, 0.68, 0.68, 0.223"
+        health              = "400"
+        initialhealth       = "400"
+        maxhealth           = "500"
+        shieldhealth        = "80"
+        initialshieldhealth = "80"
+        maxshieldhealth     = "120"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "cruiser"
+        radarname           = "Spacecruiser" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip>
+
+
+<!-- Fallback Spawnpoint: on cruiserdeath caused by pirates. Unfortunately unstable behaviour concerning activity. -->
+    <TeamSpawnPoint team=0 position="2000,1500,-1500" direction="-1,-1,1" spawnclass=SpaceShip pawndesign=spaceshipspacecruiser>
+        <events>
+            <activity>
+                <EventListener event="attack" />
+            </activity>
+        </events>
+    </TeamSpawnPoint>
+
+<!-- @Triggers: toHydroFamer <-> first  portal usage
+                ondock       <-> successfull docking
+                attack       <-> second portal usage -->
+
+    <DistanceTrigger name="attack" position="-1400,-500,800" target="Pawn" distance=100 stayActive="true" mode="and">
+        <EventTrigger name="ondock" activations="1" stayactive="true" delay=6>
+          <events>
+            <trigger>
+              <EventListener event="dockMe" />
+            </trigger>
+          </events>
+            <Trigger mode=and>
+              <DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=100 stayActive="true" />
+              <EventTrigger activations="1" invert="true">
+                <events>
+                  <trigger>
+                    <EventListener event="gameEnd" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </Trigger>
+        </EventTrigger>
+        <EventTrigger activations="1" invert="true">
+          <events>
+            <trigger>
+              <EventListener event="earlyEnd" />
+            </trigger>
+          </events>
+        </EventTrigger>
+    </DistanceTrigger>
+
+<!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,6] -->
+    <EventTrigger name="attacktrigger6" activations="1" stayactive="true">
+      <events>
+        <trigger>
+          <EventListener event="attacker" />
+        </trigger>
+      </events>
+      <EventTrigger name="attacktrigger5" activations="1" stayactive="true" delay=0.1>
+        <events>
+          <trigger>
+            <EventListener event="attacker" />
+          </trigger>
+        </events>
+        <EventTrigger name="attacktrigger4" activations="1" stayactive="true" delay=0.1>
+          <events>
+            <trigger>
+              <EventListener event="attacker" />
+            </trigger>
+          </events>
+          <EventTrigger name="attacktrigger3" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="attacker" />
+              </trigger>
+            </events>
+            <EventTrigger name="attacktrigger2" activations="1" stayactive="true" delay=0.1>
+              <events>
+                <trigger>
+                  <EventListener event="attacker" />
+                </trigger>
+              </events>
+              <EventTrigger name="attacktrigger1" activations="1" stayactive="true" delay=0.1>
+                <events>
+                  <trigger>
+                    <EventListener event="attacker" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </EventTrigger>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+
+
+    <SimpleNotification message="5 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger1" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="4 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger2" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="3 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger3" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="2 enemies left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger4" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="One enemy left!" broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger5" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Well done. You finished this tutorial." broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+<!-- @Triggers: postAttack <-> delayed attacktrigger6 -->
+    <EventTrigger name="postAttack1" activations="1" stayactive="true" delay=4.1>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <EventTrigger name="postAttack2" activations="1" stayactive="true" delay=8.2>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Either quit by pressing (Esc) or ..." broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="postAttack1" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="... stay here to learn some tricks." broadcast="true">
+      <events>
+        <trigger>
+          <EventListener event="postAttack2" />
+        </trigger>
+      </events>
+    </SimpleNotification>
+
+<!-------------------------------------- |Bonus Part| --------------------------------------->
+<!-- @Triggers: "bonusX" <->  delayed "attacktrigger6" -->
+    <EventTrigger name="bonus1" activations="1" stayactive="true" delay=12.3>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus2" activations="1" stayactive="true" delay=16.4>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus3" activations="1" stayactive="true" delay=22>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus4" activations="1" stayactive="true" delay=28.1>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus5" activations="1" stayactive="true" delay=32.3>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus6" activations="1" stayactive="true" delay=36.5>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    <EventTrigger name="bonus7" activations="1" stayactive="true" delay=4.1>
+      <events>
+        <trigger>
+          <EventListener event="bonus6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+
+
+    <SimpleNotification message="Rotate your ship. Press (Q) or (E). "  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Switch the camera's position. Press (C). "  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="360° view: press (Ctrl) + use the mouse "  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Have a look at the main menu's settings."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus4 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="E.g: Settings > Miscellaneous > Nr. of bots"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus5 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="You successfully finished Mission One!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus6 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Press (Esc) and return to the main menu."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event=bonus7 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+    <!--Script code="addBots 3" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=bonus6 />
+            </trigger>
+        </events>
+    </Script>
+
+    <Script code="artificialcontroller setbotlevel 0.1" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=bonus6 />
+            </trigger>
+        </events>
+    </Script-->
+    <!-- Script code="artificialcontroller setbotlevel 0.1" /-->
+  </Scene>
+</Level>
+
+<!-- TODO:
+- Story & more precise Questmessages; more quest hints; fail-quest;
+- Colouring: Show who is friend or foe via the colour
+- Waypoints: show the player the way
+- Foolproof text messages (e.g. verspätete Nachrichten unterdrücken ~done )
+- End Tutorial, if either the Hydrogen Farmer or the SpaceCruiser gets destroyed. (~done)
+ -->
