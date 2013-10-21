@@ -1,0 +1,490 @@
+<!-- -->
+
+<!--Basic----------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+							<!--Basic Infos-->
+
+<LevelInfo
+ name = "Escape the bastards"
+ description = "You destroyed their Base, you accomplished the mission. Now get out of there, and get rid of the haunters"
+ tags = "mission"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipSpacecruiser.oxt")
+?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=4
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0, 0.5, 1, 0.9"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+<Level
+  name = "Escape the bastards"
+  description = "You destroyed their Base, you accomplished the mission. Now get out of there, and get rid of the haunters"
+  gametype=Mission
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/skyBoxMoreNebula" 
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+	
+
+    <!-- SpawnPoint team=0 position="-1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff / -->
+
+<!-- New Ship -->
+
+
+<!-- New Ship END -->
+							<!--Basic Infos end-->
+
+<!--Story----------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+<!--Quests (Fly to the Ally)-->
+    <EventMultiTrigger name=spawntrigger>
+        <events>
+            <trigger>
+                <TeamSpawnPoint team=0 position="-1000,0,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipspacecruiser>
+                  <EventTrigger invert=true>
+                    <events>
+                      <trigger>
+                        <EventListener event="missionfinish" />
+                      </trigger>
+                    </events>
+                  </EventTrigger>
+                </TeamSpawnPoint>
+            </trigger>
+        </events>
+    </EventMultiTrigger>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <AddQuest questId="Helpisontheway.1" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=spawntrigger />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="Helpisontheway" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="missionfinish" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="defend.2" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="target3" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+
+
+        <DistanceTrigger name="missionfinish" position="-2580,300,-209" target="Pawn" distance=60 stayActive="true" delay=1>
+ 	<DistanceTrigger name="reachedally" position="-2580,300,-209" target="Pawn" distance=60 stayActive="true" delay=6>
+    </DistanceTrigger>
+    </DistanceTrigger>
+
+
+
+
+<BlinkingBillboard position="-2580,300,-209" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=missionfinish />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+
+<Billboard position="-2580,300,-209" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=missionfinish />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
+<!--Quests (Fly to the Ally) END-->
+
+<!--Quests (Fight Enemies)-->
+
+
+ <SpaceShip position="-6000,800,-709" lookat="0,0,1" name="attacker" radarname="Fighter1">
+                            <events>
+                                <visibility>
+                                    <EventListener event="reachedally" />
+                                </visibility>
+                            </events>
+                    <templates>
+                      <Template link=spaceshipassff />
+                    </templates>
+                    <controller>
+                      <WaypointPatrolController alertnessradius=1000  team=1>
+                         <waypoints>
+                        <Model mesh="cube.mesh" scale=10 position="-3700,800,-709"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3700,800,309"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3700,-200,309"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3700,-200,-709"/>
+                       </waypoints>
+                    </WaypointPatrolController>
+                  </controller>
+                </SpaceShip>
+
+ <SpaceShip position="-6050,300,-709" lookat="1,0,0" name="attacker" radarname="Fighter2">
+                            <events>
+                                <visibility>
+                                    <EventListener event="reachedally" />
+                                </visibility>
+                            </events>
+                    <templates>
+                      <Template link=spaceshipassff />
+                    </templates>
+                    <controller>
+                      <WaypointPatrolController alertnessradius=1000  team=1>
+                         <waypoints>
+                        <Model mesh="cube.mesh" scale=10 position="-4200,300,-709"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3200,300,-709"/>
+                        <Model mesh="cube.mesh" scale=10 position="-4200,300,309"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3200,300,309"/>
+                       </waypoints>
+                    </WaypointPatrolController>
+                  </controller>
+                </SpaceShip>
+
+ <SpaceShip position="-6100,-200,-209" lookat="0,1,0" name="attacker" radarname="Fighter3">
+                            <events>
+                                <visibility>
+                                    <EventListener event="reachedally" />
+                                </visibility>
+                            </events>
+                    <templates>
+                      <Template link=spaceshipassff />
+                    </templates>
+                    <controller>
+                      <WaypointPatrolController alertnessradius=1000  team=1>
+                         <waypoints>
+                        <Model mesh="cube.mesh" scale=10 position="-4200,-200,-209"/>
+                        <Model mesh="cube.mesh" scale=10 position="-4200,800,-209"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3200,800,-209"/>
+                        <Model mesh="cube.mesh" scale=10 position="-3200,-200,-209"/>
+                       </waypoints>
+                    </WaypointPatrolController>
+                  </controller>
+                </SpaceShip>
+
+<!-- @Triggers: Attakers, Fight one by one  -->
+
+	<EventTrigger name="target3" activations="1" stayactive="true" delay=0.1>
+     	 <events>
+     	   <trigger>
+        	  <EventListener event="attacker" />
+      	  </trigger>
+     	 </events>
+   	<EventTrigger name="target2" activations="1" stayactive="true" delay=0.1>
+      	  <events>
+     	     <trigger>
+    	        <EventListener event="attacker" />
+     	     </trigger>
+  	  </events>
+   	<EventTrigger name="target1" activations="1" stayactive="true" delay=0.1>
+      	  <events>
+     	     <trigger>
+    	        <EventListener event="attacker" />
+     	     </trigger>
+  	  </events>
+      	</EventTrigger>
+    	</EventTrigger>
+    	</EventTrigger>
+
+
+    <SimpleNotification message="Wow, That's an explosion."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="target1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="No Mercy!!!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="target2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Booom, you got them all."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="target3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+<!-- @Triggers: Attakers, Fight one by one END  -->
+
+
+<!--Quests (Fight Enemies) END-->
+
+
+<!-- LocalQuests -->
+    <LocalQuest id="Helpisontheway.1">
+        <QuestDescription title="Help is on the way" description="An allied pilot is cast away on a planet behind you. Fight the enemies and get him out of there.
+
+		He will blink with his lamp
+
+		PS: Remind the gravitation field"
+
+ 
+	failmessage="Well, you sucked" completeMessage="Well done, You're a hero" />
+        <complete-effects>
+            <AddQuest questId="defend.2" />
+        </complete-effects>
+    </LocalQuest>
+
+
+    <LocalQuest id="defend.2">
+        <QuestDescription title="Defend the Planet" description="You've picked up you're mate. He's wounded and you have to reach your base as fast as you can. Defend this place, 	and try to get him home.
+
+	Try to stay on the planet. It's easier to fight!" 
+	failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="leave.3" />
+        </complete-effects>
+    </LocalQuest>
+
+
+
+    <LocalQuest id="leave.3">
+        <QuestDescription title="Leave the Place" description="You've blown their minds. Let's go home." failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="wayhome.4" />
+        </complete-effects>
+    </LocalQuest>
+
+<!-- LocalQuests END -->
+
+<!-- Message Triggers -->
+    <DistanceTrigger name="StartofMission" position="-1000,0,0" target="Pawn" distance=10 stayActive="true" delay=2/>
+    <SimpleNotification message="Hi, I'm the Commander.">
+        <events>
+            <trigger>
+                <EventListener event="StartofMission" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="Introduction1" position="-1000,0,0" target="Pawn" distance=30 stayActive="true" delay=6.4/>
+    <SimpleNotification message="An allied pilot had to make a forced landing">
+        <events>
+            <trigger>
+                <EventListener event="Introduction1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="Introduction2" position="-1000,0,0" target="Pawn" distance=30 stayActive="true" delay=10.8/>
+    <SimpleNotification message="He needs your help. Get him out of there">
+        <events>
+            <trigger>
+                <EventListener event="Introduction2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="PickedUpAlly" position="-2580,300,-209" target="Pawn" distance=30 stayActive="true" delay=0.1/>
+    <SimpleNotification message="Hi .... are you an enemy?">
+        <events>
+            <trigger>
+                <EventListener event="PickedUpAlly" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="PickedUpAlly2" position="-2580,300,-209" target="Pawn" distance=30 stayActive="true" delay=4.4/>
+    <SimpleNotification message="Shoot the enemies staying on the planet">
+        <events>
+            <trigger>
+                <EventListener event="PickedUpAlly2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+<!-- Message Triggers END -->
+
+<!--Quests____END-->
+
+
+
+<!--Enviroment-------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+							<!--Asteroids Field-->
+
+	<?lua for i=0,500,1 do
+		x=math.random(-2500,2500)
+		y=math.random(-2500,2500)
+		z=math.random(-2500,2500)
+	scale=math.random(20,70)
+	?>
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>">
+    	<attached>
+        	<Model scale="<?lua print(scale) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+    	</collisionShapes>
+	</MovableEntity>
+	<?lua end ?>
+
+							<!--Asteroids Field end -->
+
+
+							<!--Asteroids Random-->
+
+	<?lua for i=0,300,1 do
+		x=math.random(-8000,8000)
+		y=math.random(-8000,8000)
+		z=math.random(-8000,8000)
+	?>
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>" >
+    	<attached>
+        	<Model scale="<?lua print(math.random(20,70)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+    	</attached>
+    	<collisionShapes>
+            <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+        </collisionShapes>
+	</MovableEntity>
+	<?lua end ?>
+
+							<!--Asteroids  Random end-->
+
+    							<!--Asteroid Elipse-->
+    <?lua
+    max = 20
+    for i = 0, max, 1
+    do
+    y = math.sin(i/max*6)*2000
+    z = math.cos(i/max*6)*2500
+    x = 0
+    ?>
+    <?lua
+    for k = 1, 15, 1
+    do
+    j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(x + math.random() * 500) ?>,<?lua print(y + math.random() * 500) ?>,<?lua print(z + math.random() * 1000) ?>"
+      collisionType = "dynamic"
+      linearDamping = "0.5"
+      angularDamping = "0.01"
+      collisiondamage = "0.01"
+      enablecollisiondamage = "true"
+      scale="<?lua print(j * 5) ?>" >
+      <attached>
+        <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
+      <?lua if k == 5 then ?><attached>			<!--asteroid fog-->
+            <ParticleEmitter position="0,0,0" source="Orxonox/Steam" />
+          </attached> <?lua end ?>
+        </Model>
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 80) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+    <?lua
+    end
+    ?>
+    <?lua end ?>
+							<!--Asteroid Elipse end-->
+
+							<!--Planet-->
+    <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
+    <StaticEntity position="2600,0,0" collisionType=static>
+        <collisionShapes>
+            <SphereCollisionShape radius="399" />
+        </collisionShapes>
+    </StaticEntity>
+							<!--Planet end-->
+
+							<!--Planet with Ally-->
+    <Planet
+      position="-2700,300,-209"
+      scale="100"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5000000"
+      pitch="0"
+      mesh="planets/muunilinst.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="1,0,0"
+      rotationrate="1.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="sphere" diameter="1000" velocity="-500" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="100" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+							<!--Planet with Ally-->
+
+
+
+
+  </Scene>
+</Level>
+
+
+
