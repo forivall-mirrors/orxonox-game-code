@@ -41,6 +41,12 @@
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
 
+#include "InvaderShip.h"
+// ! HACK
+#include "infos/PlayerInfo.h"
+
+#include "InvaderCenterPoint.h"
+
 namespace orxonox
 {
     RegisterUnloadableClass(Invader);
@@ -49,17 +55,33 @@ namespace orxonox
     {
         RegisterObject(Invader);
 
+        this->center_ = 0;
+        //this->context = context;
     }
 
     Invader::~Invader()
     {
     }
 
+    // inject custom player controller
+ /**   void Invader::spawnPlayer(PlayerInfo* player)
+    {
+        assert(player);
+
+        //player->startControl(new InvaderShip(this->center_->getContext() ) );
+    }*/
+
     void Invader::start()
     {
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = true;
 
+        if (this->center_ == NULL)  // abandon mission!
+        {
+            orxout(internal_error) << "Invader: No Centerpoint specified." << endl;
+            GSLevel::startMainMenu();
+            return;
+        }
         // Call start for the parent class.
         Deathmatch::start();
     }

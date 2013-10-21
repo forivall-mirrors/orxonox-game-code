@@ -1,6 +1,8 @@
 SET_SOURCE_FILES(Invader_SRC_FILES
 BUILD_UNIT InvaderBuildUnit.cc
   Invader.cc
+  InvaderCenterPoint.cc
+  InvaderShip.cc
 END_BUILD_UNIT
 )
 

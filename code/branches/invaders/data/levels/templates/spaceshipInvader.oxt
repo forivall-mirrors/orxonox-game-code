@@ -1,5 +1,5 @@
 <Template name=spaceshipinvader>
-  <SpaceShip
+  <InvaderShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipescortcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
@@ -58,18 +58,18 @@
 <?lua
   include("../includes/weaponSettingsEscort.oxi")
 ?>
-  </SpaceShip>
+  </InvaderShip>
 </Template>
 
 <Template name=spaceshipescortcameras defaults=0>
-  <SpaceShip>
+  <InvaderShip>
     <camerapositions>
-      <CameraPosition position="0,15, 60" drag=true mouselook=true />
+<!--       <CameraPosition position="0,15, 60" drag=true mouselook=true />
       <CameraPosition position="0,20, 90" drag=true mouselook=true />
-      <CameraPosition position="0,30,120" drag=true mouselook=true />
+      <CameraPosition position="0,30,120" drag=true mouselook=true /> -->
       <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=true mouselook=true />
     </camerapositions>
-  </SpaceShip>
+  </InvaderShip>
 </Template>
 
 <Template name=spaceshipescortengine baseclass=MultiStateEngine>

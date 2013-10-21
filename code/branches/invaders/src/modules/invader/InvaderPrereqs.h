@@ -68,6 +68,8 @@
 namespace orxonox
 {
     class Invader;
+    class InvaderCenterPoint;
+    class InvaderShip;
 }
 
 #endif /* _InvaderPrereqs_H__ */

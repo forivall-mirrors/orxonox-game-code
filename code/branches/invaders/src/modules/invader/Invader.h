@@ -39,6 +39,8 @@
 
 #include "gametypes/Deathmatch.h"
 
+#include "InvaderCenterPoint.h"
+
 namespace orxonox
 {
 
@@ -50,6 +52,14 @@ namespace orxonox
 
             virtual void start(); //!< Starts the Invader minigame.
             virtual void end(); ///!< Ends the Invader minigame.
+
+            //virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
+
+            void setCenterpoint(InvaderCenterPoint* center)
+            { this->center_ = center; }
+        private:
+            WeakPtr<InvaderCenterPoint> center_;
+            //Context* context;
     };
 }
 
