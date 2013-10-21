@@ -17,7 +17,7 @@ namespace orxonox
 {
 	class Wiimote_Test
 	        : public WindowEventListener
-			, public Tickable
+
 			, public Singleton<Wiimote_Test>
 	{
 		friend class Singleton<Wiimote_Test>;

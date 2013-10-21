@@ -1,0 +1,51 @@
+<LevelInfo
+ name = "Georg's partylevel"
+ description = "Level for the coding tutorial."
+ tags = "tutorial"
+ screenshot = "codingtutorial.png"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/Starbox"
+  >
+
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+
+    <?lua
+      for i = 1, 10, 1 do
+    ?>
+      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <?lua end ?>
+
+    
+    <AutonomousDrone primaryThrust="10" auxiliaryThrust="10" rotationThrust="1" mass = 50 linearDamping = 0.9 angularDamping = 0.7 position="0,0,0">
+ <attached>
+    <Model scale="10" mesh="drone.mesh"/>
+  </attached>
+<collisionShapes>
+    <BoxCollisionShape position="0,0,0" halfExtents="10, 10, 10" />
+  </collisionShapes>
+</AutonomousDrone>
+
+ <AutonomousDroneController>
+ </AutonomousDroneController>
+  
+
+  </Scene>
+</Level>
