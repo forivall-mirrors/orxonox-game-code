@@ -20,6 +20,7 @@
   include("templates/bigship.oxt")
   include("templates/spaceshipTurret.oxt")
   include("templates/spaceshipCollateralDamage.oxt")
+  include("templates/FPS.oxt")
 ?>
 
 <Level
@@ -28,24 +29,11 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
-  <?lua include("includes/notifications.oxi") ?>
-
-  <NotificationQueueCEGUI
-    name="narrative"
-    targets="simpleNotification"
-    size=1
-    displayTime=30
-    position="0.2, 0, 0.1, 0"
-    fontSize="24"
-    fontColor="0.3, 1, 0.2, 0.8"
-    alignment="HorzCentred"
-    displaySize="0.6, 0, 0, 0"
-    />
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
-    skybox       = "Orxonox/skyBoxMoreNebula"
-  > <!-- Orxonox/Starbox -->
+    skybox       = "Orxonox/Starbox"
+  >
     <?lua
       include("includes/pickups.oxi")
     ?>
@@ -113,7 +101,8 @@
         </attached>
 
     </Dock>
-    <SpaceShip
+    
+    <!--SpaceShip
         template            = "spaceshipcollateraldamage"
         team                = "0"
         position            = "2890,-40,6"
@@ -122,15 +111,20 @@
         roll                = "180"
         name                = "collateralDamage"
         radarname           = "Collateral Damage" >
-        <!--
-        pitch               = "90"
-        yaw                 = "0"-->
       <attached>
         <DockingTarget name="spaceShip" />
         <DistanceTriggerBeacon name="bcnDestroyer" />
         <DockingTarget name="destroyer" />
       </attached>
-    </SpaceShip>
+    </SpaceShip-->
+    
+<FpsPlayer template = "fps" radarname = "First Person Player" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+      </attached>
+</FpsPlayer>
 
     <!-- triple large belt around the planet  -->
     <?lua
