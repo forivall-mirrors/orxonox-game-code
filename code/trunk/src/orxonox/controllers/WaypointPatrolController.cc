@@ -41,7 +41,8 @@ namespace orxonox
     {
         RegisterObject(WaypointPatrolController);
 
-        this->alertnessradius_ = 500;
+        this->alertnessradius_ = 500.0f;
+        this->attackradius_ = 1000.0f;
 
         this->patrolTimer_.setTimer(rnd(), true, createExecutor(createFunctor(&WaypointPatrolController::searchEnemy, this)));
     }
@@ -51,6 +52,7 @@ namespace orxonox
         SUPER(WaypointPatrolController, XMLPort, xmlelement, mode);
 
         XMLPortParam(WaypointPatrolController, "alertnessradius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues(500.0f);
+        XMLPortParam(WaypointPatrolController, "attackradius", setAttackRadius, getAttackRadius, xmlelement, mode).defaultValues(1000.0f);
     }
 
     void WaypointPatrolController::tick(float dt)
@@ -58,14 +60,14 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->target_)
+        if (this->target_) //if there is a target, follow it and shoot it, if it is close enough
         {
             this->aimAtTarget();
 
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
 
-            if (this->getControllableEntity() && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
+            if (this->getControllableEntity() && this->isCloseAtTarget(this->attackradius_) && this->isLookingAtTarget(math::pi / 20.0f))
                 this->getControllableEntity()->fire(0);
         }
         else
