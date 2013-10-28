@@ -107,9 +107,24 @@
      aimMarkerSize = 0.02
     />
 
+<!--
     <HUDRadar
      name          = "Radar"
-     background    = "Orxonox/Radar"
+     backgroundtex = "radar.png"
+     correctaspect = true
+     size          = "0.17, 0.17"
+     position      = "1.0, 1.0"
+     pickpoint     = "1.0, 1.0"
+     rotation      = 0
+     sensitivity   = 1.0
+     halfDotSizeDistance = 3000
+     maximumDotSize      = 0.1
+    />
+    -->
+    
+    <HUDRadar
+     name          = "Radar"
+     backgroundtex = "radar3D_test.png"
      correctaspect = true
      size          = "0.17, 0.17"
      position      = "1.0, 1.0"

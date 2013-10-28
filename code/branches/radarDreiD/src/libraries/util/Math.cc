@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Wolfgang Roenninger
  *
  */
 
@@ -146,7 +146,7 @@ namespace orxonox
     }
 
     /**
-        @brief Gets the 2D viewing direction (up/down, left/right) to the position of the other object, multiplied with the viewing distance to the object (0° = 0, 180° = 1).
+        @brief Gets the 2D viewing direction (up/down, left/right) to the position of the other object, multiplied with the viewing distance to the object (0ï¿½ = 0, 180ï¿½ = 1).
         @param myposition My position
         @param mydirection My viewing direction
         @param myorthonormal My orthonormalvector (pointing upwards through my head)
@@ -189,6 +189,36 @@ namespace orxonox
         else
             return orxonox::Vector2( -sin_value * radius, cos_value * radius);
     }
+
+
+    /**
+            @brief Gets the 2D project vector for the 3D Radar .
+            @param myposition My position
+            @param mydirection My viewing direction
+            @param otherposition The position of the other object
+            @param mapangle The angle you look on the 3Dmap
+            @param detectionlimit The limit in which objects are shown on the map
+            @return The viewing direction
+
+            Examples:
+             -
+        */
+    orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
+    {
+    	//
+    	orxonox::Vector3 distance = otherposition - myposition;
+
+    	// project difference vector on our plane
+    	orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
+
+    	//float projectionlength = projection.length();
+
+    	// project vector for the rotated 3DMap
+    	float xcoordinate = projection.y/(2*detectionlimit);
+    	float ycoordinate = (projection.x*sin(mapangle)+projection.z*cos(mapangle))/(2*detectionlimit);
+    	return orxonox::Vector2(xcoordinate , ycoordinate);
+    }
+
 
     /**
         @brief Returns the predicted position I have to aim at, if I want to hit a moving target with a moving projectile.
