@@ -46,6 +46,7 @@
 #include "PongBat.h"
 #include "PongBot.h"
 #include "PongAI.h"
+
 namespace orxonox
 {
     // Events to allow to react to scoring of a player, in the level-file.
@@ -116,6 +117,7 @@ namespace orxonox
                 this->bat_[0] = 0;
             }
         }
+
     }
 
     /**

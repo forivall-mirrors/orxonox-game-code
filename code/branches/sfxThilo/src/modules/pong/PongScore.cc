@@ -40,6 +40,7 @@
 #include "infos/PlayerInfo.h"
 
 #include "Pong.h"
+#include "sound/WorldSound.h" /////////////////////////////
 
 namespace orxonox
 {

@@ -41,6 +41,7 @@
 
 #include "worldentities/MovableEntity.h"
 
+
 namespace orxonox
 {
 
@@ -62,6 +63,8 @@ namespace orxonox
             virtual ~PongBall();
 
             virtual void tick(float dt);
+
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             /**
             @brief Set the dimensions of the playing field.
@@ -122,6 +125,9 @@ namespace orxonox
 
             static const float MAX_REL_Z_VELOCITY;
 
+            void setDefScoreSound(const std::string& engineSound); //Thilo
+            const std::string& getDefScoreSound(); //Thilo
+
         private:
             void registerVariables();
 
@@ -134,6 +140,7 @@ namespace orxonox
             bool bDeleteBats_; //!< Bool, to keep track, of whether this->bat_ exists or not.
             unsigned int* batID_; //!< The object IDs of the bats, to be able to synchronize them over the network.
             float relMercyOffset_; //!< Offset, that makes the player not loose, when, in all fairness, he would have.
+            WorldSound* defScoreSound_;//Thilo
     };
 }
 

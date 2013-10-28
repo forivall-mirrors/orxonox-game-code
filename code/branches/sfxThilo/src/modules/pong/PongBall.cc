@@ -40,6 +40,9 @@
 
 #include "PongBat.h"
 
+#include "sound/WorldSound.h" //Thilo
+#include "core/XMLPort.h"
+
 namespace orxonox
 {
     RegisterClass(PongBall);
@@ -65,6 +68,21 @@ namespace orxonox
         this->relMercyOffset_ = 0.05f;
 
         this->registerVariables();
+
+        //Thilo
+        if (GameMode::isMaster())
+             {
+                 this->defScoreSound_ = new WorldSound(this->getContext());
+                 this->defScoreSound_->setLooping(false);
+                 this->defBatSound_ = new WorldSound(this->getContext());
+                 this->defBatSound_->setLooping(false);
+                 this->defBoundarySound_ = new WorldSound(this->getContext());
+                 this->defBoundarySound_->setLooping(false);
+             }
+             else
+             {
+                 this->defScoreSound_ = 0;
+             }
     }
 
     /**
@@ -80,6 +98,15 @@ namespace orxonox
 
             delete[] this->batID_;
         }
+    }
+
+    //Thilo
+    void PongBall::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(PongBall, XMLPort, xmlelement, mode);
+        XMLPortParam(PongBall, "defScoreSound",  setDefScoreSound,  getDefScoreSound,  xmlelement, mode);
+        XMLPortParam(PongBall, "defBatSound",  setDefBatSound,  getDefBatSound,  xmlelement, mode);
+        XMLPortParam(PongBall, "defBoundarySound",  setDefBoundarySound,  getDefBoundarySound,  xmlelement, mode);
     }
 
     /**
@@ -154,6 +181,7 @@ namespace orxonox
                     // If the left player scores.
                     else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
+                    	defScoreSound_->play();//Thilo
                         if (this->getGametype() && this->bat_[0])
                         {
                             this->getGametype()->playerScored(this->bat_[0]->getPlayer());
@@ -181,6 +209,7 @@ namespace orxonox
                     // If the right player scores.
                     else if (GameMode::isMaster() && position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
+                    	defScoreSound_->play();//Thilo
                         if (this->getGametype() && this->bat_[1])
                         {
                             this->getGametype()->playerScored(this->bat_[1]->getPlayer());
@@ -260,5 +289,56 @@ namespace orxonox
             this->bat_[0] = orxonox_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[0]));
         if (this->batID_[1] != OBJECTID_UNKNOWN)
             this->bat_[1] = orxonox_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[1]));
+    }
+
+    void PongBall::setDefScoreSound(const std::string &pongSound)
+    {
+        if( defScoreSound_ )
+            defScoreSound_->setSource(pongSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& PongBall::getDefScoreSound()
+    {
+        if( defScoreSound_ )
+            return defScoreSound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
+    }
+
+    void PongBall::setDefBatSound(const std::string &pongSound)
+    {
+        if( defBatSound_ )
+            defBatSound_->setSource(pongSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& PongBall::getDefBatSound()
+    {
+        if( defBatSound_ )
+            return defBatSound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
+    }
+
+    void PongBall::setDefBoundarySound(const std::string &pongSound)
+    {
+        if( defBoundarySound_ )
+            defBoundarySound_->setSource(pongSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& PongBall::getDefBoundarySound()
+    {
+        if( defBoundarySound_ )
+            return defBoundarySound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
     }
 }
