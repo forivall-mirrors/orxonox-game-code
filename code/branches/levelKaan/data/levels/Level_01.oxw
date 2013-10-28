@@ -57,26 +57,27 @@
 ?>
 
 
-<<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
+<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
 
 <SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
 
+<SpaceBoundaries warnDistance="1" maxDistance="1000" showDistance="300" healthDecrease="0.1" position="0,0,0"/>
 
-
-<!-- <?lua
+<?lua
       for i = 1, 250, 1
       do
       j = math.random()
     ?>
 
     <MovableEntity
-      position = "<?lua print(math.random()* 6000 - 3000) ?>,<?lua print(math.random() * 10000 + 3000) ?>,<?lua print(math.random() * 6000 - 3000) ?>"
+      position = "<?lua print(math.random()* 6000-3000) ?>,<?lua print(math.random() * 6000 -3000) ?>,<?lua print(math.random() * 6000-3000) ?>"
       collisionType = dynamic
       linearDamping = 0.8
       angularDamping = 0
       scale = "<?lua print(j * 150)?>"
-      collisiondamage = 0.05
+      collisiondamage = 0.005
       enablecollisiondamage = true
+      velocity          = "-5,0,0"
     >
       <attached>
         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
@@ -88,15 +89,17 @@
 
     <?lua
       end
-    ?>-->
+    ?>
 
 
 <!----------------------------------------------------------------------------------------------------->
 <!-------------------------------------- PART ZERO: Docking on  --------------------------------------->
 <!----------------------------------------------------------------------------------------------------->
 
-<!-- OBJECTS IN THIS PART
+<!-- OBJECTS IN THIS PART -->
 
+<!-- @Objects: HYDROGEN FARMER & DOCKING -->
+   
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
     <SpaceShip
         team      = 0
@@ -106,7 +109,6 @@
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "HydroFarmer"
         radarname = "Hydrogen Farmer" >
-	visible = true
       <attached>
         <!-- Docking -->
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -150,11 +152,34 @@
       </collisionShapes>
     </SpaceShip>
 
+    <Dock position="-4000,3900,4000" roll=90 yaw=180 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+            <activity>
+                <EventListener event=notGameEnd />
+            </activity>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+        </attached>
+
+    </Dock>
+
 <!--@Objects: SpaceCruiser as docking target -->
     <SpaceShip
-        template            = "spaceshipassff"
+        template            = "spaceshipspacecruiser"
         team                = "0"
-        position            = "-4000,3900,4000"
+        position            = "-4000,4700,4000"
         orientation         = "-0.14, 0.68, 0.68, 0.223"
         health              = "400"
         initialhealth       = "400"
@@ -166,12 +191,12 @@
         reloadrate          = "1"
         reloadwaittime      = "1"
         name                = "cruiser"
-        radarname           = "Spaceship Assff" >
-	visible		    = true 	
+        radarname           = "Spacecruiser" >
       <attached>
         <DockingTarget name="spaceShip" />
       </attached>
     </SpaceShip>
+
 
 <MovableEntity position="-500,500, 500">
     <attached>
@@ -198,7 +223,7 @@
         </events>
     </SimpleNotification>
 
- <DistanceTrigger name="flying3" position="-500,500,500" target="Pawn" distance=50 stayActive="true" delay=3/>
+ <DistanceTrigger name="flying3" position="-500,500, 500" target="Pawn" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="Our friends from District 69 are under attack">
         <events>
             <trigger>
@@ -207,7 +232,7 @@
         </events>
     </SimpleNotification>
 
- <DistanceTrigger name="flying4" position="-500,500,500" target="Pawn" distance=50 stayActive="true" delay=7/>
+ <DistanceTrigger name="flying4" position="-500,500, 500" target="Pawn" distance=50 stayActive="true" delay=7/>
     <SimpleNotification message="We need you to help them.">
         <events>
             <trigger>
@@ -216,7 +241,7 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="flying5" position="-500,500,500" target="Pawn" distance=50 stayActive="true" delay=11/>
+<DistanceTrigger name="flying5" position="-4000,4000,4000" target="Pawn" distance=50 stayActive="true" delay=11/>
     <SimpleNotification message="Dock on the station to get a better ship.">
         <events>
             <trigger>
@@ -225,10 +250,96 @@
         </events>
     </SimpleNotification>
 
+<DistanceTrigger name="wormhole1" position="-1400,-500,800" target="Pawn" distance=100 stayActive="true" mode="and">
+        <EventTrigger name="ondock" activations="1" stayactive="true" delay=6>
+          <events>
+            <trigger>
+              <EventListener event="dockMe" />
+            </trigger>
+          </events>
+            <Trigger mode=and>
+              <DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=100 stayActive="true" />
+              <EventTrigger activations="1" invert="true">
+                <events>
+                  <trigger>
+                    <EventListener event="gameEnd" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </Trigger>
+        </EventTrigger>
+        <EventTrigger activations="1" invert="true">
+          <events>
+            <trigger>
+              <EventListener event="earlyEnd" />
+            </trigger>
+          </events>
+        </EventTrigger>
+    </DistanceTrigger>
+
 <!----------------------------------------------------------------------------------------------------->
 <!-------------------------------- PART ONE: Passing throug wormhole  --------------------------------->
 <!----------------------------------------------------------------------------------------------------->
 
+<!-- OBJECTS IN THIS PART -->
+
+<Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Model mesh="Spacegate.mesh" yaw="90"/>
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="0,2000,0" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="0,50000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalLink fromID="1" toID="2" />
+    <!--<PortalLink fromID="2" toID="1" />-->
+
+ <?lua
+      for i = 1, 500, 1
+      do
+      j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(math.random()* 10000 - 5000) ?>,<?lua print(math.random() * 15000 + 45000) ?>,<?lua print(math.random() * 10000 - 5000) ?>"
+      collisionType = dynamic
+      linearDamping = 0.8
+      angularDamping = 0
+      scale = "<?lua print(j * 200)?>"
+      collisiondamage = 0.05
+      enablecollisiondamage = true
+    >
+      <attached>
+        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+
+    <?lua
+      end
+    ?>
+
+<DistanceTrigger name="portal2" position="-4000,4000,4000" target="Pawn" distance=50 stayActive="true" delay=3/>
+    <SimpleNotification message="Now go to the portal">
+        <events>
+            <trigger>
+                <EventListener event="portal2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<DistanceTrigger name="portal3" position="0,50000,0" target="Pawn" distance=50 stayActive="true" delay=3/>
+    <SimpleNotification message="You came to District 69">
+        <events>
+            <trigger>
+                <EventListener event="portal3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
     
   </Scene>
 </Level>
