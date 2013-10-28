@@ -36,9 +36,12 @@
 #include <vector>
 #include <boost/function.hpp>
 
+
 #include "util/Singleton.h"
 #include "util/tribool.h"
 #include "core/WindowEventListener.h"
+
+
 
 // tolua_begin
 namespace orxonox
@@ -196,6 +199,7 @@ namespace orxonox
 
         // Internal methods
         void loadDevices();
+        void loadWiiMote();
         void loadMouse();
         void loadJoySticks();
         void destroyDevices();
