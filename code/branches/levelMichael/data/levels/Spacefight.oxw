@@ -1,0 +1,354 @@
+<!--Spacefight-->
+
+<!--
+To Do:
+Naechster Quest bei Erreichen des roten Lichtes...
+-->
+<LevelInfo
+ name = "Spacefight"
+ description = "Level with the big Spacefight"
+ tags = "mission"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipSwallow.oxt")
+?>
+
+<?lua
+    dofile("includes/CuboidSpaceStation.lua")
+?>
+
+
+    
+
+<Level
+  gametype = "Mission"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
+  <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+ <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
+
+<!-- QUESTS & SPAWNTRIGGER -->
+
+<!-- Spawntrigger -->
+
+	<EventMultiTrigger name=spawntrigger>
+	  <events>
+	    <trigger>
+	      <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow>
+	        <EventTrigger invert=true>
+		  <events>
+		    <trigger>
+		      <EventListener event="spacefight.flying2" />
+		    </trigger>
+		  </events>
+		</EventTrigger>
+              </SpawnPoint>
+	    </trigger>
+	  </events>
+	</EventMultiTrigger>
+
+<!-- QUEST DESCRIPTION-->
+
+	<LocalQuest id="spacefight.flying1">
+		<QuestDescription
+			title="To the first guard"
+			description="You've reached the enemys Station and they haven't seen you yet.
+
+				Ahead you see the first little patrol. 
+				Attack them!"
+			failMessage="You've lost all your ships!"
+			completeMessage="" />
+		<complete-effects>
+			<AddQuest questId="spacefight.guard1" />
+		</complete-effects>
+	</LocalQuest>
+	
+	<LocalQuest id="spacefight.guard1">
+		<QuestDescription 
+			title="eliminate the first guard!" 
+			description=""
+			failMessage="You've lost all your ships!"
+			completeMessage="Well done!" />
+		<complete-effects>
+		  	<AddQuest questId="spacefight.upgrade1" />
+			<AddQuest questId="spacefight.flying2" />
+		</complete-effects>
+	</LocalQuest>
+
+	<LocalQuest id="spacefight.upgrade1">
+		<QuestDescription
+			title="Prepare for the fight."
+			description="Your friends has an arsenal left behind near by your position.
+				perhaps you find something useful there..."
+			failMessage=""
+			completeMessage="Your ship is prepared best for the second and last guard on the way to the mainship." />
+	</LocalQuest>
+
+	<LocalQuest id="spacefight.flying2">
+		<QuestDescription
+			title=""
+			description="(siehe flying1)"
+			failMessage="You've lost all your ships!"
+			completeMessage="" />
+		<complete-effects>
+			<AddQuest questId="spacefight.guard2" />
+		</complete-effects>
+	</LocalQuest>
+
+	<LocalQuest id="spacefight.guard2">
+		<QuestDescription
+			title=""
+			description="(siehe guard1)"
+			failMessage="You've lost all your ships!"
+			completeMessage="" />
+		<complete-effects>
+			<AddQuest questId="spacefight.escape" />
+		</complete-effects>
+	</LocalQuest>
+
+	<LocalQuest id="spacefight.escape">
+		<QuestDescription
+			title=""
+			description=""
+			failMessage="You've lost all your ships!"
+			completeMessage="" />
+	</LocalQuest>
+
+	<LocalQuest id="spacefight.
+
+	
+<!-- ---------------------------------------------------------------------- -->
+	<QuestEffectBeacon times=0>
+		<effects>
+			<AddQuest questId="spacefight.flying1" />
+		</effects>
+		<events>
+		  <execute>
+		    <EventListener event=spawntrigger />
+		  </execute>
+		</events>
+		<attached>
+			<BlinkingBillboard position="5000,0,0" colour="1,0,0" frequency=0.5 amplitude=5 material="Examples/Flare"/>
+		</attached>
+	</QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1>
+            <effects>
+                <AddQuest questId="spacefight.guard1" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="flying1" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+<!-- -->
+
+  <DistanceTrigger name="flying1" position="3000,0,0" target="SpaceShip" distance=1500 stayActive="true" delay=0 />
+
+  <DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+    <SimpleNotification message="Let's fly to the blinking light." >
+        <events>
+            <trigger>
+                <EventListener event=spawntrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<!-- ----------------------------------------------------- -->
+
+<!-- EVENTTRIGGER -->
+
+ <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
+      <events>
+        <trigger>
+          <EventListener event="firstPatrol" />
+        </trigger>
+      </events>
+      <EventTrigger name="guard1trigger3" activations="1" stayactive="true" delay=0.1>
+        <events>
+          <trigger>
+            <EventListener event="firstPatrol" />
+          </trigger>
+        </events>
+        <EventTrigger name="guard1trigger2" activations="1" stayactive="true" delay=0.1>
+          <events>
+            <trigger>
+              <EventListener event="firstPatrol" />
+            </trigger>
+          </events>
+          <EventTrigger name="guard1trigger1" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="firstPatrol" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+
+<!-- ----------------------------------------------------- -->
+
+<!-- Passive Piraten -->
+
+<SpaceShip position="5000,1000,0" lookat="-1,0,0" name="firstPatrol" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event="spacefight.guard1" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointController team=1>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=8 position="5000,-1000,0" />
+        <Model mesh="cube.mesh" scale=8 position="5000,1000,0" />
+      </waypoints>
+    </WaypointController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="5000,0,0" lookat="-1,0,0" name="firstPatrol" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event="spacefight.guard1" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointController team=1>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=8 position="5000,0,-1000" />
+        <Model mesh="cube.mesh" scale=8 position="5000,0,1000" />
+      </waypoints>
+    </WaypointController>
+  </controller>
+</SpaceShip>
+
+
+<!-- Angreiffender Pirat 1 -->
+<SpaceShip position="5000,-1000,1000" lookat="5000,1000,-1000" name="firstPatrol" visible="true" >
+  <events>
+    <visibility>
+      <EventListener event=spawntrigger />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=2000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=8 position="5000,1000,-1000" />
+        <Model mesh="cube.mesh" scale=8 position="5000,-1000,1000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event=spawntrigger />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- Angreiffender Pirat 2 -->
+<SpaceShip position="5000,-500,-500" lookat="5000,1000,1000" name="firstPatrol" visible="true" >
+  <events>
+    <visibility>
+      <EventListener event=spawntrigger />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=2000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=8 position="5000,1000,1000" />
+        <Model mesh="cube.mesh" scale=8 position="5000,-1000,-1000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event=spawntrigger />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- ----------------------------------------------------- -->
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+    <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
+    
+ <!-- triple large belt around the planet  -->
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+    ?>
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
+    ?>
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
+    ?>
+
+
+  <Planet position="2000,-250,9000" scale=5000 pitch=1 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,1,0" rotationrate="3" atmospheresize=224.0f imagesize=1024.0f />
+  
+
+<!-- ----------------Rotating SpaceStation--------------- -->
+
+<StaticEntity position="5500,0,0" yaw=112 pitch=67>
+  <attached>
+    <?lua
+      createSpaceStationPar(0,2,1,2,1,4,1,50)
+    ?>
+  </attached>
+</StaticEntity>
+
+
+  </Scene>
+</Level>
+
