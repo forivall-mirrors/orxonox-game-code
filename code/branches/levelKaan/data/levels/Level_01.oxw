@@ -18,7 +18,7 @@
   include("templates/spaceshipAssff2.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipEscort.oxt")
-  include("templates/spaceshipSpacecruiser.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
 ?>
 
 <Level gametype="Mission">
@@ -61,35 +61,7 @@
 
 <SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
 
-<SpaceBoundaries warnDistance="1" maxDistance="1000" showDistance="300" healthDecrease="0.1" position="0,0,0"/>
 
-<?lua
-      for i = 1, 250, 1
-      do
-      j = math.random()
-    ?>
-
-    <MovableEntity
-      position = "<?lua print(math.random()* 6000-3000) ?>,<?lua print(math.random() * 6000 -3000) ?>,<?lua print(math.random() * 6000-3000) ?>"
-      collisionType = dynamic
-      linearDamping = 0.8
-      angularDamping = 0
-      scale = "<?lua print(j * 150)?>"
-      collisiondamage = 0.005
-      enablecollisiondamage = true
-      velocity          = "-5,0,0"
-    >
-      <attached>
-        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
-      </attached>
-      <collisionShapes>
-        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
-      </collisionShapes>
-    </MovableEntity>
-
-    <?lua
-      end
-    ?>
 
 
 <!----------------------------------------------------------------------------------------------------->
@@ -108,7 +80,7 @@
         mass      = 10000
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "HydroFarmer"
-        radarname = "Hydrogen Farmer" >
+        radarname = "Main-Station" >
       <attached>
         <!-- Docking -->
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -152,7 +124,7 @@
       </collisionShapes>
     </SpaceShip>
 
-    <Dock position="-4000,3900,4000" roll=90 yaw=180 >
+    <Dock position="-4000,4000,4000" roll=90 yaw=180 >
         <animations>
             <MoveToDockingTarget target="destroyer" />
         </animations>
@@ -177,7 +149,7 @@
 
 <!--@Objects: SpaceCruiser as docking target -->
     <SpaceShip
-        template            = "spaceshipspacecruiser"
+        template            = "spaceshipcollateraldamage"
         team                = "0"
         position            = "-4000,4700,4000"
         orientation         = "-0.14, 0.68, 0.68, 0.223"
@@ -198,11 +170,11 @@
     </SpaceShip>
 
 
-<MovableEntity position="-500,500, 500">
+<!--<MovableEntity position="-500,500, 500">
     <attached>
         <Billboard position="0,0,0" material="Examples/Flare" colour="1, 0, 0" scale=0.5/>
     </attached>
-</MovableEntity>
+</MovableEntity>-->
 
 
   <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=4/>
@@ -223,8 +195,8 @@
         </events>
     </SimpleNotification>
 
- <DistanceTrigger name="flying3" position="-500,500, 500" target="Pawn" distance=50 stayActive="true" delay=3/>
-    <SimpleNotification message="Our friends from District 69 are under attack">
+ <DistanceTrigger name="flying3" position="-4000,4000, 4000" target="Pawn" distance=3500 stayActive="true" delay=3/>
+    <SimpleNotification message="Our Commander got kidnapped in District 69">
         <events>
             <trigger>
                 <EventListener event="flying3" />
@@ -232,8 +204,8 @@
         </events>
     </SimpleNotification>
 
- <DistanceTrigger name="flying4" position="-500,500, 500" target="Pawn" distance=50 stayActive="true" delay=7/>
-    <SimpleNotification message="We need you to help them.">
+ <DistanceTrigger name="flying4" position="-4000,4000, 4000" target="Pawn" distance=3500 stayActive="true" delay=7/>
+    <SimpleNotification message="We need you to rescue him.">
         <events>
             <trigger>
                 <EventListener event="flying4" />
@@ -241,7 +213,7 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="flying5" position="-4000,4000,4000" target="Pawn" distance=50 stayActive="true" delay=11/>
+<DistanceTrigger name="flying5" position="-4000,4000,4000" target="Pawn" distance=3500 stayActive="true" delay=11/>
     <SimpleNotification message="Dock on the station to get a better ship.">
         <events>
             <trigger>
@@ -250,32 +222,7 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="wormhole1" position="-1400,-500,800" target="Pawn" distance=100 stayActive="true" mode="and">
-        <EventTrigger name="ondock" activations="1" stayactive="true" delay=6>
-          <events>
-            <trigger>
-              <EventListener event="dockMe" />
-            </trigger>
-          </events>
-            <Trigger mode=and>
-              <DistanceTrigger name="toHydroFarmer" position="-47000,-1000,1300" target="Pawn" distance=100 stayActive="true" />
-              <EventTrigger activations="1" invert="true">
-                <events>
-                  <trigger>
-                    <EventListener event="gameEnd" />
-                  </trigger>
-                </events>
-              </EventTrigger>
-            </Trigger>
-        </EventTrigger>
-        <EventTrigger activations="1" invert="true">
-          <events>
-            <trigger>
-              <EventListener event="earlyEnd" />
-            </trigger>
-          </events>
-        </EventTrigger>
-    </DistanceTrigger>
+
 
 <!----------------------------------------------------------------------------------------------------->
 <!-------------------------------- PART ONE: Passing throug wormhole  --------------------------------->
@@ -292,24 +239,27 @@
     </Template>
 
     <PortalEndPoint position="0,2000,0" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-    <PortalEndPoint position="0,50000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="0,97100,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
     <PortalLink fromID="1" toID="2" />
     <!--<PortalLink fromID="2" toID="1" />-->
 
- <?lua
+<SpaceBoundaries warnDistance="1" maxDistance="500" showDistance="300" healthDecrease="0.1" position="0,97100,0"/>
+
+<?lua
       for i = 1, 500, 1
       do
       j = math.random()
     ?>
 
     <MovableEntity
-      position = "<?lua print(math.random()* 10000 - 5000) ?>,<?lua print(math.random() * 15000 + 45000) ?>,<?lua print(math.random() * 10000 - 5000) ?>"
+      position = "<?lua print(math.random()* 10000-5000) ?>,<?lua print(math.random() * 10000 + 95000) ?>,<?lua print(math.random() * 10000-5000) ?>"
       collisionType = dynamic
       linearDamping = 0.8
       angularDamping = 0
-      scale = "<?lua print(j * 200)?>"
-      collisiondamage = 0.05
+      scale = "<?lua print(j * 150)?>"
+      collisiondamage = 0.005
       enablecollisiondamage = true
+      
     >
       <attached>
         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
@@ -323,6 +273,12 @@
       end
     ?>
 
+<SpaceShip position="0,97300,200" lookat="0,-1,0" name="movingtarget" radarname="Pirate">
+       <templates>
+                  <Template link=spaceshippirate />
+                    </templates>
+ </SpaceShip>
+
 <DistanceTrigger name="portal2" position="-4000,4000,4000" target="Pawn" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="Now go to the portal">
         <events>
@@ -332,7 +288,7 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="portal3" position="0,50000,0" target="Pawn" distance=50 stayActive="true" delay=3/>
+<DistanceTrigger name="portal3" position="0,100000,0" target="Pawn" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="You came to District 69">
         <events>
             <trigger>
@@ -340,6 +296,10 @@
             </trigger>
         </events>
     </SimpleNotification>
+
+<!----------------------------------------------------------------------------------------------------->
+<!--------------------------- PART TWO: Passing throug area with meteorits ---------------------------->
+<!----------------------------------------------------------------------------------------------------->
     
   </Scene>
 </Level>
