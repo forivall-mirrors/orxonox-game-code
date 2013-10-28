@@ -7,7 +7,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <LevelInfo
  name = "Spacefight"
  description = "Level with the big Spacefight"
- tags = "mission"
+ tags = "missions"
  screenshot = "emptylevel.png"
 />
 
@@ -190,7 +190,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 <!-- ----------------------------------------------------- -->
 
-<!-- EVENTTRIGGER -->
+<!-- EVENTTRIGGER
 
  <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
       <events>
@@ -219,7 +219,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
           </EventTrigger>
         </EventTrigger>
       </EventTrigger>
-    </EventTrigger>
+    </EventTrigger> -->
 
 <!-- ----------------------------------------------------- -->
 
