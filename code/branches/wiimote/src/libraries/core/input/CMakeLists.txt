@@ -13,4 +13,5 @@ ADD_SOURCE_FILES(CORE_SRC_FILES
   KeyDetector.cc
   Mouse.cc
   Wiimote_Test.cc
+  WiiMote.cc
 )

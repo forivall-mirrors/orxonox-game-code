@@ -57,6 +57,8 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 
+#include "WiiMote.h"
+
 namespace orxonox
 {
     SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
@@ -217,10 +219,20 @@ namespace orxonox
 
         // Reorder states in case some joy sticks were added/removed
         this->updateActiveStates();
-
+        this->loadWiiMote();
         orxout(verbose, context::input) << "Input devices loaded." << endl;
     }
-
+    void InputManager::loadWiiMote()
+    {
+    	try
+    	{
+    		devices_.push_back(new WiiMote(234));
+    	}
+    	catch(std::exception& e)  //gotta catch em all
+    	{
+    		orxout()<<"Exception loading WiiMote!!!1!11!";
+    	}
+    }
     //! Creates a new orxonox::Mouse
     void InputManager::loadMouse()
     {
