@@ -67,7 +67,7 @@
 <!--       <CameraPosition position="0,15, 60" drag=true mouselook=true />
       <CameraPosition position="0,20, 90" drag=true mouselook=true />
       <CameraPosition position="0,30,120" drag=true mouselook=true /> -->
-      <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=true mouselook=true />
+      <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=false mouselook=true />
     </camerapositions>
   </InvaderShip>
 </Template>
