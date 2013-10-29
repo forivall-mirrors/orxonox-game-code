@@ -7,7 +7,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <LevelInfo
  name = "Spacefight"
  description = "Level with the big Spacefight"
- tags = "missions"
+ tags = "mission"
  screenshot = "emptylevel.png"
 />
 
@@ -52,7 +52,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
     displaySize="0.6, 0, 0, 0"
     />
 
-  <Scene
+<Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
@@ -103,7 +103,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 			completeMessage="Well done!" />
 		<complete-effects>
 		  	<AddQuest questId="spacefight.upgrade1" />
-			<AddQuest questId="spacefight.flying2" />
+			<!-- <AddQuest questId="spacefight.flying2" /> -->
 		</complete-effects>
 	</LocalQuest>
 
@@ -144,9 +144,18 @@ Naechster Quest bei Erreichen des roten Lichtes...
 			description=""
 			failMessage="You've lost all your ships!"
 			completeMessage="" />
+		<complete-effects>
+			<AddQuest questId="spacefight.flying3" />
+		</complete-effects>
 	</LocalQuest>
 
-	<LocalQuest id="spacefight.
+	<LocalQuest id="spacefight.flying3" >
+		<QuestDescription
+			title=""
+			description=""
+			failMessage=""
+			completeMessage="" />
+	</LocalQuest>
 
 	
 <!-- ---------------------------------------------------------------------- -->
@@ -175,7 +184,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
             </events>
         </QuestEffectBeacon>
 
-<!-- -->
+<!-- ---------------------------------------------------------------------- -->
 
   <DistanceTrigger name="flying1" position="3000,0,0" target="SpaceShip" distance=1500 stayActive="true" delay=0 />
 
@@ -190,7 +199,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 <!-- ----------------------------------------------------- -->
 
-<!-- EVENTTRIGGER
+<!-- EVENTTRIGGER -->
 
  <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
       <events>
@@ -219,7 +228,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
           </EventTrigger>
         </EventTrigger>
       </EventTrigger>
-    </EventTrigger> -->
+    </EventTrigger>
 
 <!-- ----------------------------------------------------- -->
 
