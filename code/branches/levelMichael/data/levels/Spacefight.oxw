@@ -89,7 +89,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 				Ahead you see the first little patrol. 
 				Attack them!"
 			failMessage="You've lost all your ships!"
-			completeMessage="" />
+			completeMessage="Well done!" />
 		<complete-effects>
 			<AddQuest questId="spacefight.guard1" />
 		</complete-effects>
@@ -103,7 +103,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 			completeMessage="Well done!" />
 		<complete-effects>
 		  	<AddQuest questId="spacefight.upgrade1" />
-			<!-- <AddQuest questId="spacefight.flying2" /> -->
+			<AddQuest questId="spacefight.flying2" />
 		</complete-effects>
 	</LocalQuest>
 
@@ -165,28 +165,39 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		</effects>
 		<events>
 		  <execute>
-		    <EventListener event=spawntrigger />
+		    <EventListener event=spawntrigger2 />
 		  </execute>
 		</events>
 		<attached>
-			<BlinkingBillboard position="5000,0,0" colour="1,0,0" frequency=0.5 amplitude=5 material="Examples/Flare"/>
+			<BlinkingBillboard position="5000,0,0" colour="1,0,0" frequency=0.5 amplitude=5 material="Examples/Flare" />
 		</attached>
+	</QuestEffectBeacon>
+
+	<QuestEffectBeacon times=1>
+		<effects>
+			<CompleteQuest questId="spacefight.flying1" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="flying1" />
+			</execute>		
+		</events>
 	</QuestEffectBeacon>
 
         <QuestEffectBeacon times=1>
             <effects>
-                <AddQuest questId="spacefight.guard1" />
+                <CompleteQuest questId="spacefight.guard1" />
             </effects>
             <events>
                 <execute>
-                    <EventListener event="flying1" />
+                    <EventListener event="guard1trigger4" />
                 </execute>
             </events>
         </QuestEffectBeacon>
 
 <!-- ---------------------------------------------------------------------- -->
 
-  <DistanceTrigger name="flying1" position="3000,0,0" target="SpaceShip" distance=1500 stayActive="true" delay=0 />
+  <DistanceTrigger name="flying1" position="3000,0,0" target="SpaceShip" distance=1000 stayActive="true" delay=0 />
 
   <DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
     <SimpleNotification message="Let's fly to the blinking light." >
@@ -234,10 +245,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 <!-- Passive Piraten -->
 
-<SpaceShip position="5000,1000,0" lookat="-1,0,0" name="firstPatrol" radarname="Patrol">
+<SpaceShip position="5000,1000,0" lookat="-1,0,0" name=firstPatrol radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event="spacefight.guard1" />
+      <EventListener event=spawntrigger2 />
     </visibility>
   </events>
   <templates>
@@ -253,10 +264,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
   </controller>
 </SpaceShip>
 
-<SpaceShip position="5000,0,0" lookat="-1,0,0" name="firstPatrol" radarname="Patrol">
+<SpaceShip position="5000,0,0" lookat="-1,0,0" name=firstPatrol radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event="spacefight.guard1" />
+      <EventListener event=spawntrigger2 />
     </visibility>
   </events>
   <templates>
@@ -274,10 +285,11 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 
 <!-- Angreiffender Pirat 1 -->
-<SpaceShip position="5000,-1000,1000" lookat="5000,1000,-1000" name="firstPatrol" visible="true" >
+
+<SpaceShip position="5000,-1000,1000" lookat="5000,1000,-1000" name=firstPatrol visible="true" radarname="Patrol" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger />
+      <EventListener event=spawntrigger2 />
     </visibility>
   </events>
   <templates>
@@ -291,7 +303,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event=spawntrigger />
+          <EventListener event=spawntrigger2 />
         </activity>
       </events>
     </WaypointPatrolController>
@@ -299,10 +311,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
 </SpaceShip>
 
 <!-- Angreiffender Pirat 2 -->
-<SpaceShip position="5000,-500,-500" lookat="5000,1000,1000" name="firstPatrol" visible="true" >
+<SpaceShip position="5000,-500,-500" lookat="5000,1000,1000" name=firstPatrol visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event=spawntrigger />
+      <EventListener event=spawntrigger2 />
     </visibility>
   </events>
   <templates>
@@ -316,7 +328,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event=spawntrigger />
+          <EventListener event=spawntrigger2 />
         </activity>
       </events>
     </WaypointPatrolController>
