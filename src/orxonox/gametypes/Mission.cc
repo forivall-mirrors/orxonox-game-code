@@ -31,11 +31,13 @@
 #include "controllers/ArtificialController.h"
 
 #include "core/CoreIncludes.h"
+#include "core/command/ConsoleCommand.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
+    SetConsoleCommand("Mission", "endMission", &Mission::endMission);
     RegisterUnloadableClass(Mission);
 
     Mission::Mission(Context* context) : TeamGametype(context)
@@ -77,11 +79,10 @@ namespace orxonox
     void Mission::end()
     {
         Gametype::end();
-        /*if (this->missionAccomplished_)
+        if (this->missionAccomplished_)
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
         else
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
-        */
     }
 
     void Mission::setTeams()
@@ -93,7 +94,14 @@ namespace orxonox
                 this->setDefaultObjectColour(pawn);
         }
     }
-
+    void Mission::endMission(bool accomplished)
+    {
+        for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
+        {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
+            it->setMissionAccomplished(accomplished);
+            it->end();
+        }
+    }
 
 
 }
