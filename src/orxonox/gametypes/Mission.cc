@@ -32,12 +32,15 @@
 
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
+#include "infos/PlayerInfo.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"
+
 
 namespace orxonox
 {
     SetConsoleCommand("Mission", "endMission", &Mission::endMission);
+    SetConsoleCommand("Mission", "setLives", &Mission::setLivesWrapper);
     RegisterUnloadableClass(Mission);
 
     Mission::Mission(Context* context) : TeamGametype(context)
@@ -61,10 +64,14 @@ namespace orxonox
 
     void Mission::pawnKilled(Pawn* victim, Pawn* killer)
     {
-        if (victim && victim->getPlayer() && this->lives_ == 1)
+        if (victim && victim->getPlayer() && victim->getPlayer()->isHumanPlayer() )
         {
-            this->missionAccomplished_ = false;
-            this->end();
+            this->lives_--;
+            if (this->lives_ == 0)
+            {
+                this->missionAccomplished_ = false;
+                this->end();
+            }
         }
     }
 
@@ -100,6 +107,14 @@ namespace orxonox
         {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
             it->setMissionAccomplished(accomplished);
             it->end();
+        }
+    }
+    
+    void Mission::setLivesWrapper(unsigned int amount)
+    {
+        for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
+        {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would affect ALL missions!
+            it->setLives(amount);
         }
     }
 
