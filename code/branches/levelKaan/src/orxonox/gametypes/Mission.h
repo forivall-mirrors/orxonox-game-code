@@ -51,12 +51,16 @@ namespace orxonox
                 {this->lives_ = amount;}
             inline unsigned int getLives()
                 {return this->lives_;}
+            inline void setMissionAccomplished(bool acc)
+                {this->missionAccomplished_ = acc;}
+            static void endMission(bool accomplished);
+            static void setLivesWrapper(unsigned int amount);
 
         protected:
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             bool missionAccomplished_; //<! indicates if player successfully finsihed the mission;
             int lives_; //<! amount of player's lives <-> nr. of retries
-
+            //<! If the lives_ are set negative -> unlimited lives.
     };
 }
 
