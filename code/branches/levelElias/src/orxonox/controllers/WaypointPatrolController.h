@@ -49,11 +49,17 @@ namespace orxonox
                 { this->alertnessradius_ = radius; }
             inline float getAlertnessRadius() const
                 { return this->alertnessradius_; }
+                
+            inline void setAttackRadius(float distance)
+                { this->attackradius_ = distance; }
+            inline float getAttackRadius() const
+                { return this->attackradius_; }
 
         protected:
             void searchEnemy();
 
-            float alertnessradius_;
+            float alertnessradius_; //!< Enemies within this radius are being followed and shot.
+            float attackradius_;    //!< Enemies only get shot, if they are within the attackradius_.
             Timer patrolTimer_;
     };
 }
