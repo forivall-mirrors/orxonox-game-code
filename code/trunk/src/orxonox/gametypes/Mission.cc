@@ -60,6 +60,11 @@ namespace orxonox
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
             this->end();
         }
+        else if (this->lives_ == 0)
+        {
+            this->missionAccomplished_ = false;
+            this->end();
+        }
     }
 
     void Mission::pawnKilled(Pawn* victim, Pawn* killer)
@@ -67,11 +72,6 @@ namespace orxonox
         if (victim && victim->getPlayer() && victim->getPlayer()->isHumanPlayer() )
         {
             this->lives_--;
-            if (this->lives_ == 0)
-            {
-                this->missionAccomplished_ = false;
-                this->end();
-            }
         }
     }
 
