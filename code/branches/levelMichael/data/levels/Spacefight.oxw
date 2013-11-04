@@ -23,7 +23,9 @@ Naechster Quest bei Erreichen des roten Lichtes...
   include("templates/spaceshipEscort.oxt")
   include("templates/spaceshipSwallow.oxt")
 ?>
-
+<?lua
+  include("templates/pickupRepresentationTemplates.oxt")
+?>
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
 ?>
@@ -57,7 +59,6 @@ Naechster Quest bei Erreichen des roten Lichtes...
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
-
   <?lua include("includes/pickups.oxi") ?>
 
  <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
