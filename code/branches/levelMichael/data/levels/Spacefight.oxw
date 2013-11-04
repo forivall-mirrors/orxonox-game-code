@@ -22,16 +22,11 @@ Naechster Quest bei Erreichen des roten Lichtes...
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipEscort.oxt")
   include("templates/spaceshipSwallow.oxt")
-?>
-<?lua
   include("templates/pickupRepresentationTemplates.oxt")
 ?>
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
 ?>
-
-
-    
 
 <Level
   gametype = "Mission"
@@ -292,7 +287,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 -->
 
 
-    <SimpleNotification message="first" >
+    <SimpleNotification message="first"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event="guard1trigger1" />
@@ -300,7 +295,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="shot" >
+    <SimpleNotification message="shot"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event="Patrol" />
@@ -308,13 +303,15 @@ Naechster Quest bei Erreichen des roten Lichtes...
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="shot" >
+    <SimpleNotification message="shot"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event="firstPatrol" />
             </trigger>
         </events>
     </SimpleNotification>
+
+
 
 
     <SpaceShip position="8000,1000,0" lookat="-1,0,0" name="firstPatrol" visible="true" radarname="Patrol">
