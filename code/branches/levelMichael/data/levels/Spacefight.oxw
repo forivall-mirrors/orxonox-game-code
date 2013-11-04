@@ -40,6 +40,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
   <?lua include("includes/notifications.oxi") ?>
 
+
   <NotificationQueueCEGUI
     name="narrative"
     targets="simpleNotification"
@@ -56,6 +57,8 @@ Naechster Quest bei Erreichen des roten Lichtes...
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
+
+  <?lua include("includes/pickups.oxi") ?>
 
  <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
 
@@ -78,6 +81,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	    </trigger>
 	  </events>
 	</EventMultiTrigger>
+
+    <!-- Drone pickup -->
+    
+    <PickupSpawner pickup=dronepickup position="50,0,0" triggerDistance="10" respawnTime="0" maxSpawnedItems="2" />
 
 <!-- QUEST DESCRIPTION-->
 
@@ -604,13 +611,13 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	<!-- links vor guard 1 -->	
 	<?lua
 		dofile("includes/asteroidField.lua")
-		asteroidField(-5000, -5000, -20000, 100, 300, 10000, 50, 1)
+		asteroidField(-5000, -5000, -20000, 20, 50, 10000, 200, 0)
 	?>
 
 	<!-- links hinter guard 1 -->
 	<?lua
 		dofile("includes/asteroidField.lua")
-		asteroidField(20000, -10000, -12000, 50, 1000, 10000, 40, 0)
+		asteroidField(20000, -10000, -12000, 30, 100, 10000, 200, 0)
 	?>
 
 	<!-- zwischen guard 2 & mainship -->
@@ -623,12 +630,12 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	<!-- Peripherie -->
 	<?lua
 		dofile("includes/asteroidField.lua")
-		asteroidField(-5000, -10000, 30000, 10, 500, 10000, 20, 0)
+		asteroidField(-5000, -10000, 30000, 10, 50, 10000, 100, 0)
 	?>
 
 	<?lua
       		dofile("includes/asteroidField.lua")
-		asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 300, 0, 7850, 150, 0)
+		asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
     	?>
 
 
