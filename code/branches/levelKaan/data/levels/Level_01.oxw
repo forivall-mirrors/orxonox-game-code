@@ -49,20 +49,46 @@
 
    <?lua
       include("includes/pickups.oxi")
-  ?>
+   ?>
 
- 
-<?lua
+   <?lua
     dofile("includes/CuboidSpaceStation.lua")
-?>
+   ?>
 
 
-<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
+   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
 
-<SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+   <TeamSpawnPoint team=0 position="0,0,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort/>
 
+   <MovableEntity	
+      position = "300,0,0"
+      scale = "10"
+      velocity = "-20, 0, 0" 
+      collisionType = dynamic
+      collisiondamage = 0.005
+      enablecollisiondamage = true
+   >
+     <!-- collisionType = dynamic
+      linearDamping = 0.8
+      angularDamping = 0
+      collisiondamage = 0.005
+      enablecollisiondamage = true -->
 
+      <events>
+         <activity>
+	    <EventListener event="startAsteroids" />
+	 </activity>
+      </events>
+      <attached>
+         <Model mass="1000" mesh="ast1.mesh" />
+         <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+      </attached> 
+     	<collisionShapes>
+         <SphereCollisionShape radius="10" />
+      </collisionShapes>  
+   </MovableEntity>
 
+   <DistanceTrigger name="startAsteroids" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=0 />
 
 <!----------------------------------------------------------------------------------------------------->
 <!-------------------------------------- PART ZERO: Docking on  --------------------------------------->
@@ -73,18 +99,18 @@
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
    
 <!-- @Objects: HYDROGEN FARMER & DOCKING -->
-    <SpaceShip
+   <SpaceShip
         team      = 0
-        position  = "-4000,4000,4000"
+        position  = "-4000,4100,4000"
         roll      = 90   yaw=0  pitch=20
         mass      = 10000
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "HydroFarmer"
-        radarname = "Main-Station" >
+        radarname = "Hydrogen Farmer" > 
       <attached>
         <!-- Docking -->
-        <DistanceTriggerBeacon name="bcnDestroyer" />
-        <DockingTarget name="destroyer" />
+         <DistanceTriggerBeacon name="bcnDestroyer" />
+         <DockingTarget name="destroyer" />
 
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
    <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
@@ -151,7 +177,7 @@
     <SpaceShip
         template            = "spaceshipcollateraldamage"
         team                = "0"
-        position            = "-4000,4700,4000"
+        position            = "-4000,4800,4000"
         orientation         = "-0.14, 0.68, 0.68, 0.223"
         health              = "400"
         initialhealth       = "400"
@@ -170,12 +196,59 @@
     </SpaceShip>
 
 
-<!--<MovableEntity position="-500,500, 500">
+   <SpaceShip 
+      position="-4000, 4900, 4000" >
+<templates>
+            <Template link=spaceshipcollateraldamage /> <!--spaceshipTransporter spaceshippirate-->
+        </templates>
+        <controller>
+            <AIController team=0>
+                <events>
+                    <activity>
+                        <EventListener event="formation" />
+                     </activity>
+                </events>
+            </AIController>
+        </controller>
+    </SpaceShip>
+
+<MovableEntity position="-500,500, 500">
     <attached>
         <Billboard position="0,0,0" material="Examples/Flare" colour="1, 0, 0" scale=0.5/>
     </attached>
-</MovableEntity>-->
+</MovableEntity>
 
+<MovableEntity position="-4000,4100, 4000">
+    <attached>
+        <Billboard position="0,0,0" material="Examples/Flare" colour="1, 0, 0" scale=5/>
+    </attached>
+</MovableEntity>
+
+ <Script code="formationcontroller formationflight true" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=formation />
+            </trigger>
+        </events>
+    </Script> <!-- !!! activates formation behaviour !!! -->
+
+    <Script code="artificialcontroller setbotlevel 5" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=formation />
+            </trigger>
+        </events>
+    </Script>
+
+ <DistanceTrigger name="formation" position="-4000,4800,4000" target="Pawn" distance=20 stayActive="true" delay=4/>
+
+<Script code="humancontroller toggleFormationFlight" onLoad="false">
+   <events>
+	<trigger>
+		<EventListener event="formation" />
+	</trigger>
+   </events>
+</Script>
 
   <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=4/>
     <SimpleNotification message="Hey Rookie.. We got a new mission for you.">
@@ -195,7 +268,7 @@
         </events>
     </SimpleNotification>
 
- <DistanceTrigger name="flying3" position="-4000,4000, 4000" target="Pawn" distance=3500 stayActive="true" delay=3/>
+ <DistanceTrigger name="flying3" position="-500,500, 500" target="Pawn" distance=100 stayActive="true" delay=3/>
     <SimpleNotification message="Our Commander got kidnapped in District 69">
         <events>
             <trigger>
@@ -204,7 +277,7 @@
         </events>
     </SimpleNotification>
 
- <DistanceTrigger name="flying4" position="-4000,4000, 4000" target="Pawn" distance=3500 stayActive="true" delay=7/>
+ <DistanceTrigger name="flying4" position="-500,500, 500" target="Pawn" distance=100 stayActive="true" delay=7/>
     <SimpleNotification message="We need you to rescue him.">
         <events>
             <trigger>
@@ -213,7 +286,7 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="flying5" position="-4000,4000,4000" target="Pawn" distance=3500 stayActive="true" delay=11/>
+<DistanceTrigger name="flying5" position="-500,500,500" target="Pawn" distance=100 stayActive="true" delay=11/>
     <SimpleNotification message="Dock on the station to get a better ship.">
         <events>
             <trigger>
@@ -230,54 +303,67 @@
 
 <!-- OBJECTS IN THIS PART -->
 
-<Template name=PortalDefault>
-        <PortalEndPoint>
-            <attached>
-                <Model mesh="Spacegate.mesh" yaw="90"/>
-            </attached>
-        </PortalEndPoint>
-    </Template>
+   <Template name=PortalDefault>
+      <PortalEndPoint>
+         <attached>
+            <Model mesh="Spacegate.mesh" yaw="90"/>
+         </attached>
+      </PortalEndPoint>
+   </Template>
 
-    <PortalEndPoint position="0,2000,0" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-    <PortalEndPoint position="0,97100,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-    <PortalLink fromID="1" toID="2" />
-    <!--<PortalLink fromID="2" toID="1" />-->
+   <PortalEndPoint position="-4000,2500,4000" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+   <PortalEndPoint position="0,95000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+   <PortalLink fromID="1" toID="2" />
+   <!--<PortalLink fromID="2" toID="1" />-->
 
-<SpaceBoundaries warnDistance="1" maxDistance="500" showDistance="300" healthDecrease="0.1" position="0,97100,0"/>
+  <!-- <SpaceBoundaries warnDistance="1" maxDistance="500" showDistance="300" healthDecrease="0.1" position="0,97100,0"/> -->
 
 <?lua
-      for i = 1, 500, 1
+      for i = 1, 700, 1
       do
       j = math.random()
-    ?>
+   ?>
 
-    <MovableEntity
+   <MovableEntity	
       position = "<?lua print(math.random()* 10000-5000) ?>,<?lua print(math.random() * 10000 + 95000) ?>,<?lua print(math.random() * 10000-5000) ?>"
+      scale = "<?lua print(j * 50)?>"
+      velocity = "0, -60, 0"
       collisionType = dynamic
+      collisiondamage = 0.05
+      enablecollisiondamage = true 
+   >
+     <!-- 
       linearDamping = 0.8
       angularDamping = 0
-      scale = "<?lua print(j * 150)?>"
-      collisiondamage = 0.005
-      enablecollisiondamage = true
-      
-    >
+       -->
+
+      <events>
+         <activity>
+	    <EventListener event="start" />
+	 </activity>
+      </events>
       <attached>
-        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
-      </attached>
-      <collisionShapes>
-        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
-      </collisionShapes>
-    </MovableEntity>
+         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+         <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+      </attached> 
+         <collisionShapes>
+            <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
+         </collisionShapes>   --> 
+   </MovableEntity>
 
-    <?lua
+   <?lua
       end
-    ?>
+   ?>
+	
+   <DistanceTrigger name="start" position="0,95000,0" target="SpaceShip" distance=50 stayActive="true" delay=0 />
 
-<SpaceShip position="0,97300,200" lookat="0,-1,0" name="movingtarget" radarname="Pirate">
+	
+
+<!--<SpaceShip position="0,97300,200" lookat="0,-1,0" name="movingtarget" radarname="Pirate">
        <templates>
                   <Template link=spaceshippirate />
                     </templates>
- </SpaceShip>
+ </SpaceShip> -->
 
 <DistanceTrigger name="portal2" position="-4000,4000,4000" target="Pawn" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="Now go to the portal">
@@ -288,7 +374,7 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="portal3" position="0,100000,0" target="Pawn" distance=50 stayActive="true" delay=3/>
+<DistanceTrigger name="portal3" position="0,95000,0" target="Pawn" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="You came to District 69">
         <events>
             <trigger>
