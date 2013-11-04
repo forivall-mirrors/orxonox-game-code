@@ -463,10 +463,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
 </SpaceShip>
 -->
 <!-- Angreiffende Piraten: Guard 2 -->
-<SpaceShip position="19000,5000,21000" lookat="19000,4900,21000" name=secondPatrol visible="true" radarname="Patrol">
+<SpaceShip position="8000,1000,0" lookat="19000,4900,21000" name=secondPatrol visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event=guard1trigger4 />
+      <EventListener event=guard1trigger1 />
     </visibility>
   </events>
   <templates>
@@ -486,7 +486,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event=guard1trigger4 />
+          <EventListener event=guard1trigger1 />
         </activity>
       </events>
     </WaypointPatrolController>
