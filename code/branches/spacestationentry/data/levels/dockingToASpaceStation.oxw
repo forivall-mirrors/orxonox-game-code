@@ -33,7 +33,12 @@
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
+    negativeWorldRange = "-100000, -100000, -100000"
+    positiveWorldRange = " 100000,  100000,  100000"
+    gravity      = "0,0,0"
+    hasPhysics   = true
   >
+
     <?lua
       include("includes/pickups.oxi")
     ?>
@@ -64,9 +69,23 @@
         <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
       </collisionShapes>
     </StaticEntity>
-    
-    
-    
+
+<!-- Wuerfel -->
+
+  <StaticEntity position="0,-10000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="50,50,5" />
+        
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+<ForceField position="2500,-100000,2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="2500,-100000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="-2500,-100000,2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="-2500,-100000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
+
 
    <!-- Docking -->
     <Dock position="2830,20,50" roll=0 yaw=0 >
@@ -101,6 +120,8 @@
         </attached>
 
     </Dock>
+
+
     
     <!--SpaceShip
         template            = "spaceshipcollateraldamage"
@@ -118,7 +139,7 @@
       </attached>
     </SpaceShip-->
     
-<FpsPlayer template = "fps" radarname = "First Person Player" >
+<FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-9900,0" >
       <attached>
         <DockingTarget name="spaceShip" />
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -166,5 +187,6 @@
     </Planet>
 
   </Scene>
+
 </Level>
 
