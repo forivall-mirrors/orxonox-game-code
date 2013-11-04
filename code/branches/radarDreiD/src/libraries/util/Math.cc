@@ -195,6 +195,7 @@ namespace orxonox
             @brief Gets the 2D project vector for the 3D Radar .
             @param myposition My position
             @param mydirection My viewing direction
+            @param myorthonormal My orthonormalvector (pointing upwards through my head)
             @param otherposition The position of the other object
             @param mapangle The angle you look on the 3Dmap
             @param detectionlimit The limit in which objects are shown on the map
@@ -203,19 +204,41 @@ namespace orxonox
             Examples:
              -
         */
-    orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
+    orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
     {
     	//
     	orxonox::Vector3 distance = otherposition - myposition;
 
-    	// project difference vector on our plane
-    	orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
+    	// new coordinate system base y_coordinate
+    	orxonox::Vector3 myside = -mydirection.crossProduct(myorthonormal);
 
-    	//float projectionlength = projection.length();
+    	// inverse of the transform matrix
+    	float determinant = +mydirection.x * (myside.y*myorthonormal.z - myorthonormal.y*myside.z)
+    						-mydirection.y * (myside.x*myorthonormal.z - myside.z*myorthonormal.x)
+    						+mydirection.z * (myside.x*myorthonormal.y - myside.y*myorthonormal.x);
+    	float invdet = 1/determinant;
+    	orxonox::Vector3 xinvtransform;
+    	orxonox::Vector3 yinvtransform;
+    	orxonox::Vector3 zinvtransform;
 
-    	// project vector for the rotated 3DMap
-    	float xcoordinate = projection.y/(2*detectionlimit);
-    	float ycoordinate = (projection.x*sin(mapangle)+projection.z*cos(mapangle))/(2*detectionlimit);
+    	xinvtransform.x =  (myside.y      * myorthonormal.z - myorthonormal.y * myside.z       )*invdet;
+    	xinvtransform.y = -(mydirection.y * myorthonormal.z - mydirection.z   * myorthonormal.y)*invdet;
+    	xinvtransform.z =  (mydirection.y * myside.z        - mydirection.z   * myside.y       )*invdet;
+    	yinvtransform.x = -(myside.x      * myorthonormal.z - myside.z        * myorthonormal.x)*invdet;
+    	yinvtransform.y =  (mydirection.x * myorthonormal.z - mydirection.z   * myorthonormal.x)*invdet;
+    	yinvtransform.z = -(mydirection.x * myside.z        - myside.x        * mydirection.z  )*invdet;
+    	zinvtransform.x =  (myside.x      * myorthonormal.y - myorthonormal.x * myside.y       )*invdet;
+    	zinvtransform.y = -(mydirection.x * myorthonormal.y - myorthonormal.x * mydirection.y  )*invdet;
+    	zinvtransform.z =  (mydirection.x * myside.y        - myside.x        * mydirection.x  )*invdet;
+
+    	// coordinate transformation
+    	distance.x = (xinvtransform.x + yinvtransform.x + zinvtransform.x) * distance.x;
+    	distance.y = (xinvtransform.y + yinvtransform.y + zinvtransform.y) * distance.y;
+    	distance.z = (xinvtransform.z + yinvtransform.z + zinvtransform.z) * distance.z;
+
+    	// project vector for the rotated 3DMap on screen
+    	float xcoordinate = distance.y/(2*detectionlimit);
+    	float ycoordinate = (distance.x*sin(mapangle)+distance.z*cos(mapangle))/(2*detectionlimit);
     	return orxonox::Vector2(xcoordinate , ycoordinate);
     }
 
