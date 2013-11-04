@@ -1,0 +1,223 @@
+<LevelInfo
+ name = "Heavy Cruiser Demo"
+ description = "Demonstration of the Heavy Cruiser."
+ tags = "test"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/HeavyCruiser.oxt")
+?>
+
+<Level>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+  <lodinformation> <!-- Set LOD to stay higher even on greater distances, since ship is large-->
+<!--     <MeshLodInformation mesh=HeavyCruiser_frontR.mesh enabled=true lodQuality=0.6/>
+    <MeshLodInformation mesh=HeavyCruiser_frontL.mesh enabled=true lodQuality=0.6/>
+    <MeshLodInformation mesh=HeavyCruiser_partR.mesh enabled=true lodQuality=0.6/>
+    <MeshLodInformation mesh=HeavyCruiser_partL.mesh enabled=true lodQuality=0.6/>
+    <MeshLodInformation mesh=HeavyCruiser_sidearmFrontL.mesh enabled=false/>
+    <MeshLodInformation mesh=HeavyCruiser_sidearmFrontR.mesh enabled=false/> -->
+    
+    <MeshLodInformation mesh=cube.mesh enabled=false/>
+  </lodinformation>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <StaticEntity position="0,-500,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
+    <attached> 
+            <Model mesh="HeavyCruiser_body.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_frontR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_frontL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_partL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_partR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_sidearmL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_sidearmLfront.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_sidearmR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            <Model mesh="HeavyCruiser_sidearmRfront.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            
+            <!-- bay1 lights -->
+            <BlinkingBillboard position="75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
+            <BlinkingBillboard position="-75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
+            <BlinkingBillboard position="74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
+            <BlinkingBillboard position="-74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
+            <BlinkingBillboard position="73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
+            <BlinkingBillboard position="-73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
+            <!-- front position lights -->
+            <BlinkingBillboard position="67,-5,-240" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+            <BlinkingBillboard position="-67,-5,-240" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+            <BlinkingBillboard position="72,51,-380" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+            <BlinkingBillboard position="-72,51,-380" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+            <!-- rear position lights -->
+            <BlinkingBillboard position="95,-15,483" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+            <BlinkingBillboard position="-95,-15,483" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+            <BlinkingBillboard position="74,103,524" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+            <BlinkingBillboard position="-74,103,524" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+    </attached> 
+    <collisionShapes> 
+            <BoxCollisionShape position="79,33,-320" halfExtents="8,11,54" info="frontR"/>
+            <BoxCollisionShape position="79,31,-399" halfExtents="3,6,26" info="frontR"/>  
+
+            <BoxCollisionShape position="-79,33,-320" halfExtents="8,11,54" info="frontL"/>
+            <BoxCollisionShape position="-79,31,-399" halfExtents="3,6,26" info="frontL"/> 
+
+            <BoxCollisionShape position="93,33,-179" halfExtents="12,13,45" info="partR"/>   
+            <BoxCollisionShape position="93,33,-230" halfExtents="15,17,22" info="partR"/>   
+
+            <BoxCollisionShape position="-93,33,-179" halfExtents="12,13,45" info="partL"/>   
+            <BoxCollisionShape position="-93,33,-230" halfExtents="15,17,22" info="partL"/> 		
+
+            <BoxCollisionShape position="145,21,115" roll="-15" halfExtents="19,31,105" info="sidearmR"/>             
+            
+            <BoxCollisionShape position="60,35,-310" halfExtents="13,28,60" info="body, bay1, Rwall"/> 
+            <BoxCollisionShape position="-60,35,-310" halfExtents="13,28,60" info="body, bay1, Lwall"/> 
+            <BoxCollisionShape position="0,56,-310" halfExtents="65,6,60" info="body, bay1, Twall"/> 
+            <BoxCollisionShape position="0,33,-260" halfExtents="65,28,5" info="body, bay1, Bwall"/>
+            <BoxCollisionShape position="0,10,-310" halfExtents="65,5,60" info="body, bay1, BottomWall"/> 
+
+            <BoxCollisionShape position="0,35,-125" halfExtents="83,30,130" info="body, front"/>
+	    <BoxCollisionShape position="0,6,-307" halfExtents="19,3,43" info="body, frontbottom"/>
+	    <BoxCollisionShape position="0,5,-196" halfExtents="27,3,24" info="body, dock"/>
+	    <BoxCollisionShape position="0,7,-248" pitch="25" halfExtents="63,4,12" info="body, dockF"/>
+	    <BoxCollisionShape position="70,6,-120" roll="20" halfExtents="12,6,120" info="body, dockR"/>
+	    <BoxCollisionShape position="63,-2,-180" halfExtents="3,3,60" info="body, dockR"/>
+	    <BoxCollisionShape position="-70,6,-120" roll="-20" halfExtents="12,6,120" info="body, dockL"/>
+	    <BoxCollisionShape position="-63,-2,-180" halfExtents="3,3,60" info="body, dockL"/>
+	    <BoxCollisionShape position="87,32,-63" halfExtents="4,23,50" info="body, frontCR"/>
+	    <BoxCollisionShape position="-87,32,-63" halfExtents="4,23,50" info="body, frontCL"/>
+
+	    <BoxCollisionShape position="0,72,-213" halfExtents="37,8,60" info="body, Fbridge"/>
+	    <BoxCollisionShape position="0,72,-110" halfExtents="53,11,53" info="body, Cbridge"/>
+	    <BoxCollisionShape position="0,86,-110" halfExtents="40,4,40" info="body, Cbridge"/>
+	    <BoxCollisionShape position="0,70,-60" halfExtents="65,11,30" info="body, Bbridge"/>
+	    <BoxCollisionShape position="0,84,-45" halfExtents="33,11,26" info="body, Bbridge"/>
+	    <BoxCollisionShape position="0,79,-6" pitch="10" halfExtents="32,13,17" info="body, Bbridge"/>
+	    <BoxCollisionShape position="38,67,-45" roll="50" halfExtents="16,23,25" info="body, BbridgeR"/>
+	    <BoxCollisionShape position="35,63,-17" pitch="25" yaw="-20" roll="40" halfExtents="16,23,16" info="body, BbridgeR"/>
+	    <BoxCollisionShape position="-38,67,-45" roll="-50" halfExtents="16,23,25" info="body, BbridgeL"/>
+	    <BoxCollisionShape position="-35,63,-17" pitch="25" yaw="20" roll="-40" halfExtents="16,23,16" info="body, BbridgeL"/>	    
+
+            <BoxCollisionShape position="0,-15,-60" halfExtents="60,25,65" info="body, bay3, Fwall"/>
+            <BoxCollisionShape position="47,-20,90" halfExtents="13,11,90" info="body, bay3, Rwall"/>
+            <BoxCollisionShape position="-47,-20,90" halfExtents="13,11,90" info="body, bay3, Lwall"/>
+            <BoxCollisionShape position="0,-29,149" halfExtents="10,2,11" info="body, bay3, platform"/>
+            <BoxCollisionShape position="0,-20,240" halfExtents="60,20,78" info="body, bay3, Bwall"/>
+            
+            <BoxCollisionShape position="103,60,420" halfExtents="18,9,64" info="body, bay2, Rextrusion"/>
+            <BoxCollisionShape position="-103,60,420" halfExtents="18,9,64" info="body, bay2, Rextrusion"/>             
+            
+            <BoxCollisionShape position="76,27,440" roll="-19" halfExtents="18,38,85" info="body, bay2, Rwall"/>
+            <BoxCollisionShape position="75,71,440" roll="35" halfExtents="18,27,85" info="body, bay2, Rwall"/>             
+            <BoxCollisionShape position="-76,27,440" roll="19" halfExtents="18,38,85" info="body, bay2, Lwall"/>
+            <BoxCollisionShape position="-75,71,440" roll="-35" halfExtents="18,27,85" info="body, bay2, Rwall"/>             
+            <BoxCollisionShape position="0,75,465" halfExtents="72,28,60" info="body, bay2, Twall"/>
+	    <BoxCollisionShape position="0,35,423" halfExtents="85,35,5" info="body, bay2, Fwall"/>  
+            <BoxCollisionShape position="0,-5,465" halfExtents="85,6,60" info="body, bay2, BottomWall"/>
+            <BoxCollisionShape position="0,78,526" halfExtents="43,17,5" info="body, bay2, Twall"/>
+    </collisionShapes> 
+    </StaticEntity>
+
+                                        <!-- Width/Height/Lenght-->  <!-- B=back F=front C=center-->
+    <StaticEntity position="0,-500,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 >
+    <attached> 
+            <!--<Model position="79,33,-320" mesh="cube.mesh" scale3D="8,11,54" info="frontR"/>
+            <Model position="79,31,-399" mesh="cube.mesh" scale3D="3,6,26" info="frontR"/>  
+
+            <Model position="-79,33,-320" mesh="cube.mesh" scale3D="8,11,54" info="frontL"/>
+            <Model position="-79,31,-399" mesh="cube.mesh" scale3D="3,6,26" info="frontL"/> 
+
+            <Model position="93,33,-179" mesh="cube.mesh" scale3D="12,13,45" info="partR"/>   
+            <Model position="93,33,-230" mesh="cube.mesh" scale3D="15,17,22" info="partR"/>   
+
+            <Model position="-93,33,-179" mesh="cube.mesh" scale3D="12,13,45" info="partL"/>   
+            <Model position="-93,33,-230" mesh="cube.mesh" scale3D="15,17,22" info="partL"/> 		
+
+            <Model position="145,21,115" roll="-15" mesh="cube.mesh" scale3D="19,31,105" info="sidearmR"/>           
+            
+            <Model position="60,35,-310" mesh="cube.mesh" scale3D="13,28,60" info="body, bay1, Rwall"/> 
+            <Model position="-60,35,-310" mesh="cube.mesh" scale3D="13,28,60" info="body, bay1, Lwall"/> 
+            <Model position="0,56,-310" mesh="cube.mesh" scale3D="65,6,60" info="body, bay1, Twall"/> 
+            <Model position="0,33,-260" mesh="cube.mesh" scale3D="65,28,5" info="body, bay1, Bwall"/>
+            <Model position="0,10,-310" mesh="cube.mesh" scale3D="65,5,60" info="body, bay1, BottomWall"/>  
+
+            <Model position="0,35,-125" mesh="cube.mesh" scale3D="83,30,130" info="body, front"/>
+	    <Model position="0,6,-307" mesh="cube.mesh" scale3D="19,3,43" info="body, frontbottom"/>
+	    <Model position="0,5,-196" mesh="cube.mesh" scale3D="27,3,24" info="body, dock"/>
+	    <Model position="0,7,-248" pitch="25" mesh="cube.mesh" scale3D="63,4,12" info="body, dockF"/>
+	    <Model position="70,6,-120" roll="20" mesh="cube.mesh" scale3D="12,6,120" info="body, dockR"/>
+	    <Model position="63,-2,-180" mesh="cube.mesh" scale3D="3,3,60" info="body, dockR"/>
+	    <Model position="-70,6,-120" roll="-20" mesh="cube.mesh" scale3D="12,6,120" info="body, dockL"/>
+	    <Model position="-63,-2,-180" mesh="cube.mesh" scale3D="3,3,60" info="body, dockL"/>
+	    <Model position="87,32,-63" mesh="cube.mesh" scale3D="4,23,50" info="body, frontCR"/>
+	    <Model position="-87,32,-63" mesh="cube.mesh" scale3D="4,23,50" info="body, frontCL"/>
+
+	    <Model position="0,72,-213" mesh="cube.mesh" scale3D="37,8,60" info="body, Fbridge"/>
+	    <Model position="0,72,-110" mesh="cube.mesh" scale3D="53,11,53" info="body, Cbridge"/>
+	    <Model position="0,86,-110" mesh="cube.mesh" scale3D="40,4,40" info="body, Cbridge"/>
+	    <Model position="0,70,-60" mesh="cube.mesh" scale3D="65,11,30" info="body, Bbridge"/>
+	    <Model position="0,84,-45" mesh="cube.mesh" scale3D="33,11,26" info="body, Bbridge"/>
+	    <Model position="0,79,-6" pitch="10" mesh="cube.mesh" scale3D="32,13,17" info="body, Bbridge"/>
+	    <Model position="38,67,-45" roll="50" mesh="cube.mesh" scale3D="16,23,25" info="body, BbridgeR"/>
+	    <Model position="35,63,-17" pitch="25" yaw="-20" roll="40" mesh="cube.mesh" scale3D="16,23,16" info="body, BbridgeR"/>
+	    <Model position="-38,67,-45" roll="-50" mesh="cube.mesh" scale3D="16,23,25" info="body, BbridgeL"/>
+	    <Model position="-35,63,-17" pitch="25" yaw="20" roll="-40" mesh="cube.mesh" scale3D="16,23,16" info="body, BbridgeL"/>-->
+
+	    <Model position="-67,18,58" roll="-22" mesh="cube.mesh" scale3D="13,5,53" info="body, CFL"/>
+	    <Model position="-76,36,86" mesh="cube.mesh" scale3D="5,18,81" info="body, CL"/>
+	    <Model position="-71,55,140" pitch="-4" roll="31" mesh="cube.mesh" scale3D="9,5,27" info="body, CBTopL"/>
+	    <Model position="-62,2,140" roll="24" mesh="cube.mesh" scale3D="10,24,32" info="body, CBBottomL"/>
+
+	    <Model position="0,50,85" pitch="1" mesh="cube.mesh" scale3D="81,5,29" info="body, CTop"/>
+	    <Model position="0,59,140" pitch="-4" mesh="cube.mesh" scale3D="68,5,27" info="body, CBTop"/>
+
+	    <Model position="-48,-29,400" mesh="cube.mesh" scale3D="5,8,58" info="body, BBottomLBeam"/>
+	    <Model position="-48,-29,451" mesh="cube.mesh" scale3D="10,13,14" info="body, BBottomLBeam"/>
+
+	    <Model position="0,-15,-60" mesh="cube.mesh" scale3D="60,25,65" info="body, bay3, Fwall"/>
+            <Model position="47,-11,90" mesh="cube.mesh" scale3D="13,20,90" info="body, bay3, Rwall"/>
+            <Model position="-47,-11,90" mesh="cube.mesh" scale3D="13,20,90" info="body, bay3, Lwall"/>
+            <Model position="0,-29,149" mesh="cube.mesh" scale3D="10,2,11" info="body, bay3, platform"/>
+            <Model position="0,-20,240" mesh="cube.mesh" scale3D="60,20,78" info="body, bay3, Bwall"/>
+            
+            <Model position="103,60,420" mesh="cube.mesh" scale3D="18,9,64" info="body, bay2, Rextrusion"/>
+            <Model position="-103,60,420" mesh="cube.mesh" scale3D="18,9,64" info="body, bay2, Rextrusion"/>             
+            
+            <Model position="76,27,440" roll="-19" mesh="cube.mesh" scale3D="18,38,85" info="body, bay2, Rwall"/>
+            <Model position="75,71,440" roll="35" mesh="cube.mesh" scale3D="18,27,85" info="body, bay2, Rwall"/>             
+            <Model position="-76,27,440" roll="19" mesh="cube.mesh" scale3D="18,38,85" info="body, bay2, Lwall"/>
+            <Model position="-75,71,440" roll="-35" mesh="cube.mesh" scale3D="18,27,85" info="body, bay2, Rwall"/>             
+            <Model position="0,75,465" mesh="cube.mesh" scale3D="72,28,60" info="body, bay2, Twall"/>
+            <Model position="0,35,423" mesh="cube.mesh" scale3D="85,35,5" info="body, bay2, Fwall"/> 
+            <Model position="0,-5,465" mesh="cube.mesh" scale3D="85,6,60" info="body, bay2, BottomWall"/>
+            <Model position="0,78,526" mesh="cube.mesh" scale3D="43,17,5" info="body, bay2, Twall"/>  
+	    <Model position="0,69,80" mesh="cube.mesh" scale3D="8,4,80" info="body, Cbeam"/>     
+    </attached> 
+    <collisionShapes> 
+        <BoxCollisionShape position="-50,30,0" halfExtents="10,10,10" /> 
+    </collisionShapes> 
+    </StaticEntity>     
+  
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+<!--     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort /> -->
+	 <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+<!--     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=HeavyCruiser /> -->
+    
+  </Scene>
+</Level>
+
