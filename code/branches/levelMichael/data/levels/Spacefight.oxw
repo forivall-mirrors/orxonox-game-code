@@ -226,7 +226,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
         	</effects>
         	<events>
         	        <execute>
-        	        	<EventListener event="guard1trigger4" />
+        	        	<EventListener event="guard1trigger1" />
         	        </execute>
         	</events>
         </QuestEffectBeacon>
@@ -244,7 +244,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 <!-- ---------------------------------------------------------------------- -->
 
-  <DistanceTrigger name="flying1" position="6000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
+  <DistanceTrigger name="flying1" position="4000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
 
   <DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
@@ -252,6 +252,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 <!-- EVENTTRIGGER -->
 
+<!--
  <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
       <events>
         <trigger>
@@ -280,6 +281,8 @@ Naechster Quest bei Erreichen des roten Lichtes...
         </EventTrigger>
       </EventTrigger>
     </EventTrigger>
+-->
+
 
     <SimpleNotification message="first" >
         <events>
@@ -289,26 +292,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="second" >
+    <SimpleNotification message="shot" >
         <events>
             <trigger>
-                <EventListener event="guard1trigger2" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <SimpleNotification message="third" >
-        <events>
-            <trigger>
-                <EventListener event="guard1trigger3" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <SimpleNotification message="fourth" >
-        <events>
-            <trigger>
-                <EventListener event="guard1trigger4" />
+                <EventListener event="Patrol" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -321,10 +308,66 @@ Naechster Quest bei Erreichen des roten Lichtes...
         </events>
     </SimpleNotification>
 
+
+    <SpaceShip position="8000,1000,0" lookat="-1,0,0" name="firstPatrol" visible="true" radarname="Patrol">
+        <events>
+            <visibility>
+                <EventListener event=spawntrigger2 />
+            </visibility>
+        </events>
+        <templates>
+            <Template link=spaceshippirate /> <!--spaceshipTransporter -->
+        </templates>
+        <controller>
+            <WaypointPatrolController alertnessradius=3129 team=1 active=false>
+                <waypoints>
+                    <Model mesh="cube.mesh" scale=0 position="8000,1000,0" />
+                    <Model mesh="cube.mesh" scale=0 position="8000,-1000,0" />
+                </waypoints>
+                <events>
+                    <activity>
+                        <EventListener event=spawntrigger2 /> <!-- activates enemies-->
+                     </activity>
+                </events>
+            </WaypointPatrolController>
+        </controller>
+    </SpaceShip>
+
+
+<!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,6] -->
+    <EventTrigger name="guard1trigger4" activations="1" stayactive="true">
+      <events>
+        <trigger>
+          <EventListener event="firstPatrol" />
+        </trigger>
+      </events>
+      <EventTrigger name="guard1trigger3" activations="1" stayactive="true" delay=0.1>
+        <events>
+          <trigger>
+            <EventListener event="firstPatrol" />
+          </trigger>
+        </events>
+        <EventTrigger name="guard1trigger2" activations="1" stayactive="true" delay=0.1>
+          <events>
+            <trigger>
+              <EventListener event="firstPatrol" />
+            </trigger>
+          </events>
+          <EventTrigger name="guard1trigger1" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="firstPatrol" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+
 <!-- ----------------------------------------------------- -->
 
 <!-- Passive Piraten: Guard 1 -->
-
+<!--
 <SpaceShip position="8000,1000,0" lookat="-1,0,0" name=firstPatrol radarname="Patrol">
   <events>
     <visibility>
@@ -362,10 +405,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
     </WaypointController>
   </controller>
 </SpaceShip>
-
+-->
 
 <!-- Angreiffende Piraten: Guard 1 -->
-
+<!--
 <SpaceShip position="8000,-1000,1000" lookat="8000,1000,-1000" name=firstPatrol visible="true" radarname="Patrol" >
   <events>
     <visibility>
@@ -413,7 +456,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
     </WaypointPatrolController>
   </controller>
 </SpaceShip>
-
+-->
 <!-- Angreiffende Piraten: Guard 2 -->
 <SpaceShip position="19000,5000,21000" lookat="19000,4900,21000" name=secondPatrol visible="true" radarname="Patrol">
   <events>
@@ -589,8 +632,11 @@ Naechster Quest bei Erreichen des roten Lichtes...
     	?>
 
 
-  <Planet position="2000,-250,9000" scale=5000 pitch=1 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,1,0" rotationrate="3" atmospheresize=224.0f imagesize=1024.0f />
-  
+  <Planet position="2000,-250,9000" scale=5000 pitch=1 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,1,0" rotationrate="0.5" atmospheresize=224.0f imagesize=1024.0f />
+
+<!--
+<Model position="1000,  0,40" yaw="90" pitch="-90" roll="5" scale="50" mesh="ast1.mesh" />
+-->  
 
 <!-- ----------------Rotating SpaceStation--------------- -->
 
