@@ -17,10 +17,11 @@
 ?>
 
 <?lua
+  include("templates/pickupRepresentationTemplates.oxt")
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipEscort.oxt")
-  include("templates/spaceshipSpacecruiser.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
 ?>
 
   <NotificationQueueCEGUI
@@ -50,16 +51,41 @@
     skybox       = "Orxonox/skyBoxMoreNebula" 
   >
 
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
 	
 
     <!-- SpawnPoint team=0 position="-1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff / -->
 
-<!-- New Ship -->
+<!-- Pickups -->
 
+    <PickupSpawner pickup=dronepickup position="-5000,300,-209" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+    <PickupSpawner pickup=hugespeedpickup position="-800,0,0" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
 
-<!-- New Ship END -->
+<!--
+    <PickupSpawner pickup=crazyhealthpickup position="2200,1000,-600" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" active=false>
+                       <events>
+                         <activity>
+                              <EventListener event="reachedally" />
+                         </activity>
+                       </events>
+	</PickupSpawner>
+    <PickupSpawner pickup=hugespeedpickup position="2200,1000,-600" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" active=false>
+                       <events>
+                         <activity>
+                              <EventListener event="reachedally" />
+                         </activity>
+                       </events>
+	</PickupSpawner>
+-->
+
+<!-- Pickups heal the box, so one cant destroy the box -->
+
+<!-- Pickups END -->
 							<!--Basic Infos end-->
 
 <!--Story----------------------------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -69,7 +95,7 @@
     <EventMultiTrigger name=spawntrigger>
         <events>
             <trigger>
-                <TeamSpawnPoint team=0 position="-1000,0,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipspacecruiser>
+                <TeamSpawnPoint team=0 position="-8050,0,0" direction="1,0.3,0.2" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>>
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
@@ -95,7 +121,7 @@
 
         <QuestEffectBeacon times=1>
             <effects>
-                <CompleteQuest questId="Helpisontheway" />
+                <CompleteQuest questId="Helpisontheway.1" />
             </effects>
             <events>
                 <execute>
@@ -104,34 +130,58 @@
             </events>
         </QuestEffectBeacon>
 
-        <QuestEffectBeacon times=1>
+
+        <QuestEffectBeacon times=1 >
             <effects>
                 <CompleteQuest questId="defend.2" />
             </effects>
             <events>
                 <execute>
-                    <EventListener event="target3" />
+                    <EventListener event="Boxdestroyed" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon times=1 >
+            <effects>
+                <CompleteQuest questId="leave.3" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="reachedhomeplanet" />
                 </execute>
             </events>
         </QuestEffectBeacon>
 
 
 
-        <DistanceTrigger name="missionfinish" position="-2580,300,-209" target="Pawn" distance=60 stayActive="true" delay=1>
- 	<DistanceTrigger name="reachedally" position="-2580,300,-209" target="Pawn" distance=60 stayActive="true" delay=6>
+        <DistanceTrigger name="missionfinish" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=1>
     </DistanceTrigger>
+ 	<DistanceTrigger name="reachedally" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=2>
+    </DistanceTrigger>
+ 	<DistanceTrigger name="reachedhomeplanet" position="8000,7500,-1990" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
 
 
 
+          <EventTrigger name="boxtrigger" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="box" />
+              </trigger>
+            </events>
+          </EventTrigger>
 
-<BlinkingBillboard position="-2580,300,-209" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+
+<!-- Billboard Allyplanet -->
+
+<BlinkingBillboard position="-120,0,0" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
               <EventTrigger invert=true>
                 <events>
                   <trigger>
-                    <EventListener event=missionfinish />
+                    <EventListener event="missionfinish" />
                   </trigger>
                 </events>
               </EventTrigger>
@@ -139,83 +189,178 @@
           </events>
 </BlinkingBillboard>
 
-<Billboard position="-2580,300,-209" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+<Billboard position="-120,0,0" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
           <events>
             <visibility>
               <EventTrigger>
                 <events>
                   <trigger>
-                    <EventListener event=missionfinish />
+                    <EventListener event="missionfinish" />
                   </trigger>
                 </events>
               </EventTrigger>
             </visibility>
           </events>
 </Billboard>
+
+<!-- Billboard Allyplanet END-->
+
+
+<!-- Box with Pickups -->
+    <Pawn team=1 health=30 position="2200,1000,-600" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Something" >
+        <events>
+          <visibility>
+            <EventListener event="target3" />
+          </visibility>
+        </events>
+        <attached>
+            <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+
+<Billboard position="2200,1000,-600" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="boxtrigger" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
+<!-- Box with Pickups END -->
+
+<!-- Billboard Homeplanet -->
+
+<BlinkingBillboard position="8000,7500,-1990" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event="reachedhomeplanet" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+
+<Billboard position="8000,7500,-1990" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="reachedhomeplanet" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
+
+<!-- Billboard Homeplanet END-->
+
+
 <!--Quests (Fly to the Ally) END-->
 
 <!--Quests (Fight Enemies)-->
 
 
- <SpaceShip position="-6000,800,-709" lookat="0,0,1" name="attacker" radarname="Fighter1">
+ <SpaceShip position="1000,0,0" lookat="0,0,1" name="attacker" radarname="Fighter1" visible="true">
                             <events>
                                 <visibility>
-                                    <EventListener event="reachedally" />
+                                    <EventListener event="missionfinish" />
                                 </visibility>
                             </events>
+
                     <templates>
-                      <Template link=spaceshipassff />
+                      <Template link=spaceshippirate />
                     </templates>
                     <controller>
-                      <WaypointPatrolController alertnessradius=1000  team=1>
+                      <WaypointPatrolController alertnessradius=750  team=1 active=false>
                          <waypoints>
-                        <Model mesh="cube.mesh" scale=10 position="-3700,800,-709"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3700,800,309"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3700,-200,309"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3700,-200,-709"/>
+                        <Model mesh="cube.mesh" scale=10 position="1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="500,500,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,1000,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="-500,500,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="-1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="-500,-500,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,-1000,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="500,-500,0"/>
                        </waypoints>
+                       <events>
+                         <activity>
+                              <EventListener event="reachedally" />
+                         </activity>
+                       </events>
                     </WaypointPatrolController>
                   </controller>
                 </SpaceShip>
 
- <SpaceShip position="-6050,300,-709" lookat="1,0,0" name="attacker" radarname="Fighter2">
+ <SpaceShip position="0,1000,0" lookat="1,0,0" name="attacker" radarname="Fighter2" visible="true">
                             <events>
                                 <visibility>
-                                    <EventListener event="reachedally" />
+                                    <EventListener event="missionfinish" />
                                 </visibility>
                             </events>
                     <templates>
-                      <Template link=spaceshipassff />
+                      <Template link=spaceshippirate />
                     </templates>
                     <controller>
-                      <WaypointPatrolController alertnessradius=1000  team=1>
+                      <WaypointPatrolController alertnessradius=750  team=1 active=false>
                          <waypoints>
-                        <Model mesh="cube.mesh" scale=10 position="-4200,300,-709"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3200,300,-709"/>
-                        <Model mesh="cube.mesh" scale=10 position="-4200,300,309"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3200,300,309"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,1000,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,500,500"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,0,1000"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,-500,500"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,-1000,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,-500,-500"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,0,-1000"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,500,-500"/>
                        </waypoints>
+                       <events>
+                         <activity>
+                              <EventListener event="reachedally" />
+                         </activity>
+                       </events>
                     </WaypointPatrolController>
                   </controller>
                 </SpaceShip>
 
- <SpaceShip position="-6100,-200,-209" lookat="0,1,0" name="attacker" radarname="Fighter3">
+ <SpaceShip position="0,0,1000" lookat="0,1,0" name="attacker" radarname="Fighter3" visible="true">
                             <events>
                                 <visibility>
-                                    <EventListener event="reachedally" />
+                                    <EventListener event="missionfinish" />
                                 </visibility>
                             </events>
                     <templates>
-                      <Template link=spaceshipassff />
+                      <Template link=spaceshippirate />
                     </templates>
                     <controller>
-                      <WaypointPatrolController alertnessradius=1000  team=1>
+                      <WaypointPatrolController alertnessradius=750  team=1 active=false>
                          <waypoints>
-                        <Model mesh="cube.mesh" scale=10 position="-4200,-200,-209"/>
-                        <Model mesh="cube.mesh" scale=10 position="-4200,800,-209"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3200,800,-209"/>
-                        <Model mesh="cube.mesh" scale=10 position="-3200,-200,-209"/>
+                        <Model mesh="cube.mesh" scale=10 position="1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="500,0,500"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,0,1000"/>
+                        <Model mesh="cube.mesh" scale=10 position="-500,0,500"/>
+                        <Model mesh="cube.mesh" scale=10 position="-1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=10 position="-500,0,-500"/>
+                        <Model mesh="cube.mesh" scale=10 position="0,0,-1000"/>
+                        <Model mesh="cube.mesh" scale=10 position="500,0,-500"/>
                        </waypoints>
+                       <events>
+                         <activity>
+                              <EventListener event="reachedally" />
+                         </activity>
+                       </events>
                     </WaypointPatrolController>
                   </controller>
                 </SpaceShip>
@@ -253,7 +398,7 @@
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="No Mercy!!!"  broadcast="true">
+    <SimpleNotification message="Booom, you got him!"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event="target2" />
@@ -261,13 +406,16 @@
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Booom, you got them all."  broadcast="true">
+
+    <SimpleNotification message="No Mercy!! .. What's that?"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event="target3" />
             </trigger>
         </events>
     </SimpleNotification>
+
+
 
 
 <!-- @Triggers: Attakers, Fight one by one END  -->
@@ -293,10 +441,10 @@
 
 
     <LocalQuest id="defend.2">
-        <QuestDescription title="Defend the Planet" description="You've picked up you're mate. He's wounded and you have to reach your base as fast as you can. Defend this place, 	and try to get him home.
+        <QuestDescription title="Defend the Planet" description="You've picked up you're mate. He's wounded and you have to reach your base as fast as you can. Defend this place, 	and try to get him home. Perhaps you can find something usefull around here.
 
 	Try to stay on the planet. It's easier to fight!" 
-	failmessage="" completeMessage="" />
+	failmessage="Well, you sucked" completeMessage="Well done, You're a hero" />
         <complete-effects>
             <AddQuest questId="leave.3" />
         </complete-effects>
@@ -305,16 +453,23 @@
 
 
     <LocalQuest id="leave.3">
-        <QuestDescription title="Leave the Place" description="You've blown their minds. Let's go home." failmessage="" completeMessage="" />
+        <QuestDescription title="Leave the Place" description="You've blown their minds. Let's go home. Follow the Big blue planet to reach your home." failmessage="" completeMessage="" />
         <complete-effects>
             <AddQuest questId="wayhome.4" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="wayhome.4">
+        <QuestDescription title="Let's go home" description="You've reached your planet. The radar is broke. You have to find the Base, cause you arent able to see from the air" failmessage="" completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="end.5" />
         </complete-effects>
     </LocalQuest>
 
 <!-- LocalQuests END -->
 
 <!-- Message Triggers -->
-    <DistanceTrigger name="StartofMission" position="-1000,0,0" target="Pawn" distance=10 stayActive="true" delay=2/>
+    <DistanceTrigger name="StartofMission" position="-8050,0,0" target="Pawn" distance=10 stayActive="true" delay=2/>
     <SimpleNotification message="Hi, I'm the Commander.">
         <events>
             <trigger>
@@ -323,7 +478,7 @@
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="Introduction1" position="-1000,0,0" target="Pawn" distance=30 stayActive="true" delay=6.4/>
+    <DistanceTrigger name="Introduction1" position="-8050,0,0" target="Pawn" distance=30 stayActive="true" delay=6.4/>
     <SimpleNotification message="An allied pilot had to make a forced landing">
         <events>
             <trigger>
@@ -332,7 +487,7 @@
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="Introduction2" position="-1000,0,0" target="Pawn" distance=30 stayActive="true" delay=10.8/>
+    <DistanceTrigger name="Introduction2" position="-8050,0,0" target="Pawn" distance=30 stayActive="true" delay=10.8/>
     <SimpleNotification message="He needs your help. Get him out of there">
         <events>
             <trigger>
@@ -358,6 +513,43 @@
             </trigger>
         </events>
     </SimpleNotification>
+
+
+    <SimpleNotification message="Pickups! Pick them up ;-)"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="boxtrigger" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="Boxdestroyed" position="2200,1000,-600" target="SpaceShip" distance=30 stayActive="true" delay=0.1 />
+    <SimpleNotification message="Now aim the blue planet">
+        <events>
+            <trigger>
+                <EventListener event="Boxdestroyed" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="Boxdestroyed2" position="2200,1000,-600" target="SpaceShip" distance=30 stayActive="true" delay=4.4 />
+    <SimpleNotification message="Land near the blinking light!">
+        <events>
+            <trigger>
+                <EventListener event="Boxdestroyed2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="You're almost there">
+        <events>
+            <trigger>
+                <EventListener event="reachedhomeplanet" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
 <!-- Message Triggers END -->
 
 <!--Quests____END-->
@@ -368,9 +560,9 @@
 
 							<!--Asteroids Field-->
 
-	<?lua for i=0,500,1 do
-		x=math.random(-2500,2500)
-		y=math.random(-2500,2500)
+	<?lua for i=0,750,1 do
+		x=math.random(-8000,-1000)
+		y=math.random(-2345,2345)
 		z=math.random(-2500,2500)
 	scale=math.random(20,70)
 	?>
@@ -390,7 +582,7 @@
 							<!--Asteroids Random-->
 
 	<?lua for i=0,300,1 do
-		x=math.random(-8000,8000)
+		x=math.random(-12000,4000)
 		y=math.random(-8000,8000)
 		z=math.random(-8000,8000)
 	?>
@@ -447,17 +639,17 @@
 							<!--Asteroid Elipse end-->
 
 							<!--Planet-->
-    <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
+    <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="planets/sol.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
     <StaticEntity position="2600,0,0" collisionType=static>
         <collisionShapes>
             <SphereCollisionShape radius="399" />
         </collisionShapes>
     </StaticEntity>
-							<!--Planet end-->
+							<!--Planet END-->
 
 							<!--Planet with Ally-->
     <Planet
-      position="-2700,300,-209"
+      position="0,0,0"
       scale="100"
       collisionType="dynamic"
       linearDamping="0.8"
@@ -478,8 +670,32 @@
         <SphereCollisionShape radius="100" position="0,0,0" />
       </collisionShapes>
     </Planet>
-							<!--Planet with Ally-->
+							<!-- Planet with Ally END-->
 
+
+							<!-- Homeplanet -->
+    <Planet
+      position="8000,7500,-5000"
+      scale="3000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5000000000000"
+      pitch="0"
+      mesh="iceplanet.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,0,0"
+      rotationrate="0.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-900" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="3000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
 
 
 
