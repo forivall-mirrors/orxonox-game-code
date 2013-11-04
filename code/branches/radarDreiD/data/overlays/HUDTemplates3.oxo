@@ -124,7 +124,7 @@
     
     <HUDRadar
      name          = "Radar"
-     backgroundtex = "radar3D_test.png"
+     backgroundtex = "radar3D_2_0.png"
      correctaspect = true
      size          = "0.17, 0.17"
      position      = "1.0, 1.0"
