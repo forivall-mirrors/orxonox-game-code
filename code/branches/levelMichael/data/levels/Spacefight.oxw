@@ -174,24 +174,26 @@ Naechster Quest bei Erreichen des roten Lichtes...
 				You managed it! For that you will get the golden medal of the united space armies." />
 	</LocalQuest>
 
-	<LocalQuest id="spacefight." >
+	<LocalQuest id="spacefight.rescue" >
 		<QuestDescription
-			title=""
-			description=""
-			failMessage=""
+			title="Rescue and place the bomb"
+			description="Now you have to free the commander and place the bomb."
+			failMessage="You've lost all your ships!"
 			completeMessage="" />
 	</LocalQuest>
 
-	<LocalQuest id="" >
+	<LocalQuest id="spacefight.moveAway" >
 		<QuestDescription
-			title=""
-			description=""
-			failMessage=""
-			completeMessage="" />
+			title="Get away!"
+			description="Get away of the mainship before the bomb detonates."
+			failMessage="You've lost all your ships!"
+			completeMessage="Done!" />
 	</LocalQuest>
 
 	
 <!-- ---------------------------------------------------------------------- -->
+
+<!-- QuestEffectBeacon's -->
 
 	<QuestEffectBeacon times=0>
 		<effects>
@@ -202,9 +204,9 @@ Naechster Quest bei Erreichen des roten Lichtes...
 				<EventListener event=spawntrigger2 />
 			</execute>
 		</events>
-		<attached>
+		<!--<attached>
 			<BlinkingBillboard position="8000,0,0" colour="1,0,0" frequency=0.5 amplitude=5 material="Examples/Flare" />
-		</attached>
+		</attached> -->
 	</QuestEffectBeacon>
 
 	<QuestEffectBeacon times=1>
@@ -235,23 +237,16 @@ Naechster Quest bei Erreichen des roten Lichtes...
 				<EventListener event=spawntrigger2 />
 			</execute>
 		</events>
-		<attached>
+		<!-- <attached>
 			<BlinkingBillboard position="18000, 5000, 21000" color="1,0,0" frequency=0.6 amplitude=10 material="Examples/Flare" />
-		</attached>
+		</attached> -->
 	</QuestEffectBeacon>
 
 <!-- ---------------------------------------------------------------------- -->
 
-  <DistanceTrigger name="flying1" position="5000,0,0" target="SpaceShip" distance=1000 stayActive="true" delay=0 />
+  <DistanceTrigger name="flying1" position="6000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
 
   <DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
-    <SimpleNotification message="Let's fly to the blinking light." >
-        <events>
-            <trigger>
-                <EventListener event=spawntrigger2 />
-            </trigger>
-        </events>
-    </SimpleNotification>
 
 <!-- ----------------------------------------------------- -->
 
@@ -575,6 +570,24 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		asteroidField(20000, -10000, -12000, 50, 1000, 10000, 40, 0)
 	?>
 
+	<!-- zwischen guard 2 & mainship -->
+	<!-- Kern -->	
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
+	?>
+	
+	<!-- Peripherie -->
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidField(-5000, -10000, 30000, 10, 500, 10000, 20, 0)
+	?>
+
+	<?lua
+      		dofile("includes/asteroidField.lua")
+		asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 300, 0, 7850, 150, 0)
+    	?>
+
 
   <Planet position="2000,-250,9000" scale=5000 pitch=1 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,1,0" rotationrate="3" atmospheresize=224.0f imagesize=1024.0f />
   
@@ -589,12 +602,21 @@ Naechster Quest bei Erreichen des roten Lichtes...
   </attached>
 </StaticEntity>
 
-<StaticEntity position="18000,5000,21000" yaw=112 pitch=67>
+<StaticEntity position="18000,5000,21000" yaw=12 pitch=75>
   <attached>
     <?lua
       createSpaceStationPar(0,2,1,2,1,4,1,50)
     ?>
   </attached>
+</StaticEntity>
+
+<!-- ------------------------- Mainship ------------------ -->
+<StaticEntity position="-12000, -22000, 25000" yaw=112 pitch=67>
+	<attached>
+		<?lua
+			createSpaceStationPar(0,2,1,2,1,4,1,50)
+		?>
+	</attached>
 </StaticEntity>
 
 
