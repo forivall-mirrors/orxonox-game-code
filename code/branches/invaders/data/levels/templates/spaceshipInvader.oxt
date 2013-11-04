@@ -56,7 +56,7 @@
       <BoxCollisionShape position="0,     0,-12" halfExtents="4  , 4 ,7" />
     </collisionShapes>
 <?lua
-  include("../includes/weaponSettingsEscort.oxi")
+  include("../includes/invaderWeapon.oxi")
 ?>
   </InvaderShip>
 </Template>

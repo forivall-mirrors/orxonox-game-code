@@ -3,6 +3,7 @@ BUILD_UNIT InvaderBuildUnit.cc
   Invader.cc
   InvaderCenterPoint.cc
   InvaderShip.cc
+  InvaderWeapon.cc
 END_BUILD_UNIT
 )
 
@@ -12,5 +13,6 @@ ORXONOX_ADD_LIBRARY(Invader
   LINK_LIBRARIES
     orxonox
     overlays
+    weapons
   SOURCE_FILES ${Invader_SRC_FILES}
 )

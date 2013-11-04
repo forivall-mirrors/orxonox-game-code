@@ -49,12 +49,18 @@ namespace orxonox
         RegisterObject(InvaderShip);
 
         speed = 500;
+        isFireing = false;
         damping = 10;
+
     }
 
     void InvaderShip::tick(float dt)
     {
-        // If the bat is controlled (but not over the network).
+        // if (camera == NULL)
+        //     camera = this->getCamera();
+        // if (camera != NULL)
+        //     camera->setPosition(Vector3(0, 0, 0) + this->getWorldPosition());
+
         if (this->hasLocalController())
         {
             this->setVelocity(Vector3(1000 + velocity.y, 0, velocity.x)); //
@@ -68,12 +74,16 @@ namespace orxonox
         if (isFireing)
             ControllableEntity::fire(0);
 
+
+        // camera->setOrientation(Vector3::UNIT_X, Degree(0));
+
+
         SUPER(InvaderShip, tick, dt);
     }
 
     void InvaderShip::moveFrontBack(const Vector2& value)
     {
-        orxout(internal_error) << "move backfront" << value.x << value.y << endl;
+        // orxout(internal_error) << "move backfront" << value.x << value.y << endl;
         //velocity.y = value.y * speed * 10;
         lastTimeFront = 0;
         desiredVelocity.y = value.y * speed * 10;
@@ -81,7 +91,7 @@ namespace orxonox
 
     void InvaderShip::moveRightLeft(const Vector2& value)
     {
-        orxout(internal_error) << "right left front" << value.x << value.y << endl;
+        // orxout(internal_error) << "right left front" << value.x << value.y << endl;
         lastTimeLeft = 0;
         desiredVelocity.x = value.x * speed;
         // velocity.x = value.x * speed;

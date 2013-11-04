@@ -37,6 +37,7 @@
 #include "invader/InvaderPrereqs.h"
 
 #include "worldentities/pawns/SpaceShip.h"
+#include "graphics/Camera.h"
 
 namespace orxonox
 {
@@ -58,6 +59,7 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value){};
             virtual void rotateRoll(const Vector2& value){};
         private:
+            Camera* camera;
             bool isFireing;
             float speed, damping;
             float lastTimeFront, lastTimeLeft;
