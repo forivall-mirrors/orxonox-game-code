@@ -63,7 +63,7 @@ namespace orxonox
         this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.png";
         this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.png";
         this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.png";
-        this->setDetectionLimit( 3000.0f );
+        this->setDetectionLimit( 10000.0f );
         this->owner_ = 0;
     }
 
