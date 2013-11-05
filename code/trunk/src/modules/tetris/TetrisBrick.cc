@@ -53,7 +53,7 @@ namespace orxonox
     TetrisBrick::TetrisBrick(Context* context): ControllableEntity(context)
     {
         RegisterObject(TetrisBrick);
-        this->shapeIndex_ = static_cast<unsigned int>(rnd(7.0f)); //<! random number between 0 and 7
+        this->shapeIndex_ = 1 + static_cast<unsigned int>(rnd(6.0f)); //<! random number between 0 and 7
         this->stonesPerBrick_ = 4; //<! most tetris bricks is formed by 4 stones
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisBrick::enableMovement, this)));
