@@ -80,7 +80,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
     <!-- Drone pickup -->
     
-    <PickupSpawner pickup=dronepickup position="50,0,0" triggerDistance="10" respawnTime="0" maxSpawnedItems="2" />
+    <PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
 
 <!-- QUEST DESCRIPTION-->
 
@@ -112,11 +112,12 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
 	<LocalQuest id="spacefight.upgrade1">
 		<QuestDescription
-			title="Prepare for the fight."
+			title="Prepare for the fight (optional)"
 			description="Your friends has an arsenal left behind near by your position.
-				perhaps you find something useful there..."
+				perhaps you find something useful there...
+				Hint: look for a big asteroid."
 			failMessage="You've lost all your ships!"
-			completeMessage="Your ship is prepared best for the second and last guard on the way to the mainship." />
+			completeMessage="" />
 	</LocalQuest>
 
 	<LocalQuest id="spacefight.flying2">
@@ -210,7 +211,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		</events>
 	</QuestEffectBeacon>
 
-	<!-- guard 1 -->
+	<!-- Guard 1 -->
 	<QuestEffectBeacon times=0>
 		<effects>
 			<CompleteQuest questId="spacefight.flying1" />
@@ -235,8 +236,20 @@ Naechster Quest bei Erreichen des roten Lichtes...
 			<BlinkingBillboard position="13500, 2500, 10500" color="1,1,0" frequency=0.6 amplitude=10 material="Examples/Flare" />
 		</attached>
 	</QuestEffectBeacon>
+
+	<!-- Drone (optional) -->
+	<QuestEffectBeacon times=0>
+		<effects>
+			<CompleteQuest questId="spacefight.upgrade1" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="drone" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
 	
-	<!-- guard 2 -->
+	<!-- Guard 2 -->
 	<QuestEffectBeacon times=0>
 		<effects>
 			<CompleteQuest questId="spacefight.flying2" />
@@ -251,6 +264,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	<QuestEffectBeacon times=0>
 		<effects>
 			<CompleteQuest questId="spacefight.guard2" />
+			<CompleteQuest questId="spacefight.upgrade1" />
 		</effects>
 		<events>
 			<execute>
@@ -268,7 +282,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
   <DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
   <DistanceTrigger name="flying2" position="13500, 2500, 10500" target="SpaceShip" distance=7000 stayActive="true" delay=0 />
-  <SimpleNotification message="guard 2 in Sicht!"  broadcast="true">
+  <SimpleNotification message="search the drone!?"  broadcast="true">
       <events>
           <trigger>
               <EventListener event="flying2" />
@@ -281,6 +295,28 @@ Naechster Quest bei Erreichen des roten Lichtes...
       <events>
           <trigger>
               <EventListener event="flying3" />
+          </trigger>
+      </events>
+  </SimpleNotification>
+
+<!-- Helper-Trigger for the drone(s) -->
+  <DistanceTrigger name="drone2" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=30 >
+    <DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=0.1 />
+  </DistanceTrigger>
+
+  <SimpleNotification message="Your ship is prepared best for the second and last guard on the way to the mainship.
+				Now attack the second guard!"  broadcast="true">
+      <events>
+          <trigger>
+              <EventListener event="drone1" />
+          </trigger>
+      </events>
+  </SimpleNotification>
+
+  <SimpleNotification message="Your ship is prepared best for the final fight at the mainship."  broadcast="true">
+      <events>
+          <trigger>
+              <EventListener event="drone2" />
           </trigger>
       </events>
   </SimpleNotification>
@@ -637,36 +673,44 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
     <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
     
- <!-- triple large belt around the planet  -->
-    <?lua
-        dofile("includes/asteroidField.lua")
-        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
-    ?>
-    <?lua
-        dofile("includes/asteroidField.lua")
-        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
-    ?>
-    <?lua
-        dofile("includes/asteroidField.lua")
-        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
-    ?>
+<!-- ASTEROIDS & ASTEROID-FIELDS -->
+
+<!-- Asteroids -->
+
+      <Model position="9800, -5000, 5700" yaw="90" pitch="-90" roll="0" scale="300" mesh="asteroid_ice.mesh" />
+
+<!-- triple large belt around the planet  -->
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+	?>
+
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
+	?>
+
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
+	?>
 
 <!-- other asteroid fileds -->
 
-	<!-- links vor guard 1 -->	
+	<!-- left before guard 1 -->	
 	<?lua
 		dofile("includes/asteroidField.lua")
 		asteroidField(-5000, -5000, -20000, 20, 50, 10000, 200, 0)
 	?>
 
-	<!-- links hinter guard 1 -->
+	<!-- left behind guard 1 -->
 	<?lua
 		dofile("includes/asteroidField.lua")
 		asteroidField(20000, -10000, -12000, 30, 100, 10000, 200, 0)
 	?>
 
-	<!-- zwischen guard 2 & mainship -->
-	<!-- Kern -->	
+	<!-- between guard 2 & mainship -->
+	<!-- Core -->	
 	<?lua
 		dofile("includes/asteroidField.lua")
 		asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
@@ -683,12 +727,18 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
     	?>
 
+<!-- PLANETS -->
 
-  <Planet position="2000,-250,9000" scale=5000 pitch=1 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,1,0" rotationrate="0.5" atmospheresize=224.0f imagesize=1024.0f />
+  <Planet 	position="2000,-250,9000" 
+		scale=5000 
+		pitch=1 
+		mesh="iceplanet.mesh" 
+		atmosphere="atmosphere1" 
+		rotationaxis="1,1,0" 
+		rotationrate="0.5" 
+		atmospheresize=224.0f 
+		imagesize=1024.0f />
 
-<!--
-<Model position="1000,  0,40" yaw="90" pitch="-90" roll="5" scale="50" mesh="ast1.mesh" />
--->  
 
 <!-- ----------------Rotating SpaceStation--------------- -->
 
@@ -709,6 +759,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 </StaticEntity>
 
 <!-- ------------------------- Mainship ------------------ -->
+
 <StaticEntity position="-12000, -22000, 25000" yaw=112 pitch=67>
 	<attached>
 		<?lua
