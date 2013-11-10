@@ -1,0 +1,213 @@
+<!-- Collection of almost all models in orxonox -->
+<LevelInfo
+ name =        "Gallery"
+ description = "Collection of almost all models."
+ tags =        "test, showcase"
+ screenshot =  "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+?>
+
+<Level>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+
+<!---
+    Gallery:
+    all Objects are organized in columns
+---->
+
+<!--- Whole Objects --->
+      <Model position="0, 0,-120" yaw="90" pitch="0" roll="0" scale="1" mesh="HydroHarvester.mesh" />
+
+      <Model position="0,30,-130" yaw="90" pitch="-90" roll="0" scale=1 mesh="DuBall2.mesh" />
+      <Model position="0,30,-110" yaw="90" pitch="-90" roll="0" scale=1 mesh="DuBall1.mesh" />
+
+      <StaticEntity position="0,60,-120" yaw=0 pitch=0>
+       <attached>
+        <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketIn.mesh"    scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketTop.mesh"   scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketLeft.mesh"  scale3D="10,10,10" />
+        <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
+      </attached>
+     </StaticEntity>
+
+
+
+
+
+<!--- PLANETS --->
+      <!--Model position="0,0,-80" yaw="90" pitch="-90" roll="0" scale="1" mesh="planet.mesh" /-->
+      <Model position="0, 20,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="iceplanet.mesh" />
+      <Model position="0, 40,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/earth.mesh" />
+      <Model position="0, 60,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/moon.mesh" />
+      <Model position="0, 80,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/sol.mesh" />
+      <Model position="0,-20,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/ganymede.mesh" />
+      <Model position="0,-40,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/jupiter.mesh" />
+      <Model position="0,-60,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/muunilinst.mesh" />
+      <Model position="0,-80,-80" yaw="90" pitch="-90" roll="0" scale="5" mesh="planets/planet3.mesh" />
+
+
+
+<!--- WEAPONS --->
+      <!--Model position="0,0,-40" yaw="90" pitch="-90" roll="0" scale="1" mesh="stunweapon.mesh" /-->
+      <Model position="0, 20,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="LightningGun.mesh" />
+      <Model position="0, 40,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="LightningGun-s.mesh" />
+      <Model position="0, 60,-40" yaw="90" pitch="-90" roll="0" scale="1.5" mesh="LaserBeam2.mesh" />
+      <Model position="0, 80,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="rocket.mesh" />
+      <Model position="0,-20,-40" yaw="90" pitch="-90" roll="0" scale="5" mesh="hs-w01.mesh" />
+      <Model position="0,-40,-40" yaw="90" pitch="-90" roll="0" scale="5" mesh="hs-w01s.mesh" />
+      <Model position="0,-60,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="hs-w01_reduced.mesh" />
+      <Model position="0,-80,-40" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="Spacebomb.mesh" />
+
+    
+<!--- SPACESHIPS --->
+      <Model position="0,  0,  0" yaw="90" pitch="-90" roll="0" scale="4" mesh="assff.mesh" />
+      <Model position="0, 20,  0" yaw="90" pitch="-90" roll="0" scale="4" mesh="pirate.mesh" />
+      <Model position="0, 40,  0" yaw="90" pitch="-90" roll="0" scale="0.7" mesh="Carrier.mesh" />
+      <Model position="0, 60,  0" yaw="90" pitch="-90" roll="0" scale="1" mesh="ghost.mesh" />
+      <Model position="0, 80,  0" yaw="90" pitch="-90" roll="0" scale="1" mesh="h2_green.mesh" />
+      <Model position="0,100,  0" yaw="0" pitch="0" roll="0" scale="1" mesh="collateralDamage.mesh" />
+      <Model position="0,-20,-10" yaw="180" pitch="-90" roll="0" scale="4" mesh="HXY.mesh" />
+      <Model position="0,-40,  0" yaw="90" pitch="-90" roll="0" scale="1" mesh="spacecruiser.mesh" />
+      <Model position="0,-60,  0" yaw="90" pitch="-90" roll="0" scale="1" mesh="swallow_mat.mesh" />
+
+      <Model position="0,-80,  0" yaw="0" pitch="0" roll="0" scale="1" mesh="Transporter.mesh" />
+      
+      
+
+<!--- ASTEROIDS --->
+      <Model position="0,  0,40" yaw="90" pitch="-90" roll="0" scale="3" mesh="ast1.mesh" />
+      <Model position="0, 20,40" yaw="90" pitch="-90" roll="0" scale="3" mesh="ast2.mesh" />
+      <Model position="0, 40,40" yaw="90" pitch="-90" roll="0" scale="3" mesh="ast3.mesh" />
+      <Model position="0, 60,40" yaw="90" pitch="-90" roll="0" scale="3" mesh="ast4.mesh" />
+      <Model position="0,-20,40" yaw="90" pitch="-90" roll="0" scale="4" mesh="ast5.mesh" />
+      <Model position="0,-40,40" yaw="90" pitch="-90" roll="0" scale="4" mesh="ast6.mesh" />
+      <Model position="0,-60,40" yaw="90" pitch="-90" roll="0" scale="5" mesh="asteroid_ice.mesh" />
+      <Model position="0,-80,40" yaw="90" pitch="-90" roll="0" scale="5" mesh="asteroid_UV.mesh" />
+
+
+<!--- Satellites & co --->
+      <Model position="0,  0,80" yaw="90" pitch="-90" roll="0" scale="3" mesh="satellite.mesh" />
+      <Model position="0, 20,80" yaw="90" pitch="0" roll="0" scale="3" mesh="broke-satellite.mesh" />
+      <Model position="0, 40,80" yaw="90" pitch="-90" roll="0" scale="3" mesh="satellitedish.mesh" />
+      <Model position="0, 60,80" yaw="90" pitch="-90" roll="0" scale="3" mesh="SolarPanel.mesh" />
+      <Model position="0, 80,80" yaw="90" pitch="0" roll="0" scale="2" mesh="drone.mesh" />
+      <Model position="0,-20,80" yaw="90" pitch="0" roll="0" scale="3" mesh="drone.mesh" />
+      <Model position="0,-40,80" yaw="90" pitch="-90" roll="0" scale="4" mesh="Thruster.mesh" />
+
+
+
+
+<!--- ABSTRACT SHAPES --->
+      <Model position="0,  0,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="sphere.mesh" />
+      <!--Model position="0,20,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="blackcube.mesh" /-->
+      <Model position="0, 40,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="cube.mesh" />
+      <Model position="0, 60,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="cube_green.mesh" />
+      <Model position="0, 80,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="cube_orange.mesh" />
+      <Model position="0,-20,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="CubeGround.mesh" />
+      <Model position="0,-40,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="cube_red.mesh" />
+      <Model position="0,-60,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="testcube.mesh" />
+      <Model position="0,-80,120" yaw="90" pitch="-90" roll="0" scale="3" mesh="cylinder.mesh" />
+
+
+<!--- SPACEJUNK --->
+      <Model position="0, 0,160" yaw="90" pitch="-90" roll="0" scale="8" mesh="debris-steelbeam.mesh" />
+      <Model position="0,20,160" yaw="90" pitch="-90" roll="0" scale="2" mesh="Thruster.mesh" />
+      <Model position="0,40,160" yaw="90" pitch="-90" roll="0" scale="1" mesh="crate.mesh" />
+      <Model position="0,60,160" yaw="90" pitch="-90" roll="0" scale="3" mesh="debris-fueltank.mesh" />
+      <Model position="0,80,160" yaw="90" pitch="-90" roll="0" scale="3" mesh="debris-glass.mesh" />
+      <!--Model position="0,-20,160" yaw="90" pitch="-90" roll="0" scale="3" mesh="debris-pile01.mesh" />
+      <Model position="0,-40,160" yaw="90" pitch="-90" roll="0" scale="3" mesh="debris-pile02.mesh" />
+      <Model position="0,-60,160" yaw="90" pitch="-90" roll="0" scale="3" mesh="debris-pile03.mesh" />
+      <Model position="0,-80,160" yaw="90" pitch="-90" roll="0" scale="3" mesh="debris-plane.mesh" />
+
+
+
+<!--- STUFF --->
+      <Model position="0,  0,200" yaw="90" pitch="-90" roll="0" scale="3" mesh="can.mesh" />
+      <Model position="0, 20,200" yaw="90" pitch="-90" roll="0" scale="3" mesh="cokebottle.mesh" />
+      <Model position="0, 40,200" yaw="90" pitch="-90" roll="0" scale="3" mesh="Tower.mesh" />
+      <!--Model position="0,60,200" yaw="90" pitch="-90" roll="0" scale="3" mesh="Tower_ME.mesh" /-->
+      <!--Model position="0,80,200" yaw="90" pitch="-90" roll="0" scale="5" mesh="SmallPart1.mesh" /-->
+      <Model position="0,-20,200" yaw="90" pitch="-90" roll="0" scale="4" mesh="raceCheckPoint.mesh" />
+      <Model position="0,-40,200" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="Spacegate.mesh" />
+
+      <Model position="0,-60,200" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="BigSpacegate.mesh" />
+      <!--Model position="0,-80,200" yaw="90" pitch="-90" roll="0" scale="5" mesh="SmallPart2" /> <!--- WHY doesn't it load ??--->
+
+<!--- The REST --->
+      <Model position="0,   0,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="axes.mesh" />
+      <Model position="0,  20,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="BodyDebris1.mesh" />
+      <Model position="0,  40,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="CockpitDebris.mesh" />
+      <Model position="0,  60,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="CuboidBody.mesh" />
+      <Model position="0,  80,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="CuboidConnBody.mesh" />
+      <Model position="0, -20,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="CuboidConnection.mesh" />
+      <Model position="0, -40,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="CuboidLandingZone.mesh" />
+      <Model position="0, -60,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="DoubleCuboidBody.mesh" />
+      <Model position="0, -80,240" yaw="90" pitch="-90" roll="0" scale="1" mesh="plane.mesh" />
+      <Model position="0,-100,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="WingDebris1.mesh" />
+      <Model position="0,-120,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="WingDebris2.mesh" />
+      <Model position="0,-140,240" yaw="90" pitch="-90" roll="0" scale="5" mesh="SemiCircleCockpit.mesh" />
+      <Model position="0,-160,240" yaw="90" pitch="-90" roll="0" scale="1" mesh="Playfield_ME.mesh" />
+
+<!--- Big ship: Planetary Destroyer --->
+	<Model position="0,   0,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsBody.mesh" />
+	<Model position="0,  30,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsDuseL.mesh" />
+	<Model position="0,  60,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsDuseR.mesh" />
+	<Model position="0,  90,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsKuppelV.mesh" />
+	<Model position="0, 120,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsKuppelK.mesh" />
+	<Model position="0, -30,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsAntL.mesh" />
+	<Model position="0, -60,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsAntR.mesh" />
+	<Model position="0, -90,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsGarage.mesh" />
+	<Model position="0,-120,280" yaw=0 pitch=180 roll=0 scale=1 mesh="bsStation.mesh" />
+
+
+
+
+<!-- BILLBOARDS - Flares -->
+    <Billboard position="-400,0,0" material="Flares/ringflare" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,60,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,120,0" material="Flares/point_lensflare" colour="0.7,0.4,0.1" scale=0.5/>
+    <Billboard position="-400,180,0" material="Flares/Flare" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-60,0" material="Flares/backlightflare" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-120,0" material="Flares/ThrusterFlare1" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-180,0" material="Flares/LightningBall_1" colour="0.7,0.4,0.1" scale=1/>
+    <Billboard position="-400,-240,0" material="Portals/Default" />
+
+
+
+<!-- Particle Emitters -->
+    <ParticleEmitter pitch=-135 roll=30 position="-400,0,300" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+
+
+
+
+
+
+
+
+
+  </Scene>
+</Level>
+
