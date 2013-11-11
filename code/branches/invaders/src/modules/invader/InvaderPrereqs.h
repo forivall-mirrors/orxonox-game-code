@@ -70,6 +70,7 @@ namespace orxonox
     class Invader;
     class InvaderCenterPoint;
     class InvaderShip;
+    class InvaderEnemy;
     class InvaderWeapon;
 }
 

@@ -51,7 +51,6 @@ namespace orxonox
         speed = 500;
         isFireing = false;
         damping = 10;
-
     }
 
     void InvaderShip::tick(float dt)
@@ -74,12 +73,25 @@ namespace orxonox
         if (isFireing)
             ControllableEntity::fire(0);
 
+        if (getPosition().x > 30000)
+        {
+            //level++
+            setPosition(getPosition() - Vector3(30000, 0, 0));
+        }
+
+        // if ((int(getPosition().x) % 1000) < 5)
+        // {
+        //     for (ObjectList<Invader>::iterator it = ObjectList<Invader>::begin(); it != ObjectList<Invader>::end(); ++it)
+        //         it->spawnEnemy();
+        // }
 
         // camera->setOrientation(Vector3::UNIT_X, Degree(0));
 
 
         SUPER(InvaderShip, tick, dt);
     }
+
+
 
     void InvaderShip::moveFrontBack(const Vector2& value)
     {

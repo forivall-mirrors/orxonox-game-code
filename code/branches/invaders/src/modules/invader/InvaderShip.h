@@ -58,6 +58,8 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value){}; 
             virtual void rotatePitch(const Vector2& value){};
             virtual void rotateRoll(const Vector2& value){};
+
+            // *InvaderShip getShip(){return this;}
         private:
             Camera* camera;
             bool isFireing;

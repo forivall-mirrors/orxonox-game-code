@@ -27,49 +27,39 @@
  */
 
 /**
-    @file Invader.h
-    @brief Declaration of the Invader class.
-    @ingroup Invader
+    @file InvaderEnemy.h
+    @brief Declaration of the InvaderEnemy class.
 */
 
-#ifndef _Invader_H__
-#define _Invader_H__
+#ifndef _InvaderEnemy_H__
+#define _InvaderEnemy_H__
 
 #include "invader/InvaderPrereqs.h"
 
-#include "gametypes/Deathmatch.h"
-
-#include "InvaderCenterPoint.h"
-
-#include "tools/Timer.h"
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
-
-    class _InvaderExport Invader : public Deathmatch
+    class _InvaderExport InvaderEnemy : public SpaceShip
     {
         public:
-            Invader(Context* context); //!< Constructor. Registers and initializes the object.
-            virtual ~Invader(); //!< Destructor. Cleans up, if initialized.
+            InvaderEnemy(Context* context); //!< Constructor. Registers and initializes the object.
+            virtual ~InvaderEnemy() {}
 
-            virtual void start(); //!< Starts the Invader minigame.
-            virtual void end(); ///!< Ends the Invader minigame.
+            virtual void tick(float dt);
 
-            //virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
-
-            void spawnEnemy();
-
-            void setCenterpoint(InvaderCenterPoint* center)
-            { this->center_ = center; }
         private:
-            WeakPtr<InvaderCenterPoint> center_;
-            InvaderShip * player;
+            Camera* camera;
+            bool isFireing;
+            float speed, damping;
+            float lastTimeFront, lastTimeLeft;
+            struct Velocity
+            {
+                float x;
+                float y;
+            } velocity, desiredVelocity;
 
-            ConsoleCommand* console_addEnemy;
-
-            Timer enemySpawnTimer;
-            //Context* context;
     };
 }
 
-#endif /* _Invader_H__ */
+#endif /* _InvaderEnemy_H__ */

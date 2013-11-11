@@ -41,11 +41,13 @@
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
 
-#include "InvaderShip.h"
 // ! HACK
 #include "infos/PlayerInfo.h"
 
 #include "InvaderCenterPoint.h"
+#include "InvaderShip.h"
+
+#include "core/command/ConsoleCommand.h"
 
 namespace orxonox
 {
@@ -54,13 +56,32 @@ namespace orxonox
     Invader::Invader(Context* context) : Deathmatch(context)
     {
         RegisterObject(Invader);
-
         this->center_ = 0;
+
+        this->console_addEnemy = createConsoleCommand( "spawnEnemy", createExecutor( createFunctor(&Invader::spawnEnemy, this) ) );
         //this->context = context;
+
+        enemySpawnTimer.setTimer(2.0f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
     }
 
     Invader::~Invader()
     {
+    }
+
+    void Invader::spawnEnemy()
+    {
+        if (player == NULL)
+        {
+            for (ObjectList<InvaderShip>::iterator it = ObjectList<InvaderShip>::begin(); it != ObjectList<InvaderShip>::end(); ++it)
+                player = *it;
+        }
+        if (player == NULL)
+            return;
+
+        Pawn* newPawn = new Pawn(this->center_->getContext());
+        newPawn->addTemplate("enemyinvader");
+
+        newPawn->setPosition(player->getPosition() + Vector3(1000, 0, 0));
     }
 
     // inject custom player controller
