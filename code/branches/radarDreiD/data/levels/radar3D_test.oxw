@@ -17,7 +17,9 @@
   include("templates/spaceshipEscort.oxt")
 ?>
 
-<Level>
+<Level
+  gametype     = "Mission"
+>
   <templates>
     <Template link=lodtemplate_default />
   </templates>
@@ -29,11 +31,11 @@
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+    <SpawnPoint team=0 position="-500,0,0" lookat="-500,0,1" spawnclass=SpaceShip pawndesign=spaceshipescort />
     
 
 
-	<Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 1" >
+	<Pawn team=0 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "0,0,0" >
       		<attached>
         	    <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
         	</attached>
@@ -42,7 +44,7 @@
         	</collisionShapes>
     	</Pawn>
 
-	<Pawn team=1 health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 2" >
+	<Pawn team=1 health=30 position="0,1000,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "0,1000,0" >
 		<attached>
 	            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
 	        </attached>
@@ -52,7 +54,7 @@
     	</Pawn>
 
 
-	<Pawn team=1 health=30 position="0,0,200" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 3" >
+	<Pawn team=2 health=30 position="0,0,1000" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "0,0,1000" >
 		<attached>
 	            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
 	        </attached>
@@ -61,7 +63,7 @@
 	        </collisionShapes>
     	</Pawn>
 
-	<Pawn team=1 health=30 position="200,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 4" >
+	<Pawn team=3 health=30 position="1000,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "1000,0,0" >
 		<attached>
 	            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
 	        </attached>
