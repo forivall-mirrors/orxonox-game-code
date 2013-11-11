@@ -210,7 +210,7 @@ namespace orxonox
     	orxonox::Vector3 distance = otherposition - myposition;
 
     	// new coordinate system base y_coordinate
-    	orxonox::Vector3 myside = mydirection.crossProduct(-myorthonormal);
+    	orxonox::Vector3 myside = -(mydirection.crossProduct(myorthonormal));
 
     	// inverse of the transform matrix
     	float determinant = +mydirection.x * (myside.y*myorthonormal.z - myorthonormal.y*myside.z)
@@ -246,8 +246,8 @@ namespace orxonox
     	distance = 5 * distance / detectionlimit;
 
     	// project vector for the rotated 3DMap on screen
-    	float xcoordinate = -distance.y; // -; cause in room myside points to the left, on screen x to the right
-    	float ycoordinate = (distance.x*sin(mapangle)+distance.z*cos(mapangle));
+    	float xcoordinate = distance.z; // z; cause z direction is to the side
+    	float ycoordinate = (distance.x*sin(mapangle)+distance.y*cos(mapangle));
     	return orxonox::Vector2(xcoordinate , ycoordinate);
     }
 
