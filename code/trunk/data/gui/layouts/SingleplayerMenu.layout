@@ -30,8 +30,9 @@
                 <Property Name="AlwaysOnTop" Value="True" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="VertScrollbar" Value="True" />
-                <Property Name="HorzScrollbar" Value="True" />
+                <Property Name="HorzScrollbar" Value="False" />
                 <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.725,0},{0.9,0},{0.875,0}}" />
+		<Property Name="HorzFormatting" Value="WordWrapLeftAligned" />
             </Window>
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/SingleplayerStartButton" >
