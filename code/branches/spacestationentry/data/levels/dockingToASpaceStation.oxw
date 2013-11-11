@@ -70,24 +70,7 @@
       </collisionShapes>
     </StaticEntity>
 
-<!-- Wuerfel -->
-
-  <StaticEntity position="0,-10000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
-      <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="50,50,5" />
-        
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
-      </collisionShapes>
-  </StaticEntity>
-<ForceField position="2500,-100000,2500" mode="sphere" diameter="182000" velocity="-5000" />
-<ForceField position="2500,-100000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
-<ForceField position="-2500,-100000,2500" mode="sphere" diameter="182000" velocity="-5000" />
-<ForceField position="-2500,-100000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
-
-
-   <!-- Docking -->
+   <!-- Docking (Andocken) -->
     <Dock position="2830,20,50" roll=0 yaw=0 >
         <animations>
             <MoveToDockingTarget target="destroyer" />
@@ -139,13 +122,54 @@
       </attached>
     </SpaceShip-->
     
-<FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-9900,0" >
+<FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-1900,0" >
       <attached>
         <DockingTarget name="spaceShip" />
         <DistanceTriggerBeacon name="bcnDestroyer" />
         <DockingTarget name="destroyer" />
       </attached>
 </FpsPlayer>
+
+<!-- Wuerfel -->
+
+  <StaticEntity position="0,-2000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="22,22,5" />
+        
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,10" />
+      </collisionShapes>
+  </StaticEntity>
+
+<!-- Schwerkraftfeld -->
+
+<ForceField position="2500,-92000,2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="2500,-92000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="-2500,-92000,2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="-2500,-92000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
+
+<!-- Ausgang -->
+
+  <StaticEntity position="120,-1950,120" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="cube.mesh" scale3D="4,4,4" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="4,4,4" />
+      </collisionShapes>
+  </StaticEntity>
+
+<DistanceTrigger name="ausgang" position="120,-1950,120"  target="Pawn" distance=50 stayActive="false" delay=0 />
+    <Script code="undock" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=ausgang />
+            </trigger>
+        </events>
+    </Script>
+
+
 
     <!-- triple large belt around the planet  -->
     <?lua
