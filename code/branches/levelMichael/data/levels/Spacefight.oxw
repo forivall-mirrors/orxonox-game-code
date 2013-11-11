@@ -65,7 +65,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	<EventMultiTrigger name=spawntrigger>
 	  <events>
 	    <trigger>
-	      <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
+	      <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateralDamage >
 	        <EventTrigger invert=true>
 		  <events>
 		    <trigger>
