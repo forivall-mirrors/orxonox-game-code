@@ -23,6 +23,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
   include("templates/spaceshipEscort.oxt")
   include("templates/spaceshipSwallow.oxt")
   include("templates/pickupRepresentationTemplates.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
 ?>
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
@@ -61,11 +62,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <!-- QUESTS & SPAWNTRIGGER -->
 
 <!-- Spawntrigger -->
-
 	<EventMultiTrigger name=spawntrigger>
 	  <events>
 	    <trigger>
-	      <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow>
+	      <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
 	        <EventTrigger invert=true>
 		  <events>
 		    <trigger>
@@ -78,12 +78,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	  </events>
 	</EventMultiTrigger>
 
-    <!-- Drone pickup -->
-    
-    <PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
+	<!-- Drone pickup -->
+	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
 
 <!-- QUEST DESCRIPTION-->
-
 	<LocalQuest id="spacefight.flying1">
 		<QuestDescription
 			title="To the first guard!"
@@ -117,7 +115,8 @@ Naechster Quest bei Erreichen des roten Lichtes...
 				perhaps you find something useful there...
 				Hint: look for a big asteroid."
 			failMessage="You've lost all your ships!"
-			completeMessage="" />
+			completeMessage="Your ship is prepared best for the second and last guard on the way to the mainship.
+				Now attack the second guard!" />
 	</LocalQuest>
 
 	<LocalQuest id="spacefight.flying2">
@@ -276,50 +275,50 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	<!-- Escape -->
 
 <!-- ---------------------------------------------------------------------- -->
+	<!-- Second Spawntrigger -->
+	<DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
-  <DistanceTrigger name="flying1" position="4000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
+	<!--Helper-Trigger for first guard -->
+	<DistanceTrigger name="flying1" position="4000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
 
-  <DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+	<!-- Helper-Trigger for second guard -->
+	<DistanceTrigger name="flying2" position="13500, 2500, 10500" target="SpaceShip" distance=7000 stayActive="true" delay=0 />
+	<SimpleNotification message="search the drone!?"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="flying2" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+	
+	<!-- Helper-Trigger for mainship -->
+	<DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0 />
+	<SimpleNotification message="Hauptschiff in Sicht!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="flying3" />
+			</trigger>
+		</events>
+	</SimpleNotification>
 
-  <DistanceTrigger name="flying2" position="13500, 2500, 10500" target="SpaceShip" distance=7000 stayActive="true" delay=0 />
-  <SimpleNotification message="search the drone!?"  broadcast="true">
-      <events>
-          <trigger>
-              <EventListener event="flying2" />
-          </trigger>
-      </events>
-  </SimpleNotification>
+	<!-- Helper-Trigger for the drone(s) -->
+	<DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=0 />
+	<SimpleNotification message="Now your are prepared best!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="drone1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
 
-  <DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0 />
-  <SimpleNotification message="Hauptschiff in Sicht!"  broadcast="true">
-      <events>
-          <trigger>
-              <EventListener event="flying3" />
-          </trigger>
-      </events>
-  </SimpleNotification>
-
-<!-- Helper-Trigger for the drone(s) -->
-  <DistanceTrigger name="drone2" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=30 >
-    <DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=0.1 />
-  </DistanceTrigger>
-
-  <SimpleNotification message="Your ship is prepared best for the second and last guard on the way to the mainship.
-				Now attack the second guard!"  broadcast="true">
-      <events>
-          <trigger>
-              <EventListener event="drone1" />
-          </trigger>
-      </events>
-  </SimpleNotification>
-
-  <SimpleNotification message="Your ship is prepared best for the final fight at the mainship."  broadcast="true">
-      <events>
-          <trigger>
-              <EventListener event="drone2" />
-          </trigger>
-      </events>
-  </SimpleNotification>
+	<!-- <DistanceTrigger name="drone2" position="9750, -5350, 5650" target="SpaceShip" distance=20 stay Active="true" delay=0 /> -->
+	<SimpleNotification message="Now your are prepared best!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="drone2" />
+			</trigger>
+		</events>
+	</SimpleNotification>
 
 <!-- ----------------------------------------------------- -->
 
