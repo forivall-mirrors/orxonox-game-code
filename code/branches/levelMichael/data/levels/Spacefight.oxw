@@ -59,13 +59,15 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
  <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
 
-<!-- QUESTS & SPAWNTRIGGER -->
+<!-- SPAWNTRIGGER -->
 
-<!-- Spawntrigger -->
+<!-- Spawntrigger -->    
+	<SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
+	
 	<EventMultiTrigger name=spawntrigger>
 	  <events>
 	    <trigger>
-	      <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateralDamage >
+	      <SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow >
 	        <EventTrigger invert=true>
 		  <events>
 		    <trigger>
@@ -76,7 +78,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
               </SpawnPoint>
 	    </trigger>
 	  </events>
-	</EventMultiTrigger>
+	</EventMultiTrigger>	
+
+	<!-- Second Spawntrigger -->
+	<DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
 	<!-- Drone pickup -->
 	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
@@ -151,20 +156,11 @@ Naechster Quest bei Erreichen des roten Lichtes...
 			failMessage="The messenger has reached the mainship.
 				Prepare to fight against a strong enmey!"
 			completeMessage="Well done! Now the element of surprise will be ours!" />
-		<complete-effects>
-			<AddQuest questId="spacefight.flying3" />
-		</complete-effects>
 	</LocalQuest>
 
-	<LocalQuest id="spacefight.flying3" >
-		<QuestDescription
-			title="Prepared for the big fight?"
-			description=""
-			failMessage="You've lost all your ships!"
-			completeMessage="" />
-	</LocalQuest>
-
-	<LocalQuest id="spacefight.mainfight" >
+<!-- 2 different possibilitys -->
+	<!-- Spion is destroyed -->
+	<LocalQuest id="spacefight.mainfight(min)" >
 		<QuestDescription
 			title="The big fight!"
 			description="Now the time is come!
@@ -176,6 +172,21 @@ Naechster Quest bei Erreichen des roten Lichtes...
 			completeMessage="YEEEHAAA!
 				You managed it! For that you will get the golden medal of the united space armies." />
 	</LocalQuest>
+
+	<!-- Spion isn't destroyed -->
+	<LocalQuest id="spacefight.mainfight(max)" >
+		<QuestDescription
+			title="The big fight!"
+			description="Now the time is come!
+				You've done all you can to prepare you for this spacebattle.
+				Unfortunately the spion has alert the mainship. So the soldiers will also be prepared for you.
+				But you can manage it.
+				Good luck!"
+			failMessage="You've lost all your ships!"
+			completeMessage="YEEEHAAA!
+				You managed it! For that you will get the golden medal of the united space armies." />
+	</LocalQuest>
+<!-- -->
 
 	<LocalQuest id="spacefight.rescue" >
 		<QuestDescription
@@ -231,11 +242,22 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		<effects>
 			<CompleteQuest questId="spacefight.guard1" />
 		</effects>
-		<attached>
-			<BlinkingBillboard position="13500, 2500, 10500" color="1,1,0" frequency=0.6 amplitude=10 material="Examples/Flare" />
-		</attached>
 	</QuestEffectBeacon>
 
+	<BlinkingBillboard position="13500, 2500, 10500" color="1,1,1" frequency=0.6 amplitude=10 material="Examples/Flare" >
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+                  </trigger>
+                </events>
+	      </EventTrigger>
+            </visibility>
+          </events>
+	</BlinkingBillboard>
+	
 	<!-- Drone (optional) -->
 	<QuestEffectBeacon times=0>
 		<effects>
@@ -249,6 +271,20 @@ Naechster Quest bei Erreichen des roten Lichtes...
 	</QuestEffectBeacon>
 	
 	<!-- Guard 2 -->
+
+	<!-- zum testen! -->
+	<QuestEffectBeacon times=0>
+		<effects>
+			<AddQuest questId="spacefight.flying2" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event=spawntrigger2 />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+	<!-- -->
+
 	<QuestEffectBeacon times=0>
 		<effects>
 			<CompleteQuest questId="spacefight.flying2" />
@@ -267,17 +303,56 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		</effects>
 		<events>
 			<execute>
-				<EventListener event="flying3" /> <!-- eigentlich "guard2trigger4", aber funkt. nicht! -->
+				<EventListener event="guard2" /> <!-- eigentlich "guard2trigger4", aber funkt. nicht! -->
 			</execute>		
 		</events>
 	</QuestEffectBeacon>
 
 	<!-- Escape -->
+	<SimpleNotification message="A spion is startet to the mainship!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="guard2trigger1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<QuestEffectBeacon times=0>
+		<effects>
+			<AddQuest questId="spacefight.escape" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="guard2trigger1" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
+	<QuestEffectBeacon times=0>
+		<effects>
+			<CompleteQuest questId="spacefight.escape" />
+			<CompleteQuest questId="spacefight.mainfight(max)" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="escaped" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
+	<QuestEffectBeacon>
+		<effects>
+			<CompleteQuest questId="spacefight.escape" />
+			<AddQuest questId="spacefight.mainfight(min)" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="notEscaped" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
 
 <!-- ---------------------------------------------------------------------- -->
-	<!-- Second Spawntrigger -->
-	<DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
-
 	<!--Helper-Trigger for first guard -->
 	<DistanceTrigger name="flying1" position="4000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
 
@@ -318,7 +393,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 				<EventListener event="drone2" />
 			</trigger>
 		</events>
-	</SimpleNotification>
+	</SimpleNotification>	
 
 <!-- ----------------------------------------------------- -->
 
@@ -387,8 +462,8 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </EventTrigger>
     </EventTrigger>
 
-<!-- for guard 2 -->
 
+<!-- for guard 2 -->
     <SimpleNotification message="first"  broadcast="true">
         <events>
             <trigger>
@@ -413,10 +488,10 @@ Naechster Quest bei Erreichen des roten Lichtes...
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="all shot! Fly to the blinking light"  broadcast="true">
+    <SimpleNotification message="all shot! Catch the spion!"  broadcast="true">
         <events>
             <trigger>
-                <EventListener event="guard2trigger4" />
+                <EventListener event="guard2" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -451,6 +526,44 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </EventTrigger>
     </EventTrigger>
 
+	<EventTrigger name="guard2" stayactive="true" delay=0.1 >
+		<events>
+			<trigger>
+				<EventListener event="guard2trigger4" />
+			</trigger>
+		</events>
+	</EventTrigger>
+
+<!-- For Escape -->
+	<!-- If the spion is escaped -->
+	<Trigger name="escaped" mode="xor" stayActive="true" >
+		<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
+		<EventTrigger activations="1" >
+			<events>
+				<trigger>
+					<EventListener event="spion" />
+				</trigger>
+			</events>
+		</EventTrigger>
+	</Trigger>
+
+	<!-- If the spion is destroyed -->
+	<Trigger name="notEscaped" mode="xor" stayActive="true" >
+		<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
+		
+		<!-- If the spion is escaped -->
+		<Trigger name="escaped" mode="xor" stayActive="true" >
+			<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
+			<EventTrigger activations="1" >
+				<events>
+					<trigger>
+						<EventListener event="spion" />
+					</trigger>
+				</events>
+			</EventTrigger>
+		</Trigger>
+	</Trigger>		
+	
 <!-- ----------------------------------------------------- -->
 
 <!-- Passive Piraten: Guard 1 -->
@@ -548,7 +661,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <SpaceShip position="19000,5000,21000" lookat="19000,4900,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event="guard1trigger4" />
+      <EventListener event="flying2" /> <!-- "guard1trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -568,7 +681,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event="guard1trigger4" />
+          <EventListener event="flying2" /> <!-- "guard1trigger4" -->
         </activity>
       </events>
     </WaypointPatrolController>
@@ -578,7 +691,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <SpaceShip position="17000,5000,21000" lookat="17000,5100,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event="guard1trigger4" />
+      <EventListener event="flying2" /> <!-- "guard1trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -598,7 +711,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event="guard1trigger4" />
+          <EventListener event="flying2" /> <!-- "guard1trigger4" -->
         </activity>
       </events>
     </WaypointPatrolController>
@@ -608,7 +721,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <SpaceShip position="18000,4000,21000" lookat="17000,4000,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event="guard1trigger4" />
+      <EventListener event="flying2" /> <!-- "guard1trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -628,7 +741,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event="guard1trigger4" />
+          <EventListener event="flying2" /> <!-- "guard1trigger4" -->
         </activity>
       </events>
     </WaypointPatrolController>
@@ -638,7 +751,7 @@ Naechster Quest bei Erreichen des roten Lichtes...
 <SpaceShip position="18000,6000,21000" lookat="19000,6000,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event="guard1trigger4" />
+      <EventListener event="flying2" /> <!-- "guard1trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -658,10 +771,35 @@ Naechster Quest bei Erreichen des roten Lichtes...
       </waypoints>
       <events>
         <activity>
-          <EventListener event="guard1trigger4" />
+          <EventListener event="flying2" /> <!-- "guard1trigger4" -->
         </activity>
       </events>
     </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- Escape-Ship -->
+<SpaceShip position="17000,4000,22000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+  <events>
+    <visibility>
+      <EventListener event="flying2" /> <!-- "guard1trigger4" -->
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointController team=1>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=1000 position="-7000,-10000,42000" />
+        <Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 25000" />
+      </waypoints>
+      <events>
+	<activity>
+	  <EventListener event="guard2trigger1" />
+	</activity>
+      </events>
+    </WaypointController>
   </controller>
 </SpaceShip>
 
@@ -670,15 +808,14 @@ Naechster Quest bei Erreichen des roten Lichtes...
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
-    <SpawnPoint team=0 position="0,0,0" lookat="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
-    
+
 <!-- ASTEROIDS & ASTEROID-FIELDS -->
 
-<!-- Asteroids -->
+	<!-- Asteroids -->
 
-      <Model position="9800, -5000, 5700" yaw="90" pitch="-90" roll="0" scale="300" mesh="asteroid_ice.mesh" />
+	<Model position="9800, -5000, 5700" yaw="90" pitch="-90" roll="0" scale="300" mesh="asteroid_ice.mesh" />
 
-<!-- triple large belt around the planet  -->
+	<!-- triple large belt around the planet  -->
 	<?lua
 		dofile("includes/asteroidField.lua")
 		asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
@@ -694,78 +831,94 @@ Naechster Quest bei Erreichen des roten Lichtes...
 		asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
 	?>
 
-<!-- other asteroid fileds -->
+	<!-- other asteroid fileds -->
 
-	<!-- left before guard 1 -->	
-	<?lua
-		dofile("includes/asteroidField.lua")
-		asteroidField(-5000, -5000, -20000, 20, 50, 10000, 200, 0)
-	?>
+		<!-- left before guard 1 -->	
+		<?lua
+			dofile("includes/asteroidField.lua")
+			asteroidField(-5000, -5000, -20000, 20, 50, 10000, 200, 0)
+		?>
 
-	<!-- left behind guard 1 -->
-	<?lua
-		dofile("includes/asteroidField.lua")
-		asteroidField(20000, -10000, -12000, 30, 100, 10000, 200, 0)
-	?>
+		<!-- left behind guard 1 -->
+		<?lua
+			dofile("includes/asteroidField.lua")
+			asteroidField(20000, -10000, -12000, 30, 100, 10000, 200, 0)
+		?>
 
-	<!-- between guard 2 & mainship -->
-	<!-- Core -->	
-	<?lua
-		dofile("includes/asteroidField.lua")
-		asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
-	?>
+		<!-- between guard 2 & mainship -->
+			<!-- Core -->	
+			<?lua
+				dofile("includes/asteroidField.lua")
+				asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
+			?>
 	
-	<!-- Peripherie -->
-	<?lua
-		dofile("includes/asteroidField.lua")
-		asteroidField(-5000, -10000, 30000, 10, 50, 10000, 100, 0)
-	?>
+			<!-- Peripherie -->
+			<?lua
+				dofile("includes/asteroidField.lua")
+				asteroidField(-5000, -10000, 30000, 10, 50, 10000, 100, 0)
+			?>
 
-	<?lua
-      		dofile("includes/asteroidField.lua")
-		asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
-    	?>
+			<?lua
+		      		dofile("includes/asteroidField.lua")
+				asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
+		    	?>
 
 <!-- PLANETS -->
 
-  <Planet 	position="2000,-250,9000" 
-		scale=5000 
-		pitch=1 
-		mesh="iceplanet.mesh" 
-		atmosphere="atmosphere1" 
-		rotationaxis="1,1,0" 
-		rotationrate="0.5" 
-		atmospheresize=224.0f 
-		imagesize=1024.0f />
+  	<Planet 	position="2000,-250,9000" 
+			scale=5000 
+			pitch=1 
+			mesh="iceplanet.mesh" 
+			atmosphere="atmosphere1" 
+			rotationaxis="1,1,0" 
+			rotationrate="0.5" 
+			atmospheresize=224.0f 
+			imagesize=1024.0f />
+
+	<BlinkingBillboard position="-7000,-10000,42000" color="1,1,1" frequency=0.6 amplitude=100 material="Examples/Flare" >
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="spion" />
+                  </trigger>
+                </events>
+	      </EventTrigger>
+            </visibility>
+          </events>
+	</BlinkingBillboard>
 
 
 <!-- ----------------Rotating SpaceStation--------------- -->
 
-<StaticEntity position="9000,0,0" yaw=112 pitch=67>
-  <attached>
-    <?lua
-      createSpaceStationPar(0,2,1,2,1,4,1,50)
-    ?>
-  </attached>
-</StaticEntity>
+	<!-- first guard -->
+	<StaticEntity position="9000,0,0" yaw=112 pitch=67>
+		<attached>
+			<?lua
+				createSpaceStationPar(0,2,1,2,1,4,1,50)
+			?>
+		</attached>
+	</StaticEntity>
 
-<StaticEntity position="18000,5000,21000" yaw=12 pitch=75>
-  <attached>
-    <?lua
-      createSpaceStationPar(0,2,1,2,1,4,1,50)
-    ?>
-  </attached>
-</StaticEntity>
+	<!-- second guard -->
+	<StaticEntity position="18000,5000,21000" yaw=12 pitch=75>
+		<attached>
+			<?lua
+				createSpaceStationPar(0,2,1,2,1,4,1,50)
+			?>
+		</attached>
+	</StaticEntity>
 
 <!-- ------------------------- Mainship ------------------ -->
 
-<StaticEntity position="-12000, -22000, 25000" yaw=112 pitch=67>
-	<attached>
-		<?lua
-			createSpaceStationPar(0,2,1,2,1,4,1,50)
-		?>
-	</attached>
-</StaticEntity>
+	<StaticEntity position="-12000, -22000, 25000" yaw=112 pitch=67>
+		<attached>
+			<?lua
+				createSpaceStationPar(0,2,1,2,1,4,1,50)
+			?>
+		</attached>
+	</StaticEntity>
 
 
   </Scene>
