@@ -95,7 +95,8 @@
     <EventMultiTrigger name=spawntrigger>
         <events>
             <trigger>
-                <TeamSpawnPoint team=0 position="-8050,0,0" direction="1,0.3,0.2" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>>
+                <TeamSpawnPoint team=0 position="-3000,12000,-5500" direction="0.3,1.2,-5.5" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>>
+<!-- Spawnpoint aendern zu 8050 nachher direction="1,0.3,0.2"-->
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
@@ -159,7 +160,7 @@
     </DistanceTrigger>
  	<DistanceTrigger name="reachedally" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
- 	<DistanceTrigger name="reachedhomeplanet" position="8000,7500,-1990" target="Pawn" distance=60 stayActive="true" delay=2>
+ 	<DistanceTrigger name="reachedhomeplanet" position="-3000,12000,-6990" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
 
 
@@ -238,13 +239,14 @@
 
 <!-- Billboard Homeplanet -->
 
-<BlinkingBillboard position="8000,7500,-1990" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+<!-- evt Blinking light before landing on planet, Entfernen nach architektur-->
+<BlinkingBillboard position="-3000,12000,-6990" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
               <EventTrigger invert=true>
                 <events>
                   <trigger>
-                    <EventListener event="reachedhomeplanet" />
+                    <EventListener event="target3"/> <!-- reachedhomeplanet--> 
                   </trigger>
                 </events>
               </EventTrigger>
@@ -252,19 +254,20 @@
           </events>
 </BlinkingBillboard>
 
-<Billboard position="8000,7500,-1990" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+
+<BlinkingBillboard position="-3000,12000,-6990" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
               <EventTrigger>
                 <events>
                   <trigger>
-                    <EventListener event="reachedhomeplanet" />
+                    <EventListener event="boxtrigger" />
                   </trigger>
                 </events>
               </EventTrigger>
             </visibility>
           </events>
-</Billboard>
+</BlinkingBillboard>
 
 <!-- Billboard Homeplanet END-->
 
@@ -287,14 +290,14 @@
                     <controller>
                       <WaypointPatrolController alertnessradius=750  team=1 active=false>
                          <waypoints>
-                        <Model mesh="cube.mesh" scale=10 position="1000,0,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="500,500,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,1000,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="-500,500,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="-1000,0,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="-500,-500,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,-1000,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="500,-500,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="500,500,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,1000,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="-500,500,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="-1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="-500,-500,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,-1000,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="500,-500,0"/>
                        </waypoints>
                        <events>
                          <activity>
@@ -317,14 +320,14 @@
                     <controller>
                       <WaypointPatrolController alertnessradius=750  team=1 active=false>
                          <waypoints>
-                        <Model mesh="cube.mesh" scale=10 position="0,1000,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,500,500"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,0,1000"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,-500,500"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,-1000,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,-500,-500"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,0,-1000"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,500,-500"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,1000,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,500,500"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,0,1000"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,-500,500"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,-1000,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,-500,-500"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,0,-1000"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,500,-500"/>
                        </waypoints>
                        <events>
                          <activity>
@@ -347,14 +350,14 @@
                     <controller>
                       <WaypointPatrolController alertnessradius=750  team=1 active=false>
                          <waypoints>
-                        <Model mesh="cube.mesh" scale=10 position="1000,0,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="500,0,500"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,0,1000"/>
-                        <Model mesh="cube.mesh" scale=10 position="-500,0,500"/>
-                        <Model mesh="cube.mesh" scale=10 position="-1000,0,0"/>
-                        <Model mesh="cube.mesh" scale=10 position="-500,0,-500"/>
-                        <Model mesh="cube.mesh" scale=10 position="0,0,-1000"/>
-                        <Model mesh="cube.mesh" scale=10 position="500,0,-500"/>
+                        <Model mesh="cube.mesh" scale=0 position="1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="500,0,500"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,0,1000"/>
+                        <Model mesh="cube.mesh" scale=0 position="-500,0,500"/>
+                        <Model mesh="cube.mesh" scale=0 position="-1000,0,0"/>
+                        <Model mesh="cube.mesh" scale=0 position="-500,0,-500"/>
+                        <Model mesh="cube.mesh" scale=0 position="0,0,-1000"/>
+                        <Model mesh="cube.mesh" scale=0 position="500,0,-500"/>
                        </waypoints>
                        <events>
                          <activity>
@@ -496,7 +499,7 @@
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="PickedUpAlly" position="-2580,300,-209" target="Pawn" distance=30 stayActive="true" delay=0.1/>
+    <DistanceTrigger name="PickedUpAlly" position="-120,0,0" target="Pawn" distance=30 stayActive="true" delay=0.1/>
     <SimpleNotification message="Hi .... are you an enemy?">
         <events>
             <trigger>
@@ -505,7 +508,7 @@
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="PickedUpAlly2" position="-2580,300,-209" target="Pawn" distance=30 stayActive="true" delay=4.4/>
+    <DistanceTrigger name="PickedUpAlly2" position="-120,0,0" target="Pawn" distance=30 stayActive="true" delay=4.4/>
     <SimpleNotification message="Shoot the enemies staying on the planet">
         <events>
             <trigger>
@@ -566,7 +569,8 @@
 		z=math.random(-2500,2500)
 	scale=math.random(20,70)
 	?>
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>">
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>"       collisiondamage = 0.01
+      enablecollisiondamage = true >
     	<attached>
         	<Model scale="<?lua print(scale) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
    	 </attached>
@@ -586,7 +590,8 @@
 		y=math.random(-8000,8000)
 		z=math.random(-8000,8000)
 	?>
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>" >
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>"      collisiondamage = 0.01
+      enablecollisiondamage = true  >
     	<attached>
         	<Model scale="<?lua print(math.random(20,70)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
     	</attached>
@@ -599,6 +604,19 @@
 							<!--Asteroids  Random end-->
 
     							<!--Asteroid Elipse-->
+
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(-3000,12000,-10000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+    ?>
+
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(-3000,12000,-10000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
+    ?>
+
+
+
     <?lua
     max = 20
     for i = 0, max, 1
@@ -639,12 +657,13 @@
 							<!--Asteroid Elipse end-->
 
 							<!--Planet-->
-    <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="planets/sol.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
+    <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="planets/sol.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=0 imagesize=1024.0f />
     <StaticEntity position="2600,0,0" collisionType=static>
         <collisionShapes>
             <SphereCollisionShape radius="399" />
         </collisionShapes>
     </StaticEntity>
+    <Billboard position="15100,0,0" material="Flares/backlightflare" colour="0.7,0.4,0.1" scale=600 />
 							<!--Planet END-->
 
 							<!--Planet with Ally-->
@@ -675,7 +694,7 @@
 
 							<!-- Homeplanet -->
     <Planet
-      position="8000,7500,-5000"
+      position="-3000,12000,-10000"
       scale="3000"
       collisionType="dynamic"
       linearDamping="0.8"
@@ -696,7 +715,64 @@
         <SphereCollisionShape radius="3000" position="0,0,0" />
       </collisionShapes>
     </Planet>
+  							<!-- Homeplanet  END-->
 
+							<!-- Anotherplanet -->
+    <Planet
+      position="-20000,6000,7000"
+      scale="3000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5000000000000"
+      pitch="0"
+      mesh="planets/ganymede.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,0,0"
+      rotationrate="0.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+    >
+      <collisionShapes>
+        <SphereCollisionShape radius="3000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(-20000,6000,7000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+    ?>
+  							<!-- Anotherplanet  END-->
+
+  							<!-- Homeplanet Architecture-->
+<!-- -3000,12000,-6990  = Billboard position-->
+
+     <!-- 	<Model  position="-3070,12070,-6990" yaw="90" pitch="-90" roll="0" scale="70" mesh="asteroid_ice.mesh" >
+      <collisionShapes>
+        <SphereCollisionShape radius="70" position="0,0,0" />
+      </collisionShapes>
+	</Model>
+-->
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="500" position="-2900,12080,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="70" />
+    	</collisionShapes>
+	</MovableEntity>
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" position="-3200,11950,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="90" />
+    	</collisionShapes>
+	</MovableEntity>
+
+ 							<!-- Homeplanet Architecture END-->
 
 
   </Scene>
