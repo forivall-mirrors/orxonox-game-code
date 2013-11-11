@@ -1,6 +1,7 @@
 #include "WiiMote.h"
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
+#include <wiicpp/wiicpp/wiicpp.h>
 
 namespace orxonox
 {
@@ -8,7 +9,7 @@ namespace orxonox
 	const std::string WiiMote::deviceName = "WiiMote";
 	void WiiMote::update(const Clock& time)
 	{
-		orxout()<<"fegit";
+		orxout()<<"fegit\n";
 
 	}
 	void WiiMote::clearBuffers()
