@@ -462,6 +462,11 @@ To Do:
 		</events>
 	</SimpleNotification>
 
+	<!-- Timer for the Escape-sequence 
+	<Timer interval=120 bLoop="false" bKillAfterCall="true" executor="" >
+	-->
+
+	<!-- Rescue the commander -->
 	<DistanceTrigger name="dock" position="-12100, -22000, 25000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
 
 <!-- ----------------------------------------------------- -->
@@ -893,7 +898,7 @@ To Do:
     <WaypointController team=1>
       <waypoints>
         <Model mesh="cube.mesh" scale=1000 position="-7000,-10000,42000" />
-        <Model mesh="cube.mesh" scale=1 position="-12000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -906,7 +911,7 @@ To Do:
 
 <!-- Mainship - Pirates -->
 
-<SpaceShip position="-12000, -22000, 26000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -22000, 26000" lookat="-12000, -21300, 25700" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
@@ -918,14 +923,14 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-        <Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=1000 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -936,7 +941,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -21000, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -21000, 25000" lookat="-12000, -21300, 24300" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
@@ -948,14 +953,14 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=1000 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />        
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -966,7 +971,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22700, 24300" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
@@ -978,14 +983,14 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=1000 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />        
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
       </waypoints>
       <events>
 	<activity>
@@ -996,7 +1001,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22700, 25700" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
@@ -1008,14 +1013,14 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=1000 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />        
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1027,7 +1032,7 @@ To Do:
 </SpaceShip>
 
 <!-- Additional pirates if the spion has warned the mainship -->
-<SpaceShip position="-11700, -21700, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-11700, -21700, 25000" lookat="-11000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event=spawntrigger2 /> <!-- "escaped" -->
@@ -1039,14 +1044,14 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-        <Model mesh="cube.mesh" scale=1000 position="-11000, -22000, 25000" />
-        <Model mesh="cube.mesh" scale=1000 position="-11300, -22700, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12700, -22700, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-13000, -22000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12700, -21300, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-11300, -21300, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-11000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-11300, -22700, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12700, -22700, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-13000, -22000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12700, -21300, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-11300, -21300, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1057,7 +1062,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12700, -22700, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12700, -22700, 25000" lookat="-13000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event=spawntrigger2 /> <!-- "escaped" -->
@@ -1069,14 +1074,14 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-        <Model mesh="cube.mesh" scale=1000 position="-13000, -22000, 25000" />
-        <Model mesh="cube.mesh" scale=1000 position="-12700, -21300, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-11300, -21300, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-11000, -22000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-11300, -22700, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=1000 position="-12700, -22700, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-13000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-12700, -21300, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-11300, -21300, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-11000, -22000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-11300, -22700, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-12700, -22700, 25000" />
       </waypoints>
       <events>
 	<activity>
