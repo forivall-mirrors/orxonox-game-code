@@ -171,6 +171,12 @@ To Do:
 			failMessage="You've lost all your ships!"
 			completeMessage="YEEEHAAA!
 				You managed it! For that you will get the golden medal of the united space armies." />
+		<complete-effects>
+			<AddQuest questId="spacefight.rescue" />
+			<!--
+			<BlinkingBillboard position="-12100, -22000, 25000" color="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
+			-->
+		</complete-effects>
 	</LocalQuest>
 
 	<!-- Spion isn't destroyed -->
@@ -185,15 +191,24 @@ To Do:
 			failMessage="You've lost all your ships!"
 			completeMessage="YEEEHAAA!
 				You managed it! For that you will get the golden medal of the united space armies." />
+		<complete-effects>
+			<AddQuest questId="spacefight.rescue" />
+			<!--
+			<BlinkingBillboard position="-12100, -22000, 25000" color="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
+			-->
+		</complete-effects>
 	</LocalQuest>
 <!-- -->
 
 	<LocalQuest id="spacefight.rescue" >
 		<QuestDescription
 			title="Rescue and place the bomb"
-			description="Now you have to free the commander and place the bomb."
+			description="Now you have to free the commander and place a bomb in the pirates' mainship."
 			failMessage="You've lost all your ships!"
 			completeMessage="" />
+		<complete-effects>
+			<AddQuest questId="spacefight.moveAway" />
+		</complete-effects>
 	</LocalQuest>
 
 	<LocalQuest id="spacefight.moveAway" >
@@ -203,6 +218,9 @@ To Do:
 			failMessage="You've lost all your ships!"
 			completeMessage="Done!" />
 	</LocalQuest>
+
+	<!-- GRAND EXPLOSION IF POSSIBLE -->
+	<!-- Next Part -->
 
 	
 <!-- ---------------------------------------------------------------------- -->
@@ -244,7 +262,7 @@ To Do:
 		</effects>
 	</QuestEffectBeacon>
 
-	<BlinkingBillboard position="13500, 2500, 10500" color="1,1,1" frequency=0.6 amplitude=10 material="Examples/Flare" >
+	<BlinkingBillboard position="13500, 2500, 10500" color="1.0,1.0,1.0" frequency=0.6 amplitude=10 material="Examples/Flare" >
           <events>
             <visibility>
               <EventTrigger>
@@ -352,6 +370,55 @@ To Do:
 		</events>
 	</QuestEffectBeacon>
 
+	<!-- LAST FIGHT -->
+	<!-- Spion destroyed -->
+	<QuestEffectBeacon>
+		<effects>
+			<CompleteQuest questId="spacefight.mainfight(min)" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="guard3trigger4" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
+	<!-- Spion escaped -->
+	<QuestEffectBeacon>
+		<effects>
+			<CompleteQuest questId="spacefight.mainfight(max)" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="guard3trigger6" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
+	<!-- COMMANDER RESCUE -->
+	<QuestEffectBeacon>
+		<effects>
+			<CompleteQuest questId="spacefight.rescue" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="dock" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
+	<!-- FLY AWAY -->
+	<QuestEffectBeacon>
+		<effects>
+			<CompleteQuest questId="spacefight.moveAway" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
 <!-- ---------------------------------------------------------------------- -->
 	<!--Helper-Trigger for first guard -->
 	<DistanceTrigger name="flying1" position="4000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
@@ -393,7 +460,9 @@ To Do:
 				<EventListener event="drone2" />
 			</trigger>
 		</events>
-	</SimpleNotification>	
+	</SimpleNotification>
+
+	<DistanceTrigger name="dock" position="-12100, -22000, 25000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
 
 <!-- ----------------------------------------------------- -->
 
@@ -535,18 +604,6 @@ To Do:
 	</EventTrigger>
 
 <!-- For Escape -->
-	<!-- If the spion is escaped -->
-	<Trigger name="escaped" mode="xor" stayActive="true" >
-		<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
-		<EventTrigger activations="1" >
-			<events>
-				<trigger>
-					<EventListener event="spion" />
-				</trigger>
-			</events>
-		</EventTrigger>
-	</Trigger>
-
 	<!-- If the spion is destroyed -->
 	<Trigger name="notEscaped" mode="xor" stayActive="true" >
 		<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
@@ -562,7 +619,51 @@ To Do:
 				</events>
 			</EventTrigger>
 		</Trigger>
-	</Trigger>		
+	</Trigger>
+
+<!-- For last fight -->
+    <EventTrigger name="guard3trigger5" activations="1" stayactive="true" delay=0.1 >
+      <events>
+        <trigger>
+          <EventListener event="lastGuard" />
+        </trigger>
+      </events>
+      <EventTrigger name="guard3trigger5" activations="1" stayactive="true" delay=0.1 >
+        <events>
+          <trigger>
+            <EventListener event="lastGuard" />
+          </trigger>
+        </events>
+        <EventTrigger name="guard3trigger4" activations="1" stayactive="true" delay=0.1 >
+          <events>
+            <trigger>
+              <EventListener event="lastGuard" />
+            </trigger>
+          </events>
+          <EventTrigger name="guard3trigger3" activations="1" stayactive="true" delay=0.1 >
+            <events>
+              <trigger>
+                <EventListener event="lastGuard" />
+              </trigger>
+            </events>
+	    <EventTrigger name="guard3trigger2" activations="1" stayactive="true" delay=0.1 >
+	      <events>
+		<trigger>
+		  <EventListener event="lastGuard" />
+		</trigger>
+	      </events>
+	      <EventTrigger name="guard3trigger1" activations="1" stayactive="true" delay=0.1 >
+		<events>
+		  <trigger>
+		    <EventListener event="lastGuard" />
+		  </trigger>
+		</events>
+	      </EventTrigger>
+	    </EventTrigger>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>			
 	
 <!-- ----------------------------------------------------- -->
 
@@ -782,7 +883,7 @@ To Do:
 <SpaceShip position="17000,4000,22000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
   <events>
     <visibility>
-      <EventListener event="flying2" /> <!-- "guard1trigger4" -->
+      <EventListener event="guard1trigger4" />
     </visibility>
   </events>
   <templates>
@@ -792,7 +893,7 @@ To Do:
     <WaypointController team=1>
       <waypoints>
         <Model mesh="cube.mesh" scale=1000 position="-7000,-10000,42000" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=1 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -805,10 +906,10 @@ To Do:
 
 <!-- Mainship - Pirates -->
 
-<SpaceShip position="-12000, -22000, 26000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+<SpaceShip position="-12000, -22000, 26000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -828,17 +929,17 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger1" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -21000, 25000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+<SpaceShip position="-12000, -21000, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -858,17 +959,17 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger1" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+<SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -888,17 +989,17 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger1" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+<SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -918,7 +1019,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger1" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
@@ -926,10 +1027,10 @@ To Do:
 </SpaceShip>
 
 <!-- Additional pirates if the spion has warned the mainship -->
-<SpaceShip position="-11700, -21700, 25000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+<SpaceShip position="-11700, -21700, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+      <EventListener event=spawntrigger2 /> <!-- "escaped" -->
     </visibility>
   </events>
   <templates>
@@ -949,17 +1050,17 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger1" />
+	  <EventListener event=spawntrigger2 /> <!-- "escaped" -->
 	</activity>
       </events>
     </WaypointController>
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12700, -22700, 25000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
+<SpaceShip position="-12700, -22700, 25000" lookat="-12000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+      <EventListener event=spawntrigger2 /> <!-- "escaped" -->
     </visibility>
   </events>
   <templates>
@@ -979,7 +1080,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger1" />
+	  <EventListener event=spawntrigger2 /> <!-- "escaped" -->
 	</activity>
       </events>
     </WaypointController>
