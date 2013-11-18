@@ -82,21 +82,13 @@
             <execute>
                 <EventListener event="dockMe" />
             </execute>
+	
             <activity>
                 <EventListener event=notGameEnd />
             </activity>
         </events>
         <attached>
-                    <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
-	<BlinkingBillboard position="10,0,0" material="Examples/Flare" colour="1, 0.3, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="20,0,0" material="Examples/Flare" colour="1, 0.3, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="30,0,0" material="Examples/Flare" colour="1, 0.3, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="0,10,0" material="Examples/Flare" colour="0.3, 1, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="0,20,0" material="Examples/Flare" colour="0.3, 1, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="0,30,0" material="Examples/Flare" colour="0.3, 1, 1, 0.1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="0,0,10" material="Examples/Flare" colour="0.3, 0.3, 1, 1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="0,0,20" material="Examples/Flare" colour="0.3, 0.3, 1, 1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
-	<BlinkingBillboard position="0,0,30" material="Examples/Flare" colour="0.3, 0.3, 1, 1" amplitude=0.2 frequency=0.4 phase=0 quadratic=1 />
+            <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
             <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
                 beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
             />
@@ -104,6 +96,33 @@
 
     </Dock>
 
+   <!-- Docking (Ausdocken)-->
+    <Dock position="100,-1950,100" roll=0 yaw=0 >
+        <animations>
+            <MoveToDockingTarget target="spaceShip" />
+        </animations>
+        <effects>
+            <DockToShip target="destroyer" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="undockMe" />
+            </execute>
+	
+            <activity>
+                <EventListener event=notGameEnd />
+            </activity>
+        </events>
+        <attached>
+            <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+            <DistanceTrigger position="0,0,0" distance="5" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="undockMe"
+            />
+        </attached>
+
+    </Dock>
+
+	
 
     
     <!--SpaceShip
@@ -144,14 +163,14 @@
 
 <!-- Schwerkraftfeld -->
 
-<ForceField position="2500,-92000,2500" mode="sphere" diameter="182000" velocity="-5000" />
-<ForceField position="2500,-92000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
-<ForceField position="-2500,-92000,2500" mode="sphere" diameter="182000" velocity="-5000" />
-<ForceField position="-2500,-92000,-2500" mode="sphere" diameter="182000" velocity="-5000" />
+<ForceField position="2500,-92000,2500" mode="sphere" diameter="184000" velocity="-5000" />
+<ForceField position="2500,-92000,-2500" mode="sphere" diameter="184000" velocity="-5000" />
+<ForceField position="-2500,-92000,2500" mode="sphere" diameter="184000" velocity="-5000" />
+<ForceField position="-2500,-92000,-2500" mode="sphere" diameter="184000" velocity="-5000" />
 
-<!-- Ausgang -->
+<!-- Ausgang Trigger Falsch
 
-  <StaticEntity position="120,-1950,120" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
+  <StaticEntity position="100,-1950,100" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
       <attached>
         <Model position="0,0,0" mesh="cube.mesh" scale3D="4,4,4" />
       </attached>
@@ -160,7 +179,7 @@
       </collisionShapes>
   </StaticEntity>
 
-<DistanceTrigger name="ausgang" position="120,-1950,120"  target="Pawn" distance=50 stayActive="false" delay=0 />
+<DistanceTrigger name="ausgang" position="100,-1950,100"  target="Pawn" distance=50 stayActive="false" delay=0 />
     <Script code="undock" onLoad="false">
         <events>
             <trigger>
@@ -168,6 +187,7 @@
             </trigger>
         </events>
     </Script>
+-->
 
 
 
