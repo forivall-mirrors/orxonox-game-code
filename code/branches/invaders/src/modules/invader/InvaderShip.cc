@@ -55,58 +55,89 @@ namespace orxonox
 
     void InvaderShip::tick(float dt)
     {
-        // if (camera == NULL)
-        //     camera = this->getCamera();
-        // if (camera != NULL)
-        //     camera->setPosition(Vector3(0, 0, 0) + this->getWorldPosition());
+        Vector3 pos = getPosition();
 
-        if (this->hasLocalController())
-        {
-            this->setVelocity(Vector3(1000 + velocity.y, 0, velocity.x)); //
-            //this->setVelocity(this->getOrientation() * Vector3(1, 0, 0));
-        }
+        //Movement calculation
         lastTimeFront += dt * damping;
         lastTimeLeft += dt * damping;
+        lastTime += dt;
+
         velocity.x = interpolate(clamp(lastTimeLeft, 0.0f, 1.0f), desiredVelocity.x, 0.0f);
         velocity.y = interpolate(clamp(lastTimeFront, 0.0f, 1.0f), desiredVelocity.y, 0.0f);
+
+        //Execute movement
+        if (this->hasLocalController())
+        {
+            float dist_y = velocity.y * dt;
+            if(dist_y + posforeward > -42*3 && dist_y + posforeward < 42*6)
+                posforeward += dist_y;
+            else
+                velocity.y = 0;
+            // this->setVelocity(Vector3(1000 + velocity.y, 0, velocity.x));
+            pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
+        }
 
         if (isFireing)
             ControllableEntity::fire(0);
 
-        if (getPosition().x > 30000)
+        // Camera
+        Camera* camera = this->getCamera();
+        if (camera != NULL)
         {
-            //level++
-            setPosition(getPosition() - Vector3(30000, 0, 0));
+            camera->setPosition(Vector3(-pos.z, -posforeward, 0));
+            camera->setOrientation(Vector3::UNIT_Z, Degree(90));
+            // orxout() << "asbhajskjasjahg" << pos << endl;
         }
 
-        // if ((int(getPosition().x) % 1000) < 5)
+
+
+        // bring back on track!
+        if (pos.z > 42*2.5)
+            pos.z = 42*2.5;
+        else if (pos.z < -42*3)
+            pos.z = -42*3;
+        if(pos.y != 0)
+            pos.y = 0;
+        // if (camera != NULL)
         // {
-        //     for (ObjectList<Invader>::iterator it = ObjectList<Invader>::begin(); it != ObjectList<Invader>::end(); ++it)
-        //         it->spawnEnemy();
+        //     float x = camera->getWorldPosition().x;
+        //     if (pos.x > x + 20)
+        //         pos.x = x + 20;
+        //     else if (pos.x < x - 20)
+        //         pos.x = x - 20;
         // }
+        // if (abs(posforeward) < 20)
+            
 
-        // camera->setOrientation(Vector3::UNIT_X, Degree(0));
+        setPosition(pos);
+        setOrientation(Vector3::UNIT_Y, Degree(270));
 
+        // Level up!
+        if (pos.x > 30000)
+        {
+            updateLevel();
+            setPosition(Vector3(0, 0, 0)); // pos - Vector3(30000, 0, 0)
+        }
 
         SUPER(InvaderShip, tick, dt);
     }
 
-
+    void InvaderShip::updateLevel()
+    {
+        lastTime = 0;
+        //level++
+    }
 
     void InvaderShip::moveFrontBack(const Vector2& value)
     {
-        // orxout(internal_error) << "move backfront" << value.x << value.y << endl;
-        //velocity.y = value.y * speed * 10;
-        lastTimeFront = 0;
-        desiredVelocity.y = value.y * speed * 10;
+        lastTimeLeft = 0;
+        desiredVelocity.x = -value.x * speed;
     }
 
     void InvaderShip::moveRightLeft(const Vector2& value)
     {
-        // orxout(internal_error) << "right left front" << value.x << value.y << endl;
-        lastTimeLeft = 0;
-        desiredVelocity.x = value.x * speed;
-        // velocity.x = value.x * speed;
+        lastTimeFront = 0;
+        desiredVelocity.y = value.y * speed * 42;
     }
     void InvaderShip::boost(bool bBoost)
     {

@@ -46,6 +46,7 @@
 
 #include "InvaderCenterPoint.h"
 #include "InvaderShip.h"
+#include "InvaderEnemy.h"
 
 #include "core/command/ConsoleCommand.h"
 
@@ -78,7 +79,7 @@ namespace orxonox
         if (player == NULL)
             return;
 
-        Pawn* newPawn = new Pawn(this->center_->getContext());
+        InvaderEnemy* newPawn = new InvaderEnemy(this->center_->getContext());
         newPawn->addTemplate("enemyinvader");
 
         newPawn->setPosition(player->getPosition() + Vector3(1000, 0, 0));

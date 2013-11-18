@@ -27,46 +27,32 @@
  */
 
 /**
-    @file InvaderShip.h
-    @brief Declaration of the InvaderShip class.
+    @file InvaderEnemy.h
+    @brief Declaration of the InvaderEnemy class.
 */
 
-#ifndef _InvaderShip_H__
-#define _InvaderShip_H__
+#ifndef _InvaderEnemy_H__
+#define _InvaderEnemy_H__
 
 #include "invader/InvaderPrereqs.h"
 
 #include "worldentities/pawns/SpaceShip.h"
-#include "graphics/Camera.h"
 
 namespace orxonox
 {
-    class _InvaderExport InvaderShip : public SpaceShip
+    class _InvaderExport InvaderEnemy : public Pawn
     {
         public:
-            InvaderShip(Context* context); //!< Constructor. Registers and initializes the object.
-            virtual ~InvaderShip() {}
+            InvaderEnemy(Context* context);
+            // virtual ~InvaderEnemy() {}
 
             virtual void tick(float dt);
 
-            virtual void moveFrontBack(const Vector2& value);
-            virtual void moveRightLeft(const Vector2& value);
-
-            virtual void boost(bool bBoost); // Starts or stops fireing
-
-            //no rotation!
-            virtual void rotateYaw(const Vector2& value){}; 
-            virtual void rotatePitch(const Vector2& value){};
-            virtual void rotateRoll(const Vector2& value){};
-
-            virtual void updateLevel();
-
-            // *InvaderShip getShip(){return this;}
         private:
             Camera* camera;
             bool isFireing;
-            float speed, damping, posforeward;
-            float lastTimeFront, lastTimeLeft, lastTime;
+            float speed, damping;
+            float lastTimeFront, lastTimeLeft;
             struct Velocity
             {
                 float x;
@@ -76,4 +62,4 @@ namespace orxonox
     };
 }
 
-#endif /* _InvaderShip_H__ */
+#endif /* _InvaderEnemy_H__ */

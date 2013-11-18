@@ -1,5 +1,5 @@
 <Template name=enemyinvader>
-  <InvaderShip
+  <InvaderEnemy
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipescortcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
@@ -33,9 +33,12 @@
    shakeAmplitude = 6
 
    collisionType     = "dynamic"
-   mass              = 0.00001
+   mass              = 5
    linearDamping     = 0
    angularDamping    = 0
+
+    collisiondamage = 100
+    enablecollisiondamage = true
   >
     <engines>
       <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipescortengine />
@@ -58,19 +61,19 @@
 <?lua
   include("../includes/invaderWeapon.oxi")
 ?>
-  </InvaderShip>
+  </InvaderEnemy>
 </Template>
 
-<Template name=spaceshipescortcameras defaults=0>
-  <InvaderShip>
+<!-- <Template name=spaceshipescortcameras defaults=0>
+  <InvaderEnemy>
     <camerapositions>
-<!--       <CameraPosition position="0,15, 60" drag=true mouselook=true />
+      <CameraPosition position="0,15, 60" drag=true mouselook=true />
       <CameraPosition position="0,20, 90" drag=true mouselook=true />
-      <CameraPosition position="0,30,120" drag=true mouselook=true /> -->
+      <CameraPosition position="0,30,120" drag=true mouselook=true />
       <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=false mouselook=true />
     </camerapositions>
-  </InvaderShip>
-</Template>
+  </InvaderEnemy>
+</Template> -->
 
 <Template name=spaceshipescortengine baseclass=MultiStateEngine>
   <MultiStateEngine
