@@ -62,12 +62,12 @@ To Do:
 <!-- SPAWNTRIGGER -->
 
 <!-- Spawntrigger -->    
-	<SpawnPoint team=0 position="13500, 2500, 11500" lookat="0,0,20000" spawnclass=SpaceShip pawndesign=spaceshipswallow /> <!-- pawndesign=spaceshipcollateraldamage -->
+	<SpawnPoint team=0 position="0, 0, 0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow /> <!-- pawndesign=spaceshipcollateraldamage -->
 	
 	<EventMultiTrigger name=spawntrigger>
 	  <events>
 	    <trigger>
-	      <SpawnPoint team=0 position="13500, 2500, 11500" lookat="0,0,20000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
+	      <SpawnPoint team=0 position="0, 0, 0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
 	        <EventTrigger invert=true>
 		  <events>
 		    <trigger>
@@ -81,22 +81,12 @@ To Do:
 	</EventMultiTrigger>	
 
 	<!-- Second Spawntrigger -->
-	<DistanceTrigger name=spawntrigger2 position="13500, 2500, 11500" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+	<DistanceTrigger name=spawntrigger2 position="0, 0, 0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
 	<!-- Drone pickup -->
 	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
 
 <!-- QUEST DESCRIPTION-->
-	<LocalQuest id="spacefight.flying1">
-		<QuestDescription
-			title="To the first guard!"
-			description="Reach the station ahead."
-			completeMessage="Well done!" />
-		<complete-effects>
-			<AddQuest questId="spacefight.guard1" />
-		</complete-effects>
-	</LocalQuest>
-	
 	<LocalQuest id="spacefight.guard1">
 		<QuestDescription 
 			title="Eliminate the first guard!" 
@@ -108,7 +98,6 @@ To Do:
 			failMessage="You've lost all your ships!"
 			completeMessage="Well done!" />
 		<complete-effects>
-		  	<AddQuest questId="spacefight.upgrade1" />
 			<AddQuest questId="spacefight.flying2" />
 		</complete-effects>
 	</LocalQuest>
@@ -128,12 +117,13 @@ To Do:
 		<QuestDescription
 			title="To the second guard!"
 			description="There is another sentry on the way to the big mainship.
-				unfortunately, we also have to destroy this one."
+				unfortunately, we also have to destroy this one.
+
+				The blinking light shows you the way to the sentry"
 			failMessage="You've lost all your ships!"
 			completeMessage="" />
 		<complete-effects>
 			<AddQuest questId="spacefight.guard2" />
-			<AddQuest questId="spacefight.escape" />
 		</complete-effects>
 	</LocalQuest>
 
@@ -228,7 +218,7 @@ To Do:
 	<!-- START -->
 	<QuestEffectBeacon times=0>
 		<effects>
-			<AddQuest questId="spacefight.flying1" />
+			<AddQuest questId="spacefight.guard1" />
 		</effects>
 		<events>
 			<execute>
@@ -237,22 +227,10 @@ To Do:
 		</events>
 	</QuestEffectBeacon>
 
-	<!-- Guard 1 -->
 	<QuestEffectBeacon times=0>
-		<effects>
-			<CompleteQuest questId="spacefight.flying1" />
-		</effects>
 		<events>
 			<execute>
 				<EventListener event="flying1" />
-			</execute>		
-		</events>
-	</QuestEffectBeacon>
-
-	<QuestEffectBeacon times=0>
-		<events>
-			<execute>
-				<EventListener event="flying2" /> <!-- eigentlich "guard1trigger4", aber funkt. nicht! -->
 			</execute>
 		</events>
 		<effects>
@@ -267,7 +245,7 @@ To Do:
               <EventTrigger>
                 <events>
                   <trigger>
-                    <EventListener event=spawntrigger2 /> <!-- "guard1trigger4" -->
+                    <EventListener event="flying1" />
                   </trigger>
                 </events>
 	      </EventTrigger>
@@ -276,6 +254,17 @@ To Do:
 	</BlinkingBillboard>
 	
 	<!-- Drone (optional) -->
+	<QuestEffectBeacon times=0>
+		<effects>
+			<AddQuest questId="spacefight.upgrade1" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="droneTrigger" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>	
+
 	<QuestEffectBeacon times=0>
 		<effects>
 			<CompleteQuest questId="spacefight.upgrade1" />
@@ -289,7 +278,7 @@ To Do:
 	
 	<!-- Guard 2 -->
 
-	<!-- zum testen! -->
+	<!-- zum testen!
 	<QuestEffectBeacon times=0>
 		<effects>
 			<AddQuest questId="spacefight.flying2" />
@@ -300,7 +289,7 @@ To Do:
 			</execute>
 		</events>
 	</QuestEffectBeacon>
-	<!-- -->
+	-->
 
 	<QuestEffectBeacon times=0>
 		<effects>
@@ -422,28 +411,39 @@ To Do:
 	</QuestEffectBeacon>
 
 <!-- ---------------------------------------------------------------------- -->
-	<!--Helper-Trigger for first guard -->
-	<DistanceTrigger name="flying1" position="4000,0,0" target="SpaceShip" distance=2000 stayActive="true" delay=0 />
+	<!-- Helper-Trigger for first guard -->
+	<DistanceTrigger name="flying1" position="9000, 0, 0" target="SpaceShip" distance=7000 stayActive="true" delay=0.1 >
+		<EventTrigger>
+			<events>
+				<trigger>
+					<EventListener event="guard1trigger4" />
+				</trigger>
+			</events>
+		</EventTrigger>
+	</DistanceTrigger>
 
-	<!-- Helper-Trigger for second guard -->
-	<DistanceTrigger name="flying2" position="13500, 2500, 10500" target="SpaceShip" distance=7000 stayActive="true" delay=0 />
+	<!-- Trigger to activate the upgrade1-Quest -->
+	<DistanceTrigger name="droneTrigger" position="13500, 2500, 10500" target="SpaceShip" distance=7000 stayActive="true" delay=0 />
 	<SimpleNotification message="search the drone!?"  broadcast="true">
 		<events>
 			<trigger>
-				<EventListener event="flying2" />
+				<EventListener event="droneTrigger" />
 			</trigger>
 		</events>
 	</SimpleNotification>
+
+	<!-- Helper-Trigger for second guard -->
+	<DistanceTrigger name="guard2" position="18000,5000,21000" target="SpaceShip" distance=7000 stayActive="true" delay=0.1 >
+		<EventTrigger>
+			<events>
+				<trigger>
+					<EventListener event="guard2trigger4" />
+				</trigger>
+			</events>
+		</EventTrigger>
+	</DistanceTrigger>
 	
-	<!-- Helper-Trigger for mainship -->
-	<DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0 />
-	<SimpleNotification message="Hauptschiff in Sicht!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="flying3" />
-			</trigger>
-		</events>
-	</SimpleNotification>
+
 
 	<!-- Helper-Trigger for the drone(s) -->
 	<DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=0 />
@@ -451,6 +451,16 @@ To Do:
 		<events>
 			<trigger>
 				<EventListener event="drone1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<!-- Helper-Trigger for mainship -->
+	<DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0 />
+	<SimpleNotification message="Hauptschiff in Sicht!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="flying3" />
 			</trigger>
 		</events>
 	</SimpleNotification>
@@ -475,18 +485,7 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<!--	
-	<Trigger name="destroyed" mode="and" stayActive="true"> -->
-		<DistanceTrigger name="destroyed" position="0,-10000,42000" target="DistanceTriggerBeacon" targetname="spionBeacon" distance=1000 stayActive="true" delay=0 beaconMode="exclude"/>
-		<!-- <EventTrigger>
-			<events>
-				<trigger>
-					<EventListener event="spionEvent" />
-				</trigger>
-			</events>
-		</EventTrigger>
-	</Trigger> -->
-
+	<DistanceTrigger name="destroyed" position="0,-10000,42000" target="DistanceTriggerBeacon" targetname="spionBeacon" distance=1000 stayActive="true" delay=0 beaconMode="exclude"/>
 	<SimpleNotification message="spion destroyed!"  broadcast="true">
 		<events>
 			<trigger>
@@ -512,39 +511,7 @@ To Do:
 
 <!-- EVENTTRIGGER -->
     
-    <!-- for guard 1 -->
-    <SimpleNotification message="first"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard1trigger1" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <SimpleNotification message="second"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard1trigger2" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <SimpleNotification message="thirth"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard1trigger3" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <SimpleNotification message="all shot! Fly to the blinking light"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard1trigger4" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
+<!-- For Guard 1 -->
 <!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,4] -->
     <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
       <events>
@@ -575,40 +542,16 @@ To Do:
       </EventTrigger>
     </EventTrigger>
 
-
-<!-- for guard 2 -->
-    <SimpleNotification message="first"  broadcast="true">
+    <SimpleNotification message="Fly to the blinking light!"  broadcast="true">
         <events>
             <trigger>
-                <EventListener event="guard2trigger1" />
+                <EventListener event="guard1trigger4" />
             </trigger>
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="second"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard2trigger2" />
-            </trigger>
-        </events>
-    </SimpleNotification>
 
-    <SimpleNotification message="thirth"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard2trigger3" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-    <SimpleNotification message="all shot! Catch the spion!"  broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event="guard2" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
+<!-- For Guard 2 -->
 <!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,4] -->
     <EventTrigger name="guard2trigger4" activations="1" stayactive="true" delay=0.1>
       <events>
@@ -639,26 +582,19 @@ To Do:
       </EventTrigger>
     </EventTrigger>
 
-	<EventTrigger name="guard2" stayactive="true" delay=0.1 >
-		<events>
-			<trigger>
-				<EventListener event="guard2trigger4" />
-			</trigger>
-		</events>
-	</EventTrigger>
+    <SimpleNotification message="Catch the spion"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="guard1trigger4" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
 <!-- For Escape -->
-	<EventTrigger name="spionEvent" activations="1" stayactive="true" delay=0>
-		<events>
-			<trigger>
-				<EventListener event="spion" />
-			</trigger>
-		</events>
-	</EventTrigger>
 	
 
 <!-- For last fight -->
-    <EventTrigger name="guard3trigger5" activations="1" stayactive="true" delay=0.1 >
+    <EventTrigger name="guard3trigger6" activations="1" stayactive="true" delay=0.1 >
       <events>
         <trigger>
           <EventListener event="lastGuard" />
