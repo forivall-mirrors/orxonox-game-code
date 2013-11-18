@@ -203,7 +203,7 @@ namespace orxonox
 
             Examples:
              -
-        */
+    */
     orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
     {
     	// Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
@@ -221,7 +221,70 @@ namespace orxonox
     	    	distance = distance / distance.length();
     	   		}
 
+    	// perform a coordinate transformation to get distance in relation of the position of the ship
+    	orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
 
+    	// calculate 2D vector on the map (with angle between x/z - plain and line of sight)
+    	float xcoordinate = distanceShip.z; // z; cause x direction on screen is to the right side
+    	float ycoordinate = distanceShip.x*sin(mapangle)+distanceShip.y*cos(mapangle);
+    	return orxonox::Vector2(xcoordinate , ycoordinate);
+    }
+
+    /**
+               @brief Gets if a object is over the x/z - plain on map
+               @param myposition My position
+               @param mydirection My viewing direction
+               @param myorthonormal My orthonormalvector (pointing upwards through my head)
+               @param otherposition The position of the other object
+               @param mapangle The angle you look on the 3Dmap
+               @return If distancevector to the other object has a positive y-coordinate
+
+               Examples:
+                Returns true if object is over x/z - plain
+                Returns false if object is below x/z -plain
+    */
+    bool isObjectHigherThanShipOnMap(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle)
+    {
+    	// Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
+    	orxonox::Vector3 distance = otherposition - myposition;
+
+    	// new coordinate system:	x_axsis:	mydirection		(points front)
+    	//							y_axsis:	myorthonormal	(points up)
+       	//							z_axsis:	myside			(points right)
+
+       	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get vector from Ship to object
+
+
+       	// perform a coordinate transformation to get distance in relation of the position of the ship
+       	orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
+
+       	if(distanceShip.y >= 0)
+       		return true;
+       	else
+       		return false;
+    }
+
+
+    /**
+                @brief Gets the new vector after a coordinate transformation
+                @param distance Vector which will be transformed
+                @param mydirection New x basevector
+                @param myorthonormal New y basevector
+                @param otherposition New z basevector
+                @return direction in the new coordinates
+
+                x is vector in old coordinates
+                y is vector in old coordinates
+                T is transform matrix with:
+                	T = (t1 , t2 , t3)
+                	t1 = mydirection
+                	t2 = myorthonormal
+                	t3 = myside
+
+                y = T^(-1)*x
+            */
+    orxonox::Vector3 getTransformedVector(const orxonox::Vector3& distance, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& myside)
+    {
     	// inverse of the transform matrix
     	float determinant = +mydirection.x * (myorthonormal.y*myside.z - myside.y*myorthonormal.z)
     						-mydirection.y * (myorthonormal.x*myside.z - myorthonormal.z*myside.x)
@@ -249,22 +312,8 @@ namespace orxonox
     	distanceShip.y = xinvtransform.y * distance.x + yinvtransform.y * distance.y + zinvtransform.y * distance.z;
     	distanceShip.z = xinvtransform.z * distance.x + yinvtransform.z * distance.y + zinvtransform.z * distance.z;
 
-    	// cap vector for map if its to long
-    	//distance.x = clamp<float>(distance.x, -detectionlimit/5, detectionlimit/5);
-    	//distance.y = clamp<float>(distance.y, -detectionlimit/5, detectionlimit/5);
-    	//distance.z = clamp<float>(distance.z, -detectionlimit/5, detectionlimit/5);
-    	//float distancelength = distance.length();
-
-
-    	// project vector for the rotated 3DMap on screen
-    	//float xcoordinate = distance.z;
-    	//float ycoordinate = distance.y;
-
-    	float xcoordinate = distanceShip.z; // z; cause z direction is to the side
-    	float ycoordinate = distanceShip.x*sin(mapangle)+distanceShip.y*cos(mapangle);// -; cause on screen y coordinate points down
-    	return orxonox::Vector2(xcoordinate , ycoordinate);
+    	return distanceShip;
     }
-
 
     /**
         @brief Returns the predicted position I have to aim at, if I want to hit a moving target with a moving projectile.

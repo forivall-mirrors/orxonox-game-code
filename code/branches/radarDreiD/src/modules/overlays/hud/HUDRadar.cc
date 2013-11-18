@@ -165,17 +165,23 @@ namespace orxonox
             float distance = (wePointer->getWorldPosition() - this->owner_->getPosition()).length();
             // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
             float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
+
+
             it->second->setDimensions(size, size);
 
             // calc position on radar...
             //Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
             Vector2 coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
-            if(coord.y < 0)
-            	{
-            	orxonox::ColourValue color = it->second->getColour();
-            	color.a = 0.5f;
-            	it->second->setColour(color);
-            	}
+
+            // set zOrder on screen
+            bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011);
+
+            if(overXZPlain == false && (it->second->getZOrder() >  100 * this->overlay_->getZOrder())) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
+            	it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 1);
+            if(overXZPlain == true && (it->second->getZOrder() <= 100 * this->overlay_->getZOrder()))
+            	it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 1);
+
+
 
             coord *= math::pi / 3.5f; // small adjustment to make it fit the texture
             it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
