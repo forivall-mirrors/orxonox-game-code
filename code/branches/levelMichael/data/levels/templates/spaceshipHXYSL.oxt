@@ -24,6 +24,7 @@
     </engines>
     <attached>
       <Model position="0,0,0" yaw=180 pitch=-90 roll=0 scale=4 mesh="HXY.mesh" />
+      <DistanceTriggerBeacon name="player" />
     </attached>
     <collisionShapes>
       <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />

@@ -62,12 +62,12 @@ To Do:
 <!-- SPAWNTRIGGER -->
 
 <!-- Spawntrigger -->    
-	<SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
+	<SpawnPoint team=0 position="13500, 2500, 11500" lookat="0,0,20000" spawnclass=SpaceShip pawndesign=spaceshipswallow /> <!-- pawndesign=spaceshipcollateraldamage -->
 	
 	<EventMultiTrigger name=spawntrigger>
 	  <events>
 	    <trigger>
-	      <SpawnPoint team=0 position="0,0,0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow >
+	      <SpawnPoint team=0 position="13500, 2500, 11500" lookat="0,0,20000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
 	        <EventTrigger invert=true>
 		  <events>
 		    <trigger>
@@ -81,7 +81,7 @@ To Do:
 	</EventMultiTrigger>	
 
 	<!-- Second Spawntrigger -->
-	<DistanceTrigger name=spawntrigger2 position="0,0,0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+	<DistanceTrigger name=spawntrigger2 position="13500, 2500, 11500" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
 	<!-- Drone pickup -->
 	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
@@ -133,6 +133,7 @@ To Do:
 			completeMessage="" />
 		<complete-effects>
 			<AddQuest questId="spacefight.guard2" />
+			<AddQuest questId="spacefight.escape" />
 		</complete-effects>
 	</LocalQuest>
 
@@ -142,9 +143,6 @@ To Do:
 			description="Destroy also this guard!"
 			failMessage="You've lost all your ships!"
 			completeMessage="" />
-		<complete-effects>
-			<AddQuest questId="spacefight.escape" />
-		</complete-effects>
 	</LocalQuest>
 
 	<LocalQuest id="spacefight.escape">
@@ -262,6 +260,7 @@ To Do:
 		</effects>
 	</QuestEffectBeacon>
 
+
 	<BlinkingBillboard position="13500, 2500, 10500" color="1.0,1.0,1.0" frequency=0.6 amplitude=10 material="Examples/Flare" >
           <events>
             <visibility>
@@ -326,7 +325,7 @@ To Do:
 		</events>
 	</QuestEffectBeacon>
 
-	<!-- Escape -->
+	<!-- ESCAPE -->
 	<SimpleNotification message="A spion is startet to the mainship!"  broadcast="true">
 		<events>
 			<trigger>
@@ -341,23 +340,26 @@ To Do:
 		</effects>
 		<events>
 			<execute>
-				<EventListener event="guard2trigger1" />
+				<EventListener event="secondPatrol" />
 			</execute>
 		</events>
 	</QuestEffectBeacon>
-
+	
+	<!-- ESCAPE ENDING -->
+	<!-- Spion escaped -->
 	<QuestEffectBeacon times=0>
 		<effects>
 			<CompleteQuest questId="spacefight.escape" />
-			<CompleteQuest questId="spacefight.mainfight(max)" />
+			<AddQuest questId="spacefight.mainfight(max)" />
 		</effects>
 		<events>
 			<execute>
-				<EventListener event="escaped" />
+				<EventListener event="spionTrigger" />
 			</execute>
 		</events>
 	</QuestEffectBeacon>
 
+	<!-- Spion destroyed -->
 	<QuestEffectBeacon>
 		<effects>
 			<CompleteQuest questId="spacefight.escape" />
@@ -365,7 +367,7 @@ To Do:
 		</effects>
 		<events>
 			<execute>
-				<EventListener event="notEscaped" />
+				<EventListener event="destroyed" />
 			</execute>
 		</events>
 	</QuestEffectBeacon>
@@ -462,9 +464,46 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<!-- Timer for the Escape-sequence 
-	<Timer interval=120 bLoop="false" bKillAfterCall="true" executor="" >
-	-->
+	<!-- DistanceTrigger for spion -->
+	<DistanceTrigger name="spionTrigger" position="0,-10000,42000" target="DistanceTriggerBeacon" targetname="spionBeacon" distance=100 stayActive="true" delay=0 beaconMode="identify" />
+
+	<SimpleNotification message="spion is arrived!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="spionTrigger" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<!--	
+	<Trigger name="destroyed" mode="and" stayActive="true"> -->
+		<DistanceTrigger name="destroyed" position="0,-10000,42000" target="DistanceTriggerBeacon" targetname="spionBeacon" distance=1000 stayActive="true" delay=0 beaconMode="exclude"/>
+		<!-- <EventTrigger>
+			<events>
+				<trigger>
+					<EventListener event="spionEvent" />
+				</trigger>
+			</events>
+		</EventTrigger>
+	</Trigger> -->
+
+	<SimpleNotification message="spion destroyed!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="spion" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+	<SimpleNotification message="quest should be completed"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="destroyed" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<BlinkingBillboard position="0,-10000,42000" frequency=0.5 color="1.0,1.0,1.0" amplitude=10 material="Examples/Flare" />
+	
 
 	<!-- Rescue the commander -->
 	<DistanceTrigger name="dock" position="-12100, -22000, 25000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
@@ -609,22 +648,14 @@ To Do:
 	</EventTrigger>
 
 <!-- For Escape -->
-	<!-- If the spion is destroyed -->
-	<Trigger name="notEscaped" mode="xor" stayActive="true" >
-		<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
-		
-		<!-- If the spion is escaped -->
-		<Trigger name="escaped" mode="xor" stayActive="true" >
-			<DistanceTrigger position="-7000,-10000,42000" target="SpaceShip" distance=100 stayActive="true" delay=0 />
-			<EventTrigger activations="1" >
-				<events>
-					<trigger>
-						<EventListener event="spion" />
-					</trigger>
-				</events>
-			</EventTrigger>
-		</Trigger>
-	</Trigger>
+	<EventTrigger name="spionEvent" activations="1" stayactive="true" delay=0>
+		<events>
+			<trigger>
+				<EventListener event="spion" />
+			</trigger>
+		</events>
+	</EventTrigger>
+	
 
 <!-- For last fight -->
     <EventTrigger name="guard3trigger5" activations="1" stayactive="true" delay=0.1 >
@@ -884,11 +915,11 @@ To Do:
   </controller>
 </SpaceShip>
 
-<!-- Escape-Ship -->
+<!-- Escape-Ship (Spion) -->
 <SpaceShip position="17000,4000,22000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Spion" >
   <events>
     <visibility>
-      <EventListener event="guard1trigger4" />
+      <EventListener event="guard2trigger1" />
     </visibility>
   </events>
   <templates>
@@ -897,8 +928,8 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-        <Model mesh="cube.mesh" scale=1000 position="-7000,-10000,42000" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=100 position="0,-10000,42000" /> <!-- "-7000,-10000,42000" -->
+        <Model mesh="cube.mesh" scale=100 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -907,6 +938,9 @@ To Do:
       </events>
     </WaypointController>
   </controller>
+  <attached>
+    <DistanceTriggerBeacon name="spionBeacon" />
+  </attached>
 </SpaceShip>
 
 <!-- Mainship - Pirates -->
