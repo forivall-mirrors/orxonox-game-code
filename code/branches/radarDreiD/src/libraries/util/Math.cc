@@ -212,15 +212,15 @@ namespace orxonox
     	// new coordinate system:	x_axsis:	mydirection		(points front)
     	//							y_axsis:	myorthonormal	(points up)
     	//							z_axsis:	myside			(points right)
-    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal);
-    	orxout() << "mydirection " << mydirection << endl;
-    	orxout() << "mydirection.lenght " << mydirection.length() << endl;
-    	orxout() << "myorthonormal " << myorthonormal << endl;
-    	orxout() << "myorthonormal.lenght " << myorthonormal.length() << endl;
-    	orxout() << "myside " << myside << endl;
-    	orxout() << "myside.lenght " << myside.length() << endl;
 
-    	distance = 5 * distance / detectionlimit; // shrink vector on map
+    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get vector from Ship to object
+
+    	distance = 4*distance / detectionlimit; // shrink vector on map
+    	if(distance.length() > 1.0f) // if object would wander outside of the map
+    	    	{
+    	    	distance = distance / distance.length();
+    	   		}
+
 
     	// inverse of the transform matrix
     	float determinant = +mydirection.x * (myorthonormal.y*myside.z - myside.y*myorthonormal.z)
@@ -244,11 +244,12 @@ namespace orxonox
     	zinvtransform.z = (mydirection.x   * myorthonormal.y - myorthonormal.x * mydirection.y  )*invdet;
 
     	// coordinate transformation
-    	distance.x = xinvtransform.x * distance.x + yinvtransform.x * distance.y + zinvtransform.x * distance.z;
-    	distance.y = xinvtransform.y * distance.x + yinvtransform.y * distance.y + zinvtransform.y * distance.z;
-    	distance.z = xinvtransform.z * distance.x + yinvtransform.z * distance.y + zinvtransform.z * distance.z;
+    	orxonox::Vector3 distanceShip;
+    	distanceShip.x = xinvtransform.x * distance.x + yinvtransform.x * distance.y + zinvtransform.x * distance.z;
+    	distanceShip.y = xinvtransform.y * distance.x + yinvtransform.y * distance.y + zinvtransform.y * distance.z;
+    	distanceShip.z = xinvtransform.z * distance.x + yinvtransform.z * distance.y + zinvtransform.z * distance.z;
 
-    	// cap vector for map
+    	// cap vector for map if its to long
     	//distance.x = clamp<float>(distance.x, -detectionlimit/5, detectionlimit/5);
     	//distance.y = clamp<float>(distance.y, -detectionlimit/5, detectionlimit/5);
     	//distance.z = clamp<float>(distance.z, -detectionlimit/5, detectionlimit/5);
@@ -256,11 +257,11 @@ namespace orxonox
 
 
     	// project vector for the rotated 3DMap on screen
-    	float xcoordinate = distance.z;
-    	float ycoordinate = distance.y;
+    	//float xcoordinate = distance.z;
+    	//float ycoordinate = distance.y;
 
-    	//float xcoordinate = distance.z; // z; cause z direction is to the side
-    	//float ycoordinate = distance.x*sin(mapangle)+distance.y*cos(mapangle);// -; cause on screen y coordinate points down
+    	float xcoordinate = distanceShip.z; // z; cause z direction is to the side
+    	float ycoordinate = distanceShip.x*sin(mapangle)+distanceShip.y*cos(mapangle);// -; cause on screen y coordinate points down
     	return orxonox::Vector2(xcoordinate , ycoordinate);
     }
 

@@ -170,6 +170,13 @@ namespace orxonox
             // calc position on radar...
             //Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
             Vector2 coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
+            if(coord.y < 0)
+            	{
+            	orxonox::ColourValue color = it->second->getColour();
+            	color.a = 0.5f;
+            	it->second->setColour(color);
+            	}
+
             coord *= math::pi / 3.5f; // small adjustment to make it fit the texture
             it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
 
