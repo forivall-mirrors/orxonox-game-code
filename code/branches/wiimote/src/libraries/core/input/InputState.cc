@@ -54,7 +54,9 @@ namespace orxonox
     bool InputState::isInputDeviceEnabled(unsigned int device)
     {
         if (device < handlers_.size())
+        {	orxout() << "Test we made it into the if clause" << std::endl;
             return handlers_[device] != NULL;
+        }
         else
             return false;
     }

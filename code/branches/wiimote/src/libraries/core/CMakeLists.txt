@@ -98,6 +98,8 @@ ORXONOX_ADD_LIBRARY(core
     ${LUA5.1_LIBRARY}
     cpptcl_orxonox
     ois_orxonox
+    wiic_orxonox
+    wiicpp_orxonox
     tinyxml_orxonox
     util
   LINK_LIBS_UNIX

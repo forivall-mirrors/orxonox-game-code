@@ -59,6 +59,7 @@
 
 #include "WiiMote.h"
 
+
 namespace orxonox
 {
     SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
@@ -216,22 +217,54 @@ namespace orxonox
 
         this->loadMouse();
         this->loadJoySticks();
-
+        this->loadWiiMote();
         // Reorder states in case some joy sticks were added/removed
         this->updateActiveStates();
-        this->loadWiiMote();
+
         orxout(verbose, context::input) << "Input devices loaded." << endl;
     }
+
     void InputManager::loadWiiMote()
     {
-    	try
+
+    	CWii wii; // Defaults to 4 remotes
+    	std::vector< ::CWiimote>::iterator i;
+    	int reloadWiimotes = 0;
+    	int index;
+
+    	// Find and connect to the wiimotes
+    	std::vector<CWiimote>& wiimotes = wii.FindAndConnect();
+    	if (!wiimotes.size())
     	{
-    		devices_.push_back(new WiiMote(234));
+    		cout << "No wiimotes found." << endl;
+   		}
+
+   	    // Setup the wiimotes
+   	    for(index = 0, i = wiimotes.begin(); i != wiimotes.end(); ++i, ++index)
+   	    {
+   	    	// Use a reference to make working with the iterator handy.
+    	    CWiimote & wiimote = *i;
+
+    	    //Set Leds
+    	    int LED_MAP[4] =
+    	      {CWiimote::LED_1, CWiimote::LED_2,
+    	       CWiimote::LED_3, CWiimote::LED_4};
+    	    wiimote.SetLEDs(LED_MAP[index]);
+
+
     	}
-    	catch(std::exception& e)  //gotta catch em all
-    	{
-    		orxout()<<"Exception loading WiiMote!!!1!11!";
-    	}
+   	    try
+   	    {
+   	    	orxout()<<devices_.size();
+   	  	    devices_.push_back(new WiiMote(devices_.size(), *(new CWiimote())));
+   	    	//devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
+
+   	    }
+   	    catch(std::exception& e)  //gotta catch em all
+   	    {
+   	   	      orxout()<<"Exception loading WiiMote!!!1!11!";
+   	    }
+
     }
     //! Creates a new orxonox::Mouse
     void InputManager::loadMouse()
@@ -435,8 +468,13 @@ namespace orxonox
             states.clear();
             for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin(); rit != activeStates_.rend(); ++rit)
             {
-                if (rit->second->isInputDeviceEnabled(i) && (!occupied || rit->second->bAlwaysGetsInput_))
+            	orxout() << "Checking ID " << i <<std::endl;
+            	orxout() << "Checking condition 1: " << rit->second->isInputDeviceEnabled(i) <<std::endl;
+            	orxout() << "Checking condition 2: " << rit->second->bAlwaysGetsInput_ <<std::endl;
+            	orxout() << "Checking condition 3: " << !occupied <<std::endl;
+            	if (rit->second->isInputDeviceEnabled(i) && (!occupied || rit->second->bAlwaysGetsInput_))
                 {
+                	orxout() << "Success with ID " << i <<std::endl;
                     states.push_back(rit->second);
                     if (!rit->second->bTransparent_)
                         occupied = true;
