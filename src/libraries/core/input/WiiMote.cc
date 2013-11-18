@@ -9,8 +9,7 @@ namespace orxonox
 	const std::string WiiMote::deviceName = "WiiMote";
 	void WiiMote::update(const Clock& time)
 	{
-		orxout()<<"fegit\n";
-
+		orxout(user_warning) << this->inputStates_.size() << std::endl;
 	}
 	void WiiMote::clearBuffers()
 	{
@@ -20,7 +19,8 @@ namespace orxonox
 	{
 
 	}
-	WiiMote::WiiMote(unsigned int id)  : InputDevice(id)
+	WiiMote::WiiMote(unsigned int id, CWiimote & parent)  : InputDevice(id)
 	{
+		p = &parent;
 	}
 }
