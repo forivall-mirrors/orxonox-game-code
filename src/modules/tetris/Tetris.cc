@@ -182,8 +182,11 @@ namespace orxonox
     }
 
 
-
-    bool Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
+    /**
+     * @brief Returns true, if NO collision was detected.
+     * Else returns false and the active brick is repositioned as side-effect.
+     */
+    bool Tetris::checkStoneStoneCollision(TetrisStone* stone, const Vector3& position)
     {
         assert(stone);
 
@@ -192,7 +195,6 @@ namespace orxonox
         {
             //Vector3 currentStonePosition = rotateVector((*it)->getPosition(), this->activeBrick_->getRotationCount());
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
-            //!< Saves the position of the currentStone
 
             //filter out cases where the falling stone is already below a steady stone
             if(position.y < currentStonePosition.y - this->center_->getStoneSize()/2.0f)
@@ -207,7 +209,16 @@ namespace orxonox
             }// This case applies if the stones overlap partially vertically
         }
 
-        // after we checked for collision with all stones, we also check for collision with the bottom
+        return true;
+    }
+    
+    /**
+     * @brief Returns true, if NO collision was detected.
+     * Else returns false and the active brick is repositioned as side-effect.
+     */
+    bool Tetris::checkStoneBottomCollision(TetrisStone* stone, const Vector3& position)
+    {
+        assert(stone);
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
             float baseOffset = abs(stone->getPosition().y);
@@ -219,9 +230,9 @@ namespace orxonox
             this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
             return false;
         }
-
         return true;
     }
+    
     /**
      * @brief This function determines wether a brick touches another brick or the ground.
      *
@@ -237,12 +248,22 @@ namespace orxonox
         {
             TetrisStone* stone = brick->getStone(i);
             const Vector3& stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
-            if(! this->isValidStonePosition(stone, brickPosition + stonePosition) )
+            if(! this->checkStoneStoneCollision(stone, brickPosition + stonePosition) )
             {
-                // recurse because all stones have to checked again after the brick was re-positioned
                 return false;
             }
         }
+        // check all stones in the brick
+        for (unsigned int i = 0; i < brick->getNumberOfStones(); i++ )
+        {
+            TetrisStone* stone = brick->getStone(i);
+            const Vector3& stonePosition = rotateVector(stone->getPosition(), brick->getRotationCount());
+            if(! this->checkStoneBottomCollision(stone, brickPosition + stonePosition) )
+            {
+                return false;
+            }
+        }
+        
         return true;
     }
 
