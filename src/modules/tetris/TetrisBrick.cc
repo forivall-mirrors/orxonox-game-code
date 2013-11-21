@@ -106,29 +106,24 @@ namespace orxonox
         if(i == 0) //setting the first stone as
         {
             stone->setPosition(0.0f, 0.0f, 0.0f);
-            stone->setName("Base");
         }
         else if(i == 1)
         {
             stone->setPosition(0.0f, size_, 0.0f);
-            stone->setName("Y");
         }
         else if(i == 2)
         {
             if(this->shapeIndex_ == 1 || this->shapeIndex_ == 6 || this->shapeIndex_ == 7)
             {
             	stone->setPosition(0.0f, 2*size_, 0.0f);
-            	stone->setName("2Y");
             }
             else if(this->shapeIndex_ == 3 || this->shapeIndex_ == 4|| this->shapeIndex_ == 5)
             {
             	stone->setPosition(size_, 0, 0.0f);
-            	stone->setName("X");
             }
             else if(this->shapeIndex_ == 2)
             {
             	stone->setPosition(-size_, 0, 0.0f);
-            	stone->setName("-X");
             }
         }
         else if(i == 3)
@@ -136,27 +131,22 @@ namespace orxonox
             if(this->shapeIndex_ == 2 || this->shapeIndex_ == 5)
             {
             	stone->setPosition(size_, size_, 0.0f);
-            	stone->setName("XY");
             }
             else if(this->shapeIndex_ == 1)
             {
             	stone->setPosition(0, 3*size_, 0.0f);
-            	stone->setName("3Y");
             }
             else if(this->shapeIndex_ == 3 || this->shapeIndex_ == 7)
             {
             	stone->setPosition(-size_, 0, 0.0f);
-            	stone->setName("-X");
             }
             else if(this->shapeIndex_ == 4)
             {
             	stone->setPosition(-size_, size_, 0.0f);
-            	stone->setName("-XY");
             }
             else if(this->shapeIndex_ == 6)
             {
             	stone->setPosition(size_, 0, 0.0f);
-            	stone->setName("X");
             }
         }
     }
@@ -194,7 +184,10 @@ namespace orxonox
     {
         if(value.x < 0) //speedup on key down
         {
-            this->setVelocity(this->getVelocity()*1.1);
+            Vector3 v_new = this->getVelocity()*1.2;
+            if (v_new.y < -400.0f) //limiting the speed to prevent break throughs.
+                v_new.y = -400.0f;
+            this->setVelocity(v_new);
         }
         else if(!this->lockRotation_) //rotate when key up is pressed
         {
