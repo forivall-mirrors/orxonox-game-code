@@ -958,8 +958,8 @@ namespace orxonox
         if (entity1 == entity2)
             return true;
 
-        int team1 = -1;
-        int team2 = -1;
+        int team1 = entity1->getTeam();
+        int team2 = entity2->getTeam();
 
         Controller* controller = 0;
         if (entity1->getController())
