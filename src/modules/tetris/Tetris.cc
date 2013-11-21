@@ -49,6 +49,7 @@
 #include "TetrisStone.h"
 #include "TetrisBrick.h"
 #include "infos/PlayerInfo.h"
+#include <cmath>
 
 namespace orxonox
 {
@@ -209,7 +210,10 @@ namespace orxonox
         // after we checked for collision with all stones, we also check for collision with the bottom
         if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
-            float yOffset = stone->getPosition().y + this->center_->getStoneSize()/2.0f;//calculate offset
+            float baseOffset = abs(stone->getPosition().y);
+            if (this->activeBrick_->getRotationCount() == 1 || this->activeBrick_->getRotationCount() == 3)
+                baseOffset = abs(stone->getPosition().x);
+            float yOffset = baseOffset + this->center_->getStoneSize()/2.0f;//calculate offset
             if(yOffset < 0) //catch brake-throughs
                 yOffset = 0;
             this->activeBrick_->setPosition(Vector3(this->activeBrick_->getPosition().x, yOffset, this->activeBrick_->getPosition().z));
@@ -387,6 +391,7 @@ namespace orxonox
         this->center_->attach(this->futureBrick_);
         float xPos = (this->center_->getWidth()*1.6f + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
         float yPos = (this->center_->getHeight()-5.1f)*this->center_->getStoneSize();
+        
         this->futureBrick_->setPosition(xPos, yPos, 0.0f);
         this->futureBrick_->setGame(this);
     }
