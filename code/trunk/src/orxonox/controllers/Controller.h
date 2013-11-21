@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/BaseObject.h"
+#include "core/class/Super.h"
 
 namespace orxonox
 {
@@ -43,11 +44,15 @@ namespace orxonox
         public:
             Controller(Context* context);
             virtual ~Controller();
-
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             inline void setPlayer(PlayerInfo* player)
                 { this->player_ = player; }
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
+            inline void setTeam(int team)
+                { this->team_ = team; }
+            inline int getTeam() const
+                { return this->team_; }
 
             virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
 
@@ -78,6 +83,7 @@ namespace orxonox
         protected:
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;
+            int team_;
         private:
             bool bGodMode_;
     };
