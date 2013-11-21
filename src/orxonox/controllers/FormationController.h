@@ -75,10 +75,7 @@ namespace orxonox {
       inline bool getPassive() const
            { return this->passive_; }
 
-      inline void setTeam(int team)
-           { this->team_ = team; }
-      inline int getTeam() const
-           { return this->team_; }
+
 
       /**
         @brief Mode of the formation, behaviour of slaves
@@ -104,7 +101,6 @@ namespace orxonox {
   protected:
       bool formationFlight_;
       bool passive_;
-      int team_;
       unsigned int maxFormationSize_;
       int freedomCount_;
       enum State {SLAVE, MASTER, FREE};

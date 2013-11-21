@@ -28,6 +28,7 @@
 
 #include "Controller.h"
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox
@@ -41,9 +42,16 @@ namespace orxonox
         this->player_ = 0;
         this->controllableEntity_ = 0;
         this->bGodMode_ = false;
+        this->team_=-1;
     }
 
     Controller::~Controller()
     {
     }
+    void Controller::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(Controller, XMLPort, xmlelement, mode);
+        XMLPortParam(Controller, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
+    }
+
 }
