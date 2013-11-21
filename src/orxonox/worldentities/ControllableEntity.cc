@@ -349,6 +349,8 @@ namespace orxonox
         this->playerID_ = player->getObjectID();
         this->bHasLocalController_ = player->isLocalPlayer();
         this->bHasHumanController_ = player->isHumanPlayer();
+        if(controller_ != NULL)
+            this->team_ = controller_->getTeam(); // forward controller team number
 
         if (this->bHasLocalController_ && this->bHasHumanController_)
         {
@@ -461,6 +463,7 @@ namespace orxonox
             this->xmlcontroller_ = controller;
             this->bHasLocalController_ = true;
             this->xmlcontroller_->setControllableEntity(this);
+            this->team_ = this->xmlcontroller_->getTeam(); //forward the team number
         }
         else
             orxout(internal_warning) << "ControllableEntity \"" << this->getName() << "\" already has a Controller." << endl;
