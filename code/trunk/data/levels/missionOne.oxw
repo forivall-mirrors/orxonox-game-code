@@ -508,7 +508,7 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
     </SimpleNotification>
 
 <!-- @Objects: 4 boxes (uncontrolled pawns) -->
-    <Pawn team=1 health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 4" >
+    <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 4" >
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -520,9 +520,13 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
         </collisionShapes>
+        <controller>
+            <WaypointController team=1>
+            </WaypointController>
+        </controller>
     </Pawn>
 
-    <Pawn team=1 health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 3">
+    <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 3">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -534,9 +538,13 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
         </collisionShapes>
+        <controller>
+            <WaypointController team=1>
+            </WaypointController>
+        </controller>
     </Pawn>
 
-    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 radarname = "Box 2">
+    <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 2">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -545,12 +553,16 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         <attached>
            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
         </attached>
+        <controller>
+            <WaypointController team=1>
+            </WaypointController>
+        </controller>
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
         </collisionShapes>
     </Pawn>
 
-    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box team=1 radarname = "Box 1">
+    <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Box 1">
         <events>
           <visibility>
             <EventListener event="flying4" />
@@ -562,6 +574,10 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         <collisionShapes>
            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
         </collisionShapes>
+        <controller>
+            <WaypointController team=1>
+            </WaypointController>
+        </controller>
     </Pawn>
 
 <!-- @Triggers: boxtrigger1 <-> one   box   destroyed
