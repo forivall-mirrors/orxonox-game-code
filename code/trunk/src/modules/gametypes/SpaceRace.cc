@@ -54,8 +54,6 @@ namespace orxonox
 
     void SpaceRace::end()
     {
-        this->Gametype::end();
-
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = static_cast<int>(this->clock_.getMilliseconds() - 1000*s);
@@ -71,9 +69,12 @@ namespace orxonox
             message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
                         + "." + multi_cast<std::string>(ms) + " seconds.";
         }
-
-        this->getGametypeInfo()->sendAnnounceMessage(message);
-        ChatManager::message(message);
+        if (!this->hasEnded())
+        {
+            this->getGametypeInfo()->sendAnnounceMessage(message);
+            ChatManager::message(message);
+        }
+        this->Gametype::end();
     }
 
     void SpaceRace::tick(float dt)
