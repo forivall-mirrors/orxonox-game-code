@@ -123,7 +123,7 @@ namespace orxonox
                 this->findFullRows();
                 this->startBrick();
             }
-        }
+        } 
     }
 
     bool Tetris::isValidMove(TetrisStone* stone, const Vector3& position)
