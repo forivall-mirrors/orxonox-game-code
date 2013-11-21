@@ -236,7 +236,6 @@ namespace orxonox
             if(! this->isValidStonePosition(stone, brickPosition + stonePosition) )
             {
                 // recurse because all stones have to checked again after the brick was re-positioned
-                this->isValidBrickPosition(brick);
                 return false;
             }
         }
