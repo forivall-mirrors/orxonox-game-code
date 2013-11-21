@@ -24,6 +24,7 @@
  *      Felix Schulthess
  *   Co-authors:
  *      Reto Grieder
+ *      Wolfgang Roenninger
  *
  */
 
