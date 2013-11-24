@@ -48,7 +48,10 @@ namespace orxonox
         else
             priority_ = 0;
 
-        handlers_.resize(InputDeviceEnumerator::FirstJoyStick + this->getJoyStickList().size(), NULL);
+        // SANDRO HACK: make this 1 larger so we can have the wiimote read out as well
+        //handlers_.resize(InputDeviceEnumerator::FirstJoyStick + this->getJoyStickList().size(), NULL);
+        handlers_.resize(InputDeviceEnumerator::FirstJoyStick 
+          + 1 +  this->getJoyStickList().size(), NULL);
     }
 
     bool InputState::isInputDeviceEnabled(unsigned int device)
@@ -97,6 +100,7 @@ namespace orxonox
         setKeyHandler(handler);
         setMouseHandler(handler);
         setJoyStickHandler(handler);
+        setWiiMoteHandler(handler); // SANDRO HACK
     }
 
     void InputState::entered()
