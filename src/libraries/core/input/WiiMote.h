@@ -30,7 +30,7 @@ namespace orxonox
 	         void calibrationStarted() { }
 	         void calibrationStopped() { }
 	         //! List of all input states that receive events from this device
-	         std::vector<InputState*> inputStates_;
+		 //std::vector<InputState*> inputStates_;
 
 	 private:
 	         static const std::string deviceName;

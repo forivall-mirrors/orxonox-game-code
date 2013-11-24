@@ -5,14 +5,13 @@
  *      Author: georgr
  */
 
-#include "/usr/tardis/home-itet-ab/georgr-extra-0/orxonox/wiimote/src/libraries/core/input/Wiimote_Test.h"
+#include "Wiimote_Test.h"
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "InputState.h"
-#include </usr/tardis/home-itet-ab/georgr-extra-0/orxonox/wiimote/src/orxonox/OrxonoxPrereqs.h>
 #include "InputManager.h"
-#include </usr/tardis/home-itet-ab/georgr-extra-0/orxonox/wiimote/src/libraries/util/UtilPrereqs.h>
-#include </usr/tardis/home-itet-ab/georgr-extra-0/orxonox/wiimote/src/libraries/util/ScopedSingletonManager.h>
+#include <util/UtilPrereqs.h>
+#include <util/ScopedSingletonManager.h>
 
 
 namespace orxonox

@@ -253,17 +253,18 @@ namespace orxonox
 
 
     	}
-   	    try
-   	    {
-   	    	orxout()<<devices_.size();
-   	  	    devices_.push_back(new WiiMote(devices_.size(), *(new CWiimote())));
-   	    	//devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
+            try
+            {
+              orxout()<< "Size of devices vector before wiimote insertion:" << devices_.size() << std::endl;
+              devices_.push_back(new WiiMote(devices_.size(), *(new CWiimote())));
+              //devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
+              orxout()<< "Size of devices vector after wiimote insertion:" << devices_.size() << std::endl;
 
-   	    }
-   	    catch(std::exception& e)  //gotta catch em all
-   	    {
-   	   	      orxout()<<"Exception loading WiiMote!!!1!11!";
-   	    }
+            }
+            catch(std::exception& e)  //gotta catch em all
+            {
+              orxout()<<"Exception loading WiiMote!!!1!11!";
+            }
 
     }
     //! Creates a new orxonox::Mouse
@@ -474,7 +475,7 @@ namespace orxonox
             	orxout() << "Checking condition 3: " << !occupied <<std::endl;
             	if (rit->second->isInputDeviceEnabled(i) && (!occupied || rit->second->bAlwaysGetsInput_))
                 {
-                	orxout() << "Success with ID " << i <<std::endl;
+                    orxout() << "Success with ID " << i <<std::endl;
                     states.push_back(rit->second);
                     if (!rit->second->bTransparent_)
                         occupied = true;

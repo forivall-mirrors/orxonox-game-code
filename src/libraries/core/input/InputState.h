@@ -99,6 +99,13 @@ namespace orxonox
         //! Sets the mouse event handler (overwrites if there already was one!)
         void setMouseHandler   (InputHandler* handler)
             { handlers_[mouseIndex_s]    = handler; bExpired_ = true; }
+
+        // SANDRO HACK
+        void setWiiMoteHandler(InputHandler* handler)
+        { // TODO make this a dynamically chosen number
+          handlers_[2]    = handler; bExpired_ = true;
+        }
+
         /**
         @brief
             Sets the joy stick event handler for one specific joy stick (overwrites if there already was one!)
