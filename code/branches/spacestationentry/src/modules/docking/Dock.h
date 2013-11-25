@@ -61,7 +61,7 @@ namespace orxonox // tolua_export
 
             // Trigger interface
             bool execute(bool bTriggered, BaseObject* trigger);
-        //    bool execute2(bool bTriggered, BaseObject* trigger);
+            //bool undocking(bool bTriggered, BaseObject* trigger);
 
             // XML interface
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
