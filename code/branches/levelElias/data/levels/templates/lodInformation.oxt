@@ -15,7 +15,7 @@
       <MeshLodInformation mesh=CuboidLandingZone.mesh enabled=false/>
       <MeshLodInformation mesh=HydroHarvester.mesh enabled=false />
       <MeshLodInformation mesh=turretHead.mesh enabled=false />
-      <MeshLodInformation mesh=LaserBeam.mesh enabled=false/>
+      <MeshLodInformation mesh=LaserBeam2.mesh enabled=false/>
       <MeshLodInformation mesh=asteroid_ice.mesh enabled=false/>
       <MeshLodInformation mesh=ast1.mesh  lodQuality=0.1/>
       <MeshLodInformation mesh=ast2.mesh  lodQuality=0.1/>
