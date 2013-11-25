@@ -49,7 +49,8 @@
 
 #ifndef __APPLE__
 	#include <arpa/inet.h>				/* htons() */
-	#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
+//	#include <bluetooth.h>
+	#include "/usr/include/bluetooth/bluetooth.h"
 #endif
 
 #include "definitions.h"
