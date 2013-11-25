@@ -10,7 +10,10 @@ namespace orxonox
 {
 
 
-
+	struct Orientation
+    {
+    	float roll, pitch, yaw;
+    };
 
 	class WiiMote : public InputDevice
 	{
@@ -29,6 +32,7 @@ namespace orxonox
 	 protected:
 	         void calibrationStarted() { }
 	         void calibrationStopped() { }
+	         Orientation lastOrientation;
 	         //! List of all input states that receive events from this device
 		 //std::vector<InputState*> inputStates_;
 
