@@ -15,8 +15,8 @@ namespace orxonox
 			orxout()<<"ZOMG!!1!"<<endl;
 		Orientation o;
 		p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
-		int x = (int)(o.yaw-lastOrientation.yaw)*time.tickDt_;
-		int y = (int)(o.pitch-lastOrientation.pitch)*time.tickDt_;
+		int x = (int)((o.yaw-lastOrientation.yaw)*time.getDeltaTime());
+		int y = (int)((o.pitch-lastOrientation.pitch)*time.getDeltaTime());
 		IntVector2 abs(0, 0);
 		IntVector2 rel(x, y);
 		IntVector2 clippingSize(1920, 1080);
