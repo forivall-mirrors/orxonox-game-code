@@ -10,6 +10,10 @@ namespace orxonox
 	void WiiMote::update(const Clock& time)
 	{
 		orxout(user_warning) << this->inputStates_.size() << std::endl;
+		if(p == NULL)
+	      exit(0);
+		else
+		  orxout(user_warning) << 'pointer is not null, yay' << std::endl;
 		CWiimote::EventTypes e = p->GetEvent();
 		if(p->Buttons.isPressed(CButtons::BUTTON_A))
 			orxout()<<"ZOMG!!1!"<<endl;
