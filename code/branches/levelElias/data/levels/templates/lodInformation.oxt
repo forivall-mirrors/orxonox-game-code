@@ -16,6 +16,21 @@
       <MeshLodInformation mesh=HydroHarvester.mesh enabled=false />
       <MeshLodInformation mesh=turretHead.mesh enabled=false />
       <MeshLodInformation mesh=LaserBeam.mesh enabled=false/>
+      <MeshLodInformation mesh=asteroid_ice.mesh enabled=false/>
+      <MeshLodInformation mesh=ast1.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast2.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast3.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast4.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast5.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast6.mesh  lodQuality=0.1/>
+
+
+
+
+
+
+
+
 
       <!-- disable LOD for some debris meshes which caused a crash (fixed in Ogre 1.7.3) -->
       <MeshLodInformation mesh=BodyDebris1.mesh enabled=false/>

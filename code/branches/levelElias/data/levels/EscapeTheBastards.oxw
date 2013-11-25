@@ -95,8 +95,11 @@
     <EventMultiTrigger name=spawntrigger>
         <events>
             <trigger>
-                <TeamSpawnPoint team=0 position="-3000,12000,-5500" direction="0.3,1.2,-5.5" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>>
-<!-- Spawnpoint aendern zu 8050 nachher direction="1,0.3,0.2"-->
+
+                <TeamSpawnPoint team=0 position="-42600,-30000,33800" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>
+<!-- Spawnpoint aendern zu -8050,0,0 nachher direction="1,0.3,0.2"-->
+<!-- Spawnpoint aendern zu 3000,12000,-5500 nachher direction="0.3,1.2,-5.5" Fuer homeplanet-->
+<!-- Spawnpoint aendern zu -46950,-30000,30000 nachher direction="1,0,0" Fuer inBox-->
                   <EventTrigger invert=true>
                     <events>
                       <trigger>
@@ -154,6 +157,26 @@
             </events>
         </QuestEffectBeacon>
 
+        <QuestEffectBeacon times=1 >
+            <effects>
+                <CompleteQuest questId="wayhome.4" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="reachedend" />
+                </execute>
+            </events>
+        </QuestEffectBeacon>
+
+			<!-- END OF GAME -->
+    <Script code="Mission endMission true" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=reachedend />
+            </trigger>
+        </events>
+    </Script>
+			<!-- END OF GAME END -->
 
 
         <DistanceTrigger name="missionfinish" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=1>
@@ -162,8 +185,8 @@
     </DistanceTrigger>
  	<DistanceTrigger name="reachedhomeplanet" position="-3000,12000,-6990" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
-
-
+ 	<DistanceTrigger name="reachedend" position="-3000,12000,-6990" target="Pawn" distance=60 stayActive="true" delay=2>
+    </DistanceTrigger>
 
           <EventTrigger name="boxtrigger" activations="1" stayactive="true" delay=0.1>
             <events>
@@ -208,7 +231,7 @@
 
 
 <!-- Box with Pickups -->
-    <Pawn team=1 health=30 position="2200,1000,-600" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Something" >
+    <Pawn team=1 health=30 position="0,0,-900" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Something" >
         <events>
           <visibility>
             <EventListener event="target3" />
@@ -220,9 +243,13 @@
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
         </collisionShapes>
+	<controller>
+                      <WaypointController team=1>
+                    </WaypointController>
+        </controller>
     </Pawn>
 
-<Billboard position="2200,1000,-600" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+<Billboard position="0,0,-900" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
           <events>
             <visibility>
               <EventTrigger>
@@ -583,7 +610,10 @@
 							<!--Asteroids Field end -->
 
 
-							<!--Asteroids Random-->
+							<!--Asteroids Random
+
+				"The game lags, when you're flying far away"
+
 
 	<?lua for i=0,300,1 do
 		x=math.random(-12000,4000)
@@ -600,10 +630,13 @@
         </collisionShapes>
 	</MovableEntity>
 	<?lua end ?>
-
+-->
 							<!--Asteroids  Random end-->
 
     							<!--Asteroid Elipse-->
+<!-- LAAAGS :-(
+
+				"The game lags, when you're flying far away"		
 
     <?lua
         dofile("includes/asteroidField.lua")
@@ -614,7 +647,7 @@
         dofile("includes/asteroidField.lua")
         asteroidBelt(-3000,12000,-10000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
     ?>
-
+-->
 
 
     <?lua
@@ -656,7 +689,7 @@
     <?lua end ?>
 							<!--Asteroid Elipse end-->
 
-							<!--Planet-->
+							<!--Planet sun-->
     <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="planets/sol.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=0 imagesize=1024.0f />
     <StaticEntity position="2600,0,0" collisionType=static>
         <collisionShapes>
@@ -737,11 +770,15 @@
         <SphereCollisionShape radius="3000" position="0,0,0" />
       </collisionShapes>
     </Planet>
+<!-- LAAAGS :-(
+
+				"The game lags, when you're flying far away"
 
     <?lua
         dofile("includes/asteroidField.lua")
         asteroidBelt(-20000,6000,7000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
     ?>
+-->
   							<!-- Anotherplanet  END-->
 
   							<!-- Homeplanet Architecture-->
@@ -754,7 +791,7 @@
 	</Model>
 -->
 
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="500" position="-2900,12080,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="500"  pitch="90" roll="86" yaw="12" position="-2900,12080,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
     	<attached>
         	<Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
    	 </attached>
@@ -763,7 +800,7 @@
     	</collisionShapes>
 	</MovableEntity>
 
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" position="-3200,11950,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"   pitch="30" roll="11" yaw="51" position="-3200,11950,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
     	<attached>
         	<Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
    	 </attached>
@@ -772,8 +809,394 @@
     	</collisionShapes>
 	</MovableEntity>
 
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="12" yaw="81"  position="-2800,12150,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="90" />
+    	</collisionShapes>
+	</MovableEntity>
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="0" yaw="0" position="-3300,11800,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="155" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="155" />
+    	</collisionShapes>
+	</MovableEntity>
+
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="0" yaw="12" position="-3230,12300,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="150" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="150" />
+    	</collisionShapes>
+	</MovableEntity>
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="13" roll="23"yaw="120" position="-3000,12000,-6820" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="100" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="100" />
+    	</collisionShapes>
+	</MovableEntity>
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="2" roll="12" yaw="43" position="-3250,12100,-6850" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="70" />
+    	</collisionShapes>
+	</MovableEntity>
+
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="0" roll="0" yaw="0"  position="-3230,11800,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+    	<attached>
+        	<Model scale="85" mesh="asteroid_ice.mesh"  shadow=false/>
+   	 </attached>
+   	 <collisionShapes>
+      	 	<SphereCollisionShape radius="85" />
+    	</collisionShapes>
+	</MovableEntity>
+
  							<!-- Homeplanet Architecture END-->
 
+							<!-- Portal-->
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Model mesh="Spacegate.mesh" yaw="90"/>
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="-3000,12000,-6990" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="-47000,-30000,30000" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalLink fromID="1" toID="2" />
+    <PortalLink fromID="2" toID="1" />
+
+
+							<!-- Portal END-->
+
+
+	<!-- The Cave-->
+<!-- verhaeltniss Cube.mesh <-> Crate.mesh 1:5 -->
+
+					<!-- 15 Boxes forward-->
+ <?lua
+    max = 15
+    for i = 0, max, 1
+    do
+    y=(i*200)-47200
+
+    ?>
+
+    <?lua
+    for j = 0, 2, 1
+    do
+    z =30200-(j*200)
+    ?>    
+    
+    <?lua
+    for k = 0, 1, 1
+    do
+    x =-30200+(k*400)
+    ?>
+
+
+
+
+  <StaticEntity position="<?lua print(y) ?>,<?lua print(x) ?>,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20"  />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+
+    <?lua end ?>
+    <?lua end ?>
+    <?lua end ?>
+
+ <?lua
+    max = 15
+    for i = 0, max, 1
+    do
+    y=(i*200)-47200
+
+    ?>
+    <?lua
+    for j = 0, 1, 1
+    do
+    z =30200-(j*400)
+    ?>    
+  <StaticEntity position="<?lua print(y) ?>,-30000,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+    <?lua end ?>
+    <?lua end ?>
+
+  <StaticEntity position="-47200,-30000,30000" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+					<!-- 15 Boxes forward END -->
+					<!-- 18 Boxes right-->
+
+ <?lua
+    max = 18
+    for i = 0, max, 1
+    do
+    z=29800+(i*200)
+
+    ?>
+
+    <?lua
+    for j = 0, 2, 1
+    do
+    y = (j*200)-44000
+    ?>    
+    
+    <?lua
+    for k = 0, 1, 1
+    do
+    x =-30200+(k*400)
+    ?>
+
+
+
+
+  <StaticEntity position="<?lua print(y) ?>,<?lua print(x) ?>,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+
+    <?lua end ?>
+    <?lua end ?>
+    <?lua end ?>
+
+ <?lua
+    max = 16
+    for i = 0, max, 1
+    do
+    z = 30200+(i*200)
+
+    ?>
+    <?lua
+    for j = 0, 1, 1
+    do
+     y = (j*400)-44000
+    ?>    
+  <StaticEntity position="<?lua print(y) ?>,-30000,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+    <?lua end ?>
+    <?lua end ?>
+
+  <StaticEntity position="-43600,-30000,30000" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+ <?lua
+    for i = 0, 2, 1
+    do
+    y = -44000+(i*200)
+
+    ?>
+  <StaticEntity position="<?lua print(y) ?>,-30000,29800" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+    <?lua end ?>
+
+					<!-- 18 Boxes right END-->
+					<!-- 17 Boxes forward-->
+ <?lua
+    max = 17
+    for i = 0, max, 1
+    do
+    y=(i*200)-44000
+
+    ?>
+
+    <?lua
+    for j = 0, 2, 1
+    do
+    z =34000 - (j*200)
+    ?>    
+    
+    <?lua
+    for k = 0, 1, 1
+    do
+    x =-30200+(k*400)
+    ?>
+
+
+
+
+  <StaticEntity position="<?lua print(y) ?>,<?lua print(x) ?>,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+
+    <?lua end ?>
+    <?lua end ?>
+    <?lua end ?>
+
+ <?lua
+    max = 15
+    for i = 0, max, 1
+    do
+    y=(i*200)-43600
+
+    ?>
+
+    <?lua
+    for j = 0, 0, 1
+    do
+    z =34000 - (i*5.5)
+    ?>
+
+  <StaticEntity position="<?lua print(y) ?>,-30000,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+    <?lua end ?>
+    <?lua end ?>
+ <?lua
+    max = 15
+    for i = 0, max, 1
+    do
+    y=(i*200)-43600
+
+    ?>
+
+    <?lua
+    for j = 0, 0, 1
+    do
+    z =33600 + (i*5.5)
+    ?>
+
+  <StaticEntity position="<?lua print(y) ?>,-30000,<?lua print(z) ?>" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+    <?lua end ?>
+    <?lua end ?>
+
+
+ <?lua
+    for i = 0, 1, 1
+    do
+    y = -44000+(i*200)
+
+    ?>
+  <StaticEntity position="<?lua print(y) ?>,-30000,34000" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+    <?lua end ?>
+
+  <StaticEntity position="-44000,-30000,33800" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+  <StaticEntity position="-44000,-30000,33600" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="20,20,20" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+					<!-- 17 Boxes forward END-->
+    <Billboard position="-40600,-30000,33800" material="Flares/backlightflare" colour="0,1.4,2.1" scale=10 />
+
+  <StaticEntity position="-40400,-30000,33800" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="cube_green.mesh" scale3D="100,100,100" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
+
+      </collisionShapes>
+</StaticEntity>
+
+	<!-- The Cave END-->
 
   </Scene>
 </Level>
