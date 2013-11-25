@@ -57,4 +57,21 @@ namespace orxonox
         setVelocity(Vector3(0,0,1000));
         return false;
     }
+
+    WeakPtr<Invader> InvaderEnemy::getGame()
+    {
+        if (game == NULL)
+        {
+            for (ObjectList<Invader>::iterator it = ObjectList<Invader>::begin(); it != ObjectList<Invader>::end(); ++it)
+                game = *it;
+        }
+        return game;
+    }
+
+    void InvaderEnemy::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
+    {
+        if (getGame())
+            getGame()->addPoints(42);
+        // SUPER(InvaderEnemy, damage, damage, healthdamage, shielddamage, originator);
+    }
 }

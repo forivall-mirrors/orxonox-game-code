@@ -63,7 +63,13 @@ namespace orxonox
         //this->context = context;
         this->setHUDTemplate("InvaderHUD");
 
+        lives = 3;
+        level = 1;
+        point = 0;
+        multiplier = 1;
+        b_combo = false;
         enemySpawnTimer.setTimer(2.0f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
+        comboTimer.setTimer(2.5f, true, createExecutor(createFunctor(&Invader::comboControll, this)));
     }
 
     Invader::~Invader()
@@ -84,6 +90,15 @@ namespace orxonox
         newPawn->addTemplate("enemyinvader");
 
         newPawn->setPosition(player->getPosition() + Vector3(1000, 0, 0)); // BUG: 
+    }
+
+    void Invader::comboControll()
+    {
+        if (b_combo)
+            multiplier++;
+        else
+            multiplier = 1;
+        b_combo = false;
     }
 
     // inject custom player controller

@@ -64,6 +64,9 @@ namespace orxonox
             // *InvaderShip getShip(){return this;}
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
         private:
+
+            WeakPtr<Invader> getGame();
+            WeakPtr<Invader> game;
             Camera* camera;
             bool isFireing;
             float speed, damping, posforeward;

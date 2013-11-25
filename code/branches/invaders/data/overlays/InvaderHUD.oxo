@@ -29,7 +29,7 @@
      textsize  = 0.04
      colour    = "1.0, 1.0, 1.0, 1.0"
      align     = "left"
-     caption   = "Players: "
+     caption   = "Level: "
     />
 
     <InvaderHUDinfo

@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "Invader.h"
 
 namespace orxonox
 {
@@ -119,6 +120,12 @@ namespace orxonox
     void InvaderShip::updateLevel()
     {
         lastTime = 0;
+        if (getGame())
+        {
+            getGame()->levelUp();
+            // SmartPtr<Invader> game = orxonox_cast<Invader>(getGametype());
+            
+        }
         //level++
     }
 
@@ -150,10 +157,26 @@ namespace orxonox
             if (getHealth() <= 0)
             {
                 orxout() << "DIED!!!! " << endl;
+                if (getGame())
+                {
+                    getGame()->costLife();
+                    // SmartPtr<Invader> game = orxonox_cast<Invader>(getGametype());
+                    
+                }
             }
             return false;
         }
         return false;
         // SUPER(InvaderShip, collidesAgainst, otherObject, contactPoint);
+    }
+
+    WeakPtr<Invader> InvaderShip::getGame()
+    {
+        if (game == NULL)
+        {
+            for (ObjectList<Invader>::iterator it = ObjectList<Invader>::begin(); it != ObjectList<Invader>::end(); ++it)
+                game = *it;
+        }
+        return game;
     }
 }

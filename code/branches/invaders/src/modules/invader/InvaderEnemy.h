@@ -48,8 +48,11 @@ namespace orxonox
 
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            virtual void damage(float damage, float healthdamage, float shielddamage, Pawn* originator);
 
         private:
+            WeakPtr<Invader> getGame();
+            WeakPtr<Invader> game;
             Camera* camera;
             bool isFireing;
             float speed, damping;

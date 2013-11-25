@@ -65,16 +65,24 @@ namespace orxonox
             int getLives(){return this->lives;}
             int getLevel(){return this->level;}
             int getPoints(){return this->point;}
+
+            void costLife(){lives--; if (lives == 0) orxout() << "end<<<<<<<<<<<<<<<<<" << endl;};
+            void levelUp(){level++;}
+            void addPoints(int numPoints){point += numPoints * multiplier; b_combo = true;}
+            void comboControll();
         private:
             WeakPtr<InvaderCenterPoint> center_;
             WeakPtr<InvaderShip> player;
 
             ConsoleCommand* console_addEnemy;
             Timer enemySpawnTimer;
+            Timer comboTimer;
             //Context* context;
             int lives;
             int level;
             int point;
+            bool b_combo;
+            int multiplier;
     };
 }
 
