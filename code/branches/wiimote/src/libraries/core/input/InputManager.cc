@@ -264,7 +264,7 @@ namespace orxonox
     	                 orxout()<<"Exception loading WiiMote!!!1!11!";
     	               }
 
-    	               exit(0);
+
 
     	}
 
