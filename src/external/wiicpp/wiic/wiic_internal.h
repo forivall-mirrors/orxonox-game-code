@@ -49,8 +49,13 @@
 
 #ifndef __APPLE__
 	#include <arpa/inet.h>				/* htons() */
-//	#include <bluetooth.h>
-	#include "/usr/include/bluetooth/bluetooth.h"
+/* SANDRO HACK can't get bluetooth to work properly at the moment, will come
+ * back here and fix this very ugly inclusion as soon as I get to grips with
+ * cmake.
+ */
+//      #include <bluetooth.h>
+//	#include "bluetooth/bluetooth.h"
+	#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h" 
 #endif
 
 #include "definitions.h"

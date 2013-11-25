@@ -47,8 +47,13 @@
 	#include <IOBluetooth/IOBluetoothUserLib.h>
 #else
 	/* nix */
-	//#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
-	#include "/usr/include/bluetooth/bluetooth.h"
+/* SANDRO HACK can't get bluetooth to work properly at the moment, will come
+ * back here and fix this very ugly inclusion as soon as I get to grips with
+ * cmake.
+ */
+//	#include "bluetooth/bluetooth.h"
+//	#include <bluetooth.h>
+	#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
 #endif
 
 #ifdef WIIC_INTERNAL_H_INCLUDED
