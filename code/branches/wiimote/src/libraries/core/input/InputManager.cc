@@ -251,21 +251,22 @@ namespace orxonox
     	      {CWiimote::LED_1, CWiimote::LED_2,
     	       CWiimote::LED_3, CWiimote::LED_4};
     	    wiimote.SetLEDs(LED_MAP[index]);
+    	    try
+    	               {
+    	                 orxout()<< "Size of devices vector before wiimote insertion:" << devices_.size() << std::endl;
+    	                 devices_.push_back(new WiiMote(devices_.size(), *i));
+    	                 //devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
+    	                 orxout()<< "Size of devices vector after wiimote insertion:" << devices_.size() << std::endl;
+
+    	               }
+    	               catch(std::exception& e)  //gotta catch em all
+    	               {
+    	                 orxout()<<"Exception loading WiiMote!!!1!11!";
+    	               }
 
 
     	}
-            try
-            {
-              orxout()<< "Size of devices vector before wiimote insertion:" << devices_.size() << std::endl;
-              devices_.push_back(new WiiMote(devices_.size(), *(new CWiimote())));
-              //devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
-              orxout()<< "Size of devices vector after wiimote insertion:" << devices_.size() << std::endl;
 
-            }
-            catch(std::exception& e)  //gotta catch em all
-            {
-              orxout()<<"Exception loading WiiMote!!!1!11!";
-            }
 
     }
     //! Creates a new orxonox::Mouse
