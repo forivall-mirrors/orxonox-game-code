@@ -34,6 +34,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "util/OgreForwardRefs.h"
 #include "interfaces/RadarListener.h"
@@ -50,6 +51,7 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedOwner();
+        void setConfigValues();
 
     private:
         // XML accessors
@@ -63,6 +65,15 @@ namespace orxonox
 
         float getMaximumDotSize() const { return this->maximumDotSize_; }
         void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }
+
+        float getMaximumDotSize3D() const { return this->maximumDotSize3D_; }
+        void setMaximumDotSize3D(float size) { this->maximumDotSize3D_ = size;}
+
+        std::string get2DMaterial() const {return this->material2D_; }
+        void set2DMaterial(std::string material2D) { this->material2D_ = material2D; }
+
+        std::string get3DMaterial() const {return this->material3D_; }
+        void set3DMaterial(std::string material3D) { this->material3D_ = material3D; }
 
         float getRadarSensitivity() const { return this->sensitivity_; }
         // used also by RadarListener interface!
@@ -84,8 +95,14 @@ namespace orxonox
         std::map<RadarViewable*, Ogre::PanelOverlayElement*> radarObjects_;
         Ogre::PanelOverlayElement* marker_;
 
+        bool RadarMode_; // Determines, if Radar runs in 3D or 2D Mode
+
         float halfDotSizeDistance_;
         float maximumDotSize_;
+        float maximumDotSize3D_;
+
+        std::string material2D_;
+        std::string material3D_;
 
         float sensitivity_;
         float detectionLimit_;

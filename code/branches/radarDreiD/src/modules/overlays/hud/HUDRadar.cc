@@ -41,6 +41,7 @@
 #include "worldentities/ControllableEntity.h"
 #include "Scene.h"
 #include "Radar.h"
+#include "core/config/ConfigValueIncludes.h"
 
 namespace orxonox
 {
@@ -50,6 +51,7 @@ namespace orxonox
         : OrxonoxOverlay(context)
     {
         RegisterObject(HUDRadar);
+        this->setConfigValues();
 
         this->marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
             .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberString()));
@@ -60,6 +62,7 @@ namespace orxonox
         this->setRadarSensitivity(1.0f);
         this->setHalfDotSizeDistance(3000.0f);
         this->setMaximumDotSize(0.1f);
+        this->setMaximumDotSize3D(0.07f);
 
         this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.png";
         this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.png";
@@ -81,6 +84,13 @@ namespace orxonox
         }
     }
 
+
+
+    void HUDRadar::setConfigValues()
+       {
+           SetConfigValue(RadarMode_, true);
+       }
+
     void HUDRadar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(HUDRadar, XMLPort, xmlelement, mode);
@@ -88,6 +98,9 @@ namespace orxonox
         XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlelement, mode);
         XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlelement, mode);
         XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlelement, mode);
+        XMLPortParam(HUDRadar, "maximumDotSize3D", setMaximumDotSize3D, getMaximumDotSize3D, xmlelement, mode);
+        XMLPortParam(HUDRadar, "Material2D", set2DMaterial, get2DMaterial, xmlelement, mode);
+        XMLPortParam(HUDRadar, "Material3D", set3DMaterial, get3DMaterial, xmlelement, mode);
     }
 
     void HUDRadar::addObject(RadarViewable* object)
@@ -152,6 +165,20 @@ namespace orxonox
 
         // update the distances for all objects
         std::map<RadarViewable*,Ogre::PanelOverlayElement*>::iterator it;
+
+
+        if(RadarMode_)
+        {
+        	this->setBackgroundMaterial(material3D_);
+
+
+
+        }
+        else
+        	this->setBackgroundMaterial(material2D_);
+
+
+
         for( it = this->radarObjects_.begin(); it != this->radarObjects_.end(); ++it )
         {
             // Make sure the object really is a WorldEntity
@@ -165,24 +192,30 @@ namespace orxonox
             // set size to fit distance...
             float distance = (wePointer->getWorldPosition() - this->owner_->getPosition()).length();
             // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
-            float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
 
-
+            float size;
+            if(RadarMode_)
+            	size = maximumDotSize3D_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
+            else
+            	size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
             it->second->setDimensions(size, size);
 
             // calc position on radar...
-            //Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
-            Vector2 coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
+            Vector2 coord;
+            if(RadarMode_)
+            {
+            	coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
 
-            // set zOrder on screen
-            bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011);
+            	// set zOrder on screen
+            	bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011);
 
-            if(overXZPlain == false && (it->second->getZOrder() >  100 * this->overlay_->getZOrder())) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
-            	it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 1);
-            if(overXZPlain == true && (it->second->getZOrder() <= 100 * this->overlay_->getZOrder()))
-            	it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 1);
-
-
+            	if(overXZPlain == false && (it->second->getZOrder() >  100 * this->overlay_->getZOrder())) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
+            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 1);
+            	if(overXZPlain == true && (it->second->getZOrder() <= 100 * this->overlay_->getZOrder()))
+            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 1);
+            }
+            else
+            	coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
 
             coord *= math::pi / 3.5f; // small adjustment to make it fit the texture
             it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
