@@ -233,7 +233,7 @@ namespace orxonox
     	int index;
 
     	// Find and connect to the wiimotes
-    	std::vector<CWiimote>& wiimotes = wii.FindAndConnect(30);
+    	std::vector<CWiimote>& wiimotes = wii.FindAndConnect(10);
     	if (!wiimotes.size())
     	{
     		cout << "No wiimotes found." << endl;
@@ -264,6 +264,7 @@ namespace orxonox
     	                 orxout()<<"Exception loading WiiMote!!!1!11!";
     	               }
 
+    	               exit(0);
 
     	}
 
