@@ -73,7 +73,7 @@
       <!--Model position="0,0,-40" yaw="90" pitch="-90" roll="0" scale="1" mesh="stunweapon.mesh" /-->
       <Model position="0, 20,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="LightningGun.mesh" />
       <Model position="0, 40,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="LightningGun-s.mesh" />
-      <Model position="0, 60,-40" yaw="90" pitch="-90" roll="0" scale="1.5" mesh="LaserBeam.mesh" />
+      <Model position="0, 60,-40" yaw="90" pitch="-90" roll="0" scale="1.5" mesh="LaserBeam2.mesh" />
       <Model position="0, 80,-40" yaw="90" pitch="-90" roll="0" scale="2" mesh="rocket.mesh" />
       <Model position="0,-20,-40" yaw="90" pitch="-90" roll="0" scale="5" mesh="hs-w01.mesh" />
       <Model position="0,-40,-40" yaw="90" pitch="-90" roll="0" scale="5" mesh="hs-w01s.mesh" />

@@ -349,7 +349,7 @@ namespace orxonox
             // Force Xerces parser (CEGUI 0.7.5+)
             CEGUI::System::getSingleton().setXMLParser("XercesParser");
         }
-        catch (const CEGUI::GenericException& e)
+        catch (const CEGUI::GenericException&)
         {
             // Fall back to default parser
             orxout(internal_warning) << "Cannot use XercesParser for CEGUI - using " << defaultXMLParserName << " instead" << endl;
