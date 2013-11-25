@@ -47,7 +47,8 @@
 	#include <IOBluetooth/IOBluetoothUserLib.h>
 #else
 	/* nix */
-	#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
+	//#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
+	#include "/usr/include/bluetooth/bluetooth.h"
 #endif
 
 #ifdef WIIC_INTERNAL_H_INCLUDED

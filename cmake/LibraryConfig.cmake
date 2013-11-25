@@ -204,7 +204,7 @@ IF(WIN32)
   ENDIF()
 ENDIF(WIN32)
 
-
+LIST(APPEND CMAKE_INCLUDE_PATH "/home/georgr/Documents/WiiC")
 ################# OGRE Plugins ##################
 
 # Check the plugins and determine the plugin folder
