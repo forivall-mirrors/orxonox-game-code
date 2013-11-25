@@ -5,6 +5,7 @@ To Do:
 - Different Colors of the light!
 - visibility of light only for a little time
 - If possible, do the spion with DistanceTriggerBeacon
+- More health for spacestations
 -->
 <LevelInfo
  name = "Spacefight"
@@ -64,7 +65,7 @@ To Do:
 <!-- SPAWNTRIGGER -->
 
 <!-- Spawntrigger -->    
-<!--	<SpawnPoint team=0 position="0, 0, 0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage --
+	<SpawnPoint team=0 position="0, 0, 0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
           <events>
             <activity>
               <EventListener event="flying12" />
@@ -79,9 +80,9 @@ To Do:
 	    </trigger>
           </events>
 	</EventTrigger>
--->
 
-	<SpawnPoint team=0 position="13500, 2500, 11000" lookat="18000,5000,21000" spawnclass=SpaceShip pawndesign=spaceshipswallow delay=0.1><!-- pawndesign=spaceshipcollateraldamage --
+
+	<SpawnPoint team=0 position="-10000, -22000, 25000" lookat="18000,5000,21000" spawnclass=SpaceShip pawndesign=spaceshipswallow delay=0.1><!-- pawndesign=spaceshipcollateraldamage -->
 	  <events>
             <activity>
               <EventListener event="flying1" />
@@ -89,17 +90,17 @@ To Do:
           </events> -->
         </SpawnPoint>
 
-<!-- ZUM TESTEN -->
-	<DistanceTrigger name=spawntrigger2 position="13500, 2500, 11000" target="SpaceShip" distance=10 stayActive="true" delay=0 />
-	<DistanceTrigger name="flying1" position="13500, 2500, 11000" target="SpaceShip" distance=10 stayActive="true" delay=0 />
-
+<!-- ZUM TESTEN ("-12000, -22000, 25000") 13500, 2500, 11000--
+	<DistanceTrigger name=spawntrigger2 position="-10000, -22000, 25000" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+	<DistanceTrigger name="flying1" position="-10000, -22000, 25000" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+-->
 	<!-- Distance-Spawn-Trigger -->
 	<DistanceTrigger name=spawntrigger2 position="0, 0, 0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
 	<!-- Drone pickup -->
 	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
 
-<!-- QUEST DESCRIPTION-->
+<!-- QUEST DESCRIPTION --
 	<LocalQuest id="spacefight.guard1">
 		<QuestDescription 
 			title="Eliminate the first guard!" 
@@ -146,8 +147,8 @@ To Do:
 			completeMessage="Well done! Now the element of surprise will be ours!" />
 	</LocalQuest>
 
-<!-- 2 different possibilitys -->
-	<!-- Spion is destroyed -->
+<!-- 2 different possibilitys --
+	<!-- Spion is destroyed --
 	<LocalQuest id="spacefight.mainfight(min)" >
 		<QuestDescription
 			title="The big fight!"
@@ -163,11 +164,11 @@ To Do:
 			<AddQuest questId="spacefight.rescue" />
 			<!--
 			<BlinkingBillboard position="-12100, -22000, 25000" color="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
-			-->
+			--
 		</complete-effects>
 	</LocalQuest>
 
-	<!-- Spion isn't destroyed -->
+	<!-- Spion isn't destroyed --
 	<LocalQuest id="spacefight.mainfight(max)" >
 		<QuestDescription
 			title="The big fight!"
@@ -183,10 +184,10 @@ To Do:
 			<AddQuest questId="spacefight.rescue" />
 			<!--
 			<BlinkingBillboard position="-12100, -22000, 25000" color="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
-			-->
+			--
 		</complete-effects>
 	</LocalQuest>
-<!-- -->
+<!-- --
 
 	<LocalQuest id="spacefight.rescue" >
 		<QuestDescription
@@ -209,7 +210,7 @@ To Do:
 
 	<!-- GRAND EXPLOSION IF POSSIBLE -->
 	<!-- Next Part -->
-
+-->
 	
 <!-- ---------------------------------------------------------------------- -->
 
@@ -450,6 +451,13 @@ To Do:
 			</events>
 		</EventTrigger>
 	</DistanceTrigger>
+	<SimpleNotification message="flying1"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="flying1" />
+			</trigger>
+		</events>
+	</SimpleNotification>	
 
 	<!-- Trigger to activate the upgrade1-Quest -->
 	<DistanceTrigger name="droneTrigger" position="13500, 2500, 10500" target="SpaceShip" distance=2000 stayActive="true" delay=0.1 />
@@ -459,7 +467,8 @@ To Do:
 				<EventListener event="droneTrigger" />
 			</trigger>
 		</events>
-	</SimpleNotification>	
+	</SimpleNotification>
+			
 
 	<!-- Helper-Trigger for the drone(s) -->
 	<DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=0.1 />
@@ -472,24 +481,6 @@ To Do:
 	</SimpleNotification>
 
 	<!-- Helper-Trigger for second guard -->
-	<DistanceTrigger name="flying22" position="18000, 5000, 21000" target="SpaceShip" distance=10000 stayActive="true" delay=0.1>
-		<EventTrigger>
-			<events>
-				<trigger>
-					<EventListener event="flying2" />
-				</trigger>
-			</events>
-		</EventTrigger>
-	</DistanceTrigger>
-
-	<SimpleNotification message="flying2.2"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="flying22" />
-			</trigger>
-		</events>
-	</SimpleNotification>
-
 	<DistanceTrigger name="flying2" position="18000, 5000, 21000" target="SpaceShip" distance=10000 stayActive="true" delay=0.1 >
 		<EventTrigger>
 			<events>
@@ -518,25 +509,15 @@ To Do:
         		</events>
 		</EventTrigger>
 	</DistanceTrigger>
-
-	<!-- Helper-Trigger for mainship -->
-	<DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0.1 />
-	<SimpleNotification message="Mainship sighted!"  broadcast="true">
+	<SimpleNotification message="escape10"  broadcast="true">
 		<events>
 			<trigger>
-				<EventListener event="flying3" />
+				<EventListener event="escape10" />
 			</trigger>
 		</events>
-	</SimpleNotification>
+	</SimpleNotification>	
 
-	<!-- <DistanceTrigger name="drone2" position="9750, -5350, 5650" target="SpaceShip" distance=20 stay Active="true" delay=0.1 /> -->
-	<SimpleNotification message="Now your are prepared best!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="drone2" />
-			</trigger>
-		</events>
-	</SimpleNotification>
+
 
 	<!-- DistanceTrigger for spion -->
 	<DistanceTrigger name="spionTrigger" position="15000,4000,19000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
@@ -544,6 +525,16 @@ To Do:
 		<events>
 			<trigger>
 				<EventListener event="spionTrigger" />
+			</trigger>
+		</events>
+	</SimpleNotification>	
+
+	<!-- Helper-Trigger for mainship -->
+	<DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0.1 />
+	<SimpleNotification message="Mainship sighted!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="flying3" />
 			</trigger>
 		</events>
 	</SimpleNotification>
@@ -798,7 +789,7 @@ To Do:
 <SpaceShip position="19000,5000,18000" lookat="19000,4900,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- guard1trigger4 -->
+      <EventListener event="guard1trigger4" /> <!-- guard1trigger4 -->
     </visibility>
   </events>
   <templates>
@@ -828,7 +819,7 @@ To Do:
 <SpaceShip position="17000,5000,18000" lookat="17000,5100,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- guard1trigger4 -->
+      <EventListener event="guard1trigger4" /> <!-- guard1trigger4 -->
     </visibility>
   </events>
   <templates>
@@ -858,7 +849,7 @@ To Do:
 <SpaceShip position="18000,4000,18000" lookat="17000,4000,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- guard1trigger4 -->
+      <EventListener event="guard1trigger4" /> <!-- guard1trigger4 -->
     </visibility>
   </events>
   <templates>
@@ -888,7 +879,7 @@ To Do:
 <SpaceShip position="18000,6000,18000" lookat="19000,6000,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
-      <EventListener event=spawntrigger2 /> <!-- guard1trigger4 -->
+      <EventListener event="guard1trigger4" /> <!-- guard1trigger4 -->
     </visibility>
   </events>
   <templates>
@@ -950,7 +941,7 @@ To Do:
 <SpaceShip position="-12000, -22000, 26000" lookat="-12000, -21300, 25700" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" />
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -970,7 +961,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
@@ -980,7 +971,7 @@ To Do:
 <SpaceShip position="-12000, -21000, 25000" lookat="-12000, -21300, 24300" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" />
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -1000,7 +991,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
@@ -1010,7 +1001,7 @@ To Do:
 <SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22700, 24300" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" />
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -1030,7 +1021,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
@@ -1040,7 +1031,7 @@ To Do:
 <SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22700, 25700" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" />
+      <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
     </visibility>
   </events>
   <templates>
@@ -1060,7 +1051,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" />
+	  <EventListener event=spawntrigger2 /> <!-- "guard2trigger4" -->
 	</activity>
       </events>
     </WaypointController>
@@ -1071,7 +1062,7 @@ To Do:
 <SpaceShip position="-11700, -21700, 25000" lookat="-11000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="escaped" />
+      <EventListener event=spawntrigger2 /> <!-- escaped -->
     </visibility>
   </events>
   <templates>
@@ -1091,7 +1082,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="escaped" />
+	  <EventListener event=spawntrigger2 /> <!-- escaped -->
 	</activity>
       </events>
     </WaypointController>
@@ -1101,7 +1092,7 @@ To Do:
 <SpaceShip position="-12700, -22700, 25000" lookat="-13000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="escaped" />
+      <EventListener event=spawntrigger2 /> <!-- escaped -->
     </visibility>
   </events>
   <templates>
@@ -1121,7 +1112,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="escaped" />
+	  <EventListener event=spawntrigger2 /> <!-- escaped -->
 	</activity>
       </events>
     </WaypointController>
@@ -1229,33 +1220,25 @@ To Do:
 <!-- ----------------Rotating SpaceStation--------------- -->
 
 	<!-- first guard -->
-    <Pawn team=1 health=50000 position="9000,0,0" direction="0,-1,0" yaw=112 pitch=67 collisionType=dynamic mass=100000 name=station1 radarname="Guard 1" >
-        <events>
-          <visibility>
-            <EventListener event=spawntrigger2 />
-          </visibility>
-        </events>
-        <attached>
-            	<?lua
-			createSpaceStationPar(0,2,1,2,1,4,1,50)
-		?>
-        </attached>
-        <collisionShapes>
-            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-        </collisionShapes>
-    </Pawn>
+	<StaticEntity position="9000,0,0" collisionType=static yaw=112 pitch=67 >
+	  <attached>
+	    <?lua
+	      createSpaceStationPar(0,2,1,2,1,4,1,50)
+	    ?>
+	  </attached>
+	</StaticEntity>
 
 	<!-- second guard -->
-	<StaticEntity position="18000,5000,18000" yaw=12 pitch=75>
-		<attached>
-			<?lua
-				createSpaceStationPar(0,2,1,2,1,4,1,50)
-			?>
-		</attached>
+	<StaticEntity position="18000,5000,18000" collisionType=static yaw=12 pitch=75 >
+	  <attached>
+	    <?lua
+	      createSpaceStationPar(0,2,1,2,1,4,1,50)
+	    ?>
+	  </attached>
 	</StaticEntity>
 
 <!-- ------------------------- Mainship ------------------ -->
-    <Pawn team=1 health=50000 position="13500, 2500, 13000" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Mainship" yaw=112 pitch=67>
+    <Pawn team=1 health=50000 position="-12000, -22000, 25000" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Mainship" yaw=112 pitch=67>
         <events>
           <visibility>
             <EventListener event=spawntrigger2 />
