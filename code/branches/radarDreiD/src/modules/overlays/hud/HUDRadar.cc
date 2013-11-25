@@ -100,7 +100,9 @@ namespace orxonox
         XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlelement, mode);
         XMLPortParam(HUDRadar, "maximumDotSize3D", setMaximumDotSize3D, getMaximumDotSize3D, xmlelement, mode);
         XMLPortParam(HUDRadar, "Material2D", set2DMaterial, get2DMaterial, xmlelement, mode);
-        XMLPortParam(HUDRadar, "Material3D", set3DMaterial, get3DMaterial, xmlelement, mode);
+        XMLPortParam(HUDRadar, "Material3Dmiddle", set3DMaterial, get3DMaterial, xmlelement, mode);
+
+
     }
 
     void HUDRadar::addObject(RadarViewable* object)
@@ -170,7 +172,8 @@ namespace orxonox
         if(RadarMode_)
         {
         	this->setBackgroundMaterial(material3D_);
-
+        	//this->radar3Dback_->show();
+        	//this
 
 
         }
