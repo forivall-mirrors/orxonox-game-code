@@ -169,10 +169,19 @@
         </QuestEffectBeacon>
 
 			<!-- END OF GAME -->
-    <Script code="Mission endMission true" onLoad="false">
+    <SimpleNotification message="Well done, you've finished">
         <events>
             <trigger>
                 <EventListener event=reachedend />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+    <Script code="Mission endMission true" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event="reachedend" />
             </trigger>
         </events>
     </Script>
@@ -185,7 +194,7 @@
     </DistanceTrigger>
  	<DistanceTrigger name="reachedhomeplanet" position="-3000,12000,-6990" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
- 	<DistanceTrigger name="reachedend" position="-3000,12000,-6990" target="Pawn" distance=60 stayActive="true" delay=2>
+ 	<DistanceTrigger name="reachedend" position="-41000,-30000,33800" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
 
           <EventTrigger name="boxtrigger" activations="1" stayactive="true" delay=0.1>
@@ -1184,7 +1193,7 @@
       </collisionShapes>
 </StaticEntity>
 					<!-- 17 Boxes forward END-->
-    <Billboard position="-40600,-30000,33800" material="Flares/backlightflare" colour="0,1.4,2.1" scale=10 />
+    <Billboard position="-41000,-30000,33800" material="Flares/backlightflare" colour="0,1.4,2.1" scale=15 />
 
   <StaticEntity position="-40400,-30000,33800" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
      <attached>
@@ -1192,9 +1201,9 @@
       </attached>
       <collisionShapes>
         <BoxCollisionShape position="0,0,0" halfExtents="100,100,100" />
-
       </collisionShapes>
 </StaticEntity>
+
 
 	<!-- The Cave END-->
 
