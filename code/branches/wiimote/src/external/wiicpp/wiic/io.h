@@ -37,10 +37,11 @@
 #ifndef CONNECT_H_INCLUDED
 #define CONNECT_H_INCLUDED
 
-#ifdef LINUX
-//#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
-#include "/usr/include/bluetooth/bluetooth.h"
-#endif
+/* This is not required, wiic_internal already includes bluetooth. */
+//#ifdef LINUX
+////#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
+	//#include <bluetooth.h>
+//#endif
 
 #include "wiic_internal.h"
 
