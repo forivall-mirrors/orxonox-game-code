@@ -42,10 +42,19 @@ namespace orxonox
     InvaderEnemy::InvaderEnemy(Context* context) : Pawn(context)
     {
         RegisterObject(InvaderEnemy);
+        enableCollisionCallback();
     }
 
     void InvaderEnemy::tick(float dt)
     {
         SUPER(InvaderEnemy, tick, dt);
+    }
+
+    inline bool InvaderEnemy::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    {
+        orxout() << "sadsadasfasf" << endl;
+        removeHealth(2000);
+        setVelocity(Vector3(0,0,1000));
+        return false;
     }
 }

@@ -61,14 +61,20 @@ namespace orxonox
 
             void setCenterpoint(InvaderCenterPoint* center)
             { this->center_ = center; }
+
+            int getLives(){return this->lives;}
+            int getLevel(){return this->level;}
+            int getPoints(){return this->point;}
         private:
             WeakPtr<InvaderCenterPoint> center_;
-            InvaderShip * player;
+            WeakPtr<InvaderShip> player;
 
             ConsoleCommand* console_addEnemy;
-
             Timer enemySpawnTimer;
             //Context* context;
+            int lives;
+            int level;
+            int point;
     };
 }
 

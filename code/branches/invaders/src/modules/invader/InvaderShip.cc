@@ -69,10 +69,13 @@ namespace orxonox
         if (this->hasLocalController())
         {
             float dist_y = velocity.y * dt;
+            float dist_x = velocity.x * dt;
             if(dist_y + posforeward > -42*3 && dist_y + posforeward < 42*6)
                 posforeward += dist_y;
             else
                 velocity.y = 0;
+            if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)
+                velocity.x = 0;
             // this->setVelocity(Vector3(1000 + velocity.y, 0, velocity.x));
             pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
         }
@@ -92,31 +95,22 @@ namespace orxonox
 
 
         // bring back on track!
-        if (pos.z > 42*2.5)
-            pos.z = 42*2.5;
-        else if (pos.z < -42*3)
-            pos.z = -42*3;
+        // if (pos.z > 42*2.5)
+        //     pos.z = 42*2.5;
+        // else if (pos.z < -42*3)
+        //     pos.z = -42*3;
         if(pos.y != 0)
             pos.y = 0;
-        // if (camera != NULL)
-        // {
-        //     float x = camera->getWorldPosition().x;
-        //     if (pos.x > x + 20)
-        //         pos.x = x + 20;
-        //     else if (pos.x < x - 20)
-        //         pos.x = x - 20;
-        // }
-        // if (abs(posforeward) < 20)
             
 
         setPosition(pos);
         setOrientation(Vector3::UNIT_Y, Degree(270));
 
         // Level up!
-        if (pos.x > 30000)
+        if (pos.x > 42000)
         {
             updateLevel();
-            setPosition(Vector3(0, 0, 0)); // pos - Vector3(30000, 0, 0)
+            setPosition(Vector3(0, 0, pos.z)); // pos - Vector3(30000, 0, 0)
         }
 
         SUPER(InvaderShip, tick, dt);
@@ -142,5 +136,24 @@ namespace orxonox
     void InvaderShip::boost(bool bBoost)
     {
         isFireing = bBoost;
+    }
+    inline bool InvaderShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    {
+        // orxout() << "touch!!! " << endl; //<< otherObject << " at " << contactPoint;
+
+        WeakPtr<InvaderEnemy> enemy = orxonox_cast<InvaderEnemy*>(otherObject);
+        if (enemy != NULL && lastEnemy != enemy)
+        {
+            lastEnemy = enemy;
+            orxout() << "Enemy!!!! " << endl;
+            removeHealth(20);
+            if (getHealth() <= 0)
+            {
+                orxout() << "DIED!!!! " << endl;
+            }
+            return false;
+        }
+        return false;
+        // SUPER(InvaderShip, collidesAgainst, otherObject, contactPoint);
     }
 }

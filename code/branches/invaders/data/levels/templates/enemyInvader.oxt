@@ -33,7 +33,7 @@
    shakeAmplitude = 6
 
    collisionType     = "dynamic"
-   mass              = 5
+   mass              = 0.00001
    linearDamping     = 0
    angularDamping    = 0
 

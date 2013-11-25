@@ -33,9 +33,12 @@
    shakeAmplitude = 6
 
    collisionType     = "dynamic"
-   mass              = 80
+   mass              = 4200000
    linearDamping     = 0.7
    angularDamping    = 0.9999999
+
+    collisiondamage = 100
+    enablecollisiondamage = true
   >
     <engines>
       <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipescortengine />

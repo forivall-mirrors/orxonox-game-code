@@ -72,6 +72,7 @@ namespace orxonox
     class InvaderShip;
     class InvaderEnemy;
     class InvaderWeapon;
+    class InvaderHUDinfo;
 }
 
 #endif /* _InvaderPrereqs_H__ */

@@ -62,6 +62,7 @@ namespace orxonox
             virtual void updateLevel();
 
             // *InvaderShip getShip(){return this;}
+            virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
         private:
             Camera* camera;
             bool isFireing;
@@ -72,6 +73,8 @@ namespace orxonox
                 float x;
                 float y;
             } velocity, desiredVelocity;
+
+            WeakPtr<InvaderEnemy> lastEnemy;
 
     };
 }

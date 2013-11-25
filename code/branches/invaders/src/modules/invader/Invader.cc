@@ -61,6 +61,7 @@ namespace orxonox
 
         this->console_addEnemy = createConsoleCommand( "spawnEnemy", createExecutor( createFunctor(&Invader::spawnEnemy, this) ) );
         //this->context = context;
+        this->setHUDTemplate("InvaderHUD");
 
         enemySpawnTimer.setTimer(2.0f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
     }
@@ -82,7 +83,7 @@ namespace orxonox
         InvaderEnemy* newPawn = new InvaderEnemy(this->center_->getContext());
         newPawn->addTemplate("enemyinvader");
 
-        newPawn->setPosition(player->getPosition() + Vector3(1000, 0, 0));
+        newPawn->setPosition(player->getPosition() + Vector3(1000, 0, 0)); // BUG: 
     }
 
     // inject custom player controller

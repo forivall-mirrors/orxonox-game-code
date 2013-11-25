@@ -4,10 +4,9 @@
  tags = "test"
  screenshot = "emptylevel.png"
 />
-
+<!-- include("HUDTemplates3.oxo") -->
 <?lua
   include("stats.oxo")
-  include("HUDTemplates3.oxo")
   include("templates/lodInformation.oxt")
 ?>
 
@@ -16,6 +15,7 @@
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipInvader.oxt")
   include("templates/enemyInvader.oxt")
+  include("overlays/InvaderHUD.oxo")
 ?>
 
 <Level gametype = Invader>
@@ -60,7 +60,7 @@
     ?>
 
     <MovableEntity
-      position = "<?lua print(math.random()* 30000 - 1000) ?>,-1000,<?lua print(math.random() * 4000 - 2000) ?>"
+      position = "<?lua print(math.random()* 40000 + 1000) ?>,-1000,<?lua print(math.random() * 4000 - 2000) ?>"
       collisionType = dynamic
       linearDamping = 0.8
       angularDamping = 0
