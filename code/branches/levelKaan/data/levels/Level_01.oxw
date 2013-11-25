@@ -58,7 +58,7 @@
 
    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
 
-   <TeamSpawnPoint team=0 position="-4000,2500,4100" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage/> <!--spaceshipescort-->
+   <TeamSpawnPoint team=0 position="0,0,0" direction="-1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort/> <!--spaceshipescort-->
 
 
 <!----------------------------------------------------------------------------------------------------->
@@ -121,14 +121,14 @@
       </collisionShapes>
     </SpaceShip>
 
-    <Dock position="-4000,4000,4000" roll=90 yaw=180 >
-        <animations>
-            <MoveToDockingTarget target="destroyer" />
-        </animations>
-        <effects>
-            <DockToShip target="spaceShip" />
-        </effects>
-        <events>
+   <Dock position="-4000,4000,4000" roll=90 yaw=180 >
+      <animations>
+         <MoveToDockingTarget target="destroyer" />
+      </animations>
+      <effects>
+         <DockToShip target="spaceShip" />
+      </effects>
+      <events>
             <execute>
                 <EventListener event="dockMe" />
             </execute>
@@ -138,8 +138,8 @@
         </events>
         <attached>
             <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
-                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
-            />
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"/>
+	   <Billboard position="10,-202,-42" material="Flares/ringflare" colour="0.7,0.4,0.1" scale=1/>
         </attached>
 
     </Dock>
@@ -166,13 +166,40 @@
       </attached>
     </SpaceShip>
 
+<BlinkingBillboard position="-3800,4800,4000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+                    <EventListener event=dockMe />
+            </visibility>
+          </events>
+</BlinkingBillboard>
 
-
-<MovableEntity position="-500,500, 500">
-    <attached>
-        <Billboard position="0,0,0" material="Examples/Flare" colour="1, 0, 0" scale=0.5/>
-    </attached>
-</MovableEntity>   
+<BlinkingBillboard position="-500,500,500" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=flying3 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+<Billboard position="-500,500,500" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=flying3 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
 
   <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=4/>
     <SimpleNotification message="Hey Rookie.. We got a new mission for you.">
@@ -219,23 +246,6 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="flying6" position="-4000,2800,4000" target="Pawn" distance=100 stayActive="true" delay=1/>
-    <SimpleNotification message="Enemy behind the portal!">
-        <events>
-            <trigger>
-                <EventListener event="flying6" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
-<DistanceTrigger name="flying7" position="-4000,2800,4000" target="Pawn" distance=100 stayActive="true" delay=4/>
-    <SimpleNotification message="Kill it by pressing T!">
-        <events>
-            <trigger>
-                <EventListener event="flying7" />
-            </trigger>
-        </events>
-    </SimpleNotification>
 
 <!----------------------------------------------------------------------------------------------------->
 <!-------------------------------- PART ONE: Passing throug wormhole  --------------------------------->
@@ -244,7 +254,7 @@
 
 <!------------------------------------- OBJECTS IN THIS PART ------------------------------------------>
 
-   <Model position="-4000,  2800, 4000" yaw="90" pitch="-90" roll="0" scale="3" mesh="satellite.mesh" />
+   <Model position="-4000,  2800, 4000" yaw="90" pitch="-90" roll="90" scale="3" mesh="satellite.mesh" />
 
    <Template name=PortalDefault>
       <PortalEndPoint>
@@ -255,7 +265,7 @@
    </Template>
 
    <PortalEndPoint position="-4000,2500,4000" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-   <PortalEndPoint position="0,95000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+   <PortalEndPoint position="0,94000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
    <PortalLink fromID="1" toID="2" />
    <!--<PortalLink fromID="2" toID="1" />-->
 
@@ -264,15 +274,15 @@
 
 <!-- Meteoriten, die sich bewegen -->
 <?lua
-      for i = 1, 400, 1
+      for i = 1, 450, 1
       do
       j = math.random()
    ?>
 
    <MovableEntity	
-      position = "<?lua print(math.random()* 2000-1000) ?>,<?lua print(math.random() * 10000 + 95000) ?>,<?lua print(math.random() * 2000-1000) ?>"
+      position = "<?lua print(math.random()* 1500-750) ?>,<?lua print(math.random() * 10000 + 95000) ?>,<?lua print(math.random() * 1500-750) ?>"
       scale = "<?lua print(j * 40)?>"
-      velocity = "0, -20, 0"
+      velocity = "<?lua print(j*30)?>, <?lua print(j*30)?>-180, <?lua print(j*30)?>"
       collisionType = dynamic
       collisiondamage = 0.1
       enablecollisiondamage = true 
@@ -300,10 +310,10 @@
       end
    ?>
 
-   <DistanceTrigger name="start" position="0,95000,0" target="SpaceShip" beaconMode="exclude" targetname="SpaceShipSupport" distance=20 stayActive="true" delay=0 />
+   <DistanceTrigger name="start" position="0,94000,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=20 stayActive="true" delay=0 />
 
 <DistanceTrigger name="portal2" position="-4000,4000,4000" target="Pawn" distance=50 stayActive="true" delay=3/>
-    <SimpleNotification message="Now go to the satel">
+    <SimpleNotification message="Now go to the portal next to the satellite">
         <events>
             <trigger>
                 <EventListener event="portal2" />
@@ -311,11 +321,19 @@
         </events>
     </SimpleNotification>
 
-<DistanceTrigger name="portal3" position="0,95000,0" target="Pawn" distance=50 stayActive="true" delay=3/>
+<DistanceTrigger name="portal3" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="Reach the wormhole to District 69">
         <events>
             <trigger>
                 <EventListener event="portal3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+   <SimpleNotification message="Take the lead of the formation">
+        <events>
+            <trigger>
+                <EventListener event="endOfLevel" />
             </trigger>
         </events>
     </SimpleNotification>
@@ -328,10 +346,10 @@
 ?>
 
    <SpaceShip 
-      position="-50+i*50, 94000, 4000"
+      position="-50+i*50, 94200, 0"
    >
       <templates>
-         <Template link=spaceshipcollateraldamage /> <!--spaceshipTransporter spaceshippirate-->
+         <Template link=spaceshipcollateraldamage /> 
       </templates>
       <controller>
          <AIController team=0>
@@ -366,6 +384,14 @@
         </events>
     </Script> <!-- !!! activates formation behaviour !!! -->
 
+ <Script code="formationcontroller followme">
+        <events>
+            <trigger>
+                <EventListener event=start />
+            </trigger>
+        </events>
+    </Script> <!-- !!! activates formation behaviour !!! -->
+
     <Script code="artificialcontroller setbotlevel 5" onLoad="false">
         <events>
             <trigger>
@@ -376,7 +402,7 @@
    
    <SpaceShip
         team      = 0
-        position  = "0,100000,0"
+        position  = "0,106000,0"
         roll      = 0   yaw=90  pitch=0
         mass      = 10000
         health    = 100000 initialhealth=100000 maxhealth="100000"
@@ -386,6 +412,7 @@
         <!-- Docking -->
          <DistanceTriggerBeacon name="bcnDestroyer" />
          <Billboard position="0,0,0" material="Portals/Default" />
+	<DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
 
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
    <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
@@ -425,11 +452,10 @@
       </collisionShapes>
     </SpaceShip>
 
-   <DistanceTrigger name="endOfLevel" position="0,100000,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=50 stayActive="true" delay=3/>
     <SimpleNotification message="End of game">
         <events>
             <trigger>
-                <EventListener event="portal3" />
+                <EventListener event="endOfLevel" />
             </trigger>
         </events>
     </SimpleNotification>
