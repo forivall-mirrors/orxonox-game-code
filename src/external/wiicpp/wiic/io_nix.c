@@ -40,18 +40,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-/* SANDRO HACK can't get bluetooth to work properly at the moment, will come
- * back here and fix this very ugly inclusion as soon as I get to grips with
- * cmake.
- */
-#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
-#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/hci.h"
-#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/hci_lib.h"
-#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/l2cap.h"
-//#include "/usr/include/bluetooth/bluetooth.h"
-//#include "/usr/include/bluetooth/hci.h"
-//#include "/usr/include/bluetooth/hci_lib.h"
-//#include "/usr/include/bluetooth/l2cap.h"
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/l2cap.h>
 
 #include "definitions.h"
 #include "wiic_internal.h"
