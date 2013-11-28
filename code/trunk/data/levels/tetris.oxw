@@ -29,7 +29,7 @@
 <Template name=tetrisstone>
   <TetrisStone camerapositiontemplate=tetrisstonecameras>
     <attached>
-      <Model position="0,0,0" mesh="crate.mesh" scale=0.9 />
+      <Model position="0,0,0" mesh="CuboidBody.mesh" scale=4.5 />
     </attached>
   </TetrisStone>
 </Template>
