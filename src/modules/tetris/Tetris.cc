@@ -350,7 +350,11 @@ namespace orxonox
         bool left = Gametype::playerLeft(player);
         if(player && player->isHumanPlayer())
         {
-            this->end();
+            if(this->activeBrick_ != NULL)
+            {
+                this->player_->stopControl();
+            }
+            this->cleanup();
         }
         return left;
     }
