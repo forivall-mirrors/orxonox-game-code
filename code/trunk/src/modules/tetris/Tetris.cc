@@ -344,6 +344,16 @@ namespace orxonox
             if (it->first->isHumanPlayer() && (it->first->isReadyToSpawn() || this->bForceSpawn_))
                 this->spawnPlayer(it->first);
     }
+    
+    bool Tetris::playerLeft(PlayerInfo* player)
+    {
+        bool left = Gametype::playerLeft(player);
+        if(player && player->isHumanPlayer())
+        {
+            this->end();
+        }
+        return left;
+    }
 
     /**
     @brief

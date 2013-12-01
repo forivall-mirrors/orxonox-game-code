@@ -63,6 +63,7 @@ namespace orxonox
             virtual void tick(float dt);
 
             virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
+            virtual bool playerLeft(PlayerInfo* player);
 
             void setCenterpoint(TetrisCenterpoint* center);
 
