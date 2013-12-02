@@ -11,13 +11,14 @@ namespace orxonox
 	const std::string WiiMote::deviceName = "WiiMote";
 	void WiiMote::update(const Clock& time)
 	{
-		orxout(user_warning) << this->inputStates_.size() << std::endl;
+		//orxout(user_warning) << this->inputStates_.size() << std::endl;
 		if(p == NULL)
 	      exit(0);
 		//else
 		  //orxout(user_warning) << "pointer is not null, yay" << std::endl;
 		if (PWii->Poll())
 		{
+			p->UpdateStatus();
 			//CWiimote::EventTypes e = p->GetEvent();
 			if(p->Buttons.isPressed(CButtons::BUTTON_A)||p->Buttons.isJustPressed(CButtons::BUTTON_A))
 				{
