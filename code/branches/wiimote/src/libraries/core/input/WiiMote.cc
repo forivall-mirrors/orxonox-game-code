@@ -19,7 +19,7 @@ namespace orxonox
 		if (PWii->Poll())
 		{
 			CWiimote::EventTypes e = p->GetEvent();
-			if(p->Buttons.isPressed(CButtons::BUTTON_A))
+			if(p->Buttons.isPressed(CButtons::BUTTON_A)||p->Buttons.isJustPressed(CButtons::BUTTON_A))
 				{
 					CommandExecutor::execute("fire 0", 0, 0);
 				}
