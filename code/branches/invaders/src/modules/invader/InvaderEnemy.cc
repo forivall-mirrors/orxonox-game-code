@@ -43,17 +43,31 @@ namespace orxonox
     {
         RegisterObject(InvaderEnemy);
         enableCollisionCallback();
+        lifetime = 0;
     }
 
     void InvaderEnemy::tick(float dt)
     {
-        setVelocity(Vector3(500 ,0, 0));
+        lifetime += dt;
+        if (lifetime > 5000)
+        {
+            removeHealth(2000);
+        }
+        if (player != NULL)
+        {
+            float newZ = player->getPosition().z - getPosition().z;
+            if (newZ < 0)
+                newZ = (-100 < newZ)?-100:newZ;
+            else
+                newZ = (100 > newZ)?100:newZ;
+            setVelocity(Vector3(1000 - level * 100 , 0, newZ));
+        }
         SUPER(InvaderEnemy, tick, dt);
     }
 
     inline bool InvaderEnemy::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        setVelocity(Vector3(900,0,0));
+        setVelocity(Vector3(1000,0,0));
         removeHealth(2000);
         return false;
     }

@@ -67,6 +67,27 @@
      showlevel     = false
      showpoints     = true
     />
+
+
+    <OverlayText
+     position  = "0.4, 0.1"
+     pickpoint = "0.0, 0.0"
+     font      = "ShareTechMono"
+     textsize  = 0.04
+     colour    = "1.0, 1.0, 1.0, 1.0"
+     align     = "left"
+     caption   = "X"
+    />
+    <InvaderHUDinfo
+     position  = "0.42, 0.1"
+     pickpoint = "0.0, 0.0"
+     font      = "ShareTechMono"
+     textsize  = 0.04
+     colour    = "1.0, 1.0, 1.0, 1.0"
+     align     = "left"
+
+     showMultiplier = true
+    />
   </OverlayGroup>
 </Template>
 

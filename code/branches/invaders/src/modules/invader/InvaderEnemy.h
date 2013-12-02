@@ -49,14 +49,18 @@ namespace orxonox
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             virtual void damage(float damage, float healthdamage, float shielddamage, Pawn* originator);
+            virtual void setPlayer(WeakPtr<InvaderShip> player){this->player = player;}
 
+            int level;
         private:
             WeakPtr<Invader> getGame();
             WeakPtr<Invader> game;
+            WeakPtr<InvaderShip> player;
             Camera* camera;
             bool isFireing;
             float speed, damping;
             float lastTimeFront, lastTimeLeft;
+            float lifetime;
             struct Velocity
             {
                 float x;

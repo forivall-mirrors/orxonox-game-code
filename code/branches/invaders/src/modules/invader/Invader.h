@@ -65,6 +65,7 @@ namespace orxonox
             int getLives(){return this->lives;}
             int getLevel(){return this->level;}
             int getPoints(){return this->point;}
+            int getMultiplier(){return this->multiplier;}
 
             void costLife(){lives--; if (lives <= 0) end();};
             void levelUp(){level++;}

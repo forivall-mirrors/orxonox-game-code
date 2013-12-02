@@ -86,11 +86,14 @@ namespace orxonox
         if (player == NULL)
             return;
 
-        for (int i = 0; i < level; i++)
+        srand(player->getPosition().x + player->getPosition().y);
+        for (int i = 0; i < level * 2; i++)
         {
-            SmartPtr<InvaderEnemy> newPawn = new InvaderEnemy(this->center_->getContext());
+            WeakPtr<InvaderEnemy> newPawn = new InvaderEnemy(this->center_->getContext());
             newPawn->addTemplate("enemyinvader");
-            newPawn->setPosition(player->getPosition() + Vector3(500 + 100 * i, 0, 0));
+            newPawn->setPlayer(player);
+            newPawn->level = level;
+            newPawn->setPosition(player->getPosition() + Vector3(500 + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
         }
     }
 

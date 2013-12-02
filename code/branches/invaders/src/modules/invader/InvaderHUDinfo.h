@@ -59,11 +59,18 @@ namespace orxonox
             inline bool getShowPoints() const
                 { return this->bShowPoints_; }
 
+            inline void setShowMultiplier(bool value)
+                { this->bShowMultiplier_ = value; }
+            inline bool getShowMultiplier() const
+                { return this->bShowMultiplier_; }
+
+
         private:
             Invader* InvaderGame;
             bool bShowLives_;
             bool bShowLevel_;
             bool bShowPoints_;
+            bool bShowMultiplier_;
     };
 }
 #endif /* _InvaderHUDinfo_H__ */

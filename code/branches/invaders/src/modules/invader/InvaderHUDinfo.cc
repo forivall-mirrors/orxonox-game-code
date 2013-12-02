@@ -43,6 +43,7 @@ namespace orxonox
         this->bShowLives_ = false;
         this->bShowLevel_ = false;
         this->bShowPoints_ = false;
+        this->bShowMultiplier_ = false;
     }
 
     InvaderHUDinfo::~InvaderHUDinfo()
@@ -56,6 +57,7 @@ namespace orxonox
         XMLPortParam(InvaderHUDinfo, "showlives",     setShowLives,     getShowLives,     xmlelement, mode).defaultValues(false);
         XMLPortParam(InvaderHUDinfo, "showPoints",     setShowPoints,     getShowPoints,     xmlelement, mode).defaultValues(false);
         XMLPortParam(InvaderHUDinfo, "showLevel",     setShowLevel,     getShowLevel,     xmlelement, mode).defaultValues(false);
+        XMLPortParam(InvaderHUDinfo, "showMultiplier",     setShowMultiplier,     getShowMultiplier,     xmlelement, mode).defaultValues(false);
     }
 
     void InvaderHUDinfo::tick(float dt)
@@ -78,6 +80,11 @@ namespace orxonox
             {
                 const std::string& points = multi_cast<std::string>(this->InvaderGame->getPoints());
                 this->setCaption(points);
+            }
+            else if(this->bShowMultiplier_)
+            {
+                const std::string& Multiplier = multi_cast<std::string>(this->InvaderGame->getMultiplier());
+                this->setCaption(Multiplier);
             }
         }
     }

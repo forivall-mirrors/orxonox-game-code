@@ -6,9 +6,9 @@
    spawnparticleduration  = 3
    explosionchunks        = 4
 
-   health            = 1
-   maxhealth         = 1
-   initialhealth     = 1
+   health            = 100
+   maxhealth         = 100
+   initialhealth     = 100
 
    shieldhealth        = 35
    initialshieldhealth = 35
@@ -45,9 +45,13 @@
       <MultiStateEngine position="-7.6, 0, 0" template=spaceshipescortengine />
     </engines>
     <attached>
-      <Model position="0,0,0" yaw=90 pitch=0 roll=0 scale=8 mesh="escortShip.mesh" />
-      <Model position="0,0,0" yaw=180 pitch=90 roll=0 scale=8 mesh="escortWeapon.mesh" />
+      <Model position="0,0,0" yaw=180 pitch=270 roll=0 scale=2 mesh="swallow_mat.mesh" />
+      <Model position="0,0,0" yaw=180 pitch=270 roll=0 scale=2 mesh="escortWeapon.mesh" />
 <!--Model mesh="cube.mesh" mass=10 position="0,0,3" scale3D="10,4,8" />
+
+swallow_mat.mesh
+"ghost.mesh"
+
 <Model mesh="cube.mesh" mass=10 position="12.6,-2,3" scale3D="2.8,2.8,11" />
 <Model mesh="cube.mesh" mass=10 position="-12.6,-2,3" scale3D="2.8,2.8,11" />
 <Model mesh="cube.mesh" mass=10 position="0,0,-12" scale3D="4,4,7" /-->
