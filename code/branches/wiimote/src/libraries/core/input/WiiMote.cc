@@ -20,7 +20,6 @@ namespace orxonox
 			if(p->Buttons.isPressed(CButtons::BUTTON_A))
 				orxout()<<"ZOMG!!1!"<<endl;
 			Orientation o;
-			p->Accelerometer.
 			p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
 			int x = (int)(1000*(o.yaw-lastOrientation.yaw)/time.getDeltaTime());
 			int y = (int)(1000*(o.pitch-lastOrientation.pitch)/time.getDeltaTime());
