@@ -52,8 +52,8 @@
  * cmake.
  */
 //	#include "bluetooth/bluetooth.h"
-//	#include <bluetooth.h>
-	#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
+	#include <bluetooth/bluetooth.h>
+//	#include "/home/georgr/libbluetooth-dev/libbluetooth-dev/usr/include/bluetooth/bluetooth.h"
 #endif
 
 #ifdef WIIC_INTERNAL_H_INCLUDED
