@@ -97,6 +97,13 @@ namespace orxonox
         }
     }
 
+    void Invader::costLife()
+    {
+        lives--;
+        multiplier = 0;
+        if (lives <= 0) end();
+    };
+
     void Invader::comboControll()
     {
         if (b_combo)

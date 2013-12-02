@@ -67,7 +67,7 @@ namespace orxonox
             int getPoints(){return this->point;}
             int getMultiplier(){return this->multiplier;}
 
-            void costLife(){lives--; if (lives <= 0) end();};
+            void costLife();
             void levelUp(){level++;}
             void addPoints(int numPoints){point += numPoints * multiplier; b_combo = true;}
             void comboControll();
