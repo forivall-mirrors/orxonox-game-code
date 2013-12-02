@@ -13,11 +13,15 @@
           <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
         </links>
         <Weapon>
-          <InvaderWeapon mode=0 munitionpershot=0 delay=0.125 damage=9.3 material="Flares/point_lensflare" muzzleoffset=" 0.1, 1.6,-2" projectileMesh="LaserBeam2.mesh" />
-          <!--InvaderWeapon mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" projectileMesh="LaserBeam.mesh" /-->
+          <InvaderWeapon mode=0 munitionpershot=0 delay=0.125 damage=9.3 material="Flares/point_lensflare" muzzleoffset=" 0.1, 1.6,-2" projectileMesh="cokebottle.mesh" />
+          <!--InvaderWeapon mode=0 munitionpershot=0 delay=0   
+
+          LaserBeam2
+
+            damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" projectileMesh="LaserBeam.mesh" /-->
         </Weapon>
         <Weapon>
-          <InvaderWeapon mode=0 munitionpershot=0 delay=0     damage=9.3 material="Flares/point_lensflare" muzzleoffset=" 1.6, 1.3, -2.0" projectileMesh="LaserBeam2.mesh" />
+          <InvaderWeapon mode=0 munitionpershot=0 delay=0     damage=9.3 material="Flares/point_lensflare" muzzleoffset=" 1.6, 1.3, -2.0" projectileMesh="cokebottle.mesh" />
           <!--InvaderWeapon mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-0.1, 1.6, -2.0" projectileMesh="LaserBeam.mesh" /-->
         </Weapon>
       </WeaponPack>

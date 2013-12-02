@@ -55,11 +55,11 @@ namespace orxonox
         }
         if (player != NULL)
         {
-            float newZ = player->getPosition().z - getPosition().z;
-            if (newZ < 0)
-                newZ = (-100 < newZ)?-100:newZ;
-            else
-                newZ = (100 > newZ)?100:newZ;
+            float newZ = abs(getPosition().x - player->getPosition().x) * (player->getPosition().z - getPosition().z);
+            // if (newZ < 0)
+            //     newZ = (-100 < newZ)?-100:newZ;
+            // else
+            //     newZ = (100 > newZ)?100:newZ;
             setVelocity(Vector3(1000 - level * 100 , 0, newZ));
         }
         SUPER(InvaderEnemy, tick, dt);
