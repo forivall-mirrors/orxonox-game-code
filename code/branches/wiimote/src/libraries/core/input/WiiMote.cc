@@ -2,7 +2,7 @@
 #include "core/CoreIncludes.h"
 //#include "core/command/ConsoleCommand.h"
 #include <wiicpp/wiicpp/wiicpp.h>
-#include <command/CommandExecutor.h>
+#include "core/command/CommandExecutor.h"
 
 
 namespace orxonox
@@ -21,7 +21,7 @@ namespace orxonox
 			CWiimote::EventTypes e = p->GetEvent();
 			if(p->Buttons.isPressed(CButtons::BUTTON_A))
 				{
-					CE->execute("fire 0", 0, 0);
+					CommandExecutor::execute("fire 0", 0, 0);
 				}
 			Orientation o;
 			p->SetMotionSensingMode(CWiimote::ON);
@@ -58,7 +58,7 @@ namespace orxonox
 		lastOrientation.yaw = 0;
 		lastOrientation.roll = 0;
 		lastOrientation.pitch = 0;
-		CE = &(CommandExecutor::getInstance());
+
 
 	}
 }
