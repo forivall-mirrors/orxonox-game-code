@@ -71,6 +71,7 @@ namespace orxonox
             void levelUp(){level++;}
             void addPoints(int numPoints){point += numPoints * multiplier; b_combo = true;}
             void comboControll();
+            int lives;
         private:
             WeakPtr<InvaderCenterPoint> center_;
             WeakPtr<InvaderShip> player;
@@ -79,7 +80,6 @@ namespace orxonox
             Timer enemySpawnTimer;
             Timer comboTimer;
             //Context* context;
-            int lives;
             int level;
             int point;
             bool b_combo;

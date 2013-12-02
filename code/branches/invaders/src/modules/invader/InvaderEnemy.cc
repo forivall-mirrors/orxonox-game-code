@@ -67,7 +67,7 @@ namespace orxonox
 
     inline bool InvaderEnemy::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        // setVelocity(Vector3(1000,0,0));
+        // setVelocity(Vector3(1500,0,0));
         removeHealth(2000);
         return false;
     }

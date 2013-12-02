@@ -1,7 +1,7 @@
 <LevelInfo
- name = "Invader Test"
- description = "Invader Test"
- tags = "test"
+ name = "Orxonox Arcade"
+ description = "Arcade shooter. Maximise your points!!!"
+ tags = "minigame"
  screenshot = "emptylevel.png"
 />
 <!-- include("HUDTemplates3.oxo") -->

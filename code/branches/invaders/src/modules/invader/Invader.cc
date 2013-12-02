@@ -138,7 +138,8 @@ namespace orxonox
 
     void Invader::end()
     {
+        orxout() << "STOP THE GAME, CHEATER!!!" << endl;
         // Call end for the parent class.
-        Deathmatch::end();
+        // Deathmatch::end();
     }
 }

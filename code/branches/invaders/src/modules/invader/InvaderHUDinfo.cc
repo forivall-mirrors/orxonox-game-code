@@ -79,6 +79,11 @@ namespace orxonox
             else if(this->bShowPoints_)
             {
                 const std::string& points = multi_cast<std::string>(this->InvaderGame->getPoints());
+                if (this->InvaderGame->lives <= 0)
+                {
+                    setTextSize(0.1);
+                    setPosition(Vector2(0.2, 0.5));
+                }
                 this->setCaption(points);
             }
             else if(this->bShowMultiplier_)
