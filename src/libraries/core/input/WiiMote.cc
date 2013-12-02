@@ -2,6 +2,7 @@
 #include "core/CoreIncludes.h"
 //#include "core/command/ConsoleCommand.h"
 #include <wiicpp/wiicpp/wiicpp.h>
+#include <command/CommandExecutor.h>
 
 
 namespace orxonox

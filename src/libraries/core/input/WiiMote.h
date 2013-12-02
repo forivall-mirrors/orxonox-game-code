@@ -9,7 +9,7 @@
 namespace orxonox
 {
 
-
+	class CommandExecutor;
 	struct Orientation
     {
     	float roll, pitch, yaw;
