@@ -227,13 +227,15 @@ namespace orxonox
     void InputManager::loadWiiMote()
     {
 
-    	CWii wii; // Defaults to 4 remotes
+
+
+    	static CWii wii; // Defaults to 4 remotes; static because else it will get deleted during InternalReload
     	std::vector< ::CWiimote>::iterator i;
     	int reloadWiimotes = 0;
     	int index;
 
     	// Find and connect to the wiimotes
-    	std::vector<CWiimote>& wiimotes = wii.FindAndConnect(10);
+    	static std::vector<CWiimote>& wiimotes = wii.FindAndConnect(10); //CWiimotes are kept in here in case of InternalReload calls
     	if (!wiimotes.size())
     	{
     		cout << "No wiimotes found." << endl;
