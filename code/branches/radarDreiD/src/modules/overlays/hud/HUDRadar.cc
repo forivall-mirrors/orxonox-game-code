@@ -69,6 +69,25 @@ namespace orxonox
         this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.png";
         this->setDetectionLimit( 10000.0f );
         this->owner_ = 0;
+
+        this->map3DFront_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+        	.createOverlayElement("Panel", "HUDRadar_mapDreiDFront_" + getUniqueNumberString()));
+        this->map3DFront_->setMaterialName("Orxonox/Radar3DFront");
+        this->overlay_->add2D(this->map3DFront_);
+        //this->map3DFront_->_setDimensions(0.17f, 0.17f);
+        //this->map3DFront_->_setPosition(1.0, 1.0);
+        //this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 10);
+        this->map3DFront_->hide();
+
+        this->map3DBack_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+        	.createOverlayElement("Panel", "HUDRadar_mapDreiDBack_" + getUniqueNumberString()));
+        this->map3DBack_->setMaterialName("Orxonox/Radar3DBack");
+        this->overlay_->add2D(this->map3DBack_);
+        //this->map3DBack_->_setDimensions(0.17f, 0.17f);
+        //this->map3DBack_->_setPosition(1.0, 1.0);
+        //this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 10);
+        this->map3DBack_->hide();
+
     }
 
     HUDRadar::~HUDRadar()
@@ -76,6 +95,9 @@ namespace orxonox
         if (this->isInitialized())
         {
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->map3DFront_);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->map3DBack_);
+
             for (std::map<RadarViewable*,Ogre::PanelOverlayElement*>::iterator it = this->radarObjects_.begin();
                 it != this->radarObjects_.end(); ++it)
             {
@@ -99,9 +121,12 @@ namespace orxonox
         XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlelement, mode);
         XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlelement, mode);
         XMLPortParam(HUDRadar, "maximumDotSize3D", setMaximumDotSize3D, getMaximumDotSize3D, xmlelement, mode);
-        XMLPortParam(HUDRadar, "Material2D", set2DMaterial, get2DMaterial, xmlelement, mode);
-        XMLPortParam(HUDRadar, "Material3Dmiddle", set3DMaterial, get3DMaterial, xmlelement, mode);
+        XMLPortParam(HUDRadar, "material2D", set2DMaterial, get2DMaterial, xmlelement, mode);
+        XMLPortParam(HUDRadar, "material3DMiddle", set3DMaterial, get3DMaterial, xmlelement, mode);
+        XMLPortParam(HUDRadar, "material3DFront", set3DMaterialFront, get3DMaterialFront, xmlelement, mode);
+        XMLPortParam(HUDRadar, "material3DBack", set3DMaterialBack, get3DMaterialBack, xmlelement, mode);
         XMLPortParam(HUDRadar, "mapAngle3D", setMapAngle, getMapAngle, xmlelement, mode);
+
 
 
     }
@@ -173,14 +198,13 @@ namespace orxonox
         if(RadarMode_)
         {
         	this->setBackgroundMaterial(material3D_);
-        	//this->radar3Dback_->show();
-        	//this
-
-
+        	this->map3DFront_->show();
+        	this->map3DBack_->show();
         }
         else
         	this->setBackgroundMaterial(material2D_);
-
+        	this->map3DFront_->hide();
+        	this->map3DBack_->hide();
 
 
         for( it = this->radarObjects_.begin(); it != this->radarObjects_.end(); ++it )

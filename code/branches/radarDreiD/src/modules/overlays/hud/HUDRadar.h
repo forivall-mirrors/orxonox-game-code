@@ -75,6 +75,12 @@ namespace orxonox
         std::string get3DMaterial() const {return this->material3D_; }
         void set3DMaterial(std::string material3D) { this->material3D_ = material3D; }
 
+        std::string get3DMaterialFront() const {return this->material3DFront_; }
+        void set3DMaterialFront(std::string material3DFront) { this->material3DFront_ = material3DFront; }
+
+        std::string get3DMaterialBack() const {return this->material3DBack_; }
+        void set3DMaterialBack(std::string material3DBack) { this->material3DBack_ = material3DBack; }
+
         float getRadarSensitivity() const { return this->sensitivity_; }
         // used also by RadarListener interface!
         void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
@@ -106,8 +112,13 @@ namespace orxonox
         float maximumDotSize3D_;
         float mapAngle_;
 
-        std::string material2D_;
-        std::string material3D_;
+        std::string material2D_;		//Material name for 2D map
+        std::string material3D_;		//Material names For the 3D minimap
+        std::string material3DFront_;
+        std::string material3DBack_;
+
+        Ogre::PanelOverlayElement* map3DFront_; //Overlayelements for the 3D minimap to be able to draw the points in a semi 3D matter
+        Ogre::PanelOverlayElement* map3DBack_;
 
         float sensitivity_;
         float detectionLimit_;

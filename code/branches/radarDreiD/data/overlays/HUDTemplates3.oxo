@@ -128,7 +128,9 @@
      name          			= "Radar"
      background    			= "Orxonox/Radar3D"
      material2D    			= "Orxonox/Radar"
-     material3Dmiddle   	= "Orxonox/Radar3D"
+     material3DMiddle   	= "Orxonox/Radar3D"
+     material3DFront		= "Orxonox/Radar3DFront"
+     material3DBack			= "Orxonox/Radar3DBack"
      correctaspect 			= true
      size          			= "0.17, 0.17"
      position      			= "1.0, 1.0"
