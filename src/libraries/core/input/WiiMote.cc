@@ -29,6 +29,7 @@ namespace orxonox
 			IntVector2 clippingSize(1920, 1080);
 			lastOrientation.pitch = o.pitch;
 			lastOrientation.yaw = o.yaw;
+			orxout()<<x<<std::endl<<y<<std::endl;
 			if(x!=0 && y!=0)
 			{
 				for (unsigned int i = 0; i < inputStates_.size(); ++i)
