@@ -151,7 +151,7 @@
       <!--Model position="0,60,200" yaw="90" pitch="-90" roll="0" scale="3" mesh="Tower_ME.mesh" /-->
       <!--Model position="0,80,200" yaw="90" pitch="-90" roll="0" scale="5" mesh="SmallPart1.mesh" /-->
       <Model position="0,-20,200" yaw="90" pitch="-90" roll="0" scale="4" mesh="raceCheckPoint.mesh" />
-      <Model position="0,-40,200" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="Spacegate.mesh" />
+      <Model position="0,-40,200" yaw="90" pitch="0" roll="0" scale="0.5" mesh="Spacegate.mesh" />
 
       <Model position="0,-60,200" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="BigSpacegate.mesh" />
       <!--Model position="0,-80,200" yaw="90" pitch="-90" roll="0" scale="5" mesh="SmallPart2" /> <!--- WHY doesn't it load ??--->

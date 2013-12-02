@@ -63,25 +63,22 @@
 
 <!-- Pickups -->
 
-    <PickupSpawner pickup=dronepickup position="-5000,300,-209" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
-    <PickupSpawner pickup=hugespeedpickup position="-800,0,0" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" />
+    <PickupSpawner pickup=dronepickup position="-5000,-1300,-209" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
 
-<!--
-    <PickupSpawner pickup=crazyhealthpickup position="2200,1000,-600" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" active=false>
-                       <events>
-                         <activity>
-                              <EventListener event="reachedally" />
-                         </activity>
-                       </events>
+    <PickupSpawner pickup=crazyhealthpickup position="0,-4,-940" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" visible="true">
+                            <events>
+                                <visibility>
+                                    <EventListener event="boxtrigger" />
+                                </visibility>
+                            </events>
 	</PickupSpawner>
-    <PickupSpawner pickup=hugespeedpickup position="2200,1000,-600" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" active=false>
-                       <events>
-                         <activity>
-                              <EventListener event="reachedally" />
-                         </activity>
-                       </events>
+    <PickupSpawner pickup=mediumspeedpickup position="0,4,-940" triggerDistance="10" respawnTime="10" maxSpawnedItems="99"  visible="true">
+                            <events>
+                                <visibility>
+                                    <EventListener event="boxtrigger" />
+                                </visibility>
+                            </events>
 	</PickupSpawner>
--->
 
 <!-- Pickups heal the box, so one cant destroy the box -->
 
@@ -96,7 +93,7 @@
         <events>
             <trigger>
 
-                <TeamSpawnPoint team=0 position="-42600,-30000,33800" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>
+                <TeamSpawnPoint team=0 position="-46950,-30000,30000" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>
 <!-- Spawnpoint aendern zu -8050,0,0 nachher direction="1,0.3,0.2"-->
 <!-- Spawnpoint aendern zu 3000,12000,-5500 nachher direction="0.3,1.2,-5.5" Fuer homeplanet-->
 <!-- Spawnpoint aendern zu -46950,-30000,30000 nachher direction="1,0,0" Fuer inBox-->
@@ -111,6 +108,26 @@
             </trigger>
         </events>
     </EventMultiTrigger>
+
+
+    <TeamSpawnPoint team=0 position="0,-2500,0" direction="0,-1,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage active =false>
+        <events>
+            <activity>
+                <EventListener event="reachedally" />
+            </activity>
+        </events>
+    </TeamSpawnPoint>
+
+    <TeamSpawnPoint team=0 position="-46950,-30000,30000" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage active =false>
+        <events>
+            <activity>
+                <EventListener event="reachedhomeplanet" />
+            </activity>
+        </events>
+    </TeamSpawnPoint>
+
+
+
 
         <QuestEffectBeacon times=1>
             <effects>
@@ -258,7 +275,7 @@
         </controller>
     </Pawn>
 
-<Billboard position="0,0,-900" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+<Billboard position="0,0,-940" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
           <events>
             <visibility>
               <EventTrigger>
@@ -279,31 +296,17 @@
 <BlinkingBillboard position="-3000,12000,-6990" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
-              <EventTrigger invert=true>
-                <events>
-                  <trigger>
-                    <EventListener event="target3"/> <!-- reachedhomeplanet--> 
-                  </trigger>
-                </events>
-              </EventTrigger>
-            </visibility>
-          </events>
-</BlinkingBillboard>
-
-
-<BlinkingBillboard position="-3000,12000,-6990" frequency=0.4 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
-          <events>
-            <visibility>
               <EventTrigger>
                 <events>
                   <trigger>
-                    <EventListener event="boxtrigger" />
+                    <EventListener event="boxtrigger"/> <!-- reachedhomeplanet--> 
                   </trigger>
                 </events>
               </EventTrigger>
             </visibility>
           </events>
 </BlinkingBillboard>
+
 
 <!-- Billboard Homeplanet END-->
 
@@ -562,7 +565,7 @@
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="Boxdestroyed" position="2200,1000,-600" target="SpaceShip" distance=30 stayActive="true" delay=0.1 />
+    <DistanceTrigger name="Boxdestroyed" position="0,0,-940" target="SpaceShip" distance=30 stayActive="true" delay=0.1 />
     <SimpleNotification message="Now aim the blue planet">
         <events>
             <trigger>
@@ -588,6 +591,23 @@
         </events>
     </SimpleNotification>
 
+<DistanceTrigger name="cave1" position="-46300,-30000,30000" target="SpaceShip" distance=30 stayActive="true" delay=0.1 />
+    <SimpleNotification message="You reached the cave, you're safe!!">
+        <events>
+            <trigger>
+                <EventListener event="cave1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<DistanceTrigger name="cave2" position="-46300,-30000,30000" target="SpaceShip" distance=30 stayActive="true" delay=4.4 />
+    <SimpleNotification message="... wait it's a trap">
+        <events>
+            <trigger>
+                <EventListener event="cave2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
 <!-- Message Triggers END -->
 
@@ -759,6 +779,12 @@
     </Planet>
   							<!-- Homeplanet  END-->
 
+							<!-- Planet around the cave-->
+
+<Planet position="-43500,-30000,31900" scale=5000 pitch=-90 mesh="planets/moon.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=0 imagesize=1024.0f />
+
+							<!-- Planet around the cave END-->
+
 							<!-- Anotherplanet -->
     <Planet
       position="-20000,6000,7000"
@@ -875,6 +901,7 @@
 
  							<!-- Homeplanet Architecture END-->
 
+
 							<!-- Portal-->
     <Template name=PortalDefault>
         <PortalEndPoint>
@@ -885,9 +912,8 @@
     </Template>
 
     <PortalEndPoint position="-3000,12000,-6990" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-    <PortalEndPoint position="-47000,-30000,30000" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="-47000,-30000,30000" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" pitch = "180"/>
     <PortalLink fromID="1" toID="2" />
-    <PortalLink fromID="2" toID="1" />
 
 
 							<!-- Portal END-->
@@ -1204,8 +1230,13 @@
       </collisionShapes>
 </StaticEntity>
 
+<!-- FORCEFIELD -->
+<ForceField position="-47000,-30000,30000" direction="1,0,0" diameter=2000 velocity=2000 length=2000 />
+
 
 	<!-- The Cave END-->
+
+	<!-- Planet around the cave-->
 
   </Scene>
 </Level>
