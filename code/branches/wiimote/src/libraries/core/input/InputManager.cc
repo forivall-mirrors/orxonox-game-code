@@ -259,6 +259,7 @@ namespace orxonox
     	                 devices_.push_back(new WiiMote((unsigned int)devices_.size(), *i, wii));
     	                 //devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
     	                 orxout()<< "Size of devices vector after wiimote insertion:" << devices_.size() << std::endl;
+    	                 wiimote.SetMotionSensingMode(CWiimote::ON);
 
     	               }
     	               catch(std::exception& e)  //gotta catch em all

@@ -18,13 +18,13 @@ namespace orxonox
 		  //orxout(user_warning) << "pointer is not null, yay" << std::endl;
 		if (PWii->Poll())
 		{
-			CWiimote::EventTypes e = p->GetEvent();
+			//CWiimote::EventTypes e = p->GetEvent();
 			if(p->Buttons.isPressed(CButtons::BUTTON_A)||p->Buttons.isJustPressed(CButtons::BUTTON_A))
 				{
 					CommandExecutor::execute("fire 0", 0, 0);
 				}
 			Orientation o;
-			p->SetMotionSensingMode(CWiimote::ON);
+
 			p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
 			int x = (int)(500*(o.yaw-lastOrientation.yaw)/time.getDeltaTime());
 			int y = (int)((o.pitch-lastOrientation.pitch)/time.getDeltaTime());
