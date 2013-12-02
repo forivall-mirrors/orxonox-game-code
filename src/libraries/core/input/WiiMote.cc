@@ -22,15 +22,15 @@ namespace orxonox
 			Orientation o;
 			p->SetMotionSensingMode(CWiimote::ON);
 			p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
-			int x = (int)(1000*(o.yaw-lastOrientation.yaw)/time.getDeltaTime());
-			int y = (int)(1000*(o.pitch-lastOrientation.pitch)/time.getDeltaTime());
+			int x = (int)((o.yaw-lastOrientation.yaw)/time.getDeltaTime());
+			int y = (int)((o.pitch-lastOrientation.pitch)/time.getDeltaTime());
 			IntVector2 abs(0, 0);
 			IntVector2 rel(x, y);
 			IntVector2 clippingSize(1920, 1080);
 			lastOrientation.pitch = o.pitch;
 			lastOrientation.yaw = o.yaw;
 			orxout()<<x<<std::endl<<y<<std::endl;
-			if(x!=0 && y!=0)
+			if(x!=0 || y!=0)
 			{
 				for (unsigned int i = 0; i < inputStates_.size(); ++i)
 								inputStates_[i]->mouseMoved(abs, rel, clippingSize);
