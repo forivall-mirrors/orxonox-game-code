@@ -74,18 +74,12 @@ namespace orxonox
         	.createOverlayElement("Panel", "HUDRadar_mapDreiDFront_" + getUniqueNumberString()));
         this->map3DFront_->setMaterialName("Orxonox/Radar3DFront");
         this->overlay_->add2D(this->map3DFront_);
-        //this->map3DFront_->_setDimensions(0.17f, 0.17f);
-        //this->map3DFront_->_setPosition(1.0, 1.0);
-        //this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 10);
         this->map3DFront_->hide();
 
         this->map3DBack_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
         	.createOverlayElement("Panel", "HUDRadar_mapDreiDBack_" + getUniqueNumberString()));
         this->map3DBack_->setMaterialName("Orxonox/Radar3DBack");
         this->overlay_->add2D(this->map3DBack_);
-        //this->map3DBack_->_setDimensions(0.17f, 0.17f);
-        //this->map3DBack_->_setPosition(1.0, 1.0);
-        //this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 10);
         this->map3DBack_->hide();
 
     }
@@ -198,14 +192,17 @@ namespace orxonox
         if(RadarMode_)
         {
         	this->setBackgroundMaterial(material3D_);
+        	this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 10);
+        	this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 10);
         	this->map3DFront_->show();
         	this->map3DBack_->show();
         }
         else
+        {
         	this->setBackgroundMaterial(material2D_);
         	this->map3DFront_->hide();
         	this->map3DBack_->hide();
-
+        }
 
         for( it = this->radarObjects_.begin(); it != this->radarObjects_.end(); ++it )
         {
