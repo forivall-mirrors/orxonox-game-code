@@ -28,6 +28,7 @@ namespace orxonox
 			p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
 			int x = (int)(500*(o.yaw-lastOrientation.yaw)/time.getDeltaTime()); //get difference in orientation, divide by time to make faster movements result in faster orientation change
 			int y = (int)((o.pitch-lastOrientation.pitch)/time.getDeltaTime());
+			orxout()<<time.getDeltaTime()<<std::endl;
 			IntVector2 abs(0, 0);
 			IntVector2 rel(x, y);
 			IntVector2 clippingSize(1920, 1080);
@@ -39,8 +40,6 @@ namespace orxonox
 				for (unsigned int i = 0; i < inputStates_.size(); ++i)
 								inputStates_[i]->mouseMoved(abs, rel, clippingSize); 	//pass random mouse movements to all input states
 			}
-		//}
-
 
 	}
 	void WiiMote::clearBuffers()
@@ -58,7 +57,6 @@ namespace orxonox
 		lastOrientation.yaw = 0;
 		lastOrientation.roll = 0;
 		lastOrientation.pitch = 0;
-
 
 	}
 }
