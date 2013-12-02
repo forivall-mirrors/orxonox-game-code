@@ -70,7 +70,7 @@
       </collisionShapes>
     </StaticEntity>
 
-   <!-- Docking (Andocken) -->
+<!-- Docking  -->
     <Dock position="2830,20,50" roll=0 yaw=0 >
         <animations>
             <MoveToDockingTarget target="destroyer" />
@@ -82,6 +82,10 @@
             <execute>
                 <EventListener event="dockMe" />
             </execute>
+
+	    <undocking>
+		<EventListener event="undockMe" />
+	    </undocking>
 	
             <activity>
                 <EventListener event=notGameEnd />
@@ -92,31 +96,16 @@
             <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
                 beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
             />
+
+	    <Billboard position="-2730,-19970,50" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+	    <DistanceTrigger position="-2730,-19970,50" distance="50" target="Pawn"
+                beaconMode="identify" targetname="bcnDestroyer" name="undockMe"
+            />
         </attached>
 
     </Dock>
-
-
-	
-
     
-    <!--SpaceShip
-        template            = "spaceshipcollateraldamage"
-        team                = "0"
-        position            = "2890,-40,6"
-        orientation         = "-0.14, 0.68, 0.68, 0.223"
-        lookat              = "0,0,0"
-        roll                = "180"
-        name                = "collateralDamage"
-        radarname           = "Collateral Damage" >
-      <attached>
-        <DockingTarget name="spaceShip" />
-        <DistanceTriggerBeacon name="bcnDestroyer" />
-        <DockingTarget name="destroyer" />
-      </attached>
-    </SpaceShip-->
-    
-<FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-1900,0" >
+<FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-19900,0" >
       <attached>
         <DockingTarget name="spaceShip" />
         <DistanceTriggerBeacon name="bcnDestroyer" />
@@ -126,36 +115,18 @@
 
 <!-- Wuerfel -->
 
-  <StaticEntity position="0,-2000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
+  <StaticEntity position="0,-20000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
       <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="66,15,5" />
-        
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="80,80,5" />
       </attached>
       <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="330,330,10" />
+        <BoxCollisionShape position="0,0,0" halfExtents="400,400,25" />
       </collisionShapes>
   </StaticEntity>
 
 <!-- Schwerkraftfeld -->
 
-<ForceField position="2500,-92000,2500" mode="sphere" diameter="184000" velocity="-5000" />
-<ForceField position="2500,-92000,-2500" mode="sphere" diameter="184000" velocity="-5000" />
-<ForceField position="-2500,-92000,2500" mode="sphere" diameter="184000" velocity="-5000" />
-<ForceField position="-2500,-92000,-2500" mode="sphere" diameter="184000" velocity="-5000" />
-
-<!-- Ausgang - Trigger -->
-
-<Billboard position="150,-1950,150" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
-
-<DistanceTrigger name="ausgang" position="100,-1950,100"  target="Pawn" distance=50 stayActive="false" delay=0 />
-    <Script code="undock" onLoad="false">
-        <events>
-            <trigger>
-                <EventListener event=ausgang />
-            </trigger>
-        </events>
-    </Script>
-
+<ForceField position="0,-20000,0" mode="homogen" diameter="2000" forcedirection = "0,-400,0" />
 
 <!-- Rest -->
 
