@@ -42,7 +42,7 @@ namespace orxonox
 {
     RegisterClass(BigExplosion);
 
-    BigExplosion::BigExplosion(Context* context) : StaticEntity(context)
+    BigExplosion::BigExplosion(Context* context) : MobileEntity(context)
     {
         RegisterObject(BigExplosion);
 
@@ -99,7 +99,7 @@ namespace orxonox
         this->debris3_->setSyncMode(0);
         this->debris4_->setSyncMode(0);
 
-        this->explosion_ = new StaticEntity(this->getContext());
+        this->explosion_ = new MobileEntity(this->getContext());
         this->explosion_->setSyncMode(0);
 
         this->debrisSmoke1_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);

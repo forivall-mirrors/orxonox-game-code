@@ -86,10 +86,12 @@ namespace orxonox
         if (player == NULL)
             return;
 
-        InvaderEnemy* newPawn = new InvaderEnemy(this->center_->getContext());
-        newPawn->addTemplate("enemyinvader");
-
-        newPawn->setPosition(player->getPosition() + Vector3(1000, 0, 0)); // BUG: 
+        for (int i = 0; i < level; i++)
+        {
+            SmartPtr<InvaderEnemy> newPawn = new InvaderEnemy(this->center_->getContext());
+            newPawn->addTemplate("enemyinvader");
+            newPawn->setPosition(player->getPosition() + Vector3(500 + 100 * i, 0, 0));
+        }
     }
 
     void Invader::comboControll()

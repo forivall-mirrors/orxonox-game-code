@@ -366,6 +366,7 @@ namespace orxonox
 
         BigExplosion* chunk = new BigExplosion(this->getContext());
         chunk->setPosition(this->getPosition());
+        chunk->setVelocity(this->getVelocity());
 
     }
     void Pawn::deatheffect()

@@ -66,7 +66,7 @@ namespace orxonox
             int getLevel(){return this->level;}
             int getPoints(){return this->point;}
 
-            void costLife(){lives--; if (lives == 0) orxout() << "end<<<<<<<<<<<<<<<<<" << endl;};
+            void costLife(){lives--; if (lives <= 0) end();};
             void levelUp(){level++;}
             void addPoints(int numPoints){point += numPoints * multiplier; b_combo = true;}
             void comboControll();

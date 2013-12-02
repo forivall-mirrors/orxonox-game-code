@@ -21,7 +21,7 @@
  *
  *   Author:
  *      Benjamin de Capitani
- *   Co-authors:
+ *   Co-authors:§
  *      ...
  *
  */
@@ -32,11 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "tools/Timer.h"
-#include "StaticEntity.h"
+#include "MobileEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport BigExplosion : public StaticEntity
+    class _OrxonoxExport BigExplosion : public MobileEntity
     {
         public:
             BigExplosion(Context* context);
@@ -59,7 +59,7 @@ namespace orxonox
 
             bool                  bStop_;
 
-            StaticEntity*         explosion_;
+            MobileEntity*         explosion_;
 
             MovableEntity*        debrisEntity1_;
             MovableEntity*        debrisEntity2_;

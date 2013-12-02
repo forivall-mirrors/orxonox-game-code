@@ -47,14 +47,14 @@ namespace orxonox
 
     void InvaderEnemy::tick(float dt)
     {
+        setVelocity(Vector3(500 ,0, 0));
         SUPER(InvaderEnemy, tick, dt);
     }
 
     inline bool InvaderEnemy::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        orxout() << "sadsadasfasf" << endl;
+        setVelocity(Vector3(900,0,0));
         removeHealth(2000);
-        setVelocity(Vector3(0,0,1000));
         return false;
     }
 
