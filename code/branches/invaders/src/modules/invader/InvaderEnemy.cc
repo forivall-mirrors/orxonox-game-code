@@ -55,7 +55,7 @@ namespace orxonox
         }
         if (player != NULL)
         {
-            float newZ = abs(getPosition().x - player->getPosition().x) * (player->getPosition().z - getPosition().z);
+            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01, 2) + 1) * (player->getPosition().z - getPosition().z);
             // if (newZ < 0)
             //     newZ = (-100 < newZ)?-100:newZ;
             // else
