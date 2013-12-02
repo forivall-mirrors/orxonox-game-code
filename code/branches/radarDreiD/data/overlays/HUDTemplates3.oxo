@@ -125,19 +125,20 @@
    
   
     <HUDRadar
-     name          = "Radar"
-     background    = "Orxonox/Radar3D"
-     material2D    = "Orxonox/Radar"
-     material3Dmiddle    = "Orxonox/Radar3D"
-     correctaspect = true
-     size          = "0.17, 0.17"
-     position      = "1.0, 1.0"
-     pickpoint     = "1.0, 1.0"
-     rotation      = 0
-     sensitivity   = 1.0
-     halfDotSizeDistance = 3000
-     maximumDotSize = 0.1
-     maximumDotSize3D      = 0.07
+     name          			= "Radar"
+     background    			= "Orxonox/Radar3D"
+     material2D    			= "Orxonox/Radar"
+     material3Dmiddle   	= "Orxonox/Radar3D"
+     correctaspect 			= true
+     size          			= "0.17, 0.17"
+     position      			= "1.0, 1.0"
+     pickpoint     			= "1.0, 1.0"
+     rotation      			= 0
+     sensitivity   			= 1.0
+     halfDotSizeDistance 	= 3000
+     maximumDotSize 		= 0.1
+     maximumDotSize3D      	= 0.07
+     mapAngle3D   			= 0.6435011
     />
     
 

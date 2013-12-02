@@ -79,6 +79,10 @@ namespace orxonox
         // used also by RadarListener interface!
         void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
 
+        // Determines angle between line of sight and x/z-plain on the 3D minimap
+        float getMapAngle() const { return this->mapAngle_; }
+        void setMapAngle(float mapAngle) { this->mapAngle_ = mapAngle; }
+
         // RadarListener interface
         virtual void addObject(RadarViewable* viewable);
         virtual void removeObject(RadarViewable* viewable);
@@ -100,6 +104,7 @@ namespace orxonox
         float halfDotSizeDistance_;
         float maximumDotSize_;
         float maximumDotSize3D_;
+        float mapAngle_;
 
         std::string material2D_;
         std::string material3D_;

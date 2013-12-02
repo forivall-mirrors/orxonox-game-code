@@ -101,6 +101,7 @@ namespace orxonox
         XMLPortParam(HUDRadar, "maximumDotSize3D", setMaximumDotSize3D, getMaximumDotSize3D, xmlelement, mode);
         XMLPortParam(HUDRadar, "Material2D", set2DMaterial, get2DMaterial, xmlelement, mode);
         XMLPortParam(HUDRadar, "Material3Dmiddle", set3DMaterial, get3DMaterial, xmlelement, mode);
+        XMLPortParam(HUDRadar, "mapAngle3D", setMapAngle, getMapAngle, xmlelement, mode);
 
 
     }
@@ -210,7 +211,7 @@ namespace orxonox
             	coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
 
             	// set zOrder on screen
-            	bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011);
+            	bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), this->mapAngle_);
 
             	if(overXZPlain == false && (it->second->getZOrder() >  100 * this->overlay_->getZOrder())) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
             		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 1);
