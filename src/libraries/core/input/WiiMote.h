@@ -8,8 +8,6 @@
 
 namespace orxonox
 {
-
-	class CommandExecutor;
 	struct Orientation
     {
     	float roll, pitch, yaw;
@@ -41,6 +39,5 @@ namespace orxonox
 	         void test(int x, int y);
 	         CWiimote * p;
 	         CWii * PWii; //parent "wii" the wiimote is registered to
-	         CommandExecutor * CE;
 	};
 };
