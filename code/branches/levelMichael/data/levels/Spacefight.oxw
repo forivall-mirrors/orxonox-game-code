@@ -3,10 +3,10 @@
 <!--
 To Do:
 - Different Colors of the light!
-- visibility of light only for a little time
 - If possible, do the spion with DistanceTriggerBeacon
 - More health for spacestations
 -->
+
 <LevelInfo
  name = "Spacefight"
  description = "Level with the big Spacefight"
@@ -64,7 +64,8 @@ To Do:
 
 <!-- SPAWNTRIGGER -->
 
-<!-- Spawntrigger -->    
+<!-- Spawntrigger -->
+	<!-- StartPoint -->  
 	<SpawnPoint team=0 position="0, 0, 0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
           <events>
             <activity>
@@ -81,11 +82,20 @@ To Do:
           </events>
 	</EventTrigger>
 
-
+	<!-- Second Spawnpoint (after first guard) -->
 	<SpawnPoint team=0 position="13500, 2500, 10500" lookat="18000,5000,18000" spawnclass=SpaceShip pawndesign=spaceshipswallow delay=0.1><!-- pawndesign=spaceshipcollateraldamage -->
 	  <events>
             <activity>
               <EventListener event="flying1" />
+            </activity>
+          </events> -->
+        </SpawnPoint>
+	
+	<!-- Thirth Spawnpoint (when reached Captain Hood) -->
+	<SpawnPoint team=0 position="-4000, -18000, 19000" lookat="-12000, -22000, 25000" spawnclass=SpaceShip pawndesign=spaceshipswallow delay=0.1><!-- pawndesign=spaceshipcollateraldamage -->
+	  <events>
+            <activity>
+              <EventListener event="reached" />
             </activity>
           </events> -->
         </SpawnPoint>
@@ -242,10 +252,18 @@ To Do:
 		</events>
 	</SimpleNotification>
 
+	<EventTrigger name="flying1delay" activations="1" stayactive="true" delay=0.1 >
+	  <events>
+	    <trigger>
+	      <EventListener event="flying1" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
 	<SimpleNotification message="The blinking light shows you the way!"  broadcast="true" >
 		<events>
 			<trigger>
-				<EventListener event="flying1" />
+				<EventListener event="flying1delay" />
 			</trigger>
 		</events>
 	</SimpleNotification>
@@ -315,10 +333,18 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<SimpleNotification message="before he reachs the light!"  broadcast="true" delay=5.0 >
+	<EventTrigger name="flying2delay" activations="1" stayactive="true" delay=0.1 >
+	  <events>
+	    <trigger>
+	      <EventListener event="flying2" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="Before he reachs the light!"  broadcast="true" >
 		<events>
 			<trigger>
-				<EventListener event="flying2" />
+				<EventListener event="flying2delay" />
 			</trigger>
 		</events>
 	</SimpleNotification>
@@ -482,21 +508,10 @@ To Do:
 			</events>
 		</EventTrigger>
 	</DistanceTrigger>
-	
-	<!-- Helper-Trigger for the Escape-Quest -->
-	<DistanceTrigger name="escape10" position="18000,5000,21000" target="SpaceShip" distance=10000 stayActive="true" delay=0.1 >
-		<EventTrigger>
-			<events>
-        			<trigger>
-        				<EventListener event="guard2trigger1" />
-        			</trigger>
-        		</events>
-		</EventTrigger>
-	</DistanceTrigger>
 
 	<!-- DistanceTrigger for spion -->
-	<DistanceTrigger name="spionTrigger" position="15000,4000,19000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
-	<SimpleNotification message="spion is arrived!"  broadcast="true">
+	<DistanceTrigger name="spionTrigger" position="0,-10000,42000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+	<SimpleNotification message="Scout is arrived!"  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="spionTrigger" />
@@ -514,27 +529,7 @@ To Do:
 		</events>
 	</SimpleNotification>	
 
-	<!-- Helper-Trigger for mainship -->
-	<DistanceTrigger name="flying3" position="11000, 3000, 21000" target="SpaceShip" distance=1000 stayActive="true" delay=0.1 />
-	<SimpleNotification message="Mainship sighted!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="flying3" />
-			</trigger>
-		</events>
-	</SimpleNotification>
-
 	<!-- If spion destroyed -->
-	<DistanceTrigger name="destroyed" position="8500,-3000,32000" target="SpaceShip" distance=100000 stayActive="true" delay=0.1 >
-		<EventTrigger>
-			<events>
-				<trigger>
-					<EventListener event="spion" />
-				</trigger>
-			</events>
-		</EventTrigger>
-	</DistanceTrigger>
-
 	<SimpleNotification message="Scout destroyed!"  broadcast="true">
 		<events>
 			<trigger>
@@ -571,6 +566,16 @@ To Do:
 		<events>
 			<trigger>
 				<EventListener event="spion5delay2" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<!-- Trigger for Monologue from Captain Hood --> 
+	<DistanceTrigger name="discuss" position="-4000, -18000, 19000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+	<SimpleNotification message="Look, there is the mainship!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="discuss" />
 			</trigger>
 		</events>
 	</SimpleNotification>
@@ -643,8 +648,6 @@ To Do:
         </EventTrigger>
       </EventTrigger>
     </EventTrigger>
-
-
 
 <!-- For Escape -->
 	<EventTrigger name="spion5" activations="1" stayactive="true" delay=0.1 >
@@ -926,7 +929,7 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-        <Model mesh="cube.mesh" scale=100 position="-7000,-10000,42000" /> <!-- "-7000,-10000,42000" -->
+        <Model mesh="cube.mesh" scale=100 position="0,-10000,42000" />
         <Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
@@ -936,7 +939,7 @@ To Do:
       </events>
     </WaypointController>
   </controller>
-<!--
+<!--  Should be realized, if possible...
   <attached>
     <DistanceTriggerBeacon name="spionBeacon" />
   </attached>
@@ -947,7 +950,7 @@ To Do:
 <SpaceShip position="-12000, -22000, 26000" lookat="-12000, -21300, 25700" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+      <EventListener event="guard2trigger4" />
     </visibility>
   </events>
   <templates>
@@ -967,7 +970,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+	  <EventListener event="guard2trigger4" />
 	</activity>
       </events>
     </WaypointPatrolController>
@@ -977,7 +980,7 @@ To Do:
 <SpaceShip position="-12000, -21000, 25000" lookat="-12000, -21300, 24300" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+      <EventListener event="guard2trigger4" />
     </visibility>
   </events>
   <templates>
@@ -997,7 +1000,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+	  <EventListener event="guard2trigger4" />
 	</activity>
       </events>
     </WaypointPatrolController>
@@ -1007,7 +1010,7 @@ To Do:
 <SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22700, 24300" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+      <EventListener event="guard2trigger4" />
     </visibility>
   </events>
   <templates>
@@ -1027,7 +1030,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+	  <EventListener event="guard2trigger4" />
 	</activity>
       </events>
     </WaypointPatrolController>
@@ -1037,7 +1040,7 @@ To Do:
 <SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22700, 25700" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+      <EventListener event="guard2trigger4" />
     </visibility>
   </events>
   <templates>
@@ -1057,7 +1060,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="guard2trigger4" /> <!-- "guard2trigger4" -->
+	  <EventListener event="guard2trigger4" />
 	</activity>
       </events>
     </WaypointPatrolController>
@@ -1068,7 +1071,7 @@ To Do:
 <SpaceShip position="-11700, -21700, 25000" lookat="-11000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="escaped" /> <!-- escaped -->
+      <EventListener event="spionTrigger" />
     </visibility>
   </events>
   <templates>
@@ -1088,7 +1091,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="escaped" /> <!-- escaped -->
+	  <EventListener event="spionTrigger" />
 	</activity>
       </events>
     </WaypointPatrolController>
@@ -1098,7 +1101,7 @@ To Do:
 <SpaceShip position="-12700, -22700, 25000" lookat="-13000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
-      <EventListener event="escaped" /> <!-- escaped -->
+      <EventListener event="spionTrigger" />
     </visibility>
   </events>
   <templates>
@@ -1118,7 +1121,7 @@ To Do:
       </waypoints>
       <events>
 	<activity>
-	  <EventListener event="escaped" /> <!-- escaped -->
+	  <EventListener event="spionTrigger" />
 	</activity>
       </events>
     </WaypointPatrolController>
@@ -1126,7 +1129,7 @@ To Do:
 </SpaceShip>
 
 <!-- FRIEND-SHIPS -->
-<SpaceShip position="8500, 2000, 17000" lookat="0, 0, 18000" name="friend" visible="true" radarname="Hood" >
+<SpaceShip position="8500, 2000, 17000" lookat="0, -1000, 18000" name="friend" visible="true" radarname="Hood" >
   <events>
     <visibility>
       <EventListener event="guard2trigger4" />
@@ -1138,7 +1141,8 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=0 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=100 position="0, -5000, 18000" />
+        <Model mesh="cube.mesh" scale=100 position="0, -1000, 18000" />
+	<Model mesh="cube.mesh" scale=100 position="-4000, -18000, 19000" />
 	<Model mesh="cube.mesh" scale=100 position="-11500, -22000, 25000" />
       </waypoints>
       <events>
@@ -1171,16 +1175,37 @@ To Do:
   </events>
 </BlinkingBillboard>
 
+<SimpleNotification message="Your friend, Captain Hood, is dead..."  broadcast="true">
+	<events>
+		<trigger>
+			<EventListener event="friend" />
+		</trigger>
+	</events>
+</SimpleNotification>
+
+<EventTrigger name="frienddelay" activations="1" stayactive="true" delay=5.0 >
+  <events>
+    <trigger>
+      <EventListener event="friend" />
+    </trigger>
+  </events>
+</EventTrigger>
+
+<SimpleNotification message="He died in a fight, like he wished it!"  broadcast="true">
+	<events>
+		<trigger>
+			<EventListener event="frienddelay" />
+		</trigger>
+	</events>
+</SimpleNotification>
 
 <!-- ----------------------------------------------------- -->
 
-    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
 
 <!-- ASTEROIDS & ASTEROID-FIELDS -->
-
 	<!-- Asteroids -->
-
 	<Model 	position="9800, -5000, 5700" 
 		yaw="90" 
 		pitch="-90" 
@@ -1206,38 +1231,37 @@ To Do:
 
 	<!-- other asteroid fileds -->
 
-		<!-- left before guard 1 -->	
+	<!-- left before guard 1 -->	
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidField(-5000, -5000, -20000, 20, 50, 10000, 200, 0)
+	?>
+
+	<!-- left behind guard 1 -->
+	<?lua
+		dofile("includes/asteroidField.lua")
+		asteroidField(20000, -10000, -12000, 30, 100, 10000, 200, 0)
+	?>
+
+	<!-- between guard 2 & mainship -->
+		<!-- Core -->	
 		<?lua
 			dofile("includes/asteroidField.lua")
-			asteroidField(-5000, -5000, -20000, 20, 50, 10000, 200, 0)
+			asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
 		?>
-
-		<!-- left behind guard 1 -->
-		<?lua
-			dofile("includes/asteroidField.lua")
-			asteroidField(20000, -10000, -12000, 30, 100, 10000, 200, 0)
-		?>
-
-		<!-- between guard 2 & mainship -->
-			<!-- Core -->	
-			<?lua
-				dofile("includes/asteroidField.lua")
-				asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
-			?>
 	
-			<!-- Peripherie -->
-			<?lua
-				dofile("includes/asteroidField.lua")
-				asteroidField(-5000, -10000, 30000, 10, 50, 10000, 100, 0)
-			?>
+		<!-- Peripherie -->
+		<?lua
+			dofile("includes/asteroidField.lua")
+			asteroidField(-5000, -10000, 30000, 10, 50, 10000, 100, 0)
+		?>
 
-			<?lua
-		      		dofile("includes/asteroidField.lua")
-				asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
-		    	?>
+		<?lua
+	      		dofile("includes/asteroidField.lua")
+			asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
+	    	?>
 
-<!-- PLANETS -->
-
+	<!-- PLANETS -->
   	<Planet 	position="2000,-250,9000" 
 			scale=5000 
 			pitch=1 
@@ -1255,7 +1279,6 @@ To Do:
 
 
 <!-- ----------------Rotating SpaceStation--------------- -->
-
 	<!-- first guard -->
 	<StaticEntity position="9000,0,0" collisionType=static yaw=112 pitch=67 >
 	  <attached>
@@ -1275,21 +1298,13 @@ To Do:
 	</StaticEntity>
 
 <!-- ------------------------- Mainship ------------------ -->
-    <Pawn team=1 health=50000 position="-12000, -22000, 25000" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Mainship" yaw=112 pitch=67>
-        <events>
-          <visibility>
-            <EventListener event=spawntrigger2 />
-          </visibility>
-        </events>
-        <attached>
-            	<?lua
-			createSpaceStationPar(0,2,1,2,1,4,1,50)
-		?>
-        </attached>
-        <collisionShapes>
-            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-        </collisionShapes>
-    </Pawn>
+	<StaticEntity position="-12000, -22000, 25000" collisionType=static yaw=112 pitch=67 >
+	  <attached>
+	    <?lua
+	      createSpaceStationPar(0,2,1,2,1,4,1,50)
+	    ?>
+	  </attached>
+	</StaticEntity>
 
   </Scene>
 </Level>
