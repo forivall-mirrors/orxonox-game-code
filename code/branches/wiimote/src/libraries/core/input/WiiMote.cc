@@ -13,21 +13,24 @@ namespace orxonox
 		if(p == NULL)
 	      exit(0);
 		else
-		  orxout(user_warning) << 'pointer is not null, yay' << std::endl;
-		CWiimote::EventTypes e = p->GetEvent();
-		if(p->Buttons.isPressed(CButtons::BUTTON_A))
-			orxout()<<"ZOMG!!1!"<<endl;
-		Orientation o;
-		p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
-		int x = (int)((o.yaw-lastOrientation.yaw)*time.getDeltaTime());
-		int y = (int)((o.pitch-lastOrientation.pitch)*time.getDeltaTime());
-		IntVector2 abs(0, 0);
-		IntVector2 rel(x, y);
-		IntVector2 clippingSize(1920, 1080);
-		if(x!=0&&y!=0)
+		  orxout(user_warning) << "pointer is not null, yay" << std::endl;
+		if (PWii->Poll())
 		{
-			for (unsigned int i = 0; i < inputStates_.size(); ++i)
-			                inputStates_[i]->mouseMoved(abs, rel, clippingSize);
+			CWiimote::EventTypes e = p->GetEvent();
+			if(p->Buttons.isPressed(CButtons::BUTTON_A))
+				orxout()<<"ZOMG!!1!"<<endl;
+			Orientation o;
+			p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
+			int x = (int)((o.yaw-lastOrientation.yaw)*time.getDeltaTime());
+			int y = (int)((o.pitch-lastOrientation.pitch)*time.getDeltaTime());
+			IntVector2 abs(0, 0);
+			IntVector2 rel(x, y);
+			IntVector2 clippingSize(1920, 1080);
+			if(x!=0&&y!=0)
+			{
+				for (unsigned int i = 0; i < inputStates_.size(); ++i)
+								inputStates_[i]->mouseMoved(abs, rel, clippingSize);
+			}
 		}
 
 
@@ -40,10 +43,10 @@ namespace orxonox
 	{
 
 	}
-	WiiMote::WiiMote(unsigned int id, CWiimote & parent)  : InputDevice(id)
+	WiiMote::WiiMote(unsigned int id, CWiimote & parent, CWii & parentWii)  : InputDevice(id)
 	{
 		p = &parent;
-
+		PWii = &parentWii;
 		lastOrientation.yaw = 0;
 		lastOrientation.roll = 0;
 		lastOrientation.pitch = 0;

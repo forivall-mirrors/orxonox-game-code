@@ -20,7 +20,7 @@ namespace orxonox
 
 	 public:
 			//! Only resets the members
-        	WiiMote(unsigned int id, CWiimote & parent);
+        	WiiMote(unsigned int id, CWiimote & parent, CWii & parentWii);
         	~WiiMote() { }
 	        //! Returns the device class (derived) name as string
 	        std::string getClassName() const {return deviceName;}
@@ -40,5 +40,6 @@ namespace orxonox
 	         static const std::string deviceName;
 	         void test(int x, int y);
 	         CWiimote * p;
+	         CWii * PWii; //parent "wii" the wiimote is registered to
 	};
 };
