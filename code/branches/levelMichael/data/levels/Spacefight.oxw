@@ -61,6 +61,24 @@ To Do:
   <?lua include("includes/pickups.oxi") ?>
 
  <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
+ <OverlayGroup name="spacefightHUD" scale = "1, 1">
+ <CountDown
+     position  = "0.49, 0.05"
+     pickpoint = "0.0, 0.0"
+     font      = "ShareTechMono"
+     textsize  = 0.06
+     colour    = "1.0, 1.0, 1.0, 1.0"
+     align     = "right"                  
+     counter   = "10.0"
+     active    = "false"
+  >
+      <events>
+          <activity>
+              <EventListener event="spawntrigger2" />
+          </activity>
+      </events>
+ </CountDown>
+ </OverlayGroup>
 
 <!-- SPAWNTRIGGER -->
 

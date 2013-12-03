@@ -79,6 +79,7 @@ namespace orxonox
     class AnnounceMessage;
     class BarColour;
     class ChatOverlay;
+    class CountDown;
     class DeathMessage;
     class GametypeFadingMessage;
     class GametypeStaticMessage;
