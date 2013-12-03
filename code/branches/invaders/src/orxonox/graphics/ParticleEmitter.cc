@@ -44,7 +44,7 @@ namespace orxonox
 {
     RegisterClass(ParticleEmitter);
 
-    ParticleEmitter::ParticleEmitter(Context* context) : StaticEntity(context)
+    ParticleEmitter::ParticleEmitter(Context* context) : MovableEntity(context)
     {
         RegisterObject(ParticleEmitter);
 
