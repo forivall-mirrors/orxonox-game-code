@@ -58,22 +58,22 @@ namespace orxonox
     {
         RegisterObject(Invader);
         this->center_ = 0;
-
-        this->console_addEnemy = createConsoleCommand( "spawnEnemy", createExecutor( createFunctor(&Invader::spawnEnemy, this) ) );
-        //this->context = context;
+        init();
         this->setHUDTemplate("InvaderHUD");
+    }
 
+    void Invader::init()
+    {
+        bEndGame = false;
         lives = 3;
+        // TODO:
         level = 1;
         point = 0;
         multiplier = 1;
         b_combo = false;
+        // spawn enemy every 2 seconds
         enemySpawnTimer.setTimer(2.0f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
         comboTimer.setTimer(2.5f, true, createExecutor(createFunctor(&Invader::comboControll, this)));
-    }
-
-    Invader::~Invader()
-    {
     }
 
     void Invader::spawnEnemy()
@@ -93,6 +93,7 @@ namespace orxonox
             newPawn->addTemplate("enemyinvader");
             newPawn->setPlayer(player);
             newPawn->level = level;
+            // spawn enemy at random points in front of player.
             newPawn->setPosition(player->getPosition() + Vector3(500 + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
         }
     }
@@ -100,29 +101,25 @@ namespace orxonox
     void Invader::costLife()
     {
         lives--;
-        multiplier = 0;
-        if (lives <= 0) end();
+        multiplier = 1;
+        // end the game in 30 seconds.
+        if (lives <= 0)
+            enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&Invader::end, this)));
     };
 
     void Invader::comboControll()
     {
         if (b_combo)
             multiplier++;
+        // if no combo was performed before, reset multiplier
         else
             multiplier = 1;
         b_combo = false;
     }
 
-    // inject custom player controller
- /**   void Invader::spawnPlayer(PlayerInfo* player)
-    {
-        assert(player);
-
-        //player->startControl(new InvaderShip(this->center_->getContext() ) );
-    }*/
-
     void Invader::start()
     {
+        init();
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = true;
 
@@ -136,10 +133,13 @@ namespace orxonox
         Deathmatch::start();
     }
 
+
     void Invader::end()
     {
-        orxout() << "STOP THE GAME, CHEATER!!!" << endl;
-        // Call end for the parent class.
-        // Deathmatch::end();
+        // DON'T CALL THIS!
+        //      Deathmatch::end();
+        // It will misteriously crash the game!
+        // Instead startMainMenu, this won't crash.
+        GSLevel::startMainMenu();
     }
 }

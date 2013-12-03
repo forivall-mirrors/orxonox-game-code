@@ -46,10 +46,6 @@ namespace orxonox
         this->bShowMultiplier_ = false;
     }
 
-    InvaderHUDinfo::~InvaderHUDinfo()
-    {
-    }
-
     void InvaderHUDinfo::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(InvaderHUDinfo, XMLPort, xmlelement, mode);
@@ -74,22 +70,45 @@ namespace orxonox
             else if(this->bShowLevel_)
             {
                 const std::string& Level = multi_cast<std::string>(this->InvaderGame->getLevel());
-                this->setCaption(Level);
+                if (this->InvaderGame->lives <= 0)
+                {
+                    setPosition(Vector2(0.1, 0.65));
+                    this->setCaption("Game ends in 30 seconds.\nPress (e)xit / (q)uit to go to the main menu.\nTo restart press space.");
+                    setTextSize(0.05);
+                    this->InvaderGame->bEndGame = true;
+                }
+                else
+                {
+                    setTextSize(0.04);
+                    setPosition(Vector2(0.14, 0.055));
+                    this->setCaption(Level);
+                }
             }
             else if(this->bShowPoints_)
             {
                 const std::string& points = multi_cast<std::string>(this->InvaderGame->getPoints());
                 if (this->InvaderGame->lives <= 0)
                 {
-                    setTextSize(0.1);
-                    setPosition(Vector2(0.2, 0.5));
+                    setTextSize(0.2);
+                    setPosition(Vector2(0.1, 0.25));
+                    this->setCaption("Final score:\n" + points);
+                    this->setColour(ColourValue(1, 0, 0, 1));
                 }
-                this->setCaption(points);
+                else
+                {
+                    setTextSize(0.04);
+                    setPosition(Vector2(0.14, 0.1));
+                    this->setColour(ColourValue(1, 1, 1, 1));
+                    this->setCaption(points);
+                }
             }
             else if(this->bShowMultiplier_)
             {
-                const std::string& Multiplier = multi_cast<std::string>(this->InvaderGame->getMultiplier());
+                int mult = this->InvaderGame->getMultiplier();
+                const std::string& Multiplier = "X " + multi_cast<std::string>(mult);
                 this->setCaption(Multiplier);
+                this->setColour(ColourValue(1, 0, 0, clamp(float(mult * 0.1), 0.0f, 1.0f)));
+                this->setTextSize(clamp(float(mult * 0.1), 0.0f, 1.0f) * 0.01 + 0.04);
             }
         }
     }

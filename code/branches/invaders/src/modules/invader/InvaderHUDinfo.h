@@ -38,7 +38,6 @@ namespace orxonox
     {
         public:
             InvaderHUDinfo(Context* context);
-            virtual ~InvaderHUDinfo();
 
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

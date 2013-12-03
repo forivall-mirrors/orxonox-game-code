@@ -44,27 +44,27 @@ namespace orxonox
     class _InvaderExport InvaderShip : public SpaceShip
     {
         public:
-            InvaderShip(Context* context); //!< Constructor. Registers and initializes the object.
-            virtual ~InvaderShip() {}
+            InvaderShip(Context* context);
 
             virtual void tick(float dt);
 
+            // overwrite for 2d movement
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);
 
-            virtual void boost(bool bBoost); // Starts or stops fireing
+            // Starts or stops fireing
+            virtual void boost(bool bBoost);
 
             //no rotation!
             virtual void rotateYaw(const Vector2& value){}; 
             virtual void rotatePitch(const Vector2& value){};
-            virtual void rotateRoll(const Vector2& value){};
+            //return to main menu if game has ended.
+            virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
 
             virtual void updateLevel();
 
-            // *InvaderShip getShip(){return this;}
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
         private:
-
             WeakPtr<Invader> getGame();
             WeakPtr<Invader> game;
             Camera* camera;

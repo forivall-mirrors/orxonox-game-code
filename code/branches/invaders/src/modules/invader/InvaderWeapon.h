@@ -41,14 +41,6 @@
 
 namespace orxonox
 {
-
-    /**
-    @brief
-        Shoots laser beams.
-    @author
-        Hagen Seifert
-    @ingroup WeaponsHsW01s
-    */
     class _InvaderExport InvaderWeapon : public HsW01
     {
         public:

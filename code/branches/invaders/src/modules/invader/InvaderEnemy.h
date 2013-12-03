@@ -44,7 +44,6 @@ namespace orxonox
     {
         public:
             InvaderEnemy(Context* context);
-            // virtual ~InvaderEnemy() {}
 
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);

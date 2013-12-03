@@ -60,8 +60,6 @@ namespace orxonox
 
     void InvaderWeapon::shot()
     {
-        // orxout(internal_error) << "shotttttt" << endl;
-
         assert( this->getWeapon() && this->getWeapon()->getWeaponPack() && this->getWeapon()->getWeaponPack()->getWeaponSystem() && this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn() );
 
         // Create the projectile.
@@ -73,9 +71,11 @@ namespace orxonox
         model->setScale(5);
 
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
-        projectile->setOrientation(Quaternion(sqrt(0.5),0,sqrt(0.5),0)); //this->getMuzzleOrientation()   Quaternion::IDENTITY
+        // only shoot in foreward direction
+        projectile->setOrientation(Quaternion(sqrt(0.5),0,sqrt(0.5),0));
         projectile->setPosition(this->getMuzzlePosition());
-        projectile->setVelocity(Vector3(1, 0, 0) * 2000); //this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_
+        // only shoot in foreward direction
+        projectile->setVelocity(Vector3(1, 0, 0) * 2000);
 
         projectile->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());

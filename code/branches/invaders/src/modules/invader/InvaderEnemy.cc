@@ -49,17 +49,13 @@ namespace orxonox
     void InvaderEnemy::tick(float dt)
     {
         lifetime += dt;
+        // die after 5 seconds.
         if (lifetime > 5000)
-        {
             removeHealth(2000);
-        }
+
         if (player != NULL)
         {
             float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01, 2) + 1) * (player->getPosition().z - getPosition().z);
-            // if (newZ < 0)
-            //     newZ = (-100 < newZ)?-100:newZ;
-            // else
-            //     newZ = (100 > newZ)?100:newZ;
             setVelocity(Vector3(1000 - level * 100 , 0, newZ));
         }
         SUPER(InvaderEnemy, tick, dt);
@@ -67,8 +63,8 @@ namespace orxonox
 
     inline bool InvaderEnemy::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        // setVelocity(Vector3(1500,0,0));
-        removeHealth(2000);
+        if(orxonox_cast<Pawn*>(otherObject))
+            removeHealth(2000);
         return false;
     }
 
@@ -86,6 +82,6 @@ namespace orxonox
     {
         if (getGame())
             getGame()->addPoints(42);
-        // SUPER(InvaderEnemy, damage, damage, healthdamage, shielddamage, originator);
+        Pawn::damage(damage, healthdamage, shielddamage, originator);
     }
 }

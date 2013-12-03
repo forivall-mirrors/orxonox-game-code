@@ -147,6 +147,8 @@ namespace orxonox
         this->debrisEntity3_->attach(debris3_);
         this->debrisEntity4_->attach(debris4_);
 
+        // particleSpawner is a static entity. It should probably be dynamic, for better explosions.
+        // effect->SetVelocity(this->getVelocity() + Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10,100))
         ParticleSpawner* effect = new ParticleSpawner(this->getContext());
         effect->setDestroyAfterLife(true);
         effect->setSource("Orxonox/explosion2b");

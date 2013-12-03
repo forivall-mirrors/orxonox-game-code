@@ -44,15 +44,13 @@ namespace orxonox
     class _InvaderExport InvaderCenterPoint : public StaticEntity
     {
         public:
-            InvaderCenterPoint(Context* context); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Invader.
-            virtual ~InvaderCenterPoint() {}
+            InvaderCenterPoint(Context* context); //checks whether the gametype is actually Invader.
 
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method to create a PongCenterpoint through XML.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void changedGametype(); //!< Is called when the gametype has changed.
         private:
-            void checkGametype(); //!< Checks whether the gametype is Pong and if it is, sets its centerpoint.
+            void checkGametype();
 
     };
 }

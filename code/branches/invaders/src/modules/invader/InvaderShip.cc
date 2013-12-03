@@ -41,10 +41,6 @@ namespace orxonox
 {
     RegisterClass(InvaderShip);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     InvaderShip::InvaderShip(Context* context) : SpaceShip(context)
     {
         RegisterObject(InvaderShip);
@@ -77,10 +73,10 @@ namespace orxonox
                 velocity.y = 0;
             if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)
                 velocity.x = 0;
-            // this->setVelocity(Vector3(1000 + velocity.y, 0, velocity.x));
             pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
         }
 
+        // shoot!
         if (isFireing)
             ControllableEntity::fire(0);
 
@@ -90,19 +86,13 @@ namespace orxonox
         {
             camera->setPosition(Vector3(-pos.z, -posforeward, 0));
             camera->setOrientation(Vector3::UNIT_Z, Degree(90));
-            // orxout() << "asbhajskjasjahg" << pos << endl;
         }
 
 
 
         // bring back on track!
-        // if (pos.z > 42*2.5)
-        //     pos.z = 42*2.5;
-        // else if (pos.z < -42*3)
-        //     pos.z = -42*3;
         if(pos.y != 0)
             pos.y = 0;
-            
 
         setPosition(pos);
         setOrientation(Vector3::UNIT_Y, Degree(270));
@@ -121,12 +111,7 @@ namespace orxonox
     {
         lastTime = 0;
         if (getGame())
-        {
             getGame()->levelUp();
-            // SmartPtr<Invader> game = orxonox_cast<Invader>(getGametype());
-            
-        }
-        //level++
     }
 
     void InvaderShip::moveFrontBack(const Vector2& value)
@@ -143,26 +128,26 @@ namespace orxonox
     void InvaderShip::boost(bool bBoost)
     {
         isFireing = bBoost;
+        // restart if game ended
+        if (getGame())
+            if (getGame()->bEndGame)
+                getGame()->start();
     }
     inline bool InvaderShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         // orxout() << "touch!!! " << endl; //<< otherObject << " at " << contactPoint;
-
         WeakPtr<InvaderEnemy> enemy = orxonox_cast<InvaderEnemy*>(otherObject);
+        // ensure that this gets only called once per enemy.
         if (enemy != NULL && lastEnemy != enemy)
         {
             lastEnemy = enemy;
-            orxout() << "Enemy!!!! " << endl;
+
             removeHealth(20);
-            if (getHealth() <= 0)
+            if (getGame())
             {
-                orxout() << "DIED!!!! " << endl;
-                if (getGame())
-                {
-                    getGame()->costLife();
-                    // SmartPtr<Invader> game = orxonox_cast<Invader>(getGametype());
-                    
-                }
+                getGame()->multiplier = 1;
+                if (getHealth() <= 0)
+                    getGame()->costLife();                    
             }
             return false;
         }

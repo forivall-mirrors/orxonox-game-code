@@ -41,10 +41,6 @@ namespace orxonox
 {
     RegisterClass(InvaderCenterPoint);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object and checks whether the gametype is actually Invader.
-    */
     InvaderCenterPoint::InvaderCenterPoint(Context* context) : StaticEntity(context)
     {
         RegisterObject(InvaderCenterPoint);
@@ -52,22 +48,11 @@ namespace orxonox
         this->checkGametype();
     }
 
-    /**
-    @brief
-        Method to create a InvaderCenterPoint through XML.
-    */
     void InvaderCenterPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(InvaderCenterPoint, XMLPort, xmlelement, mode);
-
-//        XMLPortParam(InvaderCenterPoint, "dimension", setFieldDimension, getFieldDimension, xmlelement, mode);
-
     }
 
-    /**
-    @brief
-        Is called when the gametype has changed.
-    */
     void InvaderCenterPoint::changedGametype()
     {
         SUPER(InvaderCenterPoint, changedGametype);
@@ -76,10 +61,6 @@ namespace orxonox
         this->checkGametype();
     }
 
-    /**
-    @brief
-        Checks whether the gametype is Invader and if it is, sets its centerpoint.
-    */
     void InvaderCenterPoint::checkGametype()
     {
         if (this->getGametype() != NULL && this->getGametype()->isA(Class(Invader)))

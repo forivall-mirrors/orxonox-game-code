@@ -6,13 +6,13 @@
    spawnparticleduration  = 3
    explosionchunks        = 4
 
-   health            = 100
-   maxhealth         = 100
-   initialhealth     = 100
+   health            = 10
+   maxhealth         = 10
+   initialhealth     = 10
 
-   shieldhealth        = 35
-   initialshieldhealth = 35
-   maxshieldhealth     = 60
+   shieldhealth        = 10
+   initialshieldhealth = 10
+   maxshieldhealth     = 10
    shieldabsorption    = 0.9
    reloadrate          = 1
    reloadwaittime      = 1

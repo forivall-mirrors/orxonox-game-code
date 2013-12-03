@@ -28,7 +28,7 @@
 
 /**
     @file Invader.h
-    @brief Declaration of the Invader class.
+    @brief Gametype.
     @ingroup Invader
 */
 
@@ -49,13 +49,10 @@ namespace orxonox
     class _InvaderExport Invader : public Deathmatch
     {
         public:
-            Invader(Context* context); //!< Constructor. Registers and initializes the object.
-            virtual ~Invader(); //!< Destructor. Cleans up, if initialized.
+            Invader(Context* context);
 
-            virtual void start(); //!< Starts the Invader minigame.
-            virtual void end(); ///!< Ends the Invader minigame.
-
-            //virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
+            virtual void start();
+            virtual void end();
 
             void spawnEnemy();
 
@@ -70,20 +67,22 @@ namespace orxonox
             void costLife();
             void levelUp(){level++;}
             void addPoints(int numPoints){point += numPoints * multiplier; b_combo = true;}
+            // checks if multiplier should be reset.
             void comboControll();
+            void init();
             int lives;
+            int multiplier;
+            bool bEndGame;
         private:
             WeakPtr<InvaderCenterPoint> center_;
             WeakPtr<InvaderShip> player;
 
-            ConsoleCommand* console_addEnemy;
             Timer enemySpawnTimer;
             Timer comboTimer;
             //Context* context;
             int level;
             int point;
             bool b_combo;
-            int multiplier;
     };
 }
 
