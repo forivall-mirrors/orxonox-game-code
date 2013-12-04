@@ -41,8 +41,8 @@
     enablecollisiondamage = true
   >
     <engines>
-      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipescortengine />
-      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipescortengine />
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipinvaderengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipinvaderengine />
     </engines>
     <attached>
       <Model position="0,0,0" yaw=90 pitch=0 roll=0 scale=4 mesh="escortShip.mesh" />
@@ -75,7 +75,7 @@
   </InvaderShip>
 </Template>
 
-<Template name=spaceshipescortengine baseclass=MultiStateEngine>
+<Template name=spaceshipinvaderengine baseclass=MultiStateEngine>
   <MultiStateEngine
    boostfactor    = 2.2
 
