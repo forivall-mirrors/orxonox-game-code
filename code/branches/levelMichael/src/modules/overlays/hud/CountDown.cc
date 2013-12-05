@@ -34,14 +34,15 @@
         @code
         <OverlayGroup name="spacefightHUD" scale = "1, 1">
           <CountDown
-              position  = "0.49, 0.05"
-              pickpoint = "0.0, 0.0"
-              font      = "ShareTechMono"
-              textsize  = 0.06
-              colour    = "1.0, 1.0, 1.0, 1.0"
-              align     = "right"                  
-              counter   = "10.0"
-              active    = "false"
+              position    = "0.49, 0.05"
+              pickpoint   = "0.0, 0.0"
+              font        = "ShareTechMono"
+              textsize    = 0.06
+              colour      = "1.0, 1.0, 1.0, 1.0"
+              align       = "right"                  
+              counter     = "10.0"
+              speedfactor = "1.0"
+              active      = "false"
            >
             <events>
               <activity>
@@ -81,6 +82,7 @@ namespace orxonox
     {
         SUPER(CountDown, XMLPort, xmlelement, mode);
         XMLPortParam(CountDown, "counter", setCounter, getCounter, xmlelement, mode).defaultValues(10);
+        XMLPortParam(CountDown, "speedfactor", setSpeed, getSpeed, xmlelement, mode).defaultValues(1);
     }
     
     void CountDown::tick(float dt)
@@ -96,7 +98,7 @@ namespace orxonox
             }
             else
             {
-                this->counter_ -= dt;
+                this->counter_ -= dt*speed_;
                 this->setCaption(multi_cast<std::string>((int)this->counter_)); //TODO: evtl. initialize with +0.5f
             }
         }

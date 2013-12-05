@@ -51,11 +51,17 @@ namespace orxonox
                 { this->counter_ = value + 0.99f; }
             inline float getCounter() const
                 { return this->counter_; }
+            inline void setSpeed(float value)
+                { this->speed_ = value; }
+            inline float getSpeed() const
+                { return this->speed_; }
+                
         protected:
 
         private:
             PlayerInfo* owner_;
             float counter_;
+            float speed_;
             bool hasStopped_;
     };
 }
