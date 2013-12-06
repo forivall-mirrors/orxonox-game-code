@@ -51,7 +51,7 @@ namespace orxonox
             virtual void setPlayer(WeakPtr<InvaderShip> player){this->player = player;}
 
             int level;
-        private:
+        protected:
             WeakPtr<Invader> getGame();
             WeakPtr<Invader> game;
             WeakPtr<InvaderShip> player;

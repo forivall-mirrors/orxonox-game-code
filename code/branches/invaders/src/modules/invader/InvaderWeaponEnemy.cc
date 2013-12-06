@@ -22,34 +22,34 @@
  *   Author:
  *      Florian Zinggeler
  *   Co-authors:
- *      ...
+ *      --
  *
  */
 
 /**
-    @file InvaderWeapon.h
-    @brief Definition of the InvaderWeapon class.
+    @file InvaderWeaponEnemy.h
+    @brief Implementation of the InvaderWeaponEnemy class.
 */
 
-#ifndef _InvaderWeapon_H__
-#define _InvaderWeapon_H__
-
-#include "weapons/weaponmodes/HsW01.h"
-#include "weapons/WeaponsPrereqs.h"
-
-#include "tools/Timer.h"
+#include "InvaderWeaponEnemy.h"
 
 namespace orxonox
 {
-    class _InvaderExport InvaderWeapon : public HsW01
+    RegisterClass(InvaderWeaponEnemy);
+
+    InvaderWeaponEnemy::InvaderWeaponEnemy(Context* context) : InvaderWeapon(context)
     {
-        public:
-            InvaderWeapon(Context* context);
-            virtual ~InvaderWeapon();
-        protected:
-            virtual void shot();
-            WeakPtr<Projectile> projectile;
-    };
+        RegisterObject(InvaderWeaponEnemy);
+    }
+
+    void InvaderWeaponEnemy::shot()
+    {
+    	InvaderWeapon::shot();
+        // SUPER(InvaderWeaponEnemy, shot);
+        // only shoot in foreward direction
+        projectile->setVelocity(Vector3(1, 0, 0) * -500);
+        // projectile->setOrientation(Quaternion(sqrt(0.5),0,sqrt(0.5),0));
+    }
 }
 
-#endif /* _InvaderWeapon_H__ */
+

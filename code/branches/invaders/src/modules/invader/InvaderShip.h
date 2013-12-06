@@ -38,6 +38,7 @@
 
 #include "worldentities/pawns/SpaceShip.h"
 #include "graphics/Camera.h"
+#include "weapons/projectiles/Projectile.h"
 
 namespace orxonox
 {
@@ -64,6 +65,9 @@ namespace orxonox
             virtual void updateLevel();
 
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+
+        protected:
+            virtual void death();
         private:
             WeakPtr<Invader> getGame();
             WeakPtr<Invader> game;
@@ -78,6 +82,7 @@ namespace orxonox
             } velocity, desiredVelocity;
 
             WeakPtr<InvaderEnemy> lastEnemy;
+            WeakPtr<Projectile> lastShot;
 
     };
 }

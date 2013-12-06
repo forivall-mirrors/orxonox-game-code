@@ -65,20 +65,24 @@ namespace orxonox
             int getMultiplier(){return this->multiplier;}
 
             void costLife();
-            void levelUp(){level++;}
-            void addPoints(int numPoints){point += numPoints * multiplier; b_combo = true;}
+            void levelUp();
+            void addPoints(int numPoints);
             // checks if multiplier should be reset.
             void comboControll();
             void init();
             int lives;
             int multiplier;
             bool bEndGame;
+            bool bShowLevel;
         private:
+            void toggleShowLevel(){bShowLevel = !bShowLevel;}
+            WeakPtr<InvaderShip> getPlayer();
             WeakPtr<InvaderCenterPoint> center_;
             WeakPtr<InvaderShip> player;
 
             Timer enemySpawnTimer;
             Timer comboTimer;
+            Timer showLevelTimer;
             //Context* context;
             int level;
             int point;

@@ -47,8 +47,10 @@
 #include "InvaderCenterPoint.h"
 #include "InvaderShip.h"
 #include "InvaderEnemy.h"
+#include "InvaderEnemyShooter.h"
 
 #include "core/command/ConsoleCommand.h"
+#include "worldentities/BigExplosion.h"
 
 namespace orxonox
 {
@@ -69,28 +71,61 @@ namespace orxonox
         // TODO:
         level = 1;
         point = 0;
+        bShowLevel = false;
         multiplier = 1;
         b_combo = false;
-        // spawn enemy every 2 seconds
-        enemySpawnTimer.setTimer(2.0f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
-        comboTimer.setTimer(2.5f, true, createExecutor(createFunctor(&Invader::comboControll, this)));
+        // spawn enemy every 3.5 seconds
+        enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
+        comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&Invader::comboControll, this)));
     }
 
-    void Invader::spawnEnemy()
+    void Invader::levelUp()
+    {
+        level++;
+        if (getPlayer() != NULL)
+        {   
+            for (int i = 0; i < 7; i++)
+            {
+                WeakPtr<BigExplosion> chunk = new BigExplosion(this->center_->getContext());
+                chunk->setPosition(Vector3(600, 0, 100 * i - 300));
+                chunk->setVelocity(Vector3(1000, 0, 0));  //player->getVelocity()
+                chunk->setScale(20);
+            }
+        }
+        addPoints(multiplier * 42);
+        multiplier *= 2;
+        toggleShowLevel();
+        showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&Invader::toggleShowLevel, this)));
+    }
+
+    WeakPtr<InvaderShip> Invader::getPlayer()
     {
         if (player == NULL)
         {
             for (ObjectList<InvaderShip>::iterator it = ObjectList<InvaderShip>::begin(); it != ObjectList<InvaderShip>::end(); ++it)
                 player = *it;
         }
-        if (player == NULL)
-            return;
+        return player;
+    }
 
+    void Invader::spawnEnemy()
+    {
+        if (getPlayer() == NULL)
+            return;
         srand(player->getPosition().x + player->getPosition().y);
-        for (int i = 0; i < level * 2; i++)
+        for (int i = 0; i < (3*log(level) + 1); i++)
         {
-            WeakPtr<InvaderEnemy> newPawn = new InvaderEnemy(this->center_->getContext());
-            newPawn->addTemplate("enemyinvader");
+            WeakPtr<InvaderEnemy> newPawn;
+            if (rand() % 42/(1 + level*level) == 0)
+            {
+                newPawn = new InvaderEnemyShooter(this->center_->getContext());
+                newPawn->addTemplate("enemyinvadershooter");
+            }
+            else
+            {
+                newPawn = new InvaderEnemy(this->center_->getContext());
+                newPawn->addTemplate("enemyinvader");
+            }
             newPawn->setPlayer(player);
             newPawn->level = level;
             // spawn enemy at random points in front of player.
@@ -132,7 +167,14 @@ namespace orxonox
         // Call start for the parent class.
         Deathmatch::start();
     }
-
+    void Invader::addPoints(int numPoints)
+    {
+        if (!bEndGame)
+        {
+            point += numPoints * multiplier;
+            b_combo = true;
+        }
+    }
 
     void Invader::end()
     {

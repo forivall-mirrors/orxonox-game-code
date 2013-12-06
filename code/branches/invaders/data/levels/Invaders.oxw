@@ -1,10 +1,9 @@
 <LevelInfo
  name = "Orxonox Arcade"
- description = "Arcade shooter. Maximise your points!!!"
+ description = "2D Arcade shooter. Maximise your points!!!\nTip: try to keep the multiplier high by avoiding shots and enemies."
  tags = "minigame"
  screenshot = "emptylevel.png"
 />
-<!-- include("HUDTemplates3.oxo") -->
 <?lua
   include("stats.oxo")
   include("templates/lodInformation.oxt")
@@ -15,6 +14,7 @@
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipInvader.oxt")
   include("templates/enemyInvader.oxt")
+  include("templates/enemyInvaderShooter.oxt")
   include("overlays/InvaderHUD.oxo")
 ?>
 

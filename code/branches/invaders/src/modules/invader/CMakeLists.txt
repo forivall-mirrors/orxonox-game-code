@@ -4,7 +4,9 @@ BUILD_UNIT InvaderBuildUnit.cc
   InvaderCenterPoint.cc
   InvaderShip.cc
   InvaderEnemy.cc
+  InvaderEnemyShooter.cc
   InvaderWeapon.cc
+  InvaderWeaponEnemy.cc
   InvaderHUDinfo.cc
 END_BUILD_UNIT
 )

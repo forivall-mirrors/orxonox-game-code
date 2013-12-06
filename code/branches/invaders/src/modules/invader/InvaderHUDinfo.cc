@@ -77,6 +77,14 @@ namespace orxonox
                     setTextSize(0.05);
                     this->InvaderGame->bEndGame = true;
                 }
+                else if (this->InvaderGame->bShowLevel)
+                {
+                    setTextSize(0.1);
+                    setPosition(Vector2(0.3, 0.55));
+                    std::stringstream sstm;
+                    sstm << "Level " << Level;
+                    this->setCaption(sstm.str()); // + level
+                }
                 else
                 {
                     setTextSize(0.04);

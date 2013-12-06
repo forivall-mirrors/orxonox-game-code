@@ -137,6 +137,7 @@ namespace orxonox
     {
         // orxout() << "touch!!! " << endl; //<< otherObject << " at " << contactPoint;
         WeakPtr<InvaderEnemy> enemy = orxonox_cast<InvaderEnemy*>(otherObject);
+        WeakPtr<Projectile> shot = orxonox_cast<Projectile*>(otherObject);
         // ensure that this gets only called once per enemy.
         if (enemy != NULL && lastEnemy != enemy)
         {
@@ -145,11 +146,20 @@ namespace orxonox
             removeHealth(20);
             if (getGame())
             {
-                getGame()->multiplier = 1;
-                if (getHealth() <= 0)
-                    getGame()->costLife();                    
+                getGame()->multiplier = 1;                   
             }
-            return false;
+        }
+        // was shot, decrease multiplier
+        else if (shot != NULL  && lastShot != shot)
+        {
+            if (getGame() && orxonox_cast<InvaderEnemy*>(shot->getShooter()) != NULL)
+            {
+                if (getGame()->multiplier > 1)
+                {
+                    lastShot = shot;
+                    getGame()->multiplier -= 1;     
+                }
+            }
         }
         return false;
         // SUPER(InvaderShip, collidesAgainst, otherObject, contactPoint);
@@ -163,5 +173,11 @@ namespace orxonox
                 game = *it;
         }
         return game;
+    }
+
+    void InvaderShip::death()
+    {
+        getGame()->costLife();
+        SpaceShip::death();
     }
 }

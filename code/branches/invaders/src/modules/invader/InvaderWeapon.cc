@@ -62,9 +62,9 @@ namespace orxonox
     {
         assert( this->getWeapon() && this->getWeapon()->getWeaponPack() && this->getWeapon()->getWeaponPack()->getWeaponSystem() && this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn() );
 
-        // Create the projectile.
-        Projectile* projectile = new Projectile(this->getContext());
-        Model* model = new Model(projectile->getContext());
+        // Create the projectile.projectile
+        projectile = new Projectile(this->getContext());
+        WeakPtr<Model> model = new Model(projectile->getContext());
         model->setMeshSource(mesh_);
         model->setCastShadows(false);
         projectile->attach(model);

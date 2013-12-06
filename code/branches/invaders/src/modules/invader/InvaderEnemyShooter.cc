@@ -27,61 +27,53 @@
  */
 
 /**
-    @file InvaderEnemy.h
-    @brief Declaration of the InvaderEnemy class.
+    @file InvaderEnemyShooter.h
+    @brief Declaration of the InvaderEnemyShooter class.
 */
 
 #include "invader/InvaderPrereqs.h"
-#include "InvaderEnemy.h"
-#include "InvaderShip.h"
+#include "InvaderEnemyShooter.h"
+// #include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
-    RegisterClass(InvaderEnemy);
+    RegisterClass(InvaderEnemyShooter);
 
-    InvaderEnemy::InvaderEnemy(Context* context) : Pawn(context)
+    InvaderEnemyShooter::InvaderEnemyShooter(Context* context) : InvaderEnemy(context)
     {
-        RegisterObject(InvaderEnemy);
+        RegisterObject(InvaderEnemyShooter);
         enableCollisionCallback();
         lifetime = 0;
+        // shoot every second
+        shootTimer.setTimer(1.0f, true, createExecutor(createFunctor(&InvaderEnemyShooter::shoot, this)));
     }
 
-    void InvaderEnemy::tick(float dt)
+    void InvaderEnemyShooter::tick(float dt)
     {
         lifetime += dt;
-        // die after 5 seconds.
-        if (lifetime > 5000)
+        // die after 20 seconds.
+        if (lifetime > 20000)
             removeHealth(2000);
 
         if (player != NULL)
         {
-            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01, 2) + 1) * (player->getPosition().z - getPosition().z);
-            setVelocity(Vector3(1000 - level * 100 , 0, newZ));
+            float distPlayer = player->getPosition().z - getPosition().z;
+            // orxout() << "i'm different!" << endl;
+            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01, 2) + 1) * distPlayer;
+            setVelocity(Vector3(950 - abs(distPlayer), 0, newZ));
         }
-        SUPER(InvaderEnemy, tick, dt);
+        Pawn::tick(dt);
     }
 
-    inline bool InvaderEnemy::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    void InvaderEnemyShooter::shoot()
     {
-        if(orxonox_cast<InvaderShip*>(otherObject))
-            removeHealth(2000);
-        return false;
+        ControllableEntity::fire(0);
     }
 
-    WeakPtr<Invader> InvaderEnemy::getGame()
-    {
-        if (game == NULL)
-        {
-            for (ObjectList<Invader>::iterator it = ObjectList<Invader>::begin(); it != ObjectList<Invader>::end(); ++it)
-                game = *it;
-        }
-        return game;
-    }
-
-    void InvaderEnemy::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
+    void InvaderEnemyShooter::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         Pawn::damage(damage, healthdamage, shielddamage, originator);
         if (getGame() && orxonox_cast<InvaderShip*>(originator) != NULL && getHealth() <= 0)
-            getGame()->addPoints(42);
+            getGame()->addPoints(3*42);
     }
 }

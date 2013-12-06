@@ -27,29 +27,32 @@
  */
 
 /**
-    @file InvaderWeapon.h
-    @brief Definition of the InvaderWeapon class.
+    @file InvaderEnemyShooter.h
+    @brief Declaration of the InvaderEnemyShooter class.
 */
 
-#ifndef _InvaderWeapon_H__
-#define _InvaderWeapon_H__
+#ifndef _InvaderEnemyShooter_H__
+#define _InvaderEnemyShooter_H__
 
-#include "weapons/weaponmodes/HsW01.h"
-#include "weapons/WeaponsPrereqs.h"
+#include "invader/InvaderPrereqs.h"
 
+#include "invader/InvaderEnemy.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _InvaderExport InvaderWeapon : public HsW01
+    class _InvaderExport InvaderEnemyShooter : public InvaderEnemy
     {
         public:
-            InvaderWeapon(Context* context);
-            virtual ~InvaderWeapon();
+            InvaderEnemyShooter(Context* context);
+
+            virtual void tick(float dt);
+            virtual void damage(float damage, float healthdamage, float shielddamage, Pawn* originator);
         protected:
-            virtual void shot();
-            WeakPtr<Projectile> projectile;
+            void shoot();
+            Timer shootTimer;
+
     };
 }
 
-#endif /* _InvaderWeapon_H__ */
+#endif /* _InvaderEnemyShooter_H__ */

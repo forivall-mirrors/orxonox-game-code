@@ -71,7 +71,9 @@ namespace orxonox
     class InvaderCenterPoint;
     class InvaderShip;
     class InvaderEnemy;
+    class InvaderEnemyShooter;
     class InvaderWeapon;
+    class InvaderWeaponEnemy;
     class InvaderHUDinfo;
 }
 
