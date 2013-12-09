@@ -70,7 +70,16 @@ namespace orxonox
             if(dist_y + posforeward > -42*3 && dist_y + posforeward < 42*6)
                 posforeward += dist_y;
             else
+            {
                 velocity.y = 0;
+                // restart if game ended
+                if (getGame())
+                    if (getGame()->bEndGame)
+                    {
+                        getGame()->start();
+                        return;
+                    }
+            }
             if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)
                 velocity.x = 0;
             pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
@@ -128,10 +137,6 @@ namespace orxonox
     void InvaderShip::boost(bool bBoost)
     {
         isFireing = bBoost;
-        // restart if game ended
-        if (getGame())
-            if (getGame()->bEndGame)
-                getGame()->start();
     }
     inline bool InvaderShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {

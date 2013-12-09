@@ -73,7 +73,7 @@ namespace orxonox
                 if (this->InvaderGame->lives <= 0)
                 {
                     setPosition(Vector2(0.1, 0.65));
-                    this->setCaption("Game ends in 30 seconds.\nPress (e)xit / (q)uit to go to the main menu.\nTo restart press space.");
+                    this->setCaption("Game ends in 30 seconds.\nPress (e)xit / (q)uit to go to the main menu.\nTo restart fly out of the screen!");
                     setTextSize(0.05);
                     this->InvaderGame->bEndGame = true;
                 }
