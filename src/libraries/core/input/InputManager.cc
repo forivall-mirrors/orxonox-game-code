@@ -254,18 +254,18 @@ namespace orxonox
     	       CWiimote::LED_3, CWiimote::LED_4};
     	    wiimote.SetLEDs(LED_MAP[index]);
     	    try
-    	               {
-    	                 orxout()<< "Size of devices vector before wiimote insertion:" << devices_.size() << std::endl;
-    	                 devices_.push_back(new WiiMote((unsigned int)devices_.size(), *i, wii));
-    	                 //devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
-    	                 orxout()<< "Size of devices vector after wiimote insertion:" << devices_.size() << std::endl;
-    	                 wiimote.SetMotionSensingMode(CWiimote::ON);
+		   {
+			 orxout()<< "Size of devices vector before wiimote insertion:" << devices_.size() << std::endl;
+			 devices_.push_back(new WiiMote((unsigned int)devices_.size(), *i, wii));
+			 //devices_[2] = new WiiMote(devices_.size(), *(new CWiimote()));
+			 orxout()<< "Size of devices vector after wiimote insertion:" << devices_.size() << std::endl;
+			 wiimote.SetMotionSensingMode(CWiimote::ON);
 
-    	               }
-    	               catch(std::exception& e)  //gotta catch em all
-    	               {
-    	                 orxout()<<"Exception loading WiiMote!!!1!11!";
-    	               }
+		   }
+		   catch(std::exception& e)  //gotta catch em all
+		   {
+			 orxout()<<"Exception loading WiiMote!!!1!11!";
+		   }
 
 
 
@@ -431,14 +431,18 @@ namespace orxonox
                 bUpdateRequired = true;
             }
         }
+
         if (bUpdateRequired)
             updateActiveStates();
 
         // Capture all the input and collect the function calls
         // No event gets triggered here yet!
+
         BOOST_FOREACH(InputDevice* device, devices_)
-            if (device != NULL)
+            if (device != NULL || device->getDeviceID()!=2)
                 device->update(time);
+        devices_[2]->update(time);
+
 
         // Collect function calls for the update
         for (unsigned int i = 0; i < activeStatesTicked_.size(); ++i)
