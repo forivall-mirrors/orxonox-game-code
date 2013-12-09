@@ -2,13 +2,10 @@
 
 <!--
 To Do:
-- Bigger Way for guard 3 (sonst im Mainship)
-- Spawnpoint 3
+- guard3 vor mainship (hood-problem)
 - Discuss between Player and Captain Hood
-- Scout-way
-- Different Colors of the light!
 - If possible, do the spion with DistanceTriggerBeacon
-- Place the explosion right (time an place)
+- Place the explosion right (time and place)
 - also place the docking-Trigger
 - bigger explosion?
 - collisionShape for mainship
@@ -129,11 +126,24 @@ To Do:
           </events>
         </SpawnPoint>
 	
-	<!-- Thirth Spawnpoint (when reached Captain Hood) --
-	<SpawnPoint team=0 position="-4000, -18000, 19000" lookat="-12000, -22000, 25000" spawnclass=SpaceShip pawndesign=spaceshipswallow /> <!-- pawndesign=spaceshipcollateraldamage --
+	<!-- Thirth Spawnpoint (when reached Captain Hood) -->
+	<SpawnPoint team=0 position="-4000, -18000, 19000" lookat="-12000, -22000, 25000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
 	  <events>
             <activity>
-	      <EventListener event="reached" />
+	      <EventTrigger>
+		<EventTrigger invert=true >
+		  <events>
+		    <trigger>
+		      <EventListener event="timerEnd" />
+		    </trigger>
+		  </events>
+		</EventTrigger>
+		<events>
+		  <trigger>
+                    <EventListener event="reached" />
+		  </trigger>
+		</events>
+	      </EventTrigger>
             </activity>
           </events>
         </SpawnPoint>
@@ -207,7 +217,7 @@ To Do:
 		<complete-effects>
 			<AddQuest questId="spacefight.rescue" />
 			<!--
-			<BlinkingBillboard position="-12100, -22000, 25000" color="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
+			<BlinkingBillboard position="-12100, -22000, 25000" colour="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
 			--
 		</complete-effects>
 	</LocalQuest>
@@ -227,7 +237,7 @@ To Do:
 		<complete-effects>
 			<AddQuest questId="spacefight.rescue" />
 			<!--
-			<BlinkingBillboard position="-12100, -22000, 25000" color="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
+			<BlinkingBillboard position="-12100, -22000, 25000" colour="1.0,1.0,1.0" frequency=0.6 amplitude=2 material="Examples/Flare" visibility="true" />
 			--
 		</complete-effects>
 	</LocalQuest>
@@ -307,7 +317,7 @@ To Do:
 	</SimpleNotification>
 
 
-	<BlinkingBillboard position="11000, 1000, 7000" color="1.0, 1.0, 0.05" frequency=0.5 amplitude=10 material="Examples/Flare" >
+	<BlinkingBillboard position="11000, 1000, 7000" colour="1.0, 1.0, 0.05" frequency=0.5 amplitude=10 material="Examples/Flare" >
           <events>
             <visibility>
               <EventTrigger>
@@ -605,7 +615,17 @@ To Do:
 	</SimpleNotification>
 
 	<!-- DistanceTrigger for spion -->
-	<DistanceTrigger name="spionTrigger" position="15000, 1000, 25000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+	<Trigger name="spionTrigger" mode="and" stayActive="true">
+	  <DistanceTrigger position="15000, 1000, 25000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+          <EventTrigger activations="1" invert="true">
+            <events>
+              <trigger>
+                <EventListener event="spion5" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
 	<SimpleNotification message="Scout is arrived!"  broadcast="true">
 		<events>
 			<trigger>
@@ -630,7 +650,7 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<BlinkingBillboard position="15000, 1000, 25000" color="1.0, 1.0, 0.05" frequency=0.3 amplitude=7 material="Examples/Flare" >
+	<BlinkingBillboard position="15000, 1000, 25000" colour="1.0, 1.0, 0.05" frequency=0.3 amplitude=7 material="Examples/Flare" >
 	  <events>
 	    <visibility>
 	      <EventTrigger>
@@ -766,18 +786,115 @@ To Do:
 	</SimpleNotification>
 
 	<!-- End of Mainfight -->
-	<DistanceTrigger name="victory" position="-12000, -22000, 25000" target="SpaceShip" distance=10000 stayActive="true" delay=0.1 >
-		<EventTrigger>
-			<events>
-				<trigger>
-					<EventListener event="guard3trigger4" />
-				</trigger>
-			</events>
-		</EventTrigger>
-	</DistanceTrigger>
+        <Trigger name="victory1" mode="and" stayActive="true">
+	  <EventTrigger>
+	    <events>
+	      <trigger>
+		<EventListener event="guard3trigger4" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+          <EventTrigger activations="1" >
+            <events>
+              <trigger>
+                <EventListener event="spion5" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+        <Trigger name="victory2" mode="and" stayActive="true">
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+		<EventListener event="guard3trigger6" />
+	        </trigger>
+	    </events>
+	  </EventTrigger>
+          <EventTrigger activations="1" >
+            <events>
+              <trigger>
+                <EventListener event="spionTrigger" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+        <Trigger name="victory" mode="or" stayActive="true">
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+		<EventListener event="victory1" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	  <EventTrigger activations="1" >
+            <events>
+              <trigger>
+                <EventListener event="victory2" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+	<SimpleNotification message="YEEEHAAA! You managed it!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="victory" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="victoryDelay1" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="victory" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="For that you will get the golden medal of the united space armies."  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="victoryDelay1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="victoryDelay2" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="victoryDelay1" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="Now dock at the mainship and free the Commander!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="victoryDelay2" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="victoryDelay3" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="victoryDelay2" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="The light shows you the hatch"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="victoryDelay3" />
+			</trigger>
+		</events>
+	</SimpleNotification>
 
 	<!-- Rescue the commander -->
-	<BlinkingBillboard position="-11800, -22090, 24900" color="1.0, 1.0, 0.05" frequency=0.5 amplitude=5 material="Examples/Flare" >
+	<BlinkingBillboard position="-11800, -22090, 24900" colour="1.0, 1.0, 0.05" frequency=0.5 amplitude=5 material="Examples/Flare" >
 	  <events>
 	    <visibility>
 	      <EventTrigger>
@@ -806,23 +923,16 @@ To Do:
 			</trigger>
 		</events>
 	</SimpleNotification>
-
-    <EventTrigger name="dockdelay1" activations="1" stayactive="true" delay=5.1 >
-      <events>
-        <trigger>
-          <EventListener event="dock" />
-        </trigger>
-      </events>
-    </EventTrigger>
-
-    <EventTrigger name="dockdelay2" activations="1" stayactive="true" delay=5.1 >
-      <events>
-        <trigger>
-          <EventListener event="dock" />
-        </trigger>
-      </events>
-    </EventTrigger>
-
+	
+	<!-- TIMER-EVENTS -->
+	<EventTrigger name="dockdelay1" activations="1" stayactive="true" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="dock" />
+	    </trigger>
+	  </events>
+	</EventTrigger>	
+	
 	<SimpleNotification message="You have 10 seconds to move away..."  broadcast="true">
 		<events>
 			<trigger>
@@ -830,6 +940,14 @@ To Do:
 			</trigger>
 		</events>
 	</SimpleNotification>
+
+	<EventTrigger name="dockdelay2" activations="1" stayactive="true" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="dock" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
 
 	<SimpleNotification message="A bomb is placed in the mainship..."  broadcast="true">
 		<events>
@@ -839,8 +957,8 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<!-- TIMER-EVENTS -->
-    <EventTrigger name="timer1" activations="1" stayactive="true" delay=5.1 >
+
+    <EventTrigger name="timer1" activations="1" stayactive="true" delay=5 >
       <events>
         <trigger>
           <EventListener event="dockdelay2" />
@@ -864,10 +982,7 @@ To Do:
       </events>
     </EventTrigger>
 
-<!-- ----------------------------------------------------- -->
-
-<!-- EVENTTRIGGER -->
-    
+<!-- ----------------------------------------------------- -->    
 <!-- For Guard 1 -->
 <!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,4] -->
     <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
@@ -981,10 +1096,10 @@ To Do:
           </EventTrigger>
         </EventTrigger>
       </EventTrigger>
-    </EventTrigger>			
+    </EventTrigger>
 	
 <!-- ----------------------------------------------------- -->
-<!-- Passive Piraten: Guard 1 -->
+<!-- Passive Pirates: Guard 1 -->
 <SpaceShip position="8000,1000,0" lookat="-1,0,0" name="firstPatrol" radarname="Patrol">
   <events>
     <visibility>
@@ -1024,7 +1139,7 @@ To Do:
 </SpaceShip>
 
 
-<!-- Angreiffende Piraten: Guard 1 -->
+<!-- Active Pirates: Guard 1 -->
 <SpaceShip position="8000,-1000,1000" lookat="8000,1000,-1000" name="firstPatrol" visible="true" radarname="Patrol" >
   <events>
     <visibility>
@@ -1073,7 +1188,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<!-- Angreiffende Piraten: Guard 2 -->
+<!-- Active Pirates: Guard 2 -->
 <SpaceShip position="19000,5000,18000" lookat="19000,4900,21000" name="secondPatrol" visible="true" radarname="Patrol">
   <events>
     <visibility>
@@ -1209,7 +1324,6 @@ To Do:
       <waypoints>
 	<Model mesh="cube.mesh" scale=0 position="15000, 1000, 25000" />
         <Model mesh="cube.mesh" scale=0 position="0, -10000, 42000" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1226,7 +1340,7 @@ To Do:
 </SpaceShip>
 
 <!-- Mainship - Pirates -->
-<SpaceShip position="-12000, -22000, 26000" lookat="-12000, -21300, 25700" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -20000, 27000" lookat="-12000, -20000, 23000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event="guard2trigger4" />
@@ -1238,14 +1352,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -20000, 23000" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 27000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -20000, 27000" />
       </waypoints>
       <events>
 	<activity>
@@ -1256,7 +1366,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -21000, 25000" lookat="-12000, -21300, 24300" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -20000, 23000" lookat="-12000, -24000, 23000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event="guard2trigger4" />
@@ -1268,14 +1378,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 27000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -20000, 23000" />
       </waypoints>
       <events>
 	<activity>
@@ -1286,7 +1392,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -22000, 24000" lookat="-12000, -22700, 24300" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -24000, 23000" lookat="-12000, -24000, 23000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event="guard2trigger4" />
@@ -1298,14 +1404,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 27000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -20000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
       </waypoints>
       <events>
 	<activity>
@@ -1316,7 +1418,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12000, -23000, 25000" lookat="-12000, -22700, 25700" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-12000, -24000, 23000" lookat="-12000, -24000, 27000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event="guard2trigger4" />
@@ -1328,14 +1430,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 27000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -20000, 23000" />        
+	<Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -24000, 23000" />
       </waypoints>
       <events>
 	<activity>
@@ -1347,7 +1445,7 @@ To Do:
 </SpaceShip>
 
 <!-- Additional pirates if the spion has warned the mainship -->
-<SpaceShip position="-11700, -21700, 25000" lookat="-11000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-10000, -22000, 25000" lookat="-10000, -24000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event="spionTrigger" />
@@ -1359,14 +1457,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=0 position="-11000, -22000, 25000" />
-        <Model mesh="cube.mesh" scale=0 position="-11300, -22700, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12700, -22700, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-13000, -22000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12700, -21300, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-11300, -21300, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -24000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-14000, -24000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-14000, -20000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-10000, -20000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1377,7 +1471,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<SpaceShip position="-12700, -22700, 25000" lookat="-13000, -22000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
+<SpaceShip position="-14000, -22000, 25000" lookat="-14000, -20000, 25000" name="lastGuard" visible="true" radarname="Pirate" >
   <events>
     <visibility>
       <EventListener event="spionTrigger" />
@@ -1389,14 +1483,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=0 position="-13000, -22000, 25000" />
-        <Model mesh="cube.mesh" scale=0 position="-12700, -21300, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-11300, -21300, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-11000, -22000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-11300, -22700, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12700, -22700, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-14000, -20000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -20000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-10000, -24000, 25000" />
+	<Model mesh="cube.mesh" scale=0 position="-14000, -24000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1418,9 +1508,8 @@ To Do:
     <Template link=spaceshipswallow />
   </templates>
   <controller>
-    <WaypointPatrolController alertnessradius=2000 team=0 active=false>
+    <WaypointPatrolController alertnessradius=5000 team=0 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=0 position="0, -1000, 18000" />
 	<Model mesh="cube.mesh" scale=0 position="-4000, -18000, 19000" />
 	<Model mesh="cube.mesh" scale=0 position="-11500, -22000, 25000" />
       </waypoints>
@@ -1433,7 +1522,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<BlinkingBillboard position="10000, 2000, 17000" color="1.0, 1.0, 0.05" frequency=0.5 amplitude=20 material="Examples/Flare" >
+<BlinkingBillboard position="10000, 2000, 17000" colour="1.0, 1.0, 0.05" frequency=0.5 amplitude=20 material="Examples/Flare" >
   <events>
     <visibility>
       <EventTrigger>
@@ -1587,17 +1676,17 @@ To Do:
         radarname = "Mainship" 
 	visible	  = "true" >
       <controller>
-        <WaypointPatrolController alertnessradius=2000 team=0 active=false>
+        <WaypointController team=1 active="true" >
           <waypoints/>
           <events>
 	    <activity>
 	      <EventListener event=spawntrigger2 />
 	    </activity>
           </events>
-        </WaypointPatrolController>
+        </WaypointController>
       </controller>
       <attached>
-        <Model scale=250 mesh="drone.mesh" position = "0,0,0" lookat="40000, 4000, 27000" />
+        <Model scale=200 mesh="drone.mesh" position = "0,0,0" lookat="40000, 4000, 27000" />
    <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
         <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
         <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
