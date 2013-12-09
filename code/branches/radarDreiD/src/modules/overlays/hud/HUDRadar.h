@@ -58,10 +58,8 @@ namespace orxonox
         float getHalfDotSizeDistance() const { return this->halfDotSizeDistance_; }
         void setHalfDotSizeDistance(float distance) { this->halfDotSizeDistance_ = distance; }
 
-        void setDetectionLimit( float limit )
-        { this->detectionLimit_ = limit; }
-        float getDetectionLimit() const
-        { return this->detectionLimit_; }
+        void setDetectionLimit( float limit ) { this->detectionLimit_ = limit; }
+        float getDetectionLimit() const { return this->detectionLimit_; }
 
         float getMaximumDotSize() const { return this->maximumDotSize_; }
         void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }

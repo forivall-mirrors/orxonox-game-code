@@ -67,7 +67,6 @@ namespace orxonox
         this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.png";
         this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.png";
         this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.png";
-        this->setDetectionLimit( 10000.0f );
         this->owner_ = 0;
 
         this->map3DFront_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
@@ -120,9 +119,7 @@ namespace orxonox
         XMLPortParam(HUDRadar, "material3DFront", set3DMaterialFront, get3DMaterialFront, xmlelement, mode);
         XMLPortParam(HUDRadar, "material3DBack", set3DMaterialBack, get3DMaterialBack, xmlelement, mode);
         XMLPortParam(HUDRadar, "mapAngle3D", setMapAngle, getMapAngle, xmlelement, mode);
-
-
-
+        XMLPortParam(HUDRadar, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode);
     }
 
     void HUDRadar::addObject(RadarViewable* object)

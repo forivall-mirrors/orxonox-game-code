@@ -121,6 +121,7 @@
      rotation      			= 0
      sensitivity   			= 1.0
      halfDotSizeDistance 	= 3000
+     detectionLimit 		= 10000.0
      maximumDotSize 		= 0.1
      maximumDotSize3D      	= 0.06
      mapAngle3D   			= 0.6435011
