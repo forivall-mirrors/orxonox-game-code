@@ -28,6 +28,9 @@
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/skyBoxMoreNebula"
   >
+  
+  <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
+  
 
     <?lua math.randomseed(98) ?>
 

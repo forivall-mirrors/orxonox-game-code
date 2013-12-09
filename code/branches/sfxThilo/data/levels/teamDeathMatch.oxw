@@ -21,6 +21,8 @@
     <Template link=lodtemplate_default />
   </templates>
   <?lua include("includes/notifications.oxi") ?>
+  
+  <WorldAmbientSound source="Jupiter.ogg" looping="true" playOnLoad="true" />
 
   <Scene
    ambientlight = "0.7, 0.6, 0.6"

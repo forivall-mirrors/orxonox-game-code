@@ -26,6 +26,8 @@
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/skyBoxBasic"
   >
+  <WorldAmbientSound source="Nebula_metal.ogg" looping="true" playOnLoad="true" />
+  
 <!-- TODO:
 1. make collisionshapes bulletproof: -> attach movable entity with dynamic collisionshape within a static collisionshape 
 2. add forcefields -> there should be several "streams" through the level

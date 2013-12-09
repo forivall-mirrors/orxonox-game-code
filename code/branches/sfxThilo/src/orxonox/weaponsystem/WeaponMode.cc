@@ -78,6 +78,7 @@ namespace orxonox
         {
             this->defSndWpnFire_ = new WorldSound(this->getContext());
             this->defSndWpnFire_->setLooping(false);
+            this->defSndWpnFire_->setVolume(0.8f);
             this->bSoundAttached_ = false;
         }
         else

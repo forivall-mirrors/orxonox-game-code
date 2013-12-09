@@ -485,7 +485,7 @@
 
 
 <!-- SOUNDS & MUSIC -->
-            <WorldSound name="scoreSound" position="-920,0,0" source="sounds/ReadyGo.ogg" >
+            <WorldSound name="scoreSound" position="-920,0,0" source="sounds/Button.ogg" >
               <events>
                 <play>
                   <EventListener event="start" />

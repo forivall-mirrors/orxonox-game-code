@@ -32,9 +32,14 @@
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 #include "AmbientSound.h"
+#include "core/command/ConsoleCommand.h"
+#include <exception>
+
 
 namespace orxonox
 {
+	SetConsoleCommand("WorldAmbientSound", "nextsong",      &WorldAmbientSound::nextSong);
+
     RegisterClass(WorldAmbientSound);
 
     WorldAmbientSound::WorldAmbientSound(Context* context) : BaseObject(context), Synchronisable(context)
@@ -43,13 +48,23 @@ namespace orxonox
 
         this->ambientSound_ = new AmbientSound();
         this->registerVariables();
-    }
+        soundList_.push_back("Earth.ogg");
+        soundList_.push_back("Jupiter.ogg");
+        soundList_.push_back("Mars.ogg");
+        soundList_.push_back("allgorythm-lift_up.ogg");
+        soundList_.push_back("allgorythm-resonance_blaster.ogg");
+        soundList_.push_back("AlphaCentauri.ogg");
+        soundList_.push_back("Asteroid_rocks.ogg");
+        soundList_.push_back("Ganymede.ogg");
+        soundList_.push_back("luke_grey_-_hypermode.ogg");
 
+    }
     WorldAmbientSound::~WorldAmbientSound()
     {
         if (this->isInitialized())
         {
             this->ambientSound_->destroy();
+            WorldAmbientSound::soundList_.clear();
         }
     }
 
@@ -92,5 +107,19 @@ namespace orxonox
             this->ambientSound_->play();
         else
             this->ambientSound_->stop();
+    }
+
+    void WorldAmbientSound::nextSong()
+    {
+
+    	//HACK: Assuption - there is only one WorldAmbientSound in a level and only one level is used.
+    	for (ObjectList<WorldAmbientSound>::iterator it = ObjectList<WorldAmbientSound>::begin();
+    	     it != ObjectList<WorldAmbientSound>::end(); ++it)
+    	{
+    		while(it->ambientSound_->setAmbientSource(WorldAmbientSound::soundList_[WorldAmbientSound::soundNumber_]) == false){
+    			WorldAmbientSound::soundNumber_ = (WorldAmbientSound::soundNumber_ + 1) % WorldAmbientSound::soundList_.size();
+    		}
+    		WorldAmbientSound::soundNumber_ = (WorldAmbientSound::soundNumber_ + 1) % WorldAmbientSound::soundList_.size();
+    	}
     }
 }

@@ -10,6 +10,7 @@
   include("HUDTemplates3.oxo")
   include("templates/lodInformation.oxt")
 ?>
+<WorldAmbientSound source="Asteroid_rocks.ogg" looping="true" playOnLoad="true" />
 
 <?lua
   include("templates/spaceshipAssff.oxt")

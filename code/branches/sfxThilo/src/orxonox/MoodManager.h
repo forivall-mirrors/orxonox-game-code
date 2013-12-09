@@ -50,7 +50,7 @@ namespace orxonox
             virtual ~MoodListener() {}
 
         private:
-            virtual void moodChanged(const std::string& mood) = 0;
+            virtual bool moodChanged(const std::string& mood) = 0;
 
             static void changedMood(const std::string& mood);
     };

@@ -13,6 +13,8 @@
   include("templates/spaceshipAssff.oxt")
 
 ?>
+<WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
+
 
 <?lua
   include("templates/spaceshipAssff2.oxt")

@@ -9,6 +9,7 @@ TODO:
  screenshot = "surfaceRace.png"
  tags = "gametype"
 />
+<WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
 
 <?lua
   include("stats.oxo")

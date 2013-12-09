@@ -125,8 +125,12 @@ namespace orxonox
 
             static const float MAX_REL_Z_VELOCITY;
 
-            void setDefScoreSound(const std::string& engineSound); //Thilo
-            const std::string& getDefScoreSound(); //Thilo
+            void setDefScoreSound(const std::string& engineSound);
+            const std::string& getDefScoreSound();
+            void setDefBatSound(const std::string& engineSound);
+            const std::string& getDefBatSound();
+            void setDefBoundarySound(const std::string& engineSound);
+            const std::string& getDefBoundarySound();
 
         private:
             void registerVariables();
@@ -140,7 +144,9 @@ namespace orxonox
             bool bDeleteBats_; //!< Bool, to keep track, of whether this->bat_ exists or not.
             unsigned int* batID_; //!< The object IDs of the bats, to be able to synchronize them over the network.
             float relMercyOffset_; //!< Offset, that makes the player not loose, when, in all fairness, he would have.
-            WorldSound* defScoreSound_;//Thilo
+            WorldSound* defScoreSound_;
+            WorldSound* defBatSound_;
+            WorldSound* defBoundarySound_;
     };
 }
 
