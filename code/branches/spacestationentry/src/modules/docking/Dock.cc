@@ -84,41 +84,45 @@ namespace orxonox
 
     bool Dock::undocking(bool bTriggered, BaseObject* trigger)
     {
-    	// Noch lange nicht fertig (leich veraenderte Kopie von execute())
+
     	PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-    	        PlayerInfo* player = NULL;
+    	PlayerInfo* player = NULL;
 
-    	        // Check whether it is a player trigger and extract pawn from it
-    	        if(pTrigger != NULL)
-    	        {
-    	            if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
-    	                orxout(verbose, context::docking) << "Docking:execute PlayerTrigger was not triggered by a player.." << endl;
-    	                return false;
-    	            }
-    	            player = pTrigger->getTriggeringPlayer();
-    	        }
-    	        else
-    	        {
-    	            orxout(verbose, context::docking) << "Docking::execute Not a player trigger, can't extract pawn from it.." << endl;
-    	            return false;
-    	        }
-    	        if(player == NULL)
-    	        {
-    	            orxout(verbose, context::docking) << "Docking::execute Can't retrieve PlayerInfo from Trigger. (" << trigger->getIdentifier()->getName() << ")" << endl;
-    	            return false;
-    	        }
+    	// Check whether it is a player trigger and extract pawn from it
+    	if(pTrigger != NULL)
+    	{
+    	      if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+    	      orxout(verbose, context::docking) << "Docking:execute PlayerTrigger was not triggered by a player.." << endl;
+    	      return false;
+    	      }
+    	      player = pTrigger->getTriggeringPlayer();
+    	}
+    	else
+    	{
+    	      orxout(verbose, context::docking) << "Docking::execute Not a player trigger, can't extract pawn from it.." << endl;
+    	      return false;
+    	}
+    	if(player == NULL)
+    	{
+    	      orxout(verbose, context::docking) << "Docking::execute Can't retrieve PlayerInfo from Trigger. (" << trigger->getIdentifier()->getName() << ")" << endl;
+    	      return false;
+    	}
 
-    	        if(bTriggered)
-    	        {
-    	            cmdUndock();
-    	        }
-    	        else
-    	        {
-    	            // Remove player from candidates list
-    	            candidates_.erase(player);
-    	        }
+ 	    if(bTriggered)
+    	{
+    	      // Add player to this Docks candidates
+    	      candidates_.insert(player);
 
-    	        return true;
+    	      // Show docking dialog
+    	      this->showUndockingDialogHelper(player);
+    	}
+    	else
+    	{
+    	      // Remove player from candidates list
+    	      candidates_.erase(player);
+    	}
+
+    	return true;
     }
 
 
@@ -165,6 +169,23 @@ namespace orxonox
         return true;
     }
 
+
+    void Dock::showUndockingDialogHelper(PlayerInfo* player)
+        {
+            assert(player);
+
+            if(!player->isHumanPlayer())
+                return;
+
+            if(GameMode::isMaster())
+            {
+                if(GameMode::showsGraphics())
+                    GUIManager::showGUI("UndockingDialog");
+            }
+            else
+                callStaticNetworkFunction(Dock::showDockingDialog, player->getClientID());
+
+        }
 
     void Dock::showDockingDialogHelper(PlayerInfo* player)
     {
