@@ -28,11 +28,10 @@ namespace orxonox
 	        void clearBuffers();
 
 	 protected:
-	         void calibrationStarted() { }
-	         void calibrationStopped() { }
-	         Orientation lastOrientation;
-	         //! List of all input states that receive events from this device
-		 //std::vector<InputState*> inputStates_;
+	        void calibrationStarted() { }
+	        void calibrationStopped() { }
+	        Orientation lastOrientation;
+	        Orientation averageOrientation(Orientation o[], int l);
 
 	 private:
 	         static const std::string deviceName;

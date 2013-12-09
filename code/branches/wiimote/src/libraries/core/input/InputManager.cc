@@ -439,9 +439,9 @@ namespace orxonox
         // No event gets triggered here yet!
 
         BOOST_FOREACH(InputDevice* device, devices_)
-            if (device != NULL || device->getDeviceID()!=2)
+            if (device != NULL)
                 device->update(time);
-        devices_[2]->update(time);
+
 
 
         // Collect function calls for the update
