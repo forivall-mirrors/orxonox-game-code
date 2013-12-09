@@ -197,12 +197,9 @@ namespace orxonox
             @param mydirection My viewing direction
             @param myorthonormal My orthonormalvector (pointing upwards through my head)
             @param otherposition The position of the other object
-            @param mapangle The angle you look on the 3Dmap
+            @param mapangle The angle between line of sight on screen and the 3Dmap-x/z-plain in radian
             @param detectionlimit The limit in which objects are shown on the map
             @return The viewing direction
-
-            Examples:
-             -
     */
     orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
     {
@@ -236,7 +233,7 @@ namespace orxonox
                @param mydirection My viewing direction
                @param myorthonormal My orthonormalvector (pointing upwards through my head)
                @param otherposition The position of the other object
-               @param mapangle The angle you look on the 3Dmap
+               @param mapangle The angle you look on the 3Dmap in radian
                @return If distancevector to the other object has a positive y-coordinate
 
                Examples:
