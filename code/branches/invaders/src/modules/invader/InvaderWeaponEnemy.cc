@@ -47,7 +47,7 @@ namespace orxonox
     	InvaderWeapon::shot();
         // SUPER(InvaderWeaponEnemy, shot);
         // only shoot in foreward direction
-        projectile->setVelocity(Vector3(1, 0, 0) * -500);
+        projectile->setVelocity(Vector3(1, 0, 0) * 300);
         // projectile->setOrientation(Quaternion(sqrt(0.5),0,sqrt(0.5),0));
     }
 }

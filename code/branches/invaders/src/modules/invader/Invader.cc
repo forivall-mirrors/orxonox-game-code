@@ -68,7 +68,6 @@ namespace orxonox
     {
         bEndGame = false;
         lives = 3;
-        // TODO:
         level = 1;
         point = 0;
         bShowLevel = false;
@@ -113,7 +112,7 @@ namespace orxonox
         if (getPlayer() == NULL)
             return;
         srand(player->getPosition().x + player->getPosition().y);
-        for (int i = 0; i < (3*log(level) + 1); i++)
+        for (int i = 0; i < (3*log10(level) + 1); i++)
         {
             WeakPtr<InvaderEnemy> newPawn;
             if (rand() % 42/(1 + level*level) == 0)
