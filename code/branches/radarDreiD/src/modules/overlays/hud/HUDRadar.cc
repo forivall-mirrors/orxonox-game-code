@@ -192,8 +192,8 @@ namespace orxonox
         if(RadarMode_)
         {
         	this->setBackgroundMaterial(material3D_);
-        	this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 10);
-        	this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 10);
+        	this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 250); // it seems that the ZOrder of overlayelements is 100 times the ZOrder of the overlay
+        	this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 250); // 250 a little bit buffer so that the two shels are displayed all in the front / in the back
         	this->map3DFront_->show();
         	this->map3DBack_->show();
         }
@@ -234,10 +234,10 @@ namespace orxonox
             	// set zOrder on screen
             	bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), this->mapAngle_);
 
-            	if(overXZPlain == false && (it->second->getZOrder() >  100 * this->overlay_->getZOrder())) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
-            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 1);
-            	if(overXZPlain == true && (it->second->getZOrder() <= 100 * this->overlay_->getZOrder()))
-            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 1);
+            	if(overXZPlain == false /*&& (it->second->getZOrder() >  100 * this->overlay_->getZOrder())*/) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
+            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 70 + determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_));
+            	if(overXZPlain == true /*&& (it->second->getZOrder() <= 100 * this->overlay_->getZOrder())*/)
+            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 70 + determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_));
             }
             else
             	coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());

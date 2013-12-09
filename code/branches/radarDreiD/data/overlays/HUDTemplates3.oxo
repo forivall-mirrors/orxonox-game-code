@@ -107,24 +107,7 @@
      aimMarkerSize = 0.02
     />
 
-<!--
-    <HUDRadar
-     name          = "Radar"
-     background    = "Orxonox/Radar"
-     correctaspect = true
-     size          = "0.17, 0.17"
-     position      = "1.0, 1.0"
-     pickpoint     = "1.0, 1.0"
-     rotation      = 0
-     sensitivity   = 1.0
-     halfDotSizeDistance = 3000
-     maximumDotSize      = 0.1
-    />
-    -->
-   
-   
-  
-    <HUDRadar
+	<HUDRadar
      name          			= "Radar"
      background    			= "Orxonox/Radar3D"
      material2D    			= "Orxonox/Radar"
@@ -139,11 +122,10 @@
      sensitivity   			= 1.0
      halfDotSizeDistance 	= 3000
      maximumDotSize 		= 0.1
-     maximumDotSize3D      	= 0.07
+     maximumDotSize3D      	= 0.06
      mapAngle3D   			= 0.6435011
     />
     
-
     <HUDTimer
      name     = "Timer"
      position = "0.5, 0.85"

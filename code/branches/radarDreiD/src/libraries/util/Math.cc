@@ -207,13 +207,13 @@ namespace orxonox
     orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
     {
     	// Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
-    	orxonox::Vector3 distance = otherposition - myposition;
+    	orxonox::Vector3 distance = otherposition - myposition;	// get vector from Ship to object
 
     	// new coordinate system:	x_axsis:	mydirection		(points front)
     	//							y_axsis:	myorthonormal	(points up)
     	//							z_axsis:	myside			(points right)
 
-    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get vector from Ship to object
+    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get 3. base vector
 
     	distance = 4*distance / detectionlimit; // shrink vector on map
     	if(distance.length() > 1.0f) // if object would wander outside of the map
@@ -262,6 +262,32 @@ namespace orxonox
        		return true;
        	else
        		return false;
+    }
+
+    /**
+                   @brief A value between 0 and 10, in order how other object is in front or in back
+                   @param myposition My position
+               	   @param mydirection My viewing direction
+               	   @param myorthonormal My orthonormalvector (pointing upwards through my head)
+               	   @param otherposition The position of the other object
+               	   @param detectionlimit The limit in which objects are shown on the map
+                   @return value between 0 and 100
+    */
+    int determineMap3DZOrder(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float detectionlimit)
+    {
+    	orxonox::Vector3 distance = otherposition - myposition;	// get vector from Ship to object
+    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); 	// get vector to the side
+
+    	distance = 4*distance / detectionlimit; // shrink vector on map
+    	if(distance.length() > 1.0f) // if object would wander outside of the map
+    	{
+    		distance = distance / distance.length();
+    	}
+
+    	// perform a coordinate transformation to get distance in relation of the position of the ship
+       	orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
+
+       	return (int) 50 - 100*distanceShip.x;
     }
 
 
