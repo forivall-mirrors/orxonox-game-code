@@ -54,7 +54,7 @@ To Do:
     name="narrative"
     targets="simpleNotification"
     size=3
-    displayTime=5.0
+    displayTime=4.9
     position="0.2, 0, 0.1, 0"
     fontSize="23"
     fontColor="0.3, 1, 0.2, 0.8"
@@ -142,7 +142,7 @@ To Do:
 	<DistanceTrigger name=spawntrigger2 position="0, 0, 0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
 	<!-- Drone pickup -->
-	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="20" respawnTime="30" maxSpawnedItems="2" />
+	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="100" respawnTime="30" maxSpawnedItems="2" />
 
 <!-- QUEST DESCRIPTION --
 	<LocalQuest id="spacefight.guard1">
@@ -290,7 +290,7 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<EventTrigger name="flying1delay" activations="1" stayactive="true" delay=0.1 >
+	<EventTrigger name="flying1delay" activations="1" stayactive="true" delay=5.1 >
 	  <events>
 	    <trigger>
 	      <EventListener event="flying1" />
@@ -362,30 +362,6 @@ To Do:
 			</execute>		
 		</events>
 	</QuestEffectBeacon>
-
-	<SimpleNotification message="Well done! Catch the scout!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="flying2" />
-			</trigger>
-		</events>
-	</SimpleNotification>
-
-	<EventTrigger name="flying2delay" activations="1" stayactive="true" delay=0.1 >
-	  <events>
-	    <trigger>
-	      <EventListener event="flying2" />
-	    </trigger>
-	  </events>
-	</EventTrigger>
-
-	<SimpleNotification message="Before he reachs the light!"  broadcast="true" >
-		<events>
-			<trigger>
-				<EventListener event="flying2delay" />
-			</trigger>
-		</events>
-	</SimpleNotification>
 
 	<!-- ESCAPE -->
 	<SimpleNotification message="A scout is startet to the mainship!"  broadcast="true">
@@ -509,7 +485,7 @@ To Do:
 
 	<!-- Trigger to activate the upgrade1-Quest -->
 	<DistanceTrigger name="droneTrigger" position="11000, 1000, 7000" target="SpaceShip" distance=2000 stayActive="true" delay=0.1 />
-	<SimpleNotification message="Upgrade?"  broadcast="true">
+	<SimpleNotification message="Need an Upgrade?"  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="droneTrigger" />
@@ -517,21 +493,45 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-	<SimpleNotification message="Search the drone!"  broadcast="true" delay=5.0 >
+		<EventTrigger name="droneTriggerDelay" stayactive="true" delay=5 >
+			<events>
+				<trigger>
+					<EventListener event="droneTrigger" />
+				</trigger>
+			</events>
+		</EventTrigger>
+
+	<SimpleNotification message="Search the drone!"  broadcast="true" >
 		<events>
 			<trigger>
-				<EventListener event="droneTrigger" />
+				<EventListener event="droneTriggerDelay" />
 			</trigger>
 		</events>
 	</SimpleNotification>
 			
 
 	<!-- Helper-Trigger for the drone(s) -->
-	<DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=20 stayActive="true" delay=0.1 />
+	<DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=100 stayActive="true" delay=0.1 />
 	<SimpleNotification message="Now your are prepared best!"  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="drone1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="drone1Delay" stayactive="true" delay=5.1 >
+		<events>
+			<trigger>
+				<EventListener event="drone1" />
+			</trigger>
+		</events>
+	</EventTrigger>
+
+	<SimpleNotification message="Fly back to the light..."  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="drone1Delay" />
 			</trigger>
 		</events>
 	</SimpleNotification>
@@ -545,14 +545,193 @@ To Do:
 				</trigger>
 			</events>
 		</EventTrigger>
-	</DistanceTrigger>
+	</DistanceTrigger>	
+
+	<SimpleNotification message="Well done!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="flying2" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<Trigger name="guard2withoutSpion" mode="and" stayActive="true" delay=0 >
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+	        <EventListener event="flying2" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	  <EventTrigger activations="1" invert="true" >
+	    <events>
+	      <trigger>
+	        <EventListener event="spionEnd" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	</Trigger>
+
+	<EventTrigger name="flying2delay1" activations="1" stayactive="true" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="guard2withoutSpion" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="Catch the scout!"  broadcast="true" >
+		<events>
+			<trigger>
+				<EventListener event="flying2delay1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="flying2delay2" activations="1" stayactive="true" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="flying2delay1" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="Before he reachs the light..."  broadcast="true" >
+		<events>
+			<trigger>
+				<EventListener event="flying2delay2" />
+			</trigger>
+		</events>
+	</SimpleNotification>
 
 	<!-- DistanceTrigger for spion -->
-	<DistanceTrigger name="spionTrigger" position="0,-10000,42000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+	<DistanceTrigger name="spionTrigger" position="15000, 1000, 25000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
 	<SimpleNotification message="Scout is arrived!"  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="spionTrigger" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="spionTriggerDelay" stayactive="true" delay=5 >
+		<events>
+			<trigger>
+				<EventListener event="spionTrigger" />
+			</trigger>
+		</events>
+	</EventTrigger>	
+
+	<SimpleNotification message="Now the mainship is alarmed..."  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="spionTriggerDelay" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<BlinkingBillboard position="15000, 1000, 25000" color="1.0, 1.0, 0.05" frequency=0.3 amplitude=7 material="Examples/Flare" >
+	  <events>
+	    <visibility>
+	      <EventTrigger>
+		<EventTrigger invert=true>
+		  <events>
+		    <trigger>
+		      <EventListener event="spionEnd" />
+		    </trigger>
+		  </events>
+		</EventTrigger>
+	        <events>
+	          <trigger>
+	            <EventListener event="guard2trigger1" />
+	          </trigger>
+	        </events>
+	      </EventTrigger>
+	    </visibility>
+	  </events>
+	</BlinkingBillboard>
+
+	<!-- If spion destroyed -->
+	<SimpleNotification message="Scout destroyed!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="spion5" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<!-- Spion end -->
+	<Trigger name="spionEnd" mode="or" stayActive="true" delay=0 >
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+	        <EventListener event="spion5" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+	        <EventListener event="spionTrigger" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	</Trigger>
+
+	<EventTrigger name="spionEndDelay" activations="1" delay=5>
+	  <events>
+	    <trigger>
+	      <EventListener event="spionEnd" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<!-- Intro to Captain Hood -->
+	<Trigger name="introHood" mode="and" stayActive="true">
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+	        <EventListener event="spionEndDelay" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	  <EventTrigger activations="1" >
+	    <events>
+	      <trigger>
+	        <EventListener event="guard2trigger4" />
+	      </trigger>
+	    </events>
+	  </EventTrigger>
+	</Trigger>
+
+	<EventTrigger name="introHoodDelay1" activations="1" stayactive="true" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="introHood" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="Your friend, Captain Hood, is near by you!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="introHoodDelay1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<EventTrigger name="introHoodDelay2" activations="1" stayactive="true" delay=5 >
+	  <events>
+	    <trigger>
+	      <EventListener event="introHoodDelay1" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="He'll show you the way to the mainship!"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="introHoodDelay2" />
 			</trigger>
 		</events>
 	</SimpleNotification>	
@@ -575,47 +754,6 @@ To Do:
 			</trigger>
 		</events>
 	</SimpleNotification>	
-
-	<!-- If spion destroyed -->
-	<SimpleNotification message="Scout destroyed!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="spion5" />
-			</trigger>
-		</events>
-	</SimpleNotification>
-
-	<EventTrigger name="spion5delay1" activations="1" stayactive="true" delay=5.0 >
-	  <events>
-	    <trigger>
-	      <EventListener event="spion5" />
-	    </trigger>
-	  </events>
-	</EventTrigger>
-
-	<SimpleNotification message="Your friend, Captain Hood, is near by you!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="spion5delay1" />
-			</trigger>
-		</events>
-	</SimpleNotification>
-
-	<EventTrigger name="spion5delay2" activations="1" stayactive="true" delay=5.0 >
-	  <events>
-	    <trigger>
-	      <EventListener event="spion5delay1" />
-	    </trigger>
-	  </events>
-	</EventTrigger>
-
-	<SimpleNotification message="He'll show you the way to the mainship!"  broadcast="true">
-		<events>
-			<trigger>
-				<EventListener event="spion5delay2" />
-			</trigger>
-		</events>
-	</SimpleNotification>
 
 	<!-- Trigger for Monologue from Captain Hood --> 
 	<DistanceTrigger name="discuss" position="-4000, -18000, 19000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
@@ -669,7 +807,7 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-    <EventTrigger name="dockdelay1" activations="1" stayactive="true" delay=5 >
+    <EventTrigger name="dockdelay1" activations="1" stayactive="true" delay=5.1 >
       <events>
         <trigger>
           <EventListener event="dock" />
@@ -702,7 +840,7 @@ To Do:
 	</SimpleNotification>
 
 	<!-- TIMER-EVENTS -->
-    <EventTrigger name="timer1" activations="1" stayactive="true" delay=5 >
+    <EventTrigger name="timer1" activations="1" stayactive="true" delay=5.1 >
       <events>
         <trigger>
           <EventListener event="dockdelay2" />
@@ -1069,7 +1207,8 @@ To Do:
   <controller>
     <WaypointController team=1>
       <waypoints>
-        <Model mesh="cube.mesh" scale=100 position="0,-10000,42000" />
+	<Model mesh="cube.mesh" scale=0 position="15000, 1000, 25000" />
+        <Model mesh="cube.mesh" scale=0 position="0, -10000, 42000" />
         <Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
@@ -1099,14 +1238,14 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1129,14 +1268,14 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />        
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1159,14 +1298,14 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />        
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
       </waypoints>
       <events>
 	<activity>
@@ -1189,14 +1328,14 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 25700" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 25000" />        
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 25700" />
-        <Model mesh="cube.mesh" scale=0 position="-12000, -21000, 25000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -21300, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22000, 24000" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -22700, 24300" />
-	<Model mesh="cube.mesh" scale=0 position="-12000, -23000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 25700" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 25000" />        
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 25700" />
+        <Model mesh="cube.mesh" scale=10 position="-12000, -21000, 25000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -21300, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -22700, 24300" />
+	<Model mesh="cube.mesh" scale=10 position="-12000, -23000, 25000" />
       </waypoints>
       <events>
 	<activity>
@@ -1323,7 +1462,7 @@ To Do:
 	</events>
 </SimpleNotification>
 
-<EventTrigger name="frienddelay" activations="1" stayactive="true" delay=5.0 >
+<EventTrigger name="frienddelay" activations="1" stayactive="true" delay=5.1 >
   <events>
     <trigger>
       <EventListener event="friend" />
@@ -1351,7 +1490,7 @@ To Do:
 		yaw="90" 
 		pitch="-90" 
 		roll="0" 
-		scale="300" 
+		scale="200" 
 		mesh="asteroid_ice.mesh" />
 
 	<!-- triple large belt around the planet  -->
@@ -1447,6 +1586,16 @@ To Do:
         name      = "Mainship"
         radarname = "Mainship" 
 	visible	  = "true" >
+      <controller>
+        <WaypointPatrolController alertnessradius=2000 team=0 active=false>
+          <waypoints/>
+          <events>
+	    <activity>
+	      <EventListener event=spawntrigger2 />
+	    </activity>
+          </events>
+        </WaypointPatrolController>
+      </controller>
       <attached>
         <Model scale=250 mesh="drone.mesh" position = "0,0,0" lookat="40000, 4000, 27000" />
    <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
