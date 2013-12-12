@@ -5,7 +5,6 @@ To Do:
 - Discuss between Player and Captain Hood
 - If possible, do the spion with DistanceTriggerBeacon
 - Place the explosion right (time and place)
-- also place the docking-Trigger
 - bigger explosion?
 - collisionShape for mainship
 - DistanceTriggerBeacon for Captain Hood
@@ -86,8 +85,8 @@ To Do:
 </OverlayGroup>
 
 <!-- SPAWNTRIGGER -->
-	<!-- StartPoint -->
-	<SpawnPoint team=0 position="0, 0, 0" lookat="100,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
+	<!-- StartPoint (0, 0, 0), lookat=(100, 0, 0) -->
+	<SpawnPoint team=0 position="-12350, -21950, 25500" lookat="-12350, -21950, 25300" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
           <events>
             <activity>
               <EventListener event="flying12" />
@@ -103,8 +102,8 @@ To Do:
           </events>
 	</EventTrigger>
 
-	<!-- Second Spawnpoint (after first guard) -->
-	<SpawnPoint team=0 position="13500, 2500, 10500" lookat="18000,5000,18000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
+	<!-- Second Spawnpoint (after first guard) --
+	<SpawnPoint team=0 position="13500, 2500, 10500" lookat="18000,5000,18000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage --
 	  <events>
             <activity>
 	      <EventTrigger>
@@ -125,8 +124,8 @@ To Do:
           </events>
         </SpawnPoint>
 	
-	<!-- Thirth Spawnpoint (when reached Captain Hood) -->
-	<SpawnPoint team=0 position="-4000, -18000, 19000" lookat="-12000, -22000, 25000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage -->
+	<!-- Thirth Spawnpoint (when reached Captain Hood) --
+	<SpawnPoint team=0 position="-4000, -18000, 19000" lookat="-12000, -22000, 25000" spawnclass=SpaceShip pawndesign=spaceshipswallow > <!-- pawndesign=spaceshipcollateraldamage --
 	  <events>
             <activity>
 	      <EventTrigger>
@@ -147,13 +146,13 @@ To Do:
           </events>
         </SpawnPoint>
 
-	<!-- Distance-Spawn-Trigger -->
-	<DistanceTrigger name=spawntrigger2 position="0, 0, 0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+	<!-- Distance-Spawn-Trigger (0, 0, 0) -->
+	<DistanceTrigger name=spawntrigger2 position="-12350, -21950, 25500" target="SpaceShip" distance=10 stayActive="true" delay=0 />
 
 	<!-- Drone pickup -->
 	<PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="100" respawnTime="30" maxSpawnedItems="2" />
 
-<!-- QUEST DESCRIPTION --
+<!-- QUEST DESCRIPTION -->
 	<LocalQuest id="spacefight.guard1">
 		<QuestDescription 
 			title="Eliminate the first guard!" 
@@ -164,9 +163,6 @@ To Do:
 				The unarmed could not attack you. So first destroy the battleships!"
 			failMessage="You've lost all your ships!"
 			completeMessage="Well done!" />
-		<complete-effects>
-			<AddQuest questId="spacefight.guard2" />
-		</complete-effects>
 	</LocalQuest>
 
 	<LocalQuest id="spacefight.upgrade1">
@@ -188,7 +184,7 @@ To Do:
 			failMessage="You've lost all your ships!"
 			completeMessage="" />
 	</LocalQuest>
-
+<!--
 	<LocalQuest id="spacefight.escape">
 		<QuestDescription
 			title="Catch the messenger!"
@@ -309,7 +305,6 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-
 	<BlinkingBillboard position="11000, 1000, 7000" colour="0.0, 1.0, 0.0" frequency=0.5 amplitude=10 material="Examples/Flare" >
           <events>
             <visibility>
@@ -349,7 +344,18 @@ To Do:
 		</effects>
 		<events>
 			<execute>
-				<EventListener event="drone" />
+				<EventListener event="drone1" />
+			</execute>
+		</events>
+	</QuestEffectBeacon>
+
+	<QuestEffectBeacon times=0>
+		<effects>
+			<CompleteQuest questId="spacefight.upgrade1" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="victory" />
 			</execute>
 		</events>
 	</QuestEffectBeacon>
@@ -357,11 +363,22 @@ To Do:
 	<!-- Guard 2 -->
 	<QuestEffectBeacon times=0>
 		<effects>
+			<AddQuest questId="spacefight.guard2" />
+		</effects>
+		<events>
+			<execute>
+				<EventListener event="droneTrigger" />
+			</execute>		
+		</events>
+	</QuestEffectBeacon>
+
+	<QuestEffectBeacon times=0>
+		<effects>
 			<CompleteQuest questId="spacefight.guard2" />
 		</effects>
 		<events>
 			<execute>
-				<EventListener event="flying22" />
+				<EventListener event="flying2" />
 			</execute>		
 		</events>
 	</QuestEffectBeacon>
@@ -496,13 +513,13 @@ To Do:
 		</events>
 	</SimpleNotification>
 
-		<EventTrigger name="droneTriggerDelay" stayactive="true" delay=5 >
-			<events>
-				<trigger>
-					<EventListener event="droneTrigger" />
-				</trigger>
-			</events>
-		</EventTrigger>
+	<EventTrigger name="droneTriggerDelay" stayactive="true" delay=5 >
+		<events>
+			<trigger>
+				<EventListener event="droneTrigger" />
+			</trigger>
+		</events>
+	</EventTrigger>
 
 	<SimpleNotification message="Search the drone!"  broadcast="true" >
 		<events>
@@ -531,13 +548,53 @@ To Do:
 		</events>
 	</EventTrigger>
 
-	<SimpleNotification message="Fly back to the light..."  broadcast="true">
+	<SimpleNotification message="Fly back to the green light."  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="drone1Delay" />
 			</trigger>
 		</events>
 	</SimpleNotification>
+
+	<Trigger name="secondDroneTrigger" mode="and" stayActive="true">
+	  <DistanceTrigger name="droneTrigger" position="11000, 1000, 7000" target="SpaceShip" distance=1000 stayActive="true" delay=0.1 />
+          <EventTrigger>
+            <events>
+              <trigger>
+                <EventListener event="drone1" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+	<SimpleNotification message="The red light shows you the direction."  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="secondDroneTrigger" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<BlinkingBillboard position="11500, 1500, 10000" colour="1.0, 0.0, 0.0" frequency=0.5 amplitude=5 material="Examples/Flare" >
+	  <events>
+	    <visibility>
+	      <EventTrigger>
+		<EventTrigger invert=true>
+		  <events>
+		    <trigger>
+		      <EventListener event="guard2trigger1" />
+		    </trigger>
+		  </events>
+		</EventTrigger>
+	        <events>
+	          <trigger>
+	            <EventListener event="secondDroneTrigger" />
+	          </trigger>
+	        </events>
+	      </EventTrigger>
+	    </visibility>
+	  </events>
+	</BlinkingBillboard>
 
 	<!-- Helper-Trigger for second guard -->
 	<DistanceTrigger name="flying2" position="18000, 5000, 21000" target="SpaceShip" distance=10000 stayActive="true" delay=0.1 >
@@ -599,7 +656,7 @@ To Do:
 	  </events>
 	</EventTrigger>
 
-	<SimpleNotification message="Before he reachs the light..."  broadcast="true" >
+	<SimpleNotification message="Before he reachs the red light..."  broadcast="true" >
 		<events>
 			<trigger>
 				<EventListener event="flying2delay2" />
@@ -846,7 +903,23 @@ To Do:
 	  </events>
 	</EventTrigger>
 
-	<SimpleNotification message="For that you will get the golden medal of the united space armies."  broadcast="true">
+	<EventTrigger name="victoryDelay1.1" delay=5.1 >
+	  <events>
+	    <trigger>
+	      <EventListener event="victory" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="For that you will get the golden medal"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="victoryDelay1.1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<SimpleNotification message="of the united space armies."  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="victoryDelay1" />
@@ -857,12 +930,28 @@ To Do:
 	<EventTrigger name="victoryDelay2" delay=5 >
 	  <events>
 	    <trigger>
-	      <EventListener event="victoryDelay1" />
+	      <EventListener event="victoryDelay1.1" />
 	    </trigger>
 	  </events>
 	</EventTrigger>
 
-	<SimpleNotification message="Now dock at the mainship and free the Commander!"  broadcast="true">
+	<EventTrigger name="victoryDelay2.1" delay=5.1 >
+	  <events>
+	    <trigger>
+	      <EventListener event="victoryDelay1.1" />
+	    </trigger>
+	  </events>
+	</EventTrigger>
+
+	<SimpleNotification message="Now dock at the mainship and"  broadcast="true">
+		<events>
+			<trigger>
+				<EventListener event="victoryDelay2.1" />
+			</trigger>
+		</events>
+	</SimpleNotification>
+
+	<SimpleNotification message="free the Commander!"  broadcast="true">
 		<events>
 			<trigger>
 				<EventListener event="victoryDelay2" />
@@ -887,7 +976,7 @@ To Do:
 	</SimpleNotification>
 
 	<!-- Rescue the commander -->
-	<BlinkingBillboard position="-11800, -22090, 24900" colour="0.0, 0.0, 1.0" frequency=0.5 amplitude=5 material="Examples/Flare" >
+	<BlinkingBillboard position="-12470, -21870, 25200" colour="0.0, 0.0, 1.0" frequency=0.5 amplitude=5 material="Examples/Flare" >
 	  <events>
 	    <visibility>
 	      <EventTrigger>
@@ -900,7 +989,7 @@ To Do:
 		</EventTrigger>
 	        <events>
 	          <trigger>
-	            <EventListener event="victory" />
+	            <EventListener event=spawntrigger2 /> <!-- "victory" -->
 	          </trigger>
 	        </events>
 	      </EventTrigger>
@@ -908,7 +997,7 @@ To Do:
 	  </events>
 	</BlinkingBillboard>
 	
-	<DistanceTrigger name="dock" position="-11800, -22090, 24900" target="SpaceShip" distance=50 stayActive="true" delay=0 />
+	<DistanceTrigger name="dock" position="-12470, -21870, 25200" target="SpaceShip" distance=50 stayActive="true" delay=0 />
 	<SimpleNotification message="The Commander is on board!"  broadcast="true">
 		<events>
 			<trigger>
@@ -1039,13 +1128,13 @@ To Do:
     </EventTrigger>
 
 <!-- For Escape -->
-	<EventTrigger name="spion5" activations="1" stayactive="true" delay=0.1 >
+	<EventTrigger name="spion5" stayactive="true" >
 	  <events>
 	    <trigger>
 	      <EventListener event="spion" />
 	    </trigger>
 	  </events>
-	</EventTrigger>	
+	</EventTrigger>
 
 <!-- For last fight -->
     <EventTrigger name="guard3trigger6" activations="1" stayactive="true" delay=0.1 >
@@ -1345,8 +1434,8 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=10 position="-10000, -22000, 24000" /> <!-- -12000, -22000, 25000    -4000, -18000, 19000 -->
-        <Model mesh="cube.mesh" scale=10 position="-11000, -22000, 23000" />
+        <Model mesh="cube.mesh" scale=10 position="-9500, -22000, 24000" /> <!-- -12000, -22000, 25000    -4000, -18000, 19000 -->
+        <Model mesh="cube.mesh" scale=10 position="-10500, -22000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-11000, -20000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-10000, -20000, 24000" />
       </waypoints>
@@ -1371,10 +1460,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=10 position="-11000, -22000, 23000" />
+        <Model mesh="cube.mesh" scale=10 position="-10500, -22000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-11000, -20000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-10000, -20000, 24000" />        
-	<Model mesh="cube.mesh" scale=10 position="-10000, -22000, 24000" />
+	<Model mesh="cube.mesh" scale=10 position="-9500, -22000, 24000" />
       </waypoints>
       <events>
 	<activity>
@@ -1399,8 +1488,8 @@ To Do:
       <waypoints>
 	<Model mesh="cube.mesh" scale=10 position="-11000, -20000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-10000, -20000, 24000" />        
-	<Model mesh="cube.mesh" scale=10 position="-10000, -22000, 24000" />
-        <Model mesh="cube.mesh" scale=10 position="-11000, -22000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-9500, -22000, 24000" />
+        <Model mesh="cube.mesh" scale=10 position="-10500, -22000, 23000" />
       </waypoints>
       <events>
 	<activity>
@@ -1424,8 +1513,8 @@ To Do:
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
 	<Model mesh="cube.mesh" scale=10 position="-10000, -20000, 24000" />        
-	<Model mesh="cube.mesh" scale=10 position="-10000, -22000, 24000" />
-        <Model mesh="cube.mesh" scale=10 position="-11000, -22000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-9500, -22000, 24000" />
+        <Model mesh="cube.mesh" scale=10 position="-10500, -22000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-11000, -20000, 23000" />
       </waypoints>
       <events>
@@ -1450,9 +1539,9 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-        <Model mesh="cube.mesh" scale=10 position="-10000, -21000, 24000" />
-        <Model mesh="cube.mesh" scale=10 position="-10500, -22000, 23500" />
-	<Model mesh="cube.mesh" scale=10 position="-11000, -21000, 23000" />
+        <Model mesh="cube.mesh" scale=10 position="-9750, -21000, 24000" />
+        <Model mesh="cube.mesh" scale=10 position="-10000, -22000, 23500" />
+	<Model mesh="cube.mesh" scale=10 position="-10750, -21000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-10500, -20000, 23500" />
       </waypoints>
       <events>
@@ -1476,10 +1565,10 @@ To Do:
   <controller>
     <WaypointPatrolController alertnessradius=2000 team=1 active=false>
       <waypoints>
-	<Model mesh="cube.mesh" scale=10 position="-11000, -21000, 23000" />
+	<Model mesh="cube.mesh" scale=10 position="-10750, -21000, 23000" />
 	<Model mesh="cube.mesh" scale=10 position="-10500, -20000, 23500" />
-        <Model mesh="cube.mesh" scale=10 position="-10000, -21000, 24000" />
-        <Model mesh="cube.mesh" scale=10 position="-10500, -22000, 23500" />
+        <Model mesh="cube.mesh" scale=10 position="-9750, -21000, 24000" />
+        <Model mesh="cube.mesh" scale=10 position="-10000, -22000, 23500" />
       </waypoints>
       <events>
 	<activity>
@@ -1515,7 +1604,7 @@ To Do:
   </controller>
 </SpaceShip>
 
-<BlinkingBillboard position="10000, 2000, 17000" colour="0.0, 0.0, 1.0" frequency=0.5 amplitude=20 material="Examples/Flare" >
+<BlinkingBillboard position="10000, 2000, 17000" colour="1.0, 1.0, 0.0" frequency=0.5 amplitude=20 material="Examples/Flare" >
   <events>
     <visibility>
       <EventTrigger>
@@ -1663,7 +1752,7 @@ To Do:
     <SpaceShip
         team      = 1
         position  = "-12000, -22000, 25000"
-        mass      = 10000
+        mass      = 10000000000
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "Mainship"
         radarname = "Mainship" 
@@ -1680,13 +1769,13 @@ To Do:
       </controller>
       <attached>
         <Model scale=200 mesh="drone.mesh" position = "0,0,0" lookat="40000, 4000, 27000" />
-   <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
-        <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
-        <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
-        <Model mesh="cube.mesh" mass=10 position="-280,0,0" scale3D="163,50,50" />
-        <Model mesh="cube.mesh" mass=10 position="140,0,-240" scale3D="163,50,50"  yaw=-120/>
-        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="163,50,50" yaw=-240/>
-        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
+	<Model mesh="cube.mesh" mass=10 position="-445,110,120" scale3D="45,45,150"  yaw=56 pitch=-4 roll=0 />
+        <Model mesh="cube.mesh" mass=10 position="-295,125,220" scale3D="28,28,28" yaw=56 pitch=-4 roll=0 />
+        <Model mesh="cube.mesh" mass=10 position="-400,350,-200" scale3D="80,280,800" yaw=56 pitch=-4 roll=5 />
+        <Model mesh="cube.mesh" mass=10 position="-300,630,-100" scale3D="250,50,500" yaw=56 pitch=-4 roll=5 />
+        <Model mesh="cube.mesh" mass=10 position="-150,-150,-550" scale3D="80,280,800"  yaw=56 pitch=-4 roll=65 />
+        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="250,50,500" yaw=0 pitch=0 roll=0 />
+<!--    <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
         <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-120/>
         <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-240/>
         <Model mesh="cube.mesh" mass=10 position="0,400,0" scale3D="43,110,26" yaw=-30 />
@@ -1695,25 +1784,25 @@ To Do:
         <Model mesh="cube.mesh" mass=10 position="100,100,173" scale3D="43,50,26" yaw=30/>
         <Model mesh="cube.mesh" mass=10 position="-100,264,0" scale3D="26,105,43" roll=-49/>
         <Model mesh="cube.mesh" mass=10 position="50,264,-87" scale3D="26,105,43" roll=-49 yaw=-120/>
-        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/>     -->
+        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/> -->
       </attached>
       <collisionShapes>
-  <!--  <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes --
-        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+	<BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /> <!-- Three lower boxes -->
+<!--    <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
         <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
-        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections --
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /> <!-- Three lower connections --
         <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
         <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
-        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower --
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /> <!-- Upper Tower --
         <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
         <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
-        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one--
-        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs --
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /> <!-- Middle one--
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /> <!--Three lower legs --
         <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
         <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
-        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs --
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /> <!--Three upper legs --
         <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
-        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 /> -->
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />  -->
       </collisionShapes>
       <events>
         <visibility>
