@@ -224,6 +224,7 @@ namespace orxonox
 
             // calc position on radar...
             Vector2 coord;
+
             if(RadarMode_)
             {
             	coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
@@ -231,10 +232,11 @@ namespace orxonox
             	// set zOrder on screen
             	bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), this->mapAngle_);
 
+            	int zOrder = determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_);
             	if(overXZPlain == false /*&& (it->second->getZOrder() >  100 * this->overlay_->getZOrder())*/) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
-            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 70 + determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_));
+            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 70 + zOrder);
             	if(overXZPlain == true /*&& (it->second->getZOrder() <= 100 * this->overlay_->getZOrder())*/)
-            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 70 + determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_));
+            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 70 + zOrder);
             }
             else
             	coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
@@ -252,6 +254,8 @@ namespace orxonox
             {
                 this->marker_->setDimensions(size * 1.5f, size * 1.5f);
                 this->marker_->setPosition((1.0f + coord.x - size * 1.5f) * 0.5f, (1.0f - coord.y - size * 1.5f) * 0.5f);
+                if(RadarMode_)
+                	this->marker_->_notifyZOrder(it->second->getZOrder() -1);
                 this->marker_->show();
             }
         }
