@@ -1,8 +1,8 @@
 <!-- -->
 
 <LevelInfo
-   name = "John Vane and the trip to Area 51"
-   description = "First Mission of John Vane"
+   name = "(i) John Vane - Trip to Area 51"
+   description = "John Vane's first mission to rescue the Commander"
    tags = "mission"
    screenshot = "JohnVane.png" 
 />
@@ -58,7 +58,7 @@
 
    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
 
-   <TeamSpawnPoint team=0 position="0,94000,0" direction="1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort> <!--spaceshipescort-->
+   <TeamSpawnPoint team=0 position="0,0,0" direction="1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort> <!--spaceshipescort-->
  	<events>
             <activity>
                 <EventListener event="start" />
@@ -356,7 +356,7 @@
    <!--<PortalLink fromID="2" toID="1" />-->
 
 <!-- Meteoriten, die sich bewegen -->
-<?lua
+   <?lua
       for i = 1, 600, 1
       do
       j = math.random()
@@ -366,13 +366,22 @@
    ?>
 
    <MovableEntity	
-      position = "<?lua print(math.random()* 1500-750) ?>,<?lua print(math.random() * 9500 + 100000) ?>,<?lua print(math.random() * 1500-750) ?>"
+      position = "<?lua print(math.random()* 1000-500) ?>,<?lua print(math.random() * 10000 + 110000) ?>,<?lua print(math.random() * 1000-500) ?>"
       scale = "<?lua print(j * 40)?>"
-      velocity = "<?lua print(x*70-35)?>, <?lua print(y*50-130)?>, <?lua print(z*70-35)?>"
+      velocity = "<?lua print(x*60-30)?>, <?lua print(y*60-160)?>, <?lua print(z*60-30)?>"
       collisionType = dynamic
       collisiondamage = 0.05
       enablecollisiondamage = true 
-   >  
+	active = true
+   >  	 	 
+	      <events> 	 	 
+	         <activity> 	 	 
+	        <EventListener event="start" /> 	 	 
+	     </activity> 	 	 
+	      </events> 	 	 
+	      <attached> 	 	 
+	         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" /> 	 	 	 	 
+	      </attached> 
          <collisionShapes>
             <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
          </collisionShapes>   
@@ -382,7 +391,7 @@
       end
    ?>
 
-<BlinkingBillboard position="5000,5800,5000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+<BlinkingBillboard position="5000,5700,5000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
               <EventTrigger invert=true>
@@ -395,7 +404,8 @@
             </visibility>
           </events>
 </BlinkingBillboard>
-<Billboard position="5000,5800,5000" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+
+<Billboard position="5000,5700,5000" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
           <events>
             <visibility>
               <EventTrigger>
@@ -411,7 +421,7 @@
 
 <DistanceTrigger name="start" position="0,94000,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=20 stayActive="true" delay=0 />
 
-<DistanceTrigger name="portal2" position="5000,5800,5000" target="Pawn" distance=20 stayActive="true" delay=3/>
+<DistanceTrigger name="portal2" position="5000,5700,5000" target="Pawn" distance=20 stayActive="true" delay=3/>
     <SimpleNotification message="Housten: Now go through the portal!">
         <events>
             <trigger>
@@ -428,7 +438,7 @@
    
   <SpaceShip
         team      = 0
-        position  = "0,110000,0"
+        position  = "0,118000,0"
         roll      = 0   yaw=90  pitch=0
         mass      = 10000
         health    = 100000 initialhealth=100000 maxhealth="100000"
