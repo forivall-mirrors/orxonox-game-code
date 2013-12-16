@@ -13,27 +13,31 @@ namespace orxonox
 	{
 		if(p == NULL)
 	      exit(0);
-		PWii->RefreshWiimotes();
-		Orientation o;
-		Orientation toMove;
+		IntVector2 o(0,0);
+		float r = 0; //roll variable
 		for (int i=0; i<4; i++)
 		{
 			if(PWii->Poll())
 				{
-					//orxout()<<"test11"<<endl;
 					switch (p->GetEvent())
 					{
 						case CWiimote::EVENT_EVENT:
 						{
 							if(p->Buttons.isPressed(CButtons::BUTTON_A)||p->Buttons.isJustPressed(CButtons::BUTTON_A)) //ugly hack to just do something on button press easily
-								{
-									orxout()<<"fak u dolan"<<endl;
-									CommandExecutor::execute("fire 0", 0, 0);
-								}
-							if (i==0)
-								p->Accelerometer.GetOrientation(o.pitch, o.roll, o.yaw);
-							//orxout()<<time.getDeltaTime()<<std::endl;
-
+							{
+								//orxout()<<"fak u dolan"<<endl;
+								CommandExecutor::execute("fire 0", 0, 0);
+							}
+//							if(p->ExpansionDevice.GetType()==CExpansionDevice::TYPE_NUNCHUK)
+//							{
+//								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_C))
+//									CommandExecutor::execute("NewHumanController accelerate");
+//								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
+//									CommandExecutor::execute("NewHumanController decelerate");
+//							}
+//							float dummyPitch, dummyYaw, dummyRoll;
+//							p->Accelerometer.GetOrientation(dummyPitch, dummyRoll, dummyYaw);
+//							r += dummyRoll;
 							break;
 						}
 						case CWiimote::EVENT_STATUS:
@@ -47,23 +51,34 @@ namespace orxonox
 					}
 				}
 		}
-		//orxout() << time.getDeltaTime()<<endl;
-		orxout() << o.pitch << endl;
-	//	int x = (int)(-10*(o.yaw-lastOrientation.yaw)); //get difference in orientation, divide by time to make faster movements result in faster orientation change
-		int y = (int)(4*(o.pitch-lastOrientation.pitch));//-lastOrientation.pitch)/time.getDeltaTime());
-		int x=0;
-		//orxout() << x<< endl << y << endl;
+//		r/=4;
+//		std::stringstream temp;
+//		temp << "scale ";
+//		temp << (r-lastOrientation.roll);
+//		temp << " rotateRoll";
+//		string com = temp.str();
+//		orxout()<<com<<endl;
+//		//CommandExecutor::execute(com, 0, 0);
+
 		IntVector2 abs(0,0);
-		IntVector2 rel(x,y);
+		IntVector2 rel(0,0);
 		IntVector2 clippingSize(1920, 1080);
+		p->IR.GetCursorPosition(o.x, o.y);
+//		orxout() << "y: " << o.y << " x: " << o.x << endl;
+//		orxout() << p->IR.GetNumDots() << endl;
+		rel.x = (o.x-lastCursor.x);
+		rel.y = (o.y-lastCursor.y);
+		abs.x = o.x;
+		abs.y = o.y;
+		if((rel.x!=0 || rel.y!=0))
+					{
+						for (unsigned int i = 0; i < inputStates_.size(); ++i)
+							inputStates_[i]->mouseMoved(abs, rel, clippingSize); 	//pass random mouse movements to all input states
+					}
+		lastCursor.x = o.x;
+		lastCursor.y = o.y;
+		lastOrientation.roll = r;
 
-
-		if((x!=0 || y!=0)&&(o.pitch!=0))
-			{
-				for (unsigned int i = 0; i < inputStates_.size(); ++i)
-					inputStates_[i]->mouseMoved(abs, rel, clippingSize); 	//pass random mouse movements to all input states
-			}
-		lastOrientation = o;
 	}
 	void WiiMote::clearBuffers()
 	{
@@ -80,6 +95,7 @@ namespace orxonox
 		lastOrientation.yaw = 0;
 		lastOrientation.roll = 0;
 		lastOrientation.pitch = 0;
-
+		lastCursor.x = 0;
+		lastCursor.y = 0;
 	}
 }

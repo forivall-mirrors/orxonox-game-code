@@ -253,6 +253,10 @@ namespace orxonox
     	      {CWiimote::LED_1, CWiimote::LED_2,
     	       CWiimote::LED_3, CWiimote::LED_4};
     	    wiimote.SetLEDs(LED_MAP[index]);
+    	    wiimote.IR.SetMode(CIR::ON);
+    	    wiimote.IR.SetAspectRatio(CIR::ASPECT_16_9);
+    	    wiimote.IR.SetBarPosition(CIR::BAR_ABOVE);
+    	    wiimote.IR.SetVres(1920,1080);
     	    try
 		   {
 			 orxout()<< "Size of devices vector before wiimote insertion:" << devices_.size() << std::endl;
@@ -266,10 +270,7 @@ namespace orxonox
 		   {
 			 orxout()<<"Exception loading WiiMote!!!1!11!";
 		   }
-
-
-
-    	}
+   	    }
 
 
     }
