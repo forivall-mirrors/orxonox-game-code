@@ -13,7 +13,6 @@
   include("templates/spaceshipAssff.oxt")
 
 ?>
-<WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
 
 
 <?lua
@@ -108,7 +107,18 @@ gametype = SpaceRace
     </SpaceShip>
 
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-
+	
+	<!-- SOUNDS & MUSIC -->
+    <WorldSound name="scoreSound" position="-200,0,0" source="sounds/ReadyGo.ogg" >
+      <events>
+        <play>
+          <EventListener event="start" />
+        </play>
+      </events>
+    </WorldSound>
+    <DistanceTrigger name="start" position="-200,0,0"  target="Pawn" distance=100 stayActive="true" delay=0.5 />
+    
+    <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
 
     <!-- ------------------Planet----------------- -->
     <Planet position="0,0,0" scale=300 pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
