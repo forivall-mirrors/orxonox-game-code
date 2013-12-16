@@ -364,8 +364,10 @@ namespace orxonox
         this->bAlive_ = false;
         this->setDestroyWhenPlayerLeft(false);
 
-        BigExplosion* chunk = new BigExplosion(this->getContext());
+        orxout() << "big explosion: " << this->getVelocity() << endl;
+        BigExplosion* chunk = new BigExplosion(this->getContext(), this->getVelocity());
         chunk->setPosition(this->getPosition());
+        // chunk->setVelocity(this->getVelocity());
 
     }
     void Pawn::deatheffect()
@@ -375,6 +377,7 @@ namespace orxonox
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
+            effect->setVelocity(this->getVelocity());
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/explosion2b");
             effect->setLifetime(4.0f);
@@ -383,6 +386,7 @@ namespace orxonox
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
+            effect->setVelocity(this->getVelocity());
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/smoke6");
             effect->setLifetime(4.0f);
@@ -391,6 +395,7 @@ namespace orxonox
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
+            effect->setVelocity(this->getVelocity());
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/sparks");
             effect->setLifetime(4.0f);
