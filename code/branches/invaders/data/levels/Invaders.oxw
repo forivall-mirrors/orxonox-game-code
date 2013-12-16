@@ -2,7 +2,7 @@
  name = "Orxonox Arcade"
  description = "2D Arcade shooter. Maximise your points!!!\nTip: try to keep the multiplier high by avoiding shots and enemies."
  tags = "minigame"
- screenshot = "emptylevel.png"
+ screenshot = "orxonoxArcade.png"
 />
 <?lua
   include("stats.oxo")
