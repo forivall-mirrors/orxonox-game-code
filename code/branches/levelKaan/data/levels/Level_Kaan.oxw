@@ -1,10 +1,10 @@
 <!-- -->
 
 <LevelInfo
-   name = "Level_Kaan"
-   description = "A level with absolutely nothing in it."
+   name = "John Vane and the trip to Area 51"
+   description = "First Mission of John Vane"
    tags = "mission"
-   screenshot = "emptylevel.png"
+   screenshot = "JohnVane.png" 
 />
 
 <?lua
@@ -60,14 +60,6 @@
 
    <TeamSpawnPoint team=0 position="0,94000,0" direction="1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort> <!--spaceshipescort-->
  	<events>
-            <activity>
-                <EventListener event="start" />
-            </activity>
-        </events>
-    </TeamSpawnPoint>
-
-   <TeamSpawnPoint team=0 position="0,94000,0" direction="0,1,0" spawnclass=SpaceShip pawndesign=spaceshipescort active=false>
-      <events>
             <activity>
                 <EventListener event="start" />
             </activity>
@@ -273,41 +265,75 @@
         </events>
     </SimpleNotification> 
 
-<QuestEffectBeacon times=1>
-            <effects>
+   <QuestEffectBeacon times=1>
+      <effects>
                 <AddQuest questId="Level_Kaan.docking" />
-                <!--AddQuestHint hintId ="quest1hint3" /-->
-            </effects>
+      </effects>
             <events>
                 <execute>
                     <EventListener event=spawntrigger />
                 </execute>
             </events>
-        </QuestEffectBeacon>
+   </QuestEffectBeacon>
 
-<LocalQuest id="Level_Kaan.docking">
-        <QuestDescription title="Docking" description="Fly to the Main Station and get a better Spaceship
-
-Further flying moves:
-break (S)
-roll     (Q) and (E)
-boost (Space)
-
-Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
-
-    </LocalQuest> 
-
-<QuestEffectBeacon times=1>
+   <QuestEffectBeacon times=1>
             <effects>
-                <AddQuest questId="Level_Kaan.portals" />
-                <!--AddQuestHint hintId ="quest1hint3" /-->
+                <CompleteQuest questId="Level_Kaan.docking" />
             </effects>
             <events>
                 <execute>
-                    <EventListener event=dockMe />
+                    <EventListener event="dockMe" />
                 </execute>
             </events>
-        </QuestEffectBeacon>
+   </QuestEffectBeacon>
+
+   <LocalQuest id="Level_Kaan.docking">
+      <QuestDescription title="Docking" description="Our Commander got kidnapped in Area 51. Fly to the Main Station and get a better Spaceship to rescue him.
+
+	Flying moves:
+	break (S)
+	roll     (Q) and (E)
+	boost (Space)
+
+	Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
+      <complete-effects>
+         <AddQuest questId="Level_Kaan.portals" />
+      </complete-effects>
+   </LocalQuest> 
+
+   <LocalQuest id="Level_Kaan.portals">
+      <QuestDescription title="Portals" description="Now you've got a Spaceship with more health and weapons. Your next goal is to pass through the portal and find there the 		wormhole to Area 51" failmessage="" completeMessage="" />
+      <complete-effects>
+         <AddQuest questId="Level_Kaan.asteroids" />
+      </complete-effects>
+   </LocalQuest> 
+
+
+   <QuestEffectBeacon times=1>
+      <effects>
+         <CompleteQuest questId="Level_Kaan.portals" />
+      </effects>
+      <events>
+         <execute>
+            <EventListener event=start />
+         </execute>
+      </events>
+   </QuestEffectBeacon>
+
+ <LocalQuest id="Level_Kaan.asteroids">
+      <QuestDescription title="Asteroids" description="The wormhole is at the end of the asteroid shower. Find your way through the asteroids without hitting the rocks and reach Area 51. " failmessage="" completeMessage="" />
+   </LocalQuest> 
+
+ <QuestEffectBeacon times=1>
+      <effects>
+         <CompleteQuest questId="Level_Kaan.asteroids" />
+      </effects>
+      <events>
+         <execute>
+            <EventListener event=endOfLevel />
+         </execute>
+      </events>
+   </QuestEffectBeacon>
 
 <!----------------------------------------------------------------------------------------------------->
 <!-------------------------------- PART ONE: Passing throug wormhole  --------------------------------->
@@ -316,12 +342,10 @@ Whenever a new quest is added you can view it by pressing (F3). Quit this menu v
 
 <!------------------------------------- OBJECTS IN THIS PART ------------------------------------------>
 
-   <Model position="4000, 2800, 4000" yaw="90" pitch="-90" roll="90" scale="3" mesh="satellite.mesh" />
-
    <Template name=PortalDefault>
       <PortalEndPoint>
          <attached>
-            <Model mesh="Spacegate.mesh" yaw="90"/>
+            <Model mesh="Spacegate.mesh" />
          </attached>
       </PortalEndPoint>
    </Template>
@@ -342,23 +366,13 @@ Whenever a new quest is added you can view it by pressing (F3). Quit this menu v
    ?>
 
    <MovableEntity	
-      position = "<?lua print(math.random()* 1500-750) ?>,<?lua print(math.random() * 10000 + 95000) ?>,<?lua print(math.random() * 1500-750) ?>"
+      position = "<?lua print(math.random()* 1500-750) ?>,<?lua print(math.random() * 9500 + 100000) ?>,<?lua print(math.random() * 1500-750) ?>"
       scale = "<?lua print(j * 40)?>"
-      velocity = "<?lua print(x*100-50)?>, <?lua print(y*60-160)?>, <?lua print(z*100-50)?>"
+      velocity = "<?lua print(x*70-35)?>, <?lua print(y*50-130)?>, <?lua print(z*70-35)?>"
       collisionType = dynamic
       collisiondamage = 0.05
       enablecollisiondamage = true 
-      active = false
-   >
-      <events>
-         <activity>
-	    <EventListener event="startAsteroids" />
-	 </activity>
-      </events>
-      <attached>
-         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
-         <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
-      </attached> 
+   >  
          <collisionShapes>
             <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
          </collisionShapes>   
@@ -368,14 +382,34 @@ Whenever a new quest is added you can view it by pressing (F3). Quit this menu v
       end
    ?>
 
+<BlinkingBillboard position="5000,5800,5000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=portal2 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+<Billboard position="5000,5800,5000" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=portal2 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
+
 <DistanceTrigger name="start" position="0,94000,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=20 stayActive="true" delay=0 />
-            <EventTrigger active=false name=startAsteroids  stayActive="true">
-              <events>
-                <trigger>
-                  <EventListener event="start" />
-                </trigger>
-              </events>
-            </EventTrigger>
 
 <DistanceTrigger name="portal2" position="5000,5800,5000" target="Pawn" distance=20 stayActive="true" delay=3/>
     <SimpleNotification message="Housten: Now go through the portal!">
@@ -386,13 +420,7 @@ Whenever a new quest is added you can view it by pressing (F3). Quit this menu v
         </events>
     </SimpleNotification>
 
- <SimpleNotification message="Start wurde ausgeloest!">
-        <events>
-            <trigger>
-                <EventListener event="start" />
-            </trigger>
-        </events>
-    </SimpleNotification>
+
 
 <!----------------------------------------------------------------------------------------------------->
 <!--------------------------- PART TWO: Passing throug area with meteorits ---------------------------->
@@ -400,12 +428,12 @@ Whenever a new quest is added you can view it by pressing (F3). Quit this menu v
    
   <SpaceShip
         team      = 0
-        position  = "0,106000,0"
+        position  = "0,110000,0"
         roll      = 0   yaw=90  pitch=0
         mass      = 10000
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "wormhole"
-        radarname = "Wormhole to District 69" > 
+        radarname = "Wormhole to Area 51" > 
       <attached>
          <DistanceTriggerBeacon name="bcnDestroyer" />
          <Billboard position="0,0,0" material="Portals/Default" />
@@ -476,6 +504,61 @@ Whenever a new quest is added you can view it by pressing (F3). Quit this menu v
       </events>
    </SimpleNotification>
 
+   <DistanceTrigger name="portal6" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=13/>
+   <SimpleNotification message="John: I see the wormhole station on the radar">
+      <events>
+         <trigger>
+            <EventListener event="portal6" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+
+   <DistanceTrigger name="portal7" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=17/>
+   <SimpleNotification message="Houston: Is it black?">
+      <events>
+         <trigger>
+            <EventListener event="portal7" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal8" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=21/>
+   <SimpleNotification message="John: Yes">
+      <events>
+         <trigger>
+            <EventListener event="portal8" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+
+   <DistanceTrigger name="portal9" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=25/>
+   <SimpleNotification message="Houston: It should really look like a black hole.">
+      <events>
+         <trigger>
+            <EventListener event="portal9" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal10" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=29/>
+   <SimpleNotification message="John: It does... ">
+      <events>
+         <trigger>
+            <EventListener event="portal10" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal11" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=33/>
+   <SimpleNotification message="Houston: Hahaha ">
+      <events>
+         <trigger>
+            <EventListener event="portal11" />
+         </trigger>
+      </events>
+   </SimpleNotification>
 
 
     <SimpleNotification message="End of game">
