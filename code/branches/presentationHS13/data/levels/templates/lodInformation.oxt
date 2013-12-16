@@ -29,6 +29,12 @@
       <MeshLodInformation mesh=HeavyCruiser_sidearmLfront.mesh enabled=false/>
       <MeshLodInformation mesh=HeavyCruiser_sidearmR.mesh enabled=false/>
       <MeshLodInformation mesh=HeavyCruiser_sidearmRfront.mesh enabled=false/>
+
+	<MeshLodInformation mesh=ss_cylinder.mesh enabled=false/>
+	<MeshLodInformation mesh=ss_chair.mesh enabled=false/>
+	<MeshLodInformation mesh=ss_flag_room.mesh enabled=false/>
+	<MeshLodInformation mesh=ss_wall.mesh enabled=false/>
+
     </lodinformation>
   </Level>
 </Template>
