@@ -37,6 +37,7 @@ function P.onLoad()
     table.insert(P.commandList, "Core bDevMode_")
     table.insert(P.commandList, "HUDNavigation MarkerLimit_")
     table.insert(P.commandList, "HUDNavigation showDistance")
+    table.insert(P.commandList, "HUDRadar RadarMode_")
 
     P.nameList = {}
     table.insert(P.nameList, "Mouse sensitivity")
@@ -59,6 +60,7 @@ function P.onLoad()
     table.insert(P.nameList, "Developer's Mode")
     table.insert(P.nameList, "Marker Limit")
     table.insert(P.nameList, "Show Distance next to cursor")
+    table.insert(P.nameList, "Set Radar on 3D mode")
 
     P.linesList = {}
 

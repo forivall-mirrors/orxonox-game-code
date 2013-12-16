@@ -34,6 +34,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "util/OgreForwardRefs.h"
 #include "interfaces/RadarListener.h"
@@ -50,23 +51,41 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedOwner();
+        void setConfigValues();
 
     private:
         // XML accessors
         float getHalfDotSizeDistance() const { return this->halfDotSizeDistance_; }
         void setHalfDotSizeDistance(float distance) { this->halfDotSizeDistance_ = distance; }
 
-        void setDetectionLimit( float limit )
-        { this->detectionLimit_ = limit; }
-        float getDetectionLimit() const
-        { return this->detectionLimit_; }
+        void setDetectionLimit( float limit ) { this->detectionLimit_ = limit; }
+        float getDetectionLimit() const { return this->detectionLimit_; }
 
         float getMaximumDotSize() const { return this->maximumDotSize_; }
         void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }
 
+        float getMaximumDotSize3D() const { return this->maximumDotSize3D_; }
+        void setMaximumDotSize3D(float size) { this->maximumDotSize3D_ = size;}
+
+        std::string get2DMaterial() const {return this->material2D_; }
+        void set2DMaterial(std::string material2D) { this->material2D_ = material2D; }
+
+        std::string get3DMaterial() const {return this->material3D_; }
+        void set3DMaterial(std::string material3D) { this->material3D_ = material3D; }
+
+        std::string get3DMaterialFront() const {return this->material3DFront_; }
+        void set3DMaterialFront(std::string material3DFront) { this->material3DFront_ = material3DFront; }
+
+        std::string get3DMaterialBack() const {return this->material3DBack_; }
+        void set3DMaterialBack(std::string material3DBack) { this->material3DBack_ = material3DBack; }
+
         float getRadarSensitivity() const { return this->sensitivity_; }
         // used also by RadarListener interface!
         void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
+
+        // Determines angle between line of sight and x/z-plain on the 3D minimap
+        float getMapAngle() const { return this->mapAngle_; }
+        void setMapAngle(float mapAngle) { this->mapAngle_ = mapAngle; }
 
         // RadarListener interface
         virtual void addObject(RadarViewable* viewable);
@@ -84,8 +103,20 @@ namespace orxonox
         std::map<RadarViewable*, Ogre::PanelOverlayElement*> radarObjects_;
         Ogre::PanelOverlayElement* marker_;
 
+        bool RadarMode_; // Determines, if Radar runs in 3D or 2D Mode
+
         float halfDotSizeDistance_;
         float maximumDotSize_;
+        float maximumDotSize3D_;
+        float mapAngle_;
+
+        std::string material2D_;		//Material name for 2D map
+        std::string material3D_;		//Material names For the 3D minimap
+        std::string material3DFront_;
+        std::string material3DBack_;
+
+        Ogre::PanelOverlayElement* map3DFront_; //Overlayelements for the 3D minimap to be able to draw the points in a semi 3D matter
+        Ogre::PanelOverlayElement* map3DBack_;
 
         float sensitivity_;
         float detectionLimit_;
