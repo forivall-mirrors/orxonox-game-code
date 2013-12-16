@@ -33,7 +33,10 @@
 </Template>
 
 <Template name=pongball>
-  <PongBall>
+  <PongBall 
+   defScoreSound = "sounds/PlayerWinScore_cut.ogg"
+   defBatSound = "sounds/Button.ogg"
+   defBoundarySound = "sounds/Button.ogg">
     <attached>
       <Model mesh="sphere.mesh" scale=2 />
       <!--Billboard scale=0.2 colour="1.0, 1.0, 0.5" material="Examples/Flare" /-->

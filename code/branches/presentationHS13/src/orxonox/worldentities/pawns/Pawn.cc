@@ -45,6 +45,7 @@
 #include "weaponsystem/WeaponSlot.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSet.h"
+#include "sound/WorldSound.h"
 
 #include "controllers/FormationController.h"
 
@@ -99,6 +100,16 @@ namespace orxonox
         this->isHumanShip_ = this->hasLocalController();
 
         this->setSyncMode(ObjectDirection::Bidirectional); // needed to synchronise e.g. aimposition
+
+        if (GameMode::isMaster())
+        {
+            this->explosionSound_ = new WorldSound(this->getContext());
+            this->explosionSound_->setVolume(1.0f);
+        }
+        else
+        {
+            this->explosionSound_ = 0;
+        }
     }
 
     Pawn::~Pawn()
@@ -108,6 +119,7 @@ namespace orxonox
             if (this->weaponSystem_)
                 this->weaponSystem_->destroy();
         }
+
     }
 
     void Pawn::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -134,8 +146,11 @@ namespace orxonox
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
 
+        XMLPortParam(Pawn, "explosionSound",  setExplosionSound,  getExplosionSound,  xmlelement, mode);
+
         XMLPortParam ( RadarViewable, "radarname", setRadarName, getRadarName, xmlelement, mode );
     }
+
 
     void Pawn::registerVariables()
     {
@@ -289,7 +304,7 @@ namespace orxonox
 
     void Pawn::kill()
     {
-        this->damage(this->health_);
+    	this->damage(this->health_);
         this->death();
     }
 
@@ -313,7 +328,8 @@ namespace orxonox
         this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
-            // Set bAlive_ to false and wait for PawnManager to do the destruction
+            explosionSound_->play();
+        	// Set bAlive_ to false and wait for PawnManager to do the destruction
             this->bAlive_ = false;
 
             this->setDestroyWhenPlayerLeft(false);
@@ -530,6 +546,23 @@ namespace orxonox
         return 0;
     }
 
+
+    void Pawn::setExplosionSound(const std::string &explosionSound)
+    {
+        if(explosionSound_ )
+            explosionSound_->setSource(explosionSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& Pawn::getExplosionSound()
+    {
+        if( explosionSound_ )
+            return explosionSound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
+    }
 
 
 }

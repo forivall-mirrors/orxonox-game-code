@@ -24,6 +24,8 @@
     <Template link=lodtemplate_default />
   </templates>
   <?lua include("includes/notifications.oxi") ?>
+  
+  <WorldAmbientSound source="Nebula_metal.ogg" looping="true" playOnLoad="true" />
 
   <NotificationQueueCEGUI
     name="narrative"

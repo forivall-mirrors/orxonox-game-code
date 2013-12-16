@@ -84,7 +84,7 @@ namespace orxonox
     GSMainMenu::~GSMainMenu()
     {
         if (GameMode::playsSound())
-            this->ambient_->destroy();
+            this->ambient_->destroy(); //CHECK Thilo destroy ?preDestroy()? !!!!!!!
 
         InputManager::getInstance().destroyState("MainMenuHackery");
 

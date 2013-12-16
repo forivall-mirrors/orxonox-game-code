@@ -28,6 +28,19 @@
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/skyBoxMoreNebula"
   >
+  
+  <!-- SOUNDS & MUSIC -->
+    <WorldSound name="scoreSound" position="0,-2100,0" source="sounds/ReadyGo.ogg" >
+      <events>
+        <play>
+          <EventListener event="start" />
+        </play>
+      </events>
+    </WorldSound>
+    <DistanceTrigger name="start" position="0,-2100,0"  target="Pawn" distance=100 stayActive="true" delay=0.5 />
+  
+    <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
+  
 
     <?lua math.randomseed(98) ?>
 
@@ -462,6 +475,8 @@
         </WaypointPatrolController>
       </controller>
     </SpaceShip>
+    
+    
 
   </Scene>
 </Level>

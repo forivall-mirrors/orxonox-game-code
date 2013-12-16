@@ -53,7 +53,7 @@ namespace orxonox
         bool stop();
         void pause();
 
-        void setAmbientSource(const std::string& source);
+        bool setAmbientSource(const std::string& source);
         inline const std::string& getAmbientSource() const
             { return this->ambientSource_; }
 
@@ -67,7 +67,7 @@ namespace orxonox
     private:
         void preDestroy();
         float getRealVolume();
-        void moodChanged(const std::string& mood);
+        bool moodChanged(const std::string& mood);
         inline void ambientSourceChanged()
             { this->setAmbientSource(this->ambientSource_); }
         inline void playOnLoadChanged()

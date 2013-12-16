@@ -24,6 +24,8 @@
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
 ?>
+
+<WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" />
     
 <Level
 name="Dani's Testlevel"

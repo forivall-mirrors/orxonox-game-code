@@ -217,7 +217,7 @@ namespace orxonox
         SetConfigValueAlias(volume_[SoundType::All], "soundVolume_", 1.0f)
             .description("Defines the overall volume.")
             .callback(this, &SoundManager::checkSoundVolumeValidity);
-        SetConfigValueAlias(volume_[SoundType::Music], "ambientVolume_", 1.0f)
+        SetConfigValueAlias(volume_[SoundType::Music], "ambientVolume_", 0.7f)
             .description("Defines the ambient volume.")
             .callback(this, &SoundManager::checkAmbientVolumeValidity);
         SetConfigValueAlias(volume_[SoundType::Effects], "effectsVolume_", 1.0f)

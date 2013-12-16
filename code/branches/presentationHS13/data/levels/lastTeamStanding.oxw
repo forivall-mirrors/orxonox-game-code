@@ -32,6 +32,8 @@
     <?lua
       include("includes/pickups.oxi")
     ?>
+    
+    <WorldAmbientSound source="Nebula_metal.ogg" looping="true" playOnLoad="true" />
 
 <Bot />
 

@@ -46,7 +46,7 @@ namespace orxonox
 
     BaseSound::BaseSound()
         : bPooling_(false)
-        , volume_(1.0)
+        , volume_(0.7)
         , bLooping_(false)
         , state_(Stopped)
         , pitch_ (1.0)

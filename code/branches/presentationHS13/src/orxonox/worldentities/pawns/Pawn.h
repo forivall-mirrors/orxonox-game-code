@@ -36,6 +36,7 @@
 #include "interfaces/RadarViewable.h"
 #include "worldentities/ControllableEntity.h"
 
+
 namespace orxonox // tolua_export
 { // tolua_export
     class _OrxonoxExport Pawn // tolua_export
@@ -177,6 +178,9 @@ namespace orxonox // tolua_export
 
             virtual void changedVisibility();
 
+            void setExplosionSound(const std::string& engineSound);
+            const std::string& getExplosionSound();
+
         protected:
             virtual void preDestroy();
 
@@ -230,6 +234,9 @@ namespace orxonox // tolua_export
                 { this->weaponSystem_ = weaponsystem; }
 
             Vector3 aimPosition_;
+
+            WorldSound* explosionSound_;
+
     }; // tolua_export
 } // tolua_export
 
