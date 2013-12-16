@@ -442,7 +442,7 @@ namespace orxonox
         }
 
         if (pawn)
-            pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 1200 );
+            pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 3000 );
 
         if( this->getControllableEntity() && this->getControllableEntity()->getTarget() != 0 )
             this->getControllableEntity()->setTarget( 0 );
