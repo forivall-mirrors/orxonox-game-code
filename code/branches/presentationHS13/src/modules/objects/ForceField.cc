@@ -44,9 +44,13 @@ namespace orxonox
     /*static*/ const std::string ForceField::modeTube_s = "tube";
     /*static*/ const std::string ForceField::modeSphere_s = "sphere";
     /*static*/ const std::string ForceField::modeInvertedSphere_s = "invertedSphere";
+
+    /*static*/ const std::string ForceField::modeHomogen_s = "homogen";
+
     /*static*/ const std::string ForceField::modeNewtonianGravity_s = "newtonianGravity";
     /*static*/ const float ForceField::gravConstant_ = 6.673e-11;
     /*static*/ const float ForceField::attenFactor_ = 1;
+
 
     /**
     @brief
@@ -88,6 +92,7 @@ namespace orxonox
         XMLPortParam(ForceField, "massDiameter", setMassDiameter, getMassDiameter, xmlelement, mode).defaultValues(0);
         XMLPortParam(ForceField, "length", setLength  , getLength  , xmlelement, mode).defaultValues(2000);
         XMLPortParam(ForceField, "mode", setMode, getMode, xmlelement, mode);
+        XMLPortParam(ForceField, "forcedirection", setForceDirection, getForceDirection, xmlelement, mode).defaultValues(Vector3(0,-400,0));
     }
     
     void ForceField::registerVariables()
@@ -195,6 +200,21 @@ namespace orxonox
                 }
             }
         }
+        else if(this->mode_ == forceFieldMode::homogen)
+        {
+        	// Iterate over all objects that could possibly be affected by the ForceField.
+        	for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
+        	{
+        		Vector3 distanceVector = it->getWorldPosition() - this->getWorldPosition();
+        	    float distance = distanceVector.length();
+        	    if (distance < this->radius_ && distance > this->massRadius_)
+        	    {
+        	    	// Add a Acceleration in forceDirection_.
+        	    	// Vector3(0,0,0) is the direction, where the force should work.
+        	    	it->addAcceleration(forceDirection_ , Vector3(0,0,0));
+        	    }
+        	}
+        }
     }
 
     /**
@@ -213,6 +233,10 @@ namespace orxonox
             this->mode_ = forceFieldMode::invertedSphere;
         else if(mode == ForceField::modeNewtonianGravity_s)
             this->mode_ = forceFieldMode::newtonianGravity;
+
+        else if(mode == ForceField::modeHomogen_s)
+            this->mode_ = forceFieldMode::homogen;
+
         else
         {
             orxout(internal_warning) << "Wrong mode '" << mode << "' in ForceField. Setting to 'tube'." << endl;
@@ -238,6 +262,10 @@ namespace orxonox
                 return ForceField::modeInvertedSphere_s;
             case forceFieldMode::newtonianGravity:
                 return ForceField::modeNewtonianGravity_s;
+
+            case forceFieldMode::homogen:
+                return ForceField::modeHomogen_s;
+
             default:
                 return ForceField::modeTube_s;
         }

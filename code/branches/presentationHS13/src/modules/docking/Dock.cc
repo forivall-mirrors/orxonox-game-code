@@ -68,6 +68,8 @@ namespace orxonox
         XMLPortObject(Dock, DockingEffect, "effects", addEffect, getEffect, xmlelement, mode);
         XMLPortObject(Dock, DockingAnimation, "animations", addAnimation, getAnimation, xmlelement, mode);
         XMLPortEventSink(Dock, BaseObject, "execute", execute, xmlelement, mode);
+        XMLPortEventSink(Dock, BaseObject, "undocking", undocking, xmlelement, mode);
+
     }
 
     void Dock::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -75,7 +77,55 @@ namespace orxonox
         SUPER(Dock, XMLEventPort, xmlelement, mode);
 
         XMLPortEventSink(Dock, BaseObject, "execute", execute, xmlelement, mode);
+
+        XMLPortEventSink(Dock, BaseObject, "undocking", undocking, xmlelement, mode);
     }
+
+
+    bool Dock::undocking(bool bTriggered, BaseObject* trigger)
+    {
+
+    	PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
+    	PlayerInfo* player = NULL;
+
+    	// Check whether it is a player trigger and extract pawn from it
+    	if(pTrigger != NULL)
+    	{
+    	      if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+    	      orxout(verbose, context::docking) << "Docking:execute PlayerTrigger was not triggered by a player.." << endl;
+    	      return false;
+    	      }
+    	      player = pTrigger->getTriggeringPlayer();
+    	}
+    	else
+    	{
+    	      orxout(verbose, context::docking) << "Docking::execute Not a player trigger, can't extract pawn from it.." << endl;
+    	      return false;
+    	}
+    	if(player == NULL)
+    	{
+    	      orxout(verbose, context::docking) << "Docking::execute Can't retrieve PlayerInfo from Trigger. (" << trigger->getIdentifier()->getName() << ")" << endl;
+    	      return false;
+    	}
+
+ 	    if(bTriggered)
+    	{
+    	      // Add player to this Docks candidates
+    	      candidates_.insert(player);
+
+    	      // Show docking dialog
+    	      this->showUndockingDialogHelper(player);
+    	}
+    	else
+    	{
+    	      // Remove player from candidates list
+    	      candidates_.erase(player);
+    	}
+
+    	return true;
+    }
+
+
 
     bool Dock::execute(bool bTriggered, BaseObject* trigger)
     {
@@ -118,6 +168,24 @@ namespace orxonox
 
         return true;
     }
+
+
+    void Dock::showUndockingDialogHelper(PlayerInfo* player)
+        {
+            assert(player);
+
+            if(!player->isHumanPlayer())
+                return;
+
+            if(GameMode::isMaster())
+            {
+                if(GameMode::showsGraphics())
+                    GUIManager::showGUI("UndockingDialog");
+            }
+            else
+                callStaticNetworkFunction(Dock::showDockingDialog, player->getClientID());
+
+        }
 
     void Dock::showDockingDialogHelper(PlayerInfo* player)
     {
@@ -176,6 +244,7 @@ namespace orxonox
 
         if (animations_.empty())
             return dockingAnimationFinished(player);
+
         else
             DockingAnimation::invokeAnimation(true, player, animations_);
 
