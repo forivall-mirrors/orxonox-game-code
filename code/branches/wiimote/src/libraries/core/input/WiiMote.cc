@@ -15,6 +15,11 @@ namespace orxonox
 	      exit(0);
 		IntVector2 o(0,0);
 		float r = 0; //roll variable
+		if (p->ExpansionDevice.GetType()!=CExpansionDevice::TYPE_NUNCHUK)
+			{
+				p->UpdateStatus();
+				PWii->RefreshWiimotes();
+			}
 		for (int i=0; i<4; i++)
 		{
 			if(PWii->Poll())
@@ -28,6 +33,8 @@ namespace orxonox
 								//orxout()<<"fak u dolan"<<endl;
 								CommandExecutor::execute("fire 0", 0, 0);
 							}
+							if(p->Buttons.isPressed(CButtons::BUTTON_B)||p->Buttons.isJustPressed(CButtons::BUTTON_B))
+								CommandExecutor::execute("boost");
 							if(p->ExpansionDevice.GetType()==CExpansionDevice::TYPE_NUNCHUK)
 							{
 								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_C))
@@ -53,25 +60,19 @@ namespace orxonox
 		}
 		r/=4;
 		std::stringstream temp;
-//		temp << "scale ";
-		if (r>0)
-			temp << "HumanController rotateRoll 1,1";
-		if (r<0)
-			temp << "HumanController rotateRoll -1,-1";
+		if (r>4.5)
+			temp << "HumanController rotateRoll " << r/6 << ",1";
+		if (r<-4.5)
+			temp << "HumanController rotateRoll "<< r/6 << ",-1";
 		if (r==0)
 			temp << "";
-//		temp << " rotateRoll";
-
 		string com = temp.str();
-		//orxout()<<com<<endl;
 		CommandExecutor::execute(com, 0, 0);
 
 		IntVector2 abs(0,0);
 		IntVector2 rel(0,0);
 		IntVector2 clippingSize(1920, 1080);
 		p->IR.GetCursorPosition(o.x, o.y);
-		//orxout() << "y: " << o.y << " x: " << o.x << endl;
-		//orxout() << p->IR.GetNumDots() << endl;
 		rel.x = (o.x-lastCursor.x);
 		rel.y = (o.y-lastCursor.y);
 		abs.x = o.x;
@@ -83,7 +84,6 @@ namespace orxonox
 					}
 		lastCursor.x = o.x;
 		lastCursor.y = o.y;
-		lastOrientation.roll = r;
 
 	}
 	void WiiMote::clearBuffers()
