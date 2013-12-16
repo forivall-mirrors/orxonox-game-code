@@ -78,6 +78,8 @@ namespace orxonox
         {
             IntVector2 abs(e.state.X.abs, e.state.Y.abs);
             IntVector2 rel(e.state.X.rel, e.state.Y.rel);
+            orxout()<<"absolute x,y: " << abs.x<< ", " << abs.y << endl;
+            orxout()<<"relative x,y: " << rel.x<< ", " << rel.y << endl;
             IntVector2 clippingSize(e.state.width, e.state.height);
             for (unsigned int i = 0; i < inputStates_.size(); ++i)
                 inputStates_[i]->mouseMoved(abs, rel, clippingSize);
