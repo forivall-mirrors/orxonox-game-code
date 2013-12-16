@@ -28,16 +28,16 @@ namespace orxonox
 								//orxout()<<"fak u dolan"<<endl;
 								CommandExecutor::execute("fire 0", 0, 0);
 							}
-//							if(p->ExpansionDevice.GetType()==CExpansionDevice::TYPE_NUNCHUK)
-//							{
-//								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_C))
-//									CommandExecutor::execute("NewHumanController accelerate");
-//								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
-//									CommandExecutor::execute("NewHumanController decelerate");
-//							}
-//							float dummyPitch, dummyYaw, dummyRoll;
-//							p->Accelerometer.GetOrientation(dummyPitch, dummyRoll, dummyYaw);
-//							r += dummyRoll;
+							if(p->ExpansionDevice.GetType()==CExpansionDevice::TYPE_NUNCHUK)
+							{
+								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_C))
+									CommandExecutor::execute("NewHumanController accelerate");
+								if(p->ExpansionDevice.Nunchuk.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
+									CommandExecutor::execute("NewHumanController decelerate");
+							}
+							float dummyPitch, dummyYaw, dummyRoll;
+							p->Accelerometer.GetOrientation(dummyPitch, dummyRoll, dummyYaw);
+							r += dummyRoll;
 							break;
 						}
 						case CWiimote::EVENT_STATUS:
@@ -51,21 +51,27 @@ namespace orxonox
 					}
 				}
 		}
-//		r/=4;
-//		std::stringstream temp;
+		r/=4;
+		std::stringstream temp;
 //		temp << "scale ";
-//		temp << (r-lastOrientation.roll);
+		if (r>0)
+			temp << "HumanController rotateRoll 1,1";
+		if (r<0)
+			temp << "HumanController rotateRoll -1,-1";
+		if (r==0)
+			temp << "";
 //		temp << " rotateRoll";
-//		string com = temp.str();
-//		orxout()<<com<<endl;
-//		//CommandExecutor::execute(com, 0, 0);
+
+		string com = temp.str();
+		//orxout()<<com<<endl;
+		CommandExecutor::execute(com, 0, 0);
 
 		IntVector2 abs(0,0);
 		IntVector2 rel(0,0);
 		IntVector2 clippingSize(1920, 1080);
 		p->IR.GetCursorPosition(o.x, o.y);
-//		orxout() << "y: " << o.y << " x: " << o.x << endl;
-//		orxout() << p->IR.GetNumDots() << endl;
+		//orxout() << "y: " << o.y << " x: " << o.x << endl;
+		//orxout() << p->IR.GetNumDots() << endl;
 		rel.x = (o.x-lastCursor.x);
 		rel.y = (o.y-lastCursor.y);
 		abs.x = o.x;
