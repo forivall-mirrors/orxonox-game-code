@@ -90,7 +90,7 @@ namespace orxonox
             ControllableEntity::fire(0);
 
         // Camera
-        Camera* camera = this->getCamera();
+        WeakPtr<Camera> camera = this->getCamera();
         if (camera != NULL)
         {
             camera->setPosition(Vector3(-pos.z, -posforeward, 0));
