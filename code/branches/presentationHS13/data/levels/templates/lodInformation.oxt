@@ -41,6 +41,7 @@
 	  <MeshLodInformation mesh=ss_chair.mesh enabled=false/>
 	  <MeshLodInformation mesh=ss_flag_room.mesh enabled=false/>
 	  <MeshLodInformation mesh=ss_wall.mesh enabled=false/>
+	  <MeshLodInformation mesh=ss_tube_twd.mesh enabled=false/>
 
     </lodinformation>
   </Level>
