@@ -42,7 +42,8 @@
 	  <MeshLodInformation mesh=ss_flag_room.mesh enabled=false/>
 	  <MeshLodInformation mesh=ss_wall.mesh enabled=false/>
 	  <MeshLodInformation mesh=ss_tube_twd.mesh enabled=false/>
-
+	  <MeshLodInformation mesh=ss_spind.mesh enabled=false/>
+	  
     </lodinformation>
   </Level>
 </Template>
