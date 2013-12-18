@@ -1,3 +1,5 @@
+<!-- -->
+
 <LevelInfo
  name = "turret Test"
  description = "A level with a turret in it."
@@ -43,7 +45,7 @@
 
 
 
-<Turret position="0,10,0" pitch="90" yaw="0" roll="0">
+<Turret position="-43600,-30500,30000" pitch="90" yaw="0" roll="0">
     <templates>
         <Template link=spaceshipturret />
     </templates>
