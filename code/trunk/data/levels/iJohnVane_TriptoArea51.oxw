@@ -436,36 +436,22 @@
 <!--------------------------- PART TWO: Passing throug area with meteorits ---------------------------->
 <!----------------------------------------------------------------------------------------------------->
    
-  <SpaceShip
+  <Pawn
         team      = 0
         position  = "0,118000,0"
         roll      = 0   yaw=90  pitch=0
         mass      = 10000
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "wormhole"
-        radarname = "Wormhole to Area 51" > 
+        radarname = "Wormhole to Area 51" >
+   </Pawn>     
+  <StaticEntity position="0,118000,0" collisionType=static yaw=90>
       <attached>
          <DistanceTriggerBeacon name="bcnDestroyer" />
          <Billboard position="0,0,0" material="Portals/Default" />
 	<DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
 
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
-   <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
-        <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
-        <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
-        <Model mesh="cube.mesh" mass=10 position="-280,0,0" scale3D="163,50,50" />
-        <Model mesh="cube.mesh" mass=10 position="140,0,-240" scale3D="163,50,50"  yaw=-120/>
-        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="163,50,50" yaw=-240/>
-        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
-        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-120/>
-        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-240/>
-        <Model mesh="cube.mesh" mass=10 position="0,400,0" scale3D="43,110,26" yaw=-30 />
-        <Model mesh="cube.mesh" mass=10 position="-200,100,0" scale3D="26,50,43" />
-        <Model mesh="cube.mesh" mass=10 position="100,100,-173" scale3D="43,50,26" yaw=-30/>
-        <Model mesh="cube.mesh" mass=10 position="100,100,173" scale3D="43,50,26" yaw=30/>
-        <Model mesh="cube.mesh" mass=10 position="-100,264,0" scale3D="26,105,43" roll=-49/>
-        <Model mesh="cube.mesh" mass=10 position="50,264,-87" scale3D="26,105,43" roll=-49 yaw=-120/>
-        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/>     -->
       </attached>
       <collisionShapes>
         <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
@@ -485,7 +471,7 @@
         <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
         <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
       </collisionShapes>
-    </SpaceShip>
+    </StaticEntity>
 
  <DistanceTrigger name="portal3" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=1/>
    <SimpleNotification message="Housten: Reach the wormhole to Area 51">
