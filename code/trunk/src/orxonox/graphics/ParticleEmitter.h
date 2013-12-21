@@ -32,11 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include "worldentities/StaticEntity.h"
+#include "worldentities/MovableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleEmitter : public StaticEntity
+    class _OrxonoxExport ParticleEmitter : public MovableEntity
     {
         public:
             ParticleEmitter(Context* context);

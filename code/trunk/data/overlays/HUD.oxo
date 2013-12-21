@@ -67,7 +67,7 @@
 
   <HUDRadar
    name          = "Radar"
-   background    = "Orxonox/Radar"
+   background    = "Orxonox/radar"
    correctAspect = true
    size          = "0.17, 0.17"
    position      = "0.5, 1.0"

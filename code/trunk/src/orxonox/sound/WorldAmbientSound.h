@@ -33,6 +33,9 @@
 
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
+#include <string>
+#include <vector>
+
 
 namespace orxonox
 {
@@ -53,11 +56,31 @@ namespace orxonox
 
             void play();
 
+            //This function changes the current ambient song.
+            //You can call nextSong() active in the level
+            //by pressing the key 'M'.
+            static void nextSong();
+
         private:
             void registerVariables();
 
+            //Vector with the diffrent available level sounds.
+            //The sound names are pushed in the WorldAmbientSound-constructor.
+            static std::vector<std::string> soundList_;
+
+            // This value will be initialized below, don't make this into
+            // a const, since we want to change it in nextSong().
+            static int soundNumber_;
+
+
             AmbientSound* ambientSound_;
     };
+
+    // This is an initialization for the soundnumber variable. Since it is
+    // static, we have to initialize it this way.
+    int WorldAmbientSound::soundNumber_ = 0;
+    std::vector<std::string> WorldAmbientSound::soundList_;
+
 }
 
 #endif /* _WorldAmbientSound_H__ */

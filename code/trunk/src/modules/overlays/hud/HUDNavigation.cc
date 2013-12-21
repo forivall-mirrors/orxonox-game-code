@@ -73,8 +73,8 @@ namespace orxonox
     HUDNavigation::HUDNavigation(Context* context) :
         OrxonoxOverlay(context)
     {
-        RegisterObject(HUDNavigation)
-;        this->setConfigValues();
+        RegisterObject(HUDNavigation);
+        this->setConfigValues();
 
         // Set default values
         this->setFont("Monofur");

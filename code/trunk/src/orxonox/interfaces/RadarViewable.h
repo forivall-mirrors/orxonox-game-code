@@ -62,6 +62,12 @@ namespace orxonox
 
         virtual void setRadarName(const std::string& name)
             {
+            // The following if-clause hides objects with radarname "HIDDEN"
+                if (name == "HIDDEN")
+                {
+                    this->bVisibility_ = 0;
+                    this->settingsChanged();
+                }
                 if (this->radarName_ != name)
                 {
                     this->radarName_ = name;

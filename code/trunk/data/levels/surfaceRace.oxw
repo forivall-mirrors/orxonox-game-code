@@ -10,6 +10,7 @@ TODO:
  tags = "gametype"
 />
 
+
 <?lua
   include("stats.oxo")
   include("HUDTemplates3.oxo")
@@ -444,6 +445,17 @@ TODO:
     end
     ?>
     <?lua end ?>
+    
+    <!-- SOUNDS & MUSIC -->
+    <WorldSound name="scoreSound" position="0,8050,0" source="sounds/ReadyGo.ogg" >
+      <events>
+        <play>
+          <EventListener event="start" />
+        </play>
+      </events>
+    </WorldSound>
+    <DistanceTrigger name="start" position="0,8050,0"  target="Pawn" distance=100 stayActive="true" delay=0.5 />
+    <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true" />
 
   </Scene>
 </Level>

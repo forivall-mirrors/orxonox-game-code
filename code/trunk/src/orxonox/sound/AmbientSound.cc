@@ -78,13 +78,13 @@ namespace orxonox
         return SoundManager::getInstance().getRealVolume(SoundType::Music);
     }
 
-    void AmbientSound::setAmbientSource(const std::string& source)
+    bool AmbientSound::setAmbientSource(const std::string& source)
     {
         this->ambientSource_ = source;
-        this->moodChanged(MoodManager::getInstance().getMood());
+        return(this->moodChanged(MoodManager::getInstance().getMood()));
     }
 
-    void AmbientSound::moodChanged(const std::string& mood)
+    bool AmbientSound::moodChanged(const std::string& mood)
     {
         if (GameMode::playsSound())
         {
@@ -94,12 +94,19 @@ namespace orxonox
             {
                 orxout(user_info) << "Loading ambient sound " << path << "..." << endl; // TODO: make this output internal if we implement sound streaming
                 this->setSource(path);
+
+                // all went fine
+                return true;
             }
             else
             {
                 orxout(internal_warning, context::sound) << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << endl;
+
+                // everything went southways
+                return false;
             }
         }
+        return false;
     }
 
     void AmbientSound::setPlayOnLoad(bool val)

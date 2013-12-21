@@ -1,3 +1,5 @@
+<!---->
+
 <LevelInfo
  name = "Under Attack"
  description = "Fight the transporter."
@@ -19,6 +21,7 @@
     <Template link=lodtemplate_default />
   </templates>
   <?lua include("includes/notifications.oxi") ?>
+  <WorldAmbientSound source="Jupiter.ogg" looping="true" playOnLoad="true" />
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"

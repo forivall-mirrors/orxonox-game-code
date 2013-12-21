@@ -123,6 +123,8 @@ namespace orxonox
             bool bShowRightPlayer_; //!< Whether the right player is shown.
             WeakPtr<PlayerInfo> player1_; //!< Store information about left player permanently.
             WeakPtr<PlayerInfo> player2_; //!< Same for the right player. To end the game properly.
+            WorldSound* scoreSound_;
+
     };
 }
 #endif /* _PongScore_H__ */

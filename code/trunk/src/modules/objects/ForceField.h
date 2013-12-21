@@ -1,3 +1,4 @@
+
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
@@ -56,7 +57,8 @@ namespace orxonox
             tube, //!< The ForceField has a tube shape.
             sphere, //!< The ForceField has a spherical shape.
             invertedSphere, //!< The ForceField has a spherical shape but "inverted" behavior.
-            newtonianGravity //!< The ForceField imitates Newtonian gravitation for use in stellar bodies.
+            newtonianGravity, //!< The ForceField imitates Newtonian gravitation for use in stellar bodies.
+            homogen //!< Local homogenous Force field with changeable direction for the Space Station
         };
     }
 
@@ -65,6 +67,7 @@ namespace orxonox
         Implements a force field, that applies a force to any @ref orxonox::MobileEntity "MobileEntity" that enters its range.
 
         The following parameters can be set to specify the behavior of the ForceField.
+        - @b forcedirection The direction and the strength of the homogenous force field. Default is 0,-400,0.
         - @b velocity The amount of force the ForceField excerts. Default is 100.
         - @b diameter The diameter of the ForceField. Default is 500.
         - @b length The length of the ForceField. Default is 2000.
@@ -146,6 +149,13 @@ namespace orxonox
             inline float getLength()
                 { return this->halfLength_*2; }
 
+            inline void setForceDirection(Vector3 forcedir)
+                { this->forceDirection_ = forcedir; }
+
+            inline Vector3 getForceDirection()
+                { return this->forceDirection_; }
+
+
             void setMode(const std::string& mode); //!< Set the mode of the ForceField.
             const std::string& getMode(void); //!< Get the mode of the ForceField.
 
@@ -155,6 +165,8 @@ namespace orxonox
             static const std::string modeSphere_s;
             static const std::string modeInvertedSphere_s;
             static const std::string modeNewtonianGravity_s;
+
+            static const std::string modeHomogen_s;
 
             float velocity_; //!< The velocity of the ForceField.
             float radius_; //!< The radius of the ForceField.
@@ -166,6 +178,7 @@ namespace orxonox
             static const float gravConstant_;
             //! Attenuation factor for Newtonian ForceFields
             static const float attenFactor_;
+            Vector3 forceDirection_;
   };
 }
 

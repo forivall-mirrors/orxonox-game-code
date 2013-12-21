@@ -36,6 +36,31 @@
     all Objects are organized in columns
 ---->
 
+<!--- Spacestation --->
+      <!--Model position="0,0,-160" yaw="90" pitch="-90" roll="0" scale="1" mesh="ss_box_lowpoly.mesh" /-->
+      <Model position="0, 20,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_box_lowpoly_ad1.mesh" />
+      <Model position="0, 40,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_box_lowpoly_ad2.mesh" />
+      <Model position="0, 60,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_box_lowpoly_ad3.mesh" />
+      <Model position="0, 80,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_box_lowpoly_ad4.mesh" />
+      <Model position="0,-20,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_tube.mesh" />
+      <Model position="0,-40,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_tube_twd.mesh" />
+      <Model position="0,-60,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_tube_x.mesh" />
+      <Model position="0,-80,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_wall.mesh" />
+      <Model position="0,-100,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_table_cracked.mesh" />
+      <Model position="0,-120,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_table.mesh" />
+      <Model position="0,-140,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_spind.mesh" />
+      <Model position="0,-160,-160" yaw="90" pitch="-90" roll="0" scale="0.01" mesh="ss_machine.mesh" />
+      <Model position="0,-180,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_flag_room.mesh" />
+      <Model position="0,-200,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_flag_eu.mesh" />
+      <Model position="0,-220,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_flag_csa.mesh" />
+      <Model position="0,-240,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_flag_cau.mesh" />
+      <Model position="0,-260,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_flag_aean.mesh" />
+      <Model position="0,-280,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_door.mesh" />
+      <Model position="0,-300,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_cylinder.mesh" />
+      <Model position="0,-320,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_curve.mesh" />
+      <Model position="0,-340,-160" yaw="90" pitch="-90" roll="0" scale="5" mesh="ss_chair.mesh" />
+      
+
 <!--- Whole Objects --->
       <Model position="0, 0,-120" yaw="90" pitch="0" roll="0" scale="1" mesh="HydroHarvester.mesh" />
 
@@ -151,7 +176,7 @@
       <!--Model position="0,60,200" yaw="90" pitch="-90" roll="0" scale="3" mesh="Tower_ME.mesh" /-->
       <!--Model position="0,80,200" yaw="90" pitch="-90" roll="0" scale="5" mesh="SmallPart1.mesh" /-->
       <Model position="0,-20,200" yaw="90" pitch="-90" roll="0" scale="4" mesh="raceCheckPoint.mesh" />
-      <Model position="0,-40,200" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="Spacegate.mesh" />
+      <Model position="0,-40,200" yaw="90" pitch="0" roll="0" scale="0.5" mesh="Spacegate.mesh" />
 
       <Model position="0,-60,200" yaw="90" pitch="-90" roll="0" scale="0.5" mesh="BigSpacegate.mesh" />
       <!--Model position="0,-80,200" yaw="90" pitch="-90" roll="0" scale="5" mesh="SmallPart2" /> <!--- WHY doesn't it load ??--->

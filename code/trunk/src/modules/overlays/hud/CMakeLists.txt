@@ -17,4 +17,5 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   LastManStandingInfos.cc
   PauseNotice.cc
   LastTeamStandingInfos.cc
+  CountDown.cc
 )

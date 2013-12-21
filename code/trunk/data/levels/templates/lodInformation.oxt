@@ -16,10 +16,34 @@
       <MeshLodInformation mesh=HydroHarvester.mesh enabled=false />
       <MeshLodInformation mesh=turretHead.mesh enabled=false />
       <MeshLodInformation mesh=LaserBeam2.mesh enabled=false/>
+      <MeshLodInformation mesh=asteroid_ice.mesh enabled=false/>
+      <MeshLodInformation mesh=ast1.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast2.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast3.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast4.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast5.mesh  lodQuality=0.1/>
+      <MeshLodInformation mesh=ast6.mesh  lodQuality=0.1/>
 
       <!-- disable LOD for some debris meshes which caused a crash (fixed in Ogre 1.7.3) -->
       <MeshLodInformation mesh=BodyDebris1.mesh enabled=false/>
       <MeshLodInformation mesh=WingDebris2.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_body.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_frontL.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_frontR.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_partL.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_partR.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_sidearmL.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_sidearmLfront.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_sidearmR.mesh enabled=false/>
+      <MeshLodInformation mesh=HeavyCruiser_sidearmRfront.mesh enabled=false/>
+
+	  <MeshLodInformation mesh=ss_cylinder.mesh enabled=false/>
+	  <MeshLodInformation mesh=ss_chair.mesh enabled=false/>
+	  <MeshLodInformation mesh=ss_flag_room.mesh enabled=false/>
+	  <MeshLodInformation mesh=ss_wall.mesh enabled=false/>
+	  <MeshLodInformation mesh=ss_tube_twd.mesh enabled=false/>
+	  <MeshLodInformation mesh=ss_spind.mesh enabled=false/>
+	  
     </lodinformation>
   </Level>
 </Template>

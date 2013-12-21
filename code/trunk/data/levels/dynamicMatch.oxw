@@ -4,6 +4,7 @@
  tags = "gametype"
  screenshot = "dynamicMatch.png"
 />
+<WorldAmbientSound source="Mars.ogg" looping="true" playOnLoad="true" />
 
 <?lua
   include("HUDTemplates3.oxo")

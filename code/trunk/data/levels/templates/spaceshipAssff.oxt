@@ -36,6 +36,8 @@
    mass              = 100
    linearDamping     = 0.7
    angularDamping    = 0.9999999
+
+   explosionSound = "sounds/Explosion2.ogg"
   >
     <engines>
       <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipassffengine />
@@ -81,7 +83,7 @@
 
    defEngineSndNormal = "sounds/Engine_low.ogg"
    defEngineSndBoost = "sounds/Engine_high.ogg"
-
+   
    accelerationfront     = 500
    accelerationbrake     = 500
    accelerationback      =  125

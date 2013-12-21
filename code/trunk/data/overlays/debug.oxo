@@ -34,6 +34,21 @@
    font     = "Monofur"
    textsize = 0.03
   />
+  
+  <OverlayText
+   name     = "PositionTextCaption"
+   position = "0.03, 0.13"
+   font     = "Monofur"
+   caption  = "Position: "
+   textsize = 0.03
+  />
+  
+  <DebugPositionText
+   name     = "PositionText"
+   position = "0.3, 0.13"
+   font     = "Monofur"
+   textsize = 0.03
+  />
 
 </OverlayGroup>
 

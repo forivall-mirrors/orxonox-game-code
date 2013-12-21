@@ -40,6 +40,9 @@
 
 #include "PongBat.h"
 
+#include "sound/WorldSound.h"
+#include "core/XMLPort.h"
+
 namespace orxonox
 {
     RegisterClass(PongBall);
@@ -65,6 +68,23 @@ namespace orxonox
         this->relMercyOffset_ = 0.05f;
 
         this->registerVariables();
+
+        //initialize sound
+        if (GameMode::isMaster())
+             {
+                 this->defScoreSound_ = new WorldSound(this->getContext());
+                 this->defScoreSound_->setVolume(1.0f);
+                 this->defBatSound_ = new WorldSound(this->getContext());
+                 this->defBatSound_->setVolume(0.4f);
+                 this->defBoundarySound_ = new WorldSound(this->getContext());
+                 this->defBoundarySound_->setVolume(0.5f);
+             }
+             else
+             {
+                 this->defScoreSound_ = 0;
+                 this->defBatSound_ = 0;
+                 this->defBoundarySound_ = 0;
+             }
     }
 
     /**
@@ -80,6 +100,15 @@ namespace orxonox
 
             delete[] this->batID_;
         }
+    }
+
+    //xml port for loading sounds
+    void PongBall::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(PongBall, XMLPort, xmlelement, mode);
+        XMLPortParam(PongBall, "defScoreSound",  setDefScoreSound,  getDefScoreSound,  xmlelement, mode);
+        XMLPortParam(PongBall, "defBatSound",  setDefBatSound,  getDefBatSound,  xmlelement, mode);
+        XMLPortParam(PongBall, "defBoundarySound",  setDefBoundarySound,  getDefBoundarySound,  xmlelement, mode);
     }
 
     /**
@@ -116,7 +145,8 @@ namespace orxonox
         // If the ball has gone over the top or bottom boundary of the playing field (i.e. the ball has hit the top or bottom delimiters).
         if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
         {
-            // Its velocity in z-direction is inverted (i.e. it bounces off).
+            defBoundarySound_->play(); //play boundary sound
+        	// Its velocity in z-direction is inverted (i.e. it bounces off).
             velocity.z = -velocity.z;
             // And its position is set as to not overstep the boundary it has just crossed.
             if (position.z > this->fieldHeight_ / 2)
@@ -141,7 +171,8 @@ namespace orxonox
                     distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
                     if (fabs(distance) <= 1) // If the bat is there to parry.
                     {
-                        // Set the ball to be exactly at the boundary.
+                        defBatSound_->play(); //play bat sound
+                    	// Set the ball to be exactly at the boundary.
                         position.x = this->fieldWidth_ / 2;
                         // Invert its velocity in x-direction (i.e. it bounces off).
                         velocity.x = -velocity.x;
@@ -154,6 +185,7 @@ namespace orxonox
                     // If the left player scores.
                     else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
+                    	defScoreSound_->play();//play score sound
                         if (this->getGametype() && this->bat_[0])
                         {
                             this->getGametype()->playerScored(this->bat_[0]->getPlayer());
@@ -168,7 +200,8 @@ namespace orxonox
                     distance = (position.z - this->bat_[0]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
                     if (fabs(distance) <= 1) // If the bat is there to parry.
                     {
-                        // Set the ball to be exactly at the boundary.
+                        defBatSound_->play(); //play bat sound
+                    	// Set the ball to be exactly at the boundary.
                         position.x = -this->fieldWidth_ / 2;
                         // Invert its velocity in x-direction (i.e. it bounces off).
                         velocity.x = -velocity.x;
@@ -181,6 +214,7 @@ namespace orxonox
                     // If the right player scores.
                     else if (GameMode::isMaster() && position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
+                    	defScoreSound_->play();//play score sound
                         if (this->getGametype() && this->bat_[1])
                         {
                             this->getGametype()->playerScored(this->bat_[1]->getPlayer());
@@ -260,5 +294,56 @@ namespace orxonox
             this->bat_[0] = orxonox_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[0]));
         if (this->batID_[1] != OBJECTID_UNKNOWN)
             this->bat_[1] = orxonox_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[1]));
+    }
+
+    void PongBall::setDefScoreSound(const std::string &pongSound)
+    {
+        if( defScoreSound_ )
+            defScoreSound_->setSource(pongSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& PongBall::getDefScoreSound()
+    {
+        if( defScoreSound_ )
+            return defScoreSound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
+    }
+
+    void PongBall::setDefBatSound(const std::string &pongSound)
+    {
+        if( defBatSound_ )
+            defBatSound_->setSource(pongSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& PongBall::getDefBatSound()
+    {
+        if( defBatSound_ )
+            return defBatSound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
+    }
+
+    void PongBall::setDefBoundarySound(const std::string &pongSound)
+    {
+        if( defBoundarySound_ )
+            defBoundarySound_->setSource(pongSound);
+        else
+            assert(0); // This should never happen, because soundpointer is only available on master
+    }
+
+    const std::string& PongBall::getDefBoundarySound()
+    {
+        if( defBoundarySound_ )
+            return defBoundarySound_->getSource();
+        else
+            assert(0);
+        return BLANKSTRING;
     }
 }

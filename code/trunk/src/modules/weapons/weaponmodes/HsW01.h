@@ -58,7 +58,7 @@ namespace orxonox
             virtual void fire();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-        private:
+        protected:
             /**
             @brief Set the mesh.
             @param mesh The mesh name.
@@ -108,7 +108,7 @@ namespace orxonox
             float getDelay() const
                 { return this->delay_; }
 
-            void shot();
+            virtual void shot();
             void muzzleflash();
 
             std::string material_; //!< The material.

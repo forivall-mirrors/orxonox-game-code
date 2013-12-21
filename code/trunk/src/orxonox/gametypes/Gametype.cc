@@ -170,7 +170,6 @@ namespace orxonox
                     entity->setPosition(oldentity->getWorldPosition());
                     entity->setOrientation(oldentity->getWorldOrientation());
                 }
-
                 it->first->startControl(entity);
             }
             else
