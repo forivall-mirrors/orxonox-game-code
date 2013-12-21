@@ -42,9 +42,45 @@ namespace orxonox
 {
     RegisterClass(BigExplosion);
 
-    BigExplosion::BigExplosion(Context* context) : StaticEntity(context)
+    BigExplosion::BigExplosion(Context* context) : MobileEntity(context)
     {
         RegisterObject(BigExplosion);
+
+        if ( GameMode::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
+            ThrowException(AbortLoading, "Can't create BigExplosion, no scene or no scene manager given.");
+
+        this->bStop_ = false;
+        this->LOD_ = LODParticle::Normal;
+
+        if ( GameMode::showsGraphics() )
+        {
+            try
+            {
+                this->init();
+            }
+            catch (const std::exception& ex)
+            {
+                orxout(internal_error) << "Couldn't load particle effect in BigExplosion: " << ex.what() << endl;
+                this->initZero();
+            }
+        }
+        else
+        {
+            this->initZero();
+        }
+
+        if (GameMode::isMaster())
+        {
+            this->destroyTimer_.setTimer(rnd(2, 4), false, createExecutor(createFunctor(&BigExplosion::stop, this)));
+        }
+
+        this->registerVariables();
+    }
+
+    BigExplosion::BigExplosion(Context* context, Vector3 initVelocity) : MobileEntity(context)
+    {
+        RegisterObject(BigExplosion);
+        this->setVelocity(initVelocity);
 
         if ( GameMode::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
             ThrowException(AbortLoading, "Can't create BigExplosion, no scene or no scene manager given.");
@@ -99,7 +135,7 @@ namespace orxonox
         this->debris3_->setSyncMode(0);
         this->debris4_->setSyncMode(0);
 
-        this->explosion_ = new StaticEntity(this->getContext());
+        this->explosion_ = new MobileEntity(this->getContext());
         this->explosion_->setSyncMode(0);
 
         this->debrisSmoke1_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
@@ -147,13 +183,19 @@ namespace orxonox
         this->debrisEntity3_->attach(debris3_);
         this->debrisEntity4_->attach(debris4_);
 
+        // ///////////////////////
+        // TODO: particleSpawner is a static entity. It should probably be dynamic, for better explosions.
+        //
         ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+        orxout() << "vel " << this->getVelocity() << endl;
+        // effect->setVelocity(this->getVelocity());
         effect->setDestroyAfterLife(true);
         effect->setSource("Orxonox/explosion2b");
         effect->setLifetime(4.0f);
         effect->setSyncMode(0);
 
         ParticleSpawner* effect2 = new ParticleSpawner(this->getContext());
+        // effect2->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10, 200));
         effect2->setDestroyAfterLife(true);
         effect2->setSource("Orxonox/smoke6");
         effect2->setLifetime(4.0f);

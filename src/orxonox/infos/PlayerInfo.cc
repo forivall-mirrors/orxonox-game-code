@@ -228,7 +228,13 @@ namespace orxonox
         if (!entity)
             return;
 
-        this->controllableEntity_->getController()->setActive(false);
+        Controller* tmp =this->controllableEntity_->getController();
+        if (tmp == NULL)
+        {
+        	orxout(verbose) <<  "PlayerInfo: pauseControl, Controller is NULL " << endl;
+        	return;
+        }
+        tmp->setActive(false);
         //this->controllableEntity_->getController()->setControllableEntity(NULL);
         this->controllableEntity_->setController(0);
     }

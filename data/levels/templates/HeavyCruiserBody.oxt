@@ -1,0 +1,426 @@
+<!-- This template includes HeavyCruiser's main body only. Its parts can be attached as Pawns -->
+
+<Template name=HeavyCruiserBody>
+  <SpaceShip
+   hudtemplate            = spaceshiphud
+   camerapositiontemplate = HeavyCruiser_cameras
+   spawnparticlesource    = "Orxonox/fairytwirl"
+   spawnparticleduration  = 3
+   explosionchunks        = 6
+
+   health            = 1000
+   maxhealth         = 2000
+   initialhealth     = 1000
+
+   shieldhealth        = 1000
+   initialshieldhealth = 300
+   maxshieldhealth     = 500
+   shieldabsorption    = 0.8
+   reloadrate          = 1
+   reloadwaittime      = 1
+
+   primaryThrust     = 300
+   auxilaryThrust    = 30
+   rotationThrust    = 0.1
+
+   lift = 1;
+   stallSpeed = 220;
+
+   boostPower            = 30
+   boostPowerRate        = 1.5
+   boostRate             = 4
+   boostCooldownDuration = 10
+
+   shakeFrequency = 15
+   shakeAmplitude = 3
+
+   collisionType     = "dynamic"
+   mass              = 10000
+   linearDamping     = 0.1
+   angularDamping    = 0.5
+  >
+    <engines>
+      <MultiStateEngine position="85,0,0" template=HeavyCruiser_body_engine /> <!-- engine attached to main body-->
+      <MultiStateEngine position="-85,0,0" template=HeavyCruiser_body_engine /> <!-- engine attached to main body-->
+
+      <MultiStateEngine position="-140,0,308" template=HeavyCruiser_sidearmL_engine /> <!-- engine attached to sidearmL-->
+      <MultiStateEngine position="140,0,308" template=HeavyCruiser_sidearmR_engine /> <!-- engine attached to sidearmR-->
+    </engines>
+    <attached>
+
+        <Model mesh="HeavyCruiser_body.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>       
+
+            <!-- bay1 lights -->
+        <BlinkingBillboard position="75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
+        <BlinkingBillboard position="-75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
+        <BlinkingBillboard position="74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
+        <BlinkingBillboard position="-74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
+        <BlinkingBillboard position="73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
+        <BlinkingBillboard position="-73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
+            <!-- front position lights -->
+        <BlinkingBillboard position="67,-5,-240" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+        <BlinkingBillboard position="-67,-5,-240" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+        <BlinkingBillboard position="72,51,-380" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+        <BlinkingBillboard position="-72,51,-380" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+            <!-- rear position lights -->
+        <BlinkingBillboard position="95,-15,483" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+        <BlinkingBillboard position="-95,-15,483" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+        <BlinkingBillboard position="74,103,524" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
+        <BlinkingBillboard position="-74,103,524" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />
+
+    </attached>
+    <collisionShapes>
+        <BoxCollisionShape position="60,35,-310" halfExtents="13,28,60" info="body, bay1, Rwall"/> 
+        <BoxCollisionShape position="-60,35,-310" halfExtents="13,28,60" info="body, bay1, Lwall"/> 
+        <BoxCollisionShape position="0,56,-310" halfExtents="65,6,60" info="body, bay1, Twall"/> 
+        <BoxCollisionShape position="0,33,-260" halfExtents="65,28,5" info="body, bay1, Bwall"/>
+        <BoxCollisionShape position="0,10,-310" halfExtents="65,5,60" info="body, bay1, BottomWall"/>  
+
+        <BoxCollisionShape position="0,35,-125" halfExtents="83,30,130" info="body, front"/>
+        <BoxCollisionShape position="0,6,-307" halfExtents="19,3,43" info="body, frontbottom"/>
+        <BoxCollisionShape position="0,5,-196" halfExtents="27,3,24" info="body, dock"/>
+        <BoxCollisionShape position="0,7,-248" pitch="25" halfExtents="63,4,12" info="body, dockF"/>
+        <BoxCollisionShape position="70,6,-120" roll="20" halfExtents="12,6,120" info="body, dockR"/>
+        <BoxCollisionShape position="63,-2,-180" halfExtents="3,3,60" info="body, dockR"/>
+        <BoxCollisionShape position="-70,6,-120" roll="-20" halfExtents="12,6,120" info="body, dockL"/>
+        <BoxCollisionShape position="-63,-2,-180" halfExtents="3,3,60" info="body, dockL"/>
+        <BoxCollisionShape position="87,32,-63" halfExtents="4,23,50" info="body, frontCR"/>
+        <BoxCollisionShape position="-87,32,-63" halfExtents="4,23,50" info="body, frontCL"/>
+
+        <BoxCollisionShape position="0,72,-213" halfExtents="37,8,60" info="body, Fbridge"/>
+        <BoxCollisionShape position="0,72,-110" halfExtents="53,11,53" info="body, Cbridge"/>
+        <BoxCollisionShape position="0,86,-110" halfExtents="40,4,40" info="body, Cbridge"/>
+        <BoxCollisionShape position="0,70,-60" halfExtents="65,11,30" info="body, Bbridge"/>
+        <BoxCollisionShape position="0,84,-45" halfExtents="33,11,26" info="body, Bbridge"/>
+        <BoxCollisionShape position="0,79,-6" pitch="10" halfExtents="32,13,17" info="body, Bbridge"/>
+        <BoxCollisionShape position="38,67,-45" roll="50" halfExtents="16,23,25" info="body, BbridgeR"/>
+        <BoxCollisionShape position="35,63,-17" pitch="25" yaw="-20" roll="40" halfExtents="16,23,16" info="body, BbridgeR"/>
+        <BoxCollisionShape position="-38,67,-45" roll="-50" halfExtents="16,23,25" info="body, BbridgeL"/>
+        <BoxCollisionShape position="-35,63,-17" pitch="25" yaw="20" roll="-40" halfExtents="16,23,16" info="body, BbridgeL"/>
+
+        <BoxCollisionShape position="0,69,80" halfExtents="8,4,80" info="body, Cbeam"/> 
+        <BoxCollisionShape position="-67,18,58" roll="-22" halfExtents="13,5,53" info="body, CF, L"/>
+        <BoxCollisionShape position="-76,36,86" halfExtents="5,18,81" info="body, C, L"/>
+        <BoxCollisionShape position="-91,46,86" halfExtents="11,6,20" info="body, C, L upper beam"/>
+        <BoxCollisionShape position="-64,8,79" roll="10" halfExtents="8,3,8" info="body, C, L lower beam"/>
+        <BoxCollisionShape position="-71,55,140" pitch="-4" roll="31" halfExtents="9,5,27" info="body, CB, TopL"/>
+        <BoxCollisionShape position="-62,2,140" roll="24" halfExtents="10,24,32" info="body, CB, BottomL"/>
+        <BoxCollisionShape position="67,18,58" roll="22" halfExtents="13,5,53" info="body, CF, R"/>
+        <BoxCollisionShape position="76,36,86" halfExtents="5,18,81" info="body, C, R"/>
+        <BoxCollisionShape position="91,46,86" halfExtents="11,6,20" info="body, C, R upper beam"/>
+        <BoxCollisionShape position="64,8,79" roll="-10" halfExtents="8,3,8" info="body, C, R lower beam"/> 
+        <BoxCollisionShape position="71,55,140" pitch="-4" roll="-31" halfExtents="9,5,27" info="body, CB, TopR"/>
+        <BoxCollisionShape position="62,2,140" roll="-24" halfExtents="10,24,32" info="body, CB, BottomR"/>
+        <BoxCollisionShape position="0,60,12" halfExtents="81,5,11" info="body, CF, Top"/>
+        <BoxCollisionShape position="0,55,40" pitch="15" halfExtents="81,5,20" info="body, CF, Top"/>
+        <BoxCollisionShape position="0,50,85" pitch="1" halfExtents="81,5,29" info="body, C, Top"/>
+        <BoxCollisionShape position="0,59,140" pitch="-4" halfExtents="68,5,27" info="body, CB, Top"/>
+
+        <BoxCollisionShape position="0,-7,90" halfExtents="40,4,90" info="body, bay3, Twall"/>
+        <BoxCollisionShape position="0,-15,-60" halfExtents="60,25,65" info="body, bay3, Fwall"/>
+        <BoxCollisionShape position="47,-11,90" halfExtents="13,20,90" info="body, bay3, Rwall"/>
+        <BoxCollisionShape position="-47,-11,90" halfExtents="13,20,90" info="body, bay3, Lwall"/>
+        <BoxCollisionShape position="0,-29,149" halfExtents="10,2,11" info="body, bay3, platform"/>
+        <BoxCollisionShape position="0,-20,227" halfExtents="60,20,65" info="body, bay3, Bwall"/>
+
+        <BoxCollisionShape position="0,81,238" halfExtents="26,5,59" info="body, BF, Top"/>
+        <BoxCollisionShape position="0,67,234" halfExtents="54,5,67" info="body, BF, Top"/>
+        <BoxCollisionShape position="0,77,175" pitch="-36" halfExtents="26,5,9" info="body, BF, Top"/>
+        <BoxCollisionShape position="0,62,161" pitch="-30" halfExtents="56,5,10" info="body, BF, Top"/>
+        <BoxCollisionShape position="0,69,162" halfExtents="16,7,10" info="body, BF, Top"/>
+        <BoxCollisionShape position="31,76,238" roll="-46" halfExtents="10,3,59" info="body, BF, TopR"/>
+        <BoxCollisionShape position="64,64,234" roll="-24" halfExtents="13,3,67" info="body, BF, TopR"/>
+        <BoxCollisionShape position="-31,76,238" roll="46" halfExtents="10,3,59" info="body, BF, TopL"/>
+        <BoxCollisionShape position="-64,64,234" roll="24" halfExtents="13,3,67" info="body, BF, TopL"/>
+
+        <BoxCollisionShape position="77,40,244" roll="16" halfExtents="7,20,79" info="body, BF, R"/>
+        <BoxCollisionShape position="95,9,234" roll="2" halfExtents="18,16,59" info="body, BF, R"/>
+        <BoxCollisionShape position="74,1,255" roll="-20" halfExtents="18,19,82" info="body, BF, BottomR"/>
+        <BoxCollisionShape position="66,-21,255" roll="9" halfExtents="17,5,82" info="body, BF, BottomR"/>
+        <BoxCollisionShape position="-77,40,244" roll="-16" halfExtents="7,20,79" info="body, BF, L"/>
+        <BoxCollisionShape position="-95,9,234" roll="-2" halfExtents="18,16,59" info="body, BF, L"/>
+        <BoxCollisionShape position="-74,1,255" roll="20" halfExtents="18,19,82" info="body, BF, BottomL"/>
+        <BoxCollisionShape position="-66,-21,255" roll="-9" halfExtents="17,5,82" info="body, BF, BottomL"/>
+
+        <BoxCollisionShape position="0,106,381" halfExtents="36,5,71" info="body, BTop"/>
+        <BoxCollisionShape position="0,93,299" pitch="-49" halfExtents="34,5,20" info="body, BTop"/>
+        <BoxCollisionShape position="41,101,381" roll="-42" halfExtents="10,4,71" info="body, BTopR"/>
+        <BoxCollisionShape position="-41,101,381" roll="42" halfExtents="10,4,71" info="body, BTopL"/>
+
+        <BoxCollisionShape position="78,45,332" pitch="-10" roll="-10" yaw="20" halfExtents="10,20,30" info="body, back, R"/>
+        <BoxCollisionShape position="68,77,332" pitch="-10" roll="35" yaw="20" halfExtents="10,20,30" info="body, back, TR"/>
+        <BoxCollisionShape position="50,70,290" pitch="-10" roll="35" yaw="43" halfExtents="5,20,20" info="body, back, TR"/>
+        <BoxCollisionShape position="37,95,307" pitch="-10" roll="30" yaw="43" halfExtents="5,8,8" info="body, back, TR"/>
+        <BoxCollisionShape position="52,92,332" pitch="-10" yaw="30" halfExtents="10,5,30" info="body, back, TR"/>
+        <BoxCollisionShape position="88,4,322" halfExtents="10,24,30" info="body, back, RB"/>
+        <BoxCollisionShape position="54,-24,314" roll="35" pitch="-10" halfExtents="8,5,23" info="body, back, RB"/>
+        <BoxCollisionShape position="68,-19,346" pitch="-17" roll="8" halfExtents="16,4,11" info="body, back, bottomR"/>
+        <BoxCollisionShape position="-78,45,332" pitch="-10" roll="10" yaw="-20" halfExtents="10,20,30" info="body, back, L"/>
+        <BoxCollisionShape position="-68,77,332" pitch="-10" roll="-35" yaw="-20" halfExtents="10,20,30" info="body, back, TL"/>
+        <BoxCollisionShape position="-50,70,290" pitch="-10" roll="-35" yaw="-43" halfExtents="5,20,20" info="body, back, TL"/>
+        <BoxCollisionShape position="-37,95,307" pitch="-10" roll="-30" yaw="-43" halfExtents="5,8,8" info="body, back, TL"/>
+        <BoxCollisionShape position="-52,92,332" pitch="-10" yaw="-30" halfExtents="10,5,30" info="body, back, TL"/>
+        <BoxCollisionShape position="-88,4,322" halfExtents="10,24,30" info="body, back, LB"/>
+        <BoxCollisionShape position="-54,-24,314" roll="-35" pitch="-10" halfExtents="8,5,23" info="body, back, LB"/>
+        <BoxCollisionShape position="-68,-19,346" pitch="-17" roll="-8" halfExtents="16,4,11" info="body, back, bottomL"/>
+        <BoxCollisionShape position="0,-30,314" pitch="-8" halfExtents="52,4,23" info="body, back, bottom"/>
+        <BoxCollisionShape position="0,-22,346" pitch="-24" halfExtents="52,4,11" info="body, back, bottom"/>
+
+        <BoxCollisionShape position="48,-29,400" halfExtents="5,8,58" info="body, BBottomRBeam"/>
+        <BoxCollisionShape position="48,-29,451" halfExtents="10,13,14" info="body, BBottomRBeam"/>
+        <BoxCollisionShape position="-48,-29,400" halfExtents="5,8,58" info="body, BBottomLBeam"/>
+        <BoxCollisionShape position="-48,-31,451" halfExtents="10,13,14" info="body, BBottomLBeam"/>
+
+        <BoxCollisionShape position="103,60,420" halfExtents="18,9,64" info="body, back, Rextrusion"/>
+        <BoxCollisionShape position="-103,60,420" halfExtents="18,9,64" info="body, back, Lextrusion"/>
+        <BoxCollisionShape position="-85,7,417" halfExtents="10,21,67" info="body, back, LB"/>
+        <BoxCollisionShape position="85,7,417" halfExtents="10,21,67" info="body, back, RB"/>
+        <BoxCollisionShape position="0,-8,473" halfExtents="90,6,10" info="body, back, Bback"/>
+        <BoxCollisionShape position="0,-13,474" pitch="-23" halfExtents="76,5,8" info="body, back, Bback"/>
+        <BoxCollisionShape position="-79,-13,405" roll="-12" halfExtents="15,5,73" info="body, back, BL"/>
+        <BoxCollisionShape position="79,-13,405" roll="12" halfExtents="15,5,73" info="body, back, BR"/>
+        <BoxCollisionShape position="0,-15,410" halfExtents="66,6,58" info="body, back, B"/>
+
+        <BoxCollisionShape position="78,32,440" roll="-18" halfExtents="18,35,85" info="body, bay2, Rwall"/>
+        <BoxCollisionShape position="75,71,440" roll="35" halfExtents="18,27,85" info="body, bay2, Rwall"/>             
+        <BoxCollisionShape position="-78,32,440" roll="18" halfExtents="18,35,85" info="body, bay2, Lwall"/>
+        <BoxCollisionShape position="-75,71,440" roll="-35" halfExtents="18,27,85" info="body, bay2, Lwall"/>             
+        <BoxCollisionShape position="0,75,435" halfExtents="72,28,90" info="body, bay2, Twall"/>
+        <BoxCollisionShape position="0,35,423" halfExtents="85,35,5" info="body, bay2, Fwall"/> 
+        <BoxCollisionShape position="0,-3,465" halfExtents="84,5,60" info="body, bay2, BottomWall"/>
+        <BoxCollisionShape position="0,78,526" halfExtents="43,17,5" info="body, bay2, Twall"/> 
+        
+        
+        <BoxCollisionShape position="0,7,80" halfExtents="23,1,34" info="HOOKBOX at 0,18,80, bottom"/>
+        <BoxCollisionShape position="0,29,80" halfExtents="23,1,34" info="HOOKBOX, top"/>
+        <BoxCollisionShape position="-22,18,80" halfExtents="1,12,34" info="HOOKBOX, left long"/>
+        <BoxCollisionShape position="0,18,80" halfExtents="1,12,34" info="HOOKBOX, center long"/>
+        <BoxCollisionShape position="22,18,80" halfExtents="1,12,34" info="HOOKBOX, right long"/>
+        <BoxCollisionShape position="0,18,113" halfExtents="23,12,1" info="HOOKBOX, wide"/> 
+        <BoxCollisionShape position="0,18,91" halfExtents="23,12,1" info="HOOKBOX, wide"/> 
+        <BoxCollisionShape position="0,18,69" halfExtents="23,12,1" info="HOOKBOX, wide"/> 
+        <BoxCollisionShape position="0,18,47" halfExtents="23,12,1" info="HOOKBOX, wide"/> 
+        
+<!-- Following the position of the other parts collisionboxes, used to attach them to the body --> 
+<!--         <BoxCollisionShape position="-11,18,102" halfExtents="10,10,10" info="sidearmL, HOOK"/>
+        <BoxCollisionShape position="11,18,102" halfExtents="10,10,10" info="sidearmR, HOOK"/>
+        <BoxCollisionShape position="-11,18,80" halfExtents="10,10,10" info="partL, HOOK"/>
+        <BoxCollisionShape position="11,18,80" halfExtents="10,10,10" info="partR, HOOK"/>
+        <BoxCollisionShape position="-11,18,58" halfExtents="10,10,10" info="frontL, HOOK"/>
+        <BoxCollisionShape position="11,18,58" halfExtents="10,10,10" info="frontR, HOOK"/> -->
+    </collisionShapes>
+<?lua
+  include("../includes/weaponSettingsHeavyCruiserBody.oxi")
+?>
+  </SpaceShip>
+
+</Template>
+
+
+
+
+<Template name=HeavyCruiser_cameras defaults=0>
+  <SpaceShip>
+    <camerapositions>
+      <CameraPosition position="0,200, 1000" drag=true mouselook=true />
+      <CameraPosition position="0,100, 1000" drag=true mouselook=true />
+      <CameraPosition position="0,150,600" drag=true mouselook=true />
+      <CameraPosition position="0,80,-300" drag=false mouselook=false />
+      <CameraPosition position="200,80,300" drag=false mouselook=false />
+      <CameraPosition position="0,1100,60" pitch="-90" drag=false mouselook=true />
+    </camerapositions>
+  </SpaceShip>
+</Template>
+
+
+
+
+<Template name=HeavyCruiser_body_engine baseclass=MultiStateEngine>
+  <MultiStateEngine
+   boostfactor    = 2
+
+   speedfront     = 150
+   speedback      =  40
+   speedleftright =  40
+   speedupdown    =  40
+
+   defEngineSndNormal = "sounds/Engine_low.ogg"
+   defEngineSndBoost = "sounds/Engine_high.ogg"
+
+   accelerationfront     = 10
+   accelerationbrake     = 8
+   accelerationback      =  4
+   accelerationleftright =  4
+   accelerationupdown    =  4
+  >
+    <EffectContainer condition="idle">
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
+    </EffectContainer>
+    <EffectContainer condition="not idle">
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="-66,87,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="-73,77,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="-80,68,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.8 position="-86,58,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="-82,46,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="-80,34,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="-76,21,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.6 position="-71,9,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="66,87,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="73,77,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="80,68,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.8 position="86,58,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="82,46,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="80,34,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.7 position="76,21,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.6 position="71,9,525" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+    <EffectContainer condition="normal or brake">
+    </EffectContainer>
+    <EffectContainer condition="normal or boost">
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="66,87,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="73,77,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="80,68,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.5 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="86,58,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="82,46,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.5 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="80,34,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.4 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="76,21,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="71,9,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-66,87,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-73,77,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-80,68,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.5 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-86,58,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-82,46,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.5 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-80,34,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.4 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-76,21,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1.2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-71,9,525" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=1 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="85,58,525" colour="0.2, 0.65, 1, 0.4" width=5 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-85,58,525" colour="0.2, 0.65, 1, 0.4" width=5 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+ </EffectContainer>
+    <EffectContainer condition="boost">
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="66,87,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.5 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="73,77,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.6 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="80,68,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.7 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="86,58,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="82,46,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.7 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="80,34,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.7 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="76,21,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.6 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="71,9,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.5 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-66,87,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.5 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-73,77,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.6 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-80,68,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.7 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-86,58,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-82,46,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.7 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-80,34,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.7 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-76,21,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.6 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-71,9,525" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=0.5 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+    </EffectContainer>
+<!--    <EffectContainer condition="brake">
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position=" 8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="-8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+-->
+  </MultiStateEngine>
+</Template>
+
+
+<Template name=HeavyCruiser_sidearmL_engine baseclass=MultiStateEngine>
+  <MultiStateEngine
+   boostfactor    = 2
+
+   speedfront     = 300
+   speedback      =  50
+   speedleftright =  50
+   speedupdown    =  50
+
+   defEngineSndNormal = "sounds/Engine_low.ogg"
+   defEngineSndBoost = "sounds/Engine_high.ogg"
+
+   accelerationfront     = 10
+   accelerationbrake     = 8
+   accelerationback      =  4
+   accelerationleftright =  4
+   accelerationupdown    =  4
+  >
+    <EffectContainer condition="idle">
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
+    </EffectContainer>
+    <EffectContainer condition="not idle">
+      <FadingBillboard mainstate=activity active=false scale=1 position="-147,35,308" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=1 position="-136,-5,308" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+    <EffectContainer condition="normal or brake">
+    </EffectContainer>
+    <EffectContainer condition="normal or boost">
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-147,35,308" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-136,-5,308" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-147,35,308" colour="0.2, 0.65, 1, 0.4" width=5 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-136,-5,308" colour="0.2, 0.65, 1, 0.4" width=5 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+ </EffectContainer>
+    <EffectContainer condition="boost">
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-148,35,308" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="-136,-5,308" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+    </EffectContainer>
+<!--    <EffectContainer condition="brake">
+
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position=" 8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="-8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+-->
+  </MultiStateEngine>
+</Template>
+
+
+<Template name=HeavyCruiser_sidearmR_engine baseclass=MultiStateEngine>
+  <MultiStateEngine
+   boostfactor    = 2
+
+   speedfront     = 300
+   speedback      =  50
+   speedleftright =  50
+   speedupdown    =  50
+
+   defEngineSndNormal = "sounds/Engine_low.ogg"
+   defEngineSndBoost = "sounds/Engine_high.ogg"
+
+   accelerationfront     = 10
+   accelerationbrake     = 8
+   accelerationback      =  4
+   accelerationleftright =  4
+   accelerationupdown    =  4
+  >
+    <EffectContainer condition="idle">
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
+    </EffectContainer>
+    <EffectContainer condition="not idle">
+      <FadingBillboard mainstate=activity active=false scale=1 position="147,35,308" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=1 position="136,-5,308" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+    <EffectContainer condition="normal or brake">
+    </EffectContainer>
+    <EffectContainer condition="normal or boost">
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="147,35,308" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="136,-5,308" colour="0.2, 0.65, 1.0, 1.0" width=10 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="147,35,308" colour="0.2, 0.65, 1, 0.4" width=5 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="136,-5,308" colour="0.2, 0.65, 1, 0.4" width=5 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+ </EffectContainer>
+    <EffectContainer condition="boost">
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="147,35,308" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.6 name=bltest position="136,-5,308" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+    </EffectContainer>
+<!--    <EffectContainer condition="brake">
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position=" 8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="-8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+-->
+  </MultiStateEngine>
+</Template>

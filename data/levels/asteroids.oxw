@@ -4,6 +4,7 @@
  tags = "gametype"
  screenshot = "asteroids.png"
 />
+<WorldAmbientSound source="Asteroid_rocks.ogg" looping="true" playOnLoad="true" />
 
 <?lua
   include("HUDTemplates3.oxo")

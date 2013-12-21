@@ -18,6 +18,8 @@
  gametype = "TeamBaseMatch"
 >
 
+<WorldAmbientSound source="Jupiter.ogg" looping="true" playOnLoad="true" />
+
   <templates>
     <Template link=lodtemplate_default />
   </templates>

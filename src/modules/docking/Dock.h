@@ -61,6 +61,7 @@ namespace orxonox // tolua_export
 
             // Trigger interface
             bool execute(bool bTriggered, BaseObject* trigger);
+            bool undocking(bool bTriggered, BaseObject* trigger);
 
             // XML interface
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -84,6 +85,8 @@ namespace orxonox // tolua_export
             // tolua_begin
             void dock()
                 { this->dock(HumanController::getLocalControllerSingleton()->getPlayer()); }
+            void undock()
+                { this->undock(HumanController::getLocalControllerSingleton()->getPlayer()); }
             static unsigned int getNumberOfActiveDocks();
             static Dock* getActiveDockAtIndex(unsigned int index);
             // tolua_end
@@ -94,6 +97,7 @@ namespace orxonox // tolua_export
 
             // Network functions
             void showDockingDialogHelper(PlayerInfo* player);
+            void showUndockingDialogHelper(PlayerInfo* player);
             static void showDockingDialog();
 
         private:
