@@ -37,6 +37,9 @@
 
 namespace orxonox
 {
+    const int attacker_ = 0; // teamnumber of the attacking team
+    const int defender_ = 1; // defender's teamnumber
+
     RegisterUnloadableClass(UnderAttack);
 
     UnderAttack::UnderAttack(Context* context) : TeamDeathmatch(context)
@@ -75,7 +78,7 @@ namespace orxonox
             if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                 continue;
 
-            if (it->second == 0)
+            if (it->second == attacker_)
                 this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
             else
                 this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
@@ -187,4 +190,26 @@ namespace orxonox
             }
         }
     }
+
+    void UnderAttack::playerEntered(PlayerInfo* player)
+    {
+        if (!player)
+            return;
+        TeamDeathmatch::playerEntered(player);
+        this->setTransporterHealth();
+    }
+
+    void UnderAttack::setTransporterHealth()
+    {
+        if (this->destroyer_ != 0)
+        {
+            //Calculation: Each attacker deals about 3500 damage. A human attacker deals 1500 damage additionally.
+            //Each defender prevents 500 damage. If human 2000 damage will be additionally be prevented.
+            //TODO: use gametime and the damage dealt so far in order to calculate the transporter's life more precisely
+            float health = this->getTeamSize(attacker_)*2000.0f + this->getHumansInTeam(attacker_)*3000.0f - this->getTeamSize(defender_)*500.0f - this->getHumansInTeam(defender_)*2000.0f ;
+            this->destroyer_->setHealth(std::max(health, 5000.0f)); //the destoyer should have at least 5000.0f life. 
+        }
+    }
+
+
 }

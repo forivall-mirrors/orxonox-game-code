@@ -116,7 +116,7 @@ namespace orxonox
         this->billboards_[current].billy->setColour(ColourValue(1, 1, 1, alpha));
         this->billboards_[current].usedYet = true;
 
-        Vector3 directionVector = (this->getPosition() - position).normalisedCopy(); // vector from the position of the billboard to the center of the sphere
+        Vector3 directionVector = (this->getWorldPosition() - position).normalisedCopy(); // vector from the position of the billboard to the center of the sphere
         this->billboards_[current].billy->setCommonDirection(directionVector);
 
         Vector3 upVector = Vector3(directionVector.z, directionVector.z, -(directionVector.x + directionVector.y)); // vector perpendicular to the direction vector
@@ -251,8 +251,8 @@ namespace orxonox
     {
         if(item != NULL)
         {
-            Vector3 itemPosition = item->getPosition();
-            return (itemPosition.distance(this->getPosition()));
+            Vector3 itemPosition = item->getWorldPosition();
+            return (itemPosition.distance(this->getWorldPosition()));
         } else {
             return -1;
         }
@@ -266,17 +266,17 @@ namespace orxonox
     void SpaceBoundaries::displayBoundaries(Pawn *item, float alpha)
     {
 
-        Vector3 direction = item->getPosition() - this->getPosition();
+        Vector3 direction = item->getWorldPosition() - this->getWorldPosition();
         direction.normalise();
 
-        Vector3 boundaryPosition = this->getPosition() + direction * this->maxDistance_;
+        Vector3 boundaryPosition = this->getWorldPosition() + direction * this->maxDistance_;
 
         this->positionBillboard(boundaryPosition, alpha);
     }
 
     void SpaceBoundaries::conditionalBounceBack(Pawn *item, float currentDistance, float dt)
     {
-        Vector3 normal = item->getPosition() - this->getPosition();
+        Vector3 normal = item->getWorldPosition() - this->getWorldPosition();
         normal.normalise();
         Vector3 velocity = item->getVelocity();
         float normalSpeed = item->getVelocity().dotProduct(normal);
@@ -299,12 +299,12 @@ namespace orxonox
         Vector3 acceleration = item->getAcceleration();
         acceleration = acceleration.reflect(*normal);
 
-        item->lookAt( *velocity + this->getPosition() );
+        item->lookAt( *velocity + this->getWorldPosition() );
 
         item->setAcceleration(acceleration * dampingFactor);
         item->setVelocity(*velocity * dampingFactor);
 
-        item->setPosition( item->getPosition() - *normal * 10 ); // Set the position of the Pawn to be well inside the boundary.
+        item->setPosition( item->getWorldPosition() - *normal * 10 ); // Set the position of the Pawn to be well inside the boundary.
     }
 
     bool SpaceBoundaries::isHumanPlayer(Pawn *item)
