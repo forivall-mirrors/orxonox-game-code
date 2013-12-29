@@ -40,6 +40,7 @@ namespace orxonox
             TeamDeathmatch(Context* context);
             virtual ~TeamDeathmatch() {}
 
+            void setConfigValues();
             virtual void start();
             virtual void end();
             virtual void playerEntered(PlayerInfo* player);
@@ -48,6 +49,8 @@ namespace orxonox
 
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
             virtual void playerScored(PlayerInfo* player, int score = 1);
+       protected:
+            int maxScore_; 
     };
 }
 

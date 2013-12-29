@@ -55,21 +55,22 @@
       velocity          = "-35,0,0"
       angularDamping    = 0.9999999
       health            = 10000
-      maxhealth         = 10000
+      maxhealth         = 10000000
       initialhealth     = 10000
       radarname         = "Transporter"
     >
 
       <attached>
-        <TeamSpawnPoint team=1 position="150,0,7" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="0,0,7" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="-50,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="100,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
-        <TeamSpawnPoint team=1 position="50,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <SpaceBoundaries position="1,2,3" maxDistance="1600" warnDistance="300" showDistance="300" reactionMode="1" healthDecrease="5.0" />
+        <TeamSpawnPoint team=1 position="200,0,20" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="50,0,100" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="-200,0,-60" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="100,0,-50" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="400,0,20" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <?lua for i = 1, 100, 1 do ?>
           <TeamSpawnPoint
             team=0
-            position="<?lua print((math.random() * 500 + 500) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>,<?lua print((math.random() * 500 + 500) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>,<?lua print((math.random() * 500 + 500) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>"
+            position="<?lua print((math.random() * 450 + 450) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>,<?lua print((math.random() * 450 + 450) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>,<?lua print((math.random() * 450 + 450) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>"
             lookat="0,0,0"
             spawnclass=SpaceShip
             pawndesign=spaceshipassff

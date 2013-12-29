@@ -172,6 +172,44 @@ namespace orxonox
         return (!this->pawnsAreInTheSameTeam(victim, originator) || !originator || this->allowFriendlyFire_);
     }
 
+    int TeamGametype::getTeamScore(PlayerInfo* player)
+    {
+        int teamscore = 0;
+        if(!player || this->getTeam(player) == -1)
+            return 0;
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if ( this->getTeam(it->first) ==  this->getTeam(player) )
+            {
+                teamscore += it->second.frags_;
+            }
+        }
+        return teamscore;
+    }
+
+    int TeamGametype::getTeamSize(int team)
+    {
+        int teamSize = 0;
+        for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+        {
+            if (it->second == team)
+                teamSize++;
+        }
+        return teamSize;
+    }
+
+    int TeamGametype::getHumansInTeam(int team)
+    {
+        int teamSize = 0;
+        for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+        {
+            if (it->second == team  && it->first->isHumanPlayer())
+                teamSize++;
+        }
+        return teamSize;
+    }
+
+
     SpawnPoint* TeamGametype::getBestSpawnPoint(PlayerInfo* player) const
     {
         int desiredTeamNr = -1;
@@ -333,6 +371,23 @@ namespace orxonox
                 tc->setTeamColour(this->teamcolours_[teamNr]);
             }
          }
+    }
+
+    void TeamGametype::announceTeamWin(int winnerTeam)
+    {
+        for (std::map<PlayerInfo*, int>::iterator it3 = this->teamnumbers_.begin(); it3 != this->teamnumbers_.end(); ++it3)
+        {
+            if (it3->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
+                continue;
+            if (it3->second == winnerTeam)
+            {
+                this->gtinfo_->sendAnnounceMessage("Your team has won the match!", it3->first->getClientID());
+            }
+            else
+            {
+                this->gtinfo_->sendAnnounceMessage("Your team has lost the match!", it3->first->getClientID());
+            }
+        }   
     }
 
 }

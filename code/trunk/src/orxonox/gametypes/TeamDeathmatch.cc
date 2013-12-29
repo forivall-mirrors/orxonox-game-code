@@ -32,6 +32,7 @@
 #include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
+#include "core/config/ConfigValueIncludes.h"
 
 namespace orxonox
 {
@@ -40,6 +41,13 @@ namespace orxonox
     TeamDeathmatch::TeamDeathmatch(Context* context) : TeamGametype(context)
     {
         RegisterObject(TeamDeathmatch);
+
+        this->setConfigValues();
+    }
+
+    void TeamDeathmatch::setConfigValues()
+    {
+        SetConfigValue(maxScore_, 10);
     }
 
     void TeamDeathmatch::start()
@@ -56,6 +64,21 @@ namespace orxonox
 
         std::string message("The match has ended.");
         ChatManager::message(message);
+        
+        //find team that won the match
+        int winnerTeam = 0;
+        int highestScore = 0;
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if ( this->getTeamScore(it->first) > highestScore )
+            {
+                winnerTeam = this->getTeam(it->first);
+                highestScore = this->getTeamScore(it->first);
+            }
+        }
+
+        //announce win
+        this->announceTeamWin(winnerTeam);
     }
 
     void TeamDeathmatch::playerEntered(PlayerInfo* player)
@@ -99,7 +122,11 @@ namespace orxonox
             if (killer)
             {
                 if (killer->getPlayer())
+                {
                     message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
+                    if(this->isExactlyA(Class(TeamDeathmatch)) && (this->getTeamScore(killer->getPlayer()) >= (this->maxScore_ -1)) )
+                        this->end();
+                }
                 else
                     message = victim->getPlayer()->getName() + " was killed";
             }
