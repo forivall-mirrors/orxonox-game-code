@@ -53,6 +53,7 @@ namespace orxonox
 
             virtual void start();
             virtual void end();
+            virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
 
             void spawnEnemy();
 

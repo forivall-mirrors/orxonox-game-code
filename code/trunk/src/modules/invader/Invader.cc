@@ -59,6 +59,7 @@ namespace orxonox
     Invader::Invader(Context* context) : Deathmatch(context)
     {
         RegisterObject(Invader);
+        this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
         this->center_ = 0;
         init();
         this->setHUDTemplate("InvaderHUD");
