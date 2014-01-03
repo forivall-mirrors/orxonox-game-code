@@ -187,7 +187,7 @@ namespace orxonox
         else
         {
             int numberOfWays = 0; // counts number of ways from this Point to the last point
-            for (std::set<int>::iterator it = currentCheckpoint->getVirtualNextCheckpoints().begin(); it!= currentCheckpoint->getVirtualNextCheckpoints().end(); ++it)
+            for (std::set<int>::iterator it = currentCheckpoint->getNextCheckpoints().begin(); it!= currentCheckpoint->getNextCheckpoints().end(); ++it)
             {
                 if(currentCheckpoint == findCheckpoint(*it))
                 {
@@ -223,7 +223,7 @@ namespace orxonox
     {
         float distances[] = {-1, -1, -1};
         int temp_i = 0;
-        for (std::set<int>::iterator it =raceCheckpoint->getVirtualNextCheckpoints().begin(); it!= raceCheckpoint->getVirtualNextCheckpoints().end(); ++it)
+        for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
         {
             distances[temp_i] = recCalculateDistance(findCheckpoint(*it), this->getControllableEntity()->getPosition());
             temp_i++;
@@ -232,11 +232,11 @@ namespace orxonox
         {
             if (distances[2] < distances[1] && distances[2] >= 0)
             {
-                return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
+                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
             }
             else
             {
-                std::set<int>::iterator temp = raceCheckpoint->getVirtualNextCheckpoints().begin();
+                std::set<int>::iterator temp = raceCheckpoint->getNextCheckpoints().begin();
                 return findCheckpoint(*(++temp)); // return [1]
             }
         }
@@ -244,11 +244,11 @@ namespace orxonox
         {
             if (distances[2] < distances[0] && distances[2] >= 0)
             {
-                return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().end()); // return [2]
+                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return [2]
             }
             else
             {
-                return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().begin()); // return [0]
+                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().begin()); // return [0]
             }
         }
     }
@@ -267,7 +267,7 @@ namespace orxonox
         else
         {
             float minimum = std::numeric_limits<float>::max();
-            for (std::set<int>::iterator it = currentCheckPoint->getVirtualNextCheckpoints().begin(); it != currentCheckPoint->getVirtualNextCheckpoints().end(); ++it)
+            for (std::set<int>::iterator it = currentCheckPoint->getNextCheckpoints().begin(); it != currentCheckPoint->getNextCheckpoints().end(); ++it)
             {
                 int dist_currentCheckPoint_currentPosition = static_cast<int> ((currentPosition- currentCheckPoint->getPosition()).length());
 
@@ -288,7 +288,7 @@ namespace orxonox
         {
             return nextRaceCheckpoint_;
         }
-        if ((currentRaceCheckpoint_->getVirtualNextCheckpoints()).size() == 1) // no Adjust possible
+        if ((currentRaceCheckpoint_->getNextCheckpoints()).size() == 1) // no Adjust possible
 
         {
             return nextRaceCheckpoint_;
