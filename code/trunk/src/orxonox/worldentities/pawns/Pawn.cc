@@ -391,7 +391,6 @@ namespace orxonox
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
-            effect->setVelocity(this->getVelocity());
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/explosion2b");
             effect->setLifetime(4.0f);
@@ -400,7 +399,6 @@ namespace orxonox
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
-            effect->setVelocity(this->getVelocity());
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/smoke6");
             effect->setLifetime(4.0f);
@@ -409,7 +407,6 @@ namespace orxonox
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
-            effect->setVelocity(this->getVelocity());
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/sparks");
             effect->setLifetime(4.0f);
