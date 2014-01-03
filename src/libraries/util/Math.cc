@@ -146,7 +146,7 @@ namespace orxonox
     }
 
     /**
-        @brief Gets the 2D viewing direction (up/down, left/right) to the position of the other object, multiplied with the viewing distance to the object (0ï¿½ = 0, 180ï¿½ = 1).
+        @brief Gets the 2D viewing direction (up/down, left/right) to the position of the other object, multiplied with the viewing distance to the object (0° = 0, 180° = 1).
         @param myposition My position
         @param mydirection My viewing direction
         @param myorthonormal My orthonormalvector (pointing upwards through my head)
