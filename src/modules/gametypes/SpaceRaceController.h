@@ -38,23 +38,20 @@ namespace orxonox
     class _GametypesExport SpaceRaceController: public ArtificialController,
             public Tickable
     {
-        private:
-            std::vector<RaceCheckPoint*> staticRacePoints_;
-            RaceCheckPoint* nextRaceCheckpoint_; // checkpoint that should be reached
-            RaceCheckPoint* currentRaceCheckpoint_; // last checkPoint (already reached)
-            std::vector<RaceCheckPoint*> checkpoints_;
-            Vector3 lastPositionSpaceship;
-            int virtualCheckPointIndex;
+        public:
+            SpaceRaceController(Context* context);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual ~SpaceRaceController();
+            virtual void tick(float dt);
 
+        private:
             float recCalculateDistance(RaceCheckPoint*, Vector3 currentPosition);
             float distanceSpaceshipToCheckPoint(RaceCheckPoint*);
             RaceCheckPoint* nextPointFind(RaceCheckPoint*);
             RaceCheckPoint* adjustNextPoint();
-            std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<
-                    RaceCheckPoint*>);
+            std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<RaceCheckPoint*>);
             std::vector<RaceCheckPoint*> staticCheckpoints();
-            int rekSimulationCheckpointsReached(RaceCheckPoint*, std::map<
-                    RaceCheckPoint*, int>*);
+            int rekSimulationCheckpointsReached(RaceCheckPoint*, std::map<RaceCheckPoint*, int>*);
             // same as SpaceRaceManager, but needed to add virtuell Checkpoints ( Checkpoints which don't exist but needed to avoid collisions with big Objects)
             RaceCheckPoint* findCheckpoint(int index) const;
             //RaceCheckPoint * addVirtualCheckPoint(RaceCheckPoint*, int , Vector3);
@@ -63,11 +60,12 @@ namespace orxonox
             bool directLinePossible(RaceCheckPoint*, RaceCheckPoint*, std::vector<StaticEntity*>);
             //void computeVirtualCheckpoint(RaceCheckPoint*, RaceCheckPoint*, std::vector<StaticEntity*>);
 
-        public:
-            SpaceRaceController(Context* context);
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual ~SpaceRaceController();
-            virtual void tick(float dt);
+            std::vector<RaceCheckPoint*> staticRacePoints_;
+            RaceCheckPoint* nextRaceCheckpoint_; // checkpoint that should be reached
+            RaceCheckPoint* currentRaceCheckpoint_; // last checkPoint (already reached)
+            std::vector<RaceCheckPoint*> checkpoints_;
+            Vector3 lastPositionSpaceship;
+            int virtualCheckPointIndex;
     };
 
 }
