@@ -221,36 +221,23 @@ namespace orxonox
      */
     RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
     {
-        float distances[] = {-1, -1, -1};
-        int temp_i = 0;
-        for (std::set<int>::iterator it =raceCheckpoint->getNextCheckpoints().begin(); it!= raceCheckpoint->getNextCheckpoints().end(); ++it)
+        float minDistance = 0;
+        RaceCheckPoint* minNextRaceCheckPoint = NULL;
+
+        // find the next checkpoint with the minimal distance
+        for (std::set<int>::iterator it = raceCheckpoint->getNextCheckpoints().begin(); it != raceCheckpoint->getNextCheckpoints().end(); ++it)
         {
-            distances[temp_i] = recCalculateDistance(findCheckpoint(*it), this->getControllableEntity()->getPosition());
-            temp_i++;
-        }
-        if (distances[0] > distances[1] && distances[1] >= 0)
-        {
-            if (distances[2] < distances[1] && distances[2] >= 0)
+            RaceCheckPoint* nextRaceCheckPoint = findCheckpoint(*it);
+            float distance = recCalculateDistance(nextRaceCheckPoint, this->getControllableEntity()->getPosition());
+
+            if (distance < minDistance || minNextRaceCheckPoint == NULL)
             {
-                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
-            }
-            else
-            {
-                std::set<int>::iterator temp = raceCheckpoint->getNextCheckpoints().begin();
-                return findCheckpoint(*(++temp)); // return [1]
+                minDistance = distance;
+                minNextRaceCheckPoint = nextRaceCheckPoint;
             }
         }
-        else
-        {
-            if (distances[2] < distances[0] && distances[2] >= 0)
-            {
-                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().end()); // return [2]
-            }
-            else
-            {
-                return findCheckpoint(*raceCheckpoint->getNextCheckpoints().begin()); // return [0]
-            }
-        }
+
+        return minNextRaceCheckPoint;
     }
 
     /*
