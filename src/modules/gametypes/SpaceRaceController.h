@@ -46,8 +46,8 @@ namespace orxonox
             Vector3 lastPositionSpaceship;
             int virtualCheckPointIndex;
 
-            int recCalculateDistance(RaceCheckPoint*, Vector3 currentPosition);
-            int distanceSpaceshipToCheckPoint(RaceCheckPoint*);
+            float recCalculateDistance(RaceCheckPoint*, Vector3 currentPosition);
+            float distanceSpaceshipToCheckPoint(RaceCheckPoint*);
             RaceCheckPoint* nextPointFind(RaceCheckPoint*);
             RaceCheckPoint* adjustNextPoint();
             std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<
