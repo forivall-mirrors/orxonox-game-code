@@ -187,7 +187,6 @@ namespace orxonox
         // TODO: particleSpawner is a static entity. It should probably be dynamic, for better explosions.
         //
         ParticleSpawner* effect = new ParticleSpawner(this->getContext());
-        orxout() << "vel " << this->getVelocity() << endl;
         // effect->setVelocity(this->getVelocity());
         effect->setDestroyAfterLife(true);
         effect->setSource("Orxonox/explosion2b");

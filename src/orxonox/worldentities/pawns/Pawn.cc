@@ -380,7 +380,6 @@ namespace orxonox
         this->bAlive_ = false;
         this->setDestroyWhenPlayerLeft(false);
 
-        orxout() << "big explosion: " << this->getVelocity() << endl;
         BigExplosion* chunk = new BigExplosion(this->getContext(), this->getVelocity());
         chunk->setPosition(this->getPosition());
         // chunk->setVelocity(this->getVelocity());
