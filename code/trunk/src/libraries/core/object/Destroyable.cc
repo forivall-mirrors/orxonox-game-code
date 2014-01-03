@@ -60,6 +60,7 @@ namespace orxonox
 
     /**
         @brief Deletes the object if no @ref orxonox::SmartPtr "smart pointers" point to this object. Otherwise schedules the object to be deleted as soon as possible.
+        Always call destroy() instead of using 'delete' directly, otherwise smart pointers won't work.
     */
     void Destroyable::destroy()
     {
