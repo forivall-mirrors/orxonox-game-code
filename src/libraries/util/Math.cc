@@ -284,7 +284,7 @@ namespace orxonox
         // perform a coordinate transformation to get distance in relation of the position of the ship
         orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
 
-        return (int) 50 - 100*distanceShip.x;
+        return static_cast<int>(50 - 100*distanceShip.x);
     }
 
 
