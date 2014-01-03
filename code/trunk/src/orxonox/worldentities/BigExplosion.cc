@@ -77,42 +77,6 @@ namespace orxonox
         this->registerVariables();
     }
 
-    BigExplosion::BigExplosion(Context* context, Vector3 initVelocity) : MobileEntity(context)
-    {
-        RegisterObject(BigExplosion);
-        this->setVelocity(initVelocity);
-
-        if ( GameMode::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
-            ThrowException(AbortLoading, "Can't create BigExplosion, no scene or no scene manager given.");
-
-        this->bStop_ = false;
-        this->LOD_ = LODParticle::Normal;
-
-        if ( GameMode::showsGraphics() )
-        {
-            try
-            {
-                this->init();
-            }
-            catch (const std::exception& ex)
-            {
-                orxout(internal_error) << "Couldn't load particle effect in BigExplosion: " << ex.what() << endl;
-                this->initZero();
-            }
-        }
-        else
-        {
-            this->initZero();
-        }
-
-        if (GameMode::isMaster())
-        {
-            this->destroyTimer_.setTimer(rnd(2, 4), false, createExecutor(createFunctor(&BigExplosion::stop, this)));
-        }
-
-        this->registerVariables();
-    }
-
     void BigExplosion::init()
     {
         this->debrisEntity1_ = new MovableEntity(this->getContext());

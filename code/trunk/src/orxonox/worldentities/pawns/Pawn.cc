@@ -119,7 +119,6 @@ namespace orxonox
             if (this->weaponSystem_)
                 this->weaponSystem_->destroy();
         }
-
     }
 
     void Pawn::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -150,7 +149,6 @@ namespace orxonox
 
         XMLPortParam ( RadarViewable, "radarname", setRadarName, getRadarName, xmlelement, mode );
     }
-
 
     void Pawn::registerVariables()
     {
@@ -379,9 +377,9 @@ namespace orxonox
         this->bAlive_ = false;
         this->setDestroyWhenPlayerLeft(false);
 
-        BigExplosion* chunk = new BigExplosion(this->getContext(), this->getVelocity());
+        BigExplosion* chunk = new BigExplosion(this->getContext());
         chunk->setPosition(this->getPosition());
-        // chunk->setVelocity(this->getVelocity());
+        chunk->setVelocity(this->getVelocity());
 
         this->explosionSound_->setPosition(this->getPosition());
         this->explosionSound_->play();
