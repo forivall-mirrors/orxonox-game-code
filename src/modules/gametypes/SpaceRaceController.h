@@ -40,25 +40,25 @@ namespace orxonox
     {
         public:
             SpaceRaceController(Context* context);
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual ~SpaceRaceController();
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
         private:
-            float recCalculateDistance(RaceCheckPoint*, Vector3 currentPosition);
+            float recCalculateDistance(RaceCheckPoint*, const Vector3& currentPosition);
             float distanceSpaceshipToCheckPoint(RaceCheckPoint*);
             RaceCheckPoint* nextPointFind(RaceCheckPoint*);
             RaceCheckPoint* adjustNextPoint();
-            std::vector<RaceCheckPoint*> findStaticCheckpoints(std::vector<RaceCheckPoint*>);
+            std::vector<RaceCheckPoint*> findStaticCheckpoints(const std::vector<RaceCheckPoint*>&);
             std::vector<RaceCheckPoint*> staticCheckpoints();
-            int rekSimulationCheckpointsReached(RaceCheckPoint*, std::map<RaceCheckPoint*, int>*);
+            int rekSimulationCheckpointsReached(RaceCheckPoint*, std::map<RaceCheckPoint*, int>&);
             // same as SpaceRaceManager, but needed to add virtuell Checkpoints ( Checkpoints which don't exist but needed to avoid collisions with big Objects)
             RaceCheckPoint* findCheckpoint(int index) const;
-            //RaceCheckPoint * addVirtualCheckPoint(RaceCheckPoint*, int , Vector3);
+            //RaceCheckPoint * addVirtualCheckPoint(RaceCheckPoint*, int , const Vector3&);
             //void placeVirtualCheckpoints(RaceCheckPoint*, RaceCheckPoint*);
-            bool vergleicheQuader(Vector3, Vector3);
-            bool directLinePossible(RaceCheckPoint*, RaceCheckPoint*, std::vector<StaticEntity*>);
-            //void computeVirtualCheckpoint(RaceCheckPoint*, RaceCheckPoint*, std::vector<StaticEntity*>);
+            bool vergleicheQuader(const Vector3&, const Vector3&);
+            bool directLinePossible(RaceCheckPoint*, RaceCheckPoint*, const std::vector<StaticEntity*>&);
+            //void computeVirtualCheckpoint(RaceCheckPoint*, RaceCheckPoint*, const std::vector<StaticEntity*>&);
 
             std::vector<RaceCheckPoint*> staticRacePoints_;
             RaceCheckPoint* nextRaceCheckpoint_; // checkpoint that should be reached
