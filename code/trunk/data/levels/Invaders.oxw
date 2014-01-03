@@ -14,7 +14,6 @@
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipInvader.oxt")
   include("templates/enemyInvader.oxt")
-  include("templates/enemyInvaderShooter.oxt")
   include("overlays/InvaderHUD.oxo")
 ?>
 

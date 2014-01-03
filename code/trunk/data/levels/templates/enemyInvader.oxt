@@ -47,14 +47,6 @@
     <attached>
       <Model position="0,0,0" yaw=180 pitch=270 roll=0 scale=2 mesh="swallow_mat.mesh" />
       <Model position="0,0,0" yaw=180 pitch=270 roll=0 scale=2 mesh="escortWeapon.mesh" />
-<!--Model mesh="cube.mesh" mass=10 position="0,0,3" scale3D="10,4,8" />
-
-swallow_mat.mesh
-"ghost.mesh"
-
-<Model mesh="cube.mesh" mass=10 position="12.6,-2,3" scale3D="2.8,2.8,11" />
-<Model mesh="cube.mesh" mass=10 position="-12.6,-2,3" scale3D="2.8,2.8,11" />
-<Model mesh="cube.mesh" mass=10 position="0,0,-12" scale3D="4,4,7" /-->
     </attached>
     <collisionShapes>
       <BoxCollisionShape position="0    ,0 ,  3" halfExtents="10,   4,8" />
@@ -68,16 +60,67 @@ swallow_mat.mesh
   </InvaderEnemy>
 </Template>
 
-<!-- <Template name=spaceshipescortcameras defaults=0>
-  <InvaderEnemy>
-    <camerapositions>
-      <CameraPosition position="0,15, 60" drag=true mouselook=true />
-      <CameraPosition position="0,20, 90" drag=true mouselook=true />
-      <CameraPosition position="0,30,120" drag=true mouselook=true />
-      <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=false mouselook=true />
-    </camerapositions>
-  </InvaderEnemy>
-</Template> -->
+<Template name=enemyinvadershooter>
+  <InvaderEnemyShooter
+   hudtemplate            = spaceshiphud
+   camerapositiontemplate = spaceshipescortcameras
+   spawnparticlesource    = "Orxonox/fairytwirl"
+   spawnparticleduration  = 3
+   explosionchunks        = 4
+
+   health            = 20
+   maxhealth         = 20
+   initialhealth     = 20
+
+   shieldhealth        = 20
+   initialshieldhealth = 20
+   maxshieldhealth     = 20
+   shieldabsorption    = 0.9
+   reloadrate          = 1
+   reloadwaittime      = 1
+
+   primaryThrust     = 150
+   auxilaryThrust    = 30
+   rotationThrust    = 50
+
+   lift = 1;
+   stallSpeed = 220;
+
+   boostPower            = 20
+   boostPowerRate        = 1
+   boostRate             = 5
+   boostCooldownDuration = 10
+
+   shakeFrequency = 15
+   shakeAmplitude = 6
+
+   collisionType     = "dynamic"
+   mass              = 100
+   linearDamping     = 0
+   angularDamping    = 0
+
+    collisiondamage = 100
+    enablecollisiondamage = true
+  >
+    <engines>
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipescortengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipescortengine />
+    </engines>
+    <attached>
+      <Model position="0,0,0" yaw=180 pitch=270 roll=0 scale=2 mesh="ghost.mesh" />
+      <Model position="0,0,0" yaw=180 pitch=270 roll=0 scale=2 mesh="escortWeapon.mesh" />
+    </attached>
+    <collisionShapes>
+      <BoxCollisionShape position="0    ,0 ,  3" halfExtents="10,   4,8" />
+      <BoxCollisionShape position="12.6 ,-2,  3" halfExtents="2.8,2.8,11"/>
+      <BoxCollisionShape position="-12.6,-2,  3" halfExtents="2.8,2.8,11"/>
+      <BoxCollisionShape position="0,     0,-12" halfExtents="4  , 4 ,7" />
+    </collisionShapes>
+<?lua
+  include("../includes/invaderWeaponEnemy.oxi")
+?>
+  </InvaderEnemyShooter>
+</Template>
 
 <Template name=spaceshipescortengine baseclass=MultiStateEngine>
   <MultiStateEngine
