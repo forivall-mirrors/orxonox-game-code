@@ -72,7 +72,7 @@ namespace orxonox
 
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         // only shoot in foreward direction
-        projectile->setOrientation(Quaternion(sqrt(0.5),0,sqrt(0.5),0));
+        projectile->setOrientation(Quaternion(sqrt(0.5f),0,sqrt(0.5f),0));
         projectile->setPosition(this->getMuzzlePosition());
         // only shoot in foreward direction
         projectile->setVelocity(Vector3(1, 0, 0) * 2000);

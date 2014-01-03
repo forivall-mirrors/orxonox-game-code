@@ -116,7 +116,7 @@ namespace orxonox
                 const std::string& Multiplier = "X " + multi_cast<std::string>(mult);
                 this->setCaption(Multiplier);
                 this->setColour(ColourValue(1, 0, 0, clamp(float(mult * 0.1), 0.0f, 1.0f)));
-                this->setTextSize(clamp(float(mult * 0.1), 0.0f, 1.0f) * 0.01 + 0.04);
+                this->setTextSize(clamp(float(mult * 0.1), 0.0f, 1.0f) * 0.01f + 0.04f);
             }
         }
     }

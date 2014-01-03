@@ -59,7 +59,7 @@ namespace orxonox
         {
             float distPlayer = player->getPosition().z - getPosition().z;
             // orxout() << "i'm different!" << endl;
-            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01, 2) + 1) * distPlayer;
+            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01f, 2) + 1) * distPlayer;
             setVelocity(Vector3(950 - abs(distPlayer), 0, newZ));
         }
         Pawn::tick(dt);
