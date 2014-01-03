@@ -59,7 +59,7 @@ namespace orxonox
 
             bool                  bStop_;
 
-            MobileEntity*         explosion_;
+            StaticEntity*         explosion_;
 
             MovableEntity*        debrisEntity1_;
             MovableEntity*        debrisEntity2_;
