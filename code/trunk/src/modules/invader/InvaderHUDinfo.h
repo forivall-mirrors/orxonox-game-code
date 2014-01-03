@@ -27,14 +27,14 @@
 #ifndef _InvaderHUDinfo_H__
 #define _InvaderHUDinfo_H__
 
-#include "overlays/OverlaysPrereqs.h"
+#include "invader/InvaderPrereqs.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OverlaysExport InvaderHUDinfo : public OverlayText, public Tickable
+    class _InvaderExport InvaderHUDinfo : public OverlayText, public Tickable
     {
         public:
             InvaderHUDinfo(Context* context);

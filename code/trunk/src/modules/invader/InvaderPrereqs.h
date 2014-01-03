@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(Invader_STATIC_BUILD)
-#  ifdef Invader_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(INVADER_STATIC_BUILD)
+#  ifdef INVADER_SHARED_BUILD
 #    define _InvaderExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
