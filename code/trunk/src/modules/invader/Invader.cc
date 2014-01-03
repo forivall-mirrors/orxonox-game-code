@@ -83,7 +83,7 @@ namespace orxonox
     {
         level++;
         if (getPlayer() != NULL)
-        {   
+        {
             for (int i = 0; i < 7; i++)
             {
                 WeakPtr<BigExplosion> chunk = new BigExplosion(this->center_->getContext());
@@ -113,7 +113,7 @@ namespace orxonox
         if (getPlayer() == NULL)
             return;
         srand(player->getPosition().x + player->getPosition().y);
-        for (int i = 0; i < (3*log10(level) + 1); i++)
+        for (int i = 0; i < (3*log10(static_cast<double>(level)) + 1); i++)
         {
             WeakPtr<InvaderEnemy> newPawn;
             if (rand() % 42/(1 + level*level) == 0)
