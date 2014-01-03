@@ -112,7 +112,7 @@ namespace orxonox
     {
         if (getPlayer() == NULL)
             return;
-        srand(player->getPosition().x + player->getPosition().y);
+
         for (int i = 0; i < (3*log10(static_cast<double>(level)) + 1); i++)
         {
             WeakPtr<InvaderEnemy> newPawn;
