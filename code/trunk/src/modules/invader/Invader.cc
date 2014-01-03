@@ -87,7 +87,7 @@ namespace orxonox
             for (int i = 0; i < 7; i++)
             {
                 WeakPtr<BigExplosion> chunk = new BigExplosion(this->center_->getContext());
-                chunk->setPosition(Vector3(600, 0, 100 * i - 300));
+                chunk->setPosition(Vector3(600, 0, 100.f * i - 300));
                 chunk->setVelocity(Vector3(1000, 0, 0));  //player->getVelocity()
                 chunk->setScale(20);
             }
@@ -129,7 +129,7 @@ namespace orxonox
             newPawn->setPlayer(player);
             newPawn->level = level;
             // spawn enemy at random points in front of player.
-            newPawn->setPosition(player->getPosition() + Vector3(500 + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
+            newPawn->setPosition(player->getPosition() + Vector3(500.f + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
         }
     }
 

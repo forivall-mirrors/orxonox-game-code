@@ -55,8 +55,8 @@ namespace orxonox
 
         if (player != NULL)
         {
-            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01, 2) + 1) * (player->getPosition().z - getPosition().z);
-            setVelocity(Vector3(1000 - level * 100 , 0, newZ));
+            float newZ = 2/(pow(abs(getPosition().x - player->getPosition().x) * 0.01f, 2) + 1) * (player->getPosition().z - getPosition().z);
+            setVelocity(Vector3(1000.f - level * 100 , 0, newZ));
         }
         SUPER(InvaderEnemy, tick, dt);
     }
