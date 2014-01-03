@@ -62,7 +62,8 @@ namespace orxonox
                 { return this->referenceCount_; }
 
         protected:
-            /// This virtual function is called if destroy() is called and no SmartPtr points to this object. Used in some cases to create a new SmartPtr to prevent destruction.
+            /// This virtual function is called if destroy() is called and no SmartPtr points to this object. Used in some cases to create a new SmartPtr to
+            /// prevent destruction. Don't call this function directly - use destroy() instead.
             virtual void preDestroy() {}
 
         private:
