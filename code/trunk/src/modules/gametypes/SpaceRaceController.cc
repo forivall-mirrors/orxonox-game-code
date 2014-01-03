@@ -148,18 +148,18 @@ namespace orxonox
      * called from constructor 'SpaceRaceController'
      * returns a vector of static Point (checkpoints the spaceship has to reach)
      */
-    std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(std::vector<RaceCheckPoint*> allCheckpoints)
+    std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(const std::vector<RaceCheckPoint*>& allCheckpoints)
     {
-        std::map<RaceCheckPoint*, int> * zaehler = new std::map<RaceCheckPoint*, int>(); // counts how many times the checkpoint was reached (for simulation)
+        std::map<RaceCheckPoint*, int> zaehler; // counts how many times the checkpoint was reached (for simulation)
         for (unsigned int i = 0; i < allCheckpoints.size(); i++)
         {
-            zaehler->insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
+            zaehler.insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
         }
-        int maxWays = rekSimulationCheckpointsReached(zaehler->begin()->first, zaehler);
+        int maxWays = rekSimulationCheckpointsReached(zaehler.begin()->first, zaehler);
 
         std::vector<RaceCheckPoint*> returnVec;
         returnVec.clear();
-        for (std::map<RaceCheckPoint*, int>::iterator iter = zaehler->begin(); iter != zaehler->end(); iter++)
+        for (std::map<RaceCheckPoint*, int>::iterator iter = zaehler.begin(); iter != zaehler.end(); iter++)
         {
             if (iter->second == maxWays)
             {
@@ -167,7 +167,6 @@ namespace orxonox
                 returnVec.insert(returnVec.end(), iter->first);
             }
         }
-        delete zaehler;
         return returnVec;
     }
 
@@ -175,13 +174,13 @@ namespace orxonox
      * called from 'findStaticCheckpoints'
      * return how many ways go from the given Checkpoint to the last Checkpoint (of the Game)
      */
-    int SpaceRaceController::rekSimulationCheckpointsReached(RaceCheckPoint* currentCheckpoint, std::map<RaceCheckPoint*, int>* zaehler)
+    int SpaceRaceController::rekSimulationCheckpointsReached(RaceCheckPoint* currentCheckpoint, std::map<RaceCheckPoint*, int>& zaehler)
     {
 
         if (currentCheckpoint->isLast())
         {// last point reached
 
-            (*zaehler)[currentCheckpoint] += 1;
+            zaehler[currentCheckpoint] += 1;
             return 1; // 1 Way form the last point to this one
         }
         else
@@ -198,7 +197,7 @@ namespace orxonox
                     {orxout()<<"Problematic Point: "<<(*it)<<endl;}
                 numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
             }
-            (*zaehler)[currentCheckpoint] += numberOfWays;
+            zaehler[currentCheckpoint] += numberOfWays;
             return numberOfWays; // returns the number of ways from this point to the last one
         }
     }
@@ -244,7 +243,7 @@ namespace orxonox
      * called from 'nextPointFind'
      * returns the distance between "currentPosition" and the next static checkpoint that can be reached from "currentCheckPoint"
      */
-    float SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, Vector3 currentPosition)
+    float SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, const Vector3& currentPosition)
     {
         // find: looks if the currentCheckPoint is a staticCheckPoint (staticCheckPoint is the same as: static Point)
         if (std::find(staticRacePoints_.begin(), staticRacePoints_.end(), currentCheckPoint) != staticRacePoints_.end())
@@ -294,7 +293,7 @@ namespace orxonox
         return NULL;
     }
 
-    /*RaceCheckPoint* SpaceRaceController::addVirtualCheckPoint( RaceCheckPoint* previousCheckpoint, int indexFollowingCheckPoint , Vector3 virtualCheckPointPosition )
+    /*RaceCheckPoint* SpaceRaceController::addVirtualCheckPoint( RaceCheckPoint* previousCheckpoint, int indexFollowingCheckPoint , const Vector3& virtualCheckPointPosition )
     {
         orxout()<<"add VCP at"<<virtualCheckPointPosition.x<<", "<<virtualCheckPointPosition.y<<", "<<virtualCheckPointPosition.z<<endl;
         RaceCheckPoint* newTempRaceCheckPoint;
@@ -392,7 +391,7 @@ namespace orxonox
     }
 
     // True if a coordinate of 'pointToPoint' is smaller then the corresponding coordinate of 'groesse'
-    bool SpaceRaceController::vergleicheQuader(Vector3 pointToPoint, Vector3 groesse)
+    bool SpaceRaceController::vergleicheQuader(const Vector3& pointToPoint, const Vector3& groesse)
     {
         if(abs(pointToPoint.x) < groesse.x)
             return true;
@@ -404,7 +403,7 @@ namespace orxonox
 
     }
 
-    bool SpaceRaceController::directLinePossible(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2,std::vector<StaticEntity*> allObjects)
+    bool SpaceRaceController::directLinePossible(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2, const std::vector<StaticEntity*>& allObjects)
     {
 
         Vector3 cP1ToCP2 = (racepoint2->getPosition() - racepoint1->getPosition()) / (racepoint2->getPosition() - racepoint1->getPosition()).length(); //unit Vector
@@ -412,7 +411,7 @@ namespace orxonox
         btVector3 positionObject;
         btScalar radiusObject;
 
-        for (std::vector<StaticEntity*>::iterator it = allObjects.begin(); it != allObjects.end(); ++it)
+        for (std::vector<StaticEntity*>::const_iterator it = allObjects.begin(); it != allObjects.end(); ++it)
         {
             for (int everyShape=0; (*it)->getAttachedCollisionShape(everyShape) != 0; everyShape++)
             {
@@ -433,7 +432,7 @@ namespace orxonox
 
     }
 
-    /*void SpaceRaceController::computeVirtualCheckpoint(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2, std::vector<StaticEntity*> allObjects)
+    /*void SpaceRaceController::computeVirtualCheckpoint(RaceCheckPoint* racepoint1, RaceCheckPoint* racepoint2, const std::vector<StaticEntity*>& allObjects)
     {
         Vector3 cP1ToCP2=(racepoint2->getPosition()-racepoint1->getPosition()) / (racepoint2->getPosition()-racepoint1->getPosition()).length(); //unit Vector
         Vector3 centerCP1=racepoint1->getPosition();

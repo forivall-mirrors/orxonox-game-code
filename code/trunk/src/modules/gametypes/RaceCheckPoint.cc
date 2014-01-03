@@ -59,9 +59,6 @@ namespace orxonox
         this->checkpointIndex_ = 0;
         this->bIsLast_ = false;
         this->timeLimit_ = 0;
-        //this->players_ = vector<PlayerInfo*>();
-
-        //orxout(user_status) << "test" << std::endl;
     }
 
     RaceCheckPoint::~RaceCheckPoint()
