@@ -73,14 +73,14 @@ namespace orxonox
             const std::string& getMesh() const
                 { return this->mesh_; }
 
-	    /**
+            /**
             @brief Set the sound.
             @param mesh The Sound name.
             */
             void setSound(const std::string& sound)
                 { this->sound_ = sound; }
 
-	    /**
+            /**
             @brief Get the sound.
             @return Returns the sound name.
             */

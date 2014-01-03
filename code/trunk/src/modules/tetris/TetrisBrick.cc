@@ -86,7 +86,7 @@ namespace orxonox
                 if(this->tetris_->getCenterpoint() != NULL)
                     stone->addTemplate(this->tetris_->getCenterpoint()->getStoneTemplate());
                 else
-                	orxout()<< "tetris_->getCenterpoint == NULL in TetrisBrick.cc"<< endl;
+                    orxout()<< "tetris_->getCenterpoint == NULL in TetrisBrick.cc"<< endl;
             }
             else
                 orxout()<< "tetris_ == NULL in TetrisBrick.cc"<< endl;
@@ -115,52 +115,52 @@ namespace orxonox
         {
             if(this->shapeIndex_ == 1 || this->shapeIndex_ == 6 || this->shapeIndex_ == 7)
             {
-            	stone->setPosition(0.0f, 2*size_, 0.0f);
+                stone->setPosition(0.0f, 2*size_, 0.0f);
             }
             else if(this->shapeIndex_ == 3 || this->shapeIndex_ == 4|| this->shapeIndex_ == 5)
             {
-            	stone->setPosition(size_, 0, 0.0f);
+                stone->setPosition(size_, 0, 0.0f);
             }
             else if(this->shapeIndex_ == 2)
             {
-            	stone->setPosition(-size_, 0, 0.0f);
+                stone->setPosition(-size_, 0, 0.0f);
             }
         }
         else if(i == 3)
         {
             if(this->shapeIndex_ == 2 || this->shapeIndex_ == 5)
             {
-            	stone->setPosition(size_, size_, 0.0f);
+                stone->setPosition(size_, size_, 0.0f);
             }
             else if(this->shapeIndex_ == 1)
             {
-            	stone->setPosition(0, 3*size_, 0.0f);
+                stone->setPosition(0, 3*size_, 0.0f);
             }
             else if(this->shapeIndex_ == 3 || this->shapeIndex_ == 7)
             {
-            	stone->setPosition(-size_, 0, 0.0f);
+                stone->setPosition(-size_, 0, 0.0f);
             }
             else if(this->shapeIndex_ == 4)
             {
-            	stone->setPosition(-size_, size_, 0.0f);
+                stone->setPosition(-size_, size_, 0.0f);
             }
             else if(this->shapeIndex_ == 6)
             {
-            	stone->setPosition(size_, 0, 0.0f);
+                stone->setPosition(size_, 0, 0.0f);
             }
         }
     }
 
     bool TetrisBrick::isValidMove(const Vector3& position, bool isRotation = false)
     {
-    	return this->tetris_->isValidMove(this,position, isRotation);
+        return this->tetris_->isValidMove(this,position, isRotation);
     }
 
     TetrisStone* TetrisBrick::getStone(unsigned int i)
     {
-    	if(i < this->brickStones_.size())
+        if(i < this->brickStones_.size())
             return this->brickStones_[i];
-    	else return NULL;
+        else return NULL;
     }
 
 
@@ -191,8 +191,8 @@ namespace orxonox
         }
         else if(!this->lockRotation_) //rotate when key up is pressed
         {
-        	if(!isValidMove(this->getPosition(), true)) //catch illegal rotations
-        	    return;
+            if(!isValidMove(this->getPosition(), true)) //catch illegal rotations
+                return;
             this->lockRotation_ = true; // multiple calls of this function have to be filtered out.
             this->rotationTimer_.setTimer(0.1f, false, createExecutor(createFunctor(&TetrisBrick::unlockRotation, this)));
             Quaternion q(Degree(90), Vector3::UNIT_Z);

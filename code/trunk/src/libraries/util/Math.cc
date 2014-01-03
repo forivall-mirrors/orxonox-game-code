@@ -203,28 +203,28 @@ namespace orxonox
     */
     orxonox::Vector2 get3DProjection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle, const float detectionlimit)
     {
-    	// Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
-    	orxonox::Vector3 distance = otherposition - myposition;	// get vector from Ship to object
+        // Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
+        orxonox::Vector3 distance = otherposition - myposition; // get vector from Ship to object
 
-    	// new coordinate system:	x_axsis:	mydirection		(points front)
-    	//							y_axsis:	myorthonormal	(points up)
-    	//							z_axsis:	myside			(points right)
+        // new coordinate system: x_axsis: mydirection   (points front)
+        //                        y_axsis: myorthonormal (points up)
+        //                        z_axsis: myside        (points right)
 
-    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get 3. base vector
+        orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get 3. base vector
 
-    	distance = 4*distance / detectionlimit; // shrink vector on map
-    	if(distance.length() > 1.0f) // if object would wander outside of the map
-    	    	{
-    	    	distance = distance / distance.length();
-    	   		}
+        distance = 4*distance / detectionlimit; // shrink vector on map
+        if(distance.length() > 1.0f) // if object would wander outside of the map
+        {
+            distance = distance / distance.length();
+        }
 
-    	// perform a coordinate transformation to get distance in relation of the position of the ship
-    	orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
+        // perform a coordinate transformation to get distance in relation of the position of the ship
+        orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
 
-    	// calculate 2D vector on the map (with angle between x/z - plain and line of sight)
-    	float xcoordinate = distanceShip.z; // z; cause x direction on screen is to the right side
-    	float ycoordinate = distanceShip.x*sin(mapangle)+distanceShip.y*cos(mapangle);
-    	return orxonox::Vector2(xcoordinate , ycoordinate);
+        // calculate 2D vector on the map (with angle between x/z - plain and line of sight)
+        float xcoordinate = distanceShip.z; // z; cause x direction on screen is to the right side
+        float ycoordinate = distanceShip.x*sin(mapangle)+distanceShip.y*cos(mapangle);
+        return orxonox::Vector2(xcoordinate , ycoordinate);
     }
 
     /**
@@ -242,49 +242,49 @@ namespace orxonox
     */
     bool isObjectHigherThanShipOnMap(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float mapangle)
     {
-    	// Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
-    	orxonox::Vector3 distance = otherposition - myposition;
+        // Orxonox Vectors: x_direction you are looking, y_direction points up, z_direction points to the right
+        orxonox::Vector3 distance = otherposition - myposition;
 
-    	// new coordinate system:	x_axsis:	mydirection		(points front)
-    	//							y_axsis:	myorthonormal	(points up)
-       	//							z_axsis:	myside			(points right)
+        // new coordinate system: x_axsis: mydirection   (points front)
+        //                        y_axsis: myorthonormal (points up)
+        //                        z_axsis: myside        (points right)
 
-       	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get vector from Ship to object
+        orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get vector from Ship to object
 
 
-       	// perform a coordinate transformation to get distance in relation of the position of the ship
-       	orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
+        // perform a coordinate transformation to get distance in relation of the position of the ship
+        orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
 
-       	if(distanceShip.y >= 0)
-       		return true;
-       	else
-       		return false;
+        if(distanceShip.y >= 0)
+            return true;
+        else
+            return false;
     }
 
     /**
                    @brief A value between 0 and 10, in order how other object is in front or in back
                    @param myposition My position
-               	   @param mydirection My viewing direction
-               	   @param myorthonormal My orthonormalvector (pointing upwards through my head)
-               	   @param otherposition The position of the other object
-               	   @param detectionlimit The limit in which objects are shown on the map
+                   @param mydirection My viewing direction
+                   @param myorthonormal My orthonormalvector (pointing upwards through my head)
+                   @param otherposition The position of the other object
+                   @param detectionlimit The limit in which objects are shown on the map
                    @return value between 0 and 100
     */
     int determineMap3DZOrder(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition, const float detectionlimit)
     {
-    	orxonox::Vector3 distance = otherposition - myposition;	// get vector from Ship to object
-    	orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); 	// get vector to the side
+        orxonox::Vector3 distance = otherposition - myposition; // get vector from Ship to object
+        orxonox::Vector3 myside = mydirection.crossProduct(myorthonormal); // get vector to the side
 
-    	distance = 4*distance / detectionlimit; // shrink vector on map
-    	if(distance.length() > 1.0f) // if object would wander outside of the map
-    	{
-    		distance = distance / distance.length();
-    	}
+        distance = 4*distance / detectionlimit; // shrink vector on map
+        if(distance.length() > 1.0f) // if object would wander outside of the map
+        {
+            distance = distance / distance.length();
+        }
 
-    	// perform a coordinate transformation to get distance in relation of the position of the ship
-       	orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
+        // perform a coordinate transformation to get distance in relation of the position of the ship
+        orxonox::Vector3 distanceShip = getTransformedVector(distance, mydirection, myorthonormal, myside);
 
-       	return (int) 50 - 100*distanceShip.x;
+        return (int) 50 - 100*distanceShip.x;
     }
 
 
@@ -299,43 +299,43 @@ namespace orxonox
                 x is vector in old coordinates
                 y is vector in old coordinates
                 T is transform matrix with:
-                	T = (t1 , t2 , t3)
-                	t1 = mydirection
-                	t2 = myorthonormal
-                	t3 = myside
+                    T = (t1 , t2 , t3)
+                    t1 = mydirection
+                    t2 = myorthonormal
+                    t3 = myside
 
                 y = T^(-1)*x
             */
     orxonox::Vector3 getTransformedVector(const orxonox::Vector3& distance, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& myside)
     {
-    	// inverse of the transform matrix
-    	float determinant = +mydirection.x * (myorthonormal.y*myside.z - myside.y*myorthonormal.z)
-    						-mydirection.y * (myorthonormal.x*myside.z - myorthonormal.z*myside.x)
-    						+mydirection.z * (myorthonormal.x*myside.y - myorthonormal.y*myside.x);
-    	float invdet = 1/determinant;
+        // inverse of the transform matrix
+        float determinant = +mydirection.x * (myorthonormal.y*myside.z - myside.y*myorthonormal.z)
+                            -mydirection.y * (myorthonormal.x*myside.z - myorthonormal.z*myside.x)
+                            +mydirection.z * (myorthonormal.x*myside.y - myorthonormal.y*myside.x);
+        float invdet = 1/determinant;
 
-    	// transform matrix
-    	orxonox::Vector3 xinvtransform;
-    	orxonox::Vector3 yinvtransform;
-    	orxonox::Vector3 zinvtransform;
+        // transform matrix
+        orxonox::Vector3 xinvtransform;
+        orxonox::Vector3 yinvtransform;
+        orxonox::Vector3 zinvtransform;
 
-    	xinvtransform.x = (myorthonormal.y * myside.z        - myside.y        * myorthonormal.z)*invdet;
-    	xinvtransform.y = (mydirection.z   * myside.y        - mydirection.y   * myside.z       )*invdet;
-    	xinvtransform.z = (mydirection.y   * myorthonormal.z - mydirection.z   * myorthonormal.y)*invdet;
-    	yinvtransform.x = (myorthonormal.z * myside.x        - myorthonormal.x * myside.z       )*invdet;
-    	yinvtransform.y = (mydirection.x   * myside.z        - mydirection.z   * myside.x       )*invdet;
-    	yinvtransform.z = (myorthonormal.x * mydirection.z   - mydirection.x   * myorthonormal.z)*invdet;
-    	zinvtransform.x = (myorthonormal.x * myside.y        - myside.x        * myorthonormal.y)*invdet;
-    	zinvtransform.y = (myside.x        * mydirection.y   - mydirection.x   * myside.y       )*invdet;
-    	zinvtransform.z = (mydirection.x   * myorthonormal.y - myorthonormal.x * mydirection.y  )*invdet;
+        xinvtransform.x = (myorthonormal.y * myside.z        - myside.y        * myorthonormal.z)*invdet;
+        xinvtransform.y = (mydirection.z   * myside.y        - mydirection.y   * myside.z       )*invdet;
+        xinvtransform.z = (mydirection.y   * myorthonormal.z - mydirection.z   * myorthonormal.y)*invdet;
+        yinvtransform.x = (myorthonormal.z * myside.x        - myorthonormal.x * myside.z       )*invdet;
+        yinvtransform.y = (mydirection.x   * myside.z        - mydirection.z   * myside.x       )*invdet;
+        yinvtransform.z = (myorthonormal.x * mydirection.z   - mydirection.x   * myorthonormal.z)*invdet;
+        zinvtransform.x = (myorthonormal.x * myside.y        - myside.x        * myorthonormal.y)*invdet;
+        zinvtransform.y = (myside.x        * mydirection.y   - mydirection.x   * myside.y       )*invdet;
+        zinvtransform.z = (mydirection.x   * myorthonormal.y - myorthonormal.x * mydirection.y  )*invdet;
 
-    	// coordinate transformation
-    	orxonox::Vector3 distanceShip;
-    	distanceShip.x = xinvtransform.x * distance.x + yinvtransform.x * distance.y + zinvtransform.x * distance.z;
-    	distanceShip.y = xinvtransform.y * distance.x + yinvtransform.y * distance.y + zinvtransform.y * distance.z;
-    	distanceShip.z = xinvtransform.z * distance.x + yinvtransform.z * distance.y + zinvtransform.z * distance.z;
+        // coordinate transformation
+        orxonox::Vector3 distanceShip;
+        distanceShip.x = xinvtransform.x * distance.x + yinvtransform.x * distance.y + zinvtransform.x * distance.z;
+        distanceShip.y = xinvtransform.y * distance.x + yinvtransform.y * distance.y + zinvtransform.y * distance.z;
+        distanceShip.z = xinvtransform.z * distance.x + yinvtransform.z * distance.y + zinvtransform.z * distance.z;
 
-    	return distanceShip;
+        return distanceShip;
     }
 
     /**

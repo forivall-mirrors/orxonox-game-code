@@ -91,7 +91,7 @@ namespace orxonox
         if (this->owner_ != NULL)
         {
             std::string score("0");
-	        if(!this->owner_->hasEnded())
+            if(!this->owner_->hasEnded())
             {
                 //get the player
                 player_ = this->owner_->getPlayer();

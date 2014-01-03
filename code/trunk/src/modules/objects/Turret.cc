@@ -56,23 +56,23 @@ namespace orxonox
 
     void Turret::rotatePitch(const Vector2& value)
     {
-    	orxout()<< "Turret rotate Pitch"<< endl;
+        orxout()<< "Turret rotate Pitch"<< endl;
 
-    	const Quaternion& orient = this->getOrientation();
-    	Radian pitch = orient.getPitch();
+        const Quaternion& orient = this->getOrientation();
+        Radian pitch = orient.getPitch();
 
-    	if((value.x > 0 && pitch < Radian(180)) || (value.x < 0 && pitch > Radian(0)))
-    		SpaceShip::rotatePitch(value);
+        if((value.x > 0 && pitch < Radian(180)) || (value.x < 0 && pitch > Radian(0)))
+            SpaceShip::rotatePitch(value);
     }
 
 
     void Turret::setAlertnessRadius(float value)
     {
-    	this->controller_->setAlertnessRadius(value);
+        this->controller_->setAlertnessRadius(value);
     }
     float Turret::getAlertnessRadius()
     {
-    	return this->controller_->getAlertnessRadius();
+        return this->controller_->getAlertnessRadius();
     }
 
     void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)

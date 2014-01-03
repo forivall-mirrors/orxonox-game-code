@@ -65,11 +65,11 @@ namespace orxonox
     bool MoveToDockingTarget::release(PlayerInfo *player)
     {
         //TODO: Investigate strange things...
-    	//this->parent_->detach((WorldEntity*)player->getControllableEntity());
+        //this->parent_->detach((WorldEntity*)player->getControllableEntity());
 
-    	//TODO: Check the issue with this detach call.
-    	//I have removed the line because the detach call only caused a warning and terminated. And because I didn't find a attach call either.
-    	//Didn't find the need for the line.
+        //TODO: Check the issue with this detach call.
+        //I have removed the line because the detach call only caused a warning and terminated. And because I didn't find a attach call either.
+        //Didn't find the need for the line.
         this->parent_->undockingAnimationFinished(player);
         return true;
     }

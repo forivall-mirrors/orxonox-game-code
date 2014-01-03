@@ -81,7 +81,7 @@ namespace orxonox
         XMLPortParam(HsW01, "delay", setDelay, getDelay, xmlelement, mode);
         XMLPortParam(HsW01, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(HsW01, "projectileMesh", setMesh, getMesh, xmlelement, mode);
-	XMLPortParam(HsW01, "sound", setSound, getSound, xmlelement, mode);
+        XMLPortParam(HsW01, "sound", setSound, getSound, xmlelement, mode);
     }
 
     /**

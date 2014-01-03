@@ -85,44 +85,44 @@ namespace orxonox
     bool Dock::undocking(bool bTriggered, BaseObject* trigger)
     {
 
-    	PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-    	PlayerInfo* player = NULL;
+        PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
+        PlayerInfo* player = NULL;
 
-    	// Check whether it is a player trigger and extract pawn from it
-    	if(pTrigger != NULL)
-    	{
-    	      if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
-    	      orxout(verbose, context::docking) << "Docking:execute PlayerTrigger was not triggered by a player.." << endl;
-    	      return false;
-    	      }
-    	      player = pTrigger->getTriggeringPlayer();
-    	}
-    	else
-    	{
-    	      orxout(verbose, context::docking) << "Docking::execute Not a player trigger, can't extract pawn from it.." << endl;
-    	      return false;
-    	}
-    	if(player == NULL)
-    	{
-    	      orxout(verbose, context::docking) << "Docking::execute Can't retrieve PlayerInfo from Trigger. (" << trigger->getIdentifier()->getName() << ")" << endl;
-    	      return false;
-    	}
+        // Check whether it is a player trigger and extract pawn from it
+        if(pTrigger != NULL)
+        {
+            if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+            orxout(verbose, context::docking) << "Docking:execute PlayerTrigger was not triggered by a player.." << endl;
+            return false;
+            }
+            player = pTrigger->getTriggeringPlayer();
+        }
+        else
+        {
+            orxout(verbose, context::docking) << "Docking::execute Not a player trigger, can't extract pawn from it.." << endl;
+            return false;
+        }
+        if(player == NULL)
+        {
+            orxout(verbose, context::docking) << "Docking::execute Can't retrieve PlayerInfo from Trigger. (" << trigger->getIdentifier()->getName() << ")" << endl;
+            return false;
+        }
 
- 	    if(bTriggered)
-    	{
-    	      // Add player to this Docks candidates
-    	      candidates_.insert(player);
+        if(bTriggered)
+        {
+            // Add player to this Docks candidates
+            candidates_.insert(player);
 
-    	      // Show docking dialog
-    	      this->showUndockingDialogHelper(player);
-    	}
-    	else
-    	{
-    	      // Remove player from candidates list
-    	      candidates_.erase(player);
-    	}
+            // Show docking dialog
+            this->showUndockingDialogHelper(player);
+        }
+        else
+        {
+            // Remove player from candidates list
+            candidates_.erase(player);
+        }
 
-    	return true;
+        return true;
     }
 
 

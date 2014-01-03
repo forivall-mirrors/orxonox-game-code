@@ -275,7 +275,7 @@ namespace orxonox
             //Case: friendly fire
             else if (friendlyfire && (source == target))
             {
-           	    this->playerScored(originator->getPlayer(), -1);
+                this->playerScored(originator->getPlayer(), -1);
             }
         }
         return false; //default: no damage
@@ -291,7 +291,7 @@ namespace orxonox
         {
             if (playerParty_[originator->getPlayer()] == killer) //reward the killer
             {
-           	    this->playerScored(originator->getPlayer(), 25);
+                this->playerScored(originator->getPlayer(), 25);
             }
             return true;
         }
@@ -411,7 +411,7 @@ namespace orxonox
         {
             if (it->second==piggy)//Spieler mit der Pig-party frags++
             {
-            	 this->playerScored(it->first);
+                 this->playerScored(it->first);
             }
         }
     }
