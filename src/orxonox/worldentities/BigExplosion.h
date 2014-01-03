@@ -40,7 +40,6 @@ namespace orxonox
     {
         public:
             BigExplosion(Context* context);
-            BigExplosion(Context* context, Vector3 initVelocity);
             virtual ~BigExplosion();
 
             inline void setLOD(LODParticle::Value level)
