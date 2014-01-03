@@ -146,7 +146,7 @@ namespace orxonox
         if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
         {
             defBoundarySound_->play(); //play boundary sound
-        	// Its velocity in z-direction is inverted (i.e. it bounces off).
+            // Its velocity in z-direction is inverted (i.e. it bounces off).
             velocity.z = -velocity.z;
             // And its position is set as to not overstep the boundary it has just crossed.
             if (position.z > this->fieldHeight_ / 2)
@@ -172,7 +172,7 @@ namespace orxonox
                     if (fabs(distance) <= 1) // If the bat is there to parry.
                     {
                         defBatSound_->play(); //play bat sound
-                    	// Set the ball to be exactly at the boundary.
+                        // Set the ball to be exactly at the boundary.
                         position.x = this->fieldWidth_ / 2;
                         // Invert its velocity in x-direction (i.e. it bounces off).
                         velocity.x = -velocity.x;
@@ -185,7 +185,7 @@ namespace orxonox
                     // If the left player scores.
                     else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
-                    	defScoreSound_->play();//play score sound
+                        defScoreSound_->play();//play score sound
                         if (this->getGametype() && this->bat_[0])
                         {
                             this->getGametype()->playerScored(this->bat_[0]->getPlayer());
@@ -201,7 +201,7 @@ namespace orxonox
                     if (fabs(distance) <= 1) // If the bat is there to parry.
                     {
                         defBatSound_->play(); //play bat sound
-                    	// Set the ball to be exactly at the boundary.
+                        // Set the ball to be exactly at the boundary.
                         position.x = -this->fieldWidth_ / 2;
                         // Invert its velocity in x-direction (i.e. it bounces off).
                         velocity.x = -velocity.x;
@@ -214,7 +214,7 @@ namespace orxonox
                     // If the right player scores.
                     else if (GameMode::isMaster() && position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
                     {
-                    	defScoreSound_->play();//play score sound
+                        defScoreSound_->play();//play score sound
                         if (this->getGametype() && this->bat_[1])
                         {
                             this->getGametype()->playerScored(this->bat_[1]->getPlayer());

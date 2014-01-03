@@ -70,13 +70,13 @@ namespace orxonox
         this->owner_ = 0;
 
         this->map3DFront_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-        	.createOverlayElement("Panel", "HUDRadar_mapDreiDFront_" + getUniqueNumberString()));
+            .createOverlayElement("Panel", "HUDRadar_mapDreiDFront_" + getUniqueNumberString()));
         this->map3DFront_->setMaterialName("Orxonox/Radar3DFront");
         this->overlay_->add2D(this->map3DFront_);
         this->map3DFront_->hide();
 
         this->map3DBack_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-        	.createOverlayElement("Panel", "HUDRadar_mapDreiDBack_" + getUniqueNumberString()));
+            .createOverlayElement("Panel", "HUDRadar_mapDreiDBack_" + getUniqueNumberString()));
         this->map3DBack_->setMaterialName("Orxonox/Radar3DBack");
         this->overlay_->add2D(this->map3DBack_);
         this->map3DBack_->hide();
@@ -188,17 +188,17 @@ namespace orxonox
 
         if(RadarMode_)
         {
-        	this->setBackgroundMaterial(material3D_);
-        	this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 250); // it seems that the ZOrder of overlayelements is 100 times the ZOrder of the overlay
-        	this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 250); // 250 a little bit buffer so that the two shels are displayed all in the front / in the back
-        	this->map3DFront_->show();
-        	this->map3DBack_->show();
+            this->setBackgroundMaterial(material3D_);
+            this->map3DFront_->_notifyZOrder(this->overlay_->getZOrder() * 100 + 250); // it seems that the ZOrder of overlayelements is 100 times the ZOrder of the overlay
+            this->map3DBack_->_notifyZOrder(this->overlay_->getZOrder() * 100 - 250); // 250 a little bit buffer so that the two shels are displayed all in the front / in the back
+            this->map3DFront_->show();
+            this->map3DBack_->show();
         }
         else
         {
-        	this->setBackgroundMaterial(material2D_);
-        	this->map3DFront_->hide();
-        	this->map3DBack_->hide();
+            this->setBackgroundMaterial(material2D_);
+            this->map3DFront_->hide();
+            this->map3DBack_->hide();
         }
 
         for( it = this->radarObjects_.begin(); it != this->radarObjects_.end(); ++it )
@@ -217,9 +217,9 @@ namespace orxonox
 
             float size;
             if(RadarMode_)
-            	size = maximumDotSize3D_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
+                size = maximumDotSize3D_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
             else
-            	size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
+                size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
             it->second->setDimensions(size, size);
 
             // calc position on radar...
@@ -227,19 +227,19 @@ namespace orxonox
 
             if(RadarMode_)
             {
-            	coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
+                coord = get3DProjection(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), 0.6435011, detectionLimit_);
 
-            	// set zOrder on screen
-            	bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), this->mapAngle_);
+                // set zOrder on screen
+                bool overXZPlain = isObjectHigherThanShipOnMap(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), this->mapAngle_);
 
-            	int zOrder = determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_);
-            	if(overXZPlain == false /*&& (it->second->getZOrder() >  100 * this->overlay_->getZOrder())*/) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
-            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 70 + zOrder);
-            	if(overXZPlain == true /*&& (it->second->getZOrder() <= 100 * this->overlay_->getZOrder())*/)
-            		it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 70 + zOrder);
+                int zOrder = determineMap3DZOrder(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition(), detectionLimit_);
+                if(overXZPlain == false /*&& (it->second->getZOrder() >  100 * this->overlay_->getZOrder())*/) // it appears that zOrder of attached Overlayelements is 100 times the zOrder of the Overlay
+                    it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 - 70 + zOrder);
+                if(overXZPlain == true /*&& (it->second->getZOrder() <= 100 * this->overlay_->getZOrder())*/)
+                    it->second->_notifyZOrder(this->overlay_->getZOrder() * 100 + 70 + zOrder);
             }
             else
-            	coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
+                coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
 
             coord *= math::pi / 3.5f; // small adjustment to make it fit the texture
             it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
@@ -255,7 +255,7 @@ namespace orxonox
                 this->marker_->setDimensions(size * 1.5f, size * 1.5f);
                 this->marker_->setPosition((1.0f + coord.x - size * 1.5f) * 0.5f, (1.0f - coord.y - size * 1.5f) * 0.5f);
                 if(RadarMode_)
-                	this->marker_->_notifyZOrder(it->second->getZOrder() -1);
+                    this->marker_->_notifyZOrder(it->second->getZOrder() -1);
                 this->marker_->show();
             }
         }

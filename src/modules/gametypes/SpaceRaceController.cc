@@ -463,31 +463,31 @@ namespace orxonox
 
                 currentShape->getBoundingSphere(positionObject,radiusObject);
                 Vector3 positionObjectNonBT(positionObject.x(), positionObject.y(), positionObject.z());
-				Vector3 norm_r_CP = cP1ToCP2.crossProduct(centerCP1-positionObjectNonBT);
+                Vector3 norm_r_CP = cP1ToCP2.crossProduct(centerCP1-positionObjectNonBT);
 
-				if(norm_r_CP.length() == 0){
-					Vector3 zufall;
+                if(norm_r_CP.length() == 0){
+                    Vector3 zufall;
                     do{
                         zufall=Vector3(rnd(),rnd(),rnd());//random
                     }while((zufall.crossProduct(cP1ToCP2)).length() == 0);
-					norm_r_CP=zufall.crossProduct(cP1ToCP2);
-				}
-				Vector3 VecToVCP = norm_r_CP.crossProduct(cP1ToCP2);
-				float distanzToCP1 = sqrt(powf(radiusObject,4)/(powf((centerCP1-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
-				float distanzToCP2 = sqrt(powf(radiusObject,4)/(powf((racepoint2->getPosition()-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
+                    norm_r_CP=zufall.crossProduct(cP1ToCP2);
+                }
+                Vector3 VecToVCP = norm_r_CP.crossProduct(cP1ToCP2);
+                float distanzToCP1 = sqrt(powf(radiusObject,4)/(powf((centerCP1-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
+                float distanzToCP2 = sqrt(powf(radiusObject,4)/(powf((racepoint2->getPosition()-positionObjectNonBT).length(), 2)-powf(radiusObject,2))+powf(radiusObject,2));
                 float distanz = std::max(distanzToCP1,distanzToCP2);
-				//float distanz = 0.0f; //TEMPORARY
-				Vector3 newCheckpointPositionPos = positionObjectNonBT+(distanz*VecToVCP)/VecToVCP.length();
-				Vector3 newCheckpointPositionNeg = positionObjectNonBT-(distanz*VecToVCP)/VecToVCP.length();
-				if((newCheckpointPositionPos - centerCP1).length() + (newCheckpointPositionPos - (centerCP1+cP1ToCP2)).length() < (newCheckpointPositionNeg - centerCP1).length() + (newCheckpointPositionNeg - (centerCP1+cP1ToCP2)).length() )
-				{
-					RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionPos);
-				}
-				else
-				{
-					RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionNeg);
-				}
-				return;
+                //float distanz = 0.0f; //TEMPORARY
+                Vector3 newCheckpointPositionPos = positionObjectNonBT+(distanz*VecToVCP)/VecToVCP.length();
+                Vector3 newCheckpointPositionNeg = positionObjectNonBT-(distanz*VecToVCP)/VecToVCP.length();
+                if((newCheckpointPositionPos - centerCP1).length() + (newCheckpointPositionPos - (centerCP1+cP1ToCP2)).length() < (newCheckpointPositionNeg - centerCP1).length() + (newCheckpointPositionNeg - (centerCP1+cP1ToCP2)).length() )
+                {
+                    RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionPos);
+                }
+                else
+                {
+                    RaceCheckPoint* newVirtualCheckpoint = addVirtualCheckPoint(racepoint1,racepoint2->getCheckpointIndex(), newCheckpointPositionNeg);
+                }
+                return;
             }
         }
 

@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-	SetConsoleCommand("WorldAmbientSound", "nextsong",      &WorldAmbientSound::nextSong);
+    SetConsoleCommand("WorldAmbientSound", "nextsong",      &WorldAmbientSound::nextSong);
 
     RegisterClass(WorldAmbientSound);
 
@@ -112,14 +112,14 @@ namespace orxonox
     void WorldAmbientSound::nextSong()
     {
 
-    	//HACK: Assuption - there is only one WorldAmbientSound in a level and only one level is used.
-    	for (ObjectList<WorldAmbientSound>::iterator it = ObjectList<WorldAmbientSound>::begin();
-    	     it != ObjectList<WorldAmbientSound>::end(); ++it)
-    	{
-    		while(it->ambientSound_->setAmbientSource(WorldAmbientSound::soundList_[WorldAmbientSound::soundNumber_]) == false){
-    			WorldAmbientSound::soundNumber_ = (WorldAmbientSound::soundNumber_ + 1) % WorldAmbientSound::soundList_.size();
-    		}
-    		WorldAmbientSound::soundNumber_ = (WorldAmbientSound::soundNumber_ + 1) % WorldAmbientSound::soundList_.size();
-    	}
+        //HACK: Assuption - there is only one WorldAmbientSound in a level and only one level is used.
+        for (ObjectList<WorldAmbientSound>::iterator it = ObjectList<WorldAmbientSound>::begin();
+             it != ObjectList<WorldAmbientSound>::end(); ++it)
+        {
+            while(it->ambientSound_->setAmbientSource(WorldAmbientSound::soundList_[WorldAmbientSound::soundNumber_]) == false){
+                WorldAmbientSound::soundNumber_ = (WorldAmbientSound::soundNumber_ + 1) % WorldAmbientSound::soundList_.size();
+            }
+            WorldAmbientSound::soundNumber_ = (WorldAmbientSound::soundNumber_ + 1) % WorldAmbientSound::soundList_.size();
+        }
     }
 }

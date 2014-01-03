@@ -304,7 +304,7 @@ namespace orxonox
 
     void Pawn::kill()
     {
-    	this->damage(this->health_);
+        this->damage(this->health_);
         this->death();
     }
 
@@ -329,7 +329,7 @@ namespace orxonox
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
             explosionSound_->play();
-        	// Set bAlive_ to false and wait for PawnManager to do the destruction
+            // Set bAlive_ to false and wait for PawnManager to do the destruction
             this->bAlive_ = false;
 
             this->setDestroyWhenPlayerLeft(false);

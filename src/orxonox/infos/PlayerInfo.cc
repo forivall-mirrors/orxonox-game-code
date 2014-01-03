@@ -231,8 +231,8 @@ namespace orxonox
         Controller* tmp =this->controllableEntity_->getController();
         if (tmp == NULL)
         {
-        	orxout(verbose) <<  "PlayerInfo: pauseControl, Controller is NULL " << endl;
-        	return;
+            orxout(verbose) <<  "PlayerInfo: pauseControl, Controller is NULL " << endl;
+            return;
         }
         tmp->setActive(false);
         //this->controllableEntity_->getController()->setControllableEntity(NULL);

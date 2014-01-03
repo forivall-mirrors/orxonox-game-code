@@ -202,18 +202,18 @@ namespace orxonox
         }
         else if(this->mode_ == forceFieldMode::homogen)
         {
-        	// Iterate over all objects that could possibly be affected by the ForceField.
-        	for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
-        	{
-        		Vector3 distanceVector = it->getWorldPosition() - this->getWorldPosition();
-        	    float distance = distanceVector.length();
-        	    if (distance < this->radius_ && distance > this->massRadius_)
-        	    {
-        	    	// Add a Acceleration in forceDirection_.
-        	    	// Vector3(0,0,0) is the direction, where the force should work.
-        	    	it->addAcceleration(forceDirection_ , Vector3(0,0,0));
-        	    }
-        	}
+            // Iterate over all objects that could possibly be affected by the ForceField.
+            for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
+            {
+                Vector3 distanceVector = it->getWorldPosition() - this->getWorldPosition();
+                float distance = distanceVector.length();
+                if (distance < this->radius_ && distance > this->massRadius_)
+                {
+                    // Add a Acceleration in forceDirection_.
+                    // Vector3(0,0,0) is the direction, where the force should work.
+                    it->addAcceleration(forceDirection_ , Vector3(0,0,0));
+                }
+            }
         }
     }
 

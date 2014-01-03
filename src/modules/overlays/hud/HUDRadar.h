@@ -110,8 +110,8 @@ namespace orxonox
         float maximumDotSize3D_;
         float mapAngle_;
 
-        std::string material2D_;		//Material name for 2D map
-        std::string material3D_;		//Material names For the 3D minimap
+        std::string material2D_;        //Material name for 2D map
+        std::string material3D_;        //Material names For the 3D minimap
         std::string material3DFront_;
         std::string material3DBack_;
 
