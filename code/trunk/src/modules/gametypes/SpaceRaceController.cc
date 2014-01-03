@@ -206,7 +206,7 @@ namespace orxonox
     //-------------------------------------
     // functions for dynamic Way-search
 
-    int SpaceRaceController::distanceSpaceshipToCheckPoint(RaceCheckPoint* CheckPoint)
+    float SpaceRaceController::distanceSpaceshipToCheckPoint(RaceCheckPoint* CheckPoint)
     {
         if (this->getControllableEntity() != NULL)
         {
@@ -221,16 +221,16 @@ namespace orxonox
      */
     RaceCheckPoint* SpaceRaceController::nextPointFind(RaceCheckPoint* raceCheckpoint)
     {
-        int distances[] = {-1, -1, -1};
+        float distances[] = {-1, -1, -1};
         int temp_i = 0;
         for (std::set<int>::iterator it =raceCheckpoint->getVirtualNextCheckpoints().begin(); it!= raceCheckpoint->getVirtualNextCheckpoints().end(); ++it)
         {
             distances[temp_i] = recCalculateDistance(findCheckpoint(*it), this->getControllableEntity()->getPosition());
             temp_i++;
         }
-        if (distances[0] > distances[1] && distances[1] != -1)
+        if (distances[0] > distances[1] && distances[1] >= 0)
         {
-            if (distances[2] < distances[1] && distances[2] != -1)
+            if (distances[2] < distances[1] && distances[2] >= 0)
             {
                 return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().end()); // return checkpoint with ID of raceCheckpoint->getNextCheckpoints() [2]
             }
@@ -242,7 +242,7 @@ namespace orxonox
         }
         else
         {
-            if (distances[2] < distances[0] && distances[2] != -1)
+            if (distances[2] < distances[0] && distances[2] >= 0)
             {
                 return findCheckpoint(*raceCheckpoint->getVirtualNextCheckpoints().end()); // return [2]
             }
@@ -257,7 +257,7 @@ namespace orxonox
      * called from 'nextPointFind'
      * returns the distance between "currentPosition" and the next static checkpoint that can be reached from "currentCheckPoint"
      */
-    int SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, Vector3 currentPosition)
+    float SpaceRaceController::recCalculateDistance(RaceCheckPoint* currentCheckPoint, Vector3 currentPosition)
     {
         // find: looks if the currentCheckPoint is a staticCheckPoint (staticCheckPoint is the same as: static Point)
         if (std::find(staticRacePoints_.begin(), staticRacePoints_.end(), currentCheckPoint) != staticRacePoints_.end())
@@ -266,7 +266,7 @@ namespace orxonox
         }
         else
         {
-            int minimum = std::numeric_limits<int>::max();
+            float minimum = std::numeric_limits<float>::max();
             for (std::set<int>::iterator it = currentCheckPoint->getVirtualNextCheckpoints().begin(); it != currentCheckPoint->getVirtualNextCheckpoints().end(); ++it)
             {
                 int dist_currentCheckPoint_currentPosition = static_cast<int> ((currentPosition- currentCheckPoint->getPosition()).length());
