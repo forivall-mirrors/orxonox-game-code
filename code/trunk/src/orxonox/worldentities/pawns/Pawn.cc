@@ -328,7 +328,6 @@ namespace orxonox
         this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
-            explosionSound_->play();
             // Set bAlive_ to false and wait for PawnManager to do the destruction
             this->bAlive_ = false;
 
@@ -384,6 +383,8 @@ namespace orxonox
         chunk->setPosition(this->getPosition());
         // chunk->setVelocity(this->getVelocity());
 
+        this->explosionSound_->setPosition(this->getPosition());
+        this->explosionSound_->play();
     }
     void Pawn::deatheffect()
     {
