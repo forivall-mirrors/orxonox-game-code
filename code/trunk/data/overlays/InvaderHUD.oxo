@@ -1,3 +1,8 @@
+<Template name="spectatorhud">
+  <OverlayGroup name = "spectatorhud" scale = "1, 1">
+  </OverlayGroup>
+</Template>
+
 <Template name="InvaderHUD">
   <OverlayGroup name="InvaderHUD" scale = "1, 1">
     <InvaderHUDinfo
