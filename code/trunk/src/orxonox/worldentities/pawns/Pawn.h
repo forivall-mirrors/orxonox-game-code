@@ -235,7 +235,7 @@ namespace orxonox // tolua_export
 
             Vector3 aimPosition_;
 
-            WorldSound* explosionSound_;
+            WorldSound* explosionSound_; // TODO: Does this really belong here? Maybe move it to BigExplosion?
 
     }; // tolua_export
 } // tolua_export
