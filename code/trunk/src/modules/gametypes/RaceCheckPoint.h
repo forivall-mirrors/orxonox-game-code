@@ -119,7 +119,6 @@ namespace orxonox
             bool bIsLast_; ///< True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
             float timeLimit_; ///< The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
             std::vector<PlayerInfo*> players_; ///< The player that reached the checkpoint
-            Vector3 myPosition_;
             std::set<int>  nextCheckpointsVirtual_;
             std::map<int,int> virtualToRealCheckPoints_; // if virtualChepoint was inserted the original can be reconstructed
     };
