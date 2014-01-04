@@ -154,9 +154,8 @@ namespace orxonox
     {
         this->gtinfo_->end();
         if (this->bAutoEnd_)
-	{
-            GSLevel::startMainMenu();
-            //this->showMenuTimer_.setTimer(2.5f, true, createExecutor(createFunctor(&Gametype::showMenu, this)));
+        {
+            this->showMenuTimer_.setTimer(3.0f, true, createExecutor(createFunctor(&Gametype::showMenu, this)));
         }
 
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
