@@ -128,6 +128,7 @@ namespace orxonox
                 KeybindMode::Value mode = KeybindMode::None;
                 float paramModifier = 1.0f;
                 std::string commandStr;
+                bool forceArguments = false;
 
                 for (unsigned int iToken = 0; iToken < tokens.size(); ++iToken)
                 {
@@ -141,6 +142,8 @@ namespace orxonox
                         mode = KeybindMode::OnPressAndRelease;
                     else if (token == "onhold")
                         mode = KeybindMode::OnHold;
+                    else if (token == "forcearguments")
+                        forceArguments = true;
                     else if (token == "buttonthreshold")
                     {
                         // for real axes, we can feed a ButtonThreshold argument
@@ -185,7 +188,7 @@ namespace orxonox
 
                 // check for param command
                 int paramIndex = eval.getConsoleCommand()->getInputConfiguredParam_();
-                if (paramIndex >= 0)
+                if (paramIndex >= 0 && !forceArguments)
                 {
                     // parameter supported command
                     ParamCommand* cmd = new ParamCommand();
