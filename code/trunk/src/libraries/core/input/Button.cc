@@ -212,26 +212,13 @@ namespace orxonox
 
 
                     // we don't know whether this is an actual axis or just a button
-                    if (mode == KeybindMode::None)
-                    {
-                        if (!addParamCommand(cmd))
-                        {
-                            mode = eval.getConsoleCommand()->getKeybindMode();
-                            this->addCommand(cmd, mode, commands);
-                        }
-                    }
-                    else
-                        cmd->setFixedKeybindMode(true);
+                    if (mode != KeybindMode::None || !addParamCommand(cmd))
+                        this->addCommand(cmd, mode, commands);
                 }
                 else
                 {
                     SimpleCommand* cmd = new SimpleCommand();
                     cmd->evaluation_ = eval;
-
-                    if (mode == KeybindMode::None)
-                        mode = eval.getConsoleCommand()->getKeybindMode();
-                    else
-                        cmd->setFixedKeybindMode(true);
 
                     this->addCommand(cmd, mode, commands);
                 }
@@ -254,6 +241,11 @@ namespace orxonox
 
     inline void Button::addCommand(BaseCommand* cmd, KeybindMode::Value mode, std::vector<BaseCommand*> commands[3])
     {
+        if (mode == KeybindMode::None)
+            mode = cmd->getEvaluation()->getConsoleCommand()->getKeybindMode();
+        else
+            cmd->setFixedKeybindMode(true);
+
         if (mode == KeybindMode::OnPressAndRelease)
         {
             BaseCommand* cmd2 = cmd->clone();
