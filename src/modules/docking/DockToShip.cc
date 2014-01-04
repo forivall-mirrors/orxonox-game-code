@@ -84,7 +84,7 @@ namespace orxonox
 
         // Make sure target isn't removed when undocking
         dockTo->setDestroyWhenPlayerLeft(false);
-        player->startTemporaryControl(dockTo);
+        player->startControl(dockTo);
 
         return true;
     }
