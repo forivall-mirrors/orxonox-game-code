@@ -137,6 +137,8 @@ namespace orxonox
                         mode = KeybindMode::OnPress;
                     else if (token == "onrelease")
                         mode = KeybindMode::OnRelease;
+                    else if (token == "onpressandrelease")
+                        mode = KeybindMode::OnPressAndRelease;
                     else if (token == "onhold")
                         mode = KeybindMode::OnHold;
                     else if (token == "buttonthreshold")
@@ -215,7 +217,7 @@ namespace orxonox
                         if (!addParamCommand(cmd))
                         {
                             mode = eval.getConsoleCommand()->getKeybindMode();
-                            commands[mode].push_back(cmd);
+                            this->addCommand(cmd, mode, commands);
                         }
                     }
                     else
@@ -231,7 +233,7 @@ namespace orxonox
                     else
                         cmd->setFixedKeybindMode(true);
 
-                    commands[mode].push_back(cmd);
+                    this->addCommand(cmd, mode, commands);
                 }
             }
         }
@@ -248,6 +250,19 @@ namespace orxonox
             else
                 commands_[j] = 0;
         }
+    }
+
+    inline void Button::addCommand(BaseCommand* cmd, KeybindMode::Value mode, std::vector<BaseCommand*> commands[3])
+    {
+        if (mode == KeybindMode::OnPressAndRelease)
+        {
+            BaseCommand* cmd2 = cmd->clone();
+
+            commands[KeybindMode::OnPress].push_back(cmd);
+            commands[KeybindMode::OnRelease].push_back(cmd2); // clone
+        }
+        else
+            commands[mode].push_back(cmd);
     }
 
     inline void Button::parseError(const std::string& message, bool serious)

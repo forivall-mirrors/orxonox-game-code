@@ -105,6 +105,7 @@ namespace orxonox
             OnPress,
             OnHold,
             OnRelease,
+            OnPressAndRelease,
             None
         };
     };

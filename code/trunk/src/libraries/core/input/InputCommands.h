@@ -66,6 +66,8 @@ namespace orxonox
         inline bool hasFixedKeybindMode() const
             { return this->bFixedKeybindMode_; }
 
+        virtual BaseCommand* clone() = 0;
+
     private:
         bool bFixedKeybindMode_;
     };
@@ -75,6 +77,7 @@ namespace orxonox
     public:
         bool execute(float abs = 1.0f, float rel = 1.0f);
         CommandEvaluation* getEvaluation();
+        virtual SimpleCommand* clone() { return new SimpleCommand(*this); }
 
         CommandEvaluation evaluation_;
     };
@@ -102,6 +105,7 @@ namespace orxonox
         ParamCommand() : scale_(1.0f), paramCommand_(0) { }
         bool execute(float abs = 1.0f, float rel = 1.0f);
         CommandEvaluation* getEvaluation();
+        virtual ParamCommand* clone() { return new ParamCommand(*this); }
 
         float scale_;
         BufferedParamCommand* paramCommand_;

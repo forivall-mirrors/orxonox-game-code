@@ -194,30 +194,30 @@ namespace orxonox
 
 
     inline void KeyBinder::buttonPressed (const KeyEvent& evt)
-    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnPress); }
+    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnPress, 1); }
 
     inline void KeyBinder::buttonReleased(const KeyEvent& evt)
-    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnRelease); }
+    { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnRelease, 0); }
 
     inline void KeyBinder::buttonHeld    (const KeyEvent& evt)
     { assert(!keys_[evt.getKeyCode()].name_.empty()); keys_[evt.getKeyCode()].execute(KeybindMode::OnHold); }
 
 
     inline void KeyBinder::buttonPressed (MouseButtonCode::ByEnum button)
-    { mouseButtons_[button].execute(KeybindMode::OnPress); }
+    { mouseButtons_[button].execute(KeybindMode::OnPress, 1); }
 
     inline void KeyBinder::buttonReleased(MouseButtonCode::ByEnum button)
-    { mouseButtons_[button].execute(KeybindMode::OnRelease); }
+    { mouseButtons_[button].execute(KeybindMode::OnRelease, 0); }
 
     inline void KeyBinder::buttonHeld    (MouseButtonCode::ByEnum button)
     { mouseButtons_[button].execute(KeybindMode::OnHold); }
 
 
     inline void KeyBinder::buttonPressed (unsigned int device, JoyStickButtonCode::ByEnum button)
-    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnPress); }
+    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnPress, 1); }
 
     inline void KeyBinder::buttonReleased(unsigned int device, JoyStickButtonCode::ByEnum button)
-    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnRelease); }
+    { (*joyStickButtons_[device])[button].execute(KeybindMode::OnRelease, 0); }
 
     inline void KeyBinder::buttonHeld    (unsigned int device, JoyStickButtonCode::ByEnum button)
     { (*joyStickButtons_[device])[button].execute(KeybindMode::OnHold); }
