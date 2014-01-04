@@ -39,7 +39,7 @@
 #include "core/class/SubclassIdentifier.h"
 #include "tools/interfaces/Tickable.h"
 #include "infos/GametypeInfo.h"
-//#include "tools/Timer.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -198,7 +198,7 @@ namespace orxonox
             ConsoleCommand* dedicatedAddBots_;
             ConsoleCommand* dedicatedKillBots_;
             /* HACK HACK HACK */
-            //Timer showMenuTimer_;
+            Timer showMenuTimer_;
     };
 }
 
