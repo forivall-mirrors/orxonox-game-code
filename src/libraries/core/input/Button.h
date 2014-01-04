@@ -74,6 +74,7 @@ namespace orxonox
 
     private:
         void parseError(const std::string& message, bool serious);
+        void addCommand(BaseCommand* cmd, KeybindMode::Value mode, std::vector<BaseCommand*> commands[3]);
     };
 
     inline bool Button::execute(KeybindMode::Value mode, float abs, float rel)
