@@ -522,6 +522,6 @@ namespace orxonox
 
     void Gametype::showMenu()
     {
-    	GSLevel::startMainMenu();
+        GSLevel::startMainMenu();
     }
 }
