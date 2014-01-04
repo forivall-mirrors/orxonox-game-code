@@ -34,6 +34,7 @@
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/ConsoleCommand.h"
+#include "gamestates/GSLevel.h"
 
 #include "infos/PlayerInfo.h"
 #include "infos/Bot.h"
@@ -60,6 +61,7 @@ namespace orxonox
 
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
+        this->bAutoEnd_ = true;
         this->numberOfBots_ = 0;
 
         this->timeLimit_ = 0;
@@ -103,6 +105,7 @@ namespace orxonox
         SetConfigValue(initialStartCountdown_, 3.0f);
         SetConfigValue(bAutoStart_, false);
         SetConfigValue(bForceSpawn_, false);
+        SetConfigValue(bAutoEnd_, true);
         SetConfigValue(numberOfBots_, 0);
         SetConfigValue(scoreboardTemplate_, "defaultScoreboard");
     }
@@ -143,15 +146,15 @@ namespace orxonox
     void Gametype::start()
     {
         this->addBots(this->numberOfBots_);
-
         this->gtinfo_->start();
-
         this->spawnPlayersIfRequested();
     }
 
     void Gametype::end()
     {
         this->gtinfo_->end();
+        if (this->bAutoEnd_)
+            this->showMenuTimer_.setTimer(2.5f, true, createExecutor(createFunctor(&Gametype::showMenu, this)));
 
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -513,5 +516,10 @@ namespace orxonox
     {
         this->timeLimit_ = t;
         this->time_ = t;
+    }
+
+    void Gametype::showMenu()
+    {
+    	GSLevel::startMainMenu();
     }
 }
