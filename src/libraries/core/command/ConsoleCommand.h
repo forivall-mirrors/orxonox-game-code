@@ -612,7 +612,7 @@ namespace orxonox
             inline ConsoleCommand& inputConfiguredParam(int index)
                 { this->inputConfiguredParam_ = index; return *this; }
             /// Returns the input configured param.
-            inline int getInputConfiguredParam_() const
+            inline int getInputConfiguredParam() const
                 { return this->inputConfiguredParam_; }
 
             /// Returns a manipulator for this command.
