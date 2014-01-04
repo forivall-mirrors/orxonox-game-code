@@ -187,7 +187,7 @@ namespace orxonox
                 }
 
                 // check for param command
-                int paramIndex = eval.getConsoleCommand()->getInputConfiguredParam_();
+                int paramIndex = eval.getConsoleCommand()->getInputConfiguredParam();
                 if (paramIndex >= 0 && !forceArguments)
                 {
                     // parameter supported command
