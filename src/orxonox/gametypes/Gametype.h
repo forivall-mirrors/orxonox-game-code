@@ -158,7 +158,7 @@ namespace orxonox
             */
             inline unsigned int getNumberOfPlayers() const
                 { return this->players_.size(); }
-            //void showMenu();
+            void showMenu();
 
 
         protected:
@@ -175,7 +175,7 @@ namespace orxonox
 
             bool bAutoStart_;
             bool bForceSpawn_;
-            //bool bAutoEnd_;
+            bool bAutoEnd_;
 
             float time_;
             float timeLimit_;
