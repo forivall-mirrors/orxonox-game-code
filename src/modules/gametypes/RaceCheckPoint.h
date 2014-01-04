@@ -61,7 +61,7 @@ namespace orxonox
             void setNextCheckpointsAsVector3(const Vector3& checkpoints);
             Vector3 getNextCheckpointsAsVector3();
 
-            std::set<int> getNextCheckpoints()
+            const std::set<int>& getNextCheckpoints()
             {
                 return nextCheckpoints_;
             }
