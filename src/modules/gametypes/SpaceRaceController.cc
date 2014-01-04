@@ -54,10 +54,12 @@ namespace orxonox
     SpaceRaceController::SpaceRaceController(Context* context) :
         ArtificialController(context)
     {
-        RegisterObject(SpaceRaceController)
-;        std::vector<RaceCheckPoint*> checkpoints;
+        RegisterObject(SpaceRaceController);
+        std::vector<RaceCheckPoint*> checkpoints;
 
         virtualCheckPointIndex = -2;
+        if (ObjectList<SpaceRaceManager>::size() != 1)
+            orxout(internal_warning) << "Expected 1 instance of SpaceRaceManager but found " << ObjectList<SpaceRaceManager>::size() << endl;
         for (ObjectList<SpaceRaceManager>::iterator it = ObjectList<SpaceRaceManager>::begin(); it != ObjectList<SpaceRaceManager>::end(); ++it)
         {
             checkpoints = it->getAllCheckpoints();
@@ -121,7 +123,7 @@ namespace orxonox
 
         }//ausgabe
         orxout()<<"es gibt: "<<checkpoints_.size()<<"checkpoints"<<endl;*/
-        staticRacePoints_ = findStaticCheckpoints(checkpoints);
+        staticRacePoints_ = findStaticCheckpoints(nextRaceCheckpoint_, checkpoints);
         // initialisation of currentRaceCheckpoint_
         currentRaceCheckpoint_ = NULL;
 
@@ -148,23 +150,21 @@ namespace orxonox
      * called from constructor 'SpaceRaceController'
      * returns a vector of static Point (checkpoints the spaceship has to reach)
      */
-    std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(const std::vector<RaceCheckPoint*>& allCheckpoints)
+    std::vector<RaceCheckPoint*> SpaceRaceController::findStaticCheckpoints(RaceCheckPoint* currentCheckpoint, const std::vector<RaceCheckPoint*>& allCheckpoints)
     {
         std::map<RaceCheckPoint*, int> zaehler; // counts how many times the checkpoint was reached (for simulation)
         for (unsigned int i = 0; i < allCheckpoints.size(); i++)
         {
             zaehler.insert(std::pair<RaceCheckPoint*, int>(allCheckpoints[i],0));
         }
-        int maxWays = rekSimulationCheckpointsReached(zaehler.begin()->first, zaehler);
+        int maxWays = rekSimulationCheckpointsReached(currentCheckpoint, zaehler);
 
         std::vector<RaceCheckPoint*> returnVec;
-        returnVec.clear();
         for (std::map<RaceCheckPoint*, int>::iterator iter = zaehler.begin(); iter != zaehler.end(); iter++)
         {
             if (iter->second == maxWays)
             {
-                //returnVec.insert(allCheckpoints[1]);
-                returnVec.insert(returnVec.end(), iter->first);
+                returnVec.push_back(iter->first);
             }
         }
         return returnVec;
@@ -188,14 +188,15 @@ namespace orxonox
             int numberOfWays = 0; // counts number of ways from this Point to the last point
             for (std::set<int>::iterator it = currentCheckpoint->getNextCheckpoints().begin(); it!= currentCheckpoint->getNextCheckpoints().end(); ++it)
             {
-                if(currentCheckpoint == findCheckpoint(*it))
+                if (currentCheckpoint == findCheckpoint(*it))
                 {
                     //orxout() << currentCheckpoint->getCheckpointIndex()<<endl;
                     continue;
                 }
-                if(findCheckpoint(*it) == NULL)
-                    {orxout()<<"Problematic Point: "<<(*it)<<endl;}
-                numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
+                if (findCheckpoint(*it) == NULL)
+                    orxout(internal_warning) << "Problematic Point: " << (*it) << endl;
+                else
+                    numberOfWays += rekSimulationCheckpointsReached(findCheckpoint(*it), zaehler);
             }
             zaehler[currentCheckpoint] += numberOfWays;
             return numberOfWays; // returns the number of ways from this point to the last one
