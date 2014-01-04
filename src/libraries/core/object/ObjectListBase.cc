@@ -63,7 +63,7 @@ namespace orxonox
     }
 
     /**
-        @brief Destructor: Deletes all list-elements, but NOT THE OBJECTS.
+        @brief Destructor: Detaches all list-elements, but doesn't delete them (nor the objects).
     */
     ObjectListBase::~ObjectListBase()
     {
@@ -78,6 +78,10 @@ namespace orxonox
 
             current = next;
         }
+
+        if (!this->listeners_.empty())
+            orxout(internal_error) << "Deleting ObjectListBase but it still has " << this->listeners_.size() << " listeners. This will lead to a crash. "
+                                   << "Ensure that all Iterators are destroyed before deleting object lists." << endl;
     }
 
     /**
