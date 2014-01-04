@@ -104,12 +104,12 @@ namespace orxonox
     {
         this->nextCheckpoints_.clear();
 
-        if (checkpoints.x > -1)
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5)); // the red number has the type double and for the cast (to int) is added 0.5 so that the cast works correctly
-        if (checkpoints.y > -1)
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
-        if (checkpoints.z > -1)
-        this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
+        if (checkpoints.x > -0.5)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.x + 0.5)); // the red number has the type double and for the cast (to int) is added 0.5 so that the cast works correctly
+        if (checkpoints.y > -0.5)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.y + 0.5));
+        if (checkpoints.z > -0.5)
+            this->nextCheckpoints_.insert(static_cast<int>(checkpoints.z + 0.5));
     }
 
     PlayerInfo* RaceCheckPoint::getPlayer(unsigned int clientID) const
@@ -145,14 +145,15 @@ namespace orxonox
     Vector3 RaceCheckPoint::getNextCheckpointsAsVector3()
     {
         Vector3 checkpoints(-1,-1,-1); int count=0;
-        for (std::set<int>::iterator it= nextCheckpoints_.begin();it!=nextCheckpoints_.end(); it++ ){
+        for (std::set<int>::iterator it= nextCheckpoints_.begin();it!=nextCheckpoints_.end(); it++ )
+        {
             switch (count)
-                        {
-                            case 0: checkpoints.x = static_cast<Ogre::Real>(*it); break;
-                            case 1: checkpoints.y = static_cast<Ogre::Real>(*it); break;
-                            case 2: checkpoints.z = static_cast<Ogre::Real>(*it); break;
-                        }
-                        ++count;
+            {
+                case 0: checkpoints.x = static_cast<Ogre::Real>(*it); break;
+                case 1: checkpoints.y = static_cast<Ogre::Real>(*it); break;
+                case 2: checkpoints.z = static_cast<Ogre::Real>(*it); break;
+            }
+            ++count;
         }
         return checkpoints;
     }
