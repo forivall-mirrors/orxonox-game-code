@@ -39,7 +39,7 @@
 #include "core/class/SubclassIdentifier.h"
 #include "tools/interfaces/Tickable.h"
 #include "infos/GametypeInfo.h"
-#include "tools/Timer.h"
+//#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -158,7 +158,7 @@ namespace orxonox
             */
             inline unsigned int getNumberOfPlayers() const
                 { return this->players_.size(); }
-            void showMenu();
+            //void showMenu();
 
 
         protected:
@@ -175,7 +175,7 @@ namespace orxonox
 
             bool bAutoStart_;
             bool bForceSpawn_;
-            bool bAutoEnd_;
+            //bool bAutoEnd_;
 
             float time_;
             float timeLimit_;
@@ -198,7 +198,7 @@ namespace orxonox
             ConsoleCommand* dedicatedAddBots_;
             ConsoleCommand* dedicatedKillBots_;
             /* HACK HACK HACK */
-            Timer showMenuTimer_;
+            //Timer showMenuTimer_;
     };
 }
 
