@@ -1657,6 +1657,42 @@ Always take care of the enemy that is the closest to you." failmessage="" comple
         </events>
     </SimpleNotification>
 
+<!-- @Triggers: HACK. The attacktrigger6 Event is created, but does not trigger the Script.
+(WTF?) TODO: looks like a BUG 
+Thus a distanceTrigger is created, that gets enabled, when the inner trigger gets activated.
+Due to the large radius it is likely that it actually gets triggered.
+-->
+
+  <DistanceTrigger name="testDistanceTrigger" position="0,0,0" distance=10000 target="SpaceShip" stayActive="true" delay=37.0>
+    <EventTrigger name="testEventTrigger" activations="1" stayactive="true" delay=0.1>
+      <events>
+        <trigger>
+          <EventListener event="attacktrigger6" />
+        </trigger>
+      </events>
+    </EventTrigger>
+  </DistanceTrigger>
+
+    <Script code="Mission endMission true" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event="testDistanceTrigger" />
+            </trigger>
+        </events>
+    </Script>
+
+    <Script code="Mission endMission false" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event="gameEnd" />
+            </trigger>
+        </events>
+    </Script>
+
+
+
+
+
 
     <!--Script code="addBots 3" onLoad="false">
         <events>
