@@ -56,15 +56,18 @@
    ?>
 
 
-   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>	
+   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>    
 
-   <TeamSpawnPoint team=0 position="0,0,0" direction="1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort> <!--spaceshipescort-->
- 	<events>
+   <TeamSpawnPoint team=0 position="0,0,0" direction="1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort>
+         <events>
             <activity>
                 <EventListener event="start" />
             </activity>
         </events>
     </TeamSpawnPoint>
+   <!--TeamSpawnPoint team=0 position="0,94000,0" lookat="0,118000,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage/-->
+
+   <Script code="Mission setLives 1" onLoad="true"/>
 
    <DistanceTrigger name="spawntrigger" position="0,0,0" distance=10 target="SpaceShip" stayActive="true" delay=0.1/>
 
@@ -146,7 +149,7 @@
         <attached>
             <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
                 beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"/>
-	   <Billboard position="10,-202,-42" material="Flares/ringflare" colour="0.7,0.4,0.1" scale=1/>
+       <Billboard position="10,-202,-42" material="Flares/ringflare" colour="0.7,0.4,0.1" scale=1/>
         </attached>
 
     </Dock> 
@@ -290,19 +293,19 @@
    <LocalQuest id="Level_Kaan.docking">
       <QuestDescription title="Docking" description="Our Commander got kidnapped in Area 51. Fly to the Main Station and get a better Spaceship to rescue him.
 
-	Flying moves:
-	break (S)
-	roll     (Q) and (E)
-	boost (Space)
+    Flying moves:
+    break (S)
+    roll     (Q) and (E)
+    boost (Space)
 
-	Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
+    Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
       <complete-effects>
          <AddQuest questId="Level_Kaan.portals" />
       </complete-effects>
    </LocalQuest> 
 
    <LocalQuest id="Level_Kaan.portals">
-      <QuestDescription title="Portals" description="Now you've got a Spaceship with more health and weapons. Your next goal is to pass through the portal and find there the 		wormhole to Area 51" failmessage="" completeMessage="" />
+      <QuestDescription title="Portals" description="Now you've got a Spaceship with more health and weapons. Your next goal is to pass through the portal and find there the         wormhole to Area 51" failmessage="" completeMessage="" />
       <complete-effects>
          <AddQuest questId="Level_Kaan.asteroids" />
       </complete-effects>
@@ -340,7 +343,7 @@
 <!----------------------------------------------------------------------------------------------------->
 
 
-<!------------------------------------- OBJECTS IN THIS PART ------------------------------------------>
+<!------------------------------------- OBJECTS IN THIS PART  lookat="0,118000,0" ------------------------------------------>
 
    <Template name=PortalDefault>
       <PortalEndPoint>
@@ -350,43 +353,79 @@
       </PortalEndPoint>
    </Template>
 
-   <PortalEndPoint position="4000,2500,4000" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-   <PortalEndPoint position="0,94000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+   <PortalEndPoint position="5000,5800,4500" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+   <PortalEndPoint position="0,94000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" lookat="0,118000,0" />
    <PortalLink fromID="1" toID="2" />
    <!--<PortalLink fromID="2" toID="1" />-->
 
 <!-- Meteoriten, die sich bewegen -->
    <?lua
-      for i = 1, 600, 1
+      for i = 1, 300, 1
       do
       j = math.random()
-	x = math.random()
+      x = math.random()
       y = math.random()
-	z = math.random()
+      z = math.random()
    ?>
 
-   <MovableEntity	
-      position = "<?lua print(math.random()* 1000-500) ?>,<?lua print(math.random() * 10000 + 110000) ?>,<?lua print(math.random() * 1000-500) ?>"
+   <MovableEntity    
+      position = "<?lua print(math.random()* 600-300) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random() * 600-300) ?>"
       scale = "<?lua print(j * 40)?>"
-      velocity = "<?lua print(x*60-30)?>, <?lua print(y*60-160)?>, <?lua print(z*60-30)?>"
+      velocity = "<?lua print(x*20-10)?>, <?lua print(y*60-160)?>, <?lua print(z*20-10)?>"
       collisionType = dynamic
       collisiondamage = 0.05
       enablecollisiondamage = true 
-	active = true
-   >  	 	 
-	      <events> 	 	 
-	         <activity> 	 	 
-	        <EventListener event="start" /> 	 	 
-	     </activity> 	 	 
-	      </events> 	 	 
-	      <attached> 	 	 
-	         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" /> 	 	 	 	 
-	      </attached> 
+      active = true
+   >            
+          <events>           
+            <activity>           
+              <EventListener event="start" />           
+            </activity>           
+          </events>           
+          <attached>           
+              <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />                     
+          </attached> 
          <collisionShapes>
-            <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
+             <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
          </collisionShapes>   
    </MovableEntity>
 
+   <?lua
+      end
+   ?>
+
+
+<!-- Fiese Meteoriten, die direkt auf den Spieler zufliegen-->
+
+   <?lua
+      for i = 1, 240, 1
+      do
+      j = math.random()
+      x = math.random()
+      y = math.random()
+      z = math.random()
+   ?>
+   <MovableEntity    
+      position = "<?lua print(math.random()* 240-120) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random()* 240-120) ?>"
+      scale = "10"
+      velocity = "0, -160, 0"
+      collisionType = dynamic
+      collisiondamage = 0.05
+      enablecollisiondamage = true 
+      active = true
+   >            
+          <events>           
+            <activity>           
+              <EventListener event="start" />           
+            </activity>           
+          </events>           
+          <attached>           
+              <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />                     
+          </attached> 
+         <collisionShapes>
+             <SphereCollisionShape radius="10" />
+         </collisionShapes>   
+   </MovableEntity>
    <?lua
       end
    ?>
@@ -449,29 +488,50 @@
       <attached>
          <DistanceTriggerBeacon name="bcnDestroyer" />
          <Billboard position="0,0,0" material="Portals/Default" />
-	<DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
-
+         <DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude"
+                          targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
       </attached>
-      <collisionShapes>
-        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
-        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
-        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
-        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections -->
-        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
-        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
-        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower -->
-        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
-        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
-        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one-->
-        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs -->
-        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
-        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
-        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs -->
-        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
-        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
-      </collisionShapes>
-    </StaticEntity>
+  </StaticEntity>
+
+    <OverlayGroup name="spacefightHUD" scale = "1, 1">
+      <CountDown
+         position    = "0.51, 0.05"
+         pickpoint   = "0.0, 0.0"
+         font        = "ShareTechMono"
+         textsize    = "0.1"
+         colour      = "1.0, 1.0, 1.0, 1.0"
+         align       = "center"                  
+         counter     = "110.0"
+         speedfactor = "1.0"
+         active      = "false"
+      >
+        <events>
+          <activity>
+            <EventListener event="portal4" />
+          </activity>
+        </events>
+      </CountDown>
+    </OverlayGroup>
+
+
+  <DistanceTrigger name="HACKgameOver" position="0,94000,0" target="SpaceShip" distance=100000 stayActive="true" >
+    <EventTrigger name="gameOver" stayActive="true" delay=10 >
+      <events>
+        <trigger>
+          <EventListener event=portal4 />
+        </trigger>
+      </events>
+    </EventTrigger>
+  </DistanceTrigger>
+
+   <Script code="Mission endMission false" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event="HACKgameOver" />
+            </trigger>
+        </events>
+    </Script> 
 
  <DistanceTrigger name="portal3" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=1/>
    <SimpleNotification message="Housten: Reach the wormhole to Area 51">
@@ -483,7 +543,7 @@
    </SimpleNotification>
 
   <DistanceTrigger name="portal4" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=5/>
-   <SimpleNotification message="Housten: Hurry up John">
+   <SimpleNotification message="Housten: Hurry up John, time is running out!">
       <events>
          <trigger>
             <EventListener event="portal4"  />
@@ -529,7 +589,7 @@
    </SimpleNotification>
 
 
-   <DistanceTrigger name="portal9" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=25/>
+   <!--DistanceTrigger name="portal9" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=25/>
    <SimpleNotification message="Houston: It should really look like a black hole.">
       <events>
          <trigger>
@@ -563,7 +623,7 @@
                 <EventListener event="endOfLevel" />
             </trigger>
         </events>
-    </SimpleNotification>
+    </SimpleNotification-->
 
    <Script code="Mission endMission true" onLoad="false">
         <events>

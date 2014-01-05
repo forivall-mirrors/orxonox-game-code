@@ -85,11 +85,11 @@ namespace orxonox
 
     void Mission::end()
     {
-        Gametype::end();
-        if (this->missionAccomplished_)
+        if (this->missionAccomplished_ && !this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
-        else
+        else if (!this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
+        Gametype::end();
     }
 
     void Mission::setTeams()
