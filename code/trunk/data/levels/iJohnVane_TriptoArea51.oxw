@@ -67,7 +67,7 @@
     </TeamSpawnPoint>
    <!--TeamSpawnPoint team=0 position="0,94000,0" lookat="0,118000,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage/-->
 
-   <Script code="Mission setLives 1" onLoad="true"/>
+   <Script code="Mission setLives 1" onLoad="true" times="1" />
 
    <DistanceTrigger name="spawntrigger" position="0,0,0" distance=10 target="SpaceShip" stayActive="true" delay=0.1/>
 
@@ -353,8 +353,8 @@
       </PortalEndPoint>
    </Template>
 
-   <PortalEndPoint position="5000,5800,4500" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-   <PortalEndPoint position="0,94000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" lookat="0,118000,0" />
+   <PortalEndPoint position="5000,6400,5000" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" lookat="5000,5800,5000"/>
+   <PortalEndPoint position="0,94000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" />
    <PortalLink fromID="1" toID="2" />
    <!--<PortalLink fromID="2" toID="1" />-->
 
@@ -376,14 +376,15 @@
       collisiondamage = 0.05
       enablecollisiondamage = true 
       active = true
-   >            
-          <events>           
-            <activity>           
-              <EventListener event="start" />           
-            </activity>           
-          </events>           
+   >                 
           <attached>           
-              <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />                     
+              <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
+                  <events>           
+                    <visibility>           
+                      <EventListener event="portal3" />           
+                    </visibility>           
+                  </events>
+              </Model>                          
           </attached> 
          <collisionShapes>
              <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
@@ -413,14 +414,16 @@
       collisiondamage = 0.05
       enablecollisiondamage = true 
       active = true
-   >            
-          <events>           
-            <activity>           
-              <EventListener event="start" />           
-            </activity>           
-          </events>           
+      visible = false
+   >                     
           <attached>           
-              <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />                     
+              <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
+                  <events>           
+                    <visibility>           
+                      <EventListener event="portal3" />           
+                    </visibility>           
+                  </events>
+              </Model>                    
           </attached> 
          <collisionShapes>
              <SphereCollisionShape radius="10" />
@@ -490,7 +493,13 @@
          <Billboard position="0,0,0" material="Portals/Default" />
          <DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude"
                           targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
-        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 visible=false >
+          <events>           
+            <visibility>           
+              <EventListener event="portal3" />           
+            </visibility>           
+          </events>
+        </Model>
       </attached>
   </StaticEntity>
 
@@ -514,8 +523,22 @@
       </CountDown>
     </OverlayGroup>
 
+  <DistanceTrigger name="HACKgameOver" position="0,94000,0" distance=100000 target="SpaceShip" stayActive="true" delay=2.0>
+    <EventTrigger name="gameOver" activations="1" stayactive="true" delay=0.1>
+      <events>
+        <trigger>
+          <EventListener event="portal4" />
+        </trigger>
+      </events>
+    </EventTrigger>
+  </DistanceTrigger>
 
-  <DistanceTrigger name="HACKgameOver" position="0,94000,0" target="SpaceShip" distance=100000 stayActive="true" >
+
+
+
+
+
+  <!--DistanceTrigger name="HACKgameOver" position="0,94000,0" target="SpaceShip" distance=100000 stayActive="true" >
     <EventTrigger name="gameOver" stayActive="true" delay=10 >
       <events>
         <trigger>
@@ -523,9 +546,23 @@
         </trigger>
       </events>
     </EventTrigger>
-  </DistanceTrigger>
+  </DistanceTrigger-->
+    <SimpleNotification message="GAMEOVER !">
+        <events>
+            <trigger>
+                <EventListener event="HACKgameOver" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    <SimpleNotification message="GAMEOVER simple">
+        <events>
+            <trigger>
+                <EventListener event="gameOver" />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-   <Script code="Mission endMission false" onLoad="false">
+   <Script code="Mission endMission false" onLoad="false" times="1" >
         <events>
             <trigger>
                 <EventListener event="HACKgameOver" />
@@ -561,7 +598,7 @@
    </SimpleNotification>
 
    <DistanceTrigger name="portal6" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=13/>
-   <SimpleNotification message="John: I see the wormhole station on the radar">
+   <SimpleNotification message="Houston: Make sure to reach the wormhole in time!">
       <events>
          <trigger>
             <EventListener event="portal6" />
@@ -570,7 +607,7 @@
    </SimpleNotification>
 
 
-   <DistanceTrigger name="portal7" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=17/>
+   <!--DistanceTrigger name="portal7" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=17/>
    <SimpleNotification message="Houston: Is it black?">
       <events>
          <trigger>
@@ -625,7 +662,7 @@
         </events>
     </SimpleNotification-->
 
-   <Script code="Mission endMission true" onLoad="false">
+   <Script code="Mission endMission true" onLoad="false" times="1" >
         <events>
             <trigger>
                 <EventListener event=endOfLevel />
