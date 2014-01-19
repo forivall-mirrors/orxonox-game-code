@@ -65,6 +65,7 @@
             </activity>
         </events>
     </TeamSpawnPoint>
+   <!-- HELPER FOR LEVEL DESIGNERS: go directly to the racing part of the level -->
    <!--TeamSpawnPoint team=0 position="0,94000,0" lookat="0,118000,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage/-->
 
    <Script code="Mission setLives 1" onLoad="true" times="1" />
@@ -305,7 +306,9 @@
    </LocalQuest> 
 
    <LocalQuest id="Level_Kaan.portals">
-      <QuestDescription title="Portals" description="Now you've got a Spaceship with more health and weapons. Your next goal is to pass through the portal and find there the         wormhole to Area 51" failmessage="" completeMessage="" />
+      <QuestDescription title="Portals" description="Now you've got a Spaceship that is suited for your Mission.
+It is faster, has more health and is equipped with stronger weapons.
+Your next goal is to pass through the portal and find there the wormhole to Area 51" failmessage="" completeMessage="" />
       <complete-effects>
          <AddQuest questId="Level_Kaan.asteroids" />
       </complete-effects>
@@ -324,7 +327,10 @@
    </QuestEffectBeacon>
 
  <LocalQuest id="Level_Kaan.asteroids">
-      <QuestDescription title="Asteroids" description="The wormhole is at the end of the asteroid shower. Find your way through the asteroids without hitting the rocks and reach Area 51. " failmessage="" completeMessage="" />
+      <QuestDescription title="Asteroids" description="The wormhole is at the end of the asteroid shower.
+Find your way through the asteroids without hitting the rocks and reach Area 51.
+You have to get there in time - the wormhole cannot be forced open forever.
+Your Mission is to fly straight through the wormhole." failmessage="" completeMessage="" />
    </LocalQuest> 
 
  <QuestEffectBeacon times=1>
@@ -505,11 +511,11 @@
 
     <OverlayGroup name="spacefightHUD" scale = "1, 1">
       <CountDown
-         position    = "0.51, 0.05"
+         position    = "0.9, 0.02"
          pickpoint   = "0.0, 0.0"
          font        = "ShareTechMono"
          textsize    = "0.1"
-         colour      = "1.0, 1.0, 1.0, 1.0"
+         colour      = "1.0, 0.2, 0.2, 0.8"
          align       = "center"                  
          counter     = "110.0"
          speedfactor = "1.0"
@@ -521,51 +527,30 @@
           </activity>
         </events>
       </CountDown>
+      <!--OverlayText
+       position  = "0.05, 0.02"
+       pickpoint = "0.0, 0.0"
+       font      = "ShareTechMono"
+       textsize  = "0.1"
+       colour    = "1.0, 0.2, 0.2, 0.8"
+       align     = "left"
+       caption   = "Wormhole closing in:"
+       active    = "false"
+      >
+        <events>
+          <activity>
+            <EventListener event="portal4" />
+          </activity>
+        </events>
+      </OverlayText-->
     </OverlayGroup>
 
-  <DistanceTrigger name="HACKgameOver" position="0,94000,0" distance=100000 target="SpaceShip" stayActive="true" delay=2.0>
-    <EventTrigger name="gameOver" activations="1" stayactive="true" delay=0.1>
-      <events>
-        <trigger>
-          <EventListener event="portal4" />
-        </trigger>
-      </events>
-    </EventTrigger>
-  </DistanceTrigger>
 
-
-
-
-
-
-  <!--DistanceTrigger name="HACKgameOver" position="0,94000,0" target="SpaceShip" distance=100000 stayActive="true" >
-    <EventTrigger name="gameOver" stayActive="true" delay=10 >
-      <events>
-        <trigger>
-          <EventListener event=portal4 />
-        </trigger>
-      </events>
-    </EventTrigger>
-  </DistanceTrigger-->
-    <SimpleNotification message="GAMEOVER !">
-        <events>
-            <trigger>
-                <EventListener event="HACKgameOver" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-    <SimpleNotification message="GAMEOVER simple">
-        <events>
-            <trigger>
-                <EventListener event="gameOver" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-
+  <DistanceTrigger name="portaldelaytrigger" position="0,94000,0" target="Pawn" distance=500 stayActive="true" delay=116 />
    <Script code="Mission endMission false" onLoad="false" times="1" >
         <events>
             <trigger>
-                <EventListener event="HACKgameOver" />
+                <EventListener event="portaldelaytrigger" />
             </trigger>
         </events>
     </Script> 
@@ -598,7 +583,7 @@
    </SimpleNotification>
 
    <DistanceTrigger name="portal6" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=13/>
-   <SimpleNotification message="Houston: Make sure to reach the wormhole in time!">
+   <SimpleNotification message="Houston: Reach the wormhole in time!" >
       <events>
          <trigger>
             <EventListener event="portal6" />
@@ -607,8 +592,8 @@
    </SimpleNotification>
 
 
-   <!--DistanceTrigger name="portal7" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=17/>
-   <SimpleNotification message="Houston: Is it black?">
+   <DistanceTrigger name="portal7" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=17/>
+   <SimpleNotification message="Houston: We cannot keep it open much longer.">
       <events>
          <trigger>
             <EventListener event="portal7" />
@@ -617,7 +602,7 @@
    </SimpleNotification>
 
    <DistanceTrigger name="portal8" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=21/>
-   <SimpleNotification message="John: Yes">
+   <SimpleNotification message="Houston: Fly though the black hole, if you can.">
       <events>
          <trigger>
             <EventListener event="portal8" />
