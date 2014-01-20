@@ -234,7 +234,7 @@
     </SimpleNotification>
 
  <DistanceTrigger name="flying4" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=13/>
-    <SimpleNotification message="Housten: Our Commander got kidnapped">
+    <SimpleNotification message="Housten: Our Commander was kidnapped">
         <events>
             <trigger>
                 <EventListener event="flying4" />
@@ -292,7 +292,7 @@
    </QuestEffectBeacon>
 
    <LocalQuest id="Level_Kaan.docking">
-      <QuestDescription title="Docking" description="Our Commander got kidnapped in Area 51. Fly to the Main Station and get a better Spaceship to rescue him.
+      <QuestDescription title="Docking" description="Our Commander was kidnapped in Area 51. Fly to the Main Station and get a better Spaceship to rescue him.
 
     Flying moves:
     break (S)
@@ -306,7 +306,7 @@
    </LocalQuest> 
 
    <LocalQuest id="Level_Kaan.portals">
-      <QuestDescription title="Portals" description="Now you've got a Spaceship that is suited for your Mission.
+      <QuestDescription title="Portals" description="Now you received a spaceship that is suited for your mission.
 It is faster, has more health and is equipped with stronger weapons.
 Your next goal is to pass through the portal and find there the wormhole to Area 51" failmessage="" completeMessage="" />
       <complete-effects>
@@ -496,7 +496,19 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
   <StaticEntity position="0,118000,0" collisionType=static yaw=90>
       <attached>
          <DistanceTriggerBeacon name="bcnDestroyer" />
-         <Billboard position="0,0,0" material="Portals/Default" />
+         <Billboard position="0,0,0" material="Portals/Default" >
+           <events>
+             <visibility>
+               <EventTrigger invert=true>
+                 <events>
+                   <trigger>
+                     <EventListener event="portaldelaytrigger" />
+                   </trigger>
+                 </events>
+               </EventTrigger>
+             </visibility>
+           </events>
+         </Billboard>
          <DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude"
                           targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 visible=false >
@@ -517,7 +529,7 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
          textsize    = "0.1"
          colour      = "1.0, 0.2, 0.2, 0.8"
          align       = "center"                  
-         counter     = "110.0"
+         counter     = "100.0"
          speedfactor = "1.0"
          active      = "false"
       >
@@ -527,7 +539,7 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
           </activity>
         </events>
       </CountDown>
-      <!--OverlayText
+      <OverlayText
        position  = "0.05, 0.02"
        pickpoint = "0.0, 0.0"
        font      = "ShareTechMono"
@@ -535,18 +547,18 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
        colour    = "1.0, 0.2, 0.2, 0.8"
        align     = "left"
        caption   = "Wormhole closing in:"
-       active    = "false"
+       visible    = "false"
       >
         <events>
-          <activity>
+          <visibility>
             <EventListener event="portal4" />
-          </activity>
+          </visibility>
         </events>
-      </OverlayText-->
+      </OverlayText>
     </OverlayGroup>
 
 
-  <DistanceTrigger name="portaldelaytrigger" position="0,94000,0" target="Pawn" distance=500 stayActive="true" delay=116 />
+  <DistanceTrigger name="portaldelaytrigger" position="0,94000,0" target="Pawn" distance=500 stayActive="true" delay=106 />
    <Script code="Mission endMission false" onLoad="false" times="1" >
         <events>
             <trigger>
@@ -602,7 +614,7 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
    </SimpleNotification>
 
    <DistanceTrigger name="portal8" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=21/>
-   <SimpleNotification message="Houston: Fly though the black hole, if you can.">
+   <SimpleNotification message="Houston: Boost your way through the asteroids.">
       <events>
          <trigger>
             <EventListener event="portal8" />
@@ -627,19 +639,19 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
             <EventListener event="portal10" />
          </trigger>
       </events>
-   </SimpleNotification>
+   </SimpleNotification-->
 
    <DistanceTrigger name="portal11" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=33/>
    <SimpleNotification message="Houston: Hahaha ">
       <events>
          <trigger>
-            <EventListener event="portal11" />
+            <EventListener event="Houston: Fly though the black hole, if you can." />
          </trigger>
       </events>
    </SimpleNotification>
 
 
-    <SimpleNotification message="End of game">
+    <!--SimpleNotification message="End of game">
         <events>
             <trigger>
                 <EventListener event="endOfLevel" />
