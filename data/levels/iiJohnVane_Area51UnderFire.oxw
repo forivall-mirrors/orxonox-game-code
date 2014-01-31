@@ -42,8 +42,6 @@ To Do:
   </templates>
 
   <?lua include("includes/notifications.oxi") ?>
-
-
   <NotificationQueueCEGUI
     name="narrative"
     targets="simpleNotification"
@@ -62,7 +60,7 @@ To Do:
   >
   <?lua include("includes/pickups.oxi") ?>
 
-    <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
+    <Script code="showGUI NotificationLayer false true" needsGraphics="true" times="1"/>
     <OverlayGroup name="spacefightHUD" scale = "1, 1">
       <CountDown
          position    = "0.51, 0.05"

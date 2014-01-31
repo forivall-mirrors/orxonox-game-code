@@ -4,20 +4,20 @@
 
 Everything works fine, there are just some design issues:
 
-	- Better Homeplanet Design
-	- Change Boxdesign at the End (metal_crate.mesh instead of crate.mesh)
-	- Apply Boxcollison
-	- Green Box at the end Triangular
-	- Better Portal Jump
-	- better forcefield
-	- Sun Background (Particle Effects)
-	- Asteroid Belts around Planets (without lags!!!)
+- Better Homeplanet Design
+- Change Boxdesign at the End (metal_crate.mesh instead of crate.mesh)
+- Apply Boxcollison
+- Green Box at the end Triangular
+- Better Portal Jump
+- better forcefield
+- Sun Background (Particle Effects)
+- Asteroid Belts around Planets (without lags!!!)
 -->
 
 
 <!--
 Basic ------------------------------------------------------------------------------------------------------------------------>
-							<!--Basic Infos-->
+<!--Basic Infos-->
 
 <LevelInfo
  name = "(iii) John Vane: Escape the Bastards"
@@ -41,18 +41,6 @@ Basic --------------------------------------------------------------------------
   include("templates/spaceshipTurret.oxt")
 ?>
 
-  <NotificationQueueCEGUI
-    name="narrative"
-    targets="simpleNotification"
-    size=3
-    displayTime=4
-    position="0.2, 0, 0.1, 0"
-    fontSize="23"
-    fontColor="0, 0.5, 1, 0.9"
-    alignment="HorzCentred"
-    displaySize="0.6, 0, 0, 0"
-    />
-
 <Level
   name = "Escape the bastards"
   description = "You destroyed their Base, you accomplished the mission. Now get out of there, and get rid of the haunters"
@@ -61,7 +49,19 @@ Basic --------------------------------------------------------------------------
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  
   <?lua include("includes/notifications.oxi") ?>
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=4.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
@@ -74,8 +74,6 @@ Basic --------------------------------------------------------------------------
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
-	
-
     <!-- SpawnPoint team=0 position="-1000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff / -->
 
 <!-- Pickups -->
@@ -83,24 +81,24 @@ Basic --------------------------------------------------------------------------
     <PickupSpawner pickup=dronepickup position="-5000,-1300,-209" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
 
     <PickupSpawner pickup=hugehealthpickup position="0,-4,-1540" triggerDistance="10" respawnTime="10" maxSpawnedItems="99" visible="true">
-                            <events>
-                                <visibility>
-                                    <EventListener event="boxtrigger" />
-                                </visibility>
-                            </events>
-	</PickupSpawner>
+        <events>
+            <visibility>
+                <EventListener event="boxtrigger" />
+            </visibility>
+        </events>
+    </PickupSpawner>
     <PickupSpawner pickup=mediumspeedpickup position="0,4,-1540" triggerDistance="10" respawnTime="10" maxSpawnedItems="99"  visible="true">
-                            <events>
-                                <visibility>
-                                    <EventListener event="boxtrigger" />
-                                </visibility>
-                            </events>
-	</PickupSpawner>
+        <events>
+            <visibility>
+                <EventListener event="boxtrigger" />
+            </visibility>
+        </events>
+    </PickupSpawner>
 
 <!-- Pickups heal the box, so one cant destroy the box -->
 
 <!-- Pickups END -->
-							<!--Basic Infos end-->
+<!--Basic Infos end-->
 
 <!--Story----------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
@@ -109,7 +107,6 @@ Basic --------------------------------------------------------------------------
     <EventMultiTrigger name=spawntrigger>
         <events>
             <trigger>
-
                 <TeamSpawnPoint team=0 position="-8050,0,0" direction="1,0.3,0.2" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage>
 <!-- Spawnpoint aendern zu -8050,0,0 nachher direction="1,0.3,0.2"-->
 <!-- Spawnpoint aendern zu 3000,12000,-5500 nachher direction="0.3,1.2,-5.5" Fuer homeplanet-->
@@ -142,8 +139,6 @@ Basic --------------------------------------------------------------------------
             </activity>
         </events>
     </TeamSpawnPoint>
-
-
 
 
         <QuestEffectBeacon times=1>
@@ -202,7 +197,7 @@ Basic --------------------------------------------------------------------------
             </events>
         </QuestEffectBeacon>
 
-			<!-- END OF GAME -->
+    <!-- END OF GAME -->
     <SimpleNotification message="Well done, you've finished">
         <events>
             <trigger>
@@ -212,23 +207,25 @@ Basic --------------------------------------------------------------------------
     </SimpleNotification>
 
 
-    <Script code="Mission endMission true" onLoad="false">
+    <Script code="Mission endMission true" onLoad="false" times="1">
         <events>
             <trigger>
                 <EventListener event="reachedend" />
             </trigger>
         </events>
     </Script>
-			<!-- END OF GAME END -->
+    
+    <Script code="Mission setLives 1" onLoad="true" times="1" />
+    <!-- END OF GAME END -->
 
 
-        <DistanceTrigger name="missionfinish" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=1>
+    <DistanceTrigger name="missionfinish" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=1>
     </DistanceTrigger>
- 	<DistanceTrigger name="reachedally" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=0>
+    <DistanceTrigger name="reachedally" position="-120,0,0" target="Pawn" distance=60 stayActive="true" delay=0>
     </DistanceTrigger>
- 	<DistanceTrigger name="reachedhomeplanet" position="-3000,12000,-6990" target="Pawn" distance=100 stayActive="true" delay=0>
+    <DistanceTrigger name="reachedhomeplanet" position="-3000,12000,-6990" target="Pawn" distance=100 stayActive="true" delay=0>
     </DistanceTrigger>
- 	<DistanceTrigger name="reachedend" position="-41000,-30000,33800" target="Pawn" distance=60 stayActive="true" delay=2>
+    <DistanceTrigger name="reachedend" position="-41000,-30000,33800" target="Pawn" distance=60 stayActive="true" delay=2>
     </DistanceTrigger>
 
           <EventTrigger name="boxtrigger" activations="1" stayactive="true" delay=0.1>
@@ -673,9 +670,9 @@ Basic --------------------------------------------------------------------------
 
 <!--Enviroment-------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
-							<!--Asteroids Field-->
+    <!--Asteroids Field-->
 
-	<?lua for i=0,750,1 do
+	<?lua for i=0,650,1 do
 		x=math.random(-8000,-1000)
 		y=math.random(-2345,2345)
 		z=math.random(-2500,2500)
@@ -772,9 +769,9 @@ Basic --------------------------------------------------------------------------
     end
     ?>
     <?lua end ?>
-							<!--Asteroid Elipse end-->
+<!--Asteroid Elipse end-->
 
-							<!--Planet sun-->
+<!--Planet sun-->
     <Planet position="15000,0,0" scale=1500 pitch=-90 mesh="planets/sol.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=0 imagesize=1024.0f />
     <StaticEntity position="2600,0,0" collisionType=static>
         <collisionShapes>
@@ -784,9 +781,9 @@ Basic --------------------------------------------------------------------------
 
     <Billboard position="15100,0,0" material="Flares/backlightflare" colour="0.7,0.4,0.1" scale=600 />
 
-						<!--Planet END-->
+<!--Planet END-->
 
-							<!--Planet with Ally-->
+<!--Planet with Ally-->
     <Planet
       position="0,0,0"
       scale="100"
@@ -795,7 +792,7 @@ Basic --------------------------------------------------------------------------
       angularDamping="0"
       mass="5000000"
       pitch="0"
-      mesh="planets/muunilinst.mesh"
+      mesh="iceplanet.mesh"
       atmosphere="atmosphere1"
       rotationaxis="1,0,0"
       rotationrate="1.0"
@@ -810,10 +807,10 @@ Basic --------------------------------------------------------------------------
         <SphereCollisionShape radius="100" position="0,0,0" />
       </collisionShapes>
     </Planet>
-							<!-- Planet with Ally END-->
+<!-- Planet with Ally END-->
 
 
-							<!-- Homeplanet -->
+<!-- Homeplanet -->
     <Planet
       position="-3000,12000,-10000"
       scale="3000"
@@ -822,7 +819,7 @@ Basic --------------------------------------------------------------------------
       angularDamping="0"
       mass="5000000000000"
       pitch="0"
-      mesh="iceplanet.mesh"
+      mesh="planets/muunilinst.mesh"
       atmosphere="atmosphere1"
       rotationaxis="0,0,0"
       rotationrate="0.0"
@@ -836,15 +833,15 @@ Basic --------------------------------------------------------------------------
         <SphereCollisionShape radius="3000" position="0,0,0" />
       </collisionShapes>
     </Planet>
-  							<!-- Homeplanet  END-->
+<!-- Homeplanet  END-->
 
-							<!-- Planet around the cave-->
+<!-- Planet around the cave-->
 
 <Planet position="-43500,-30000,31900" scale=5000 pitch=-90 mesh="planets/moon.mesh" atmosphere="atmosphere1" rotationaxis="8,1,0" rotationrate="1" atmospheresize=0 imagesize=1024.0f />
 
-							<!-- Planet around the cave END-->
+<!-- Planet around the cave END-->
 
-							<!-- Anotherplanet -->
+<!-- Anotherplanet -->
     <Planet
       position="-20000,6000,7000"
       scale="3000"
@@ -1091,11 +1088,11 @@ Basic --------------------------------------------------------------------------
                     </WaypointPatrolController>
                   </controller>
                 </SpaceShip>
-		
-					<!-- Enemies END-->
+
+<!-- Enemies END-->
 
 
-					<!-- 15 Boxes forward-->
+<!-- 15 Boxes forward-->
  <?lua
     max = 15
     for i = 0, max, 1
@@ -1261,8 +1258,8 @@ Basic --------------------------------------------------------------------------
 
     <?lua end ?>
 
-					<!-- 18 Boxes right END-->
-					<!-- 17 Boxes forward-->
+    <!-- 18 Boxes right END-->
+    <!-- 17 Boxes forward-->
  <?lua
     max = 17
     for i = 0, max, 1
@@ -1391,7 +1388,7 @@ Basic --------------------------------------------------------------------------
 
       </collisionShapes>
 </StaticEntity>
-					<!-- 17 Boxes forward END-->
+<!-- 17 Boxes forward END-->
     <Billboard position="-41000,-30000,33800" material="Flares/backlightflare" colour="0,1.4,2.1" scale=15 />
 
   <StaticEntity position="-40400,-30000,33800" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
@@ -1407,9 +1404,9 @@ Basic --------------------------------------------------------------------------
 <ForceField position="-47000,-30000,30000" direction="1,0,0" diameter=2000 velocity=2000 length=2000 />
 
 
-	<!-- The Cave END-->
+<!-- The Cave END-->
 
-	<!-- Planet around the cave-->
+<!-- Planet around the cave-->
 
   </Scene>
 </Level>
