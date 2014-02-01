@@ -11,7 +11,7 @@ To Do:
 
 <LevelInfo
  name = "(ii) John Vane : Area 51 Under Fire"
- description = "Level-part with the big Spacefight"
+ description = "John Vane on rampage to free his commander."
  tags = "mission"
  screenshot = "emptylevel.png"
 />
@@ -63,7 +63,7 @@ To Do:
     <Script code="showGUI NotificationLayer false true" needsGraphics="true" times="1"/>
     <OverlayGroup name="spacefightHUD" scale = "1, 1">
       <CountDown
-         position    = "0.51, 0.05"
+         position    = "0.91, 0.05"
          pickpoint   = "0.0, 0.0"
          font        = "ShareTechMono"
          textsize    = 0.1
@@ -75,15 +75,15 @@ To Do:
       >
         <events>
           <activity>
-            <EventListener event="timer1" />
+            <EventListener event="dockDelay2" />
           </activity>
         </events>
       </CountDown>
     </OverlayGroup>
 
 <!-- SPAWNTRIGGER -->
-    <!-- StartPoint --> 
-    <SpawnPoint team=0 position="0, 0, 0" lookat="100, 0, 0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
+    <!-- StartPoint  0, 0, 0 --> 
+    <SpawnPoint team=0 position="-12470, -21870, 25200" lookat="100, 0, 0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
           <events>
             <activity>
               <EventListener event="flying12" />
@@ -91,6 +91,7 @@ To Do:
           </events>
     </SpawnPoint>
     <Billboard position="-10,0,0" material="Portals/Default" />
+    <ForceField position="0, 0, 0" lookat="100, 0, 0" diameter=200 velocity=1800 length=1400 />
 
     <EventTrigger name="flying12" invert="true" >
       <events>
@@ -380,7 +381,7 @@ Hint: look for a big asteroid."
     </QuestEffectBeacon>
 
     <!-- ESCAPE -->
-    <SimpleNotification message="Houston: A scout is startet to the mainship!"  broadcast="true">
+    <SimpleNotification message="Houston: A scout started to the mainship!"  broadcast="true">
         <events>
             <trigger>
                 <EventListener event="guard2trigger1" />
@@ -1209,7 +1210,15 @@ Hint: look for a big asteroid."
       </events>
     </BlinkingBillboard>
     
-    <DistanceTrigger name="dock" position="-12470, -21870, 25200" target="SpaceShip" distance=50 stayActive="true" delay=0 />
+    <DistanceTrigger
+     name="dock"
+     position="-12470, -21870, 25200"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=50
+     stayActive="true"
+     delay=0 />
     <SimpleNotification message="Houston: The Commander is on board!"  broadcast="true">
         <events>
             <trigger>
@@ -1259,6 +1268,45 @@ Hint: look for a big asteroid."
         </trigger>
       </events>
     </EventTrigger>
+
+
+    <DistanceTrigger
+     name="dockdelay3"
+     position="-12470, -21870, 25200"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=50
+     stayActive="true"
+     delay=20 />
+
+    <DistanceTrigger
+     name="inExplosionRange"
+     position="-12000, -22000, 25000"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=1000
+     stayActive="true"
+     delay=0 >
+        <EventTrigger>
+            <events>
+                <trigger>
+                    <EventListener event="dockdelay3" />
+                </trigger>
+            </events>
+        </EventTrigger>
+    </DistanceTrigger>
+
+    <DistanceTrigger
+     name="dockdelay4"
+     position="-12470, -21870, 25200"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=50
+     stayActive="true"
+     delay=23.1 />
 
     <EventTrigger name="timerEnd" activations="1" stayactive="true" delay=10 >
       <events>
@@ -1643,6 +1691,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshippirate />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=1 active=false>
       <waypoints>
@@ -1669,6 +1720,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshippirate />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=1 active=false>
       <waypoints>
@@ -1695,6 +1749,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshippirate />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=1 active=false>
       <waypoints>
@@ -1721,6 +1778,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshippirate />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=1 active=false>
       <waypoints>
@@ -1748,6 +1808,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshippirate />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=1 active=false>
       <waypoints>
@@ -1774,6 +1837,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshippirate />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=1 active=false>
       <waypoints>
@@ -1801,6 +1867,9 @@ Hint: look for a big asteroid."
   <templates>
     <Template link=spaceshipswallow />
   </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
   <controller>
     <WaypointPatrolController alertnessradius=5000 team=0 active=false>
       <waypoints>
@@ -1884,7 +1953,8 @@ Hint: look for a big asteroid."
 
 <!-- ASTEROIDS & ASTEROID-FIELDS -->
     <!-- Asteroids -->
-    <Model     position="9800, -5000, 5700" 
+    <Model
+        position="9800, -5000, 5700" 
         yaw="90" 
         pitch="-90" 
         roll="0" 
@@ -1928,12 +1998,13 @@ Hint: look for a big asteroid."
         ?>
 
         <?lua
-                  dofile("includes/asteroidField.lua")
+            dofile("includes/asteroidField.lua")
             asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
-            ?>
+        ?>
 
     <!-- PLANETS -->
-      <Planet     position="2000,-250,9000" 
+      <Planet
+            position="2000,-250,9000" 
             scale=5000 
             pitch=1 
             mesh="iceplanet.mesh" 
@@ -1949,8 +2020,8 @@ Hint: look for a big asteroid."
             collisionType="dynamic" />
 
 <!--  PICKUPS to make travelling faster  -->
-    <PickupSpawner pickup=hugespeedpickup position="8000,-600,17200" triggerDistance="400" respawnTime="10" maxSpawnedItems="5" />
-    <PickupSpawner pickup=hugespeedpickup position="12700,2400,9200" triggerDistance="400" respawnTime="10" maxSpawnedItems="5" />
+    <PickupSpawner pickup=hugespeedpickup position="11473,1275,7689" triggerDistance="400" respawnTime="10" maxSpawnedItems="5" />
+    <PickupSpawner pickup=mediumspeedpickup position="9455,1309,16891" triggerDistance="400" respawnTime="10" maxSpawnedItems="5" />
 
 <!-- ----------------Rotating SpaceStation--------------- -->
     <!-- first guard -->
@@ -1979,7 +2050,18 @@ Hint: look for a big asteroid."
         health    = 100000 initialhealth=100000 maxhealth="100000"
         name      = "Mainship"
         radarname = "Mainship" 
-        visible      = "true" >
+        visible   = "true" >
+      <events>
+        <visibility>
+          <EventTrigger invert=true>
+            <events>
+              <trigger>
+                <EventListener event="dockdelay3" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </visibility>
+      </events>
       <controller>
         <WaypointController team=1 active="true" >
           <waypoints/>
@@ -1992,6 +2074,7 @@ Hint: look for a big asteroid."
       </controller>
       <attached>
         <Model scale=200 mesh="drone.mesh" position = "0,0,0" lookat="40000, 4000, 27000" />
+        <DistanceTriggerBeacon name="NPC" />
 <!--    <Model mesh="cube.mesh" mass=10 position="-445,110,120" scale3D="45,45,150"  yaw=56 pitch=-4 roll=0 />
         <Model mesh="cube.mesh" mass=10 position="-295,125,220" scale3D="28,28,28" yaw=56 pitch=-4 roll=0 />
         <Model mesh="cube.mesh" mass=10 position="-400,350,-200" scale3D="80,280,800" yaw=56 pitch=-4 roll=5 />
@@ -2019,43 +2102,101 @@ Hint: look for a big asteroid."
     </SpaceShip>
 
     <!-- PARTICLE EFFECT -->
-    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp" autostart="false" lifetime=500 loop=0 startdelay=0.5>
+    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp" autostart="false" lifetime=600 loop=0 startdelay=0.5>
         <events>
             <spawn>
-                <EventListener event="timerEnd" />
+                <EventListener event="dockdelay3" />
             </spawn>
         </events>
     </ParticleSpawner>
-    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp2" autostart="false" lifetime=500 loop=0 startdelay=0>
+    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp2" autostart="false" lifetime=600 loop=0 startdelay=0>
         <events>
             <spawn>
-                <EventListener event="timerEnd" />
+                <EventListener event="dockdelay3" />
             </spawn>
         </events>
     </ParticleSpawner>
-    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp3" autostart="false" lifetime=500 loop=0 startdelay=0>
+    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp3" autostart="false" lifetime=600 loop=0 startdelay=0>
         <events>
             <spawn>
-                <EventListener event="timerEnd" />
+                <EventListener event="dockdelay3" />
             </spawn>
         </events>
     </ParticleSpawner>
     
-   <!-- TODO: End the game >
+    <!-- The fire is set ->
+    <EventTrigger name="kaboom1" activations="1" stayactive="true" delay=3 >
+      <events>
+        <trigger>
+          <EventListener event="dockdelay2" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    
+    <ParticleSpawner position="-12370,-21954.7,24993.4" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=0>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-11983.6,-21599,25172.2" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-12738.7,-22278.6,24827.4" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-11830.5,-22207.2,24714.7" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-11772.2,-21992.9,25151.8" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-12953.1,-22107.5,24330.7" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner-->
+
+    
+   <!-- TODO: End the game -->
    <Script code="Mission endMission true" onLoad="false" times="1" >
         <events>
             <trigger>
-                <EventListener event=timerEnd />
+                <EventListener event="dockdelay4" />
             </trigger>
         </events>
     </Script>
     <Script code="Mission endMission false" onLoad="false" times="1" >
         <events>
             <trigger>
-                <EventListener event="timerEnd" />
+                <EventListener event="inExplosionRange" />
             </trigger>
         </events>
-    </Script--> 
+    </Script> 
 
   </Scene>
 </Level>

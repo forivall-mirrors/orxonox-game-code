@@ -2,7 +2,7 @@
 
 <LevelInfo
    name = "(i) John Vane - Trip to Area 51"
-   description = "John Vane's first mission to rescue the Commander"
+   description = "John Vane's first mission to rescue the Commander."
    tags = "mission"
    screenshot = "JohnVane.png" 
 />

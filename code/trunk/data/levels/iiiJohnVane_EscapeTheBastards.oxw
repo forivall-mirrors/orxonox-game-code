@@ -21,7 +21,7 @@ Basic --------------------------------------------------------------------------
 
 <LevelInfo
  name = "(iii) John Vane: Escape the Bastards"
- description = "You destroyed their Base, you accomplished the mission. Now get out of there, and get rid of the haunters"
+ description = "You destroyed their Base, you accomplished the mission. Now get out of there, and get rid of the haunters."
  tags = "mission"
  screenshot = "EscapeTheBastards.png"
 />
@@ -283,7 +283,7 @@ Basic --------------------------------------------------------------------------
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
         </collisionShapes>
-	<controller>
+    <controller>
                       <WaypointController team=1>
                     </WaypointController>
         </controller>
@@ -423,27 +423,27 @@ Basic --------------------------------------------------------------------------
 
 <!-- @Triggers: Attakers, Fight one by one  -->
 
-	<EventTrigger name="target3" activations="1" stayactive="true" delay=0.1>
-     	 <events>
-     	   <trigger>
-        	  <EventListener event="attacker" />
-      	  </trigger>
-     	 </events>
-   	<EventTrigger name="target2" activations="1" stayactive="true" delay=0.1>
-      	  <events>
-     	     <trigger>
-    	        <EventListener event="attacker" />
-     	     </trigger>
-  	  </events>
-   	<EventTrigger name="target1" activations="1" stayactive="true" delay=0.1>
-      	  <events>
-     	     <trigger>
-    	        <EventListener event="attacker" />
-     	     </trigger>
-  	  </events>
-      	</EventTrigger>
-    	</EventTrigger>
-    	</EventTrigger>
+    <EventTrigger name="target3" activations="1" stayactive="true" delay=0.1>
+          <events>
+            <trigger>
+              <EventListener event="attacker" />
+            </trigger>
+          </events>
+       <EventTrigger name="target2" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="attacker" />
+              </trigger>
+        </events>
+       <EventTrigger name="target1" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="attacker" />
+              </trigger>
+        </events>
+          </EventTrigger>
+        </EventTrigger>
+        </EventTrigger>
 
 
     <SimpleNotification message="Wow, That's an explosion."  broadcast="true">
@@ -485,12 +485,12 @@ Basic --------------------------------------------------------------------------
         <QuestDescription title="Help is on the way" description="An allied pilot is cast away on a planet in front of you. Pick him up and leave.
 
 
-		Hint: He will blink with his lamp
+        Hint: He will blink with his lamp
 
-		PS: Remind the gravitation field"
+        PS: Remind the gravitation field"
 
  
-	failmessage="Well, you sucked" completeMessage="Well done, You're a hero" />
+    failmessage="Well, you sucked" completeMessage="Well done, You're a hero" />
         <complete-effects>
             <AddQuest questId="defend.2" />
         </complete-effects>
@@ -500,7 +500,7 @@ Basic --------------------------------------------------------------------------
     <LocalQuest id="defend.2">
         <QuestDescription title="Defend the Planet" description="Well your enemies trapped you. Kill'em all."
 
-	failmessage="Well, you sucked" completeMessage="Well done, You're a hero" />
+    failmessage="Well, you sucked" completeMessage="Well done, You're a hero" />
         <complete-effects>
             <AddQuest questId="leave.3" />
         </complete-effects>
@@ -672,53 +672,53 @@ Basic --------------------------------------------------------------------------
 
     <!--Asteroids Field-->
 
-	<?lua for i=0,650,1 do
-		x=math.random(-8000,-1000)
-		y=math.random(-2345,2345)
-		z=math.random(-2500,2500)
-	scale=math.random(20,70)
-	?>
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>"       collisiondamage = 0.005
+    <?lua for i=0,650,1 do
+        x=math.random(-8000,-1000)
+        y=math.random(-2345,2345)
+        z=math.random(-2500,2500)
+    scale=math.random(20,70)
+    ?>
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>"       collisiondamage = 0.005
       enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="<?lua print(scale) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
-    	</collisionShapes>
-	</MovableEntity>
-	<?lua end ?>
+        <attached>
+            <Model scale="<?lua print(scale) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+        </collisionShapes>
+    </MovableEntity>
+    <?lua end ?>
 
-							<!--Asteroids Field end -->
-
-
-							<!--Asteroids Random
-
-				"The game lags, when you're flying far away"
+                            <!--Asteroids Field end -->
 
 
-	<?lua for i=0,300,1 do
-		x=math.random(-12000,4000)
-		y=math.random(-8000,8000)
-		z=math.random(-8000,8000)
-	?>
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>"      collisiondamage = 0.005
+                            <!--Asteroids Random
+
+                "The game lags, when you're flying far away"
+
+
+    <?lua for i=0,300,1 do
+        x=math.random(-12000,4000)
+        y=math.random(-8000,8000)
+        z=math.random(-8000,8000)
+    ?>
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>"      collisiondamage = 0.005
       enablecollisiondamage = true  >
-    	<attached>
-        	<Model scale="<?lua print(math.random(20,70)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
-    	</attached>
-    	<collisionShapes>
+        <attached>
+            <Model scale="<?lua print(math.random(20,70)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+        </attached>
+        <collisionShapes>
             <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
         </collisionShapes>
-	</MovableEntity>
-	<?lua end ?>
+    </MovableEntity>
+    <?lua end ?>
 -->
-							<!--Asteroids  Random end-->
+                            <!--Asteroids  Random end-->
 
-    							<!--Asteroid Elipse-->
+                                <!--Asteroid Elipse-->
 <!-- LAAAGS :-(
 
-				"The game lags, when you're flying far away"		
+                "The game lags, when you're flying far away"        
 
     <?lua
         dofile("includes/asteroidField.lua")
@@ -756,7 +756,7 @@ Basic --------------------------------------------------------------------------
       scale="<?lua print(j * 5) ?>" >
       <attached>
         <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
-      <?lua if k == 5 then ?><attached>			<!--asteroid fog-->
+      <?lua if k == 5 then ?><attached>            <!--asteroid fog-->
             <ParticleEmitter position="0,0,0" source="Orxonox/Steam" />
           </attached> <?lua end ?>
         </Model>
@@ -863,102 +863,102 @@ Basic --------------------------------------------------------------------------
     </Planet>
 <!-- LAAAGS :-(
 
-				"The game lags, when you're flying far away"
+                "The game lags, when you're flying far away"
 
     <?lua
         dofile("includes/asteroidField.lua")
         asteroidBelt(-20000,6000,7000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
     ?>
 -->
-  							<!-- Anotherplanet  END-->
+                              <!-- Anotherplanet  END-->
 
-  							<!-- Homeplanet Architecture-->
+                              <!-- Homeplanet Architecture-->
 <!-- -3000,12000,-6990  = Billboard position-->
 
-     <!-- 	<Model  position="-3070,12070,-6990" yaw="90" pitch="-90" roll="0" scale="70" mesh="asteroid_ice.mesh" >
+     <!--     <Model  position="-3070,12070,-6990" yaw="90" pitch="-90" roll="0" scale="70" mesh="asteroid_ice.mesh" >
       <collisionShapes>
         <SphereCollisionShape radius="70" position="0,0,0" />
       </collisionShapes>
-	</Model>
+    </Model>
 -->
 
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="500"  pitch="90" roll="86" yaw="12" position="-2900,12080,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="70" />
-    	</collisionShapes>
-	</MovableEntity>
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="500"  pitch="90" roll="86" yaw="12" position="-2900,12080,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="70" />
+        </collisionShapes>
+    </MovableEntity>
 
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"   pitch="30" roll="11" yaw="51" position="-3200,11950,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="90" />
-    	</collisionShapes>
-	</MovableEntity>
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"   pitch="30" roll="11" yaw="51" position="-3200,11950,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="90" />
+        </collisionShapes>
+    </MovableEntity>
 
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="12" yaw="81"  position="-2800,12150,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="90" />
-    	</collisionShapes>
-	</MovableEntity>
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="12" yaw="81"  position="-2800,12150,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="90" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="90" />
+        </collisionShapes>
+    </MovableEntity>
 
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="0" yaw="0" position="-3300,11800,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="155" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="155" />
-    	</collisionShapes>
-	</MovableEntity>
-
-
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="0" yaw="12" position="-3230,12300,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="150" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="150" />
-    	</collisionShapes>
-	</MovableEntity>
-
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="13" roll="23"yaw="120" position="-3000,12000,-6820" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="100" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="100" />
-    	</collisionShapes>
-	</MovableEntity>
-
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="2" roll="12" yaw="43" position="-3250,12100,-6850" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="70" />
-    	</collisionShapes>
-	</MovableEntity>
-
-	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="0" roll="0" yaw="0"  position="-3230,11800,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
-    	<attached>
-        	<Model scale="85" mesh="asteroid_ice.mesh"  shadow=false/>
-   	 </attached>
-   	 <collisionShapes>
-      	 	<SphereCollisionShape radius="85" />
-    	</collisionShapes>
-	</MovableEntity>
-
- 							<!-- Homeplanet Architecture END-->
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="0" yaw="0" position="-3300,11800,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="155" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="155" />
+        </collisionShapes>
+    </MovableEntity>
 
 
-							<!-- Portal-->
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500"  pitch="0" roll="0" yaw="12" position="-3230,12300,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="150" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="150" />
+        </collisionShapes>
+    </MovableEntity>
+
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="13" roll="23"yaw="120" position="-3000,12000,-6820" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="100" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="100" />
+        </collisionShapes>
+    </MovableEntity>
+
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="2" roll="12" yaw="43" position="-3250,12100,-6850" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="70" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="70" />
+        </collisionShapes>
+    </MovableEntity>
+
+    <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=5 mass="500" pitch="0" roll="0" yaw="0"  position="-3230,11800,-6990" rotationaxis="0,0,0" rotationrate="0"       collisiondamage = 0.01  enablecollisiondamage = true >
+        <attached>
+            <Model scale="85" mesh="asteroid_ice.mesh"  shadow=false/>
+        </attached>
+        <collisionShapes>
+               <SphereCollisionShape radius="85" />
+        </collisionShapes>
+    </MovableEntity>
+
+                             <!-- Homeplanet Architecture END-->
+
+
+                            <!-- Portal-->
     <Template name=PortalDefault>
         <PortalEndPoint>
             <attached>
@@ -972,13 +972,13 @@ Basic --------------------------------------------------------------------------
     <PortalLink fromID="1" toID="2" />
 
 
-							<!-- Portal END-->
+                            <!-- Portal END-->
 
 
-	<!-- The Cave-->
+    <!-- The Cave-->
 <!-- verhaeltniss Cube.mesh <-> Crate.mesh 1:5 -->
 
-					<!-- Enemies-->
+                    <!-- Enemies-->
 <Turret position="-43700,-30000,30000" pitch="0" yaw="90" roll="90">
     <templates>
         <Template link=spaceshipturret />
@@ -1165,8 +1165,8 @@ Basic --------------------------------------------------------------------------
       </collisionShapes>
 </StaticEntity>
 
-					<!-- 15 Boxes forward END -->
-					<!-- 18 Boxes right-->
+                    <!-- 15 Boxes forward END -->
+                    <!-- 18 Boxes right-->
 
  <?lua
     max = 18
