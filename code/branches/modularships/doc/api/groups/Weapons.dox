@@ -1,0 +1,27 @@
+/**
+    @addtogroup Weapons Weapons
+    @ingroup Modules
+
+    The Weapons module adds additional weapons to the Orxonox arsenal.
+*/
+
+/**
+    @defgroup WeaponsMunitions Munitions
+    @ingroup Weapons
+
+    The different munitions.
+*/
+
+/**
+    @defgroup WeaponsProjectiles Projectiles
+    @ingroup Weapons
+
+    The different projectiles.
+*/
+
+/**
+    @defgroup WeaponsWeaponModes Weapon Modes
+    @ingroup Weapons
+
+    The different weapon modes.
+*/
