@@ -279,7 +279,7 @@ namespace orxonox
         if (originator)
             damage *= originator->getDamageMultiplier();
 
-        orxout() << "damage(): Custom collision detected on CS: " << cs << endl;
+        orxout() << "damage(): Custom collision detected on " << this->getRadarName() << ", CS: " << cs << endl;
 
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {

@@ -372,9 +372,9 @@ namespace orxonox
         // false means that bullet will assume we didn't modify the contact
         bool modified = false;
         if (object0->isCollisionCallbackActive())
-            modified |= object0->customCollidesAgainst(object1, cs0, cp);
+            modified |= object0->customCollidesAgainst(object1, cs1, cp);
         if (object1->isCollisionCallbackActive())
-            modified |= object1->customCollidesAgainst(object0, cs1, cp);
+            modified |= object1->customCollidesAgainst(object0, cs0, cp);
 
         return modified;
     }
