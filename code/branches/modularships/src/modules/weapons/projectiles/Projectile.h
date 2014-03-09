@@ -64,6 +64,7 @@ namespace orxonox
 
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            virtual bool customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
 
         private:
             float lifetime_; //!< The time the projectile exists.

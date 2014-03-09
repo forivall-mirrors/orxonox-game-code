@@ -195,6 +195,11 @@ namespace orxonox
         return this->processCollision(otherObject, contactPoint);
     }
 
+    bool Rocket::customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
+    {
+        return this->customProcessCollision(otherObject, contactPoint, cs);
+    }
+
     /**
     @brief
         Destroys the Rocket and stops the sound,

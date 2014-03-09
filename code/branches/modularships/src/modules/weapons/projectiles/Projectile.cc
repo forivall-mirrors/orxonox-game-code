@@ -92,4 +92,9 @@ namespace orxonox
         return this->processCollision(otherObject, contactPoint);
     }
 
+    bool Projectile::customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
+    {
+        return this->customProcessCollision(otherObject, contactPoint, cs);
+    }
+
 }

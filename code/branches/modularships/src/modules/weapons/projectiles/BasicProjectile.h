@@ -119,6 +119,7 @@ namespace orxonox
 
         protected:
             bool processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            bool customProcessCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint, const btCollisionShape* cs);
             void destroyCheck(void);
 
         private:

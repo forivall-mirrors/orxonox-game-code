@@ -176,6 +176,11 @@ namespace orxonox
         return this->processCollision(otherObject, contactPoint);
     }
 
+    bool SimpleRocket::customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
+    {
+        return this->customProcessCollision(otherObject, contactPoint, cs);
+    }
+
     /**
     @brief
         Rotates the SimpleRocket around the y-axis by the amount specified by the first component of the input 2-dim vector.

@@ -31,6 +31,32 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
     
+    <MovableEntity position="0,0,0" collisionType=dynamic scale=1 linearDamping=0.8 angularDamping=0  collisiondamage=0.005 enablecollisiondamage=true>
+    <attached> 
+        <Model position="0,0,0" mesh="cube.mesh" scale3D="40,40,40" /> 
+        <StaticEntity position="0,90,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model position="0,0,0" mesh="cube.mesh" scale3D="30,30,30" /> 
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="0,0,0" halfExtents="30,30,30" /> 
+            </collisionShapes> 
+        </StaticEntity>
+    </attached> 
+    <collisionShapes> 
+        <BoxCollisionShape position="0,0,0" halfExtents="40,40,40" /> 
+    </collisionShapes> 
+    </MovableEntity>
+    
+    <Pawn health=30 position="0,-50,0" direction="0,-1,0" collisionType=dynamic mass=1000 name=box radarname = "Box 4" >
+        <attached>
+            <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+        </collisionShapes>
+    </Pawn>
+    
   </Scene>
 </Level>
 

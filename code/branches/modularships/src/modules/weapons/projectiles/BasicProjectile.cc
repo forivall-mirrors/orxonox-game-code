@@ -140,6 +140,69 @@ namespace orxonox
         return false;
     }
 
+    bool BasicProjectile::customProcessCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint, const btCollisionShape* cs)
+        {
+            if (!this->bDestroy_ && GameMode::isMaster())
+            {
+                if (otherObject == this->getShooter()) // Prevents you from shooting yourself
+                    return false;
+
+                this->bDestroy_ = true; // If something is hit, the object is destroyed and can't hit something else.
+                                        // The projectile is destroyed by its tick()-function (in the following tick).
+
+                Pawn* victim = orxonox_cast<Pawn*>(otherObject); // If otherObject isn't a Pawn, then victim is NULL
+
+                WorldEntity* entity = orxonox_cast<WorldEntity*>(this);
+                assert(entity); // The projectile must not be a WorldEntity.
+
+                // If visual effects after destruction cause problems, put this block below the effects code block
+                if (victim)
+                {
+                    victim->customHit(this->getShooter(), contactPoint, cs, this->getDamage(), this->getHealthDamage(), this->getShieldDamage());
+                    victim->startReloadCountdown();
+                }
+
+                // Visual effects for being hit, depending on whether the shield is hit or not
+                if (this->getShooter()) // If the owner does not exist (anymore?), no effects are displayed.
+                {
+                    // Damping and explosion effect is only played if the victim is no Pawn (see cast above)
+                    // or if the victim is a Pawn, has no shield left, is still alive and any damage goes to the health
+                    if (!victim || (victim && !victim->hasShield() && victim->getHealth() > 0.0f && (this->getDamage() > 0.0f || this->getHealthDamage() > 0.0f)))
+                    {
+                        {
+                            ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getContext());
+                            effect->setPosition(entity->getPosition());
+                            effect->setOrientation(entity->getOrientation());
+                            effect->setDestroyAfterLife(true);
+                            effect->setSource("Orxonox/explosion3");
+                            effect->setLifetime(2.0f);
+                        }
+                        // Second effect with same condition
+                        {
+                            ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getContext());
+                            effect->setPosition(entity->getPosition());
+                            effect->setOrientation(entity->getOrientation());
+                            effect->setDestroyAfterLife(true);
+                            effect->setSource("Orxonox/smoke4");
+                            effect->setLifetime(3.0f);
+                        }
+                    }
+
+                    // victim->isAlive() is not false until the next tick, so getHealth() > 0 is used instead
+                    if (victim && victim->hasShield() && (this->getDamage() > 0.0f || this->getShieldDamage() > 0.0f) && victim->getHealth() > 0.0f)
+                    {
+                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getContext());
+                        effect->setDestroyAfterLife(true);
+                        effect->setSource("Orxonox/Shield");
+                        effect->setLifetime(0.5f);
+                        victim->attach(effect);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
     /**
     @brief
         Check whether the projectile needs to be destroyed and destroys it if so.

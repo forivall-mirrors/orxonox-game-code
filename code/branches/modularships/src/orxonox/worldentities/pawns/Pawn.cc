@@ -273,6 +273,38 @@ namespace orxonox
         }
     }
 
+    void Pawn::customDamage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
+    {
+        // Applies multiplier given by the DamageBoost Pickup.
+        if (originator)
+            damage *= originator->getDamageMultiplier();
+
+        orxout() << "damage(): Custom collision detected on CS: " << cs << endl;
+
+        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
+        {
+            if (shielddamage >= this->getShieldHealth())
+            {
+                this->setShieldHealth(0);
+                this->setHealth(this->health_ - (healthdamage + damage));
+            }
+            else
+            {
+                this->setShieldHealth(this->shieldHealth_ - shielddamage);
+
+                // remove remaining shieldAbsorpton-Part of damage from shield
+                shielddamage = damage * this->shieldAbsorption_;
+                shielddamage = std::min(this->getShieldHealth(),shielddamage);
+                this->setShieldHealth(this->shieldHealth_ - shielddamage);
+
+                // set remaining damage to health
+                this->setHealth(this->health_ - (damage - shielddamage) - healthdamage);
+            }
+
+            this->lastHitOriginator_ = originator;
+        }
+    }
+
 // TODO: Still valid?
 /* HIT-Funktionen
     Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
@@ -287,12 +319,31 @@ namespace orxonox
         }
     }
 
+    void Pawn::customHit(Pawn* originator, const Vector3& force, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
+    {
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
+        {
+            this->customDamage(damage, healthdamage, shielddamage, originator, cs);
+            this->setVelocity(this->getVelocity() + force);
+        }
+    }
 
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, healthdamage, shielddamage, originator);
+
+            if ( this->getController() )
+                this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
+        }
+    }
+
+    void Pawn::customHit(Pawn* originator, btManifoldPoint& contactpoint, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
+    {
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
+        {
+            this->customDamage(damage, healthdamage, shielddamage, originator, cs);
 
             if ( this->getController() )
                 this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?

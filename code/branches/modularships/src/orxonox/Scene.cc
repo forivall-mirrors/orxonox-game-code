@@ -200,7 +200,7 @@ namespace orxonox
             // also set the collision callback variable.
             // Note: This is a global variable which we assign a static function.
             // TODO: Check whether this (or anything about Bullet) works with multiple physics engine instances.
-            gContactAddedCallback = &Scene::collisionCallback;
+            gContactAddedCallback = &Scene::customCollisionCallback;
         }
         else if (!wantPhysics && hasPhysics())
         {
@@ -354,6 +354,27 @@ namespace orxonox
             modified |= object0->collidesAgainst(object1, cp);
         if (object1->isCollisionCallbackActive())
             modified |= object1->collidesAgainst(object0, cp);
+
+        return modified;
+    }
+
+    /* ADDED static*/ bool Scene::customCollisionCallback(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0,
+                                             int index0, const btCollisionObject* colObj1, int partId1, int index1)
+    {
+        // get the WorldEntity pointers
+        SmartPtr<WorldEntity> object0 = static_cast<WorldEntity*>(colObj0->getUserPointer());
+        SmartPtr<WorldEntity> object1 = static_cast<WorldEntity*>(colObj1->getUserPointer());
+
+        // get the CollisionShape pointers
+        const btCollisionShape* cs0 = colObj0->getCollisionShape();
+        const btCollisionShape* cs1 = colObj1->getCollisionShape();
+
+        // false means that bullet will assume we didn't modify the contact
+        bool modified = false;
+        if (object0->isCollisionCallbackActive())
+            modified |= object0->customCollidesAgainst(object1, cs0, cp);
+        if (object1->isCollisionCallbackActive())
+            modified |= object1->customCollidesAgainst(object0, cs1, cp);
 
         return modified;
     }
