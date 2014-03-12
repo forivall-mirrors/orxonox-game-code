@@ -70,6 +70,7 @@ namespace orxonox
             void updateAttachedShape(CollisionShape* shape);
 
             virtual void changedScale();
+            int getNumChildShapes();
 
         private:
             void updatePublicShape();

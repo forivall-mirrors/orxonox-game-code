@@ -296,4 +296,9 @@ namespace orxonox
 
         this->updatePublicShape();*/
     }
+
+    int CompoundCollisionShape::getNumChildShapes()
+    {
+        return this->compoundShape_->getNumChildShapes();
+    }
 }

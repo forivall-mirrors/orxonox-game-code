@@ -48,13 +48,24 @@
     </collisionShapes> 
     </MovableEntity>
     
-    <Pawn health=30 position="0,-100,0" direction="0,0,0" collisionType=dynamic mass=1000 name=box radarname = "Box 4" >
+    <Pawn health=1000 initialhealth=1000 maxhealth=1000 position="0,-100,0" direction="0,0,0" collisionType=dynamic mass=1000 name=box radarname = "Box 4" >
         <attached>
             <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+            <Model position="0,-30,0" mesh="cube.mesh" scale3D="15,15,15" />
+            <StaticEntity position="0,-60,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+                <attached> 
+                    <Model position="0,0,0" mesh="cube.mesh" scale3D="15,15,15" />
+                    <Model position="0,0,30" mesh="cube.mesh" scale3D="15,15,15" /> 
+                </attached> 
+                <collisionShapes> 
+                    <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" /> 
+                    <BoxCollisionShape position="0,0,30" halfExtents="15,15,15" /> 
+                </collisionShapes> 
+            </StaticEntity>
         </attached>
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-            <BoxCollisionShape position="0,-15,0" halfExtents="15,15,15" />
+            <BoxCollisionShape position="0,-30,0" halfExtents="15,15,15" />
         </collisionShapes>
     </Pawn>
     

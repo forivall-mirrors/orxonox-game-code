@@ -408,6 +408,9 @@ namespace orxonox
             */
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
 
+            inline virtual WorldEntityCollisionShape* getWorldEntityCollisionShape()
+                { return this->collisionShape_; }
+
             btRigidBody*  physicalBody_; //!< Bullet rigid body. Everything physical is applied to this instance.
 
         private:
