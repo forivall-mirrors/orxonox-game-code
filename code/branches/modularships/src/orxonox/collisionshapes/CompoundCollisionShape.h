@@ -72,6 +72,11 @@ namespace orxonox
             virtual void changedScale();
             int getNumChildShapes();
 
+            inline std::map<CollisionShape*, btCollisionShape*> getShapesMap()
+            {
+                return attachedShapes_;
+            }
+
         private:
             void updatePublicShape();
             inline virtual btCollisionShape* createNewShape() const

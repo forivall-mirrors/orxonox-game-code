@@ -234,6 +234,7 @@ namespace orxonox // tolua_export
             virtual int isMyCollisionShape(const btCollisionShape* cs);
             void printChildShapes(CompoundCollisionShape* cs, int indent, int subshape);
             void printSpaces(int num);
+            void printChildShapeMap(std::map<CollisionShape*, btCollisionShape*> map);
 
         private:
             void registerVariables();

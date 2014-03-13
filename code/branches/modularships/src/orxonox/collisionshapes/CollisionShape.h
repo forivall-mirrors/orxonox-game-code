@@ -169,8 +169,11 @@ namespace orxonox
             bool notifyBeingAttached(CompoundCollisionShape* newParent); // Notifies the CollisionShape of being attached to a CompoundCollisionShape.
             void notifyDetached(); // Notifies the CollisionShape of being detached from a CompoundCollisionShape.
 
-            inline unsigned int getparentID()
+            inline unsigned int getParentID()
                 { return this->parentID_; }
+
+            inline CompoundCollisionShape* getParent()
+                { return this->parent_; }
 
         protected:
             virtual void updateParent(); // Updates the CompoundCollisionShape the CollisionShape belongs to, after the CollisionShape has changed.
