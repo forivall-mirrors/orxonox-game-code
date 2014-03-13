@@ -1,0 +1,672 @@
+<!-- -->
+
+<LevelInfo
+   name = "(i) John Vane - Trip to Area 51"
+   description = "John Vane's first mission to rescue the Commander."
+   tags = "mission"
+   screenshot = "JohnVane.png" 
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
+?>
+
+<Level gametype="Mission">
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+  <Scene
+    ambientlight = "0.5, 0.5, 0.5"
+    skybox       = "Orxonox/Starbox"
+    hasPhysics   = true
+
+  >
+
+   <?lua
+      include("includes/pickups.oxi")
+   ?>
+
+   <?lua
+    dofile("includes/CuboidSpaceStation.lua")
+   ?>
+
+
+   <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>    
+
+   <TeamSpawnPoint team=0 position="0,0,0" direction="1,1,1" spawnclass=SpaceShip pawndesign=spaceshipescort>
+         <events>
+            <activity>
+                <EventListener event="start" />
+            </activity>
+        </events>
+    </TeamSpawnPoint>
+   <!-- HELPER FOR LEVEL DESIGNERS: go directly to the racing part of the level -->
+   <!--TeamSpawnPoint team=0 position="0,94000,0" lookat="0,118000,0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage/-->
+
+   <Script code="Mission setLives 1" onLoad="true" times="1" />
+
+   <DistanceTrigger name="spawntrigger" position="0,0,0" distance=10 target="SpaceShip" stayActive="true" delay=0.1/>
+
+<!----------------------------------------------------------------------------------------------------->
+<!-------------------------------------- PART ZERO: Docking on  --------------------------------------->
+<!----------------------------------------------------------------------------------------------------->
+
+<!-- OBJECTS IN THIS PART -->
+
+<!-- @Objects: HYDROGEN FARMER & DOCKING -->
+   
+<!-- @Objects: HYDROGEN FARMER & DOCKING -->
+   <SpaceShip
+        team      = 0
+        position  = "5000,5100,5000"
+        roll      = 90   yaw=0  pitch=20
+        mass      = 10000
+        health    = 100000 initialhealth=100000 maxhealth="100000"
+        name      = "HydroFarmer"
+        radarname = "Main station" > 
+      <attached>
+        <!-- Docking -->
+         <DistanceTriggerBeacon name="bcnDestroyer" />
+         <DockingTarget name="destroyer" />
+
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+   <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
+        <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
+        <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
+        <Model mesh="cube.mesh" mass=10 position="-280,0,0" scale3D="163,50,50" />
+        <Model mesh="cube.mesh" mass=10 position="140,0,-240" scale3D="163,50,50"  yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="163,50,50" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,400,0" scale3D="43,110,26" yaw=-30 />
+        <Model mesh="cube.mesh" mass=10 position="-200,100,0" scale3D="26,50,43" />
+        <Model mesh="cube.mesh" mass=10 position="100,100,-173" scale3D="43,50,26" yaw=-30/>
+        <Model mesh="cube.mesh" mass=10 position="100,100,173" scale3D="43,50,26" yaw=30/>
+        <Model mesh="cube.mesh" mass=10 position="-100,264,0" scale3D="26,105,43" roll=-49/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,-87" scale3D="26,105,43" roll=-49 yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/>     -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
+        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections -->
+        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
+        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower -->
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one-->
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs -->
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs -->
+        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
+      </collisionShapes>
+    </SpaceShip>
+
+   <Dock position="5000,5000,5000" roll=90 yaw=180 >
+      <animations>
+         <MoveToDockingTarget target="destroyer" />
+      </animations>
+      <effects>
+         <DockToShip target="spaceShip" />
+      </effects>
+      <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+            <activity>
+                <EventListener event=notGameEnd />
+            </activity>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"/>
+       <Billboard position="10,-202,-42" material="Flares/ringflare" colour="0.7,0.4,0.1" scale=1/>
+        </attached>
+
+    </Dock> 
+
+<!--@Objects: SpaceCruiser as docking target -->
+    <SpaceShip
+        template            = "spaceshipcollateraldamage"
+        team                = "0"
+        position            = "5000,5800,5000"
+        orientation         = "-0.14, 0.68, 0.68, 0.223"
+        health              = "400"
+        initialhealth       = "400"
+        maxhealth           = "500"
+        shieldhealth        = "80"
+        initialshieldhealth = "80"
+        maxshieldhealth     = "120"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "cruiser"
+        radarname           = "Spacecruiser" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip>
+
+
+<BlinkingBillboard position="1500,1500,1500" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=flying3 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+<Billboard position="1500,1500,1500" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=flying4 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
+
+  <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=1/>
+    <SimpleNotification message="Housten: John Vane do you hear us?">
+        <events>
+            <trigger>
+                <EventListener event="flying1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+   <DistanceTrigger name="flying2" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=5/>
+   <SimpleNotification message="Housten: We got a new mission for you">
+        <events>
+            <trigger>
+                <EventListener event="flying2" />
+            </trigger>
+        </events>
+   </SimpleNotification>
+
+
+  <DistanceTrigger name="flying3" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=9/>
+    <SimpleNotification message="John: I hear you. What is it about?">
+        <events>
+            <trigger>
+                <EventListener event="flying3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+ <DistanceTrigger name="flying4" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=13/>
+    <SimpleNotification message="Housten: Our Commander was kidnapped">
+        <events>
+            <trigger>
+                <EventListener event="flying4" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+ <DistanceTrigger name="flying5" position="0,0, 0" target="Pawn" distance=100 stayActive="true" delay=17/>
+    <SimpleNotification message="Housten: We need you to rescue him.">
+        <events>
+            <trigger>
+                <EventListener event="flying5" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<DistanceTrigger name="flying6" position="0,0, 0" target="Pawn" distance=100 stayActive="true" delay=21/>
+    <SimpleNotification message="John: I'm right on the way.">
+        <events>
+            <trigger>
+                <EventListener event="flying6" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<DistanceTrigger name="flying7" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=25/>
+    <SimpleNotification message="Houston: First dock on the station">
+        <events>
+            <trigger>
+                <EventListener event="flying7" />
+            </trigger>
+        </events>
+    </SimpleNotification> 
+
+   <QuestEffectBeacon times=1>
+      <effects>
+                <AddQuest questId="Level_Kaan.docking" />
+      </effects>
+            <events>
+                <execute>
+                    <EventListener event=spawntrigger />
+                </execute>
+            </events>
+   </QuestEffectBeacon>
+
+   <QuestEffectBeacon times=1>
+            <effects>
+                <CompleteQuest questId="Level_Kaan.docking" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="dockMe" />
+                </execute>
+            </events>
+   </QuestEffectBeacon>
+
+   <LocalQuest id="Level_Kaan.docking">
+      <QuestDescription title="Docking" description="Our Commander was kidnapped in Area 51. Fly to the Main Station and get a better Spaceship to rescue him.
+
+    Flying moves:
+    break (S)
+    roll     (Q) and (E)
+    boost (Space)
+
+    Whenever a new quest is added you can view it by pressing (F3). Quit this menu via (Esc)." failmessage="" completeMessage="" />
+      <complete-effects>
+         <AddQuest questId="Level_Kaan.portals" />
+      </complete-effects>
+   </LocalQuest> 
+
+   <LocalQuest id="Level_Kaan.portals">
+      <QuestDescription title="Portals" description="Now you received a spaceship that is suited for your mission.
+It is faster, has more health and is equipped with stronger weapons.
+Your next goal is to pass through the portal and find there the wormhole to Area 51" failmessage="" completeMessage="" />
+      <complete-effects>
+         <AddQuest questId="Level_Kaan.asteroids" />
+      </complete-effects>
+   </LocalQuest> 
+
+
+   <QuestEffectBeacon times=1>
+      <effects>
+         <CompleteQuest questId="Level_Kaan.portals" />
+      </effects>
+      <events>
+         <execute>
+            <EventListener event=start />
+         </execute>
+      </events>
+   </QuestEffectBeacon>
+
+ <LocalQuest id="Level_Kaan.asteroids">
+      <QuestDescription title="Asteroids" description="The wormhole is at the end of the asteroid shower.
+Find your way through the asteroids without hitting the rocks and reach Area 51.
+You have to get there in time - the wormhole cannot be forced open forever.
+Your Mission is to fly straight through the wormhole." failmessage="" completeMessage="" />
+   </LocalQuest> 
+
+ <QuestEffectBeacon times=1>
+      <effects>
+         <CompleteQuest questId="Level_Kaan.asteroids" />
+      </effects>
+      <events>
+         <execute>
+            <EventListener event=endOfLevel />
+         </execute>
+      </events>
+   </QuestEffectBeacon>
+
+<!----------------------------------------------------------------------------------------------------->
+<!-------------------------------- PART ONE: Passing throug wormhole  --------------------------------->
+<!----------------------------------------------------------------------------------------------------->
+
+
+<!------------------------------------- OBJECTS IN THIS PART  lookat="0,118000,0" ------------------------------------------>
+
+   <Template name=PortalDefault>
+      <PortalEndPoint>
+         <attached>
+            <Model mesh="Spacegate.mesh" />
+         </attached>
+      </PortalEndPoint>
+   </Template>
+
+   <PortalEndPoint position="5000,6400,5000" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" lookat="5000,5800,5000"/>
+   <PortalEndPoint position="0,94000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0" />
+   <PortalLink fromID="1" toID="2" />
+   <!--<PortalLink fromID="2" toID="1" />-->
+
+<!-- Meteoriten, die sich bewegen -->
+   <?lua
+      for i = 1, 300, 1
+      do
+      j = math.random()
+      x = math.random()
+      y = math.random()
+      z = math.random()
+   ?>
+
+   <MovableEntity    
+      position = "<?lua print(math.random()* 600-300) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random() * 600-300) ?>"
+      scale = "<?lua print(j * 40)?>"
+      velocity = "<?lua print(x*20-10)?>, <?lua print(y*60-160)?>, <?lua print(z*20-10)?>"
+      collisionType = dynamic
+      collisiondamage = 0.05
+      enablecollisiondamage = true 
+      active = true
+   >                 
+          <attached>           
+              <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
+                  <events>           
+                    <visibility>           
+                      <EventListener event="portal3" />           
+                    </visibility>           
+                  </events>
+              </Model>                          
+          </attached> 
+         <collisionShapes>
+             <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
+         </collisionShapes>   
+   </MovableEntity>
+
+   <?lua
+      end
+   ?>
+
+
+<!-- Fiese Meteoriten, die direkt auf den Spieler zufliegen-->
+
+   <?lua
+      for i = 1, 240, 1
+      do
+      j = math.random()
+      x = math.random()
+      y = math.random()
+      z = math.random()
+   ?>
+   <MovableEntity    
+      position = "<?lua print(math.random()* 240-120) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random()* 240-120) ?>"
+      scale = "10"
+      velocity = "0, -160, 0"
+      collisionType = dynamic
+      collisiondamage = 0.05
+      enablecollisiondamage = true 
+      active = true
+      visible = false
+   >                     
+          <attached>           
+              <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
+                  <events>           
+                    <visibility>           
+                      <EventListener event="portal3" />           
+                    </visibility>           
+                  </events>
+              </Model>                    
+          </attached> 
+         <collisionShapes>
+             <SphereCollisionShape radius="10" />
+         </collisionShapes>   
+   </MovableEntity>
+   <?lua
+      end
+   ?>
+
+<BlinkingBillboard position="5000,5700,5000" frequency=0.6 amplitude=3 material="Flares/lensflare" colour="1,1,0.05">
+          <events>
+            <visibility>
+              <EventTrigger invert=true>
+                <events>
+                  <trigger>
+                    <EventListener event=portal2 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</BlinkingBillboard>
+
+<Billboard position="5000,5700,5000" amplitude=1 material="Flares/lensflare" colour="0,0.8,0.1">
+          <events>
+            <visibility>
+              <EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event=portal2 />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+</Billboard>
+
+<DistanceTrigger name="start" position="0,94000,0" target="SpaceShip" beaconMode="exclude" targetname="bcnDestroyer" distance=20 stayActive="true" delay=0 />
+
+<DistanceTrigger name="portal2" position="5000,5700,5000" target="Pawn" distance=20 stayActive="true" delay=3/>
+    <SimpleNotification message="Housten: Now go through the portal!">
+        <events>
+            <trigger>
+                <EventListener event="portal2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+
+<!----------------------------------------------------------------------------------------------------->
+<!--------------------------- PART TWO: Passing throug area with meteorits ---------------------------->
+<!----------------------------------------------------------------------------------------------------->
+   
+  <Pawn
+        team      = 0
+        position  = "0,118000,0"
+        roll      = 0   yaw=90  pitch=0
+        mass      = 10000
+        health    = 100000 initialhealth=100000 maxhealth="100000"
+        name      = "wormhole"
+        radarname = "Wormhole to Area 51" >
+   </Pawn>     
+  <StaticEntity position="0,118000,0" collisionType=static yaw=90>
+      <attached>
+         <DistanceTriggerBeacon name="bcnDestroyer" />
+         <Billboard position="0,0,0" material="Portals/Default" >
+           <events>
+             <visibility>
+               <EventTrigger invert=true>
+                 <events>
+                   <trigger>
+                     <EventListener event="portaldelaytrigger" />
+                   </trigger>
+                 </events>
+               </EventTrigger>
+             </visibility>
+           </events>
+         </Billboard>
+         <DistanceTrigger name="endOfLevel" position="0,0,0" target="SpaceShip" beaconMode="exclude"
+                          targetname="bcnDestroyer" distance=50 stayActive="true" delay=0/>
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 visible=false >
+          <events>           
+            <visibility>           
+              <EventListener event="portal3" />           
+            </visibility>           
+          </events>
+        </Model>
+      </attached>
+  </StaticEntity>
+
+    <OverlayGroup name="spacefightHUD" scale = "1, 1">
+      <CountDown
+         position    = "0.9, 0.02"
+         pickpoint   = "0.0, 0.0"
+         font        = "ShareTechMono"
+         textsize    = "0.1"
+         colour      = "1.0, 0.2, 0.2, 0.8"
+         align       = "center"                  
+         counter     = "100.0"
+         speedfactor = "1.0"
+         active      = "false"
+      >
+        <events>
+          <activity>
+            <EventListener event="portal4" />
+          </activity>
+        </events>
+      </CountDown>
+      <OverlayText
+       position  = "0.05, 0.02"
+       pickpoint = "0.0, 0.0"
+       font      = "ShareTechMono"
+       textsize  = "0.1"
+       colour    = "1.0, 0.2, 0.2, 0.8"
+       align     = "left"
+       caption   = "Wormhole closing in:"
+       visible    = "false"
+      >
+        <events>
+          <visibility>
+            <EventListener event="portal4" />
+          </visibility>
+        </events>
+      </OverlayText>
+    </OverlayGroup>
+
+
+  <DistanceTrigger name="portaldelaytrigger" position="0,94000,0" target="Pawn" distance=500 stayActive="true" delay=106 />
+   <Script code="Mission endMission false" onLoad="false" times="1" >
+        <events>
+            <trigger>
+                <EventListener event="portaldelaytrigger" />
+            </trigger>
+        </events>
+    </Script> 
+
+ <DistanceTrigger name="portal3" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=1/>
+   <SimpleNotification message="Housten: Reach the wormhole to Area 51">
+      <events>
+         <trigger>
+            <EventListener event="portal3" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+  <DistanceTrigger name="portal4" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=5/>
+   <SimpleNotification message="Housten: Hurry up John, time is running out!">
+      <events>
+         <trigger>
+            <EventListener event="portal4"  />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal5" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=9/>
+   <SimpleNotification message="Houston: Pay attention to the asteroids!">
+      <events>
+         <trigger>
+            <EventListener event="portal5" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal6" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=13/>
+   <SimpleNotification message="Houston: Reach the wormhole in time!" >
+      <events>
+         <trigger>
+            <EventListener event="portal6" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+
+   <DistanceTrigger name="portal7" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=17/>
+   <SimpleNotification message="Houston: We cannot keep it open much longer.">
+      <events>
+         <trigger>
+            <EventListener event="portal7" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal8" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=21/>
+   <SimpleNotification message="Houston: Boost your way through the asteroids.">
+      <events>
+         <trigger>
+            <EventListener event="portal8" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+
+   <!--DistanceTrigger name="portal9" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=25/>
+   <SimpleNotification message="Houston: It should really look like a black hole.">
+      <events>
+         <trigger>
+            <EventListener event="portal9" />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+   <DistanceTrigger name="portal10" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=29/>
+   <SimpleNotification message="John: It does... ">
+      <events>
+         <trigger>
+            <EventListener event="portal10" />
+         </trigger>
+      </events>
+   </SimpleNotification-->
+
+   <DistanceTrigger name="portal11" position="0,94000,0" target="SpaceShip" distance=50 stayActive="true" delay=33/>
+   <SimpleNotification message="Houston: Hahaha ">
+      <events>
+         <trigger>
+            <EventListener event="Houston: Fly though the black hole, if you can." />
+         </trigger>
+      </events>
+   </SimpleNotification>
+
+
+    <!--SimpleNotification message="End of game">
+        <events>
+            <trigger>
+                <EventListener event="endOfLevel" />
+            </trigger>
+        </events>
+    </SimpleNotification-->
+
+   <Script code="Mission endMission true" onLoad="false" times="1" >
+        <events>
+            <trigger>
+                <EventListener event=endOfLevel />
+            </trigger>
+        </events>
+    </Script> 
+    
+  </Scene>
+</Level>
+

@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+
+<!--
+
+`xsltproc -''-nonet \
+          -''-param man.charmap.use.subset "0" \
+          -''-param make.year.ranges "1" \
+          -''-param make.single.year.ranges "1" \
+          /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl \
+          manpage.xml'
+
+A manual page <package>.<section> will be generated. You may view the
+manual page with: nroff -man <package>.<section> | less'. A typical entry
+in a Makefile or Makefile.am is:
+
+DB2MAN = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl
+XP     = xsltproc -''-nonet -''-param man.charmap.use.subset "0"
+
+manpage.1: manpage.xml
+        $(XP) $(DB2MAN) $<
+
+The xsltproc binary is found in the xsltproc package. The XSL files are in
+docbook-xsl. A description of the parameters you can use can be found in the
+docbook-xsl-doc-* packages. Please remember that if you create the nroff
+version in one of the debian/rules file targets (such as build), you will need
+to include xsltproc and docbook-xsl in your Build-Depends control field.
+Alternatively use the xmlto command/package. That will also automatically
+pull in xsltproc and docbook-xsl.
+
+Notes for using docbook2x: docbook2x-man does not automatically create the
+AUTHOR(S) and COPYRIGHT sections. In this case, please add them manually as
+<refsect1> ... </refsect1>.
+
+To disable the automatic creation of the AUTHOR(S) and COPYRIGHT sections
+read /usr/share/doc/docbook-xsl/doc/manpages/authors.html. This file can be
+found in the docbook-xsl-doc-html package.
+
+Validation can be done using: `xmllint -''-noout -''-valid manpage.xml`
+
+General documentation about man-pages and man-page-formatting:
+man(1), man(7), http://www.tldp.org/HOWTO/Man-Page/
+
+-->
+
+  <!ENTITY dhfirstname "Adrian">
+  <!ENTITY dhsurname   "Friedli">
+  <!ENTITY dhusername  "&dhfirstname; &dhsurname;">
+  <!ENTITY dhemail     "adi@koalatux.ch">
+  <!ENTITY dhsection   "6">
+  <!ENTITY dhtitle     "orxonox Gamer Manual">
+  <!ENTITY dhucpackage "ORXONOX">
+  <!ENTITY dhpackage   "orxonox">
+]>
+
+<refentry>
+  <refentryinfo>
+    <title>&dhtitle;</title>
+    <productname>&dhpackage;</productname>
+    <authorgroup>
+      <author>
+       <firstname>&dhfirstname;</firstname>
+        <surname>&dhsurname;</surname>
+        <contrib>Wrote this manpage for the Debian system.</contrib>
+        <address>
+          <email>&dhemail;</email>
+        </address>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>2010</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    <legalnotice>
+      <para>This manual page was written for the Debian system
+        (and may be used by others).</para>
+      <para>Permission is granted to copy, distribute and/or modify this
+        document under the terms of the GNU General Public License,
+        Version 2 or (at your option) any later version published by
+        the Free Software Foundation.</para>
+      <para>On Debian systems, the complete text of the GNU General Public
+        License can be found in
+        <filename>/usr/share/common-licenses/GPL-2</filename>.</para>
+    </legalnotice>
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>&dhucpackage;</refentrytitle>
+    <manvolnum>&dhsection;</manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+    <refpurpose>a spacecraft shooter</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg choice="opt"><replaceable class="option">options</replaceable></arg>
+    </cmdsynopsis>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg choice="plain"><option>--standalone</option></arg>
+      <arg choice="opt">
+        <group choice="req">
+          <arg choice="plain"><option>-l</option></arg>
+          <arg choice="plain"><option>--level</option></arg>
+        </group>
+        <arg choice="plain"><replaceable>file</replaceable></arg>
+      </arg>
+    </cmdsynopsis>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg choice="plain"><option>--client</option></arg>
+      <arg choice="opt"><option>--dest <replaceable>address</replaceable></option></arg>
+      <arg choice="opt">
+        <group choice="req">
+          <arg choice="plain"><option>-p</option></arg>
+          <arg choice="plain"><option>--port</option></arg>
+        </group>
+        <arg choice="plain"><replaceable>port</replaceable></arg>
+      </arg>
+    </cmdsynopsis>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <group choice="req">
+        <arg choice="plain"><option>--dedicated</option></arg>
+        <arg choice="plain"><option>--server</option></arg>
+      </group>
+      <arg choice="opt">
+        <group choice="req">
+          <arg choice="plain"><option>-p</option></arg>
+          <arg choice="plain"><option>--port</option></arg>
+        </group>
+        <arg choice="plain"><replaceable>port</replaceable></arg>
+      </arg>
+      <arg choice="opt">
+        <group choice="req">
+          <arg choice="plain"><option>-l</option></arg>
+          <arg choice="plain"><option>--level</option></arg>
+        </group>
+        <arg choice="plain"><replaceable>file</replaceable></arg>
+      </arg>
+    </cmdsynopsis>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg choice="plain"><option>--masterserver</option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1 id="description">
+    <title>DESCRIPTION</title>
+    <para>This manual page documents briefly the
+      <command>&dhpackage;</command> command.</para>
+    <para><command>&dhpackage;</command> is a spacecraft shooter that plays in
+      the post-apocalyptic world of our future. Humanity struggles to survive
+      under the threat of wars, economic and ecological disasters. A lot of
+      people search for their luck in the vast space of the solar system. But
+      the human race faces extinction when they realize they are not alone in
+      the galaxy. The Noxons, an evil alien species, believes the human race
+      must be destroyed to free themselves from their cruel god Nox.</para>
+  </refsect1>
+  <refsect1 id="options">
+    <title>OPTIONS</title>
+    <variablelist>
+      <varlistentry>
+        <term><option>--client</option></term>
+        <listitem>
+          <para>Start in client mode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--console</option></term>
+        <listitem>
+          <para>Start in console mode (text IO only).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--dedicated</option></term>
+        <listitem>
+          <para>Start in dedicated server mode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--externalDataPath <replaceable>path</replaceable></option></term>
+        <listitem>
+          <para>Path to the external data files.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><option>--dest <replaceable>address</replaceable></option></term>
+        <listitem>
+          <para>Server hostname/IP (IP in the form of #.#.#.#).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--keyboard_no_grab</option></term>
+        <listitem>
+          <para>Whether not to exclusively grab the keyboard.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-l <replaceable>file</replaceable></option></term>
+        <term><option>--level <replaceable>file</replaceable></option></term>
+        <listitem>
+          <para>Default level file (overrides LevelManager::defaultLevelName_ configValue).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--masterserver</option></term>
+        <listitem>
+          <para>Start in master server mode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--noIOConsole</option></term>
+        <listitem>
+          <para>Use this if you don't want to use the IOConsole (for instance for Lua debugging).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-p <replaceable>port</replaceable></option></term>
+        <term><option>--port <replaceable>port</replaceable></option></term>
+        <listitem>
+          <para>Network communication port to be used 0-65535 (default: 55556).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--server</option></term>
+        <listitem>
+          <para>Start in server mode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--settingsFile <replaceable>file</replaceable></option></term>
+        <listitem>
+          <para>THE configuration file.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--standalone</option></term>
+        <listitem>
+          <para>Start in standalone mode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--writingPathSuffix <replaceable>suffix</replaceable></option></term>
+        <listitem>
+          <para>Additional subfolder for config and log files.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1 id="files">
+    <title>FILES</title>
+    <variablelist>
+      <varlistentry>
+        <term><filename>${HOME}/.orxonox/config/</filename></term>
+        <listitem>
+          <para>Per-user configuration files to control the
+            behaviour of <application>&dhpackage;</application>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><filename>${HOME}/.orxonox/log/</filename></term>
+        <listitem>
+          <para>Log files of <application>&dhpackage;</application>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1 id="bugs">
+    <title>BUGS</title>
+    <para>The upstreams "<acronym>BTS</acronym>" can be found
+      at <ulink url="http://forum.orxonox.net/viewforum.php?f=6"/>.</para>
+  </refsect1>
+</refentry>

@@ -1,0 +1,2203 @@
+<!-- (ii) John Vane : Trip to Area 51 -->
+
+<!--
+To Do:
+- Quest-Problem
+- Time the explosion right and no loops
+- Bigger explosion?
+- If possible, do the scout with DistanceTriggerBeacon
+- DistanceTriggerBeacon for Captain Hood
+-->
+
+<LevelInfo
+ name = "(ii) John Vane : Area 51 Under Fire"
+ description = "John Vane on rampage to free his commander."
+ tags = "mission"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
+?>
+<?lua
+    dofile("includes/CuboidSpaceStation.lua")
+?>
+
+<Level
+  gametype = "Mission"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
+  <?lua include("includes/notifications.oxi") ?>
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=4.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+  <?lua include("includes/pickups.oxi") ?>
+
+    <Script code="showGUI NotificationLayer false true" needsGraphics="true" times="1"/>
+    <OverlayGroup name="spacefightHUD" scale = "1, 1">
+      <CountDown
+         position    = "0.91, 0.05"
+         pickpoint   = "0.0, 0.0"
+         font        = "ShareTechMono"
+         textsize    = 0.1
+         colour      = "1.0, 1.0, 1.0, 1.0"
+         align       = "center"                  
+         counter     = "10.0"
+         speedfactor = "1.0"
+         active      = "false"
+      >
+        <events>
+          <activity>
+            <EventListener event="dockDelay2" />
+          </activity>
+        </events>
+      </CountDown>
+    </OverlayGroup>
+
+<!-- SPAWNTRIGGER -->
+    <!-- StartPoint  0, 0, 0 --> 
+    <SpawnPoint team=0 position="-12470, -21870, 25200" lookat="100, 0, 0" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
+          <events>
+            <activity>
+              <EventListener event="flying12" />
+            </activity>
+          </events>
+    </SpawnPoint>
+    <Billboard position="-10,0,0" material="Portals/Default" />
+    <ForceField position="0, 0, 0" lookat="100, 0, 0" diameter=200 velocity=1800 length=1400 />
+
+    <EventTrigger name="flying12" invert="true" >
+      <events>
+        <trigger>
+          <EventListener event="flying1" />
+        </trigger>
+          </events>
+    </EventTrigger>
+
+    <!-- Second Spawnpoint (after first guard) -->
+    <SpawnPoint team=0 position="13500, 2500, 10500" lookat="18000,5000,18000" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
+      <events>
+            <activity>
+          <EventTrigger>
+        <EventTrigger invert=true >
+          <events>
+            <trigger>
+              <EventListener event="reached" />
+            </trigger>
+          </events>
+        </EventTrigger>
+        <events>
+          <trigger>
+                    <EventListener event="flying1" />
+          </trigger>
+        </events>
+          </EventTrigger>
+            </activity>
+          </events>
+        </SpawnPoint>
+    
+    <!-- Thirth Spawnpoint (when reached Captain Hood) -->
+    <SpawnPoint team=0 position="-4000, -18000, 19000" lookat="-12000, -22000, 25000" spawnclass=SpaceShip pawndesign=spaceshipcollateraldamage >
+      <events>
+        <activity>
+          <EventTrigger>
+            <EventTrigger invert=true >
+              <events>
+                <trigger>
+                  <EventListener event="timerEnd" />
+                </trigger>
+              </events>
+            </EventTrigger>
+            <events>
+              <trigger>
+                <EventListener event="reached" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </activity>
+      </events>
+    </SpawnPoint>
+
+    <!-- Distance-Spawn-Trigger -->
+    <DistanceTrigger name=spawntrigger2 position="0, 0, 0" target="SpaceShip" distance=10 stayActive="true" delay=0 />
+
+    <!-- Drone pickup -->
+    <PickupSpawner pickup=dronepickup position="9750, -5350, 5650" triggerDistance="100" respawnTime="30" maxSpawnedItems="2" />
+
+    <!-- QUEST DESCRIPTION -->
+    <LocalQuest id="spacefight.guard1">
+        <QuestDescription 
+            title="The first guard!" 
+            description="You've reached the enemys Station and they haven't seen you yet.
+
+Ahead you see the first little patrol.
+There are two little battleships and also two unarmed ships.
+The unarmed could not attack you. So first destroy the battleships!"
+            failMessage="You've lost all your ships!"
+            completeMessage="Well done!" />
+    </LocalQuest>
+
+    <LocalQuest id="spacefight.upgrade1">
+        <QuestDescription
+            title="Prepare for the fight (optional)"
+            description="Your friends has an arsenal left behind near by your position.
+Perhaps you find something useful there...
+Hint: look for a big asteroid."
+            failMessage="You've lost all your ships!"
+            completeMessage="Your ship is well prepared for the second and last guard on the way to the mainship.
+                Now attack the second guard!" />
+    </LocalQuest>
+
+    <!-- Quest-Problem: Quests couldn't be started and completed --
+    <LocalQuest id="spacefight.guard2">
+        <QuestDescription
+            title="The second guard!"
+            description="There is also a second guard. The blinking light shows you the direction.
+                Destroy also this guard!"
+            failMessage="You've lost all your ships!"
+            completeMessage="" />
+    </LocalQuest>
+
+    <LocalQuest id="spacefight.escape">
+        <QuestDescription
+            title="Catch the messenger!"
+            description="A messenger is on the way to warn the troups of the mainship.
+                Destroy him before he is near by the mainship. 
+                Else the fight against the enemys troups will be much more difficult."
+            failMessage="The messenger has reached the mainship.
+                Prepare to fight against a strong enmey!"
+            completeMessage="Well done! Now the element of surprise will be ours!" />
+    </LocalQuest>
+
+    <!-- 2 different possibilitys --
+    <!-- Spion is destroyed --
+    <LocalQuest id="spacefight.mainfight(min)" >
+        <QuestDescription
+            title="The big fight!"
+            description="Now the time is come!
+                You've done all you can to prepare you for this spacebattle.
+                Let us see, if it was enough.
+                
+                ATTACK!!!"
+            failMessage="You've lost all your ships!"
+            completeMessage="YEEEHAAA!
+                You managed it! For that you will get the golden medal of the united space armies." />
+        <complete-effects>
+            <AddQuest questId="spacefight.rescue" />
+        </complete-effects>
+    </LocalQuest>
+
+    <!-- Spion isn't destroyed --
+    <LocalQuest id="spacefight.mainfight(max)" >
+        <QuestDescription
+            title="The big fight!"
+            description="Now the time is come!
+                You've done all you can to prepare you for this spacebattle.
+                Unfortunately the spion has alert the mainship. So the soldiers will also be prepared for you.
+                But you can manage it.
+                Good luck!"
+            failMessage="You've lost all your ships!"
+            completeMessage="YEEEHAAA!
+                You managed it! For that you will get the golden medal of the united space armies." />
+        <complete-effects>
+            <AddQuest questId="spacefight.rescue" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="spacefight.rescue" >
+        <QuestDescription
+            title="Rescue and place the bomb"
+            description="Now you have to free the commander and place a bomb in the pirates' mainship."
+            failMessage="You've lost all your ships!"
+            completeMessage="" />
+        <complete-effects>
+            <AddQuest questId="spacefight.moveAway" />
+        </complete-effects>
+    </LocalQuest>
+
+    <LocalQuest id="spacefight.moveAway" >
+        <QuestDescription
+            title="Get away!"
+            description="Get away of the mainship before the bomb detonates."
+            failMessage="You've lost all your ships!"
+            completeMessage="Done!" />
+    </LocalQuest>
+
+    <!-- End of Mission -->
+    
+<!-- ---------------------------------------------------------------------- -->
+<!-- QuestEffectBeacon's (not all necessary, because not all Quests work -->
+    <!-- START -->
+    <QuestEffectBeacon times=0>
+        <effects>
+            <AddQuest questId="spacefight.guard1" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event=spawntrigger2 />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <QuestEffectBeacon times=0>
+        <events>
+            <execute>
+                <EventListener event="flying1" />
+            </execute>
+        </events>
+        <effects>
+            <CompleteQuest questId="spacefight.guard1" />
+        </effects>
+    </QuestEffectBeacon>
+
+    <SimpleNotification message="Houston: Well done!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="flying1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="flying1delay" activations="1" stayactive="true" delay=5.1 >
+      <events>
+        <trigger>
+          <EventListener event="flying1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: The green light shows you the way!"  broadcast="true" >
+        <events>
+            <trigger>
+                <EventListener event="flying1delay" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- Is activ at flying 1 and again inactive when flying2-->
+    <BlinkingBillboard position="11000, 1000, 7000" colour="0.0, 1.0, 0.0" frequency=0.5 amplitude=10 material="Examples/Flare" >
+      <events>
+        <visibility>
+          <EventTrigger>
+            <EventTrigger invert=true>
+              <events>
+                <trigger>
+                  <EventListener event="flying2" />
+                </trigger>
+              </events>
+            </EventTrigger>
+                <events>
+                  <trigger>
+                    <EventListener event="flying1" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </visibility>
+          </events>
+    </BlinkingBillboard>
+    
+    <!-- Drone (optional quest) -->
+    <QuestEffectBeacon times=0>
+        <effects>
+            <AddQuest questId="spacefight.upgrade1" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="droneTrigger" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>    
+
+    <QuestEffectBeacon times=0>
+        <effects>
+            <CompleteQuest questId="spacefight.upgrade1" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="drone1" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <QuestEffectBeacon times=0>
+        <effects>
+            <CompleteQuest questId="spacefight.upgrade1" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="victory" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+    
+    <!-- Guard 2 -->
+    <QuestEffectBeacon times=0>
+        <effects>
+            <AddQuest questId="spacefight.guard2" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="droneTrigger" />
+            </execute>        
+        </events>
+    </QuestEffectBeacon>
+
+    <QuestEffectBeacon times=0>
+        <effects>
+            <CompleteQuest questId="spacefight.guard2" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="flying2" />
+            </execute>        
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- ESCAPE -->
+    <SimpleNotification message="Houston: A scout started to the mainship!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="guard2trigger1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <QuestEffectBeacon times=0>
+        <effects>
+            <AddQuest questId="spacefight.escape" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="escape10" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- ESCAPE ENDING -->
+    <!-- Spion escaped -->
+    <QuestEffectBeacon times=0>
+        <effects>
+            <CompleteQuest questId="spacefight.escape" />
+            <AddQuest questId="spacefight.mainfight(max)" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="spionTrigger" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- Spion destroyed -->
+    <QuestEffectBeacon>
+        <effects>
+            <CompleteQuest questId="spacefight.escape" />
+            <AddQuest questId="spacefight.mainfight(min)" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="spion5" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- LAST FIGHT -->
+    <!-- Spion destroyed -->
+    <QuestEffectBeacon>
+        <effects>
+            <CompleteQuest questId="spacefight.mainfight(min)" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="guard3trigger4" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- Spion escaped -->
+    <QuestEffectBeacon>
+        <effects>
+            <CompleteQuest questId="spacefight.mainfight(max)" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="guard3trigger6" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- COMMANDER RESCUE -->
+    <QuestEffectBeacon>
+        <effects>
+            <CompleteQuest questId="spacefight.rescue" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dock" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- FLY AWAY -->
+    <QuestEffectBeacon>
+        <effects>
+            <CompleteQuest questId="spacefight.moveAway" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="" />
+            </execute>
+        </events>
+    </QuestEffectBeacon>
+
+    <!-- End with explosion -->
+
+<!-- ---------------------------------------------------------------------- -->
+    <!-- Helper-Trigger for first guard -->
+    <EventTrigger name="spawntrigger2Delay" stayactive="true" delay=2 >
+        <events>
+            <trigger>
+                <EventListener event=spawntrigger2 />
+            </trigger>
+        </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Attack the first guard!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="spawntrigger2Delay" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="flying1" position="9000, 0, 0" target="SpaceShip" distance=10000 stayActive="true" delay=0.1 >
+        <EventTrigger>
+            <events>
+                <trigger>
+                    <EventListener event="guard1trigger4" />
+                </trigger>
+            </events>
+        </EventTrigger>
+    </DistanceTrigger>
+
+    <!-- Trigger to activate the upgrade1-Quest -->
+    <DistanceTrigger name="droneTrigger" position="11000, 1000, 7000" target="SpaceShip" distance=2000 stayActive="true" delay=0.1 />
+    <SimpleNotification message="Houston: Need an Upgrade?"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="droneTrigger" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="droneTriggerDelay" stayactive="true" delay=5 >
+        <events>
+            <trigger>
+                <EventListener event="droneTrigger" />
+            </trigger>
+        </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Search the drone!"  broadcast="true" >
+        <events>
+            <trigger>
+                <EventListener event="droneTriggerDelay" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="droneTriggerDelay2" stayactive="true" delay=5 >
+        <events>
+            <trigger>
+                <EventListener event="droneTriggerDelay" />
+            </trigger>
+        </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Else you see the second guard ahead..."  broadcast="true" >
+        <events>
+            <trigger>
+                <EventListener event="droneTriggerDelay2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+            
+
+    <!-- Helper-Trigger for the drone -->
+    <DistanceTrigger name="drone1" position="9750, -5350, 5650" target="SpaceShip" distance=100 stayActive="true" delay=0.1 />
+    <SimpleNotification message="Houston: Now your are prepared best!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="drone1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="drone1Delay" stayactive="true" delay=5.1 >
+        <events>
+            <trigger>
+                <EventListener event="drone1" />
+            </trigger>
+        </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Fly back to the green light."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="drone1Delay" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Trigger name="secondDroneTrigger" mode="and" stayActive="true">
+      <DistanceTrigger name="droneTrigger" position="11000, 1000, 7000" target="SpaceShip" distance=1000 stayActive="true" delay=0.1 />
+          <EventTrigger>
+            <events>
+              <trigger>
+                <EventListener event="drone1" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+    <SimpleNotification message="Houston: The red light shows you the direction."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="secondDroneTrigger" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <BlinkingBillboard position="12000, 1500, 10000" colour="1.0, 0.0, 0.0" frequency=0.5 amplitude=5 material="Examples/Flare" >
+      <events>
+        <visibility>
+          <EventTrigger>
+        <EventTrigger invert=true>
+          <events>
+            <trigger>
+              <EventListener event="guard2trigger1" />
+            </trigger>
+          </events>
+        </EventTrigger>
+            <events>
+              <trigger>
+                <EventListener event="secondDroneTrigger" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </visibility>
+      </events>
+    </BlinkingBillboard>
+
+    <!-- Helper-Trigger for second guard -->
+    <DistanceTrigger name="flying2" position="17000,5000,15000" target="SpaceShip" distance=20000 stayActive="true" delay=0 >
+        <EventTrigger>
+            <events>
+                <trigger>
+                    <EventListener event="guard2trigger4" />
+                </trigger>
+            </events>
+        </EventTrigger>
+    </DistanceTrigger>    
+
+    <SimpleNotification message="Houston: Well done!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="flying2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Trigger name="guard2withoutScout" mode="and" stayActive="true" delay=0 >
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="flying2" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger activations="1" invert="true" >
+        <events>
+          <trigger>
+            <EventListener event="spionEnd" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <EventTrigger name="flying2delay1" activations="1" stayactive="true" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="guard2withoutScout" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Catch the scout!"  broadcast="true" >
+        <events>
+            <trigger>
+                <EventListener event="flying2delay1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="flying2delay2" activations="1" stayactive="true" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="flying2delay1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Before he reachs the red light..."  broadcast="true" >
+        <events>
+            <trigger>
+                <EventListener event="flying2delay2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- DistanceTrigger for scout -->
+    <Trigger name="spionTrigger" mode="and" stayActive="true">
+      <DistanceTrigger position="14000, 1000, 22000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+          <EventTrigger activations="1" invert="true">
+            <events>
+              <trigger>
+                <EventListener event="spion5" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+    <SimpleNotification message="Houston: Scout is arrived!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="spionTrigger" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="spionTriggerDelay" stayactive="true" delay=5 >
+        <events>
+            <trigger>
+                <EventListener event="spionTrigger" />
+            </trigger>
+        </events>
+    </EventTrigger>    
+
+    <SimpleNotification message="Houston: Now the mainship is alarmed..."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="spionTriggerDelay" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <BlinkingBillboard position="14000, 1000, 22000" colour="1.0, 0.0, 0.0" frequency=0.3 amplitude=7 material="Examples/Flare" >
+      <events>
+        <visibility>
+          <EventTrigger>
+        <EventTrigger invert=true>
+          <events>
+            <trigger>
+              <EventListener event="spionEnd" />
+            </trigger>
+          </events>
+        </EventTrigger>
+            <events>
+              <trigger>
+                <EventListener event="guard2trigger1" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </visibility>
+      </events>
+    </BlinkingBillboard>
+
+    <!-- If scout destroyed -->
+    <SimpleNotification message="Houston: Scout destroyed!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="spion5" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Trigger name="scoutDestroydAddon" mode="and" stayActive="true" delay=5 >
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="spion5" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="spionTrigger" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <SimpleNotification message="Houston: But the mainship is already warned."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="scoutDestroydAddon" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- Scout end -->
+    <Trigger name="spionEnd" mode="or" stayActive="true" delay=0 >
+      <EventTrigger>
+        <events>
+          <trigger>
+            <EventListener event="spion5" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger>
+        <events>
+          <trigger>
+            <EventListener event="spionTrigger" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <EventTrigger name="spionEndDelay" activations="1" delay=5>
+      <events>
+        <trigger>
+          <EventListener event="spionEnd" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <!-- Intro to Captain Hood -->
+    <Trigger name="introHood" mode="and" stayActive="true">
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="spionEndDelay" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="guard2trigger4" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <EventTrigger name="introHoodDelay1" activations="1" stayactive="true" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="introHood" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Your friend, Captain Hood, is"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="introHoodDelay1.2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="introHoodDelay1.2" activations="1" stayactive="true" delay=0.1 >
+      <events>
+        <trigger>
+          <EventListener event="introHoodDelay1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="near by you!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="introHoodDelay1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="introHoodDelay2" activations="1" stayactive="true" delay=5.1 >
+      <events>
+        <trigger>
+          <EventListener event="introHoodDelay1" />
+        </trigger>
+      </events>
+    </EventTrigger>    
+
+    <SimpleNotification message="Houston: He'll show you the way"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="introHoodDelay2.2" />
+            </trigger>
+        </events>
+    </SimpleNotification>    
+
+    <EventTrigger name="introHoodDelay2.2" activations="1" stayactive="true" delay=0.1 >
+      <events>
+        <trigger>
+          <EventListener event="introHoodDelay2" />
+        </trigger>
+      </events>
+    </EventTrigger>    
+
+    <SimpleNotification message="to the mainship!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="introHoodDelay2" />
+            </trigger>
+        </events>
+    </SimpleNotification>    
+
+    <!-- Helper-Trigger for Captain Hood -->
+    <DistanceTrigger name="reached" position="10000, 2000, 17000" target="SpaceShip" distance=1000 stayActive="true" delay=0.1 >
+        <EventTrigger>
+            <events>
+                <trigger>
+                    <EventListener event="guard2trigger4" />
+                </trigger>
+            </events>
+        </EventTrigger>
+    </DistanceTrigger>
+
+    <SimpleNotification message="Houston: Follow Captain Hood!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reached" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="reachedDelay1" activations="1" stayactive="true" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="reached" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Hood: Hello my friend!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="reachedDelay2" activations="1" stayactive="true" delay=7 >
+      <events>
+        <trigger>
+          <EventListener event="reachedDelay1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Hood: Good work at the first two guards..."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="reachedDelay3" activations="1" stayactive="true" delay=7 >
+      <events>
+        <trigger>
+          <EventListener event="reachedDelay2" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Hood: But the heaviest part is waiting"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay4" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="reachedDelay4" activations="1" stayactive="true" delay=0.1 >
+      <events>
+        <trigger>
+          <EventListener event="reachedDelay3" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="for us..."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="reachedDelay5" activations="1" stayactive="true" delay=7 >
+      <events>
+        <trigger>
+          <EventListener event="reachedDelay4" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <Trigger name="reachedDelay6.destroyed" mode="and" stayActive="true">
+      <EventTrigger>
+        <events>
+          <trigger>
+        <EventListener event="reachedDelay5" />
+          </trigger>
+        </events>
+      </EventTrigger>
+          <EventTrigger invert=true >
+            <events>
+              <trigger>
+                <EventListener event="spionTrigger" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </Trigger>
+
+    <SimpleNotification message="Hood: Good that you've destroyed the scout!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay6.destroyed" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Trigger name="reachedDelay6.arrived" mode="and" stayActive="true">
+      <EventTrigger>
+        <events>
+          <trigger>
+        <EventListener event="reachedDelay5" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger>
+        <events>
+          <trigger>
+            <EventListener event="spionTrigger" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <SimpleNotification message="Hood: What a pity that you couldn't"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay6.arrived2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="reachedDelay6.arrived2" activations="1" stayactive="true" delay=0.1 >
+      <events>
+        <trigger>
+          <EventListener event="reachedDelay6.arrived" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="destroy the scout..."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="reachedDelay6.arrived" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="discuss" position="-4000, -9000, 18000" target="SpaceShip" distance=50 stayActive="true" delay=0.1 />
+    <SimpleNotification message="Hood: Look, there is the mainship!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="discuss" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- End of Mainfight -->
+    <Trigger name="victory1" mode="and" stayActive="true">
+      <EventTrigger>
+        <events>
+          <trigger>
+        <EventListener event="guard3trigger4" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="spion5" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <Trigger name="victory2" mode="and" stayActive="true">
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="guard3trigger6" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="spionTrigger" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <Trigger name="victory" mode="or" stayActive="true">
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+        <EventListener event="victory1" />
+          </trigger>
+        </events>
+      </EventTrigger>
+      <EventTrigger activations="1" >
+        <events>
+          <trigger>
+            <EventListener event="victory2" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </Trigger>
+
+    <SimpleNotification message="Houston: YEEEHAAA! You managed it!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="victory" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="victoryDelay1" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="victory" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <EventTrigger name="victoryDelay1.1" delay=5.1 >
+      <events>
+        <trigger>
+          <EventListener event="victory" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: For that you will get the golden medal"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="victoryDelay1.1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="of the united space armies."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="victoryDelay1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="victoryDelay2" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="victoryDelay1.1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <EventTrigger name="victoryDelay2.1" delay=5.1 >
+      <events>
+        <trigger>
+          <EventListener event="victoryDelay1.1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: Now dock at the mainship and"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="victoryDelay2.1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="free the Commander!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="victoryDelay2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="victoryDelay3" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="victoryDelay2" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: The light shows you the hatch"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="victoryDelay3" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- Rescue the commander -->
+    <BlinkingBillboard position="-12470, -21870, 25200" colour="0.0, 0.0, 1.0" frequency=0.5 amplitude=5 material="Examples/Flare" >
+      <events>
+        <visibility>
+          <EventTrigger>
+            <EventTrigger invert=true>
+              <events>
+                <trigger>
+                  <EventListener event="dock" />
+                </trigger>
+              </events>
+            </EventTrigger>
+            <events>
+              <trigger>
+                <EventListener event="victory" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </visibility>
+      </events>
+    </BlinkingBillboard>
+    
+    <DistanceTrigger
+     name="dock"
+     position="-12470, -21870, 25200"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=50
+     stayActive="true"
+     delay=0 />
+    <SimpleNotification message="Houston: The Commander is on board!"  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="dock" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    
+    <!-- TIMER-EVENTS -->
+    <EventTrigger name="dockDelay1" stayactive="true" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="dock" />
+        </trigger>
+      </events>
+    </EventTrigger>    
+    
+    <SimpleNotification message="Houston: A bomb is placed in the mainship..."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="dockDelay1" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <EventTrigger name="dockDelay2" activations="1" stayactive="true" delay=5.0 >
+      <events>
+        <trigger>
+          <EventListener event="dockDelay1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <SimpleNotification message="Houston: You have 10 seconds to move away..."  broadcast="true">
+        <events>
+            <trigger>
+                <EventListener event="dockDelay2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+    <EventTrigger name="timer1" activations="1" stayactive="true" delay=5 >
+      <events>
+        <trigger>
+          <EventListener event="dockdelay2" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+
+    <DistanceTrigger
+     name="dockdelay3"
+     position="-12470, -21870, 25200"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=50
+     stayActive="true"
+     delay=20 />
+
+    <DistanceTrigger
+     name="inExplosionRange"
+     position="-12000, -22000, 25000"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=1000
+     stayActive="true"
+     delay=0 >
+        <EventTrigger>
+            <events>
+                <trigger>
+                    <EventListener event="dockdelay3" />
+                </trigger>
+            </events>
+        </EventTrigger>
+    </DistanceTrigger>
+
+    <DistanceTrigger
+     name="dockdelay4"
+     position="-12470, -21870, 25200"
+     beaconMode="exclude"
+     targetname="NPC"
+     target="SpaceShip"
+     distance=50
+     stayActive="true"
+     delay=23.1 />
+
+    <EventTrigger name="timerEnd" activations="1" stayactive="true" delay=10 >
+      <events>
+        <trigger>
+          <EventListener event="timer1" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+    <EventTrigger name="negativeTimerEnd" invert="true" delay=0 >
+      <events>
+        <trigger>
+          <EventListener event="timerEnd" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+<!-- ----------------------------------------------------- -->    
+<!-- For Guard 1 -->
+<!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,4] -->
+    <EventTrigger name="guard1trigger4" activations="1" stayactive="true" delay=0.1>
+      <events>
+        <trigger>
+          <EventListener event="firstPatrol" />
+        </trigger>
+      </events>
+      <EventTrigger name="guard1trigger3" activations="1" stayactive="true" delay=0.1>
+        <events>
+          <trigger>
+            <EventListener event="firstPatrol" />
+          </trigger>
+        </events>
+        <EventTrigger name="guard1trigger2" activations="1" stayactive="true" delay=0.1>
+          <events>
+            <trigger>
+              <EventListener event="firstPatrol" />
+            </trigger>
+          </events>
+          <EventTrigger name="guard1trigger1" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="firstPatrol" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+
+<!-- For Guard 2 -->
+<!-- @Triggers: attacktriggerX <-> X enemies destroyed , X is an element of [1,4] -->
+    <EventTrigger name="guard2trigger4" activations="1" stayactive="true" delay=0.1>
+      <events>
+        <trigger>
+          <EventListener event="secondPatrol" />
+        </trigger>
+      </events>
+      <EventTrigger name="guard2trigger3" activations="1" stayactive="true" delay=0.1>
+        <events>
+          <trigger>
+            <EventListener event="secondPatrol" />
+          </trigger>
+        </events>
+        <EventTrigger name="guard2trigger2" activations="1" stayactive="true" delay=0.1>
+          <events>
+            <trigger>
+              <EventListener event="secondPatrol" />
+            </trigger>
+          </events>
+          <EventTrigger name="guard2trigger1" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="secondPatrol" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+
+<!-- For Escape -->
+    <EventTrigger name="spion5" stayactive="true" >
+      <events>
+        <trigger>
+          <EventListener event="spion" />
+        </trigger>
+      </events>
+    </EventTrigger>
+
+<!-- For last fight -->
+    <EventTrigger name="guard3trigger6" activations="1" stayactive="true" delay=0.1 >
+      <events>
+        <trigger>
+          <EventListener event="lastGuard" />
+        </trigger>
+      </events>
+      <EventTrigger name="guard3trigger5" activations="1" stayactive="true" delay=0.1 >
+        <events>
+          <trigger>
+            <EventListener event="lastGuard" />
+          </trigger>
+        </events>
+        <EventTrigger name="guard3trigger4" activations="1" stayactive="true" delay=0.1 >
+          <events>
+            <trigger>
+              <EventListener event="lastGuard" />
+            </trigger>
+          </events>
+          <EventTrigger name="guard3trigger3" activations="1" stayactive="true" delay=0.1 >
+            <events>
+              <trigger>
+                <EventListener event="lastGuard" />
+              </trigger>
+            </events>
+            <EventTrigger name="guard3trigger2" activations="1" stayactive="true" delay=0.1 >
+              <events>
+            <trigger>
+              <EventListener event="lastGuard" />
+            </trigger>
+              </events>
+              <EventTrigger name="guard3trigger1" activations="1" stayactive="true" delay=0.1 >
+                <events>
+                  <trigger>
+                    <EventListener event="lastGuard" />
+                  </trigger>
+                </events>
+              </EventTrigger>
+            </EventTrigger>
+          </EventTrigger>
+        </EventTrigger>
+      </EventTrigger>
+    </EventTrigger>
+    
+<!-- ----------------------------------------------------- -->
+<!-- Passive Pirates: Guard 1 -->
+<SpaceShip position="8000,1000,0" lookat="8000,-1000,0" name="firstPatrol" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event=spawntrigger2 />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointController team=1>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="8000,-1000,0" />
+        <Model mesh="cube.mesh" scale=0 position="8000,1000,0" />
+      </waypoints>
+    </WaypointController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="8000,0,0" lookat="8000,0,-1000" name="firstPatrol" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event=spawntrigger2 />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointController team=1>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="8000,400,2000" />
+        <Model mesh="cube.mesh" scale=0 position="8000,0,0" />
+      </waypoints>
+    </WaypointController>
+  </controller>
+</SpaceShip>
+
+
+<!-- Active Pirates: Guard 1 -->
+<SpaceShip position="8000,-1000,1000" lookat="8000,1000,-1000" name="firstPatrol" visible="true" radarname="Patrol" >
+  <events>
+    <visibility>
+      <EventListener event=spawntrigger2 />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="8000,1000,-1000" />
+        <Model mesh="cube.mesh" scale=0 position="8000,-1000,1000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event=spawntrigger2 />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="8000,-500,-500" lookat="8000,1000,1000" name="firstPatrol" visible="true" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event=spawntrigger2 />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="8000,1000,1000" />
+        <Model mesh="cube.mesh" scale=0 position="8000,-1000,-1000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event=spawntrigger2 />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- Pirates Guard 2 -->
+<SpaceShip position="18000,5000,15000" lookat="17700,4300,15000" name="secondPatrol" visible="true" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event="guard1trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="17700,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,4000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16300,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16000,5000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16300,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,6000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17700,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="18000,5000,15000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event="guard1trigger4" />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="16000,5000,15000" lookat="16300,5700,15000" name="secondPatrol" visible="true" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event="guard1trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="16300,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,6000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17700,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="18000,5000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17700,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,4000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16300,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16000,5000,15000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event="guard1trigger4" />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="17000,4000,15000" lookat="16300,4300,15000" name="secondPatrol" visible="true" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event="guard1trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="16300,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16000,5000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16300,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,6000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17700,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="18000,5000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17700,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,4000,15000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event="guard1trigger4" />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="17000,6000,15000" lookat="17700,5700,15000" name="secondPatrol" visible="true" radarname="Patrol">
+  <events>
+    <visibility>
+      <EventListener event="guard1trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="17700,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="18000,5000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17700,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,4000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16300,4300,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16000,5000,15000" />
+        <Model mesh="cube.mesh" scale=0 position="16300,5700,15000" />
+        <Model mesh="cube.mesh" scale=0 position="17000,6000,15000" />
+      </waypoints>
+      <events>
+        <activity>
+          <EventListener event="guard1trigger4" />
+        </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- Escape-Ship (Scout) -->
+<SpaceShip position="16000,4000,16000" lookat="-12000, -22000, 25000" name="spion" visible="true" radarname="Scout" >
+  <events>
+    <visibility>
+      <EventListener event="guard2trigger1" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <controller>
+    <WaypointController team=1>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="14000, 1000, 22000" />
+        <Model mesh="cube.mesh" scale=0 position="0, -10000, 42000" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="guard2trigger1" />
+    </activity>
+      </events>
+    </WaypointController>
+  </controller>
+<!--  Should be realized, if possible...
+  <attached>
+    <DistanceTriggerBeacon name="spionBeacon" />
+  </attached>
+-->
+</SpaceShip>
+
+<!-- Pirates Mainship -->
+<SpaceShip position="-10000, -20000, 24000" lookat="-10000, -22000, 24000" name="lastGuard" visible="true" radarname="Pirate" >
+  <events>
+    <visibility>
+      <EventListener event="guard2trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-9500, -22000, 24000" /> <!-- -12000, -22000, 25000    -4000, -18000, 19000 -->
+        <Model mesh="cube.mesh" scale=0 position="-10500, -22000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-11000, -20000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -20000, 24000" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="guard2trigger4" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="-10000, -22000, 24000" lookat="-11000, -22000, 23000" name="lastGuard" visible="true" radarname="Pirate" >
+  <events>
+    <visibility>
+      <EventListener event="guard2trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-10500, -22000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-11000, -20000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -20000, 24000" />        
+        <Model mesh="cube.mesh" scale=0 position="-9500, -22000, 24000" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="guard2trigger4" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="-11000, -22000, 23000" lookat="-11000, -20000, 23000" name="lastGuard" visible="true" radarname="Pirate" >
+  <events>
+    <visibility>
+      <EventListener event="guard2trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-11000, -20000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -20000, 24000" />        
+        <Model mesh="cube.mesh" scale=0 position="-9500, -22000, 24000" />
+        <Model mesh="cube.mesh" scale=0 position="-10500, -22000, 23000" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="guard2trigger4" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="-11000, -20000, 23000" lookat="-10000, -20000, 24000" name="lastGuard" visible="true" radarname="Pirate" >
+  <events>
+    <visibility>
+      <EventListener event="guard2trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-10000, -20000, 24000" />        
+        <Model mesh="cube.mesh" scale=0 position="-9500, -22000, 24000" />
+        <Model mesh="cube.mesh" scale=0 position="-10500, -22000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-11000, -20000, 23000" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="guard2trigger4" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- Additional pirates if the scout has warned the mainship -->
+<SpaceShip position="-10500, -20000, 23500" lookat="-10000, -21000, 24000" name="lastGuard" visible="true" radarname="Pirate" >
+  <events>
+    <visibility>
+      <EventListener event="spionTrigger" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-9750, -21000, 24000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -22000, 23500" />
+        <Model mesh="cube.mesh" scale=0 position="-10750, -21000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-10500, -20000, 23500" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="spionTrigger" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<SpaceShip position="-10500, -22000, 23500" lookat="-11000, -21000, 23000" name="lastGuard" visible="true" radarname="Pirate" >
+  <events>
+    <visibility>
+      <EventListener event="spionTrigger" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshippirate />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=1 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-10750, -21000, 23000" />
+        <Model mesh="cube.mesh" scale=0 position="-10500, -20000, 23500" />
+        <Model mesh="cube.mesh" scale=0 position="-9750, -21000, 24000" />
+        <Model mesh="cube.mesh" scale=0 position="-10000, -22000, 23500" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="spionTrigger" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<!-- Captain Hood (Friend) -->
+<SpaceShip position="8500, 2000, 17000" lookat="0, -1000, 18000" name="friend" visible="true" radarname="Hood" >
+  <events>
+    <visibility>
+      <EventListener event="guard2trigger4" />
+    </visibility>
+  </events>
+  <templates>
+    <Template link=spaceshipswallow />
+  </templates>
+  <attached>
+    <DistanceTriggerBeacon name="NPC" />
+  </attached>
+  <controller>
+    <WaypointPatrolController alertnessradius=5000 team=0 active=false>
+      <waypoints>
+        <Model mesh="cube.mesh" scale=0 position="-4000, -9000, 18000" />
+        <Model mesh="cube.mesh" scale=0 position="-11500, -22000, 25000" />
+      </waypoints>
+      <events>
+    <activity>
+      <EventListener event="reached" />
+    </activity>
+      </events>
+    </WaypointPatrolController>
+  </controller>
+</SpaceShip>
+
+<BlinkingBillboard position="10000, 2000, 17000" colour="1.0, 1.0, 0.0" frequency=0.5 amplitude=20 material="Examples/Flare" >
+  <events>
+    <visibility>
+      <EventTrigger>
+    <EventTrigger invert=true>
+      <events>
+        <trigger>
+          <EventListener event="reached" />
+        </trigger>
+      </events>
+    </EventTrigger>
+        <events>
+          <trigger>
+            <EventListener event="spion5" />
+          </trigger>
+        </events>
+      </EventTrigger>
+    </visibility>
+  </events>
+</BlinkingBillboard>
+
+<SimpleNotification message="Houston: Your friend Captain Hood is dead..."  broadcast="true">
+    <events>
+        <trigger>
+            <EventListener event="friend" />
+        </trigger>
+    </events>
+</SimpleNotification>
+
+<EventTrigger name="friendDelay1" stayactive="true" delay=5.0 >
+  <events>
+    <trigger>
+      <EventListener event="friend" />
+    </trigger>
+  </events>
+</EventTrigger>
+
+<SimpleNotification message="Vane: NOOOOO!!!"  broadcast="true">
+    <events>
+        <trigger>
+            <EventListener event="friendDelay1" />
+        </trigger>
+    </events>
+</SimpleNotification>
+
+<EventTrigger name="friendDelay2" stayactive="true" delay=5.0 >
+  <events>
+    <trigger>
+      <EventListener event="friendDelay1" />
+    </trigger>
+  </events>
+</EventTrigger>
+
+<SimpleNotification message="Houston: He died in a fight like he wished it!"  broadcast="true">
+    <events>
+        <trigger>
+            <EventListener event="friendDelay2" />
+        </trigger>
+    </events>
+</SimpleNotification>
+
+<!-- ----------------------------------------------------- -->
+
+<Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+
+<!-- ASTEROIDS & ASTEROID-FIELDS -->
+    <!-- Asteroids -->
+    <Model
+        position="9800, -5000, 5700" 
+        yaw="90" 
+        pitch="-90" 
+        roll="0" 
+        scale="200" 
+        mesh="asteroid_ice.mesh" >
+      <attached>
+<!--        <Model mass=10 scale3D="0.5,0.5,0.5" mesh="cube.mesh" position = "0,0,0" yaw=0 pitch=0 roll=0 /> -->
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius=0.5 />
+      </collisionShapes>
+    </Model>
+
+    <!-- triple large belt around the planet  -->
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+    ?>
+
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
+    ?>
+
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(2000, -250, 9000, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
+    ?>
+
+    <!-- between guard 2 & mainship -->
+        <!-- Core -->    
+        <?lua
+            dofile("includes/asteroidField.lua")
+            asteroidField(-5000, -10000, 30000, 10, 700, 8000, 80, 0)
+        ?>
+    
+        <!-- Peripherie -->
+        <?lua
+            dofile("includes/asteroidField.lua")
+            asteroidField(-5000, -10000, 30000, 10, 50, 10000, 100, 0)
+        ?>
+
+        <?lua
+            dofile("includes/asteroidField.lua")
+            asteroidBelt(-10000, -12500, 0, 0, 0, 30, 30, 500, 0, 7850, 150, 0)
+        ?>
+
+    <!-- PLANETS -->
+      <Planet
+            position="2000,-250,9000" 
+            scale=5000 
+            pitch=1 
+            mesh="iceplanet.mesh" 
+            atmosphere="atmosphere1" 
+            rotationaxis="1,1,0" 
+            rotationrate="0.5" 
+            atmospheresize=224.0f 
+            imagesize=1024.0f
+            mass="10000000"
+            angularDamping=0
+            collisiondamage=2
+            enablecollisiondamage=true
+            collisionType="dynamic" />
+
+<!--  PICKUPS to make travelling faster  -->
+    <PickupSpawner pickup=hugespeedpickup position="11473,1275,7689" triggerDistance="400" respawnTime="10" maxSpawnedItems="5" />
+    <PickupSpawner pickup=mediumspeedpickup position="9455,1309,16891" triggerDistance="400" respawnTime="10" maxSpawnedItems="5" />
+
+<!-- ----------------Rotating SpaceStation--------------- -->
+    <!-- first guard -->
+    <StaticEntity position="9000,0,0" collisionType=static yaw=112 pitch=67 >
+      <attached>
+        <?lua
+          createSpaceStationPar(0,2,1,2,1,4,1,50)
+        ?>
+      </attached>
+    </StaticEntity>
+
+    <!-- second guard -->
+    <StaticEntity position="17000,5000,15000" collisionType=static yaw=12 pitch=75 >
+      <attached>
+        <?lua
+          createSpaceStationPar(0,2,1,2,1,4,1,50)
+        ?>
+      </attached>
+    </StaticEntity>
+
+<!-- ------------------------- Mainship ------------------ -->
+    <SpaceShip
+        team      = 1
+        position  = "-12000, -22000, 25000"
+        mass      = 10000000000
+        health    = 100000 initialhealth=100000 maxhealth="100000"
+        name      = "Mainship"
+        radarname = "Mainship" 
+        visible   = "true" >
+      <events>
+        <visibility>
+          <EventTrigger invert=true>
+            <events>
+              <trigger>
+                <EventListener event="dockdelay3" />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </visibility>
+      </events>
+      <controller>
+        <WaypointController team=1 active="true" >
+          <waypoints/>
+          <events>
+            <activity>
+              <EventListener event=spawntrigger2 />
+            </activity>
+          </events>
+        </WaypointController>
+      </controller>
+      <attached>
+        <Model scale=200 mesh="drone.mesh" position = "0,0,0" lookat="40000, 4000, 27000" />
+        <DistanceTriggerBeacon name="NPC" />
+<!--    <Model mesh="cube.mesh" mass=10 position="-445,110,120" scale3D="45,45,150"  yaw=56 pitch=-4 roll=0 />
+        <Model mesh="cube.mesh" mass=10 position="-295,125,220" scale3D="28,28,28" yaw=56 pitch=-4 roll=0 />
+        <Model mesh="cube.mesh" mass=10 position="-400,350,-200" scale3D="80,280,800" yaw=56 pitch=-4 roll=5 />
+        <Model mesh="cube.mesh" mass=10 position="-300,630,-100" scale3D="250,50,500" yaw=56 pitch=-4 roll=5 />
+        <Model mesh="cube.mesh" mass=10 position="-150,-150,-550" scale3D="80,280,800"  yaw=56 pitch=-4 roll=65 />
+        <Model mesh="cube.mesh" mass=10 position="150,-270,-600" scale3D="250,50,500" yaw=56 pitch=-4 roll=65 />
+        <Model mesh="cube.mesh" mass=10 position="-500,-250,0" scale3D="80,280,800" yaw=56 pitch=-4 roll=-50 />
+        <Model mesh="cube.mesh" mass=10 position="-500,-420,250" scale3D="250,50,500" yaw=56 pitch=-4 roll=-50 /> -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-445,110,120" halfExtents="45,45,150" yaw=56 pitch=-4 roll=0 />
+        <BoxCollisionShape  position="-295,125,220" halfExtents="28,28,28" yaw=56 pitch=-4 roll=0 />
+        <BoxCollisionShape  position="-400,350,-200" halfExtents="80,280,800" yaw=56 pitch=-4 roll=5 />
+        <BoxCollisionShape  position="-300,630,-100" halfExtents="250,50,500" yaw=56 pitch=-4 roll=5 />
+        <BoxCollisionShape  position="-150,-150,-550" halfExtents="80,280,800" yaw=56 pitch=-4 roll=65 />
+        <BoxCollisionShape  position="150,-270,-600" halfExtents="250,50,500" yaw=56 pitch=-4 roll=65 />
+        <BoxCollisionShape  position="-500,-250,0" halfExtents="80,280,800" yaw=56 pitch=-4 roll=-50 />
+        <BoxCollisionShape  position="-500,-420,250" halfExtents="250,50,500" yaw=56 pitch=-4 roll=-50 />
+      </collisionShapes>
+      <events>
+        <visibility>
+          <EventListener event="negativeTimerEnd" />
+        </visibility>
+      </events>
+    </SpaceShip>
+
+    <!-- PARTICLE EFFECT -->
+    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp" autostart="false" lifetime=600 loop=0 startdelay=0.5>
+        <events>
+            <spawn>
+                <EventListener event="dockdelay3" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp2" autostart="false" lifetime=600 loop=0 startdelay=0>
+        <events>
+            <spawn>
+                <EventListener event="dockdelay3" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <ParticleSpawner position="-12000, -22000, 25000" source="Orxonox/RingExp3" autostart="false" lifetime=600 loop=0 startdelay=0>
+        <events>
+            <spawn>
+                <EventListener event="dockdelay3" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    
+    <!-- The fire is set ->
+    <EventTrigger name="kaboom1" activations="1" stayactive="true" delay=3 >
+      <events>
+        <trigger>
+          <EventListener event="dockdelay2" />
+        </trigger>
+      </events>
+    </EventTrigger>
+    
+    <ParticleSpawner position="-12370,-21954.7,24993.4" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=0>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-11983.6,-21599,25172.2" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-12738.7,-22278.6,24827.4" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-11830.5,-22207.2,24714.7" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-11772.2,-21992.9,25151.8" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+
+    <ParticleSpawner position="-12953.1,-22107.5,24330.7" source="Orxonox/bigexplosion" lifetime=3.5 loop=0 autostart=false>
+        <events>
+            <spawn>
+                <EventListener event="kaboom1" />
+            </spawn>
+        </events>
+    </ParticleSpawner-->
+
+    
+   <!-- TODO: End the game -->
+   <Script code="Mission endMission true" onLoad="false" times="1" >
+        <events>
+            <trigger>
+                <EventListener event="dockdelay4" />
+            </trigger>
+        </events>
+    </Script>
+    <Script code="Mission endMission false" onLoad="false" times="1" >
+        <events>
+            <trigger>
+                <EventListener event="inExplosionRange" />
+            </trigger>
+        </events>
+    </Script> 
+
+  </Scene>
+</Level>
+
