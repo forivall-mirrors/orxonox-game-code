@@ -51,6 +51,8 @@
 
 #include "collisionshapes/WorldEntityCollisionShape.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+
 
 namespace orxonox
 {
@@ -634,7 +636,8 @@ namespace orxonox
 
         // print child shapes of this WECS
         // printChildShapes(ownWECS, 2, 0);
-        printChildShapeMap(ownWECS->getShapesMap());
+        printBtChildShapes((btCompoundShape*)(ownWECS->getCollisionShape()), 2, 0);
+        // printChildShapeMap(ownWECS->getShapesMap());
 
 
         // end
@@ -698,7 +701,31 @@ namespace orxonox
             {
                 printChildShapes((CompoundCollisionShape*)(cs->getAttachedShape(i)), indent+2, i);
             }
-            */
+
+        }*/
+    }
+
+    void Pawn::printBtChildShapes(btCompoundShape* cs, int indent, int subshape)
+    {
+        // e.g. "  Childshape 1 (WECS 0x126dc8c0) has 2 childshapes:"
+        printSpaces(indent);  orxout() << "Childshape " << subshape << " (btCS* " << cs << ") has " << cs->getNumChildShapes() << " childshapes:" << endl;
+
+        for (int i=0; i < cs->getNumChildShapes(); i++)
+        {
+            printSpaces(indent+2);  orxout() << "- " << i << " - - -" << endl;
+
+            // For each childshape, print:
+
+            // pointer to the btCollisionShape
+            printSpaces(indent+2);  orxout() << "btCollisionShape*: " << cs->getChildShape(i) << endl;
+
+            // if the childshape is a CompoundCollisionShape, print its children.
+            if (cs->getChildShape(i)->isCompound())
+            {
+                printSpaces(indent+2);  orxout() << "This shape is compound." << endl;
+                printBtChildShapes((btCompoundShape*)(cs->getChildShape(i)), indent+2, i);
+            }
+
         }
     }
 
@@ -707,9 +734,9 @@ namespace orxonox
         orxout() << endl;
     }
 
-    void Pawn::printSpaces(int number)
+    void Pawn::printSpaces(int num)
     {
-        for(int i=0; i<number; i++)
+        for(int i=0; i<num; i++)
             orxout() << " ";
     }
 }
