@@ -62,6 +62,16 @@
                     <BoxCollisionShape position="0,0,60" halfExtents="30,30,30" /> 
                 </collisionShapes> 
             </StaticEntity>
+            <StaticEntity position="0,-180,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+                <attached> 
+                    <Model position="0,0,0" mesh="crate.mesh" scale3D="6,6,6" />
+                    <Model position="0,-60,0" mesh="cube.mesh" scale3D="30,30,30" /> 
+                </attached> 
+                <collisionShapes> 
+                    <BoxCollisionShape position="0,0,0" halfExtents="30,30,30" /> 
+                    <BoxCollisionShape position="0,-60,0" halfExtents="30,30,30" /> 
+                </collisionShapes> 
+            </StaticEntity>
         </attached>
         <collisionShapes>
             <BoxCollisionShape position="0,0,0" halfExtents="30,30,30" />

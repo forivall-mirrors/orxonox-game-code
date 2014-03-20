@@ -629,15 +629,19 @@ namespace orxonox
         orxout() << this->getRadarName() << ": Searching for btCS* " << cs << endl;
         // e.g. "Box 4 is WorldEntityCollisionShape 0x126dd060"
         orxout() << "  " << this->getRadarName() << " is WorldEntityCollisionShape* " << ownWECS << endl;
-        // e.g. "Box 4 is btCollisionShape 0x126dd060"
-        orxout() << "  " << this->getRadarName() << " is btCollisionShape* " << ownWECS->getCollisionShape() << endl;
+        // e.g. "Box 4 is WorldEntity 0x126dd060"
+        orxout() << "  " << this->getRadarName() << " is WorldEntity* " << this << endl;
         // e.g. "Box 4 is objectID 943"
         orxout() << "  " << this->getRadarName() << " is objectID " << this->getObjectID() << endl;
+
+        // List all attached Objects
+        orxout() << "  " << this->getRadarName() << " has the following Objects attached:" << endl;
+        for (int i=0; i<10; i++)
+            orxout() << " " << i << ": " << this->getAttachedObject(i) << endl;
 
         // print child shapes of this WECS
         // printChildShapes(ownWECS, 2, 0);
         printBtChildShapes((btCompoundShape*)(ownWECS->getCollisionShape()), 2, 0);
-        // printChildShapeMap(ownWECS->getShapesMap());
 
 
         // end
@@ -714,24 +718,21 @@ namespace orxonox
         {
             printSpaces(indent+2);  orxout() << "- " << i << " - - -" << endl;
 
-            // For each childshape, print:
+            // For each childshape, print: (as long as it's not another CompoundCollisionShape)
+            if (!orxonox_cast<btCompoundShape*>(cs->getChildShape(i)))
+            {
+                // pointer to the btCollisionShape
+                printSpaces(indent+2);  orxout() << "btCollisionShape*: " << cs->getChildShape(i) << endl;
 
-            // pointer to the btCollisionShape
-            printSpaces(indent+2);  orxout() << "btCollisionShape*: " << cs->getChildShape(i) << endl;
+                // pointer to the btCollisionShape
+                printSpaces(indent+2);  orxout() << "m_userPointer*: " << cs->getChildShape(i)->getUserPointer() << endl;
+            }
 
             // if the childshape is a CompoundCollisionShape, print its children.
             if (cs->getChildShape(i)->isCompound())
-            {
-                printSpaces(indent+2);  orxout() << "This shape is compound." << endl;
                 printBtChildShapes((btCompoundShape*)(cs->getChildShape(i)), indent+2, i);
-            }
 
         }
-    }
-
-    void Pawn::printChildShapeMap(std::map<CollisionShape*, btCollisionShape*> map)
-    {
-        orxout() << endl;
     }
 
     void Pawn::printSpaces(int num)
