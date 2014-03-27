@@ -52,6 +52,7 @@
 #include "collisionshapes/WorldEntityCollisionShape.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
+#include "graphics/Model.h"
 
 
 namespace orxonox
@@ -637,76 +638,29 @@ namespace orxonox
         // List all attached Objects
         orxout() << "  " << this->getRadarName() << " has the following Objects attached:" << endl;
         for (int i=0; i<10; i++)
-            orxout() << " " << i << ": " << this->getAttachedObject(i) << endl;
+        {
+            if (this->getAttachedObject(i)==NULL)
+                break;
+            orxout() << " " << i << ": " << this->getAttachedObject(i);
+            if(!orxonox_cast<Model*>(this->getAttachedObject(i)))
+                orxout() << " (SE)";
+            orxout() << endl;
+        }
+
+        if (this->health_ < 800)
+            this->detach(this->getAttachedObject(2));
 
         // print child shapes of this WECS
-        // printChildShapes(ownWECS, 2, 0);
         printBtChildShapes((btCompoundShape*)(ownWECS->getCollisionShape()), 2, 0);
 
+        int temp = entityOfCollisionShape(cs);
+        if (temp==0)
+            orxout() << this->getRadarName() << " has been hit on it's main body." << endl;
+        else
+            orxout() << this->getRadarName() << " has been hit on the attached entity no. " << temp << endl;
 
         // end
-        orxout() << "  " << this->getRadarName() << ": no matching CS found." << endl;
         return -1;
-    }
-
-    void Pawn::printChildShapes(CompoundCollisionShape* cs, int indent, int subshape)
-    {
-        for (int i=0; i < cs->getNumChildShapes(); i++)
-        {
-            orxout() << "" << endl;
-        }
-        /*
-        // e.g. "  Childshape 1 (WECS 0x126dc8c0) has 2 childshapes:"
-        printSpaces(indent);  orxout() << "Childshape " << subshape << " (CS* " << cs << ") has " << cs->getNumChildShapes() << " childshapes:" << endl;
-
-        // e.g. "Box 4 is WorldEntityCollisionShape 0x126dd060"
-        printSpaces(indent);  orxout() << "Childshape " << subshape << " is btCollisionShape* " << cs->getCollisionShape() << endl;
-
-        for (int i=0; i < cs->getNumChildShapes(); i++)
-        {
-            printSpaces(indent+2);  orxout() << "- " << i << " - - -" << endl;
-            printSpaces(indent+2);  orxout() << "This Shape is a ";
-            if (orxonox_cast<WorldEntityCollisionShape*>(cs->getAttachedShape(i)))
-                orxout() << "WECS ";
-            if (orxonox_cast<CompoundCollisionShape*>(cs->getAttachedShape(i)))
-                orxout() << "CCS ";
-            if (orxonox_cast<CollisionShape*>(cs->getAttachedShape(i)))
-                orxout() << "CS ";
-            orxout() << endl;
-
-            // For each childshape, print:
-
-            // parentID of the CollisionShape
-            printSpaces(indent+2);  orxout() << "ParentID: " << cs->getAttachedShape(i)->getObjectID() << endl;
-
-            // parentID of the CollisionShape
-            printSpaces(indent+2);  orxout() << "ParentID: " << cs->getAttachedShape(i)->getParentID() << endl;
-
-            // parent of the CollisionShape
-            printSpaces(indent+2);  orxout() << "ParentCCS*: " << cs->getAttachedShape(i)->getParent() << endl;
-
-            // pointer to the btCollisionShape
-            printSpaces(indent+2);  orxout() << "btCollisionShape*: " << cs->getAttachedShape(i)->getCollisionShape() << endl;
-
-            // pointer to the CollisionShape
-            printSpaces(indent+2);  orxout() << "CollisionShape*: " << cs->getAttachedShape(i) << endl;
-
-            if (cs->getAttachedShape(i)->getCollisionShape() != NULL)
-            {
-                // pointer to the user of the btCollisionShape
-                printSpaces(indent+2);  orxout() << "bt: getUserPointer: " << cs->getAttachedShape(i)->getCollisionShape()->getUserPointer() << endl;
-
-                //
-                printSpaces(indent+2);  orxout() << "bt: isCompound: " << cs->getAttachedShape(i)->getCollisionShape()->isCompound() << endl;
-            }
-
-            // if the childshape is a CompoundCollisionShape, print its children.
-            if (orxonox_cast<CompoundCollisionShape*>(cs->getAttachedShape(i)))
-            {
-                printChildShapes((CompoundCollisionShape*)(cs->getAttachedShape(i)), indent+2, i);
-            }
-
-        }*/
     }
 
     void Pawn::printBtChildShapes(btCompoundShape* cs, int indent, int subshape)
@@ -733,6 +687,13 @@ namespace orxonox
                 printBtChildShapes((btCompoundShape*)(cs->getChildShape(i)), indent+2, i);
 
         }
+    }
+
+    int Pawn::entityOfCollisionShape(const btCollisionShape* cs)
+    {
+        btCompoundShape* ownBtCS = (btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape());
+
+        return -1;
     }
 
     void Pawn::printSpaces(int num)
