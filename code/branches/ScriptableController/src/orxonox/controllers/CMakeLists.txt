@@ -9,4 +9,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   WaypointPatrolController.cc
   DroneController.cc
   FormationController.cc
+  ScriptController_00.cc
 )

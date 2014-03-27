@@ -1,0 +1,30 @@
+    <Dock position="2830,20,50" roll=0 yaw=0 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+
+	    <undocking>
+		<EventListener event="undockMe" />
+	    </undocking>
+	
+            <activity>
+                <EventListener event=notGameEnd />
+            </activity>
+        </events>
+        <attached>
+	<!-- Trigger for docking with billboard -->
+
+	<!-- Trigger for undocking with billboard -->
+	    <!-- <Billboard position="-2630,-19970,150" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 /> -->
+	    <DistanceTrigger position="-2630,-19970,150" distance="50" target="Pawn"
+                beaconMode="identify" targetname="bcnDestroyer" name="undockMe"
+            />
+        </attached>
+    </Dock>
