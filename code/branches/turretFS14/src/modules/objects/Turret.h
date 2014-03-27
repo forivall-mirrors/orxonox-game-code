@@ -64,7 +64,6 @@ namespace orxonox
         private:
             bool gotOrient_;
             Quaternion startOrient_;
-            Quaternion firstOrient_;
     };
 }
 
