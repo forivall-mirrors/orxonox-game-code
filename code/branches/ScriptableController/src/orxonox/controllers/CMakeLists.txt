@@ -10,4 +10,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   DroneController.cc
   FormationController.cc
   ScriptController_00.cc
+  ControllerDirector.cc
 )
