@@ -1,4 +1,4 @@
-<!--  -->
+<!-- First levelFile of mkronig and samuezu. It was copied from dockingToASpaceStation.oxw and modified a little bit -->
 <LevelInfo
  name = "Fancy orxout tests"
  description = "Docking into a spacestation."
@@ -94,6 +94,8 @@
         <attached>
 	<!-- Trigger for docking with billboard -->
 
+		<!-- removed -->
+
 	<!-- Trigger for undocking with billboard -->
 	    <!-- <Billboard position="-2630,-19970,150" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 /> -->
 	    <DistanceTrigger position="-2630,-19970,150" distance="50" target="Pawn"
@@ -108,7 +110,7 @@
     />
 
 
-
+<!-- Object, which orxouts the message "hello Universe!". EVENT NOT WORKING  -->
     <ScriptController_00 position="0,0,0">
         <events>
             <party>
