@@ -36,6 +36,8 @@ namespace orxonox
 {
     RegisterClass(Turret);
 
+
+
     /**
      * @brief Constructor
      */
@@ -43,6 +45,7 @@ namespace orxonox
     {
         RegisterObject(Turret);
         this->controller_ = new WaypointPatrolController(this->getContext());
+        gotOrient_ = false;
     }
 
     /**
@@ -56,15 +59,65 @@ namespace orxonox
 
     void Turret::rotatePitch(const Vector2& value)
     {
-        orxout()<< "Turret rotate Pitch"<< endl;
-
-        const Quaternion& orient = this->getOrientation();
-        Radian pitch = orient.getPitch();
-
-        if((value.x > 0 && pitch < Radian(180)) || (value.x < 0 && pitch > Radian(0)))
-            SpaceShip::rotatePitch(value);
+        Radian currentPitch = this->getOrientation().getPitch();
+        Radian startPitch = startOrient_.getPitch();
+        Radian limit = Radian((Degree)45);
+        Radian upperBoundary = startPitch+limit;
+        if(upperBoundary > Radian(Degree(360)))
+        {
+            upperBoundary -= Radian(Degree(360));
+        }
+        Radian lowerBoundary = startPitch-limit;
+        if(lowerBoundary < Radian(Degree(0)))
+        {
+            lowerBoundary += Radian(Degree(360));
+        }
+        //orxout() << "Pitch:\t" << currentPitch << "\t" << startPitch << endl;
+        
+        if(currentPitch > upperBoundary && value.x > 0 ||
+           currentPitch < lowerBoundary && value.x < 0)
+        {
+            return;
+        }
+        
+        //SpaceShip::rotatePitch(value);
     }
 
+    void Turret::rotateYaw(const Vector2& value)
+    {
+
+        Radian currentYaw = this->getOrientation().getYaw();
+        Radian startYaw = startOrient_.getYaw();
+        Radian limit = Radian(Degree(45));
+        Radian upperBoundary = startYaw + limit;
+        Radian lowerBoundary = startYaw - limit;
+        orxout() << currentYaw << " " << this->getOrientation().getRoll() << endl;
+        /*if(upperBoundary >= Radian(Degree(180)));
+        {
+            upperBoundary -= Radian(Degree(180));
+            lowerBoundary -= Radian(Degree(180));
+            currentYaw -= Radian(Degree(180));
+        }
+        if(lowerBoundary <= Radian(Degree(-180)))
+        {
+            lowerBoundary += Radian(Degree(180));
+            upperBoundary += Radian(Degree(180));
+            currentYaw += Radian(Degree(180));
+        }*/
+        //orxout() << "Yaw:\t" << (Degree)currentYaw << "\t" << (Degree)upperBoundary << "\t" << (Degree)lowerBoundary << endl;
+        //if((currentYaw > upperBoundary && value.x > 0) ||
+        //   (currentYaw < lowerBoundary && value.x < 0))
+        if((currentYaw < Radian(1) && value.x < 0) || (currentYaw > Radian(3) && value.x>0))
+        {
+            //return;
+        }
+        SpaceShip::rotateYaw(value);
+    }
+
+    void Turret::rotateRoll(const Vector2& value)
+    {
+        return;
+    }
 
     void Turret::setAlertnessRadius(float value)
     {
@@ -81,5 +134,14 @@ namespace orxonox
         XMLPortParam(Turret, "alertnessRadius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues("400");
     }
 
+    void Turret::tick(float dt)
+    {
+        if(!gotOrient_)
+        {
+            startOrient_ = this->getOrientation();
+            gotOrient_ = true;
+        }
+        SUPER(Turret, tick, dt);
+    }
 
 }

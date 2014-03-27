@@ -36,6 +36,7 @@
 #define _Turret_H__
 
 #include "objects/ObjectsPrereqs.h"
+#include "OgreQuaternion.h"
 
 #include "worldentities/pawns/SpaceShip.h"
 
@@ -47,20 +48,23 @@ namespace orxonox
             Turret(Context* context);
             virtual ~Turret();
 
-            //virtual void tick(float dt);
-
             virtual void rotatePitch(const Vector2& value);
+            virtual void rotateYaw(const Vector2& value);
+            virtual void rotateRoll(const Vector2& value);
 
             void setAlertnessRadius(float value);
             float getAlertnessRadius();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void tick(float dt);
 
 
         protected:
             WaypointPatrolController* controller_;
         private:
-
+            bool gotOrient_;
+            Quaternion startOrient_;
+            Quaternion firstOrient_;
     };
 }
 

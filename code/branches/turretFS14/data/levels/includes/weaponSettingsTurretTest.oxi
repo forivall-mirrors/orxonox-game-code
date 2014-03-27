@@ -1,0 +1,22 @@
+    <weaponslots>
+      <WeaponSlot position="0,0,0" />
+    </weaponslots>
+    <weaponsets>
+      <WeaponSet firemode=0 />
+    </weaponsets>
+    <weapons>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+        </links>
+        <Weapon>
+          <attached>
+            <Model mesh="sphere.mesh" position="3,3,-2.2" scale=0.6 />
+          </attached>
+          <HsW01 mode=0 munitionpershot=0 delay=0 damage=0 material="Flares/point_lensflare" muzzleoffset=" 3, 3,-2.2" />
+          <HsW01 mode=0 munitionpershot=0 delay=0 damage=0 material="Flares/point_lensflare" muzzleoffset=" 3,-3,-2.2" />
+          <HsW01 mode=0 munitionpershot=0 delay=0 damage=0 material="Flares/point_lensflare" muzzleoffset="-3, 3,-2.2" />
+          <HsW01 mode=0 munitionpershot=0 delay=0 damage=0 material="Flares/point_lensflare" muzzleoffset="-3,-3,-2.2" />
+        </Weapon>
+      </WeaponPack>
+    </weapons>

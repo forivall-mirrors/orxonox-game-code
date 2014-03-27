@@ -16,7 +16,7 @@
 <?lua
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipTurret.oxt")
+  include("templates/spaceshipTurretTest.oxt")
 ?>
 
 <Level>
@@ -47,7 +47,7 @@
 
 <Turret position="0,10,0" pitch="90" yaw="0" roll="0">
     <templates>
-        <Template link=spaceshipturret />
+        <Template link=spaceshipturrettest />
     </templates>
     <controller>
         <WaypointPatrolController alertnessradius=100 team=10>
