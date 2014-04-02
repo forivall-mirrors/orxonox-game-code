@@ -1,7 +1,9 @@
 <!-- This template includes HeavyCruiser with all its parts (not individually destructible) -->
 
 <Template name=HeavyCruiser>
-  <SpaceShip
+  <ModularSpaceShip
+   name = HeavyCruiser
+   
    hudtemplate            = spaceshiphud
    camerapositiontemplate = heavycruisercameras
    spawnparticlesource    = "Orxonox/fairytwirl"
@@ -46,17 +48,132 @@
       <MultiStateEngine position="-140,0,308" template=HeavyCruiser_sidearmL_engine1 />
       <MultiStateEngine position="140,0,308" template=HeavyCruiser_sidearmR_engine1 />
     </engines>
+    
+    <parts>
+        <ShipPart name="part0" />
+        <ShipPart name="part1" />
+    </parts>
+    
     <attached>
-
         <Model mesh="HeavyCruiser_body.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_frontL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_frontR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_partL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_partR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_sidearmL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_sidearmLfront.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_sidearmR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
-        <Model mesh="HeavyCruiser_sidearmRfront.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>       
+        
+        <StaticEntity name="frontL" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_frontL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="-80,33,-320" halfExtents="7,11,54" info="frontL"/>
+                <BoxCollisionShape position="-79,31,-399" halfExtents="3,6,26" info="frontL"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+        <StaticEntity name="frontR" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_frontR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="80,33,-320" halfExtents="7,11,54" info="frontR"/>
+                <BoxCollisionShape position="79,31,-399" halfExtents="3,6,26" info="frontR"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+        <StaticEntity name="partL" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_partL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="-94,33,-179" halfExtents="11,13,45" info="partL"/>
+                <BoxCollisionShape position="-96,33,-230" halfExtents="13,17,22" info="partL"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+        <StaticEntity name="partR" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_partR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="94,33,-179" halfExtents="11,13,45" info="partR"/>
+                <BoxCollisionShape position="96,33,-230" halfExtents="13,17,22" info="partR"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+                <StaticEntity name="sidearmL" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_sidearmL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="-109,47,87" halfExtents="29,8,26" info="sidearmL, upper connection"/>
+                <BoxCollisionShape position="-99,-1,79" roll="15" halfExtents="40,4,9" info="sidearmL, lower connection"/>
+                <BoxCollisionShape position="-145,21,115" roll="15" halfExtents="19,31,105" info="sidearmL, front"/>
+                <BoxCollisionShape position="-140,12,261" roll="15" halfExtents="22,41,43" info="sidearmL, back"/>
+                <BoxCollisionShape position="-145,25,5" roll="15" halfExtents="10,18,5" info="sidearmL, front break"/>
+                <BoxCollisionShape position="-133,-13,29" roll="15" halfExtents="12,6,17" info="sidearmL, bottom cylinder"/>
+                <BoxCollisionShape position="-165,-4,31" roll="15" halfExtents="7,21,13" info="sidearmL, box"/>
+                <BoxCollisionShape position="-153,59,96" roll="15" halfExtents="6,7,60" info="sidearmL, upper beam"/>
+                <BoxCollisionShape position="-143,57,119" roll="15" halfExtents="3,4,85" info="sidearmL, upper inner beam"/>
+                <BoxCollisionShape position="-142,53,212" pitch="21" yaw="5" roll="15" halfExtents="3,4,10" info="sidearmL, upper inner beam"/>
+                <BoxCollisionShape position="-160,52,119" roll="15" halfExtents="3,4,85" info="sidearmL, upper outer beam"/>
+                <BoxCollisionShape position="-159,48,212" pitch="21" yaw="5" roll="15" halfExtents="3,4,10" info="sidearmL, upper outer beam"/>
+                <BoxCollisionShape position="-152,54,34" pitch="-46" yaw="-14" roll="15" halfExtents="6,7,10" info="sidearmL, upper beam front"/>
+                <BoxCollisionShape position="-152,54,162" pitch="30" yaw="9" roll="15" halfExtents="6,7,12" info="sidearmL, upper beam back"/>
+                <BoxCollisionShape position="-168,21,119" roll="15" halfExtents="3,5,109" info="sidearmL, outer beam"/>
+                <BoxCollisionShape position="-134,-10,169" roll="15" halfExtents="6,4,55" info="sidearmL, lower beam front"/>
+                <BoxCollisionShape position="-131,-20,217" pitch="-20" roll="15" yaw="-5" halfExtents="6,12,3" info="sidearmL, lower beam middle"/>
+                <BoxCollisionShape position="-130,-29,233" roll="15" halfExtents="6,3,15" info="sidearmL, lower beam back"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+        <StaticEntity name="sidearmLfront" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_sidearmLfront.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="-141,15,-53" roll="15" halfExtents="27,44,62" info="sidearmLfront"/>
+                <BoxCollisionShape position="-153,59,-30" roll="15" halfExtents="4,2,38" info="sidearmLfront, top"/>
+                <BoxCollisionShape position="-153,61,-41" roll="15" halfExtents="4,4,11" info="sidearmLfront, top"/>
+                <BoxCollisionShape position="-153,60,-65" roll="15" halfExtents="4,3,4" info="sidearmLfront, top"/>
+                <BoxCollisionShape position="-153,59,-41" roll="15" halfExtents="8,2,11" info="sidearmLfront, top"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+        <StaticEntity name="sidearmR" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_sidearmR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="109,47,87" halfExtents="29,8,26" info="sidearmR, upper connection"/>
+                <BoxCollisionShape position="99,-1,79" roll="-15" halfExtents="40,4,9" info="sidearmR, lower connection"/>
+                <BoxCollisionShape position="145,21,115" roll="-15" halfExtents="19,31,105" info="sidearmR, front"/>
+                <BoxCollisionShape position="140,12,261" roll="-15" halfExtents="22,41,43" info="sidearmR, back"/>
+                <BoxCollisionShape position="145,25,5" roll="-15" halfExtents="10,18,5" info="sidearmR, front break"/>
+                <BoxCollisionShape position="133,-13,29" roll="-15" halfExtents="12,6,17" info="sidearmR, bottom cylinder"/>
+                <BoxCollisionShape position="165,-4,31" roll="-15" halfExtents="7,21,13" info="sidearmR, box"/>
+                <BoxCollisionShape position="153,59,96" roll="-15" halfExtents="6,7,60" info="sidearmR, upper beam"/>
+                <BoxCollisionShape position="143,57,119" roll="-15" halfExtents="3,4,85" info="sidearmR, upper inner beam"/>
+                <BoxCollisionShape position="142,53,212" pitch="21" yaw="-5" roll="-15" halfExtents="3,4,10" info="sidearmR, upper inner beam"/>
+                <BoxCollisionShape position="160,52,119" roll="-15" halfExtents="3,4,85" info="sidearmR, upper outer beam"/>
+                <BoxCollisionShape position="159,48,212" pitch="21" yaw="-5" roll="-15" halfExtents="3,4,10" info="sidearmR, upper outer beam"/>
+                <BoxCollisionShape position="152,54,34" pitch="-46" yaw="14" roll="-15" halfExtents="6,7,10" info="sidearmR, upper beam front"/>
+                <BoxCollisionShape position="152,54,162" pitch="30" yaw="-9" roll="-15" halfExtents="6,7,12" info="sidearmR, upper beam back"/>
+                <BoxCollisionShape position="168,21,119" roll="-15" halfExtents="3,5,109" info="sidearmR, outer beam"/>
+                <BoxCollisionShape position="134,-10,169" roll="-15" halfExtents="6,4,55" info="sidearmR, lower beam front"/>
+                <BoxCollisionShape position="131,-20,217" pitch="-20" roll="-15" yaw="5" halfExtents="6,12,3" info="sidearmR, lower beam middle"/>
+                <BoxCollisionShape position="130,-29,233" roll="-15" halfExtents="6,3,15" info="sidearmR, lower beam back"/>
+            </collisionShapes> 
+        </StaticEntity>
+        
+        <StaticEntity name="sidearmRfront" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached> 
+                <Model mesh="HeavyCruiser_sidearmRfront.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+            </attached> 
+            <collisionShapes> 
+                <BoxCollisionShape position="141,15,-53" roll="-15" halfExtents="27,44,62" info="sidearmRfront"/>
+                <BoxCollisionShape position="153,59,-30" roll="-15" halfExtents="4,2,38" info="sidearmRfront, top"/>
+                <BoxCollisionShape position="153,61,-41" roll="-15" halfExtents="4,4,11" info="sidearmRfront, top"/>
+                <BoxCollisionShape position="153,60,-65" roll="-15" halfExtents="4,3,4" info="sidearmRfront, top"/>
+                <BoxCollisionShape position="153,59,-41" roll="-15" halfExtents="8,2,11" info="sidearmRfront, top"/>
+            </collisionShapes> 
+        </StaticEntity>   
 
             <!-- bay1 lights -->
         <BlinkingBillboard position="75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
@@ -78,76 +195,6 @@
 
     </attached>
     <collisionShapes>
-        <BoxCollisionShape position="80,33,-320" halfExtents="7,11,54" info="frontR"/>
-        <BoxCollisionShape position="79,31,-399" halfExtents="3,6,26" info="frontR"/>
-
-
-        <BoxCollisionShape position="-80,33,-320" halfExtents="7,11,54" info="frontL"/>
-        <BoxCollisionShape position="-79,31,-399" halfExtents="3,6,26" info="frontL"/>
-
-
-        <BoxCollisionShape position="94,33,-179" halfExtents="11,13,45" info="partR"/>
-        <BoxCollisionShape position="96,33,-230" halfExtents="13,17,22" info="partR"/>
-
-
-        <BoxCollisionShape position="-94,33,-179" halfExtents="11,13,45" info="partL"/>
-        <BoxCollisionShape position="-96,33,-230" halfExtents="13,17,22" info="partL"/>
-
-
-        <BoxCollisionShape position="109,47,87" halfExtents="29,8,26" info="sidearmR, upper connection"/>
-        <BoxCollisionShape position="99,-1,79" roll="-15" halfExtents="40,4,9" info="sidearmR, lower connection"/>
-        <BoxCollisionShape position="145,21,115" roll="-15" halfExtents="19,31,105" info="sidearmR, front"/>
-        <BoxCollisionShape position="140,12,261" roll="-15" halfExtents="22,41,43" info="sidearmR, back"/>
-        <BoxCollisionShape position="145,25,5" roll="-15" halfExtents="10,18,5" info="sidearmR, front break"/>
-        <BoxCollisionShape position="133,-13,29" roll="-15" halfExtents="12,6,17" info="sidearmR, bottom cylinder"/>
-        <BoxCollisionShape position="165,-4,31" roll="-15" halfExtents="7,21,13" info="sidearmR, box"/>
-        <BoxCollisionShape position="153,59,96" roll="-15" halfExtents="6,7,60" info="sidearmR, upper beam"/>
-        <BoxCollisionShape position="143,57,119" roll="-15" halfExtents="3,4,85" info="sidearmR, upper inner beam"/>
-        <BoxCollisionShape position="142,53,212" pitch="21" yaw="-5" roll="-15" halfExtents="3,4,10" info="sidearmR, upper inner beam"/>
-        <BoxCollisionShape position="160,52,119" roll="-15" halfExtents="3,4,85" info="sidearmR, upper outer beam"/>
-        <BoxCollisionShape position="159,48,212" pitch="21" yaw="-5" roll="-15" halfExtents="3,4,10" info="sidearmR, upper outer beam"/>
-        <BoxCollisionShape position="152,54,34" pitch="-46" yaw="14" roll="-15" halfExtents="6,7,10" info="sidearmR, upper beam front"/>
-        <BoxCollisionShape position="152,54,162" pitch="30" yaw="-9" roll="-15" halfExtents="6,7,12" info="sidearmR, upper beam back"/>
-        <BoxCollisionShape position="168,21,119" roll="-15" halfExtents="3,5,109" info="sidearmR, outer beam"/>
-        <BoxCollisionShape position="134,-10,169" roll="-15" halfExtents="6,4,55" info="sidearmR, lower beam front"/>
-        <BoxCollisionShape position="131,-20,217" pitch="-20" roll="-15" yaw="5" halfExtents="6,12,3" info="sidearmR, lower beam middle"/>
-        <BoxCollisionShape position="130,-29,233" roll="-15" halfExtents="6,3,15" info="sidearmR, lower beam back"/>
-
-
-        <BoxCollisionShape position="141,15,-53" roll="-15" halfExtents="27,44,62" info="sidearmRfront"/>
-        <BoxCollisionShape position="153,59,-30" roll="-15" halfExtents="4,2,38" info="sidearmRfront, top"/>
-        <BoxCollisionShape position="153,61,-41" roll="-15" halfExtents="4,4,11" info="sidearmRfront, top"/>
-        <BoxCollisionShape position="153,60,-65" roll="-15" halfExtents="4,3,4" info="sidearmRfront, top"/>
-        <BoxCollisionShape position="153,59,-41" roll="-15" halfExtents="8,2,11" info="sidearmRfront, top"/>
-
-
-        <BoxCollisionShape position="-109,47,87" halfExtents="29,8,26" info="sidearmL, upper connection"/>
-        <BoxCollisionShape position="-99,-1,79" roll="15" halfExtents="40,4,9" info="sidearmL, lower connection"/>
-        <BoxCollisionShape position="-145,21,115" roll="15" halfExtents="19,31,105" info="sidearmL, front"/>
-        <BoxCollisionShape position="-140,12,261" roll="15" halfExtents="22,41,43" info="sidearmL, back"/>
-        <BoxCollisionShape position="-145,25,5" roll="15" halfExtents="10,18,5" info="sidearmL, front break"/>
-        <BoxCollisionShape position="-133,-13,29" roll="15" halfExtents="12,6,17" info="sidearmL, bottom cylinder"/>
-        <BoxCollisionShape position="-165,-4,31" roll="15" halfExtents="7,21,13" info="sidearmL, box"/>
-        <BoxCollisionShape position="-153,59,96" roll="15" halfExtents="6,7,60" info="sidearmL, upper beam"/>
-        <BoxCollisionShape position="-143,57,119" roll="15" halfExtents="3,4,85" info="sidearmL, upper inner beam"/>
-        <BoxCollisionShape position="-142,53,212" pitch="21" yaw="5" roll="15" halfExtents="3,4,10" info="sidearmL, upper inner beam"/>
-        <BoxCollisionShape position="-160,52,119" roll="15" halfExtents="3,4,85" info="sidearmL, upper outer beam"/>
-        <BoxCollisionShape position="-159,48,212" pitch="21" yaw="5" roll="15" halfExtents="3,4,10" info="sidearmL, upper outer beam"/>
-        <BoxCollisionShape position="-152,54,34" pitch="-46" yaw="-14" roll="15" halfExtents="6,7,10" info="sidearmL, upper beam front"/>
-        <BoxCollisionShape position="-152,54,162" pitch="30" yaw="9" roll="15" halfExtents="6,7,12" info="sidearmL, upper beam back"/>
-        <BoxCollisionShape position="-168,21,119" roll="15" halfExtents="3,5,109" info="sidearmL, outer beam"/>
-        <BoxCollisionShape position="-134,-10,169" roll="15" halfExtents="6,4,55" info="sidearmL, lower beam front"/>
-        <BoxCollisionShape position="-131,-20,217" pitch="-20" roll="15" yaw="-5" halfExtents="6,12,3" info="sidearmL, lower beam middle"/>
-        <BoxCollisionShape position="-130,-29,233" roll="15" halfExtents="6,3,15" info="sidearmL, lower beam back"/>
-
-
-        <BoxCollisionShape position="-141,15,-53" roll="15" halfExtents="27,44,62" info="sidearmLfront"/>
-        <BoxCollisionShape position="-153,59,-30" roll="15" halfExtents="4,2,38" info="sidearmLfront, top"/>
-        <BoxCollisionShape position="-153,61,-41" roll="15" halfExtents="4,4,11" info="sidearmLfront, top"/>
-        <BoxCollisionShape position="-153,60,-65" roll="15" halfExtents="4,3,4" info="sidearmLfront, top"/>
-        <BoxCollisionShape position="-153,59,-41" roll="15" halfExtents="8,2,11" info="sidearmLfront, top"/>
-
-
         <BoxCollisionShape position="60,35,-310" halfExtents="13,28,60" info="body, bay1, Rwall"/> 
         <BoxCollisionShape position="-60,35,-310" halfExtents="13,28,60" info="body, bay1, Lwall"/> 
         <BoxCollisionShape position="0,56,-310" halfExtents="65,6,60" info="body, bay1, Twall"/> 
@@ -292,7 +339,7 @@
 <?lua
   include("../includes/weaponSettingsHeavyCruiser.oxi")
 ?>
-  </SpaceShip>
+  </ModularSpaceShip>
 
 </Template>
 

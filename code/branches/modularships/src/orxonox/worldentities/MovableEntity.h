@@ -46,8 +46,7 @@ namespace orxonox
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
-            virtual bool customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
+            virtual bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
 
             using WorldEntity::setPosition;
             using WorldEntity::setOrientation;

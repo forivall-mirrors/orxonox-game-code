@@ -71,7 +71,7 @@ namespace orxonox
         XMLPortParam(MovableEntity, "collisiondamage", setCollisionDamage, getCollisionDamage, xmlelement, mode).defaultValues(1);
     }
 
-    bool MovableEntity::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    bool MovableEntity::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* ownCollisionShape, btManifoldPoint& contactPoint)
     {
         if (GameMode::isMaster() && enableCollisionDamage_)
         {
@@ -79,28 +79,12 @@ namespace orxonox
             if (victim)
             {
                 float damage = this->collisionDamage_ * (victim->getVelocity() - this->getVelocity()).length();
-                victim->hit(0, contactPoint, damage);
+                victim->hit(0, contactPoint, ownCollisionShape, damage);
             }
         }
 
         return false;
     }
-
-    bool MovableEntity::customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* ownCollisionShape, btManifoldPoint& contactPoint)
-    {
-        if (GameMode::isMaster() && enableCollisionDamage_)
-        {
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
-            if (victim)
-            {
-                float damage = this->collisionDamage_ * (victim->getVelocity() - this->getVelocity()).length();
-                victim->customHit(0, contactPoint, ownCollisionShape, damage);
-            }
-        }
-
-        return false;
-    }
-
 
     void MovableEntity::registerVariables()
     {

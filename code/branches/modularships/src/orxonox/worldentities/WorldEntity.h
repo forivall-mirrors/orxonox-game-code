@@ -373,10 +373,7 @@ namespace orxonox
             @note
                 Condition is that enableCollisionCallback() was called.
             */
-            virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
-                { return false; } /* With false, Bullet assumes no modification to the collision objects. */
-
-            virtual inline bool customCollidesAgainst(WorldEntity* otherObject, const btCollisionShape* ownCollisionShape, btManifoldPoint& contactPoint)
+            virtual inline bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* ownCollisionShape, btManifoldPoint& contactPoint)
                 { return false; } /* With false, Bullet assumes no modification to the collision objects. */
 
             //! Enables the collidesAgainst(.) function. The object doesn't respond to collision otherwise!

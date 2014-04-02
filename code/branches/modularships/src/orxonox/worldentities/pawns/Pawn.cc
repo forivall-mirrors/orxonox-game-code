@@ -249,39 +249,9 @@ namespace orxonox
         this->reloadWaitCountdown_ -= dt;
     }
 
-    void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
+    void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
-        // Applies multiplier given by the DamageBoost Pickup.
-        if (originator)
-            damage *= originator->getDamageMultiplier();
-
-        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
-        {
-            if (shielddamage >= this->getShieldHealth())
-            {
-                this->setShieldHealth(0);
-                this->setHealth(this->health_ - (healthdamage + damage));
-            }
-            else
-            {
-                this->setShieldHealth(this->shieldHealth_ - shielddamage);
-
-                // remove remaining shieldAbsorpton-Part of damage from shield
-                shielddamage = damage * this->shieldAbsorption_;
-                shielddamage = std::min(this->getShieldHealth(),shielddamage);
-                this->setShieldHealth(this->shieldHealth_ - shielddamage);
-
-                // set remaining damage to health
-                this->setHealth(this->health_ - (damage - shielddamage) - healthdamage);
-            }
-
-            this->lastHitOriginator_ = originator;
-        }
-    }
-
-    void Pawn::customDamage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
-    {
-        orxout() << "damage(): Collision detected on " << this->getRadarName() << ", btCS*: " << cs << endl;
+        orxout() << "damage(): Collision detected on " << this->getName() << ", btCS*: " << cs << endl;
 
         int collisionShapeIndex = this->isMyCollisionShape(cs);
         orxout() << collisionShapeIndex << endl;
@@ -319,40 +289,20 @@ namespace orxonox
     Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
 
 */
-    void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
+    void Pawn::hit(Pawn* originator, const Vector3& force, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
-            this->damage(damage, healthdamage, shielddamage, originator);
+            this->damage(damage, healthdamage, shielddamage, originator, cs);
             this->setVelocity(this->getVelocity() + force);
         }
     }
 
-    void Pawn::customHit(Pawn* originator, const Vector3& force, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
+    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
-            this->customDamage(damage, healthdamage, shielddamage, originator, cs);
-            this->setVelocity(this->getVelocity() + force);
-        }
-    }
-
-    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
-    {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
-        {
-            this->damage(damage, healthdamage, shielddamage, originator);
-
-            if ( this->getController() )
-                this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
-        }
-    }
-
-    void Pawn::customHit(Pawn* originator, btManifoldPoint& contactpoint, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
-    {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
-        {
-            this->customDamage(damage, healthdamage, shielddamage, originator, cs);
+            this->damage(damage, healthdamage, shielddamage, originator, cs);
 
             if ( this->getController() )
                 this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
@@ -619,45 +569,42 @@ namespace orxonox
         return BLANKSTRING;
     }
 
-    // WIP function that (once I get it working) determines to which attached entity a collisionshape belongs.
-    // Shame that this doesn't seem to work as intended. It behaves differently (different number of childshapes) every reload. D:
+
     int Pawn::isMyCollisionShape(const btCollisionShape* cs)
     {
         // This entities WECS
         WorldEntityCollisionShape* ownWECS = this->getWorldEntityCollisionShape();
 
         // e.g. "Box 4: Searching for CS 0x1ad49200"
-        orxout() << this->getRadarName() << ": Searching for btCS* " << cs << endl;
+        orxout() << this->getName() << ": Searching for btCS* " << cs << endl;
         // e.g. "Box 4 is WorldEntityCollisionShape 0x126dd060"
-        orxout() << "  " << this->getRadarName() << " is WorldEntityCollisionShape* " << ownWECS << endl;
+        orxout() << "  " << this->getName() << " is WorldEntityCollisionShape* " << ownWECS << endl;
         // e.g. "Box 4 is WorldEntity 0x126dd060"
-        orxout() << "  " << this->getRadarName() << " is WorldEntity* " << this << endl;
+        orxout() << "  " << this->getName() << " is WorldEntity* " << this << endl;
         // e.g. "Box 4 is objectID 943"
-        orxout() << "  " << this->getRadarName() << " is objectID " << this->getObjectID() << endl;
+        orxout() << "  " << this->getName() << " is objectID " << this->getObjectID() << endl;
 
         // List all attached Objects
-        orxout() << "  " << this->getRadarName() << " has the following Objects attached:" << endl;
+        orxout() << "  " << this->getName() << " has the following Objects attached:" << endl;
         for (int i=0; i<10; i++)
         {
             if (this->getAttachedObject(i)==NULL)
                 break;
-            orxout() << " " << i << ": " << this->getAttachedObject(i);
+            orxout() << " " << i << ": " << this->getAttachedObject(i) << " (" << this->getAttachedObject(i)->getName() << ")";
             if(!orxonox_cast<Model*>(this->getAttachedObject(i)))
                 orxout() << " (SE)";
             orxout() << endl;
         }
 
-        if (this->health_ < 800)
-            this->detach(this->getAttachedObject(2));
 
         // print child shapes of this WECS
         printBtChildShapes((btCompoundShape*)(ownWECS->getCollisionShape()), 2, 0);
 
         int temp = entityOfCollisionShape(cs);
         if (temp==0)
-            orxout() << this->getRadarName() << " has been hit on it's main body." << endl;
+            orxout() << this->getName() << " has been hit on it's main body." << endl;
         else
-            orxout() << this->getRadarName() << " has been hit on the attached entity no. " << temp << endl;
+            orxout() << this->getName() << " has been hit on the attached entity no. " << temp << endl;
 
         // end
         return -1;
@@ -679,7 +626,7 @@ namespace orxonox
                 printSpaces(indent+2);  orxout() << "btCollisionShape*: " << cs->getChildShape(i) << endl;
 
                 // pointer to the btCollisionShape
-                printSpaces(indent+2);  orxout() << "m_userPointer*: " << cs->getChildShape(i)->getUserPointer() << endl;
+                printSpaces(indent+2);  orxout() << "m_userPointer*: " << cs->getChildShape(i)->getUserPointer() << " (name_: " << ((BaseObject*)(cs->getChildShape(i)->getUserPointer()))->getName() << ")" << endl;
             }
 
             // if the childshape is a CompoundCollisionShape, print its children.

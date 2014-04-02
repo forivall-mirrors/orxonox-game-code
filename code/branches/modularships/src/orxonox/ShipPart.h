@@ -30,6 +30,7 @@
 #define _ShipPart_H__
 
 #include "OrxonoxPrereqs.h"
+#include "items/Item.h"
 
 #include <string>
 
@@ -37,17 +38,47 @@
 namespace orxonox // tolua_export
 { // tolua_export
     class _OrxonoxExport ShipPart // tolua_export
+        : public Item
     { // tolua_export
 
         public:
             ShipPart(Context* context);
             virtual ~ShipPart();
 
-        protected:
+            //virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
+            virtual void handleHit(float damage, float healthdamage, float shielddamage, Pawn* originator);
+
+            //virtual void attachTo(Pawn* newParent);
+            //virtual void detach();
+
+            void addEntity(StaticEntity* entity);
+            StaticEntity* getEntity(unsigned int index);
+
+            virtual void setDamageAbsorption(float value);
+            inline float getDamageAbsorption()
+                { return this->damageAbsorption_; }
+
+            virtual void setHealth(float health);
+            inline void addHealth(float health)
+                { this->setHealth(this->health_ + health); }
+            inline void removeHealth(float health)
+                { this->setHealth(this->health_ - health); }
+            inline float getHealth() const
+                { return this->health_; }
+
+            // FIXME: (noep) Why doesn't this work? Works fine in Engine.h
+            //void addToSpaceShip(ModularSpaceShip* ship);
+
+        protected:
+            Pawn* parent_;
+            unsigned int parentID_; // Object ID of the SpaceShip the Part is mounted on.
+
+            float damageAbsorption_;
+            float health_;
 
         private:
-
+            std::vector<StaticEntity*> entityList_; // list of all entities which belong to this part
 
     }; // tolua_export
 } // tolua_export
