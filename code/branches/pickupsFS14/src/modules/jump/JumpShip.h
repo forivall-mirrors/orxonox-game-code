@@ -55,14 +55,14 @@ namespace orxonox
 /*
             // Starts or stops fireing
             virtual void boost(bool bBoost);
-
+*/
             //no rotation!
             virtual void rotateYaw(const Vector2& value){}; 
             virtual void rotatePitch(const Vector2& value){};
             //return to main menu if game has ended.
-            virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
+            virtual void rotateRoll(const Vector2& value){};
 
-            virtual void updateLevel();
+            /*virtual void updateLevel();
 
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
@@ -71,7 +71,11 @@ namespace orxonox
         private:
             WeakPtr<Jump> getGame();
             WeakPtr<Jump> game;
-            //Camera* camera;
+            WeakPtr<Camera> camera;
+            const float xVelocity = 150.0f;
+            const float xBoundary = 200.0f;
+
+
             //bool isFireing;
             //float speed;
             //float damping
@@ -89,11 +93,15 @@ namespace orxonox
                 float y;
             } velocity, desiredVelocity;*/
 
-            bool left;
-            bool right;
+            bool leftPressed;
+            bool rightPressed;
+            bool upPressed;
+            bool downPressed;
 
-
-
+            float yScreenPosition;
+            float yVelocity;
+            const float yAcceleration = 10.0f;
+            const float ySpeedAfterJump = 300.0f;
     };
 }
 

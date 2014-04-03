@@ -27,48 +27,28 @@
  */
 
 /**
-    @file JumpCenterPoint.cc
-    @brief Implementation of the JumpCenterPoint class.
+    @file JumpPlatform.h
+    @brief Declaration of the JumpPlatform class.
 */
 
-#include "JumpCenterPoint.h"
+#ifndef _JumpPlatform_H__
+#define _JumpPlatform_H__
 
-#include "core/CoreIncludes.h"
+#include "jump/JumpPrereqs.h"
 
-#include "Jump.h"
+#include "MobileEntity.h"
 
 namespace orxonox
 {
-    RegisterClass(JumpCenterPoint);
-
-    JumpCenterPoint::JumpCenterPoint(Context* context) : StaticEntity(context)
+    class _JumpExport JumpPlatform : public MobileEntity
     {
-        RegisterObject(JumpCenterPoint);
-
-        this->checkGametype();
-    }
-
-    void JumpCenterPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(JumpCenterPoint, XMLPort, xmlelement, mode);
-    }
-
-    void JumpCenterPoint::changedGametype()
-    {
-        SUPER(JumpCenterPoint, changedGametype);
-
-        // Check, whether it's still Jump.
-        this->checkGametype();
-    }
-
-    void JumpCenterPoint::checkGametype()
-    {
-        if (this->getGametype() != NULL && this->getGametype()->isA(Class(Jump)))
-        {
-            Jump* jumpGametype = orxonox_cast<Jump*>(this->getGametype().get());
-            jumpGametype->setCenterpoint(this);
-        }
-    }
+        public:
+            JumpPlatform(Context* context);
 
 
+        private:
+
+    };
 }
+
+#endif /* _JumpPlatform_H__ */

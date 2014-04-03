@@ -45,6 +45,7 @@
 
 #include "JumpCenterPoint.h"
 #include "JumpShip.h"
+#include "JumpPlatform.h"
 /*
 #include "JumpEnemy.h"
 #include "JumpEnemyShooter.h"*/

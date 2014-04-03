@@ -10,12 +10,13 @@
 ?>
 
 <?lua
-  include("templates/spaceshipAssff2.oxt")
-  include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipInvader.oxt")
-  include("templates/enemyInvader.oxt")
-  include("overlays/InvaderHUD.oxo")
+  -- include("templates/spaceshipAssff2.oxt")
+  -- include("templates/spaceshipPirate.oxt") 
+  include("templates/spaceshipJump.oxt")
+  -- include("templates/enemyInvader.oxt")
+  -- include("overlays/InvaderHUD.oxo")
 ?>
+
 
 <Level gametype = Jump>
   <templates>
@@ -34,48 +35,67 @@
       playOnLoad="true"
     />
   
+    <Planet
+      position="0, 0, -2000"
+      scale="1000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="10000000"
+      pitch="0"
+      mesh="planets/muunilinst.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="1,0,0"
+      rotationrate="1.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+
+    </Planet>
+
+
 
     <!-- <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/> -->
     <Light type=directional position="1100, 11000, -7000" lookat="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
 
 
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=JumpShip pawndesign=spaceshipinvader />
-<!--
-    <DistanceTrigger name="start" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=0 />
+    <SpawnPoint team=0 position="0,0,0" lookat="0,0,-1" spawnclass=JumpShip pawndesign=spaceshipjump />
+
+    
 
 
     <JumpCenterPoint name=jumpcenter />
 
     
     <?lua
-      for i = 1, 300, 1 do
+      for i = 1, 200, 1 do
         j = math.random()
     ?>
 
     <MovableEntity
-      position = "<?lua print(math.random()* 40000 + 1000) ?>,-1000,<?lua print(math.random() * 4000 - 2000) ?>"
+      position = "<?lua print(math.random(-300,300)) ?>,<?lua print(math.random(-250,10000)) ?>,-300>"
       collisionType = dynamic
       linearDamping = 0.8
       angularDamping = 0
-      scale = "<?lua print(j * 150)?>"
+      scale = "10"
       collisiondamage = 0
-      enablecollisiondamage = true
+      enablecollisiondamage = no
+
     >
       <attached>
         <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
       </attached>
-      <collisionShapes>
-        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
-      </collisionShapes>
+
     </MovableEntity>
 
     <?lua
       end
     ?>
 
-  -->
+  
     
   </Scene>
 </Level>
-

@@ -48,15 +48,19 @@ namespace orxonox
         //speed = 500;
         //isFireing = false;
         //damping = 10;
-        left = false;
-        right = false;
+        leftPressed = false;
+        rightPressed = false;
+        upPressed = false;
+        downPressed = false;
 
+        yScreenPosition = 0;
+        yVelocity = 0;
     }
 
     void JumpShip::tick(float dt)
     {
-
-        Vector3 pos = getPosition();
+    	Vector3 movement(0,0,0);
+        Vector3 shipPosition = getPosition();
 
         /*
         //Movement calculation
@@ -94,17 +98,13 @@ namespace orxonox
         // shoot!
         if (isFireing)
             ControllableEntity::fire(0);
-
+		*/
         // Camera
-        WeakPtr<Camera> camera = this->getCamera();
-        if (camera != NULL)
-        {
-            camera->setPosition(Vector3(-pos.z, -posforeward, 0));
-            camera->setOrientation(Vector3::UNIT_Z, Degree(90));
-        }
 
 
 
+
+	    /*
         // bring back on track!
         if(pos.y != 0)
             pos.y = 0;
@@ -120,18 +120,59 @@ namespace orxonox
         }
         */
 
-    	if (left == true)
+    	// Berechne Bewegung anhand der Eingabe
+    	if (leftPressed == true)
     	{
-    		pos += Vector3(100 + pos.y, 0, 0) * dt;
-    		left = false;
+    		movement -= Vector3(xVelocity, 0, 0);
+    		leftPressed = false;
     	}
-    	else if (right == true)
+    	else if (rightPressed == true)
     	{
-    		right = false;
+    		movement += Vector3(xVelocity, 0, 0);
+    		rightPressed = false;
     	}
 
-    	setPosition(pos);
+    	if (upPressed == true)
+    	{
+    		//movement += Vector3(0, xVelocity, 0);
+    		yVelocity = ySpeedAfterJump;
+    		upPressed = false;
+    	}
+    	else if (downPressed == true)
+    	{
+    		movement -= Vector3(0, 0, 0);
+    		downPressed = false;
+    	}
 
+    	movement += Vector3(0, yVelocity, 0);
+    	yVelocity -= yAcceleration;
+
+    	// Skalierung der Bewegung je nach vergangener Zeit
+    	movement *= dt;
+
+    	// Verschiebe das Schiff um den berechneten Vektor movement und verhindere Verlassen des Bildschrims
+    	shipPosition.x = clamp(shipPosition.x + movement.x, -xBoundary, xBoundary);
+		shipPosition.y += movement.y;
+
+    	setPosition(shipPosition);
+
+    	// Bildschirmposition kann nur nach oben verschoben werden
+    	if (shipPosition.y > yScreenPosition)
+    	{
+    		yScreenPosition = shipPosition.y;
+    	}
+
+    	// Kameraposition nachfuehren
+    	if (camera == NULL)
+    	{
+    		camera = getCamera();
+    	}
+        if (camera != NULL)
+        {
+
+            camera->setPosition(Vector3(-shipPosition.x, yScreenPosition-shipPosition.y, 100));
+            //camera->setOrientation(Vector3::UNIT_Z, Degree(180));
+        }
 
         SUPER(JumpShip, tick, dt);
     }
@@ -145,19 +186,27 @@ namespace orxonox
 
     void JumpShip::moveFrontBack(const Vector2& value)
     {
+    	if (value.y < 0)
+    	{
+    		downPressed = true;
+    	}
+    	else if (value.y > 0)
+    	{
+    		upPressed = true;
+    	}
         //lastTimeLeft = 0;
         //desiredVelocity.x = -value.x * speed;
     }
 
     void JumpShip::moveRightLeft(const Vector2& value)
     {
-    	if (value.y < 0)
+    	if (value.x < 0)
     	{
-    		left = true;
+    		leftPressed = true;
     	}
-    	else if (value.y > 0)
+    	else if (value.x > 0)
     	{
-    		right = true;
+    		rightPressed = true;
     	}
         //lastTimeFront = 0;
         //desiredVelocity.y = value.y * speed * 42;

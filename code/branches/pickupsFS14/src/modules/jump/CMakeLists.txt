@@ -3,6 +3,7 @@ BUILD_UNIT JumpBuildUnit.cc
   Jump.cc
   JumpCenterPoint.cc
   JumpShip.cc
+  JumpPlatform.cc
 END_BUILD_UNIT
 )
 
