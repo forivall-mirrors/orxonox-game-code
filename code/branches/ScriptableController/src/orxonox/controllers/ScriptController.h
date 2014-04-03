@@ -39,14 +39,31 @@ namespace orxonox
     class _OrxonoxExport ScriptController : public ArtificialController
     {
         public:
-            ScriptController(Context* context);
+            ScriptController(Context* context, ControllableEntity CE);
             virtual ~ScriptController() { }
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            bool execute(bool bTriggered, BaseObject* trigger);
+            
+           
+            void set_luasrc(string);
 
+            void set_controlled(&ControllableEntity);
+
+            void moveToPosition(const Vector3& target);
+
+            /* TO DO
+                - in the constuctor: make accessible functions such as moveToPoint.. in LUA 
+                  ->tolua++ example: http://usefulgamedev.weebly.com/tolua-example.html*/
+
+            
+                
+
+            //function to execute the luafile
 
         private:
+        	string luasrc;		// name of the LUA-sourcefile that shall be executed->see XMLPort-function
+
+            ControllableEntity* controlled; //entity controlled by this SC
 
 
     };

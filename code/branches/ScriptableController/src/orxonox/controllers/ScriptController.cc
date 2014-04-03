@@ -33,24 +33,38 @@ namespace orxonox
 {
     RegisterClass(ScriptController);
 
-    ScriptController::ScriptController(Context* context) : ArtificialController(context)
+    ScriptController::ScriptController(Context* context, ControllableEntity CE) : ArtificialController(context)
     {
         RegisterObject(ScriptController);
+        set_controlled(CE);
     }
 
-    bool ScriptController::execute(bool bTriggered, BaseObject* trigger)
+    void set_luasrc(string lsrc)
     {
-        orxout(verbose)<<"hello universe"<<endl;
-        return true;
+        this->luasrc=lsrc;
     }
 
-
+    void set_controlled(&ControllableEntity toControl)
+    {
+        this->controlled=toControl;
+    }
+    
     void ScriptController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-    	XMLPortEventSink(ScriptController, BaseObject, "execute", execute, xmlelement, mode);
+    	XMLPort(ScriptController, BaseObject, "lsrc", set_luasrc, xmlelement, mode);
 
     }
 
+    void ScriptController::moveToPosition(const Vector3& target)
+    {
+
+
+    }
+    /* TO DO
+                in the constuctor: make accessible functions such as moveToPosition.. in LUA 
+            ->tolua++ example: http://usefulgamedev.weebly.com/tolua-example.html*/
+
+    //function to execute the luafile
 
 
 
