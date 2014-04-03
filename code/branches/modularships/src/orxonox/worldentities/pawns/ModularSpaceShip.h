@@ -39,7 +39,8 @@
 #include "util/OrxAssert.h"
 
 #include "SpaceShip.h"
-#include "ShipPart.h"
+#include "items/ShipPart.h"
+#include <map>
 
 namespace orxonox
 {
@@ -93,6 +94,11 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
+            void attach(WorldEntity* object);
+
+            void addPartEntityAssignment(StaticEntity* entity, ShipPart* part);
+            ShipPart* getPartOfEntity(StaticEntity* entity) const;
+
             virtual void damage(float damage, float healthdamage = 0.0f, float shielddamage = 0.0f, Pawn* originator = NULL, const btCollisionShape* cs = NULL);
 
             void addShipPart(ShipPart* part);
@@ -107,6 +113,7 @@ namespace orxonox
         private:
             void registerVariables();
             std::vector<ShipPart*> partList_;  // The list of all Parts mounted on this ModularSpaceShip.
+            std::map<StaticEntity*, ShipPart*> partMap_;
         
     };
 }

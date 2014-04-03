@@ -37,7 +37,9 @@
 #include "util/Math.h"
 #include "gametypes/Gametype.h"
 
-#include "ShipPart.h"
+#include "items/ShipPart.h"
+#include "worldentities/StaticEntity.h"
+#include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
 
 
@@ -74,7 +76,62 @@ namespace orxonox
 
     void ModularSpaceShip::updatePartAssignment()
     {
+        // iterate through all attached objects
+        for (unsigned int i=0; i < 100; i++)
+        {
+            if (this->getAttachedObject(i) == NULL)
+                break;
+            // iterate through all attached parts
+            for(unsigned int j = 0; j < this->partList_.size(); j++)
+            {
+                // if the name of the part matches the name of the object, add the object to that parts entitylist (unless it was already done).
+                if((this->partList_[j]->getName() == this->getAttachedObject(i)->getName()) && !this->partList_[j]->hasEntity(orxonox_cast<StaticEntity*>(this->getAttachedObject(i))))
+                {
+                    this->partList_[j]->addEntity(orxonox_cast<StaticEntity*>(this->getAttachedObject(i)));
+                    orxout() << "A matching part-entity-pair with name " << this->partList_[j]->getName() << " was found!" << endl;
+                    this->partList_[j]->printEntities(); // FIXME: (noep) remove debug
+                }
+            }
+        }
+    }
 
+    void ModularSpaceShip::attach(WorldEntity* object)
+    {
+        SpaceShip::attach(object);
+        this->updatePartAssignment();
+    }
+
+    void ModularSpaceShip::addPartEntityAssignment(StaticEntity* entity, ShipPart* part)
+    {
+        if (!entity || !part)
+            return;
+
+        if (this->partMap_.find(entity) != this->partMap_.end())
+                {
+                    orxout(internal_warning) << "Assigning an Entity to multiple parts is not yet supported." << endl;
+                    return;
+                }
+
+        this->partMap_[entity] = part;
+        orxout() << "New entity-part assignment created!" << endl;
+    }
+
+    /**
+    @brief
+        Get the ShipPart an attached entity belongs to.
+    @param entity
+        The entity to be searched.
+    @return
+        Returns a pointer to the ShipPart the entity belongs to.
+    */
+    ShipPart* ModularSpaceShip::getPartOfEntity(StaticEntity* entity) const
+    {
+        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = this->partMap_.begin(); it != this->partMap_.end(); ++it)
+        {
+            if (it->first == entity)
+                return it->second;
+        }
+        return NULL;
     }
 
     //FIXME: (noep) finish
@@ -83,15 +140,35 @@ namespace orxonox
     void ModularSpaceShip::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
         orxout() << "Mdamage(): Collision detected on " << this->getRadarName() << ", btCS*: " << cs << endl;
-        orxout() << "Attached parts:" << endl;
+        orxout() << "UserPtr of said collisionShape: " << cs->getUserPointer() << endl;
+
+        // List all attached Objects
+        orxout() << "  " << this->getName() << " has the following Objects attached:" << endl;
+        for (int i=0; i<10; i++)
+        {
+            if (this->getAttachedObject(i)==NULL)
+                break;
+            orxout() << " " << i << ": " << this->getAttachedObject(i) << " (" << this->getAttachedObject(i)->getName() << ")";
+            orxout() << endl;
+        }
+
+        orxout() << "  Attached ShipParts:" << endl;
         for(unsigned int i=0; i < this->partList_.size(); i++)
         {
             orxout() << "  " << i << ": " << this->partList_[i] << " (" << this->partList_[i]->getName() << ")" << endl;
         }
 
-        int collisionShapeIndex = this->isMyCollisionShape(cs);
-        orxout() << collisionShapeIndex << endl;
+        //int collisionShapeIndex = this->isMyCollisionShape(cs);
+        //orxout() << collisionShapeIndex << endl;
 
+        orxout() << "ShipPart of Entity " << cs->getUserPointer() << ": " << this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) << endl;
+
+        if (this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
+            this->getPartOfEntity((StaticEntity*)(cs->getUserPointer()))->handleHit(damage, healthdamage, shielddamage, originator);
+        //else
+        //    SpaceShip::damage(damage, healthdamage, shielddamage, originator, cs);
+
+        /*
         // Applies multiplier given by the DamageBoost Pickup.
         if (originator)
             damage *= originator->getDamageMultiplier();
@@ -117,7 +194,7 @@ namespace orxonox
             }
 
             this->lastHitOriginator_ = originator;
-        }
+        }*/
     }
 
     /**

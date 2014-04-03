@@ -30,7 +30,7 @@
 #define _ShipPart_H__
 
 #include "OrxonoxPrereqs.h"
-#include "items/Item.h"
+#include "Item.h"
 
 #include <string>
 
@@ -54,6 +54,9 @@ namespace orxonox // tolua_export
 
             void addEntity(StaticEntity* entity);
             StaticEntity* getEntity(unsigned int index);
+            bool hasEntity(StaticEntity* entity) const;
+
+            void printEntities(); // FIXME: (noep) remove debug
 
             virtual void setDamageAbsorption(float value);
             inline float getDamageAbsorption()
@@ -66,6 +69,7 @@ namespace orxonox // tolua_export
                 { this->setHealth(this->health_ - health); }
             inline float getHealth() const
                 { return this->health_; }
+
 
             // FIXME: (noep) Why doesn't this work? Works fine in Engine.h
             //void addToSpaceShip(ModularSpaceShip* ship);

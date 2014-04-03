@@ -31,7 +31,6 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   PawnManager.cc
   PlayerManager.cc
   Radar.cc
-  ShipPart.cc
 #  Test.cc
 
 BUILD_UNIT SceneBuildUnit.cc

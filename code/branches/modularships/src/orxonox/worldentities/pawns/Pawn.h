@@ -229,8 +229,8 @@ namespace orxonox // tolua_export
             unsigned int numexplosionchunks_;
 
             virtual int isMyCollisionShape(const btCollisionShape* cs);
-            void printBtChildShapes(btCompoundShape* cs, int indent, int subshape);
-            void printSpaces(int num);
+            void printBtChildShapes(btCompoundShape* cs, int indent, int subshape); // FIXME: (noep) remove debug
+            void printSpaces(int num);   // FIXME: (noep) remove debug
             int entityOfCollisionShape(const btCollisionShape* cs);
 
         private:

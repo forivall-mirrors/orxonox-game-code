@@ -34,10 +34,10 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "network/NetworkFunction.h"
-#include "items/Item.h"
+#include "Item.h"
 #include "worldentities/pawns/Pawn.h"
 #include "gametypes/Gametype.h"
-#include "worldentities/pawns/ModularSpaceShip.h"
+#include "worldentities/StaticEntity.h"
 
 
 namespace orxonox
@@ -83,6 +83,31 @@ namespace orxonox
             return this->entityList_[index];
     }
 
+    /**
+    @brief
+        Check whether the ShipPart has a particular Entity.
+    @param engine
+        A pointer to the Entity to be checked.
+    */
+    bool ShipPart::hasEntity(StaticEntity* entity) const
+    {
+        for(unsigned int i = 0; i < this->entityList_.size(); i++)
+        {
+            if(this->entityList_[i] == entity)
+                return true;
+        }
+        return false;
+    }
+
+    void ShipPart::printEntities()
+    {
+        orxout() << "ShipPart " << this->getName() << " has the following entities assigned:" << endl;
+        for(unsigned int j = 0; j < this->entityList_.size(); j++)
+        {
+            orxout() << "  " << this->entityList_[j]->getName() << endl;
+        }
+    }
+
     void ShipPart::setDamageAbsorption(float value)
     {
         this->damageAbsorption_ = value;
@@ -103,6 +128,7 @@ namespace orxonox
     */
     void ShipPart::handleHit(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
+        orxout() << "ShipPart " <<this->getName() << " is handling a hit!" << endl;
         if (parent_->getGametype() && parent_->getGametype()->allowPawnDamage(parent_, originator))
         {
             if (shielddamage >= parent_->getShieldHealth())

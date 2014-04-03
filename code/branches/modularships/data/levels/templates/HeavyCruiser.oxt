@@ -50,8 +50,8 @@
     </engines>
     
     <parts>
-        <ShipPart name="part0" />
-        <ShipPart name="part1" />
+        <ShipPart name="frontL" />
+        <ShipPart name="frontR" />
     </parts>
     
     <attached>
