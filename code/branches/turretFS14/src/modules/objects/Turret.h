@@ -39,6 +39,7 @@
 #include "OgreQuaternion.h"
 
 #include "worldentities/pawns/SpaceShip.h"
+#include "controllers/TurretController.h"
 
 namespace orxonox
 {
@@ -52,18 +53,28 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
 
-            void setAlertnessRadius(float value);
-            float getAlertnessRadius();
-
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
+            inline void setMaxPitch(Ogre::Real pitch)
+                {this->maxPitch_ = pitch;}
 
-        protected:
-            WaypointPatrolController* controller_;
+            inline Ogre::Real getMaxPitch()
+                {return this->maxPitch_;}
+
+            inline void setMaxYaw(Ogre::Real yaw)
+                {this->maxYaw_ = yaw;}
+
+            inline Ogre::Real getMaxYaw()
+                {return this->maxYaw_;}
+
         private:
             bool gotOrient_;
-            Quaternion startOrient_;
+            Ogre::Real maxPitch_;
+            Ogre::Real maxYaw_;
+            Quaternion startOrientInv_;
+
+            Ogre::Real boundBetween(float val, float lowerBound, float upperBound);
     };
 }
 

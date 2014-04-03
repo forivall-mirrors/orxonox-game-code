@@ -35,6 +35,8 @@
  	TurretController::TurretController(Context* context) : ArtificialController(context)
  	{
  		RegisterObject(TurretController);
+ 		counter = 0;
+ 		flag = false;
  	}
 
  	TurretController::~TurretController()
@@ -44,6 +46,22 @@
 
  	void TurretController::tick(float dt)
  	{
- 		this->getControllableEntity()->rotateYaw(10*dt);
+ 		counter += dt;
+ 		if(counter >= 10)
+ 		{
+ 			counter = 0;
+ 			flag = !flag;
+ 			orxout() << "Direction change" << endl;
+ 		}
+ 		if(flag)
+ 		{
+ 			this->getControllableEntity()->rotatePitch(10*dt);
+ 			//this->getControllableEntity()->rotateYaw(10*dt);
+ 		}
+ 		else
+ 		{
+ 			this->getControllableEntity()->rotatePitch(-10*dt);
+ 			//this->getControllableEntity()->rotateYaw(-10*dt);
+ 		}
  	}
  }

@@ -41,7 +41,7 @@
         <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" />
         <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
 
-        <Turret position="0,10,0" pitch="0" yaw="90" roll="0">
+        <Turret position="0,10,0" pitch="-90" yaw="0" roll="0" maxPitch=30 maxYaw=30>
             <templates>
               <Template link=spaceshipturrettest />
             </templates>

@@ -38,7 +38,7 @@
    angularDamping    = 0.9999999
   >
     <attached>
-        <Model position="0,0,0" pitch="0" roll="0" mesh="turretHead.mesh" scale3D="10,10,10"/>
+        <Model position="0,0,0" pitch="90" roll="0" mesh="turretHead.mesh" scale3D="10,10,10"/>
     </attached>
     <collisionShapes>
         <SphereCollisionShape radius="10"   position = "0,0,0"/>

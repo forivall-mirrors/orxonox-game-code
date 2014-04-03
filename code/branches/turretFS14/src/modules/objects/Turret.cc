@@ -44,8 +44,10 @@ namespace orxonox
     Turret::Turret(Context* context) : SpaceShip(context)
     {
         RegisterObject(Turret);
-        this->controller_ = new WaypointPatrolController(this->getContext());
-        gotOrient_ = false;
+        this->startOrientInv_ = Quaternion::IDENTITY;
+        this->maxPitch_ = 0;
+        this->maxYaw_ = 0;
+        this->gotOrient_ = false;
     }
 
     /**
@@ -59,89 +61,110 @@ namespace orxonox
 
     void Turret::rotatePitch(const Vector2& value)
     {
-        Radian currentPitch = this->getOrientation().getPitch();
-        Radian startPitch = startOrient_.getPitch();
-        Radian limit = Radian((Degree)45);
-        Radian upperBoundary = startPitch+limit;
-        if(upperBoundary > Radian(Degree(360)))
+        if (this->maxPitch_ == 0)
         {
-            upperBoundary -= Radian(Degree(360));
+            return;
         }
-        Radian lowerBoundary = startPitch-limit;
-        if(lowerBoundary < Radian(Degree(0)))
+        if (this->maxPitch_ >= 180) //no need to check, if the limit too big
         {
-            lowerBoundary += Radian(Degree(360));
+           SpaceShip::rotatePitch(value);
+           return;
         }
-        //orxout() << "Pitch:\t" << currentPitch << "\t" << startPitch << endl;
-        
-        if(currentPitch > upperBoundary && value.x > 0 ||
-           currentPitch < lowerBoundary && value.x < 0)
+
+        Quaternion drot = startOrientInv_ * this->getOrientation();
+
+        Ogre::Real val = boundBetween(drot.getPitch(false).valueDegrees(), -180, 180);
+        Ogre::Real offset = boundBetween(Degree(value.x).valueDegrees(), -180, 180);
+        Ogre::Real lowerBound = offset - this->maxPitch_;
+        Ogre::Real upperBound = offset + this->maxPitch_;
+        if (lowerBound < -180) //Avoid wrapping around of the boundaries
         {
-            //return;
+            lowerBound += this->maxPitch_;
+            upperBound += this->maxPitch_;
+            val = boundBetween(val + this->maxPitch_, -180, 180); //val might wrap around here
         }
-        
-        SpaceShip::rotatePitch(value);
+        else if (upperBound >= 180) //Avoid wrapping around of the boundaries (the other side)
+        {
+            lowerBound -= this->maxPitch_;
+            upperBound -= this->maxPitch_;
+            val = boundBetween(val-this->maxPitch_, -180, 180); //val might wrap around here
+        }
+        if ((val >= lowerBound || value.x > 0) && (val <= upperBound || value.x < 0)) 
+        {
+            SpaceShip::rotatePitch(value);
+        }
+        return;
     }
 
     void Turret::rotateYaw(const Vector2& value)
     {
+        if (this->maxPitch_ == 0)
+        {
+            return;
+        }
+        if (this->maxPitch_ >= 180) //no need to check, if the limit too big
+        {
+           SpaceShip::rotateYaw(value);
+           return;
+        }
 
-        Radian currentYaw = this->getOrientation().getYaw();
-        Radian startYaw = startOrient_.getYaw();
-        Radian limit = Radian(Degree(45));
-        Radian upperBoundary = startYaw + limit;
-        Radian lowerBoundary = startYaw - limit;
-        /*if(upperBoundary >= Radian(Degree(180)));
+        Quaternion drot = startOrientInv_ * this->getOrientation();
+
+        Ogre::Real val = boundBetween(drot.getYaw(false).valueDegrees(), -180, 180);
+        Ogre::Real offset = boundBetween(Degree(value.x).valueDegrees(), -180, 180);
+        Ogre::Real lowerBound = offset - this->maxPitch_;
+        Ogre::Real upperBound = offset + this->maxPitch_;
+        if (lowerBound < -180) //Avoid wrapping around of the boundaries
         {
-            upperBoundary -= Radian(Degree(180));
-            lowerBoundary -= Radian(Degree(180));
-            currentYaw -= Radian(Degree(180));
+            lowerBound += this->maxPitch_;
+            upperBound += this->maxPitch_;
+            val = boundBetween(val + this->maxPitch_, -180, 180); //val might wrap around here
         }
-        if(lowerBoundary <= Radian(Degree(-180)))
+        else if (upperBound >= 180) //Avoid wrapping around of the boundaries (the other side)
         {
-            lowerBoundary += Radian(Degree(180));
-            upperBoundary += Radian(Degree(180));
-            currentYaw += Radian(Degree(180));
-        }*/
-        //orxout() << "Yaw:\t" << (Degree)currentYaw << "\t" << (Degree)upperBoundary << "\t" << (Degree)lowerBoundary << endl;
-        //if((currentYaw > upperBoundary && value.x > 0) ||
-        //   (currentYaw < lowerBoundary && value.x < 0))
-        if((currentYaw < Radian(1) && value.x < 0) || (currentYaw > Radian(3) && value.x>0))
-        {
-            //return;
+            lowerBound -= this->maxPitch_;
+            upperBound -= this->maxPitch_;
+            val = boundBetween(val-this->maxPitch_, -180, 180); //val might wrap around here
         }
-        SpaceShip::rotateYaw(value);
+        if ((val >= lowerBound || value.x > 0) && (val <= upperBound || value.x < 0)) 
+        {
+            SpaceShip::rotateYaw(value);
+        }
+        return;
     }
 
     void Turret::rotateRoll(const Vector2& value)
     {
-        SpaceShip::rotateRoll(value);
-    }
-
-    void Turret::setAlertnessRadius(float value)
-    {
-        this->controller_->setAlertnessRadius(value);
-    }
-    float Turret::getAlertnessRadius()
-    {
-        return this->controller_->getAlertnessRadius();
+        return; //Standard turrets don't roll
     }
 
     void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
+        XMLPortParam(Turret, "maxPitch", setMaxPitch, getMaxPitch, xmlelement, mode);
+        XMLPortParam(Turret, "maxYaw", setMaxYaw, getMaxYaw, xmlelement, mode);
         SUPER(Turret, XMLPort, xmlelement, mode);
-        XMLPortParam(Turret, "alertnessRadius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues("400");
     }
 
     void Turret::tick(float dt)
     {
-        orxout() << "Pitch: " << this->getOrientation().getPitch() << "\tYaw: " << this->getOrientation().getYaw() << "\tRoll: " << this->getOrientation().getRoll() << endl;
         if(!gotOrient_)
         {
-            startOrient_ = this->getOrientation();
+            startOrientInv_ = this->getOrientation().Inverse();
             gotOrient_ = true;
         }
+        Quaternion drot = startOrientInv_ * this->getOrientation();
+        orxout() << "Pitch: " << drot.getPitch(false).valueDegrees() << "\tYaw: " << drot.getYaw(false).valueDegrees() << "\tRoll: " << drot.getRoll(false).valueDegrees() << endl;
         SUPER(Turret, tick, dt);
+    }
+
+
+    Ogre::Real Turret::boundBetween(Ogre::Real val, Ogre::Real lowerBound, Ogre::Real upperBound)
+    {
+        if (lowerBound > upperBound){ std::swap(lowerBound, upperBound); }
+        val -= lowerBound; //adjust to 0
+        Ogre::Real rangeSize = upperBound - lowerBound;
+        if (rangeSize == 0){ return upperBound; } //avoid dividing by 0
+        return val - (rangeSize * std::floor(val / rangeSize)) + lowerBound;
     }
 
 }
