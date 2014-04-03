@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 #include "ArtificialController.h"
+#include "core/EventIncludes.h"
+
 
 namespace orxonox
 {
@@ -40,7 +42,23 @@ namespace orxonox
             ScriptController(Context* context);
             virtual ~ScriptController() { }
 
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            bool party(bool bTriggered, BaseObject* trigger);
+	    void tick(float dt);
+	    void takeControl(Controller * controller, BaseObject * trigger);
+	    bool preparationToTakeControl(BaseObject * trigger);
+	    void setNewController(Controller * controller);
+
+
         private:
+	   
+	   PlayerInfo* player_;
+
+           ControllableEntity* entity_; 
+
+	   PlayerTrigger * pTrigger_;
+	
+
     };
 }
 
