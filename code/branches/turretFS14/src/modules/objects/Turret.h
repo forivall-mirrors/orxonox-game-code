@@ -39,11 +39,10 @@
 #include "OgreQuaternion.h"
 
 #include "worldentities/pawns/SpaceShip.h"
-#include "controllers/TurretController.h"
 
 namespace orxonox
 {
-    class _ObjectsExport Turret : public SpaceShip
+    class _ObjectsExport Turret : public Pawn
     {
         public:
             Turret(Context* context);
@@ -73,6 +72,9 @@ namespace orxonox
             Ogre::Real maxPitch_;
             Ogre::Real maxYaw_;
             Quaternion startOrientInv_;
+            float rotationThrust_;
+
+            btVector3 localAngularAcceleration_;
 
             Ogre::Real boundBetween(float val, float lowerBound, float upperBound);
     };

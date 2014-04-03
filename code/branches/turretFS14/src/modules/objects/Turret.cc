@@ -28,9 +28,8 @@
 
 #include "Turret.h"
 #include "core/CoreIncludes.h"
-#include "OgreQuaternion.h"
 #include "core/XMLPort.h"
-#include "controllers/WaypointPatrolController.h"
+#include "BulletDynamics/Dynamics/btRigidBody.h"
 
 namespace orxonox
 {
@@ -41,13 +40,16 @@ namespace orxonox
     /**
      * @brief Constructor
      */
-    Turret::Turret(Context* context) : SpaceShip(context)
+    Turret::Turret(Context* context) : Pawn(context)
     {
         RegisterObject(Turret);
         this->startOrientInv_ = Quaternion::IDENTITY;
         this->maxPitch_ = 0;
         this->maxYaw_ = 0;
         this->gotOrient_ = false;
+        this->rotationThrust_ = 50;
+
+        this->localAngularAcceleration_.setValue(0, 0, 0);
     }
 
     /**
@@ -67,8 +69,8 @@ namespace orxonox
         }
         if (this->maxPitch_ >= 180) //no need to check, if the limit too big
         {
-           SpaceShip::rotatePitch(value);
-           return;
+            this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
+            return;
         }
 
         Quaternion drot = startOrientInv_ * this->getOrientation();
@@ -91,7 +93,7 @@ namespace orxonox
         }
         if ((val >= lowerBound || value.x > 0) && (val <= upperBound || value.x < 0)) 
         {
-            SpaceShip::rotatePitch(value);
+            this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
         }
         return;
     }
@@ -104,8 +106,8 @@ namespace orxonox
         }
         if (this->maxPitch_ >= 180) //no need to check, if the limit too big
         {
-           SpaceShip::rotateYaw(value);
-           return;
+            this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x*0.8f);
+            return;
         }
 
         Quaternion drot = startOrientInv_ * this->getOrientation();
@@ -128,7 +130,7 @@ namespace orxonox
         }
         if ((val >= lowerBound || value.x > 0) && (val <= upperBound || value.x < 0)) 
         {
-            SpaceShip::rotateYaw(value);
+           this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x*0.8f);
         }
         return;
     }
@@ -147,6 +149,8 @@ namespace orxonox
 
     void Turret::tick(float dt)
     {
+        SUPER(Turret, tick, dt);
+
         if(!gotOrient_)
         {
             startOrientInv_ = this->getOrientation().Inverse();
@@ -154,7 +158,10 @@ namespace orxonox
         }
         Quaternion drot = startOrientInv_ * this->getOrientation();
         orxout() << "Pitch: " << drot.getPitch(false).valueDegrees() << "\tYaw: " << drot.getYaw(false).valueDegrees() << "\tRoll: " << drot.getRoll(false).valueDegrees() << endl;
-        SUPER(Turret, tick, dt);
+        
+        this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
+        this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
+        this->localAngularAcceleration_.setValue(0, 0, 0);
     }
 
 
