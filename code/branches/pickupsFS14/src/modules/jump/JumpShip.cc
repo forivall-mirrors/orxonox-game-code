@@ -140,6 +140,11 @@ namespace orxonox
     	}
     	else if (downPressed == true)
     	{
+    		platform = new JumpPlatform(getContext());
+    		platform->setPosition(Vector3(0, 0, 0));
+    		platform->setVelocity(Vector3(0, 0, 0));
+    		platform->setScale(100);
+
     		movement -= Vector3(0, 0, 0);
     		downPressed = false;
     	}

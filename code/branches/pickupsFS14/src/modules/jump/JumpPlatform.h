@@ -36,7 +36,7 @@
 
 #include "jump/JumpPrereqs.h"
 
-#include "MobileEntity.h"
+#include "worldentities/MobileEntity.h"
 
 namespace orxonox
 {
@@ -47,6 +47,8 @@ namespace orxonox
 
 
         private:
+            Model* model;
+            MovableEntity* movableEntity;
 
     };
 }

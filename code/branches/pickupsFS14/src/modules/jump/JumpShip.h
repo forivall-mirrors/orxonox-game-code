@@ -39,6 +39,7 @@
 #include "worldentities/pawns/SpaceShip.h"
 #include "graphics/Camera.h"
 #include "weapons/projectiles/Projectile.h"
+#include "JumpPlatform.h"
 
 namespace orxonox
 {
@@ -102,6 +103,8 @@ namespace orxonox
             float yVelocity;
             const float yAcceleration = 10.0f;
             const float ySpeedAfterJump = 300.0f;
+
+            JumpPlatform* platform;
     };
 }
 

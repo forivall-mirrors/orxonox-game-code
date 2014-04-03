@@ -36,12 +36,10 @@
 #define _Jump_H__
 
 #include "jump/JumpPrereqs.h"
-
 #include "gametypes/Deathmatch.h"
-
 #include "JumpCenterPoint.h"
-
 #include "tools/Timer.h"
+#include "JumpPlatform.h"
 
 namespace orxonox
 {

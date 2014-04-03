@@ -45,7 +45,6 @@
 
 #include "JumpCenterPoint.h"
 #include "JumpShip.h"
-#include "JumpPlatform.h"
 /*
 #include "JumpEnemy.h"
 #include "JumpEnemyShooter.h"*/
@@ -64,6 +63,7 @@ namespace orxonox
         //this->center_ = 0;
        // init();
         //this->setHUDTemplate("JumpHUD");
+
     }
 
     void Jump::init()
