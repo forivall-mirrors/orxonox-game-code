@@ -45,9 +45,11 @@ namespace orxonox // tolua_export
             ShipPart(Context* context);
             virtual ~ShipPart();
 
-            //virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void handleHit(float damage, float healthdamage, float shielddamage, Pawn* originator);
+
+            virtual void death();
 
             //virtual void attachTo(Pawn* newParent);
             //virtual void detach();
@@ -62,6 +64,10 @@ namespace orxonox // tolua_export
             inline float getDamageAbsorption()
                 { return this->damageAbsorption_; }
 
+            void setParent(ModularSpaceShip* ship);
+            inline ModularSpaceShip* getParent()
+                { return this->parent_; }
+
             virtual void setHealth(float health);
             inline void addHealth(float health)
                 { this->setHealth(this->health_ + health); }
@@ -70,16 +76,28 @@ namespace orxonox // tolua_export
             inline float getHealth() const
                 { return this->health_; }
 
+            inline void setMaxHealth(float maxhealth)
+                { this->maxHealth_ = maxhealth; this->setHealth(this->health_); }
+            inline float getMaxHealth() const
+                { return this->maxHealth_; }
+
+            inline void setInitialHealth(float initialhealth)
+                { this->initialHealth_ = initialhealth; this->setHealth(initialhealth); }
+            inline float getInitialHealth() const
+                { return this->initialHealth_; }
+
 
             // FIXME: (noep) Why doesn't this work? Works fine in Engine.h
             //void addToSpaceShip(ModularSpaceShip* ship);
 
         protected:
-            Pawn* parent_;
+            ModularSpaceShip* parent_;
             unsigned int parentID_; // Object ID of the SpaceShip the Part is mounted on.
 
             float damageAbsorption_;
             float health_;
+            float maxHealth_;
+            float initialHealth_;
 
         private:
             std::vector<StaticEntity*> entityList_; // list of all entities which belong to this part

@@ -87,12 +87,21 @@ namespace orxonox
                 // if the name of the part matches the name of the object, add the object to that parts entitylist (unless it was already done).
                 if((this->partList_[j]->getName() == this->getAttachedObject(i)->getName()) && !this->partList_[j]->hasEntity(orxonox_cast<StaticEntity*>(this->getAttachedObject(i))))
                 {
+                    // The Entity is added to the part's entityList_
                     this->partList_[j]->addEntity(orxonox_cast<StaticEntity*>(this->getAttachedObject(i)));
+                    // An entry in the partMap_ is created, assigning the part to the entity.
+                    this->addPartEntityAssignment((StaticEntity*)(this->getAttachedObject(i)), this->partList_[j]);
                     orxout() << "A matching part-entity-pair with name " << this->partList_[j]->getName() << " was found!" << endl;
                     this->partList_[j]->printEntities(); // FIXME: (noep) remove debug
                 }
             }
         }
+
+        orxout() << "List of all assignments:" << endl;
+        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = this->partMap_.begin(); it != this->partMap_.end(); ++it)
+                {
+                    orxout() << "Entity: " << it->first << "   Part: " << it->second << endl;
+                }
     }
 
     void ModularSpaceShip::attach(WorldEntity* object)
@@ -142,9 +151,12 @@ namespace orxonox
         orxout() << "Mdamage(): Collision detected on " << this->getRadarName() << ", btCS*: " << cs << endl;
         orxout() << "UserPtr of said collisionShape: " << cs->getUserPointer() << endl;
 
-        // List all attached Objects
+
+            // Print all attached objects & parts
+        /*
         orxout() << "  " << this->getName() << " has the following Objects attached:" << endl;
-        for (int i=0; i<10; i++)
+
+        for (int i=0; i<50; i++)
         {
             if (this->getAttachedObject(i)==NULL)
                 break;
@@ -156,17 +168,22 @@ namespace orxonox
         for(unsigned int i=0; i < this->partList_.size(); i++)
         {
             orxout() << "  " << i << ": " << this->partList_[i] << " (" << this->partList_[i]->getName() << ")" << endl;
-        }
+        }*/
+
 
         //int collisionShapeIndex = this->isMyCollisionShape(cs);
         //orxout() << collisionShapeIndex << endl;
 
-        orxout() << "ShipPart of Entity " << cs->getUserPointer() << ": " << this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) << endl;
+        //orxout() << "ShipPart of Entity " << cs->getUserPointer() << ": " << this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) << endl;
+
+        orxout() << "CP_start" << endl;
 
         if (this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
             this->getPartOfEntity((StaticEntity*)(cs->getUserPointer()))->handleHit(damage, healthdamage, shielddamage, originator);
-        //else
-        //    SpaceShip::damage(damage, healthdamage, shielddamage, originator, cs);
+        else
+            SpaceShip::damage(damage, healthdamage, shielddamage, originator, cs);
+
+        orxout() << "CP_end" << endl;
 
         /*
         // Applies multiplier given by the DamageBoost Pickup.
@@ -207,6 +224,7 @@ namespace orxonox
     {
         OrxAssert(part != NULL, "The ShipPart cannot be NULL.");
         this->partList_.push_back(part);
+        part->setParent(this);
         //part->addToSpaceShip(this); //FIXME: (noep) add
         this->updatePartAssignment();
     }
@@ -239,6 +257,27 @@ namespace orxonox
                 return true;
         }
         return false;
+    }
+
+    void ModularSpaceShip::removeShipPart(ShipPart* part)
+    {
+        // Remove the part from the partList_
+        std::vector<ShipPart*>::iterator it = this->partList_.begin();
+        for(unsigned int i = 0; i < this->partList_.size(); i++)
+        {
+            if(this->partList_[i] == part)
+                this->partList_.erase(it);
+            it++;
+        }
+        // Remove the part-entity assignment and detach the Entity of this ShipPart
+        for (std::map<StaticEntity*, ShipPart*>::iterator itt = this->partMap_.begin(); itt != this->partMap_.end(); ++itt)
+        {
+            if (itt->second == part)
+            {
+                this->detach(itt->first);
+                this->partMap_.erase(itt);
+            }
+        }
     }
 
 }

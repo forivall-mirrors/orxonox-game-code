@@ -10,9 +10,9 @@
    spawnparticleduration  = 3
    explosionchunks        = 6
 
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
+   health            = 1000
+   maxhealth         = 2000
+   initialhealth     = 1000
 
    shieldhealth        = 100
    initialshieldhealth = 30
@@ -50,8 +50,14 @@
     </engines>
     
     <parts>
-        <ShipPart name="frontL" />
-        <ShipPart name="frontR" />
+        <ShipPart name="frontL" health="100" damageabsorption="0.5" />
+        <ShipPart name="frontR" health="100" damageabsorption="0.5" />
+        <ShipPart name="partL" health="100" damageabsorption="0.5" />
+        <ShipPart name="partR" health="100" damageabsorption="0.5" />
+        <ShipPart name="sidearmL" health="201" damageabsorption="0.2" />
+        <ShipPart name="sidearmLfront" health="100" damageabsorption="0.5" />
+        <ShipPart name="sidearmR" health="200" damageabsorption="0.2" />
+        <ShipPart name="sidearmRfront" health="100" damageabsorption="0.5" />
     </parts>
     
     <attached>
@@ -60,6 +66,9 @@
         <StaticEntity name="frontL" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
             <attached> 
                 <Model mesh="HeavyCruiser_frontL.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+                <BlinkingBillboard position="-75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
+                <BlinkingBillboard position="-74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
+                <BlinkingBillboard position="-73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
             </attached> 
             <collisionShapes> 
                 <BoxCollisionShape position="-80,33,-320" halfExtents="7,11,54" info="frontL"/>
@@ -70,6 +79,9 @@
         <StaticEntity name="frontR" position="0,0,0" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
             <attached> 
                 <Model mesh="HeavyCruiser_frontR.mesh" direction="-1,0,0" position="0,0,0" scale="40"/>
+                <BlinkingBillboard position="75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
+                <BlinkingBillboard position="74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
+                <BlinkingBillboard position="73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
             </attached> 
             <collisionShapes> 
                 <BoxCollisionShape position="80,33,-320" halfExtents="7,11,54" info="frontR"/>
@@ -175,13 +187,6 @@
             </collisionShapes> 
         </StaticEntity>   
 
-            <!-- bay1 lights -->
-        <BlinkingBillboard position="75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
-        <BlinkingBillboard position="-75,30,-416" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.05 frequency=0.3 phase=240 quadratic=1 />
-        <BlinkingBillboard position="74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
-        <BlinkingBillboard position="-74,30,-402" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.1 frequency=0.3 phase=120 quadratic=1 />
-        <BlinkingBillboard position="73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
-        <BlinkingBillboard position="-73,30,-388" material="Examples/Flare" colour="0.8, 0.8, 0, 0.1" amplitude=0.15 frequency=0.3 phase=0 quadratic=1 />
             <!-- front position lights -->
         <BlinkingBillboard position="67,-5,-240" material="Examples/Flare" colour="0, 0.7, 0, 0.1" amplitude=0.3 frequency=0.15 phase=0 quadratic=1 />
         <BlinkingBillboard position="-67,-5,-240" material="Examples/Flare" colour="0.7, 0, 0, 0.1" amplitude=0.3 frequency=0.15 phase=360 quadratic=1 />

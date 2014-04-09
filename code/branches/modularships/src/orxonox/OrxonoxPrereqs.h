@@ -141,6 +141,7 @@ namespace orxonox
     class TeamColourable;
 
     // items
+    class ShipPart;
     class Engine;
     class Item;
     class MultiStateEngine;
@@ -188,6 +189,7 @@ namespace orxonox
     class Destroyer;
     class Pawn;
     class SpaceShip;
+    class ModularSpaceShip;
     class Spectator;
     class TeamBaseMatchBase;
 }

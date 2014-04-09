@@ -36,6 +36,7 @@
 #include "network/NetworkFunction.h"
 #include "Item.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/ModularSpaceShip.h"
 #include "gametypes/Gametype.h"
 #include "worldentities/StaticEntity.h"
 
@@ -55,6 +56,39 @@ namespace orxonox
 
     }
 
+    void ShipPart::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(ShipPart, XMLPort, xmlelement, mode);
+
+        XMLPortParam(ShipPart, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
+        XMLPortParam(ShipPart, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
+        XMLPortParam(ShipPart, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
+
+        XMLPortParam(ShipPart, "damageabsorption", setDamageAbsorption, getDamageAbsorption, xmlelement, mode).defaultValues(0.5);
+
+        /*
+        XMLPortParam(ShipPart, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(ShipPart, "initialshieldhealth", setInitialShieldHealth, getInitialShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(ShipPart, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
+        XMLPortParam(ShipPart, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode).defaultValues(0);
+
+        XMLPortParam(ShipPart, "sShipPartparticlesource", setSShipPartParticleSource, getSShipPartParticleSource, xmlelement, mode);
+        XMLPortParam(ShipPart, "sShipPartparticleduration", setSShipPartParticleDuration, getSShipPartParticleDuration, xmlelement, mode).defaultValues(3.0f);
+        XMLPortParam(ShipPart, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
+
+        XMLPortParam(ShipPart, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
+        XMLPortParam(ShipPart, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
+
+        XMLPortParam(ShipPart, "explosionSound",  setExplosionSound,  getExplosionSound,  xmlelement, mode);
+
+        XMLPortParam ( RadarViewable, "radarname", setRadarName, getRadarName, xmlelement, mode );
+        */
+    }
+
+    void ShipPart::death()
+    {
+        this->parent_->removeShipPart(this);
+    }
 
     /**
     @brief
@@ -113,6 +147,11 @@ namespace orxonox
         this->damageAbsorption_ = value;
     }
 
+    void ShipPart::setParent(ModularSpaceShip* ship)
+    {
+        this->parent_ = ship;
+    }
+
     /**
     @brief
         Sets the health of the ShipPart.
@@ -151,6 +190,9 @@ namespace orxonox
                 parent_->setHealth(parent_->getHealth() - ((damage - shielddamage) - healthdamage) * (1- this->damageAbsorption_));
             }
         }
+        if (this->health_ < 0)
+            this->death();
+        orxout() << "Health of ShipPart " << this->getName() << " is " << this->getHealth() << endl;
     }
 
 

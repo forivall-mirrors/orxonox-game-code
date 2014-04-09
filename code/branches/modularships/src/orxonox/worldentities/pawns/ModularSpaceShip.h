@@ -47,7 +47,8 @@ namespace orxonox
 
     /**
     @brief
-        The ModularSpaceShip is the principal entity through which the player interacts with the game. Its main function is to fly, however many things, such as @ref orxonox::Engine Engines or @ref orxonox::Weapon Weapons, can be attached to it.
+        The SpaceShip is the principal entity through which the player interacts with the game. Its main function is to fly, however many things, such as @ref orxonox::Engine Engines or @ref orxonox::Weapon Weapons, can be attached to it.
+        The ModularSpaceShip is an extension of a @ref orxonox::SpaceShip SpaceShip, which uses @ref orxonox::ShipPart ShipParts to allow entities attached to it to be destroyed individually.
 
         There are several parameters that define the behavior of the ModularSpaceShip>
         - The <b>rotationThrust</b>, specifies the force with which the ModularSpaceShip rotates.
@@ -55,7 +56,9 @@ namespace orxonox
         - The <b>boost shaking</b>, when the ModularSpaceShip boosts, the camera shakes to create a more immersive effect. Two parameters can be used to adjust the effect. The <b>shakeFrequency</b> is the frequency with which the camera shakes. And the <b>shakeAmplitude</b> is the amount with which the camera shakes. Again these parameters must bee non-negative.
         - The <b>lift</b> creates a more natural flight feeling through the addition of a lift force. There are again tow parameters that can be specified. The <b>lift</b> which is the lift force that is applied. And the <b>stallSpeed</b> which is the forward speed after which no more lift is generated.
 
-        As mentioned @ref orxonox::Engine Engines can be mounted on the ModularSpaceShip. Here is a (primitive) example of a ModularSpaceShip defined in XML:
+        As mentioned @ref orxonox::Engine Engines can be mounted on the ModularSpaceShip.
+        In order to assign attached entities to a ShipPart, a ShipPart with the same name as the corresponding entity needs to be created in the <parts> tag.
+        Here is a (primitive) example of a ModularSpaceShip defined in XML:
         @code
         <ModularSpaceShip
             rotationThrust    = 50
@@ -76,6 +79,14 @@ namespace orxonox
             linearDamping     = 0.7
             angularDamping    = 0.9999999
             >
+                <attached>
+                    <StaticEntity name="wing"  . . .  />
+                    <StaticEntity name="tail" . . . />
+                </attached>
+                <parts>
+                    <ShipPart name="wing" . . . />
+                    <ShipPart name="tail" . . . />
+                </parts>
                 <engines>
                     <Engine />
                     <Engine />
@@ -84,7 +95,7 @@ namespace orxonox
         @endcode
 
     @author
-        Fabian 'x3n' Landau
+        Fabian 'x3n' Landau, Noe Pedrazzini
     */
     class _OrxonoxExport ModularSpaceShip : public SpaceShip
     {
@@ -104,6 +115,7 @@ namespace orxonox
             void addShipPart(ShipPart* part);
             ShipPart* getShipPart(unsigned int index);
             bool hasShipPart(ShipPart* part) const;
+            void removeShipPart(ShipPart* part);
 
             virtual void updatePartAssignment();
 

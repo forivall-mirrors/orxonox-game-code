@@ -251,10 +251,11 @@ namespace orxonox
 
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
-        orxout() << "damage(): Collision detected on " << this->getName() << ", btCS*: " << cs << endl;
+        //FIXME: (noep) remove debug
+        //orxout() << "damage(): Collision detected on " << this->getName() << ", btCS*: " << cs << endl;
 
-        int collisionShapeIndex = this->isMyCollisionShape(cs);
-        orxout() << collisionShapeIndex << endl;
+        //int collisionShapeIndex = this->isMyCollisionShape(cs);
+        //orxout() << collisionShapeIndex << endl;
 
         // Applies multiplier given by the DamageBoost Pickup.
         if (originator)
@@ -586,7 +587,7 @@ namespace orxonox
 
         // List all attached Objects
         orxout() << "  " << this->getName() << " has the following Objects attached:" << endl;
-        for (int i=0; i<10; i++)
+        for (int i=0; i<50; i++)
         {
             if (this->getAttachedObject(i)==NULL)
                 break;
