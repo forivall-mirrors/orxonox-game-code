@@ -39,12 +39,12 @@ namespace orxonox
         set_controlled(CE);
     }
 
-    void set_luasrc(string lsrc)
+    void set_luasrc(std::string lsrc)
     {
         this->luasrc=lsrc;
     }
 
-    void set_controlled(&ControllableEntity toControl)
+    void set_controlled(*ControllableEntity toControl)
     {
         this->controlled=toControl;
     }

@@ -45,9 +45,9 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             
            
-            void set_luasrc(string);
+            void set_luasrc(std::string);
 
-            void set_controlled(&ControllableEntity);
+            void set_controlled(*ControllableEntity);
 
             void moveToPosition(const Vector3& target);
 
@@ -61,7 +61,7 @@ namespace orxonox
             //function to execute the luafile
 
         private:
-        	string luasrc;		// name of the LUA-sourcefile that shall be executed->see XMLPort-function
+        	std::string luasrc;		// name of the LUA-sourcefile that shall be executed->see XMLPort-function
 
             ControllableEntity* controlled; //entity controlled by this SC
 
