@@ -26,7 +26,9 @@
  *
  */
 
- #include "TurretController.h"
+#include "TurretController.h"
+#include "worldentities/pawns/Pawn.h"
+#include "Turret.h"
 
  namespace orxonox
  {
@@ -35,8 +37,6 @@
  	TurretController::TurretController(Context* context) : ArtificialController(context)
  	{
  		RegisterObject(TurretController);
- 		counter = 0;
- 		flag = false;
  	}
 
  	TurretController::~TurretController()
@@ -44,24 +44,61 @@
 
  	}
 
+ 	void TurretController::searchTarget()
+ 	{
+        Turret* turret = orxonox_cast<Turret*>(this->getControllableEntity());
+        if(target_ && turret->isInRange(target_->getPosition()))
+        {
+        	return;
+        }
+        else
+        {
+        	this->forgetTarget();
+        }
+
+
+        ControllableEntity* parent = orxonox_cast<ControllableEntity*>(turret->getParent());
+        if(parent)
+        {
+        	Pawn* parenttarget = orxonox_cast<Pawn*>(parent->getTarget());
+        	if(parenttarget && turret->isInRange(parenttarget->getPosition()))
+        	{
+        		this->setTarget(parenttarget);
+        		turret->setTarget(parenttarget);
+        		return;
+        	}
+        }
+
+  		for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
+        {
+        	Pawn* entity = orxonox_cast<Pawn*>(*it);
+            if (ArtificialController::sameTeam(this->getControllableEntity(), entity, this->getGametype()))
+            	continue;
+
+            if(turret->isInRange(entity->getPosition()))
+            {
+            	this->setTarget(entity);
+            	turret->setTarget(entity);
+            	break;
+            }
+    	}		
+ 	}
+
  	void TurretController::tick(float dt)
  	{
- 		counter += dt;
- 		if(counter >= 10)
+        if (!this->isActive() || !this->getControllableEntity())
+            return;
+ 		this->searchTarget();
+ 		this->getControllableEntity()->rotatePitch(0.2);
+ 		/*if(target_)
  		{
- 			counter = 0;
- 			flag = !flag;
- 			orxout() << "Direction change" << endl;
- 		}
- 		if(flag)
- 		{
- 			this->getControllableEntity()->rotatePitch(10*dt);
- 			//this->getControllableEntity()->rotateYaw(10*dt);
- 		}
- 		else
- 		{
- 			this->getControllableEntity()->rotatePitch(-10*dt);
- 			//this->getControllableEntity()->rotateYaw(-10*dt);
- 		}
+ 			this->aimAtTarget();
+ 			//It says move, but really it only turns
+ 			this->moveToTargetPosition();
+ 			if(this->isLookingAtTarget(Degree(5).valueRadians()))
+ 			{
+ 				orxout() << 42 << endl;
+ 			}
+ 		}*/
  	}
  }

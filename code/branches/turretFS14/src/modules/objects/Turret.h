@@ -36,9 +36,7 @@
 #define _Turret_H__
 
 #include "objects/ObjectsPrereqs.h"
-#include "OgreQuaternion.h"
-
-#include "worldentities/pawns/SpaceShip.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -55,6 +53,8 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
+            virtual bool isInRange(Vector3 position);
+
             inline void setMaxPitch(Ogre::Real pitch)
                 {this->maxPitch_ = pitch;}
 
@@ -67,16 +67,26 @@ namespace orxonox
             inline Ogre::Real getMaxYaw()
                 {return this->maxYaw_;}
 
+            inline void setAttackRadius(float radius)
+                {this->attackRadius_ = radius;}
+
+            inline float getAttackRadius()
+                {return this->attackRadius_;}
+
+
         private:
             bool gotOrient_;
             Ogre::Real maxPitch_;
             Ogre::Real maxYaw_;
-            Quaternion startOrientInv_;
+            float attackRadius_;
+            Quaternion startOrient_;
+            Vector3 startDir_;
+            Vector3 localZ_;
+            Vector3 localY_;
+            Vector3 localX_;
             float rotationThrust_;
 
             btVector3 localAngularAcceleration_;
-
-            Ogre::Real boundBetween(float val, float lowerBound, float upperBound);
     };
 }
 

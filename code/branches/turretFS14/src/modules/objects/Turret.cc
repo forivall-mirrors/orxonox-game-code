@@ -43,9 +43,14 @@ namespace orxonox
     Turret::Turret(Context* context) : Pawn(context)
     {
         RegisterObject(Turret);
-        this->startOrientInv_ = Quaternion::IDENTITY;
+        this->startOrient_ = Quaternion::IDENTITY;
+        this->startDir_ = Vector3::ZERO;
+        this->localZ_ = Vector3::UNIT_Z;
+        this->localY_ = Vector3::UNIT_Y;
+        this->localX_ = Vector3::UNIT_X;
         this->maxPitch_ = 0;
         this->maxYaw_ = 0;
+        this->attackRadius_ = 200;
         this->gotOrient_ = false;
         this->rotationThrust_ = 50;
 
@@ -62,88 +67,84 @@ namespace orxonox
 
 
     void Turret::rotatePitch(const Vector2& value)
-    {
-        if (this->maxPitch_ == 0)
-        {
-            return;
-        }
-        if (this->maxPitch_ >= 180) //no need to check, if the limit too big
-        {
-            this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
-            return;
-        }
-
-        Quaternion drot = startOrientInv_ * this->getOrientation();
-
-        Ogre::Real val = boundBetween(drot.getPitch(false).valueDegrees(), -180, 180);
-        Ogre::Real offset = boundBetween(Degree(value.x).valueDegrees(), -180, 180);
-        Ogre::Real lowerBound = offset - this->maxPitch_;
-        Ogre::Real upperBound = offset + this->maxPitch_;
-        if (lowerBound < -180) //Avoid wrapping around of the boundaries
-        {
-            lowerBound += this->maxPitch_;
-            upperBound += this->maxPitch_;
-            val = boundBetween(val + this->maxPitch_, -180, 180); //val might wrap around here
-        }
-        else if (upperBound >= 180) //Avoid wrapping around of the boundaries (the other side)
-        {
-            lowerBound -= this->maxPitch_;
-            upperBound -= this->maxPitch_;
-            val = boundBetween(val-this->maxPitch_, -180, 180); //val might wrap around here
-        }
-        if ((val >= lowerBound || value.x > 0) && (val <= upperBound || value.x < 0)) 
+    {    
+        //This is a failed attempt at limiting the turret's rotation. It's handled in the controller (for now?)
+        /*
+        Vector3 currentDir = getTransformedVector(this->getOrientation() * WorldEntity::FRONT, this->localX_, this->localY_, this->localZ_);
+        Vector3 currentDirProjected = currentDir;
+        currentDirProjected.x = 0;
+        Vector3 startDirProjected = this->startDir_;
+        startDirProjected.x = 0;     
+        Ogre::Real angle = startDirProjected.angleBetween(currentDirProjected).valueDegrees();
+        //orxout() << "Pitch: " << angle << endl;   
+        //if(angle < this->maxPitch_ || (currentDirProjected.y <= 0 && value.x > 0) || (currentDirProjected.y > 0 && value.x < 0) )
         {
             this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
         }
-        return;
+        */
+        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
     }
 
     void Turret::rotateYaw(const Vector2& value)
     {
-        if (this->maxPitch_ == 0)
-        {
-            return;
-        }
-        if (this->maxPitch_ >= 180) //no need to check, if the limit too big
+        //This is a failed attempt at limiting the turret's rotation. It's handled in the controller (for now?)
+        /*
+        Vector3 currentDir = getTransformedVector(this->getOrientation() * WorldEntity::FRONT, this->localX_, this->localY_, this->localZ_);
+        Vector3 currentDirProjected = currentDir;
+        currentDirProjected.y = 0;
+        Vector3 startDirProjected = this->startDir_;
+        startDirProjected.y = 0;
+        Ogre::Real angle = startDirProjected.angleBetween(currentDirProjected).valueDegrees();
+        orxout() << "Yaw: " << angle << endl;
+        if(angle < this->maxYaw_ || (currentDirProjected.x <= 0 && value.x < 0) || (currentDirProjected.x > 0 && value.x > 0))
         {
             this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x*0.8f);
-            return;
         }
-
-        Quaternion drot = startOrientInv_ * this->getOrientation();
-
-        Ogre::Real val = boundBetween(drot.getYaw(false).valueDegrees(), -180, 180);
-        Ogre::Real offset = boundBetween(Degree(value.x).valueDegrees(), -180, 180);
-        Ogre::Real lowerBound = offset - this->maxPitch_;
-        Ogre::Real upperBound = offset + this->maxPitch_;
-        if (lowerBound < -180) //Avoid wrapping around of the boundaries
-        {
-            lowerBound += this->maxPitch_;
-            upperBound += this->maxPitch_;
-            val = boundBetween(val + this->maxPitch_, -180, 180); //val might wrap around here
-        }
-        else if (upperBound >= 180) //Avoid wrapping around of the boundaries (the other side)
-        {
-            lowerBound -= this->maxPitch_;
-            upperBound -= this->maxPitch_;
-            val = boundBetween(val-this->maxPitch_, -180, 180); //val might wrap around here
-        }
-        if ((val >= lowerBound || value.x > 0) && (val <= upperBound || value.x < 0)) 
-        {
-           this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x*0.8f);
-        }
-        return;
+        */
+        this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x*0.8f);
     }
 
     void Turret::rotateRoll(const Vector2& value)
     {
-        return; //Standard turrets don't roll
+        this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x*0.8f);
+    }
+
+    bool Turret::isInRange(Vector3 position)
+    {
+        Vector3 distance = position - this->getPosition();
+        if(distance.squaredLength() > (this->attackRadius_ * this->attackRadius_))
+        {
+            return false;
+        }
+
+        Vector3 dir = getTransformedVector(distance, this->localX_, this->localY_, this->localZ_);
+        Vector3 dirProjected = dir;
+        dirProjected.x = 0;
+        Vector3 startDirProjected = this->startDir_;
+        startDirProjected.x = 0;
+        Ogre::Real angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
+        if(angle > this->maxPitch_)
+        {
+            return false;
+        }
+
+        dirProjected = dir;
+        dirProjected.y = 0;
+        startDirProjected = this->startDir_;
+        startDirProjected.y = 0;
+        angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
+        if(angle > this->maxYaw_)
+        {
+            return false;
+        }
+        return true;
     }
 
     void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         XMLPortParam(Turret, "maxPitch", setMaxPitch, getMaxPitch, xmlelement, mode);
         XMLPortParam(Turret, "maxYaw", setMaxYaw, getMaxYaw, xmlelement, mode);
+        XMLPortParam(Turret, "attackRadius", setAttackRadius, getAttackRadius, xmlelement, mode);
         SUPER(Turret, XMLPort, xmlelement, mode);
     }
 
@@ -153,25 +154,23 @@ namespace orxonox
 
         if(!gotOrient_)
         {
-            startOrientInv_ = this->getOrientation().Inverse();
-            gotOrient_ = true;
+            this->startOrient_ = this->getOrientation();
+            this->localX_ = this->startOrient_ * this->localX_;
+            this->localX_.normalise();
+            this->localY_ = this->startOrient_ * this->localY_;
+            this->localY_.normalise();
+            this->localZ_ = this->startOrient_ * this->localZ_;
+            this->localZ_.normalise();
+
+            //startDir should always be (0,0,-1)
+            this->startDir_ = getTransformedVector(this->startOrient_ * WorldEntity::FRONT, this->localX_, this->localY_, this->localZ_);
+
+            this->gotOrient_ = true;
         }
-        Quaternion drot = startOrientInv_ * this->getOrientation();
-        orxout() << "Pitch: " << drot.getPitch(false).valueDegrees() << "\tYaw: " << drot.getYaw(false).valueDegrees() << "\tRoll: " << drot.getRoll(false).valueDegrees() << endl;
-        
+
         this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
         this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
         this->localAngularAcceleration_.setValue(0, 0, 0);
-    }
-
-
-    Ogre::Real Turret::boundBetween(Ogre::Real val, Ogre::Real lowerBound, Ogre::Real upperBound)
-    {
-        if (lowerBound > upperBound){ std::swap(lowerBound, upperBound); }
-        val -= lowerBound; //adjust to 0
-        Ogre::Real rangeSize = upperBound - lowerBound;
-        if (rangeSize == 0){ return upperBound; } //avoid dividing by 0
-        return val - (rangeSize * std::floor(val / rangeSize)) + lowerBound;
     }
 
 }

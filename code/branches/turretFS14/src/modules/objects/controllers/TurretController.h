@@ -43,8 +43,7 @@
  			virtual void tick(float dt);
 
  		private:
- 			float counter;
- 			bool flag;
+ 			void searchTarget();
  	};
  }
 
