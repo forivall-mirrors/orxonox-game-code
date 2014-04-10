@@ -77,10 +77,12 @@ namespace orxonox
     void ModularSpaceShip::updatePartAssignment()
     {
         // iterate through all attached objects
-        for (unsigned int i=0; i < 100; i++)
+        for (unsigned int i=0; i < this->getNumAttachedObj(); i++)
         {
             if (this->getAttachedObject(i) == NULL)
+            {
                 break;
+            }
             // iterate through all attached parts
             for(unsigned int j = 0; j < this->partList_.size(); j++)
             {
@@ -148,7 +150,7 @@ namespace orxonox
 
     void ModularSpaceShip::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
-        orxout() << "Mdamage(): Collision detected on " << this->getRadarName() << ", btCS*: " << cs << endl;
+        /*orxout() << "Mdamage(): Collision detected on " << this->getRadarName() << ", btCS*: " << cs << endl;
         orxout() << "UserPtr of said collisionShape: " << cs->getUserPointer() << endl;
 
 
@@ -176,14 +178,10 @@ namespace orxonox
 
         //orxout() << "ShipPart of Entity " << cs->getUserPointer() << ": " << this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) << endl;
 
-        orxout() << "CP_start" << endl;
-
         if (this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
             this->getPartOfEntity((StaticEntity*)(cs->getUserPointer()))->handleHit(damage, healthdamage, shielddamage, originator);
         else
             SpaceShip::damage(damage, healthdamage, shielddamage, originator, cs);
-
-        orxout() << "CP_end" << endl;
 
         /*
         // Applies multiplier given by the DamageBoost Pickup.
@@ -266,7 +264,10 @@ namespace orxonox
         for(unsigned int i = 0; i < this->partList_.size(); i++)
         {
             if(this->partList_[i] == part)
+            {
                 this->partList_.erase(it);
+                break;
+            }
             it++;
         }
         // Remove the part-entity assignment and detach the Entity of this ShipPart
@@ -274,7 +275,11 @@ namespace orxonox
         {
             if (itt->second == part)
             {
-                this->detach(itt->first);
+                //this->detach(itt->first);
+                //itt->first->destroy();
+                itt->first->setActive(false);
+                itt->first->setVisible(false);
+                itt->first->setCollisionResponse(false);
                 this->partMap_.erase(itt);
             }
         }

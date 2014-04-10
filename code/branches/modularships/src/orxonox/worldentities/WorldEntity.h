@@ -206,6 +206,9 @@ namespace orxonox
 
             void notifyChildPropsChanged();
 
+            inline int getNumAttachedObj()
+                { return this->children_.size(); }
+
         protected:
             virtual void parentChanged() {}
 

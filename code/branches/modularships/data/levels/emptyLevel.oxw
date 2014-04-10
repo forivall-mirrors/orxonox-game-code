@@ -97,7 +97,7 @@
       </templates>
     </ModularSpaceShip>
     
-    <ModularSpaceShip position="0,-1000,-200" health="1000" maxhealth="2000" initialhealth="1000">
+    <ModularSpaceShip position="0,-1000,-200" health="2000" maxhealth="4000" initialhealth="2000">
       <templates>
         <Template link=HeavyCruiser />
       </templates>
