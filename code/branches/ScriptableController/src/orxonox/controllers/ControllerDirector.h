@@ -58,7 +58,7 @@ namespace orxonox
 	   
 	   PlayerInfo* player_;
 
-      	   ControllableEntity* entity_; 
+       ControllableEntity* entity_; 
 
 	   PlayerTrigger * pTrigger_;
 	
