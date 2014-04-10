@@ -53,7 +53,7 @@ namespace orxonox
         preparationToTakeControl(trigger);
         setNewController(controller);
         LuaState test = new Luastate();
-        test.doFile("/tmp/myluahelloworld.lua");
+        test.doFile("/tmp/my.lua");
         
     } 
 
