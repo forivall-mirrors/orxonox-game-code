@@ -70,51 +70,18 @@
       </collisionShapes>
     </StaticEntity>
 
-<!-- Docking  -->
-    <Dock position="2830,20,50" roll=0 yaw=0 >
-        <animations>
-            <MoveToDockingTarget target="destroyer" />
-        </animations>
-        <effects>
-            <DockToShip target="spaceShip" />
-        </effects>
-        <events>
-            <execute>
-                <EventListener event="dockMe" />
-            </execute>
-
-	    <undocking>
-		<EventListener event="undockMe" />
-	    </undocking>
-	
-            <activity>
-                <EventListener event=notGameEnd />
-            </activity>
-        </events>
-        <attached>
-	<!-- Trigger for docking with billboard -->
-
-		<!-- removed -->
-
-	<!-- Trigger for undocking with billboard -->
-	    <!-- <Billboard position="-2630,-19970,150" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 /> -->
-	    <DistanceTrigger position="-2630,-19970,150" distance="50" target="Pawn"
-                beaconMode="identify" targetname="bcnDestroyer" name="undockMe"
-            />
-        </attached>
-    </Dock>
 
     <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=100 />
     <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
-      beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+      beaconMode="exclude" targetname="bcnDestroyer" name="takeControl"
     />
 
 
-<!-- Object, which orxouts the message "hello Universe!". EVENT NOT WORKING  -->
+<!-- ControllerDirector waits for the event takeControl to attach a new Controller -->
     <ControllerDirector position="0,0,0">
         <events>
             <party>
-                <EventListener event="dockMe" />
+                <EventListener event="takeControl" />
             </party>
 
         </events>

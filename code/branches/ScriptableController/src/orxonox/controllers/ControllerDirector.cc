@@ -10,6 +10,8 @@ First try of a ControllerDirector. Target: An event occurs in the levelTry.oxw f
 #include "infos/HumanPlayer.h"
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
+#include "LuaState.h"
+
 
 namespace orxonox
 {
@@ -26,53 +28,33 @@ namespace orxonox
 	   this->pTrigger_=NULL;
     }
 
-    bool ControllerDirector::party(bool bTriggered, BaseObject* trigger)
-       {
-	   //XMLPortEventSink seems not to execute the party function
-           orxout()<<"hello universe party"<< endl;
-           return true;
-       }
-
 
     void ControllerDirector::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ControllerDirector, XMLPort, xmlelement, mode);
 
 	
-        orxout()<<"hello universe xmlport"<< endl;
+        orxout()<<"ControllerDriector::XMLPort An instance of ControllerDirector has been created."<< endl;
     }
 
     void ControllerDirector::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ControllerDirector, XMLEventPort, xmlelement, mode);
 
-        XMLPortEventSink(ControllerDirector, BaseObject, "party", party, xmlelement, mode);
+        XMLPortEventSink(ControllerDirector, BaseObject, "takeControl", takeControl, xmlelement, mode);
 
     }
 
 
 
-   /* void ControllerDirector::tick(float dt)
-    {
-
-	//Get controllable entity which is attached to this controller in the XML file.
-        ControllableEntity* entity = this->getControllableEntity();
-        if (!entity)
-	    orxout()<<"No controllable entity found"<<endl;
-            return;
-
-        
-
-        SUPER(ControllerDirector, tick, dt);
-    }
-
-    */
 
     void ControllerDirector::takeControl(Controller * controller, BaseObject * trigger) {
 
         preparationToTakeControl(trigger);
         setNewController(controller);
-
+        LuaState test = new Luastate();
+        test.doFile("/tmp/myluahelloworld.lua");
+        
     } 
 
 	
@@ -112,39 +94,14 @@ namespace orxonox
         this->entity_->setController(controller);
         this->setControllableEntity(this->entity_);
 
+
+
     }
        
     
 
 }
 
-/* Detaillierte Planung
-Director nimmt event auf und hängt dann einen controller (momentan als erstellt zu betrachten) an objekt, welches event ausgelöst hat.
-
-
-
-	Klassenvariablen
-
-		...? brauchts überhaupt?
-
-	Variablen (in Funktionen auftretend):
-
-		Playerinfo * player 		enthält infos über objekt, welches event ausgelöst hat.Relevant für Inputseite des Directors
-
-	Funktion:
-
-		Auf Seite des Inputs des Directors:
-
-			preparationForControlTakeOver(...) 	Vorbereitende Massnahmen um neuen Controller anzuhängen, z.B. player = pTrigger->getTriggeringPlayer();
-								Orientierung an execute Funktion von Dock.cc
-	
-		Auf Outputseite des Directors:
-
-			takeControl(...) 			Orientierung an DockingController.cc
-
-			tick()					Soll von Event ausgelöst werden, wenn z.B. Kamera an Endposition angelangt ist. Danach soll wieder ein
-								menschlicher Spieler die Kontrolle übernehmen (wie? new human controller? Klasse noch angucken!).
-*/
 
 
 
