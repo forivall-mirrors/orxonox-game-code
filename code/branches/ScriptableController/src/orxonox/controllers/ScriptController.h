@@ -29,17 +29,20 @@
 #ifndef _ScriptController_H__
 #define _ScriptController_H__
 
-#include "OrxonoxPrereqs.h"
+#include "OrxonoxPrereqs.h"                 /* die ganzen tolua, kopiert aus Dock.h*/
 #include "ArtificialController.h"
 #include "core/EventIncludes.h"
 
 
-namespace orxonox
-{
-    class _OrxonoxExport ScriptController : public ArtificialController
-    {
+namespace orxonox  // tolua_export
+{  // tolua_export
+    class _OrxonoxExport ScriptController // tolua_export 
+       : public ArtificialController
+    {  // tolua_export
         public:
-            ScriptController(Context* context, ControllableEntity CE);
+            //ScriptController(Context* context, ControllableEntity* CE);
+            ScriptController(Context* context);
+
             virtual ~ScriptController() { }
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -47,18 +50,19 @@ namespace orxonox
            
             void set_luasrc(std::string);
 
-            void set_controlled(*ControllableEntity);
+            void set_controlled(ControllableEntity*);
 
+
+            // LUA interface
+            // tolua_begin 
             void moveToPosition(const Vector3& target);
 
-            /* TO DO
-                - in the constuctor: make accessible functions such as moveToPoint.. in LUA 
-                  ->tolua++ example: http://usefulgamedev.weebly.com/tolua-example.html*/
+           
 
             
-                
+              /* virtual void tick(float dt);*/ 
 
-            //function to execute the luafile
+            // tolua_end
 
         private:
         	std::string luasrc;		// name of the LUA-sourcefile that shall be executed->see XMLPort-function
@@ -66,7 +70,7 @@ namespace orxonox
             ControllableEntity* controlled; //entity controlled by this SC
 
 
-    };
-}
+    };// tolua_export
+} // tolua_export
 
 #endif /* _ScriptController_H__ */

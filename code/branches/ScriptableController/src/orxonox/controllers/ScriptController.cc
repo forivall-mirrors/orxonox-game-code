@@ -28,41 +28,61 @@
 
 #include "ScriptController.h"
 #include "core/CoreIncludes.h"
+#include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
     RegisterClass(ScriptController);
 
-    ScriptController::ScriptController(Context* context, ControllableEntity CE) : ArtificialController(context)
+    //ScriptController::ScriptController(Context* context, ControllableEntity* CE) : ArtificialController(context)
+    ScriptController::ScriptController(Context* context) : ArtificialController(context)
     {
         RegisterObject(ScriptController);
-        set_controlled(CE);
+        //set_controlled(CE);
     }
 
-    void set_luasrc(std::string lsrc)
+    void ScriptController::set_luasrc(std::string lsrc)
     {
         this->luasrc=lsrc;
     }
 
-    void set_controlled(*ControllableEntity toControl)
+    void ScriptController::set_controlled(ControllableEntity* toControl)
     {
         this->controlled=toControl;
     }
     
     void ScriptController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-    	XMLPort(ScriptController, BaseObject, "lsrc", set_luasrc, xmlelement, mode);
+    	//XMLPortParam(ScriptController, BaseObject, "lsrc", set_luasrc, xmlelement, mode);
 
     }
 
     void ScriptController::moveToPosition(const Vector3& target)
     {
-
-
+        
+        /*this->controlled_->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
+        this->controlled_->rotatePitch(sgn(coord.y)*coord.y*coord.y);*/
     }
+
+    /*void WaypointController::tick(float dt)  //copied from waypointcontroller
+    {
+        if (!this->isActive())
+            return;
+
+        if (this->waypoints_.size() == 0 || !this->getControllableEntity())
+            return;
+
+        if (this->waypoints_[this->currentWaypoint_]->getWorldPosition().squaredDistance(this->getControllableEntity()->getPosition()) <= this->squaredaccuracy_)
+            this->currentWaypoint_ = (this->currentWaypoint_ + 1) % this->waypoints_.size();
+
+        this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
+    }*/
+
     /* TO DO
                 in the constuctor: make accessible functions such as moveToPosition.. in LUA 
             ->tolua++ example: http://usefulgamedev.weebly.com/tolua-example.html*/
+
+
 
     //function to execute the luafile
 
