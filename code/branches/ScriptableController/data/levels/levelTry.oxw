@@ -111,7 +111,7 @@
 
 
 <!-- Object, which orxouts the message "hello Universe!". EVENT NOT WORKING  -->
-    <ScriptController_00 position="0,0,0">
+    <ControllerDirector position="0,0,0">
         <events>
             <party>
                 <EventListener event="dockMe" />
@@ -119,7 +119,7 @@
 
         </events>
 
-    </ScriptController_00>
+    </ControllerDirector>
 
 
 <!-- FPS Player as destination of the dock -->

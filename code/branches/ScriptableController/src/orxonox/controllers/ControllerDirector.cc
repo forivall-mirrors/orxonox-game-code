@@ -1,26 +1,32 @@
 /*
-First try of a scriptController. Target: An event occurs in the levelTry.oxw file, which is "heard" by an object of the type of this class. It then SHOULD (because it is not working) execute the party function.
+First try of a ControllerDirector. Target: An event occurs in the levelTry.oxw file, which is "heard" by an object of the type of this class. It then SHOULD (because it is not working) execute the party function.
  */
 
-#include "ScriptController.h"
+#include "ControllerDirector.h"
 #include "core/CoreIncludes.h"
+
+//#include "network/NetworkFunction.h"
+
+#include "infos/HumanPlayer.h"
+#include "interfaces/PlayerTrigger.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
-    RegisterClass(ScriptController);
+    RegisterClass(ControllerDirector);
 
-    ScriptController::ScriptController(Context* context) : ArtificialController(context)
+    ControllerDirector::ControllerDirector(Context* context) : ArtificialController(context)
     {
 	//Working
-        RegisterObject(ScriptController);
+        RegisterObject(ControllerDirector);
         orxout()<<"hello universe constructor"<< endl;
 
-	this->player_=NULL;
-	this->entity_=NULL;
-	this->pTrigger_=NULL;
+	   this->player_=NULL;
+	   this->entity_=NULL;
+	   this->pTrigger_=NULL;
     }
 
-    bool ScriptController::party(bool bTriggered, BaseObject* trigger)
+    bool ControllerDirector::party(bool bTriggered, BaseObject* trigger)
        {
 	   //XMLPortEventSink seems not to execute the party function
            orxout()<<"hello universe party"<< endl;
@@ -28,17 +34,25 @@ namespace orxonox
        }
 
 
-    void ScriptController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void ControllerDirector::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(ScriptController, XMLPort, xmlelement, mode);
+        SUPER(ControllerDirector, XMLPort, xmlelement, mode);
 
 	
-    	XMLPortEventSink(ScriptController, BaseObject, "party", party, xmlelement, mode);
-	// Working
         orxout()<<"hello universe xmlport"<< endl;
     }
 
-    void ScriptController::tick(float dt)
+    void ControllerDirector::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(ControllerDirector, XMLEventPort, xmlelement, mode);
+
+        XMLPortEventSink(ControllerDirector, BaseObject, "party", party, xmlelement, mode);
+
+    }
+
+
+
+   /* void ControllerDirector::tick(float dt)
     {
 
 	//Get controllable entity which is attached to this controller in the XML file.
@@ -49,34 +63,34 @@ namespace orxonox
 
         
 
-        SUPER(ScriptController, tick, dt);
+        SUPER(ControllerDirector, tick, dt);
     }
 
-    void ScriptController::takeControl(Controller * controller, BaseObject * trigger) {
+    */
 
-	preparationToTakeControl(trigger);
-	setNewController(controller);
+    void ControllerDirector::takeControl(Controller * controller, BaseObject * trigger) {
 
-    }
+        preparationToTakeControl(trigger);
+        setNewController(controller);
+
+    } 
 
 	
-    bool ScriptController::preparationToTakeControl(BaseObject * trigger) {
+    bool ControllerDirector::preparationToTakeControl(BaseObject * trigger) {
 
-	this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
+	    this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
         this->player_ = NULL;
 
+        orxout() << "Preparation to take Control!" << endl; 
         // Check whether it is a player trigger and extract pawn from it
-        if(pTrigger != NULL)
+        if(this->pTrigger_ != NULL)
         {
-            if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
-                orxout(verbose, context::docking) << "Docking:execute PlayerTrigger was not triggered by a player.." << endl;
-                return false;
-            }
-            player_ = pTrigger->getTriggeringPlayer();  //Get the object which triggered the event.
+            
+            player_ = this->pTrigger_->getTriggeringPlayer();  //Get the object which triggered the event.
         }
         else
         {
-            orxout(verbose, context::docking) << "Docking::execute Not a player trigger, can't extract pawn from it.." << endl;
+            orxout() << "ControllerDirector::preparationToTakeControl Not a player trigger, can't extract pawn from it.." << endl;
             return false;
         }
 
@@ -84,24 +98,25 @@ namespace orxonox
 	this->entity_ = this->player_->getControllableEntity();
 	assert(this->entity_);
 
+    return true;
+
     }
 
-    void ScriptController::setNewController(Controller * controller) {
+    void ControllerDirector::setNewController(Controller * controller) {
 
 
-            orxout(verbose) << "New Controller is going to be set!" << endl;
+        orxout() << "New Controller is going to be set!" << endl;
 
-            this->entity_->setDestroyWhenPlayerLeft(false);
-            this->player_->pauseControl();
-            this->entity_->setController(controller);
-            this->setControllableEntity(this->entity_);
+        this->entity_->setDestroyWhenPlayerLeft(false);
+        this->player_->pauseControl();
+        this->entity_->setController(controller);
+        this->setControllableEntity(this->entity_);
+
+    }
        
     
 
-    }
-
-  
-
+}
 
 /* Detaillierte Planung
 Director nimmt event auf und hängt dann einen controller (momentan als erstellt zu betrachten) an objekt, welches event ausgelöst hat.
@@ -133,4 +148,3 @@ Director nimmt event auf und hängt dann einen controller (momentan als erstellt
 
 
 
-}
