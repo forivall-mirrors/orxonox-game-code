@@ -55,6 +55,17 @@
 
     </Planet>
 
+    <MovableEntity
+      position="0, 0, 500"
+      scale="5"
+      collisionType="dynamic"
+      mass="10000000"
+    >
+      <attached>
+        <Model mesh="Platform01.mesh" />
+      </attached>
+    </MovableEntity>
+
 
 
     <!-- <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/> -->
@@ -63,8 +74,6 @@
 
 
     <SpawnPoint team=0 position="0,0,0" lookat="0,0,-1" spawnclass=JumpShip pawndesign=spaceshipjump />
-
-    
 
 
     <JumpCenterPoint name=jumpcenter />

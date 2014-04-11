@@ -44,12 +44,10 @@ namespace orxonox
     {
         public:
             JumpPlatform(Context* context);
-
+            virtual void tick(float dt);
 
         private:
             Model* model;
-            MovableEntity* movableEntity;
-
     };
 }
 

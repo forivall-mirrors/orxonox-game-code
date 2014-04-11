@@ -52,73 +52,15 @@ namespace orxonox
         rightPressed = false;
         upPressed = false;
         downPressed = false;
-
-        yScreenPosition = 0;
         yVelocity = 0;
     }
 
     void JumpShip::tick(float dt)
     {
+
+
     	Vector3 movement(0,0,0);
         Vector3 shipPosition = getPosition();
-
-        /*
-        //Movement calculation
-        lastTimeFront += dt * damping;
-        lastTimeLeft += dt * damping;
-        lastTime += dt;
-
-        velocity.x = interpolate(clamp(lastTimeLeft, 0.0f, 1.0f), desiredVelocity.x, 0.0f);
-        velocity.y = interpolate(clamp(lastTimeFront, 0.0f, 1.0f), desiredVelocity.y, 0.0f);
-
-        //Execute movement
-        if (this->hasLocalController())
-        {
-            float dist_y = velocity.y * dt;
-            float dist_x = velocity.x * dt;
-            if(dist_y + posforeward > -42*3 && dist_y + posforeward < 42*6)
-                posforeward += dist_y;
-            else
-            {
-                velocity.y = 0;
-                // restart if game ended
-                if (getGame())
-                    if (getGame()->bEndGame)
-                    {
-                        getGame()->start();
-                        return;
-                    }
-            }
-            if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)
-                velocity.x = 0;
-            pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
-
-        }
-
-        // shoot!
-        if (isFireing)
-            ControllableEntity::fire(0);
-		*/
-        // Camera
-
-
-
-
-	    /*
-        // bring back on track!
-        if(pos.y != 0)
-            pos.y = 0;
-
-        setPosition(pos);
-        setOrientation(Vector3::UNIT_Y, Degree(270));
-
-        // Level up!
-        if (pos.x > 42000)
-        {
-            updateLevel();
-            setPosition(Vector3(0, 0, pos.z)); // pos - Vector3(30000, 0, 0)
-        }
-        */
 
     	// Berechne Bewegung anhand der Eingabe
     	if (leftPressed == true)
@@ -140,11 +82,6 @@ namespace orxonox
     	}
     	else if (downPressed == true)
     	{
-    		platform = new JumpPlatform(getContext());
-    		platform->setPosition(Vector3(0, 0, 0));
-    		platform->setVelocity(Vector3(0, 0, 0));
-    		platform->setScale(100);
-
     		movement -= Vector3(0, 0, 0);
     		downPressed = false;
     	}
@@ -161,25 +98,7 @@ namespace orxonox
 
     	setPosition(shipPosition);
 
-    	// Bildschirmposition kann nur nach oben verschoben werden
-    	if (shipPosition.y > yScreenPosition)
-    	{
-    		yScreenPosition = shipPosition.y;
-    	}
-
-    	// Kameraposition nachfuehren
-    	if (camera == NULL)
-    	{
-    		camera = getCamera();
-    	}
-        if (camera != NULL)
-        {
-
-            camera->setPosition(Vector3(-shipPosition.x, yScreenPosition-shipPosition.y, 100));
-            //camera->setOrientation(Vector3::UNIT_Z, Degree(180));
-        }
-
-        SUPER(JumpShip, tick, dt);
+    	SUPER(JumpShip, tick, dt);
     }
 /*
     void JumpShip::updateLevel()

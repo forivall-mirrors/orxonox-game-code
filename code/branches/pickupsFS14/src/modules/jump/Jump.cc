@@ -59,26 +59,17 @@ namespace orxonox
     Jump::Jump(Context* context) : Deathmatch(context)
     {
         RegisterObject(Jump);
+        platformList.clear();
+        yScreenPosition = 0;
+        screenShiftSinceLastUpdate = 0;
+
         //this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
         //this->center_ = 0;
-       // init();
         //this->setHUDTemplate("JumpHUD");
 
+
     }
 
-    void Jump::init()
-    {
-        /*bEndGame = false;
-        lives = 3;
-        level = 1;
-        point = 0;
-        bShowLevel = false;
-        multiplier = 1;
-        b_combo = false;*/
-        // spawn enemy every 3.5 seconds
-        //enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&Jump::spawnEnemy, this)));
-        //comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&Jump::comboControll, this)));
-    }
 
     /*void Jump::levelUp()
     {
@@ -103,15 +94,53 @@ namespace orxonox
     {
         if (player == NULL)
         {
-        	ObjectList<JumpShip>::iterator it;
-        	it = ObjectList<JumpShip>::begin();
-        	/*for (ObjectList<JumpShip>::iterator it = ObjectList<JumpShip>::begin(); it != ObjectList<JumpShip>::end(); ++it)
+        	for (ObjectList<JumpShip>::iterator it = ObjectList<JumpShip>::begin(); it != ObjectList<JumpShip>::end(); ++it)
         	{
                 player = *it;
-        	}*/
+        	}
         }
         return player;
     }
+
+    void Jump::tick(float dt)
+    {
+
+
+        if (getPlayer() != NULL)
+        {
+            Vector3 shipPosition = getPlayer()->getPosition();
+
+        	// Bildschirmposition kann nur nach oben verschoben werden
+        	if (shipPosition.y > yScreenPosition)
+        	{
+        		screenShiftSinceLastUpdate += shipPosition.y - yScreenPosition;
+
+        		yScreenPosition = shipPosition.y;
+        	}
+
+        	// Kameraposition nachfuehren
+        	if (camera == NULL)
+        	{
+        		camera = getPlayer()->getCamera();
+        	}
+            if (camera != NULL)
+            {
+                camera->setPosition(Vector3(-shipPosition.x, yScreenPosition-shipPosition.y, 100));
+                //camera->setOrientation(Vector3::UNIT_Z, Degree(180));
+            }
+
+            if (screenShiftSinceLastUpdate > 200.0)
+            {
+            	screenShiftSinceLastUpdate -= 200.0;
+            	orxout() << "new section added" << endl;
+            	addPlatform(shipPosition.x, shipPosition.y + 300.0);
+            }
+
+        }
+
+        SUPER(Jump, tick, dt);
+    }
+
 
     /*void Jump::spawnEnemy()
     {
@@ -157,9 +186,13 @@ namespace orxonox
         b_combo = false;
     }*/
 
-    /*void Jump::start()
+
+    void Jump::start()
     {
-        init();
+    	// Call start for the parent class.
+    	Deathmatch::start();
+
+        /*
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = true;
 
@@ -169,9 +202,12 @@ namespace orxonox
             GSLevel::startMainMenu();
             return;
         }
-        // Call start for the parent class.
-        Deathmatch::start();
-    }*/
+        */
+
+    	//addPlatform(0,0);
+
+    }
+
 
     /*void Jump::addPoints(int numPoints)
     {
@@ -190,4 +226,12 @@ namespace orxonox
         // Instead startMainMenu, this won't crash.
         GSLevel::startMainMenu();
     }*/
+
+    void Jump::addPlatform(float xPosition, float yPosition)
+    {
+		JumpPlatform* newPlatform = new JumpPlatform(center_->getContext());
+		newPlatform->setPosition(Vector3(xPosition, yPosition, 0));
+		platformList.push_front(newPlatform);
+    }
+
 }

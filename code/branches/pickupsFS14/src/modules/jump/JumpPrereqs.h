@@ -70,6 +70,7 @@ namespace orxonox
     class Jump;
     class JumpCenterPoint;
     class JumpShip;
+    class JumpPlatform;
     class JumpEnemy;
     class JumpEnemyShooter;
     class JumpWeapon;

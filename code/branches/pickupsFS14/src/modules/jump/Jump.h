@@ -40,6 +40,8 @@
 #include "JumpCenterPoint.h"
 #include "tools/Timer.h"
 #include "JumpPlatform.h"
+#include <list>
+
 
 namespace orxonox
 {
@@ -48,14 +50,17 @@ namespace orxonox
     {
         public:
             Jump(Context* context);
-
-            //virtual void start();
+            virtual void start();
             //virtual void end();
             //virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
+
+            virtual void tick(float dt);
 
             //void spawnEnemy();
 
             void setCenterpoint(JumpCenterPoint* center){ this->center_ = center; }
+
+            virtual void addPlatform(float x, float y);
 
            /*int getLives(){return this->lives;}
             int getLevel(){return this->level;}
@@ -67,7 +72,6 @@ namespace orxonox
             void addPoints(int numPoints);
             // checks if multiplier should be reset.
             void comboControll();*/
-            void init();
             //int lives;
             //int multiplier;
             //bool bEndGame;
@@ -77,6 +81,7 @@ namespace orxonox
             WeakPtr<JumpShip> getPlayer();
             WeakPtr<JumpCenterPoint> center_;
             WeakPtr<JumpShip> player;
+            WeakPtr<Camera> camera;
 
             /*Timer enemySpawnTimer;
             Timer comboTimer;
@@ -85,6 +90,9 @@ namespace orxonox
             int level;
             int point;
             bool b_combo;*/
+            std::list<JumpPlatform*> platformList;
+            float yScreenPosition;
+            float screenShiftSinceLastUpdate;
     };
 }
 

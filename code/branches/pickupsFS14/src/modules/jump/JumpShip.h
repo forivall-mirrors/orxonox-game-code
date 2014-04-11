@@ -72,7 +72,6 @@ namespace orxonox
         private:
             WeakPtr<Jump> getGame();
             WeakPtr<Jump> game;
-            WeakPtr<Camera> camera;
             const float xVelocity = 150.0f;
             const float xBoundary = 200.0f;
 
@@ -99,12 +98,9 @@ namespace orxonox
             bool upPressed;
             bool downPressed;
 
-            float yScreenPosition;
             float yVelocity;
             const float yAcceleration = 10.0f;
             const float ySpeedAfterJump = 300.0f;
-
-            JumpPlatform* platform;
     };
 }
 

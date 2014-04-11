@@ -50,19 +50,25 @@ namespace orxonox
 
         model = new Model(getContext());
         model->setSyncMode(0);
-        model->setMeshSource("drone.mesh");
+        model->setMeshSource("Platform01.mesh");
 
-        movableEntity = new MovableEntity(getContext());
-        movableEntity->attach(model);
-
-        movableEntity->setScale(100);
-        //movableEntity->setPosition(Vector3(0,0,0));
-        //movableEntity->setVelocity(Vector3(0,0,1));
-
+        attach(model);
+        setScale(5);
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
 
     }
 
+    void JumpPlatform::tick(float dt)
+    {
+    	//setAngularVelocity(getAngularVelocity() + Vector3(0.05,0,0));
+    	/*Vector3 movement(0,0,0);
+        Vector3 shipPosition = getPosition();*/
 
+
+
+        SUPER(JumpPlatform, tick, dt);
+    }
 
 
 }
