@@ -88,6 +88,7 @@ namespace orxonox
     void ShipPart::death()
     {
         this->parent_->removeShipPart(this);
+        orxout() << this->getName() << " has died." << endl;
     }
 
     /**

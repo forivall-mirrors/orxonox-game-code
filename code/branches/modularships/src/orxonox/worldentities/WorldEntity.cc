@@ -579,6 +579,7 @@ namespace orxonox
     void WorldEntity::detachCollisionShape(CollisionShape* shape)
     {
         // Note: The collision shapes may not be detached with this function!
+        orxout() << "WE: detachCS()" << endl;
         this->collisionShape_->detach(shape);
         // Note: this->collisionShape_ already notifies us of any changes.
     }

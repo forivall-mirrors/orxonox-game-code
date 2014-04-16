@@ -117,6 +117,8 @@ namespace orxonox
             bool hasShipPart(ShipPart* part) const;
             void removeShipPart(ShipPart* part);
 
+            void detach(WorldEntity* object);
+
             virtual void updatePartAssignment();
 
         protected:
