@@ -55,10 +55,10 @@ namespace orxonox  // tolua_export
 
             // LUA interface
             // tolua_begin 
-            void moveToPosition(const Vector3& target);
+            void moveToPosition_beta(float x, float y, float z);
 
            
-
+            const Vector3& getPosition();
             
               /* virtual void tick(float dt);*/ 
 

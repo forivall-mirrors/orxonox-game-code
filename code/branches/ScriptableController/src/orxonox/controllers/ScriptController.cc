@@ -29,6 +29,7 @@
 #include "ScriptController.h"
 #include "core/CoreIncludes.h"
 #include "worldentities/ControllableEntity.h"
+#include <cmath>
 
 namespace orxonox
 {
@@ -57,12 +58,32 @@ namespace orxonox
 
     }
 
-    void ScriptController::moveToPosition(const Vector3& target)
+    const Vector3& ScriptController::getPosition()
     {
-        
-        /*this->controlled_->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
-        this->controlled_->rotatePitch(sgn(coord.y)*coord.y*coord.y);*/
+        return this->controlled->getPosition();
     }
+
+    void ScriptController::moveToPosition_beta(float x, float y, float z )
+    {
+
+       /*const Vector3 local=getPosition();
+       const Vector3* target=new Vector3(x,y,z);
+
+        setDirection(target, TransformSpace relativeTo = WorldEntity::Local, local);
+
+        float dist = (target - local).length();
+
+        moveFrontBack(dist);*/
+
+        orxout()<<x<<"  "<<y<<"  "<<z<<endl;
+
+
+
+         //this->controlled->rotateYaw(-sgn(coord.x)*coord.x*coord.x); erkennt coord nicht
+        //this->controlled->rotatePitch(sgn(coord.y)*coord.y*coord.y);
+    }
+
+    /* TO DO; noetige bewegungsfunktionen mit geschw., verbleibzeit.. als parameter*/
 
     /*void WaypointController::tick(float dt)  //copied from waypointcontroller
     {
