@@ -37,6 +37,16 @@
  	TurretController::TurretController(Context* context) : ArtificialController(context)
  	{
  		RegisterObject(TurretController);
+ 		this->startOrient_ = Quaternion::IDENTITY;
+        this->startDir_ = Vector3::ZERO;
+        this->localZ_ = Vector3::UNIT_Z;
+        this->localY_ = Vector3::UNIT_Y;
+        this->localX_ = Vector3::UNIT_X;
+        this->attackRadius_ = 200;
+        this->maxPitch_ = 90;
+        this->maxYaw_ = 90;
+        this->gotOrient_ = false;
+        orxout() << "Constructor " << this << endl;
  	}
 
  	TurretController::~TurretController()
@@ -47,7 +57,7 @@
  	void TurretController::searchTarget()
  	{
         Turret* turret = orxonox_cast<Turret*>(this->getControllableEntity());
-        if(target_ && turret->isInRange(target_->getPosition()))
+        if(target_ && this->isInRange(target_->getWorldPosition()))
         {
         	return;
         }
@@ -61,7 +71,7 @@
         if(parent)
         {
         	Pawn* parenttarget = orxonox_cast<Pawn*>(parent->getTarget());
-        	if(parenttarget && turret->isInRange(parenttarget->getPosition()))
+        	if(parenttarget && this->isInRange(parenttarget->getWorldPosition()))
         	{
         		this->setTarget(parenttarget);
         		turret->setTarget(parenttarget);
@@ -75,7 +85,7 @@
             if (ArtificialController::sameTeam(this->getControllableEntity(), entity, this->getGametype()))
             	continue;
 
-            if(turret->isInRange(entity->getPosition()))
+            if(this->isInRange(entity->getWorldPosition()))
             {
             	this->setTarget(entity);
             	turret->setTarget(entity);
@@ -84,21 +94,87 @@
     	}		
  	}
 
+ 	bool TurretController::isInRange(Vector3 position)
+    {
+        Vector3 distance = position - this->getControllableEntity()->getWorldPosition();
+        if(distance.squaredLength() > (this->attackRadius_ * this->attackRadius_))
+        {
+            return false;
+        }
+
+        Vector3 dir = getTransformedVector(distance, this->localX_, this->localY_, this->localZ_);
+        Vector3 dirProjected = dir;
+        dirProjected.x = 0;
+        Vector3 startDirProjected = this->startDir_;
+        startDirProjected.x = 0;
+        Ogre::Real angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
+        if(angle > this->maxPitch_)
+        {
+            return false;
+        }
+
+        dirProjected = dir;
+        dirProjected.y = 0;
+        startDirProjected = this->startDir_;
+        startDirProjected.y = 0;
+        angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
+        if(angle > this->maxYaw_)
+        {
+            return false;
+        }
+        return true;
+    }
+
  	void TurretController::tick(float dt)
  	{
+
+
+        if(!gotOrient_)
+        {
+            this->startOrient_ = this->getControllableEntity()->getOrientation();
+            this->localXStart_ = this->startOrient_ * this->localX_;
+            this->localXStart_.normalise();
+            this->localX_ = this->localXStart_;
+            this->localYStart_ = this->startOrient_ * this->localY_;
+            this->localYStart_.normalise();
+            this->localY_ = this->localYStart_;
+            this->localZStart_ = this->startOrient_ * this->localZ_;
+            this->localZStart_.normalise();
+            this->localZ_ = this->localZStart_;
+
+            //startDir should always be (0,0,-1)
+            this->startDir_ = getTransformedVector(this->startOrient_ * WorldEntity::FRONT, this->localX_, this->localY_, this->localZ_);
+
+            this->gotOrient_ = true;
+        }
+
+        //orxout() << "Controller " << this;
+        //orxout() << "\tControllable Entity " << this->getControllableEntity() << endl;
+        WorldEntity* parent = this->getControllableEntity()->getParent();
+        if(parent)
+        {
+            Quaternion parentrot = parent->getOrientation();
+            this->localX_ = parentrot * this->localXStart_;
+            this->localY_ = parentrot * this->localYStart_;
+            this->localZ_ = parentrot * this->localZStart_;
+        }
+
+        orxout() << this->getControllableEntity()->getWorldPosition() << endl;
+
+
         if (!this->isActive() || !this->getControllableEntity())
             return;
  		this->searchTarget();
- 		this->getControllableEntity()->rotatePitch(0.2);
- 		/*if(target_)
+ 		if(target_)
  		{
  			this->aimAtTarget();
+ 			//this->getControllableEntity()->lookAt(this->targetPosition_);
  			//It says move, but really it only turns
  			this->moveToTargetPosition();
  			if(this->isLookingAtTarget(Degree(5).valueRadians()))
  			{
  				orxout() << 42 << endl;
  			}
- 		}*/
+ 		}
  	}
  }

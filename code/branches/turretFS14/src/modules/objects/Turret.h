@@ -53,37 +53,8 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
-            virtual bool isInRange(Vector3 position);
-
-            inline void setMaxPitch(Ogre::Real pitch)
-                {this->maxPitch_ = pitch;}
-
-            inline Ogre::Real getMaxPitch()
-                {return this->maxPitch_;}
-
-            inline void setMaxYaw(Ogre::Real yaw)
-                {this->maxYaw_ = yaw;}
-
-            inline Ogre::Real getMaxYaw()
-                {return this->maxYaw_;}
-
-            inline void setAttackRadius(float radius)
-                {this->attackRadius_ = radius;}
-
-            inline float getAttackRadius()
-                {return this->attackRadius_;}
-
 
         private:
-            bool gotOrient_;
-            Ogre::Real maxPitch_;
-            Ogre::Real maxYaw_;
-            float attackRadius_;
-            Quaternion startOrient_;
-            Vector3 startDir_;
-            Vector3 localZ_;
-            Vector3 localY_;
-            Vector3 localX_;
             float rotationThrust_;
 
             btVector3 localAngularAcceleration_;
@@ -91,4 +62,3 @@ namespace orxonox
 }
 
 #endif
-

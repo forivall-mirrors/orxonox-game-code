@@ -43,15 +43,6 @@ namespace orxonox
     Turret::Turret(Context* context) : Pawn(context)
     {
         RegisterObject(Turret);
-        this->startOrient_ = Quaternion::IDENTITY;
-        this->startDir_ = Vector3::ZERO;
-        this->localZ_ = Vector3::UNIT_Z;
-        this->localY_ = Vector3::UNIT_Y;
-        this->localX_ = Vector3::UNIT_X;
-        this->maxPitch_ = 0;
-        this->maxYaw_ = 0;
-        this->attackRadius_ = 200;
-        this->gotOrient_ = false;
         this->rotationThrust_ = 50;
 
         this->localAngularAcceleration_.setValue(0, 0, 0);
@@ -109,42 +100,8 @@ namespace orxonox
         this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x*0.8f);
     }
 
-    bool Turret::isInRange(Vector3 position)
-    {
-        Vector3 distance = position - this->getPosition();
-        if(distance.squaredLength() > (this->attackRadius_ * this->attackRadius_))
-        {
-            return false;
-        }
-
-        Vector3 dir = getTransformedVector(distance, this->localX_, this->localY_, this->localZ_);
-        Vector3 dirProjected = dir;
-        dirProjected.x = 0;
-        Vector3 startDirProjected = this->startDir_;
-        startDirProjected.x = 0;
-        Ogre::Real angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
-        if(angle > this->maxPitch_)
-        {
-            return false;
-        }
-
-        dirProjected = dir;
-        dirProjected.y = 0;
-        startDirProjected = this->startDir_;
-        startDirProjected.y = 0;
-        angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
-        if(angle > this->maxYaw_)
-        {
-            return false;
-        }
-        return true;
-    }
-
     void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(Turret, "maxPitch", setMaxPitch, getMaxPitch, xmlelement, mode);
-        XMLPortParam(Turret, "maxYaw", setMaxYaw, getMaxYaw, xmlelement, mode);
-        XMLPortParam(Turret, "attackRadius", setAttackRadius, getAttackRadius, xmlelement, mode);
         SUPER(Turret, XMLPort, xmlelement, mode);
     }
 
@@ -152,25 +109,14 @@ namespace orxonox
     {
         SUPER(Turret, tick, dt);
 
-        if(!gotOrient_)
-        {
-            this->startOrient_ = this->getOrientation();
-            this->localX_ = this->startOrient_ * this->localX_;
-            this->localX_.normalise();
-            this->localY_ = this->startOrient_ * this->localY_;
-            this->localY_.normalise();
-            this->localZ_ = this->startOrient_ * this->localZ_;
-            this->localZ_.normalise();
-
-            //startDir should always be (0,0,-1)
-            this->startDir_ = getTransformedVector(this->startOrient_ * WorldEntity::FRONT, this->localX_, this->localY_, this->localZ_);
-
-            this->gotOrient_ = true;
-        }
-
         this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
-        this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
+        this->localAngularAcceleration_ = physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_;
+
+
+        pitch(Degree(localAngularAcceleration_.x()/10000), WorldEntity::World);
+        yaw(Degree(localAngularAcceleration_.y()/10000), WorldEntity::World);
+        roll(Degree(localAngularAcceleration_.z()/10000), WorldEntity::World);
+
         this->localAngularAcceleration_.setValue(0, 0, 0);
     }
-
 }

@@ -413,6 +413,7 @@ namespace orxonox
             }
             else if (this->isDynamic())
             {
+                //hacky hack, really shouldn't do that
                 //orxout(internal_warning) << "Cannot attach a dynamic object to a WorldEntity." << endl;
                 //return false;
             }

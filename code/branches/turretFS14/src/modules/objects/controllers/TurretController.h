@@ -43,7 +43,20 @@
  			virtual void tick(float dt);
 
  		private:
+            bool gotOrient_;
+            float attackRadius_;
+            Ogre::Real maxPitch_;
+            Ogre::Real maxYaw_;
+            Quaternion startOrient_;
+            Vector3 startDir_;
+            Vector3 localZ_;
+            Vector3 localZStart_;
+            Vector3 localY_;
+            Vector3 localYStart_;
+            Vector3 localX_;
+            Vector3 localXStart_;
  			void searchTarget();
+ 			bool isInRange(Vector3 position);
  	};
  }
 
