@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Florian Zinggeler
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -32,6 +32,7 @@
 */
 
 #include "Jump.h"
+
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/command/Executor.h"
@@ -40,198 +41,316 @@
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
 
-// ! HACK
+#include "JumpCenterpoint.h"
+#include "JumpPlatform.h"
+#include "JumpFigure.h"
+
 #include "infos/PlayerInfo.h"
-
-#include "JumpCenterPoint.h"
-#include "JumpShip.h"
-/*
-#include "JumpEnemy.h"
-#include "JumpEnemyShooter.h"*/
-
-#include "core/command/ConsoleCommand.h"
-#include "worldentities/BigExplosion.h"
 
 namespace orxonox
 {
+    // Events to allow to react to scoring of a player, in the level-file.
+    CreateEventName(JumpCenterpoint, right);
+    CreateEventName(JumpCenterpoint, left);
+
     RegisterUnloadableClass(Jump);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     Jump::Jump(Context* context) : Deathmatch(context)
     {
         RegisterObject(Jump);
-        platformList.clear();
-        yScreenPosition = 0;
-        screenShiftSinceLastUpdate = 0;
 
-        //this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
-        //this->center_ = 0;
+        this->center_ = 0;
+        this->ball_ = 0;
+        this->figure_ = 0;
+        this->camera = 0;
+
         //this->setHUDTemplate("JumpHUD");
 
+        // Pre-set the timer, but don't start it yet.
+        this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Jump::startBall, this)));
+        this->starttimer_.stopTimer();
 
+
+        this->scoreLimit_ = 10;
+        this->setConfigValues();
     }
 
-
-    /*void Jump::levelUp()
+    /**
+    @brief
+        Destructor. Cleans up, if initialized.
+    */
+    Jump::~Jump()
     {
-        level++;
-        if (getPlayer() != NULL)
+        if (this->isInitialized())
         {
-            for (int i = 0; i < 7; i++)
-            {
-                WeakPtr<BigExplosion> chunk = new BigExplosion(this->center_->getContext());
-                chunk->setPosition(Vector3(600, 0, 100.f * i - 300));
-                chunk->setVelocity(Vector3(1000, 0, 0));  //player->getVelocity()
-                chunk->setScale(20);
-            }
+            this->cleanup();
         }
-        addPoints(multiplier * 42);
-        multiplier *= 2;
-        toggleShowLevel();
-        showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&Jump::toggleShowLevel, this)));
-    }*/
-
-    WeakPtr<JumpShip> Jump::getPlayer()
-    {
-        if (player == NULL)
-        {
-        	for (ObjectList<JumpShip>::iterator it = ObjectList<JumpShip>::begin(); it != ObjectList<JumpShip>::end(); ++it)
-        	{
-                player = *it;
-        	}
-        }
-        return player;
     }
 
     void Jump::tick(float dt)
     {
+    	SUPER(Jump, tick, dt);
+
+    	if (figure_ != NULL)
+    	{
+    		Vector3 figurePosition = figure_->getPosition();
+
+    		if (figurePosition.z > totalScreenShift)
+    		{
+    			totalScreenShift = figurePosition.z;
+    		}
+
+    		if (this->camera != NULL)
+			{
+				Vector3 cameraPosition = Vector3(0,totalScreenShift,0);
+				camera->setPosition(cameraPosition);
+			}
+			else
+			{
+				orxout() << "no camera found" << endl;
+				//this->camera = this->figure_->getCamera();
+			}
+    	}
 
 
-        if (getPlayer() != NULL)
-        {
-            Vector3 shipPosition = getPlayer()->getPosition();
 
-        	// Bildschirmposition kann nur nach oben verschoben werden
-        	if (shipPosition.y > yScreenPosition)
-        	{
-        		screenShiftSinceLastUpdate += shipPosition.y - yScreenPosition;
 
-        		yScreenPosition = shipPosition.y;
-        	}
 
-        	// Kameraposition nachfuehren
-        	if (camera == NULL)
-        	{
-        		camera = getPlayer()->getCamera();
-        	}
-            if (camera != NULL)
-            {
-                camera->setPosition(Vector3(-shipPosition.x, yScreenPosition-shipPosition.y, 100));
-                //camera->setOrientation(Vector3::UNIT_Z, Degree(180));
-            }
-
-            if (screenShiftSinceLastUpdate > 200.0)
-            {
-            	screenShiftSinceLastUpdate -= 200.0;
-            	orxout() << "new section added" << endl;
-            	addPlatform(shipPosition.x, shipPosition.y + 300.0);
-            }
-
-        }
-
-        SUPER(Jump, tick, dt);
     }
 
 
-    /*void Jump::spawnEnemy()
+    void Jump::setConfigValues()
     {
-        if (getPlayer() == NULL)
-            return;
+        SetConfigValue(scoreLimit_, 10).description("The player first reaching those points wins.");
+    }
 
-        for (int i = 0; i < (3*log10(static_cast<double>(level)) + 1); i++)
+    /**
+    @brief
+        Cleans up the Gametype by destroying the ball and the bats.
+    */
+    void Jump::cleanup()
+    {
+        if (this->ball_ != NULL) // Destroy the ball, if present.
         {
-            WeakPtr<JumpEnemy> newPawn;
-            if (rand() % 42/(1 + level*level) == 0)
-            {
-                newPawn = new JumpEnemyShooter(this->center_->getContext());
-                newPawn->addTemplate("enemyjumpshooter");
-            }
-            else
-            {
-                newPawn = new JumpEnemy(this->center_->getContext());
-                newPawn->addTemplate("enemyjump");
-            }
-            newPawn->setPlayer(player);
-            newPawn->level = level;
-            // spawn enemy at random points in front of player.
-            newPawn->setPosition(player->getPosition() + Vector3(500.f + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
+            this->ball_->destroy();
+            this->ball_ = 0;
         }
-    }*/
 
-    /*void Jump::costLife()
-    {
-        lives--;
-        multiplier = 1;
-        // end the game in 30 seconds.
-        if (lives <= 0)
-            enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&Jump::end, this)));
-    };*/
+        // Destroy both bats, if present.
+		if (this->figure_ != NULL)
+		{
+			this->figure_->destroy();
+			this->figure_ = 0;
+		}
+		this->camera = 0;
+    }
 
-    /*void Jump::comboControll()
-    {
-        if (b_combo)
-            multiplier++;
-        // if no combo was performed before, reset multiplier
-        else
-            multiplier = 1;
-        b_combo = false;
-    }*/
-
-
+    /**
+    @brief
+        Starts the Jump minigame.
+    */
     void Jump::start()
     {
-    	// Call start for the parent class.
-    	Deathmatch::start();
+        if (this->center_ != NULL) // There needs to be a JumpCenterpoint, i.e. the area the game takes place.
+        {
+            if (this->ball_ == NULL) // If there is no ball, create a new ball.
+            {
+                this->ball_ = new JumpPlatform(this->center_->getContext());
+                // Apply the template for the ball specified by the centerpoint.
+                this->ball_->addTemplate(this->center_->getBalltemplate());
+            }
 
-        /*
-        // Set variable to temporarily force the player to spawn.
-        this->bForceSpawn_ = true;
+            // Attach the ball to the centerpoint and set the parameters as specified in the centerpoint, the ball is attached to.
+            this->center_->attach(this->ball_);
+            this->ball_->setPosition(0, 0, 0);
+            this->ball_->setFieldDimension(this->center_->getFieldDimension());
 
-        if (this->center_ == NULL)  // abandon mission!
+            // If one of the bats is missing, create it. Apply the template for the bats as specified in the centerpoint.
+			if (this->figure_ == NULL)
+			{
+				this->figure_ = new JumpFigure(this->center_->getContext());
+				this->figure_->addTemplate(this->center_->getBattemplate());
+			}
+
+            // Attach the bats to the centerpoint and set the parameters as specified in the centerpoint, the bats are attached to.
+            this->center_->attach(this->figure_);
+            this->figure_->setPosition(-this->center_->getFieldDimension().x / 2, 0, 0);
+            this->figure_->yaw(Degree(-90));
+            this->figure_->setSpeed(this->center_->getBatSpeed());
+            this->figure_->setFieldDimension(this->center_->getFieldDimension());
+            this->figure_->setLength(this->center_->getBatLength());
+
+            // Set the bats for the ball.
+            this->ball_->setFigure(this->figure_);
+        }
+        else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
             orxout(internal_error) << "Jump: No Centerpoint specified." << endl;
             GSLevel::startMainMenu();
             return;
         }
-        */
 
-    	//addPlatform(0,0);
+        // Start the timer. After it has expired the ball is started.
+        this->starttimer_.startTimer();
+
+        // Set variable to temporarily force the player to spawn.
+        bool temp = this->bForceSpawn_;
+        this->bForceSpawn_ = true;
+
+        // Call start for the parent class.
+        Deathmatch::start();
+
+        // Reset the variable.
+        this->bForceSpawn_ = temp;
+
+        if (this->figure_ != NULL)
+        {
+        	this->camera = this->figure_->getCamera();
+        }
+
+        totalScreenShift = 0.0;
+    }
+
+    /**
+    @brief
+        Ends the Jump minigame.
+    */
+    void Jump::end()
+    {
+        this->cleanup();
+
+        // Call end for the parent class.
+        Deathmatch::end();
+    }
+
+    /**
+    @brief
+        Spawns players, and fills the rest up with bots.
+    */
+    void Jump::spawnPlayersIfRequested()
+    {
+
+        // first spawn human players to assign always the left bat to the player in singleplayer
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->first->isHumanPlayer() && (it->first->isReadyToSpawn() || this->bForceSpawn_))
+                this->spawnPlayer(it->first);
+        // now spawn bots
+        /*
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (!it->first->isHumanPlayer() && (it->first->isReadyToSpawn() || this->bForceSpawn_))
+                this->spawnPlayer(it->first);
+        */
+    }
+
+    /**
+    @brief
+        Spawns the input player.
+    @param player
+        The player to be spawned.
+    */
+    void Jump::spawnPlayer(PlayerInfo* player)
+    {
+        assert(player);
+
+        // If the first (left) bat has no player.
+        if (this->figure_->getPlayer() == NULL)
+        {
+            player->startControl(this->figure_);
+            this->players_[player].state_ = PlayerState::Alive;
+        }
+        // If both bats are taken.
+        else
+        {
+            return;
+        }
 
     }
 
-
-    /*void Jump::addPoints(int numPoints)
+    /**
+    @brief
+        Is called when the player scored.
+    */
+    void Jump::playerScored(PlayerInfo* player, int score)
     {
-        if (!bEndGame)
+    	/*
+        Deathmatch::playerScored(player, score);
+        if (this->center_ != NULL) // If there is a centerpoint.
         {
-            point += numPoints * multiplier;
-            b_combo = true;
+            // Fire an event for the player that has scored, to be able to react to it in the level, e.g. by displaying fireworks.
+            if (player == this->getRightPlayer())
+                this->center_->fireEvent(FireEventName(JumpCenterpoint, right));
+            else if (player == this->getLeftPlayer())
+                this->center_->fireEvent(FireEventName(JumpCenterpoint, left));
+
+            // Also announce, that the player has scored.
+            if (player != NULL)
+                this->gtinfo_->sendAnnounceMessage(player->getName() + " scored");
         }
-    }*/
 
-    /*void Jump::end()
-    {
-        // DON'T CALL THIS!
-        //      Deathmatch::end();
-        // It will misteriously crash the game!
-        // Instead startMainMenu, this won't crash.
-        GSLevel::startMainMenu();
-    }*/
+        // If there is a ball present, reset its position, velocity and acceleration.
+        if (this->ball_ != NULL)
+        {
+            this->ball_->setPosition(Vector3::ZERO);
+            this->ball_->setVelocity(Vector3::ZERO);
+            this->ball_->setAcceleration(Vector3::ZERO);
+            this->ball_->setSpeed(0);
+        }
 
-    void Jump::addPlatform(float xPosition, float yPosition)
+        // If there are bats reset them to the middle position.
+        if (this->figure_[0] != NULL && this->figure_[1] != NULL)
+        {
+            this->figure_[0]->setPosition(-this->center_->getFieldDimension().x / 2, 0, 0);
+            this->figure_[1]->setPosition( this->center_->getFieldDimension().x / 2, 0, 0);
+        }
+
+        // If a player gets enough points, he won the game -> end of game
+        PlayerInfo* winningPlayer = NULL;
+        if (this->getLeftPlayer() && this->getScore(this->getLeftPlayer()) >= scoreLimit_)
+            winningPlayer = this->getLeftPlayer();
+        else if (this->getRightPlayer() && this->getScore(this->getRightPlayer()) >= scoreLimit_)
+            winningPlayer = getLeftPlayerthis->getRightPlayer();
+
+        if (winningPlayer)
+        {
+             ChatManager::message(winningPlayer->getName() + " has won!");
+             this->end();
+        }
+
+        // Restart the timer to start the ball.
+        this->starttimer_.startTimer();
+
+        */
+    }
+
+    /**
+    @brief
+        Starts the ball with some default speed.
+    */
+    void Jump::startBall()
     {
-		JumpPlatform* newPlatform = new JumpPlatform(center_->getContext());
-		newPlatform->setPosition(Vector3(xPosition, yPosition, 0));
-		platformList.push_front(newPlatform);
+
+    }
+
+    /**
+    @brief
+        Get the left player.
+    @return
+        Returns a pointer to the player playing on the left. If there is no left player, NULL is returned.
+    */
+    PlayerInfo* Jump::getPlayer() const
+    {
+        if (this->figure_ != NULL)
+        {
+            return this->figure_->getPlayer();
+        }
+        else
+        {
+            return 0;
+        }
     }
 
 }

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Florian Zinggeler
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -29,7 +29,7 @@
 /**
 @file
 @brief
-    Shared library macros, enums, constants and forward declarations for the Invader module
+    Shared library macros, enums, constants and forward declarations for the jump module
 */
 
 #ifndef _JumpPrereqs_H__
@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(INVADER_STATIC_BUILD)
-#  ifdef INVADER_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(PONG_STATIC_BUILD)
+#  ifdef PONG_SHARED_BUILD
 #    define _JumpExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
@@ -68,14 +68,11 @@
 namespace orxonox
 {
     class Jump;
-    class JumpCenterPoint;
-    class JumpShip;
     class JumpPlatform;
-    class JumpEnemy;
-    class JumpEnemyShooter;
-    class JumpWeapon;
-    class JumpWeaponEnemy;
-    class JumpHUDinfo;
+    class JumpPlatformHMove;
+    class JumpFigure;
+    class JumpCenterpoint;
+    class JumpScore;
 }
 
 #endif /* _JumpPrereqs_H__ */
