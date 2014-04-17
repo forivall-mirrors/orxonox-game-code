@@ -66,46 +66,30 @@ namespace orxonox
     void ScriptController::moveToPosition_beta(float x, float y, float z )
     {
 
-       /*const Vector3 local=getPosition();
-       const Vector3* target=new Vector3(x,y,z);
+       const Vector3 local=getPosition();
+       const Vector3 target=Vector3(x,y,z);
 
-        setDirection(target, TransformSpace relativeTo = WorldEntity::Local, local);
+       Vector3 way=target-local;
 
-        float dist = (target - local).length();
+       
+       this->controlled->lookAt(target);
 
-        moveFrontBack(dist);*/
-
-        orxout()<<x<<"  "<<y<<"  "<<z<<endl;
-
+        this->controlled->moveFrontBack(way.length());      
 
 
-         //this->controlled->rotateYaw(-sgn(coord.x)*coord.x*coord.x); erkennt coord nicht
-        //this->controlled->rotatePitch(sgn(coord.y)*coord.y*coord.y);
+        /*orxout()<<x<<"  "<<y<<"  "<<z<<endl;*/
+
+
+
+         
     }
 
-    /* TO DO; noetige bewegungsfunktionen mit geschw., verbleibzeit.. als parameter*/
+    /* TODO:    hilfs(zwischen)funktionen um lua eingabe zu ermoeglichen: zb moveToPosition(float...) weil in LUA wohl 
+                kein vektor3 definierbar ist
 
-    /*void WaypointController::tick(float dt)  //copied from waypointcontroller
-    {
-        if (!this->isActive())
-            return;
+                NB: viele noetige funktionen sind schon in artificial- bzw formationcontroller vorhanden 
 
-        if (this->waypoints_.size() == 0 || !this->getControllableEntity())
-            return;
-
-        if (this->waypoints_[this->currentWaypoint_]->getWorldPosition().squaredDistance(this->getControllableEntity()->getPosition()) <= this->squaredaccuracy_)
-            this->currentWaypoint_ = (this->currentWaypoint_ + 1) % this->waypoints_.size();
-
-        this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
-    }*/
-
-    /* TO DO
-                in the constuctor: make accessible functions such as moveToPosition.. in LUA 
-            ->tolua++ example: http://usefulgamedev.weebly.com/tolua-example.html*/
-
-
-
-    //function to execute the luafile
+                tick funktion?*/        
 
 
 
