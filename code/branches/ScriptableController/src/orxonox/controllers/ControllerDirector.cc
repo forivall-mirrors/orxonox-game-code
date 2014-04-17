@@ -10,7 +10,7 @@ First try of a ControllerDirector. Target: An event occurs in the levelTry.oxw f
 #include "infos/HumanPlayer.h"
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
-#include "LuaState.h"
+#include "core/LuaState.h"
 
 
 namespace orxonox
@@ -50,15 +50,16 @@ namespace orxonox
 
     void ControllerDirector::takeControl(Controller * controller, BaseObject * trigger) {
 
-        preparationToTakeControl(trigger);
-        setNewController(controller);
-        LuaState test = new Luastate();
-        test.doFile("/tmp/my.lua");
+       // preparationTo(trigger);
+       // setNewController(controller);
+        LuaState * test = new LuaState();
+        orxout()<<"test takecontrol."<< endl;
+        test->doFile("testscript.lua");
         
     } 
 
 	
-    bool ControllerDirector::preparationToTakeControl(BaseObject * trigger) {
+    /*bool ControllerDirector::preparationToTakeControl(BaseObject * trigger) {
 
 	    this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
         this->player_ = NULL;
@@ -97,6 +98,7 @@ namespace orxonox
 
 
     }
+*/
        
     
 

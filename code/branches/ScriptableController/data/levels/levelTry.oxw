@@ -1,6 +1,6 @@
 <!-- First levelFile of mkronig and samuezu. It was copied from dockingToASpaceStation.oxw and modified a little bit -->
 <LevelInfo
- name = "Fancy orxout tests"
+ name = "levelTry"
  description = "Docking into a spacestation."
  tags = "showcase"
  screenshot = "emptylevel.png"
@@ -80,9 +80,9 @@
 <!-- ControllerDirector waits for the event takeControl to attach a new Controller -->
     <ControllerDirector position="0,0,0">
         <events>
-            <party>
+            <takeControl>
                 <EventListener event="takeControl" />
-            </party>
+            </takeControl>
 
         </events>
 
