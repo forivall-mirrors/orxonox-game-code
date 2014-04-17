@@ -88,6 +88,12 @@
 
     </ControllerDirector>
 
+<!-- -->
+    <ScriptController position="0,0,1">
+
+
+    </ScriptController>
+
 
 <!-- FPS Player as destination of the dock -->
 <FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-19900,0" >
