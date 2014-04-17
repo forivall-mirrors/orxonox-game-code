@@ -137,15 +137,12 @@ namespace orxonox
         // If the input CollisionShape is actually attached.
         if (this->attachedShapes_.find(shape) != this->attachedShapes_.end())
         {
-            orxout() << "Still going..." << endl;
             this->attachedShapes_.erase(shape);
             if (shape->getCollisionShape())
                 this->compoundShape_->removeChildShape(shape->getCollisionShape()); // TODO: Apparently this is broken?
             shape->notifyDetached();
-            orxout() << "Still going...." << endl;
 
             this->updatePublicShape();
-            orxout() << "Still going....." << endl;
         }
         else
             orxout(internal_warning) << "Cannot detach non child collision shape" << endl;

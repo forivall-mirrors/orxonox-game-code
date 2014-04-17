@@ -41,6 +41,7 @@
 #include "worldentities/StaticEntity.h"
 #include "collisionshapes/WorldEntityCollisionShape.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
 
 
@@ -125,7 +126,34 @@ namespace orxonox
                 }
 
         this->partMap_[entity] = part;
+
+        //This adds a list of SmartPointers for all StaticEntities which have a ShipPart, preventing them from getting deleted. Hopefully.
+        SmartPtr<StaticEntity> newSmartPtr = entity;
+        SmartPtr<StaticEntity>* one = &newSmartPtr;
+        this->entityPtrList_.push_back(one);
+
+        this->createCSPtrList(this->getWorldEntityCollisionShape());
+
         orxout() << "New entity-part assignment created!" << endl;
+    }
+
+    // This should add smartPointers to all (Orxonox)Collisionshapes of this SpaceShip, preventing them fromg etting deleted. Might not work due to weird acting getAttachedShape
+    void ModularSpaceShip::createCSPtrList(CompoundCollisionShape* cs)
+    {
+        for (int i=0; i < cs->getNumChildShapes(); i++)
+        {
+
+            if (!orxonox_cast<CompoundCollisionShape*>(cs->getAttachedShape(i)))
+            {
+                SmartPtr<CollisionShape> newSmartPtr = cs->getAttachedShape(i);
+                SmartPtr<CollisionShape>* one = &newSmartPtr;
+                this->csPtrList_.push_back(one);
+            }
+
+            if (orxonox_cast<CompoundCollisionShape*>(cs->getAttachedShape(i)))
+                createCSPtrList((CompoundCollisionShape*)(cs->getAttachedShape(i)));
+
+        }
     }
 
     /**

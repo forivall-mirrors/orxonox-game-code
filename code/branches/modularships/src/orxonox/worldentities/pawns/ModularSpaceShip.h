@@ -121,12 +121,16 @@ namespace orxonox
 
             virtual void updatePartAssignment();
 
+            void createCSPtrList(CompoundCollisionShape* cs);
+
         protected:
 
 
         private:
             void registerVariables();
             std::vector<ShipPart*> partList_;  // The list of all Parts mounted on this ModularSpaceShip.
+            std::vector<SmartPtr<StaticEntity>*> entityPtrList_;
+            std::vector<SmartPtr<CollisionShape>*> csPtrList_;
             std::map<StaticEntity*, ShipPart*> partMap_;
         
     };
