@@ -43,6 +43,8 @@
 #include "gametypes/Deathmatch.h"
 #include "JumpCenterpoint.h"
 
+#include <list>
+
 namespace orxonox
 {
 
@@ -77,6 +79,14 @@ namespace orxonox
 
             virtual void playerScored(PlayerInfo* player, int score = 1); //!< Is called when the player scored.
 
+            virtual void addPlatform(JumpPlatform* newPlatform, float xPosition, float zPosition);
+            virtual void addStartSection();
+            virtual void addSection();
+            virtual float randomXPosition();
+            virtual float randomYPosition(float lowerBoundary, float upperBoundary);
+
+            int getScore(PlayerInfo* player) const;
+
             /**
             @brief Set the JumpCenterpoint (the playing field).
             @param center A pointer to the JumpCenterpoint to be set.
@@ -94,13 +104,17 @@ namespace orxonox
             void cleanup(); //!< Cleans up the Gametype by destroying the ball and the bats.
 
             WeakPtr<JumpCenterpoint> center_; //!< The playing field.
-            WeakPtr<JumpPlatform> ball_; //!< The Jump ball.
+            //WeakPtr<JumpPlatform> ball_; //!< The Jump ball.
             WeakPtr<JumpFigure> figure_; //!< The two bats.
             WeakPtr<Camera> camera;
             Timer starttimer_; //!< A timer to delay the start of the game.
             int scoreLimit_; //!< If a player scored that much points, the game is ended.
 
             float totalScreenShift;
+            float screenShiftSinceLastUpdate;
+            float sectionLength;
+            int sectionNumber;
+            std::list<JumpPlatform*> platformList;
     };
 }
 

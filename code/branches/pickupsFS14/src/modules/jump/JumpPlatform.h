@@ -110,6 +110,7 @@ namespace orxonox
             float relMercyOffset_; //!< Offset, that makes the player not loose, when, in all fairness, he would have.
             WorldSound* defScoreSound_;
             WorldSound* defBatSound_;
+            Model* model;
             WorldSound* defBoundarySound_;
     };
 }

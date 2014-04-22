@@ -69,7 +69,9 @@ namespace orxonox
 {
     class Jump;
     class JumpPlatform;
+    class JumpPlatformStatic;
     class JumpPlatformHMove;
+    class JumpPlatformVMove;
     class JumpFigure;
     class JumpCenterpoint;
     class JumpScore;

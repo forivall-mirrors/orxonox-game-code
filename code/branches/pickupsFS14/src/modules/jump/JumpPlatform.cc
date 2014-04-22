@@ -35,7 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-
+#include "graphics/Model.h"
 #include "gametypes/Gametype.h"
 
 #include "JumpFigure.h"
@@ -85,6 +85,8 @@ namespace orxonox
         this->setPosition(Vector3(0,0,0));
         this->setVelocity(Vector3(0,0,0));
         this->setAcceleration(Vector3(0,0,0));
+
+        model = NULL;
     }
 
     /**
@@ -93,13 +95,13 @@ namespace orxonox
     */
     JumpPlatform::~JumpPlatform()
     {
-        if (this->isInitialized())
+        /*if (this->isInitialized())
         {
             if (this->bDeleteBats_)
                 delete this->figure_;
 
             delete[] this->batID_;
-        }
+        }*/
     }
 
     //xml port for loading sounds
@@ -136,7 +138,6 @@ namespace orxonox
         SUPER(JumpPlatform, tick, dt);
 
         Vector3 platformPosition = this->getPosition();
-        Vector3 platformVelocity = this->getVelocity();
 
         if (figure_ != NULL)
         {
@@ -148,6 +149,8 @@ namespace orxonox
             	figure_->JumpFromPlatform(200.0f);
             }
         }
+
+
 
 
 

@@ -163,8 +163,8 @@ namespace orxonox
             inline void scale3D(float x, float y, float z)
                 { this->scale3D(Vector3(x, y, z)); }
             inline void scale(float scale)
-                { this->scale3D(scale, scale, scale); }
 
+                { this->scale3D(scale, scale, scale); }
             virtual void changedScale() {}
 
             void attach(WorldEntity* object);

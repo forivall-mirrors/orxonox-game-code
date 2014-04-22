@@ -2,6 +2,7 @@ SET_SOURCE_FILES(JUMP_SRC_FILES
 BUILD_UNIT JumpBuildUnit.cc
   Jump.cc
   JumpPlatform.cc
+  JumpPlatformStatic.cc
   JumpPlatformHMove.cc
   JumpPlatformVMove.cc
   JumpFigure.cc

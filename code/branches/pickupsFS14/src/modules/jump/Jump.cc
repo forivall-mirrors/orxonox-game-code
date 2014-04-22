@@ -43,6 +43,9 @@
 
 #include "JumpCenterpoint.h"
 #include "JumpPlatform.h"
+#include "JumpPlatformStatic.h"
+#include "JumpPlatformHMove.h"
+#include "JumpPlatformVMove.h"
 #include "JumpFigure.h"
 
 #include "infos/PlayerInfo.h"
@@ -64,11 +67,12 @@ namespace orxonox
         RegisterObject(Jump);
 
         this->center_ = 0;
-        this->ball_ = 0;
         this->figure_ = 0;
         this->camera = 0;
 
-        //this->setHUDTemplate("JumpHUD");
+        platformList.clear();
+
+        this->setHUDTemplate("JumpHUD");
 
         // Pre-set the timer, but don't start it yet.
         this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Jump::startBall, this)));
@@ -98,28 +102,58 @@ namespace orxonox
     	if (figure_ != NULL)
     	{
     		Vector3 figurePosition = figure_->getPosition();
+    		Vector3 figureVelocity = figure_->getVelocity();
 
     		if (figurePosition.z > totalScreenShift)
     		{
+    			screenShiftSinceLastUpdate += figurePosition.z - totalScreenShift;
     			totalScreenShift = figurePosition.z;
+
+                // Falls noetig neue Platformen im neuen Bereich einfuegen
+                if (screenShiftSinceLastUpdate > sectionLength)
+                {
+                	screenShiftSinceLastUpdate -= sectionLength;
+                    addSection();
+                }
     		}
+
+    		// Spiel verloren wegen Ansturz?
+    		if (figurePosition.z < totalScreenShift - center_->getFieldDimension().y && figureVelocity.z < 0)
+    		{
+    			end();
+    		}
+
 
     		if (this->camera != NULL)
 			{
-				Vector3 cameraPosition = Vector3(0,totalScreenShift,0);
+				Vector3 cameraPosition = Vector3(0, totalScreenShift, 0);
 				camera->setPosition(cameraPosition);
 			}
 			else
 			{
-				orxout() << "no camera found" << endl;
+				orxout() << "No camera found." << endl;
 				//this->camera = this->figure_->getCamera();
 			}
     	}
+    	else
+    	{
+    		//orxout() << "No figure found." << endl;
+    	}
 
-
-
-
-
+		// Platformen, die zu weit unten sind entfernen
+		Vector3 platformPosition;
+		for (std::list<JumpPlatform*>::iterator it = platformList.begin(); it != platformList.end(); it++)
+		{
+			// IDEE: Statt durch alle platformen in der Liste, wie im Tutorial durch alle objekte im Spiel iterieren --> eigene liste unnoetig
+			platformPosition = (**it).getPosition();
+			if (platformPosition.z < totalScreenShift - center_->getFieldDimension().y)
+			{
+				// Entferne Platform
+				orxout() << "position = " << (**it).getPosition().y << endl;
+				center_->detach(*it);
+				it = platformList.erase(it);
+			}
+		}
     }
 
 
@@ -134,11 +168,11 @@ namespace orxonox
     */
     void Jump::cleanup()
     {
-        if (this->ball_ != NULL) // Destroy the ball, if present.
+        /*if (this->ball_ != NULL) // Destroy the ball, if present.
         {
             this->ball_->destroy();
             this->ball_ = 0;
-        }
+        }*/
 
         // Destroy both bats, if present.
 		if (this->figure_ != NULL)
@@ -157,17 +191,16 @@ namespace orxonox
     {
         if (this->center_ != NULL) // There needs to be a JumpCenterpoint, i.e. the area the game takes place.
         {
-            if (this->ball_ == NULL) // If there is no ball, create a new ball.
-            {
-                this->ball_ = new JumpPlatform(this->center_->getContext());
-                // Apply the template for the ball specified by the centerpoint.
-                this->ball_->addTemplate(this->center_->getBalltemplate());
-            }
+
 
             // Attach the ball to the centerpoint and set the parameters as specified in the centerpoint, the ball is attached to.
-            this->center_->attach(this->ball_);
+            /*this->center_->attach(this->ball_);
             this->ball_->setPosition(0, 0, 0);
             this->ball_->setFieldDimension(this->center_->getFieldDimension());
+
+            // Set the bats for the ball.
+            this->ball_->setFigure(this->figure_);
+            */
 
             // If one of the bats is missing, create it. Apply the template for the bats as specified in the centerpoint.
 			if (this->figure_ == NULL)
@@ -184,8 +217,7 @@ namespace orxonox
             this->figure_->setFieldDimension(this->center_->getFieldDimension());
             this->figure_->setLength(this->center_->getBatLength());
 
-            // Set the bats for the ball.
-            this->ball_->setFigure(this->figure_);
+
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
@@ -213,6 +245,13 @@ namespace orxonox
         }
 
         totalScreenShift = 0.0;
+        screenShiftSinceLastUpdate = 0.0;
+        sectionNumber = 0;
+        sectionLength = 100.0;
+
+        addStartSection();
+        addSection();
+        addSection();
     }
 
     /**
@@ -351,6 +390,88 @@ namespace orxonox
         {
             return 0;
         }
+    }
+
+    void Jump::addPlatform(JumpPlatform* newPlatform, float xPosition, float zPosition)
+    {
+    	if (newPlatform != NULL)
+		{
+    		newPlatform->setPosition(Vector3(xPosition, 0.0, zPosition));
+    		newPlatform->setFieldDimension(center_->getFieldDimension());
+    		newPlatform->setFigure(this->figure_);
+    		center_->attach(newPlatform);
+    		platformList.push_front(newPlatform);
+		}
+    }
+
+    void Jump::addStartSection()
+    {
+		JumpPlatform* newPlatform;
+
+		for (float xPosition = -center_->getFieldDimension().x; xPosition <= center_->getFieldDimension().x; xPosition += 12.0)
+		{
+			newPlatform = new JumpPlatformStatic(center_->getContext());
+			addPlatform(newPlatform, xPosition, -0.05*sectionLength);
+		}
+    }
+
+    void Jump::addSection()
+    {
+        float fieldWidth = center_->getFieldDimension().x;
+        float fieldHeight = center_->getFieldDimension().y;
+
+        float sectionBegin = sectionNumber * sectionLength;
+        float sectionEnd = (1.0 + sectionNumber) * sectionLength;
+
+        JumpPlatformStatic* newPlatformStatic;
+        JumpPlatformHMove* newPlatformHMove;
+        JumpPlatformVMove* newPlatformVMove;
+
+		switch (rand()%3)
+		{
+		case 0:
+			for (int i = 0; i < 10; ++i)
+			{
+				newPlatformStatic = new JumpPlatformStatic(center_->getContext());
+				addPlatform(newPlatformStatic, randomXPosition(), sectionBegin + i*sectionLength/10);
+			}
+			break;
+		case 1:
+			for (int i = 0; i < 10; ++i)
+			{
+				newPlatformHMove = new JumpPlatformHMove(center_->getContext());
+				newPlatformHMove->setProperties(-fieldWidth, fieldWidth, 30.0);
+				addPlatform(newPlatformHMove, randomXPosition(), sectionBegin + i*sectionLength/10);
+			}
+
+			break;
+		case 2:
+			for (int i = 0; i < 10; ++i)
+			{
+				newPlatformVMove = new JumpPlatformVMove(center_->getContext());
+				newPlatformVMove->setProperties(sectionBegin, sectionEnd, 20.0);
+				addPlatform(newPlatformVMove, -fieldWidth + i*fieldWidth*2/10, randomYPosition(sectionBegin, sectionEnd));
+			}
+			break;
+		}
+		orxout() << "new section added with number "<< sectionNumber << endl;
+
+		++ sectionNumber;
+    }
+
+    float Jump::randomXPosition()
+    {
+    	return (float)(rand()%(2*(int)center_->getFieldDimension().x)) - center_->getFieldDimension().x;
+    }
+
+    float Jump::randomYPosition(float lowerBoundary, float upperBoundary)
+    {
+    	return (float)(rand()%(int)(upperBoundary - lowerBoundary)) + lowerBoundary;
+    }
+
+    int Jump::getScore(PlayerInfo* player) const
+    {
+        return sectionNumber - 2;
     }
 
 }
