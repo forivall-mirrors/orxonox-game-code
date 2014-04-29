@@ -276,8 +276,8 @@ namespace orxonox
 //             return;
         }
 
-        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getWorldPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
-        float distance = (target - this->getControllableEntity()->getWorldPosition()).length();
+        Vector2 coord = get2DViewcoordinates(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        float distance = (target - this->getControllableEntity()->getPosition()).length();
         float rotateX = clamp(coord.x * 10, -1.0f, 1.0f);
         float rotateY = clamp(coord.y * 10, -1.0f, 1.0f);
 
