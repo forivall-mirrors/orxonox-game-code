@@ -33,7 +33,7 @@
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
 
-<SpaceShip position="-100,0,0" yaw=0 pitch=0>
+<!-- <SpaceShip position="-100,0,0" yaw=0 pitch=0>
     <attached>
         <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
         <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
@@ -57,9 +57,17 @@
         <Model mesh="sphere.mesh" position="0,0,30" scale=1/>
 
     </attached>
-</SpaceShip>
+</SpaceShip> -->
+<StaticEntity position="100,0,0">
+  <attached>
+    <Model mesh="sphere.mesh" position="20,0,0" scale=1/>
 
-<SpaceShip position="100,0,0" yaw=0 pitch=0>
+    <Model mesh="sphere.mesh" position="0,25,0" scale=1.5/>
+
+    <Model mesh="sphere.mesh" position="0,0,30" scale=2/>
+  </attached>
+</StaticEntity>
+<SpaceShip position="100,0,0" yaw=0 pitch=90>
     <attached>
         <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
         <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
@@ -72,15 +80,11 @@
               <Template link=spaceshipturrettest />
             </templates>
             <controller>
-              <TurretController team=9 />
+              <TurretController team=10 />
             </controller>
         </Turret>
 
-        <Model mesh="sphere.mesh" position="20,0,0" scale=1/>
 
-        <Model mesh="sphere.mesh" position="0,25,0" scale=1/>
-
-        <Model mesh="sphere.mesh" position="0,0,30" scale=1/>
 
     </attached>
 </SpaceShip>

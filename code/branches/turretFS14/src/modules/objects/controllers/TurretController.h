@@ -55,8 +55,12 @@
             Vector3 localYStart_;
             Vector3 localX_;
             Vector3 localXStart_;
+
+            void aimAtPositionRot(const Vector3 &position);
+            void aimAtTargetRot();
  			void searchTarget();
- 			bool isInRange(Vector3 position);
+ 			bool isInRange(const Vector3 &position);
+ 			bool isLookingAtTargetNew(float angle) const;
  	};
  }
 

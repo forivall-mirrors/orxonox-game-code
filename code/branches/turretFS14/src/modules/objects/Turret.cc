@@ -112,10 +112,12 @@ namespace orxonox
         this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
         this->localAngularAcceleration_ = physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_;
 
+        //physics don't work when attached :(
+        //this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
 
-        pitch(Degree(localAngularAcceleration_.x()/10000), WorldEntity::World);
-        yaw(Degree(localAngularAcceleration_.y()/10000), WorldEntity::World);
-        roll(Degree(localAngularAcceleration_.z()/10000), WorldEntity::World);
+        pitch(Degree(localAngularAcceleration_.x()*dt/1000), WorldEntity::World);
+        yaw(Degree(localAngularAcceleration_.y()*dt/1000), WorldEntity::World);
+        roll(Degree(localAngularAcceleration_.z()*dt/1000), WorldEntity::World);
 
         this->localAngularAcceleration_.setValue(0, 0, 0);
     }
