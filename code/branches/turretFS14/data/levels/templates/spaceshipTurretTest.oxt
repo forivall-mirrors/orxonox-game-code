@@ -6,10 +6,10 @@
     <collisionShapes>
         <SphereCollisionShape radius="10"   position = "0,0,0"/>
     </collisionShapes>
-  </Turret>
 <?lua
   include("../includes/weaponSettingsTurretTest.oxi")
 ?>
+  </Turret>
 </Template>
 
 <Template name=spaceshipturretcameras defaults=0>

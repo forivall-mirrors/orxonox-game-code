@@ -49,15 +49,48 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateYaw(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
+            virtual bool isInRange(const Vector3 &position);
+            virtual void aimAtPosition(const Vector3 &position);
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
+            inline void setAttackRadius(float radius)
+                { this->attackRadius_ = radius; }
+
+            inline void setMaxPitch(float pitch)
+                { this->maxPitch_ = pitch; }
+
+            inline void setMaxYaw(float yaw)
+                { this->maxYaw_ = yaw; }
+
+            inline float getAttackRadius() const
+                { return this->attackRadius_; }                
+
+            inline float getMaxPitch() const
+                { return this->maxPitch_; }
+
+            inline float getMaxYaw() const
+                { return this->maxYaw_; }
+
+        protected:
+            Vector3 startDir_;
+            Vector3 localZ_;
+            Vector3 localZStart_;
+            Vector3 localY_;
+            Vector3 localYStart_;
+            Vector3 localX_;
+            Vector3 localXStart_;           
 
         private:
+            bool once_;
+
+            float attackRadius_;
+            Ogre::Real maxPitch_;
+            Ogre::Real maxYaw_;
             float rotationThrust_;
 
-            btVector3 localAngularAcceleration_;
+            Quaternion rotation_;
     };
 }
 

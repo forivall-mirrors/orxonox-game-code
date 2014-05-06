@@ -37,15 +37,9 @@
  	TurretController::TurretController(Context* context) : ArtificialController(context)
  	{
  		RegisterObject(TurretController);
- 		this->startOrient_ = Quaternion::IDENTITY;
-        this->startDir_ = Vector3::ZERO;
-        this->localZ_ = Vector3::UNIT_Z;
-        this->localY_ = Vector3::UNIT_Y;
-        this->localX_ = Vector3::UNIT_X;
-        this->attackRadius_ = 200;
-        this->maxPitch_ = 90;
-        this->maxYaw_ = 90;
-        this->gotOrient_ = false;
+
+ 		this->once_ = false;
+
  	}
 
  	TurretController::~TurretController()
@@ -56,13 +50,14 @@
  	void TurretController::searchTarget()
  	{
         Turret* turret = orxonox_cast<Turret*>(this->getControllableEntity());
-        if(target_ && this->isInRange(target_->getWorldPosition()))
+        if(target_ && turret->isInRange(target_->getWorldPosition()))
         {
         	return;
         }
         else
         {
         	this->forgetTarget();
+        	turret->setTarget(0);
         }
 
 
@@ -70,7 +65,7 @@
         if(parent)
         {
         	Pawn* parenttarget = orxonox_cast<Pawn*>(parent->getTarget());
-        	if(parenttarget && this->isInRange(parenttarget->getWorldPosition()))
+        	if(parenttarget && turret->isInRange(parenttarget->getWorldPosition()))
         	{
         		this->setTarget(parenttarget);
         		turret->setTarget(parenttarget);
@@ -81,10 +76,10 @@
   		for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
         {
         	Pawn* entity = orxonox_cast<Pawn*>(*it);
-            if (ArtificialController::sameTeam(this->getControllableEntity(), entity, this->getGametype()))
+            if (this->FormationController::sameTeam(this->getControllableEntity(), entity, this->getGametype()))
             	continue;
 
-            if(this->isInRange(entity->getWorldPosition()))
+            if(turret->isInRange(entity->getWorldPosition()))
             {
             	this->setTarget(entity);
             	turret->setTarget(entity);
@@ -93,60 +88,6 @@
     	}		
  	}
 
- 	bool TurretController::isInRange(const Vector3 &position)
-    {
-    	//Check distance
-        Vector3 distance = position - this->getControllableEntity()->getWorldPosition();
-        if(distance.squaredLength() > (this->attackRadius_ * this->attackRadius_))
-        {
-            return false;
-        }
-
-        //Check pitch
-        Vector3 dir = getTransformedVector(distance, this->localX_, this->localY_, this->localZ_);
-        Vector3 dirProjected = dir;
-        dirProjected.x = 0;
-        Vector3 startDirProjected = this->startDir_;
-        startDirProjected.x = 0;
-        Ogre::Real angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
-        if(angle > this->maxPitch_)
-        {
-            return false;
-        }
-
-        //Check yaw
-        dirProjected = dir;
-        dirProjected.y = 0;
-        startDirProjected = this->startDir_;
-        startDirProjected.y = 0;
-        angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
-        if(angle > this->maxYaw_)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    void TurretController::aimAtPositionRot(const Vector3 &position)
-    {
-
-        Vector3 currDir = this->getControllableEntity()->getWorldOrientation() * WorldEntity::FRONT;
-        Vector3 targetDir = position - this->getControllableEntity()->getWorldPosition();
-
-        Quaternion rot = currDir.getRotationTo(targetDir);
-
-        //Don't make the rotation instantaneous
-        rot = Quaternion::Slerp(0.1, Quaternion::IDENTITY, rot);
-
-        this->getControllableEntity()->rotate(rot, WorldEntity::World);
-    }
-    
-
-    void TurretController::aimAtTargetRot()
-    {
-    	this->aimAtPositionRot(this->target_->getWorldPosition());
-    }
-
     bool TurretController::isLookingAtTargetNew(float angle) const
     {
         return (getAngle(this->getControllableEntity()->getWorldPosition(), this->getControllableEntity()->getWorldOrientation() * WorldEntity::FRONT, this->target_->getWorldPosition()) < angle);
@@ -154,51 +95,48 @@
 
  	void TurretController::tick(float dt)
  	{
-			if(!gotOrient_)
-	        {
-	            this->startOrient_ = this->getControllableEntity()->getOrientation();
-	            this->localXStart_ = this->startOrient_ * this->localX_;
-	            this->localXStart_.normalise();
-	            this->localX_ = this->localXStart_;
-	            this->localYStart_ = this->startOrient_ * this->localY_;
-	            this->localYStart_.normalise();
-	            this->localY_ = this->localYStart_;
-	            this->localZStart_ = this->startOrient_ * this->localZ_;
-	            this->localZStart_.normalise();
-	            this->localZ_ = this->localZStart_;
-
-	            //startDir should always be (0,0,-1)
-	            this->startDir_ = getTransformedVector(this->startOrient_ * WorldEntity::FRONT, this->localX_, this->localY_, this->localZ_);
-
-	            this->gotOrient_ = true;
-
-	        }
-
-	        WorldEntity* parent = this->getControllableEntity()->getParent();
-	        if(parent)
-	        {
-	            Quaternion parentrot = parent->getOrientation();
-	            this->localX_ = parentrot * this->localXStart_;
-	            this->localY_ = parentrot * this->localYStart_;
-	            this->localZ_ = parentrot * this->localZStart_;
-	        }
+	    if (!this->isActive() || !this->getControllableEntity())
+	        return;
 
 
+ 		if(!this->once_)
+ 		{
+ 			if(this->getTeam() != -1)
+ 			{
+ 				orxout(internal_warning) << "Turret: Team already set, may result in undesired behaviour" << endl;
+ 			}
+ 			else
+ 			{
+	            //Make sure the turret is in the same team as the parent
+	            ControllableEntity* parent = orxonox_cast<ControllableEntity*> (this->getControllableEntity()->getParent());
+	            if(parent)
+	            {
+	                Controller* parentcontroller = parent->getController();
+	                if(parentcontroller)
+	                {
+	                    this->setTeam(parentcontroller->getTeam());
+	                }
+	                else
+	                {
+	                    this->setTeam(parent->getTeam());
+	                }
+	                this->getControllableEntity()->setTeam(parent->getTeam());
+	            }
+        	}
+            this->once_ = true;
+        }
 
-	        if (!this->isActive() || !this->getControllableEntity())
-	            return;
-
-	 		this->searchTarget();
-	 		if(target_)
-	 		{
-	 			this->aimAtTarget();
-	 			//this->getControllableEntity()->lookAt(this->targetPosition_);
-	 			//It says move, but really it only turns
-	 			this->aimAtTargetRot();
-	 			if(this->isLookingAtTargetNew(Degree(5).valueRadians()))
-	 			{
-	 				orxout() << 42 << endl;
-	 			}
-	 		}
+ 		this->searchTarget();
+		if(target_)
+ 		{
+ 			Turret* turret = orxonox_cast<Turret*> (this->getControllableEntity());
+ 			this->aimAtTarget();
+ 			turret->aimAtPosition(target_->getWorldPosition());
+ 			if(this->isLookingAtTargetNew(Degree(5).valueRadians()))
+ 			{
+ 				this->getControllableEntity()->fire(0);
+ 				orxout() << 42 << endl;
+ 			}
+ 		}
  	}
  }

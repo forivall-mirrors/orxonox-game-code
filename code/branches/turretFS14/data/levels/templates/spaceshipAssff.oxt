@@ -47,16 +47,6 @@
       <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
       <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />
       <BlinkingBillboard position="-17,-1.5,0" material="Examples/Flare" colour="0.5, 1.0, 0.3" amplitude=0.1 frequency=0.5 phase=180 quadratic=1 />
-
-               <!-- <Turret position="0,10,0" pitch="90" yaw="0" roll="0" maxPitch=90 maxYaw=90 attackRadius=2000>
-            <templates>
-              <Template link=spaceshipturrettest />
-            </templates>
-            <controller>
-              <TurretController team=10 />
-            </controller>
-        </Turret> -->
-
     </attached>
     <collisionShapes>
       <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />
