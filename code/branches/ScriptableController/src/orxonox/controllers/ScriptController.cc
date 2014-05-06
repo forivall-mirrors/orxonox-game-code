@@ -29,6 +29,7 @@
 #include "ScriptController.h"
 #include "core/CoreIncludes.h"
 #include "worldentities/ControllableEntity.h"
+#include "core/LuaState.h"
 #include <cmath>
 
 namespace orxonox
@@ -62,6 +63,22 @@ namespace orxonox
     {
         return this->controlled->getPosition();
     }
+
+    ScriptController* ScriptController::getScriptController()
+    {
+      orxout() << "Great success!" << std::endl;
+      for(ObjectList<ScriptController>::iterator it = 
+        ObjectList<ScriptController>::begin(); 
+        it != ObjectList<ScriptController>::end(); ++it)
+      { 
+        // TODO: do some selection here. Currently just returns the first one
+        return *it; 
+      
+      }
+      return NULL;
+    }
+
+
 
     void ScriptController::moveToPosition_beta(float x, float y, float z )
     {

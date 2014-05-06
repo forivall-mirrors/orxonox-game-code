@@ -58,11 +58,12 @@ namespace orxonox  // tolua_export
             void moveToPosition_beta(float x, float y, float z);
 
            
-            const Vector3& getPosition();
+            static ScriptController* getScriptController();
             
               /* virtual void tick(float dt);*/ 
 
             // tolua_end
+            const Vector3& getPosition();
 
         private:
         	std::string luasrc;		// name of the LUA-sourcefile that shall be executed->see XMLPort-function
