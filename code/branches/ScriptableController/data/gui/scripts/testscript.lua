@@ -8,8 +8,15 @@ z = 3.3
 
 
 local ctrl = orxonox.ScriptController:getScriptController()
---orxonox.ScriptController:moveToPosition(x, y, z)
+if ctrl ~= nil then
+  ctrl:moveToPosition_beta(x, y, z)
+end
+
 --ctrl.moveToPosition(x,y,z)
+--
+if newctrlid ~= nil then
+  orxonox.execute("orxout message test " .. newctrlid)
+end
 
 local docks = orxonox.Dock:getNumberOfActiveDocks()
 local docklist = {}

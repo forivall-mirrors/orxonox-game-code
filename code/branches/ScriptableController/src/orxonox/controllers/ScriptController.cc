@@ -66,7 +66,10 @@ namespace orxonox
 
     ScriptController* ScriptController::getScriptController()
     {
+      /* Output a message that confirms this function was called */
       orxout() << "Great success!" << std::endl;
+
+      /* Loop over all the scriptcontrollers currently present in the game */
       for(ObjectList<ScriptController>::iterator it = 
         ObjectList<ScriptController>::begin(); 
         it != ObjectList<ScriptController>::end(); ++it)
@@ -82,23 +85,18 @@ namespace orxonox
 
     void ScriptController::moveToPosition_beta(float x, float y, float z )
     {
-
-       const Vector3 local=getPosition();
-       const Vector3 target=Vector3(x,y,z);
-
-       Vector3 way=target-local;
-
+        /* The section commented out here below throws segfaults */
+        //const Vector3 local=getPosition();
+        //const Vector3 target=Vector3(x,y,z);
+        //Vector3 way=target-local;
        
-       this->controlled->lookAt(target);
+        
+        //this->controlled->lookAt(target);
+        //this->controlled->moveFrontBack(way.length());      
 
-        this->controlled->moveFrontBack(way.length());      
-
-
-        /*orxout()<<x<<"  "<<y<<"  "<<z<<endl;*/
-
-
-
-         
+  
+        /* This works fine */
+        orxout()<<x<<"  "<<y<<"  "<<z<<endl;
     }
 
     /* TODO:    hilfs(zwischen)funktionen um lua eingabe zu ermoeglichen: zb moveToPosition(float...) weil in LUA wohl 

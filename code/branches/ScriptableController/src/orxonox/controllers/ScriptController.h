@@ -49,7 +49,6 @@ namespace orxonox  // tolua_export
             
            
             void set_luasrc(std::string);
-
             void set_controlled(ControllableEntity*);
 
 
