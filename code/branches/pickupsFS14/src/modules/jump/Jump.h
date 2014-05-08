@@ -79,12 +79,6 @@ namespace orxonox
 
             virtual void playerScored(PlayerInfo* player, int score = 1); //!< Is called when the player scored.
 
-            virtual void addPlatform(JumpPlatform* newPlatform, float xPosition, float zPosition);
-            virtual void addStartSection();
-            virtual void addSection();
-            virtual float randomXPosition();
-            virtual float randomYPosition(float lowerBoundary, float upperBoundary);
-
             int getScore(PlayerInfo* player) const;
 
             /**
@@ -103,8 +97,25 @@ namespace orxonox
             void startBall(); //!< Starts the ball with some default speed.
             void cleanup(); //!< Cleans up the Gametype by destroying the ball and the bats.
 
+            virtual void addPlatform(JumpPlatform* newPlatform, std::string platformTemplate, float xPosition, float zPosition);
+
+            virtual void addPlatformStatic(float xPosition, float zPosition);
+            virtual void addPlatformHMove(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float speed);
+            virtual void addPlatformVMove(float xPosition, float zPosition, float lowerBoundary, float upperBoundary, float speed);
+            virtual void addPlatformDisappear(float xPosition, float zPosition);
+            virtual void addPlatformTimer(float xPosition, float zPosition, float time, float variance);
+            virtual void addPlatformFake(float xPosition, float zPosition);
+            virtual void addProjectile(float xPosition, float zPosition, float xVelocity, float zVelocity);
+            virtual void addEnemy1(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+
+            virtual void addStartSection();
+            virtual void addSection();
+
+            virtual float randomXPosition();
+            virtual float randomXPosition(int totalColumns, int culomn);
+            virtual float randomYPosition(float lowerBoundary, float upperBoundary);
+
             WeakPtr<JumpCenterpoint> center_; //!< The playing field.
-            //WeakPtr<JumpPlatform> ball_; //!< The Jump ball.
             WeakPtr<JumpFigure> figure_; //!< The two bats.
             WeakPtr<Camera> camera;
             Timer starttimer_; //!< A timer to delay the start of the game.
@@ -112,9 +123,9 @@ namespace orxonox
 
             float totalScreenShift;
             float screenShiftSinceLastUpdate;
-            float sectionLength;
             int sectionNumber;
-            std::list<JumpPlatform*> platformList;
+
+            bool fakeAdded_;
     };
 }
 

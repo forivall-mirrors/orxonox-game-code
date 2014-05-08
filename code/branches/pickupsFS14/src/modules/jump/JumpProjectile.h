@@ -27,13 +27,13 @@
  */
 
 /**
-    @file JumpPlatform.h
-    @brief Declaration of the JumpPlatform class.
+    @file JumpProjectile.h
+    @brief Declaration of the JumpProjectile class.
     @ingroup Jump
 */
 
-#ifndef _JumpPlatform_H__
-#define _JumpPlatform_H__
+#ifndef _JumpProjectile_H__
+#define _JumpProjectile_H__
 
 #include "jump/JumpPrereqs.h"
 
@@ -56,11 +56,11 @@ namespace orxonox
 
     @ingroup Jump
     */
-    class _JumpExport JumpPlatform : public MovableEntity
+    class _JumpExport JumpProjectile : public MovableEntity
     {
         public:
-            JumpPlatform(Context* context);
-            virtual ~JumpPlatform();
+            JumpProjectile(Context* context);
+            virtual ~JumpProjectile();
 
             virtual void tick(float dt);
 
@@ -92,23 +92,13 @@ namespace orxonox
             virtual void accelerateFigure();
             virtual void touchFigure();
 
-            static const float MAX_REL_Z_VELOCITY;
-
-            void setDefScoreSound(const std::string& engineSound);
-            const std::string& getDefScoreSound();
-            void setDefBatSound(const std::string& engineSound);
-            const std::string& getDefBatSound();
-            void setDefBoundarySound(const std::string& engineSound);
-            const std::string& getDefBoundarySound();
-
         protected:
+            void registerVariables();
+
             float fieldWidth_; //!< The width of the playing field.
             float fieldHeight_; //!< The height of the playing field.
             WeakPtr<JumpFigure> figure_; //!< An array with the two bats.
-            WorldSound* defScoreSound_;
-            WorldSound* defBatSound_;
-            WorldSound* defBoundarySound_;
     };
 }
 
-#endif /* _JumpPlatform_H__ */
+#endif /* _JumpProjectile_H__ */

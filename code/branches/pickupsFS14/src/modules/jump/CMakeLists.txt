@@ -5,7 +5,13 @@ BUILD_UNIT JumpBuildUnit.cc
   JumpPlatformStatic.cc
   JumpPlatformHMove.cc
   JumpPlatformVMove.cc
+  JumpPlatformDisappear.cc
+  JumpPlatformTimer.cc
+  JumpPlatformFake.cc
+  JumpProjectile.cc
+  JumpEnemy.cc
   JumpFigure.cc
+  JumpItem.cc
   JumpCenterpoint.cc
   JumpScore.cc
 END_BUILD_UNIT

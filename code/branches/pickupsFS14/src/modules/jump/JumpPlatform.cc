@@ -58,12 +58,6 @@ namespace orxonox
         RegisterObject(JumpPlatform);
 
         this->figure_ = 0;
-        this->bDeleteBats_ = false;
-        this->batID_ = new unsigned int[1];
-        this->batID_[0] = OBJECTID_UNKNOWN;
-        this->relMercyOffset_ = 0.05f;
-
-        this->registerVariables();
 
         //initialize sound
         if (GameMode::isMaster())
@@ -85,8 +79,6 @@ namespace orxonox
         this->setPosition(Vector3(0,0,0));
         this->setVelocity(Vector3(0,0,0));
         this->setAcceleration(Vector3(0,0,0));
-
-        model = NULL;
     }
 
     /**
@@ -115,19 +107,6 @@ namespace orxonox
 
     /**
     @brief
-        Register variables to synchronize over the network.
-    */
-    void JumpPlatform::registerVariables()
-    {
-        registerVariable( this->fieldWidth_ );
-        registerVariable( this->fieldHeight_ );
-        registerVariable( this->relMercyOffset_ );
-        registerVariable( this->batID_[0] );
-        //registerVariable( this->batID_[1], VariableDirection::ToClient, new NetworkCallback<JumpPlatform>( this, &JumpPlatform::applyBats) );
-    }
-
-    /**
-    @brief
         Is called every tick.
         Handles the movement of the ball and its interaction with the boundaries and bats.
     @param dt
@@ -146,7 +125,7 @@ namespace orxonox
 
             if(figureVelocity.z < 0 && figurePosition.x > platformPosition.x-10 && figurePosition.x < platformPosition.x+10 && figurePosition.z > platformPosition.z-4 && figurePosition.z < platformPosition.z+4)
             {
-            	figure_->JumpFromPlatform(200.0f);
+            	touchFigure();
             }
         }
 
@@ -248,35 +227,17 @@ namespace orxonox
     */
     void JumpPlatform::setFigure(WeakPtr<JumpFigure> newFigure)
     {
-        if (this->bDeleteBats_) // If there are already some bats, delete them.
-        {
-            delete this->figure_;
-            this->bDeleteBats_ = false;
-        }
-
-        this->figure_ = newFigure;
-        // Also store their object IDs, for synchronization.
-        this->batID_[0] = this->figure_->getObjectID();
+        figure_ = newFigure;
     }
 
-    /**
-    @brief
-        Get the bats over the network.
-    */
-    void JumpPlatform::applyBats()
+    void JumpPlatform::accelerateFigure()
     {
-        // Make space for the bats, if they don't exist, yet.
-        if (this->figure_ == NULL)
-        {
-            this->figure_ = *(new WeakPtr<JumpFigure>);
-            this->bDeleteBats_ = true;
-        }
+    	figure_->JumpFromPlatform(this);
+    }
 
-        if (this->batID_[0] != OBJECTID_UNKNOWN)
-        {
-        	// WAR IM PONG NICHT AUSKOMMENTIERT!!!
-            //this->figure_ = orxonox_cast<JumpFigure>(Synchronisable::getSynchronisable(this->batID_[0]));
-        }
+    void JumpPlatform::touchFigure()
+    {
+
     }
 
     void JumpPlatform::setDefScoreSound(const std::string &jumpSound)

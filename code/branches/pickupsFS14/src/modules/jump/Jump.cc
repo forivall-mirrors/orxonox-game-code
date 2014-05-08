@@ -46,6 +46,11 @@
 #include "JumpPlatformStatic.h"
 #include "JumpPlatformHMove.h"
 #include "JumpPlatformVMove.h"
+#include "JumpPlatformDisappear.h"
+#include "JumpPlatformTimer.h"
+#include "JumpPlatformFake.h"
+#include "JumpProjectile.h"
+#include "JumpEnemy.h"
 #include "JumpFigure.h"
 
 #include "infos/PlayerInfo.h"
@@ -69,15 +74,13 @@ namespace orxonox
         this->center_ = 0;
         this->figure_ = 0;
         this->camera = 0;
-
-        platformList.clear();
+        this->fakeAdded_ = false;
 
         this->setHUDTemplate("JumpHUD");
 
         // Pre-set the timer, but don't start it yet.
         this->starttimer_.setTimer(1.0, false, createExecutor(createFunctor(&Jump::startBall, this)));
         this->starttimer_.stopTimer();
-
 
         this->scoreLimit_ = 10;
         this->setConfigValues();
@@ -110,9 +113,9 @@ namespace orxonox
     			totalScreenShift = figurePosition.z;
 
                 // Falls noetig neue Platformen im neuen Bereich einfuegen
-                if (screenShiftSinceLastUpdate > sectionLength)
+                if (screenShiftSinceLastUpdate > center_->getSectionLength())
                 {
-                	screenShiftSinceLastUpdate -= sectionLength;
+                	screenShiftSinceLastUpdate -= center_->getSectionLength();
                     addSection();
                 }
     		}
@@ -121,6 +124,13 @@ namespace orxonox
     		if (figurePosition.z < totalScreenShift - center_->getFieldDimension().y && figureVelocity.z < 0)
     		{
     			end();
+    		}
+
+    		// Schiessen
+    		if (figure_->fireSignal)
+    		{
+    			figure_->fireSignal = false;
+    			addProjectile(figurePosition.x, figurePosition.z, 0.0, 150.0);
     		}
 
 
@@ -132,7 +142,7 @@ namespace orxonox
 			else
 			{
 				orxout() << "No camera found." << endl;
-				//this->camera = this->figure_->getCamera();
+				//camera = figure_->getCamera();
 			}
     	}
     	else
@@ -141,21 +151,105 @@ namespace orxonox
     	}
 
 		// Platformen, die zu weit unten sind entfernen
+		ObjectList<JumpPlatform>::iterator beginPlatform = ObjectList<JumpPlatform>::begin();
+		ObjectList<JumpPlatform>::iterator endPlatform = ObjectList<JumpPlatform>::end();
+		ObjectList<JumpPlatform>::iterator itPlatform = beginPlatform;
 		Vector3 platformPosition;
-		for (std::list<JumpPlatform*>::iterator it = platformList.begin(); it != platformList.end(); it++)
+
+		while (itPlatform != endPlatform)
 		{
-			// IDEE: Statt durch alle platformen in der Liste, wie im Tutorial durch alle objekte im Spiel iterieren --> eigene liste unnoetig
-			platformPosition = (**it).getPosition();
+			platformPosition = itPlatform->getPosition();
 			if (platformPosition.z < totalScreenShift - center_->getFieldDimension().y)
 			{
-				// Entferne Platform
-				orxout() << "position = " << (**it).getPosition().y << endl;
-				center_->detach(*it);
-				it = platformList.erase(it);
+				ObjectList<JumpPlatform>::iterator temp = itPlatform;
+				++ itPlatform;
+				center_->detach(*temp);
+				temp->destroy();
+			}
+			else
+			{
+				++ itPlatform;
 			}
 		}
-    }
 
+		// DAS GEHT NICHT!!! it++ funktioniert nicht, falls eine Platform geloescht wurde -> Segmentation Error
+		/*
+		for (ObjectList<JumpPlatformDisappear>::iterator it = ObjectList<JumpPlatformDisappear>::begin(); orxout() << "E" << endl, it != ObjectList<JumpPlatformDisappear>::end(); orxout() << "F" << endl, ++it)
+		{
+			if (!it->isActive())
+			{
+				// Entferne Platform
+				center_->detach(*it);
+				it->destroy();
+			}
+		}
+		*/
+
+		// Deaktivierte Platformen entfernen
+		ObjectList<JumpPlatformDisappear>::iterator beginDisappear = ObjectList<JumpPlatformDisappear>::begin();
+		ObjectList<JumpPlatformDisappear>::iterator endDisappear = ObjectList<JumpPlatformDisappear>::end();
+		ObjectList<JumpPlatformDisappear>::iterator itDisappear = beginDisappear;
+
+		while (itDisappear != endDisappear)
+		{
+			if (!itDisappear->isActive())
+			{
+				ObjectList<JumpPlatformDisappear>::iterator temp = itDisappear;
+				++ itDisappear;
+				center_->detach(*temp);
+				temp->destroy();
+			}
+			else
+			{
+				++ itDisappear;
+			}
+		}
+
+		// Abgelaufene Timer-Platformen entfernen
+		ObjectList<JumpPlatformTimer>::iterator beginTimer = ObjectList<JumpPlatformTimer>::begin();
+		ObjectList<JumpPlatformTimer>::iterator endTimer = ObjectList<JumpPlatformTimer>::end();
+		ObjectList<JumpPlatformTimer>::iterator itTimer = beginTimer;
+
+		while (itTimer != endTimer)
+		{
+			if (!itTimer->isActive())
+			{
+				ObjectList<JumpPlatformTimer>::iterator temp = itTimer;
+				++ itTimer;
+				center_->detach(*temp);
+				temp->destroy();
+			}
+			else
+			{
+				++ itTimer;
+			}
+		}
+
+		// Projektile, die zu weit oben sind entfernen
+		ObjectList<JumpProjectile>::iterator beginProjectile = ObjectList<JumpProjectile>::begin();
+		ObjectList<JumpProjectile>::iterator endProjectile = ObjectList<JumpProjectile>::end();
+		ObjectList<JumpProjectile>::iterator itProjectile = beginProjectile;
+		Vector3 projectilePosition;
+
+		while (itProjectile != endProjectile)
+		{
+			projectilePosition = itProjectile->getPosition();
+			if (projectilePosition.z > totalScreenShift + 5*center_->getFieldDimension().y)
+			{
+				ObjectList<JumpProjectile>::iterator temp = itProjectile;
+				++ itProjectile;
+				center_->detach(*temp);
+				temp->destroy();
+			}
+			else
+			{
+				++ itProjectile;
+			}
+		}
+
+
+
+    }
 
     void Jump::setConfigValues()
     {
@@ -168,17 +262,10 @@ namespace orxonox
     */
     void Jump::cleanup()
     {
-        /*if (this->ball_ != NULL) // Destroy the ball, if present.
-        {
-            this->ball_->destroy();
-            this->ball_ = 0;
-        }*/
-
-        // Destroy both bats, if present.
 		if (this->figure_ != NULL)
 		{
-			this->figure_->destroy();
-			this->figure_ = 0;
+			//this->figure_->destroy();
+			//this->figure_ = 0;
 		}
 		this->camera = 0;
     }
@@ -206,18 +293,13 @@ namespace orxonox
 			if (this->figure_ == NULL)
 			{
 				this->figure_ = new JumpFigure(this->center_->getContext());
-				this->figure_->addTemplate(this->center_->getBattemplate());
+				this->figure_->addTemplate(this->center_->getFigureTemplate());
 			}
 
             // Attach the bats to the centerpoint and set the parameters as specified in the centerpoint, the bats are attached to.
             this->center_->attach(this->figure_);
             this->figure_->setPosition(-this->center_->getFieldDimension().x / 2, 0, 0);
-            this->figure_->yaw(Degree(-90));
-            this->figure_->setSpeed(this->center_->getBatSpeed());
             this->figure_->setFieldDimension(this->center_->getFieldDimension());
-            this->figure_->setLength(this->center_->getBatLength());
-
-
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
@@ -247,7 +329,6 @@ namespace orxonox
         totalScreenShift = 0.0;
         screenShiftSinceLastUpdate = 0.0;
         sectionNumber = 0;
-        sectionLength = 100.0;
 
         addStartSection();
         addSection();
@@ -260,7 +341,8 @@ namespace orxonox
     */
     void Jump::end()
     {
-        this->cleanup();
+    	cleanup();
+    	GSLevel::startMainMenu();
 
         // Call end for the parent class.
         Deathmatch::end();
@@ -392,15 +474,96 @@ namespace orxonox
         }
     }
 
-    void Jump::addPlatform(JumpPlatform* newPlatform, float xPosition, float zPosition)
+    void Jump::addPlatform(JumpPlatform* newPlatform, std::string platformTemplate, float xPosition, float zPosition)
     {
-    	if (newPlatform != NULL)
+    	if (newPlatform != NULL && center_ != NULL)
 		{
+    		newPlatform->addTemplate(platformTemplate);
     		newPlatform->setPosition(Vector3(xPosition, 0.0, zPosition));
     		newPlatform->setFieldDimension(center_->getFieldDimension());
     		newPlatform->setFigure(this->figure_);
     		center_->attach(newPlatform);
-    		platformList.push_front(newPlatform);
+		}
+    }
+
+    void Jump::addPlatformStatic(float xPosition, float zPosition)
+    {
+		if (fakeAdded_ == false && rand()%5 == 0)
+		{
+			addPlatformFake(xPosition, zPosition);
+		}
+		else
+		{
+	    	JumpPlatformStatic* newPlatform = new JumpPlatformStatic(center_->getContext());
+			addPlatform(newPlatform, center_->getPlatformStaticTemplate(), xPosition, zPosition);
+		}
+    }
+
+    void Jump::addPlatformHMove(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float speed)
+    {
+    	JumpPlatformHMove* newPlatform = new JumpPlatformHMove(center_->getContext());
+		newPlatform->setProperties(leftBoundary, rightBoundary, speed);
+		addPlatform(newPlatform, center_->getPlatformHMoveTemplate(), xPosition, zPosition);
+    }
+
+    void Jump::addPlatformVMove(float xPosition, float zPosition, float lowerBoundary, float upperBoundary, float speed)
+    {
+    	JumpPlatformVMove* newPlatform = new JumpPlatformVMove(center_->getContext());
+		newPlatform->setProperties(lowerBoundary, upperBoundary, speed);
+		addPlatform(newPlatform, center_->getPlatformVMoveTemplate(), xPosition, zPosition);
+    }
+
+    void Jump::addPlatformDisappear(float xPosition, float zPosition)
+    {
+		JumpPlatformDisappear* newPlatform = new JumpPlatformDisappear(center_->getContext());
+		newPlatform->setProperties(true);
+		addPlatform(newPlatform, center_->getPlatformDisappearTemplate(), xPosition, zPosition);
+    }
+
+    void Jump::addPlatformTimer(float xPosition, float zPosition, float time, float variance)
+    {
+		float additionalTime = (float)(rand()%100)/(100*variance) - variance/2;
+
+    	JumpPlatformTimer* newPlatform = new JumpPlatformTimer(center_->getContext());
+		newPlatform->setProperties(time + additionalTime);
+		addPlatform(newPlatform, center_->getPlatformTimerTemplate(), xPosition, zPosition);
+    }
+
+    void Jump::addPlatformFake(float xPosition, float zPosition)
+    {
+    	fakeAdded_ = true;
+
+		JumpPlatformFake* newPlatform = new JumpPlatformFake(center_->getContext());
+		addPlatform(newPlatform, center_->getPlatformFakeTemplate(), xPosition, zPosition);
+		newPlatform->setAngularVelocity(Vector3(0, 0, 2.0));
+    }
+
+
+    void Jump::addProjectile(float xPosition, float zPosition, float xVelocity, float zVelocity)
+    {
+    	JumpProjectile* newProjectile = new JumpProjectile(center_->getContext());
+    	if (newProjectile != NULL && center_ != NULL)
+		{
+    		newProjectile->addTemplate(center_->getProjectileTemplate());
+    		newProjectile->setPosition(Vector3(xPosition, 0.0, zPosition));
+    		newProjectile->setVelocity(Vector3(xVelocity, 0.0, zVelocity));
+    		newProjectile->setFieldDimension(center_->getFieldDimension());
+    		newProjectile->setFigure(this->figure_);
+    		center_->attach(newProjectile);
+		}
+    }
+
+    void Jump::addEnemy1(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity)
+    {
+    	JumpEnemy* newEnemy = new JumpEnemy(center_->getContext());
+    	if (newEnemy != NULL && center_ != NULL)
+		{
+    		newEnemy->addTemplate(center_->getEnemy1Template());
+    		newEnemy->setPosition(Vector3(xPosition, 0.0, zPosition));
+    		newEnemy->setProperties(leftBoundary, rightBoundary, lowerBoundary, upperBoundary, xVelocity, zVelocity);
+    		newEnemy->setFieldDimension(center_->getFieldDimension());
+    		newEnemy->setFigure(this->figure_);
+    		center_->attach(newEnemy);
 		}
     }
 
@@ -408,65 +571,192 @@ namespace orxonox
     {
 		JumpPlatform* newPlatform;
 
-		for (float xPosition = -center_->getFieldDimension().x; xPosition <= center_->getFieldDimension().x; xPosition += 12.0)
+		float sectionLength = center_->getSectionLength();
+		float platformLength = center_->getPlatformLength();
+
+		for (float xPosition = -center_->getFieldDimension().x; xPosition <= center_->getFieldDimension().x; xPosition += platformLength)
 		{
 			newPlatform = new JumpPlatformStatic(center_->getContext());
-			addPlatform(newPlatform, xPosition, -0.05*sectionLength);
+			addPlatform(newPlatform, center_->getPlatformStaticTemplate(), xPosition, -0.05*sectionLength);
 		}
     }
 
     void Jump::addSection()
     {
         float fieldWidth = center_->getFieldDimension().x;
-        float fieldHeight = center_->getFieldDimension().y;
+        float sectionLength = center_->getSectionLength();
+        float platformLength = center_->getPlatformLength();
 
         float sectionBegin = sectionNumber * sectionLength;
         float sectionEnd = (1.0 + sectionNumber) * sectionLength;
 
-        JumpPlatformStatic* newPlatformStatic;
-        JumpPlatformHMove* newPlatformHMove;
-        JumpPlatformVMove* newPlatformVMove;
+		int randPos1 = rand()%10;
+		int randPos2 = rand()%10;
+		int randPos3 = rand()%10;
+		int randPos4 = rand()%10;
 
-		switch (rand()%3)
+		if (rand()%5 == 0)
+		{
+			addEnemy1(randomXPosition(), sectionBegin + sectionLength/10, -fieldWidth, fieldWidth, sectionBegin + sectionLength/10, sectionBegin + sectionLength/10, 5.0, 0.0);
+		}
+
+        switch (rand()%12)
 		{
 		case 0:
+			// Doppelt statisch
 			for (int i = 0; i < 10; ++i)
 			{
-				newPlatformStatic = new JumpPlatformStatic(center_->getContext());
-				addPlatform(newPlatformStatic, randomXPosition(), sectionBegin + i*sectionLength/10);
+				for (int j = 0; j < 2; ++j)
+				{
+					addPlatformStatic(randomXPosition(2, j), sectionBegin + i*sectionLength/10);
+				}
 			}
 			break;
 		case 1:
+			// Dreifach statisch
 			for (int i = 0; i < 10; ++i)
 			{
-				newPlatformHMove = new JumpPlatformHMove(center_->getContext());
-				newPlatformHMove->setProperties(-fieldWidth, fieldWidth, 30.0);
-				addPlatform(newPlatformHMove, randomXPosition(), sectionBegin + i*sectionLength/10);
+				for (int j = 0; j < 3; ++j)
+				{
+					addPlatformStatic(randomXPosition(3, j), sectionBegin + i*sectionLength/10);
+				}
 			}
-
 			break;
 		case 2:
+			// statisch mit 1 horizontal
 			for (int i = 0; i < 10; ++i)
 			{
-				newPlatformVMove = new JumpPlatformVMove(center_->getContext());
-				newPlatformVMove->setProperties(sectionBegin, sectionEnd, 20.0);
-				addPlatform(newPlatformVMove, -fieldWidth + i*fieldWidth*2/10, randomYPosition(sectionBegin, sectionEnd));
+				if (i == randPos1)
+				{
+					addPlatformHMove(randomXPosition(), sectionBegin + i*sectionLength/10, -fieldWidth, fieldWidth, 30.0);
+				}
+				else
+				{
+					addPlatformStatic(randomXPosition(), sectionBegin + i*sectionLength/10);
+				}
+			}
+			break;
+		case 3:
+			// statisch mit 2 horizontal
+			for (int i = 0; i < 10; ++i)
+			{
+				if (i == randPos1 || i == randPos2)
+				{
+					addPlatformHMove(randomXPosition(), sectionBegin + i*sectionLength/10, -fieldWidth, fieldWidth, 30.0);
+				}
+				else
+				{
+					addPlatformStatic(randomXPosition(), sectionBegin + i*sectionLength/10);
+				}
+			}
+			break;
+		case 4:
+			// statisch mit 3 horizontal
+			for (int i = 0; i < 10; ++i)
+			{
+				if (i == randPos1 || i == randPos2 || i == randPos3)
+				{
+					addPlatformHMove(randomXPosition(), sectionBegin + i*sectionLength/10, -fieldWidth, fieldWidth, 30.0);
+				}
+				else
+				{
+					addPlatformStatic(randomXPosition(), sectionBegin + i*sectionLength/10);
+				}
+			}
+			break;
+		case 5:
+			// statisch mit 4 horizontal
+			for (int i = 0; i < 10; ++i)
+			{
+				if (i == randPos1 || i == randPos2 || i == randPos3 || i == randPos4)
+				{
+					addPlatformHMove(randomXPosition(), sectionBegin + i*sectionLength/10, -fieldWidth, fieldWidth, 30.0);
+				}
+				else
+				{
+					addPlatformStatic(randomXPosition(), sectionBegin + i*sectionLength/10);
+				}
+			}
+			break;
+			// Einfach horizontal
+		case 6:
+			for (int i = 0; i < 10; ++i)
+			{
+				addPlatformHMove(randomXPosition(), sectionBegin + i*sectionLength/10, -fieldWidth, fieldWidth, 30.0);
+			}
+			break;
+			// Doppelt horizontal
+		case 7:
+			for (int i = 0; i < 10; ++i)
+			{
+					float mediumPos = randomXPosition(3, 1);
+					addPlatformHMove(randomXPosition(3, 0), sectionBegin + i*sectionLength/10, -fieldWidth, mediumPos - platformLength/2, 30.0);
+					addPlatformHMove(randomXPosition(3, 2), sectionBegin + i*sectionLength/10, mediumPos+platformLength/2, fieldWidth, 30.0);
+			}
+			break;
+			// Einfach vertikal
+		case 8:
+			for (int i = 0; i < 7; ++i)
+			{
+				addPlatformVMove(-fieldWidth + i*fieldWidth*2/10, randomYPosition(sectionBegin, sectionEnd), sectionBegin, sectionEnd, 20.0);
+			}
+			break;
+			// Doppelt vertikal
+		case 9:
+			for (int i = 0; i < 14; ++i)
+			{
+				addPlatformVMove(-fieldWidth + i*fieldWidth*2/10, randomYPosition(sectionBegin, sectionEnd), sectionBegin, sectionEnd, 20.0);
+			}
+			break;
+			// Doppelt verschwindend
+		case 10:
+			for (int i = 0; i < 10; ++i)
+			{
+				for (int j = 0; j < 2; ++j)
+				{
+					addPlatformDisappear(randomXPosition(2, j), randomYPosition(sectionBegin, sectionEnd));
+				}
+			}
+			break;
+			// Doppelt Timer
+		case 11:
+			for (int i = 0; i < 10; ++i)
+			{
+				for (int j = 0; j < 2; ++j)
+				{
+					addPlatformTimer(randomXPosition(2, j), randomYPosition(sectionBegin, sectionEnd), 6.0, 1.5);
+				}
 			}
 			break;
 		}
 		orxout() << "new section added with number "<< sectionNumber << endl;
+
+		fakeAdded_ = false;
 
 		++ sectionNumber;
     }
 
     float Jump::randomXPosition()
     {
-    	return (float)(rand()%(2*(int)center_->getFieldDimension().x)) - center_->getFieldDimension().x;
+        float fieldWidth = center_->getFieldDimension().x;
+
+    	return (float)(rand()%(2*(int)fieldWidth)) - fieldWidth;
+    }
+
+    float Jump::randomXPosition(int totalColumns, int culomn)
+    {
+    	float fieldWidth = center_->getFieldDimension().x;
+
+    	float width = 2*fieldWidth/totalColumns;
+    	float leftBound = culomn*width-fieldWidth;
+    	float platformLength = center_->getPlatformLength();
+
+    	return (float)(rand()%(int)(width-platformLength)) + leftBound + platformLength/2;
     }
 
     float Jump::randomYPosition(float lowerBoundary, float upperBoundary)
     {
-    	return (float)(rand()%(int)(upperBoundary - lowerBoundary)) + lowerBoundary;
+    	return (float)(rand()%(int)(100*(upperBoundary - lowerBoundary)))/100 + lowerBoundary;
     }
 
     int Jump::getScore(PlayerInfo* player) const

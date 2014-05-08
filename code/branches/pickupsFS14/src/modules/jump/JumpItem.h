@@ -27,13 +27,13 @@
  */
 
 /**
-    @file JumpPlatform.h
-    @brief Declaration of the JumpPlatform class.
+    @file JumpItem.h
+    @brief Declaration of the JumpItem class.
     @ingroup Jump
 */
 
-#ifndef _JumpPlatform_H__
-#define _JumpPlatform_H__
+#ifndef _JumpItem_H__
+#define _JumpItem_H__
 
 #include "jump/JumpPrereqs.h"
 
@@ -56,11 +56,11 @@ namespace orxonox
 
     @ingroup Jump
     */
-    class _JumpExport JumpPlatform : public MovableEntity
+    class _JumpExport JumpItem : public MovableEntity
     {
         public:
-            JumpPlatform(Context* context);
-            virtual ~JumpPlatform();
+            JumpItem(Context* context);
+            virtual ~JumpItem();
 
             virtual void tick(float dt);
 
@@ -86,29 +86,23 @@ namespace orxonox
             Vector2 getFieldDimension() const
                 { return Vector2(this->fieldWidth_, this->fieldHeight_); }
 
+            virtual void setProperties(float newLeftBoundary, float newRightBoundary, float newLowerBoundary, float newUpperBoundary, float newHSpeed, float newVSpeed);
 
             void setFigure(WeakPtr<JumpFigure> bats); //!< Set the bats for the ball.
 
-            virtual void accelerateFigure();
             virtual void touchFigure();
-
-            static const float MAX_REL_Z_VELOCITY;
-
-            void setDefScoreSound(const std::string& engineSound);
-            const std::string& getDefScoreSound();
-            void setDefBatSound(const std::string& engineSound);
-            const std::string& getDefBatSound();
-            void setDefBoundarySound(const std::string& engineSound);
-            const std::string& getDefBoundarySound();
 
         protected:
             float fieldWidth_; //!< The width of the playing field.
             float fieldHeight_; //!< The height of the playing field.
+
+            float leftBoundary_;
+            float rightBoundary_;
+            float lowerBoundary_;
+            float upperBoundary_;
+
             WeakPtr<JumpFigure> figure_; //!< An array with the two bats.
-            WorldSound* defScoreSound_;
-            WorldSound* defBatSound_;
-            WorldSound* defBoundarySound_;
     };
 }
 
-#endif /* _JumpPlatform_H__ */
+#endif /* _JumpItem_H__ */
