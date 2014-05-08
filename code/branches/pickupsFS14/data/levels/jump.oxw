@@ -1,0 +1,272 @@
+<LevelInfo
+ name = "Jump"
+ description = "Jump in space!"
+ tags = "minigame"
+ screenshot = "pong.png"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")  
+  include("jumpHUD.oxo")
+  include("stats.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<Template name=jumpfigurecameras defaults=0>
+  <JumpFigure>
+    <camerapositions>
+      <CameraPosition position="0,-150,0" absolute=true mouselook=false drag=false lookat="0,0,0"/>
+    </camerapositions>
+  </JumpFigure>
+</Template>
+
+
+
+<Template name=jumpFigureTemplate>
+  <JumpFigure camerapositiontemplate=jumpfigurecameras mouseFactor="100.0">
+    <attached>
+      <Model position="0,0,0" mesh="sphere.mesh" scale=4 />
+    </attached>
+  <!--
+      <controller>
+        <HumanController />
+      </controller>    
+    -->
+  </JumpFigure>
+</Template>
+
+<Template name=jumpProjectileTemplate>
+  <JumpProjectile>
+    <attached>
+      <Model mesh="Projectile.mesh" scale=1.2  pitch=90/>
+      <ParticleEmitter scale=1 pitch=0 roll=0 position="0, 0, 0" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=0.0 />
+    </attached>
+  </JumpProjectile>
+</Template>
+
+<Template name=jumpPlatformStaticTemplate>
+  <JumpPlatformStatic>
+    <attached>
+      <Model mesh="Platform01.mesh" scale=1.2  pitch=90/>
+    </attached>
+  </JumpPlatformStatic>
+</Template>
+
+<Template name=jumpPlatformHMoveTemplate>
+  <JumpPlatformHMove>
+    <attached>
+      <Model mesh="Platform02.mesh" scale=1.2  pitch=90/>
+      <Backlight scale=0.2 colour="0.1, 0.1, 1.0" width=7 length=500 lifetime=0.3 elements=20 trailmaterial="Trail/backlighttrail" material="Examples/Flare" loop=1 />
+    </attached>
+  </JumpPlatformHMove>
+</Template>
+
+<Template name=jumpPlatformVMoveTemplate>
+  <JumpPlatformVMove>
+    <attached>
+      <Model mesh="Platform03.mesh" scale=1.2  pitch=90/>
+      <Backlight scale=0.2 colour="1.0, 1.0, 1.0" width=7 length=500 lifetime=0.3 elements=20 trailmaterial="Trail/backlighttrail" material="Examples/Flare" loop=1 />
+    </attached>
+  </JumpPlatformVMove>
+</Template>
+
+<Template name=jumpPlatformDisappearTemplate>
+  <JumpPlatformDisappear>
+    <attached>
+      <Model mesh="Platform04.mesh" scale=1.2  pitch=90/>
+      <Backlight scale=0.2 colour="0.0, 0.0, 1.0" width=7 length=500 lifetime=0.3 elements=20 trailmaterial="Trail/backlighttrail" material="Examples/Flare" loop=1 />
+            <Backlight scale=0.2 colour="0.0, 1.0, 0.1" width=7 length=500 lifetime=0.3 elements=20 trailmaterial="Trail/backlighttrail" material="Examples/Flare" loop=1 />       
+    </attached>
+  </JumpPlatformDisappear>
+</Template>
+
+<Template name=jumpPlatformTimerTemplate>
+  <JumpPlatformTimer effectPath="Orxonox/BigExplosion1part2" effectStartTime="0.4">
+    <attached>
+      <Model mesh="Platform05.mesh" scale=1.2  pitch=90/>
+      <ParticleEmitter scaled3D="5.0, 1.0, 2.0" pitch=0 roll=0 position="0, 0, -2.0" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=0.0 />
+
+      <!-- <ParticleSpawner name=hiteffect position="0,0,0" source="Orxonox/sparks2" lifetime=0.01 autostart=0 mainstate=spawn /> -->
+    </attached>
+  </JumpPlatformTimer>
+</Template>
+
+<Template name=jumpPlatformFakeTemplate>
+  <JumpPlatformFake>
+    <attached>
+      <Model mesh="Platform06.mesh" scale=1.2  pitch=90/>
+      <ParticleEmitter scale3D="0.2,0.2,0.2" pitch=0 roll=0 position="0, 0, -2.5" source="Orxonox/sparks" lifetime=1.0 loop=1 startdelay=0.0 />
+    </attached>
+  </JumpPlatformFake>
+</Template>
+
+<Template name=jumpPlatformEnemy1Template>
+  <JumpEnemy>
+    <attached>
+      <Model mesh="cube.mesh" scale3D="10.0, 4.0, 4.0"  pitch=90/>
+    </attached>
+  </JumpEnemy>
+</Template>
+
+
+<Level gametype = "Jump">
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <WorldAmbientSound source="Ganymede.ogg" looping="true" playOnLoad="true"/>
+  <JumpBot />
+
+  <Scene ambientlight="1.0, 1.0, 1.0" skybox="Orxonox/skyBoxBasic">
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <SpawnPoint position="991.729, -110.11, 435.404" orientation="0.534038, 0.563456, 0.212168, 0.593553" />
+
+    <MovableEntity>
+      <attached>
+        <JumpCenterpoint
+          name=jumpcenter
+          dimension="120,80"
+          sectionLength="100"
+          platformLength="12"
+
+          platformStaticTemplate=jumpPlatformStaticTemplate
+          platformHMoveTemplate=jumpPlatformHMoveTemplate
+          platformVMoveTemplate=jumpPlatformVMoveTemplate
+          platformDisappearTemplate=jumpPlatformDisappearTemplate
+          platformTimerTemplate=jumpPlatformTimerTemplate
+          platformFakeTemplate=jumpPlatformFakeTemplate
+          enemy1Template=jumpPlatformEnemy1Template
+          figureTemplate=jumpFigureTemplate
+          projectileTemplate=jumpProjectileTemplate>
+
+          <attached>
+
+            <Model position="0,0,-1000" mesh="Platform01.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="Platform02.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="Platform03.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="Platform04.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="Platform05.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="Platform06.mesh" scale="1" />
+
+            <Model position="0,0,-1000" mesh="Projectile.mesh" scale="1" />
+
+            <!--                   
+            <Model position="0,0,60" mesh="cube.mesh" scale3D="105,1,1" />
+            <Model position="0,0,-60" mesh="cube.mesh" scale3D="105,1,1" />            
+            
+            <ParticleSpawner name=scoreeffect_right position="120,0, 45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_right position="120,0, 30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+            <ParticleSpawner name=scoreeffect_right position="120,0, 15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_right position="120,0,  0" source="Orxonox/BigExplosion1part2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_right position="120,0,-15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_right position="120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+            <ParticleSpawner name=scoreeffect_right position="120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+
+            <ParticleSpawner name=scoreeffect_left position="-120,0, 45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_left position="-120,0, 30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+            <ParticleSpawner name=scoreeffect_left position="-120,0, 15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_left position="-120,0,  0" source="Orxonox/BigExplosion1part2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_left position="-120,0,-15" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            <ParticleSpawner name=scoreeffect_left position="-120,0,-30" source="Orxonox/BigExplosion1part2" lifetime=3.0 autostart=0 />
+            <ParticleSpawner name=scoreeffect_left position="-120,0,-45" source="Orxonox/sparks2" lifetime=0.1 autostart=0 />
+            
+            <?lua
+              for i = 1, 15, 1 do
+            ?>
+              <ParticleSpawner name=scoreeffect_center position="<?lua print(math.random() * 200 - 100) ?>,0,<?lua print(math.random() * 120 - 60) ?>" source="Orxonox/sparks2" lifetime=0.02 autostart=0 startdelay=<?lua print(math.random() * 0.7) ?> />
+            <?lua end ?>
+            -->
+          </attached>
+        </JumpCenterpoint>
+      </attached>
+    </MovableEntity>
+
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=scoreeffect_right />
+        <EventTarget target=scoreeffect_center />
+      </targets>
+      <events>
+        <spawn>
+          <EventFilter>
+            <names>
+              <EventName name=right />
+            </names>
+            <EventListener event=jumpcenter />
+          </EventFilter>
+        </spawn>
+      </events>
+    </EventDispatcher>
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=scoreeffect_left />
+        <EventTarget target=scoreeffect_center />
+      </targets>
+      <events>
+        <spawn>
+          <EventFilter>
+            <names>
+              <EventName name=left />
+            </names>
+            <EventListener event=jumpcenter />
+          </EventFilter>
+        </spawn>
+      </events>
+    </EventDispatcher>
+
+    <?lua
+      dofile("includes/CuboidSpaceStation.lua")
+    ?>
+
+    <StaticEntity pitch=15>
+      <attached>
+        <MovableEntity rotationrate="-4.15786" rotationaxis="0,0,1">
+          <attached>
+            <StaticEntity position="-2500,0,0" yaw=90 pitch=90>
+              <attached>
+                <?lua
+                  createSpaceStationPar(0,2,1,2,1,4,1,50)
+                ?>
+              </attached>
+            </StaticEntity>
+          </attached>
+        </MovableEntity>
+      </attached>
+    </StaticEntity>
+
+    <StaticEntity position="0,1200,-200" yaw=50 pitch=60 roll=45>
+      <attached>
+        <Model scale=10 mesh="Carrier.mesh" />
+        <Model position="0,30,20" scale=10 mesh="pirate.mesh" roll="180" />
+        <Model position="-80,-30,20" scale=10 mesh="pirate.mesh" roll="180" />
+      </attached>
+    </StaticEntity>
+
+    <StaticEntity pitch=70>
+      <attached>
+        <MovableEntity rotationaxis="0,0,1" rotationrate=8.5974>
+          <attached>
+            <StaticEntity yaw=-90 pitch=0 roll=90 position="800,0,0">
+              <attached>
+                <Model position="0,0,0" scale=10 mesh="satellite.mesh" />
+                <MovableEntity position="-4,0,20" velocity="0,0,0" rotationaxis="0,0,1" rotationrate=50>
+                  <attached>
+                    <Model position="0,0,0" scale=10 mesh="satellitedish.mesh"/>
+                  </attached>
+                </MovableEntity>
+                <!--
+                <ParticleEmitter pitch=-135 roll=30 position="-14, 3.5,-2.5" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+                <ParticleEmitter pitch=135 roll=30 position="-14, 3.5,-9" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+                <ParticleEmitter pitch=-45 roll=30 position="-14,-3.5,-2.5" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+                <ParticleEmitter pitch=45 roll=30 position="-14,-3.5,-9" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+              -->
+              </attached>
+            </StaticEntity>
+          </attached>
+        </MovableEntity>
+      </attached>
+    </StaticEntity>
+  </Scene>
+</Level>
