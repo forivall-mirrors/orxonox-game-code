@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "Item.h"
+#include "items/PartDestructionEvent.h"
 
 #include <string>
 
@@ -57,6 +58,9 @@ namespace orxonox // tolua_export
             void addEntity(StaticEntity* entity);
             StaticEntity* getEntity(unsigned int index);
             bool hasEntity(StaticEntity* entity) const;
+
+            void addDestructionEvent(PartDestructionEvent* event);
+            PartDestructionEvent* getDestructionEvent(unsigned int index);
 
             void printEntities(); // FIXME: (noep) remove debug
 
@@ -101,6 +105,8 @@ namespace orxonox // tolua_export
 
         private:
             std::vector<StaticEntity*> entityList_; // list of all entities which belong to this part
+            std::vector<PartDestructionEvent*> eventList_;  // The list of all PartDestructionEvent assigned to this ShipPart.
+
 
     }; // tolua_export
 } // tolua_export

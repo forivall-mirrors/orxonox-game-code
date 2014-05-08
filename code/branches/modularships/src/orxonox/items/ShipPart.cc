@@ -39,6 +39,7 @@
 #include "worldentities/pawns/ModularSpaceShip.h"
 #include "gametypes/Gametype.h"
 #include "worldentities/StaticEntity.h"
+#include "items/PartDestructionEvent.h"
 
 
 namespace orxonox
@@ -65,6 +66,8 @@ namespace orxonox
         XMLPortParam(ShipPart, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
 
         XMLPortParam(ShipPart, "damageabsorption", setDamageAbsorption, getDamageAbsorption, xmlelement, mode).defaultValues(0.5);
+
+        XMLPortObject(ShipPart, PartDestructionEvent, "destructionevents", addDestructionEvent, getDestructionEvent, xmlelement, mode);
 
         /*
         XMLPortParam(ShipPart, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
@@ -141,6 +144,33 @@ namespace orxonox
         {
             orxout() << "  " << this->entityList_[j]->getName() << endl;
         }
+    }
+
+    /**
+    @brief
+        Add a PartDestructionEvent to the ShipPart.
+    @param engine
+        A pointer to the PartDestructionEvent to be added.
+    */
+    void ShipPart::addDestructionEvent(PartDestructionEvent* part)
+    {
+        OrxAssert(part != NULL, "The PartDestructionEvent cannot be NULL.");
+        this->eventList_.push_back(part);
+        //part->setParent(this);
+    }
+
+    /**
+    @brief
+        Get the i-th PartDestructionEvent of the ShipPart.
+    @return
+        Returns a pointer to the i-the PartDestructionEvent. NULL if there is no PartDestructionEvent with that index.
+    */
+    PartDestructionEvent* ShipPart::getDestructionEvent(unsigned int index)
+    {
+        if(this->eventList_.size() >= index)
+            return NULL;
+        else
+            return this->eventList_[index];
     }
 
     void ShipPart::setDamageAbsorption(float value)

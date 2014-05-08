@@ -118,6 +118,7 @@ namespace orxonox
     */
     WorldEntity::~WorldEntity()
     {
+        orxout() << "destroying " << this->getIdentifier()->getName() << endl;
         if (this->isInitialized())
         {
             if (this->parent_)

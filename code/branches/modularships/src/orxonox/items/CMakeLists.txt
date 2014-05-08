@@ -3,4 +3,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Engine.cc
   MultiStateEngine.cc
   ShipPart.cc
+  PartDestructionEvent.cc
 )

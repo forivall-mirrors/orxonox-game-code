@@ -302,7 +302,7 @@ namespace orxonox
             it++;
         }
         // Remove the part-entity assignment and detach the Entity of this ShipPart
-        for (std::map<StaticEntity*, ShipPart*>::iterator itt = this->partMap_.begin(); itt != this->partMap_.end(); ++itt)
+        for (std::map<StaticEntity*, ShipPart*>::iterator itt = this->partMap_.begin(); itt != this->partMap_.end(); )
         {
             if (itt->second == part)
             {
@@ -313,7 +313,9 @@ namespace orxonox
                 //itt->first->setCollisionResponse(false);
                 //itt->first->setCollisionType(None);
                 //itt->first->deactivatePhysics();
-                this->partMap_.erase(itt);
+                this->partMap_.erase(itt++);
+            } else {
+                ++itt;
             }
         }
     }

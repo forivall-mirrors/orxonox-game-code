@@ -142,6 +142,7 @@ namespace orxonox
 
     // items
     class ShipPart;
+    class PartDestructionEvent;
     class Engine;
     class Item;
     class MultiStateEngine;
