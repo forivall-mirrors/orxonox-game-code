@@ -20,14 +20,13 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Marian Runo
+ *      Marian Runo, Martin Mueller
  *   Co-authors:
  *      ...
  *
  */
 
 /**
-    @file Turret.h
     @brief Definition of the Turret class.
     @ingroup Objects
 */
@@ -40,6 +39,15 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        Creates a turret with limited rotation. The point of this class is to be able to attach
+        a turret to a spaceship or a spacestation which is more or less completely autonomous in
+        it's behaviour.
+
+    @note
+        The rotation isn't limited "physically". You have to call isInRange to find out if the turret is allowed to shoot at a target.
+    */
     class _ObjectsExport Turret : public Pawn
     {
         public:
@@ -55,42 +63,57 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
-            inline void setAttackRadius(float radius)
-                { this->attackRadius_ = radius; }
+            /** @brief Sets the maximum distance the turret is allowed to shoot. @param radius The distance*/
+            inline void setMaxAttackRadius(float radius)
+                { this->maxAttackRadius_ = radius; }
 
+            /** @brief Sets the minimum distance the turret is allowed to shoot. @param radius The distance*/
+            inline void setMinAttackRadius(float radius)
+                { this->minAttackRadius_ = radius; }
+
+            /** @brief Sets the maximum pitch the turret can have (in both directions). @param pitch The pitch (in one direction)*/
             inline void setMaxPitch(float pitch)
                 { this->maxPitch_ = pitch; }
 
+            /** @brief Sets the maximum yaw the turret can have (in both directions). @param yaw The yaw (in one direction)*/
             inline void setMaxYaw(float yaw)
                 { this->maxYaw_ = yaw; }
 
-            inline float getAttackRadius() const
-                { return this->attackRadius_; }                
+            /** @brief Returns the maximum distance the turret is allowed to shoot. @return The distance */
+            inline float getMaxAttackRadius() const
+                { return this->maxAttackRadius_; }                
 
+            /** @brief Returns the minimum distance the turret is allowed to shoot. @return The distance */
+            inline float getMinAttackRadius() const
+                { return this->minAttackRadius_; }   
+
+            /** @brief Returns the maximum pitch the turret can have. @return The pitch */
             inline float getMaxPitch() const
                 { return this->maxPitch_; }
 
+            /** @brief Returns the maximum yaw the turret can have. @return The yaw */
             inline float getMaxYaw() const
                 { return this->maxYaw_; }
 
         protected:
-            Vector3 startDir_;
-            Vector3 localZ_;
-            Vector3 localZStart_;
-            Vector3 localY_;
-            Vector3 localYStart_;
-            Vector3 localX_;
-            Vector3 localXStart_;           
+            Vector3 startDir_; //!< The initial facing direction, in local coordinates.
+            Vector3 localZ_; //!< The local z-axis, includes for the parent's rotation and rotations done in xml.
+            Vector3 localY_; //!< The local y-axis, includes for the parent's rotation and rotations done in xml.
+            Vector3 localX_; //!< The local x-axis, includes for the parent's rotation and rotations done in xml.      
+            Quaternion rotation_; //!< The rotation to be done by the turret.
 
         private:
-            bool once_;
+            bool once_; //!< Flag for executing code in the tick function only once.
 
-            float attackRadius_;
-            Ogre::Real maxPitch_;
-            Ogre::Real maxYaw_;
-            float rotationThrust_;
+            Vector3 localZStart_; //!< The local z-axis, without the parent's rotation.
+            Vector3 localYStart_; //!< The local y-axis, without the parent's rotation.
+            Vector3 localXStart_; //!< The local x-axis, without the parent's rotation.
+            float maxAttackRadius_; //!< The maximum distance the turret is allowed to shoot.
+            float minAttackRadius_; //!< The minimum distance the turret is allowed to shoot.
+            Ogre::Real maxPitch_; //!< The maxmium pitch the turret can have (on one side).
+            Ogre::Real maxYaw_; //!< The maxmium yaw the turret can have (on one side).
+            float rotationThrust_;  //!< The velocity the turret rotates with.
 
-            Quaternion rotation_;
     };
 }
 

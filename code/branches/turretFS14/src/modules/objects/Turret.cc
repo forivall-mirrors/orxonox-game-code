@@ -37,7 +37,11 @@ namespace orxonox
 
 
     /**
-     * @brief Constructor
+        @brief 
+        Sets default values for all variables. Also hides the turret from the radar.
+
+        @param context
+        The context
      */
     Turret::Turret(Context* context) : Pawn(context)
     {
@@ -47,7 +51,8 @@ namespace orxonox
         this->localZ_ = Vector3::UNIT_Z;
         this->localY_ = Vector3::UNIT_Y;
         this->localX_ = Vector3::UNIT_X;
-        this->attackRadius_ = 200;
+        this->maxAttackRadius_ = 200;
+        this->minAttackRadius_ = 0;
         this->maxPitch_ = 90;
         this->maxYaw_ = 90;
         this->once_ = false;
@@ -57,19 +62,30 @@ namespace orxonox
     }
 
     /**
-     * @brief Destructor
+        @brief 
+        Destructor. Nothing to see here.
      */
     Turret::~Turret()
     {
 
     }
 
+    /**
+        @brief
+        Checks, if a (world)position is inside the turret's range.
 
+        This function is safe to use on turrets that are attached, rotated, etc.
+        The turret's range is determined with the maxPitch, maxYaw, and the two attackRadius'.
+
+        @param position
+        The position to check
+    */
     bool Turret::isInRange(const Vector3 &position)
     {
         //Check distance
         Vector3 distance = position - this->getWorldPosition();
-        if(distance.squaredLength() > (this->attackRadius_ * this->attackRadius_))
+        float distanceVal = distance.squaredLength();
+        if(distanceVal > (this->maxAttackRadius_ * this->maxAttackRadius_) || distanceVal < (this->minAttackRadius_ * this->minAttackRadius_))
         {
             return false;
         }
@@ -99,15 +115,31 @@ namespace orxonox
         return true;
     }
 
+    /**
+        @brief
+        Rotates the turret to make it aim at a certain position.
+
+        @note
+        There are no checks, if the position is valid (i.e. if the turret is allowed to aim there).
+        This function must be called again for every tick, or the turret will stop rotating.
+
+        @param position
+        The position to aim at
+    */
     void Turret::aimAtPosition(const Vector3& position)
     {
         Vector3 currDir = this->getWorldOrientation() * WorldEntity::FRONT;
         Vector3 targetDir = position - this->getWorldPosition();
 
         this->rotation_ = currDir.getRotationTo(targetDir);
-
     }
 
+    /**
+        @brief
+        Does currently nothing.
+
+        Should rotate the turret with the specified pitch. Contains a failed attempt at limiting said rotation.
+    */
     void Turret::rotatePitch(const Vector2& value)
     {    
         //This is a failed attempt at limiting the turret's rotation. It's handled in the controller (for now?)
@@ -126,6 +158,12 @@ namespace orxonox
         */
     }
 
+    /**
+        @brief
+        Does currently nothing.
+
+        Should rotate the turret with the specified yaw. Contains a failed attempt at limiting said rotation.
+    */
     void Turret::rotateYaw(const Vector2& value)
     {
         //This is a failed attempt at limiting the turret's rotation. It's handled in the controller (for now?)
@@ -144,20 +182,39 @@ namespace orxonox
         */
     }
 
+    /**
+        @brief
+        Does currently nothing.
+
+        May be used to limit turret's rotation in the future.
+    */
     void Turret::rotateRoll(const Vector2& value)
     {
     }
 
+    /**
+        @brief
+        Loads parameters from xml
+
+        Parameters loaded are: rotationThrust, maxAttackRadius, minAttackRadius, maxYaw, maxPitch
+    */
     void Turret::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Turret, XMLPort, xmlelement, mode);
         
         XMLPortParamVariable(Turret, "rotationThrust", rotationThrust_, xmlelement, mode);
-        XMLPortParam(Turret, "attackRadius", setAttackRadius, getAttackRadius, xmlelement, mode);
+        XMLPortParam(Turret, "maxAttackRadius", setMaxAttackRadius, getMaxAttackRadius, xmlelement, mode);
+        XMLPortParam(Turret, "minAttackRadius", setMinAttackRadius, getMinAttackRadius, xmlelement, mode);
         XMLPortParam(Turret, "maxYaw", setMaxYaw, getMaxYaw, xmlelement, mode);
         XMLPortParam(Turret, "maxPitch", setMaxPitch, getMaxPitch, xmlelement, mode);
     }
 
+    /**
+        @brief
+        The turret's actions are done here.
+
+        Every tick, the turret gets rotated if it should, and the local axes get updated with the parent's rotation.
+    */
     void Turret::tick(float dt)
     {
         SUPER(Turret, tick, dt);
@@ -165,7 +222,7 @@ namespace orxonox
 
         if(!this->once_)
         {
-
+            //Account for rotations done in xml
             Quaternion startOrient = this->getOrientation();
             this->localXStart_ = startOrient * this->localX_;
             this->localXStart_.normalise();
@@ -197,8 +254,8 @@ namespace orxonox
         //rotate
         if(this->rotation_ != Quaternion::IDENTITY)
         {
-            //Don't make the rotation instantaneous
-            Quaternion drot = Quaternion::Slerp(dt*this->rotationThrust_/20.f, Quaternion::IDENTITY, this->rotation_);
+            //Don't make the rotation instantaneous. Use an arbitrary interpolation, not that great...
+            Quaternion drot = Quaternion::nlerp(dt*this->rotationThrust_/20.f, Quaternion::IDENTITY, this->rotation_);
             this->rotate(drot, WorldEntity::World);
             this->rotation_ = Quaternion::IDENTITY;
         }

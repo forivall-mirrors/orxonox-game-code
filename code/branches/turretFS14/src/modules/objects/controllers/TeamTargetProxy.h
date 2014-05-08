@@ -26,37 +26,23 @@
  *
  */
 
-/**
-    @brief Definition for the controller for turrets.
-*/
-
-#ifndef _TurretController_H__
-#define _TurretController_H__
+#ifndef _TeamTargetProxy_H__
+#define _TeamTargetProxy_H__
 
 #include "OrxonoxPrereqs.h"
-#include "controllers/ArtificialController.h"
+#include "controllers/FormationController.h"
 
  namespace orxonox
  {
- 	/**
- 		@brief
- 		Controller for turrets. Chooses a target, and makes the turret aim/shoot at it.
-
- 		The controllableEntity gets casted to Turret, so this controller won't work for anything else.
- 	*/
- 	class _OrxonoxExport TurretController : public ArtificialController, public Tickable
+ 	class _OrxonoxExport TeamTargetProxy : public FormationController, public Tickable
  	{
  		public:
- 			TurretController(Context* context);
- 			virtual ~TurretController();
+ 			TeamTargetProxy(Context* context);
+ 			virtual ~TeamTargetProxy();
 
  			virtual void tick(float dt);
 
  		private:
-
- 			void searchTarget();
- 			bool isLookingAtTargetNew(float angle) const;
-
  			bool once_;
  	};
  }

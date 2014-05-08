@@ -135,7 +135,6 @@
  			if(this->isLookingAtTargetNew(Degree(5).valueRadians()))
  			{
  				this->getControllableEntity()->fire(0);
- 				orxout() << 42 << endl;
  			}
  		}
  	}

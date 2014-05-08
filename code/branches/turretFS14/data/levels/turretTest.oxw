@@ -15,8 +15,8 @@
 
 <?lua
   include("templates/spaceshipAssff.oxt")
-  include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipTurretTest.oxt")
+  include("templates/spaceshipTransporter.oxt")
+  include("templates/standardTurret.oxt")
 ?>
 
 <Level>
@@ -32,64 +32,30 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
-
-<!-- <SpaceShip position="-100,0,0" yaw=0 pitch=0>
-    <attached>
-        <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
-
-        <Turret position="0,10,0" pitch="90" yaw="0" roll="0" maxPitch=90 maxYaw=90 attackRadius=2000>
-            <templates>
-              <Template link=spaceshipturrettest />
-            </templates>
-            <controller>
-              <TurretController team=10 />
-            </controller>
-        </Turret>
-
-        <Model mesh="sphere.mesh" position="20,0,0" scale=1/>
-
-        <Model mesh="sphere.mesh" position="0,25,0" scale=1/>
-
-        <Model mesh="sphere.mesh" position="0,0,30" scale=1/>
-
-    </attached>
-</SpaceShip> -->
-
-
-<StaticEntity position="100,0,0">
+<SpaceShip>
   <attached>
-    <Model mesh="sphere.mesh" position="20,0,0" scale=1/>
-
-    <Model mesh="sphere.mesh" position="0,25,0" scale=1.5/>
-
-    <Model mesh="sphere.mesh" position="0,0,30" scale=2/>
+    <Turret position="10,2,0" pitch="90" yaw="0" roll="0" scale3D="0.2,0.2,0.2">
+      <templates>
+        <Template link=standardturret />
+      </templates>
+    </Turret>    
+    <Turret position="-10,2,0" pitch="90" yaw="0" roll="0" scale3D="0.2,0.2,0.2">
+      <templates>
+        <Template link=standardturret />
+      </templates>
+    </Turret>    
+    <Turret position="0,2,0" pitch="90" yaw="0" roll="0" scale3D="0.2,0.2,0.2">
+      <templates>
+        <Template link=standardturret />
+      </templates>
+    </Turret>    
   </attached>
-  
-</StaticEntity>
-<SpaceShip position="100,0,0" yaw=0 pitch=90>
-    <attached>
-        <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
-
-        <Turret position="0,10,0" pitch="90" yaw="0" roll="0" maxPitch=90 maxYaw=90 attackRadius=2000>
-            <templates>
-              <Template link=spaceshipturrettest />
-            </templates>
-            <controller>
-              <TurretController team=10 />
-            </controller>
-        </Turret>
-
-
-
-    </attached>
+  <templates>
+    <Template link=spaceshipassff />
+  </templates>
+<!--   <controller>
+    <AIController />
+  </controller> -->
 </SpaceShip>
 
 
