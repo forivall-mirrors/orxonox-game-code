@@ -37,7 +37,7 @@
 namespace orxonox  // tolua_export
 {  // tolua_export
     class _OrxonoxExport ScriptController // tolua_export 
-       : public ArtificialController
+       : public ArtificialController, public Tickable
     {  // tolua_export
         public:
             //ScriptController(Context* context, ControllableEntity* CE);
@@ -47,10 +47,13 @@ namespace orxonox  // tolua_export
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             
+            void takeControl(int ctrlid);
+            void setPlayer(PlayerInfo* player) { this->player_ = player; }
            
-            void set_luasrc(std::string);
-            void set_controlled(ControllableEntity*);
+            //void set_luasrc(std::string);
+            //void set_controlled(ControllableEntity*);
 
+            virtual void tick(float dt);
 
             // LUA interface
             // tolua_begin 
@@ -58,16 +61,19 @@ namespace orxonox  // tolua_export
 
            
             static ScriptController* getScriptController();
+
+            int getID() { return ctrlid_; }
             
-              /* virtual void tick(float dt);*/ 
 
             // tolua_end
             const Vector3& getPosition();
 
         private:
-        	std::string luasrc;		// name of the LUA-sourcefile that shall be executed->see XMLPort-function
-
-            ControllableEntity* controlled; //entity controlled by this SC
+            // name of the LUA-sourcefile that shall be executed->see XMLPort-function
+            std::string luasrc;		
+            PlayerInfo* player_;
+            ControllableEntity* entity_;
+            int ctrlid_;
 
 
     };// tolua_export

@@ -27,6 +27,7 @@
  */
 
 #include "ScriptController.h"
+#include "infos/PlayerInfo.h"
 #include "core/CoreIncludes.h"
 #include "worldentities/ControllableEntity.h"
 #include "core/LuaState.h"
@@ -41,18 +42,31 @@ namespace orxonox
     {
         RegisterObject(ScriptController);
         //set_controlled(CE);
+        this->ctrlid_ = 0;
     }
 
-    void ScriptController::set_luasrc(std::string lsrc)
+    void ScriptController::takeControl(int ctrlid)
     {
-        this->luasrc=lsrc;
+        orxout() << "ScriptController: Taking control" << endl;
+        orxout() << "This-pointer: " << this << endl;
+        this->ctrlid_ = ctrlid;
+        this->entity_ = this->player_->getControllableEntity();
+        assert(this->entity_);
+
+        this->entity_->setDestroyWhenPlayerLeft(false);
+        this->player_->pauseControl();
+        this->entity_->setController(this);
+        this->setControllableEntity(this->entity_);
     }
 
-    void ScriptController::set_controlled(ControllableEntity* toControl)
-    {
-        this->controlled=toControl;
-    }
-    
+    /* Yet to be implemented and tested */
+    //void ScriptController::yieldControl()
+    //{
+        //this->player_->startControl(this->entity_);
+        //this->setActive(false);
+        //this->controllableEntity_ = NULL;
+    //}
+
     void ScriptController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
     	//XMLPortParam(ScriptController, BaseObject, "lsrc", set_luasrc, xmlelement, mode);
@@ -61,7 +75,7 @@ namespace orxonox
 
     const Vector3& ScriptController::getPosition()
     {
-        return this->controlled->getPosition();
+        return this->entity_->getPosition();
     }
 
     ScriptController* ScriptController::getScriptController()
@@ -69,35 +83,56 @@ namespace orxonox
       /* Output a message that confirms this function was called */
       orxout() << "Great success!" << std::endl;
 
-      /* Loop over all the scriptcontrollers currently present in the game */
+      /* Debugging: print all the scriptcontroller object pointers */
+      for(ObjectList<ScriptController>::iterator it = 
+        ObjectList<ScriptController>::begin(); 
+        it != ObjectList<ScriptController>::end(); ++it)
+      { orxout() << "Have object in list: " << *it << endl; }
+
+      /* Find the first one with a nonzero ID */
       for(ObjectList<ScriptController>::iterator it = 
         ObjectList<ScriptController>::begin(); 
         it != ObjectList<ScriptController>::end(); ++it)
       { 
         // TODO: do some selection here. Currently just returns the first one
-        return *it; 
+        if( (*it)->getID() > 0 )
+          return *it; 
       
       }
       return NULL;
     }
 
+    void ScriptController::tick(float dt)
+    {
+        /* If this controller has no entity entry, do nothing */
+        if( !(this->entity_) )
+          return;
+
+        //orxout() << "Rotating!" << endl;
+
+        //this->entity_->rotateYaw(-1.0f * 100.0f * dt);
+        //this->entity_->rotatePitch(0.8f * 100.0f);
+
+        SUPER(ScriptController, tick, dt);
+    }
 
 
     void ScriptController::moveToPosition_beta(float x, float y, float z )
     {
-        /* The section commented out here below throws segfaults */
-        //const Vector3 local=getPosition();
-        //const Vector3 target=Vector3(x,y,z);
-        //Vector3 way=target-local;
+        //const Vector3 local = this->getPosition();
+        const Vector3 target = Vector3(100*x,100*y,100*z);
+        //Vector3 way = target-local;
+        orxout() << "Moving This-pointer: " << this << endl;
        
         
-        //this->controlled->lookAt(target);
-        //this->controlled->moveFrontBack(way.length());      
+        this->entity_->lookAt(target);
+        this->entity_->moveFrontBack(-1000*target.length());      
 
   
         /* This works fine */
         orxout()<<x<<"  "<<y<<"  "<<z<<endl;
     }
+
 
     /* TODO:    hilfs(zwischen)funktionen um lua eingabe zu ermoeglichen: zb moveToPosition(float...) weil in LUA wohl 
                 kein vektor3 definierbar ist

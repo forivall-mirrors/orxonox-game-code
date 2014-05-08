@@ -5,6 +5,7 @@
  */
 
 #include "ControllerDirector.h"
+#include "ScriptController.h"
 #include "core/CoreIncludes.h"
 
 //#include "network/NetworkFunction.h"
@@ -31,6 +32,7 @@ namespace orxonox
         this->player_ = NULL;
         this->entity_ = NULL;
         this->pTrigger_ = NULL;
+        this->context_ = context;
     }
 
     void ControllerDirector::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -63,9 +65,21 @@ namespace orxonox
        /* First, we set up a new controller to attach to the unit that
         * triggered our event. 
         */
-       static int ctrlid = 0;
-       // preparationTo(trigger);
-       // setNewController(controller);
+       static int ctrlid = 1;
+       bool prepok = preparationToTakeControl(trigger);
+       if( prepok == true) 
+       {
+         /* Create a scriptcontroller object */
+         ScriptController *newctrl = new ScriptController(this->context_);
+
+         /* Make the player we were given its slave */
+         newctrl->setPlayer(this->player_);
+
+         /* Start controlling that object */
+         newctrl->takeControl(ctrlid);
+       }
+       else
+         return;
        
        /* Set up a luastate to use for running the scripts */
        LuaState * ls = new LuaState();
@@ -89,32 +103,36 @@ namespace orxonox
     } 
 
 	
-    /*bool ControllerDirector::preparationToTakeControl(BaseObject * trigger) {
-
-	    this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
+    bool ControllerDirector::preparationToTakeControl(BaseObject * trigger) 
+    {
+        this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
         this->player_ = NULL;
 
         orxout() << "Preparation to take Control!" << endl; 
+
         // Check whether it is a player trigger and extract pawn from it
         if(this->pTrigger_ != NULL)
         {
-            
-            player_ = this->pTrigger_->getTriggeringPlayer();  //Get the object which triggered the event.
+            // Get the object which triggered the event.
+            this->player_ = this->pTrigger_->getTriggeringPlayer();  
+
+            // Check if there actually was a player returned.
+            if( this->player_ == NULL) return false;
         }
         else
         {
-            orxout() << "ControllerDirector::preparationToTakeControl Not a player trigger, can't extract pawn from it.." << endl;
+            orxout() << "ControllerDirector::preparationToTakeControl " 
+              << "Not a player trigger, can't extract pawn from it.." << endl;
             return false;
         }
 
-	
 	this->entity_ = this->player_->getControllableEntity();
 	assert(this->entity_);
 
-    return true;
-
+        return true;
     }
 
+    /* // Currently unused
     void ControllerDirector::setNewController(Controller * controller) {
 
 
@@ -123,12 +141,10 @@ namespace orxonox
         this->entity_->setDestroyWhenPlayerLeft(false);
         this->player_->pauseControl();
         this->entity_->setController(controller);
-        this->setControllableEntity(this->entity_);
-
-
-
+        this->player_->startControl(this->entity_);
+        //this->setControllableEntity(this->entity_);
     }
-*/
+    */
        
     
 
