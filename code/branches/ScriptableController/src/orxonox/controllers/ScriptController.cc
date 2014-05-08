@@ -35,6 +35,16 @@
 
 namespace orxonox
 {
+    float scTime=0;  /*initialise time, to coordinate eventTime*/
+
+
+
+    std::vector<event> eventList;
+
+    
+
+
+
     RegisterClass(ScriptController);
 
     //ScriptController::ScriptController(Context* context, ControllableEntity* CE) : ArtificialController(context)
@@ -102,6 +112,15 @@ namespace orxonox
       return NULL;
     }
 
+    void ScriptController::execute(event ev)
+    {
+        if(ev.fctName=="moveToPosition_beta")
+        {
+            moveToPosition_beta(ev.xCoord,ev.yCoord,ev.zCoord);
+        }
+    }
+
+
     void ScriptController::tick(float dt)
     {
         /* If this controller has no entity entry, do nothing */
@@ -113,8 +132,20 @@ namespace orxonox
         //this->entity_->rotateYaw(-1.0f * 100.0f * dt);
         //this->entity_->rotatePitch(0.8f * 100.0f);
 
+        if(eventList[0].eventTime<=scTime)
+        {
+            /*TO DO: execute the function: eventList[0].fctName*/
+
+
+            eventList.erase(eventList.begin());
+        }
+
         SUPER(ScriptController, tick, dt);
+
+        scTime=scTime+dt;
     }
+
+
 
 
     void ScriptController::moveToPosition_beta(float x, float y, float z )
@@ -133,13 +164,44 @@ namespace orxonox
         orxout()<<x<<"  "<<y<<"  "<<z<<endl;
     }
 
+    void ScriptController::eventScheduler(std::string instruction, float x, float y, float z, float executionTime)
+    {
+        /*put data (from LUA) into time-sorted eventList*/ 
+        /*nimmt den befehl und die argumente aus luascript und ertellt einen struct pro event, diese structs werden sortiert nach eventTime*/
+        struct event tmp;
+        tmp.fctName=instruction;
+        tmp.xCoord=x;
+        tmp.yCoord=y;
+        tmp.zCoord=z;
+        tmp.eventTime=executionTime;
 
-    /* TODO:    hilfs(zwischen)funktionen um lua eingabe zu ermoeglichen: zb moveToPosition(float...) weil in LUA wohl 
-                kein vektor3 definierbar ist
+        for(unsigned int i=0;i<eventList.size();i++)
+        {
+            if(tmp.eventTime<eventList[i].eventTime)
+            {
+                std::vector<event>::iterator it = eventList.begin();
 
-                NB: viele noetige funktionen sind schon in artificial- bzw formationcontroller vorhanden 
+                eventList.insert(it+(i+1),tmp);
+                break;
+            }
+            if(i==eventList.size()-1)
+            {
+                std::vector<event>::iterator it = eventList.end();
 
-                tick funktion?*/        
+                eventList.insert(it,tmp);
+
+            }
+
+        }
+        
+    }
+
+
+
+    /* TODO:    struct event erweitern um mehr funktionen benutzen zu koennen
+
+                mehr funktionen definieren (und dann in  execute if(...))
+                NB: viele noetige funktionen sind schon in artificial- bzw formationcontroller vorhanden */        
 
 
 

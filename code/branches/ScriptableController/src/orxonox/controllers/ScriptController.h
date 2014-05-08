@@ -34,8 +34,21 @@
 #include "core/EventIncludes.h"
 
 
+
 namespace orxonox  // tolua_export
 {  // tolua_export
+
+    struct event 
+    {   
+        std::string fctName;
+        float xCoord;
+        float yCoord;
+        float zCoord;
+
+        float eventTime;
+
+    }; 
+
     class _OrxonoxExport ScriptController // tolua_export 
        : public ArtificialController, public Tickable
     {  // tolua_export
@@ -59,7 +72,8 @@ namespace orxonox  // tolua_export
             // tolua_begin 
             void moveToPosition_beta(float x, float y, float z);
 
-           
+            void eventScheduler(std::string instruction, float x, float y, float z, float time);
+
             static ScriptController* getScriptController();
 
             int getID() { return ctrlid_; }
@@ -67,6 +81,8 @@ namespace orxonox  // tolua_export
 
             // tolua_end
             const Vector3& getPosition();
+
+            void execute(event ev);
 
         private:
             // name of the LUA-sourcefile that shall be executed->see XMLPort-function
