@@ -48,7 +48,7 @@ namespace orxonox
         : Item(context)
     {
         RegisterObject(PartDestructionEvent);
-        this->isValid_ = false;
+        this->setValid(true);
     }
 
     PartDestructionEvent::~PartDestructionEvent()
@@ -75,13 +75,30 @@ namespace orxonox
 
     void PartDestructionEvent::execute()
     {
-        if(!this->isValid_)
+        // Do not execute if this event is invalid
+        if(!isValid())
         {
-            //orxout(internal_warning) <<
+            orxout(internal_warning) << "Attempted to execute an invalid PartDestructionEvent!" << endl;
             return;
         }
 
+        if (this->targetType_ == "ship")
+        {
+            switch (this->targetParam_) {
+            case shieldhealth:
+                this->parent_->getParent()->setShieldHealth(operate(this->parent_->getParent()->getShieldHealth()));
+                break;
+            default:
+                break;
+            }
+            this->setValid(false);
+            return;
+        }
+    }
 
+    void PartDestructionEvent::setParent(ShipPart* part)
+    {
+        this->parent_ = part;
     }
 
     void PartDestructionEvent::setTargetType(std::string type)
@@ -94,8 +111,8 @@ namespace orxonox
         }
 
         // Error, if invalid target-type was entered.
-        orxout(internal_warning) << type << " is not a valid target-type for a PartDestructionEvent. Valid types are: ship engine weapon" << endl;
-        this->isValid_ = false;
+        orxout(internal_warning) << "\"" << type << "\" is not a valid target-type for a PartDestructionEvent. Valid types are: ship engine weapon" << endl;
+        this->setValid(false);
         return;
     }
 
@@ -116,7 +133,7 @@ namespace orxonox
         if (this->targetType_ == "NULL")
         {
             orxout(internal_warning) << "No valid target-type defined. Cannot set target-param for this PartDestructionEvent." << endl;
-            this->isValid_ = false;
+            this->setValid(false);
             return;
         }
 
@@ -130,19 +147,43 @@ namespace orxonox
         {
             if (param == "shieldhealth")
             {
-                this->targetParam_ = param;
+                this->targetParam_ = shieldhealth;
                 return;
             }
 
-            orxout(internal_warning) << param << " is not a valid target-param for a PartDestructionEvent with target-type \"ship\". Valid types are: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate" << endl;
+            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"ship\". Valid types are: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate" << endl;
             return;
         }
+
+        orxout(internal_warning) << "No valid target-param defined. The chosen param is either invalid or not available for this target-type." << endl;
+        this->setValid(false);
     }
 
     void PartDestructionEvent::setOperation(std::string operation)
     {
         // * + - destroy
-        this->operation_ = operation;
+        if ((operation == "*") || (operation == "+") || (operation == "-") || (operation == "destroy"))
+        {
+            this->operation_ = operation;
+            return;
+        }
+        this->operation_ = "NULL";
+        orxout(internal_warning) << "\"" << operation << "\" is not a valid operation for a PartDestructionEvent. Valid operations are: * + - destroy" << endl;
+    }
+
+    float PartDestructionEvent::operate(float input)
+    {
+        if (this->operation_ == "*")
+            return input * this->value_;
+        if (this->operation_ == "+")
+            return input + this->value_;
+        if (this->operation_ == "-")
+            return input - this->value_;
+        if (this->operation_ == "destroy")
+        {
+            return 0;
+        }
+        return 0;
     }
 
     void PartDestructionEvent::setEventValue(float value)

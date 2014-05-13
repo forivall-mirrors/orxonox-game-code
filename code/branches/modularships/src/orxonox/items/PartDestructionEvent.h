@@ -43,12 +43,30 @@ namespace orxonox // tolua_export
 
         public:
 
+            enum TargetParam
+            {
+                shieldhealth,
+                maxshieldhealth,
+                shieldabsorption,
+                shieldrechargerate,
+                null
+            };
+
             PartDestructionEvent(Context* context);
             virtual ~PartDestructionEvent();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void execute();
+
+            inline void setValid(bool valid)
+                { this->valid_ = valid; }
+            inline bool isValid()
+                { return this->valid_; }
+
+            void setParent(ShipPart* parent);
+            inline ShipPart* getParent()
+                { return this->parent_; }
 
             void setTargetType(std::string type);
             inline std::string getTargetType()
@@ -66,6 +84,8 @@ namespace orxonox // tolua_export
             inline std::string getOperation()
                 { return this->operation_; }
 
+            float operate(float input);
+
             void setEventValue(float value);
             inline float getEventValue()
                 { return this->value_; }
@@ -74,11 +94,12 @@ namespace orxonox // tolua_export
 
         private:
 
-            bool isValid_;
+            ShipPart* parent_;
+            bool valid_;
 
             std::string targetType_;
             std::string targetName_;
-            std::string targetParam_;
+            TargetParam targetParam_;
             std::string operation_;
 
             float value_;

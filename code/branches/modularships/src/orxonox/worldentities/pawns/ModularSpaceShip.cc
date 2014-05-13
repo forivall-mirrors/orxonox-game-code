@@ -132,13 +132,13 @@ namespace orxonox
         SmartPtr<StaticEntity>* one = &newSmartPtr;
         this->entityPtrList_.push_back(one);
 
-        this->createCSPtrList(this->getWorldEntityCollisionShape());
+        //this->createCSPtrList(this->getWorldEntityCollisionShape());
 
         orxout() << "New entity-part assignment created!" << endl;
     }
 
     // This should add smartPointers to all (Orxonox)Collisionshapes of this SpaceShip, preventing them fromg etting deleted. Might not work due to weird acting getAttachedShape
-    void ModularSpaceShip::createCSPtrList(CompoundCollisionShape* cs)
+    void ModularSpaceShip::createCSPtrList(CompoundCollisionShape* cs) // FIXME: (noep) remove debug
     {
         for (int i=0; i < cs->getNumChildShapes(); i++)
         {
@@ -207,8 +207,6 @@ namespace orxonox
 
         //orxout() << "ShipPart of Entity " << cs->getUserPointer() << ": " << this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) << endl;
 
-        orxout() << "CP before handleHit" << endl;
-
         if (this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
             this->getPartOfEntity((StaticEntity*)(cs->getUserPointer()))->handleHit(damage, healthdamage, shielddamage, originator);
         else
@@ -254,7 +252,6 @@ namespace orxonox
         OrxAssert(part != NULL, "The ShipPart cannot be NULL.");
         this->partList_.push_back(part);
         part->setParent(this);
-        //part->addToSpaceShip(this); //FIXME: (noep) add
         this->updatePartAssignment();
     }
 
@@ -266,7 +263,7 @@ namespace orxonox
     */
     ShipPart* ModularSpaceShip::getShipPart(unsigned int index)
     {
-        if(this->partList_.size() >= index)
+        if(this->partList_.size() <= index)
             return NULL;
         else
             return this->partList_[index];
@@ -338,7 +335,7 @@ namespace orxonox
 
         this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
         this->detachCollisionShape(object->collisionShape_);  // after succeeding, causes a crash in the collision handling
-        this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
+        //this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
 
         // mass
         if (object->getMass() > 0.0f)

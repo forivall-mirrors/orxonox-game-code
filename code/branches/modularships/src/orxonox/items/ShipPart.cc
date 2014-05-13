@@ -50,6 +50,7 @@ namespace orxonox
         : Item(context)
     {
         RegisterObject(ShipPart);
+        this->setAlive(true);
     }
 
     ShipPart::~ShipPart()
@@ -90,6 +91,19 @@ namespace orxonox
 
     void ShipPart::death()
     {
+        if (!(this->isAlive()))
+            return;
+
+        this->setAlive(false);
+
+        // Execute all destruction events
+        for (unsigned int i = 0; i < this->eventList_.size(); i++)
+        {
+            orxout() << "executing" << endl;
+            this->getDestructionEvent(i)->execute();
+        }
+
+        // Remove this ShipPart from the parent.
         this->parent_->removeShipPart(this);
         orxout() << this->getName() << " has died." << endl;
     }
@@ -104,7 +118,6 @@ namespace orxonox
     {
         OrxAssert(entity != NULL, "The Entity cannot be NULL.");
         this->entityList_.push_back(entity);
-        //part->addToSpaceShip(this); //FIXME: (noep) add
     }
 
     /**
@@ -152,11 +165,11 @@ namespace orxonox
     @param engine
         A pointer to the PartDestructionEvent to be added.
     */
-    void ShipPart::addDestructionEvent(PartDestructionEvent* part)
+    void ShipPart::addDestructionEvent(PartDestructionEvent* event)
     {
-        OrxAssert(part != NULL, "The PartDestructionEvent cannot be NULL.");
-        this->eventList_.push_back(part);
-        //part->setParent(this);
+        OrxAssert(event != NULL, "The PartDestructionEvent cannot be NULL.");
+        event->setParent(this);
+        this->eventList_.push_back(event);
     }
 
     /**
@@ -167,7 +180,7 @@ namespace orxonox
     */
     PartDestructionEvent* ShipPart::getDestructionEvent(unsigned int index)
     {
-        if(this->eventList_.size() >= index)
+        if(this->eventList_.size() <= index)
             return NULL;
         else
             return this->eventList_[index];
@@ -199,6 +212,7 @@ namespace orxonox
     void ShipPart::handleHit(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         orxout() << "ShipPart " <<this->getName() << " is handling a hit!" << endl;
+
         if (parent_->getGametype() && parent_->getGametype()->allowPawnDamage(parent_, originator))
         {
             if (shielddamage >= parent_->getShieldHealth())

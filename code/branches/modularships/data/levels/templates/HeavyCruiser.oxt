@@ -51,11 +51,15 @@
     
     <parts>
         <ShipPart name="frontL" initialhealth="10" damageabsorption="0.5">
-	    <destructionevents>
-		<PartDestructionEvent targetType="ship" targetParam="shieldhealth" operation="*" value="0.5"/>
-	    </destructionevents>
-	</ShipPart>
-        <ShipPart name="frontR" initialhealth="10" damageabsorption="0.5" />
+            <destructionevents>
+                <PartDestructionEvent targetType="ship" targetParam="shieldhealth" operation="*" value="0.5"/>
+            </destructionevents>
+        </ShipPart>
+        <ShipPart name="frontR" initialhealth="10" damageabsorption="0.5">
+            <destructionevents>
+                <PartDestructionEvent targetType="ship" targetParam="shieldhealth" operation="*" value="0.5"/>
+            </destructionevents>
+        </ShipPart>
         <ShipPart name="partL" initialhealth="10" damageabsorption="0.5" />
         <ShipPart name="partR" initialhealth="10" damageabsorption="0.5" />
         <ShipPart name="sidearmL" initialhealth="20" damageabsorption="0.2" />

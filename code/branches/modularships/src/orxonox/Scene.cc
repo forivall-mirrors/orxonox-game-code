@@ -344,8 +344,6 @@ namespace orxonox
     /*static*/ bool Scene::collisionCallback(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0,
                                              int index0, const btCollisionObject* colObj1, int partId1, int index1)
     {
-        orxout() << "collisionCb()" << endl;
-
         // get the WorldEntity pointers
         SmartPtr<WorldEntity> object0 = static_cast<WorldEntity*>(colObj0->getUserPointer());
         SmartPtr<WorldEntity> object1 = static_cast<WorldEntity*>(colObj1->getUserPointer());
@@ -360,8 +358,6 @@ namespace orxonox
             modified |= object0->collidesAgainst(object1, cs1, cp);
         if (object1->isCollisionCallbackActive())
             modified |= object1->collidesAgainst(object0, cs0, cp);
-
-        orxout() << "collisionCb() completed." << endl;
 
         return modified;
     }
