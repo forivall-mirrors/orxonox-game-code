@@ -56,7 +56,16 @@
             </collisionShapes>
         </StaticEntity>
         
-        <StaticEntity name="two" position="0,0,60" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+        <StaticEntity name="two" position="0,0,62" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached>
+                <Model position="0,0,0" mesh="cube.mesh" scale3D="30,30,30" />
+            </attached>
+            <collisionShapes>
+                <BoxCollisionShape position="0,0,0" halfExtents="30,30,30" />
+            </collisionShapes>
+        </StaticEntity>
+        
+        <StaticEntity name="two_2" position="0,0,124" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
             <attached>
                 <Model position="0,0,0" mesh="cube.mesh" scale3D="30,30,30" />
             </attached>
@@ -74,7 +83,16 @@
             </collisionShapes>
         </StaticEntity>
         
-        <StaticEntity name="four" position="0,0,-60" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+        <StaticEntity name="four" position="0,0,-59" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
+            <attached>
+                <Model position="0,0,0" mesh="cube.mesh" scale3D="30,30,30" />
+            </attached>
+            <collisionShapes>
+                <BoxCollisionShape position="0,0,0" halfExtents="30,30,30" />
+            </collisionShapes>
+        </StaticEntity>
+        
+        <StaticEntity name="four_2" position="0,0,-118" direction="0,0,0" collisionType=static mass=100 friction=0.01 >
             <attached>
                 <Model position="0,0,0" mesh="cube.mesh" scale3D="30,30,30" />
             </attached>
@@ -86,10 +104,12 @@
     </attached>
     
     <parts>
-        <ShipPart name="one" initialhealth="15" damageabsorption="1" />
-        <ShipPart name="two" initialhealth="15" damageabsorption="1" />
-        <ShipPart name="three" initialhealth="18" damageabsorption="1" />
+        <ShipPart name="one" initialhealth="20" damageabsorption="1" />
+        <ShipPart name="two" initialhealth="20" damageabsorption="1" />
+        <ShipPart name="two_2" initialhealth="20" damageabsorption="1" />
+        <ShipPart name="three" initialhealth="20" damageabsorption="1" />
         <ShipPart name="four" initialhealth="20" damageabsorption="1" />
+        <ShipPart name="four_2" initialhealth="20" damageabsorption="1" />
     </parts>
     
     <collisionShapes>

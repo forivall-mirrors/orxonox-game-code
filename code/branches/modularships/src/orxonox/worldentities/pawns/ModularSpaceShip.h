@@ -121,8 +121,6 @@ namespace orxonox
 
             virtual void updatePartAssignment();
 
-            void createCSPtrList(CompoundCollisionShape* cs);
-
         protected:
 
 
