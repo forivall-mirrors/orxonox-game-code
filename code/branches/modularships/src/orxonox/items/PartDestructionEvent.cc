@@ -37,7 +37,9 @@
 #include "Item.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/ModularSpaceShip.h"
+#include "items/Engine.h"
 #include "gametypes/Gametype.h"
+#include "chat/ChatManager.h"
 
 
 namespace orxonox
@@ -62,9 +64,10 @@ namespace orxonox
 
         XMLPortParam(PartDestructionEvent, "targetType", setTargetType, getTargetType, xmlelement, mode).defaultValues("NULL");
         XMLPortParam(PartDestructionEvent, "targetName", setTargetName, getTargetName, xmlelement, mode).defaultValues("NULL");
-        XMLPortParam(PartDestructionEvent, "targetParam", setTargetParam, getTargetParam, xmlelement, mode).defaultValues("NULL");
         XMLPortParam(PartDestructionEvent, "operation", setOperation, getOperation, xmlelement, mode).defaultValues("NULL");
+        XMLPortParam(PartDestructionEvent, "targetParam", setTargetParam, getTargetParam, xmlelement, mode).defaultValues("NULL");
         XMLPortParam(PartDestructionEvent, "value", setEventValue, getEventValue, xmlelement, mode).defaultValues(0);
+        XMLPortParam(PartDestructionEvent, "message", setMessage, getMessage, xmlelement, mode).defaultValues("NULL");
 
         /*
         XMLPortParam(PartDestructionEvent, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
@@ -73,8 +76,14 @@ namespace orxonox
         */
     }
 
+    /**
+    @brief
+        Executes this event.
+    */
     void PartDestructionEvent::execute()
     {
+        orxout() << "Executing PartDestructionEvent " << this->getName() << endl;
+
         // Do not execute if this event is invalid
         if(!isValid())
         {
@@ -82,11 +91,51 @@ namespace orxonox
             return;
         }
 
+        // Output the destruction-message to the chat
+        if(this->message_ != "NULL")
+            ChatManager::message(this->message_);
+
+        // Modify parameters as configured for all cases
         if (this->targetType_ == "ship")
         {
             switch (this->targetParam_) {
             case shieldhealth:
                 this->parent_->getParent()->setShieldHealth(operate(this->parent_->getParent()->getShieldHealth()));
+                break;
+            case boostpower:
+                this->parent_->getParent()->setInitialBoostPower(operate(this->parent_->getParent()->getInitialBoostPower()));
+                break;
+            case boostpowerrate:
+                this->parent_->getParent()->setBoostPowerRate(operate(this->parent_->getParent()->getBoostPowerRate()));
+                break;
+            default:
+                break;
+            }
+            this->setValid(false);
+            return;
+        }
+
+        if (this->targetType_ == "engine")
+        {
+            switch (this->targetParam_) {
+            case null:
+                for(unsigned int i = 0; i < this->parent_->getParent()->getEngineList().size(); i++) // FIXME: (noep) segfault on .size()
+                {
+                    if(this->parent_->getParent()->getEngine(i)->getName() == this->targetName_)
+                    {
+                        orxout() << "engine found" << endl;
+                        this->parent_->getParent()->removeEngine(this->parent_->getParent()->getEngine(i));
+                        break;
+                    }
+                }
+                break;
+            case boostfactor:
+                for(unsigned int i = 0; i < this->parent_->getParent()->getEngineList().size(); i++)
+                {
+                    if(this->parent_->getParent()->getEngine(i)->getName() == this->targetName_)
+                        this->parent_->getParent()->getEngine(i)->setBoostFactor(operate(this->parent_->getParent()->getEngine(i)->getBoostFactor()));
+                    break;
+                }
                 break;
             default:
                 break;
@@ -101,9 +150,14 @@ namespace orxonox
         this->parent_ = part;
     }
 
+    /**
+    @brief
+        Set type of the target
+    @param param
+        The desired target-type as string. Valid target-types: ship engine weapon
+    */
     void PartDestructionEvent::setTargetType(std::string type)
     {
-        // ship engine weapon
         if ((type == "ship") || (type == "engine") || (type == "weapon"))
         {
             this->targetType_ = type;
@@ -128,8 +182,15 @@ namespace orxonox
         this->targetName_ = name;
     }
 
+    /**
+    @brief
+        Set the operation to be applied.
+    @param param
+        The desired parameter as string. Valid parameters: c.f. @ref orxnox::PartDestructionEvent::TargetParam
+    */
     void PartDestructionEvent::setTargetParam(std::string param)
     {
+        // A target-type needs to be defined in order to choose a parameter.
         if (this->targetType_ == "NULL")
         {
             orxout(internal_warning) << "No valid target-type defined. Cannot set target-param for this PartDestructionEvent." << endl;
@@ -137,12 +198,37 @@ namespace orxonox
             return;
         }
 
-        // ship: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate
+        // engine: NULL boostfactor speedfront accelerationfront
+        if (this->targetType_ == "engine")
+        {
+            if (param == "NULL")
+            {
+                this->targetParam_ = null;
+                return;
+            }
+            if (param == "boostfactor")
+            {
+                this->targetParam_ = boostfactor;
+                return;
+            }
+            if (param == "speedfront")
+            {
+                this->targetParam_ = speedfront;
+                return;
+            }
+            if (param == "accelerationfront")
+            {
+                this->targetParam_ = accelerationfront;
+                return;
+            }
 
-        // engine:
+            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"engine\". Valid types are: boostfactor speedfront accelerationfront" << endl;
+            return;
+        }
 
         // weapon:
 
+        // ship: shieldhealth (maxshieldhealth shieldabsorption shieldrechargerate) boostpower boostpowerrate
         if (this->targetType_ == "ship")
         {
             if (param == "shieldhealth")
@@ -150,8 +236,18 @@ namespace orxonox
                 this->targetParam_ = shieldhealth;
                 return;
             }
+            if (param == "boostpower")
+            {
+                this->targetParam_ = boostpower;
+                return;
+            }
+            if (param == "boostpowerrate")
+            {
+                this->targetParam_ = boostpowerrate;
+                return;
+            }
 
-            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"ship\". Valid types are: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate" << endl;
+            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"ship\". Valid types are: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate boostpower boostpowerrate" << endl;
             return;
         }
 
@@ -159,6 +255,12 @@ namespace orxonox
         this->setValid(false);
     }
 
+    /**
+    @brief
+        Set the operation to be applied.
+    @param operation
+        The desired operator as string. Valid operators: * + - destroy
+    */
     void PartDestructionEvent::setOperation(std::string operation)
     {
         // * + - destroy
@@ -171,6 +273,26 @@ namespace orxonox
         orxout(internal_warning) << "\"" << operation << "\" is not a valid operation for a PartDestructionEvent. Valid operations are: * + - destroy" << endl;
     }
 
+    /**
+    @brief
+        Set the message to be shown upon execution of the vent.
+    @param msg
+        The desired message as string.
+    */
+    void PartDestructionEvent::setMessage(std::string msg)
+    {
+        this->message_ = msg;
+    }
+
+
+    /**
+    @brief
+        Apply the configured operation and value to an input.
+    @param input
+        The value which should be modified
+    @return
+        Returns the product / sum / difference of input and configured value, or 0 if the operation is "destroy"
+    */
     float PartDestructionEvent::operate(float input)
     {
         if (this->operation_ == "*")
@@ -186,6 +308,12 @@ namespace orxonox
         return 0;
     }
 
+    /**
+    @brief
+        Sets the value applied with the chosen operation.
+    @param value
+        The value as float.
+    */
     void PartDestructionEvent::setEventValue(float value)
     {
         this->value_ = value;

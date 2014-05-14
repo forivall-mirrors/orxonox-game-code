@@ -60,9 +60,21 @@
                 <PartDestructionEvent targetType="ship" targetParam="shieldhealth" operation="*" value="0.5"/>
             </destructionevents>
         </ShipPart>
-        <ShipPart name="partL" initialhealth="10" damageabsorption="0.5" />
-        <ShipPart name="partR" initialhealth="10" damageabsorption="0.5" />
-        <ShipPart name="sidearmL" initialhealth="20" damageabsorption="0.2" />
+        <ShipPart name="partL" initialhealth="10" damageabsorption="0.5">
+            <destructionevents>
+                <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
+            </destructionevents>
+        </ShipPart>
+        <ShipPart name="partR" initialhealth="10" damageabsorption="0.5">
+            <destructionevents>
+                <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
+            </destructionevents>
+        </ShipPart>
+        <ShipPart name="sidearmL" initialhealth="20" damageabsorption="0.2">
+            <destructionevents>
+                <!-- <PartDestructionEvent targetType="engine" targetName="HeavyCruiser_sidearmL_engine1" operation="destroy"/> -->
+            </destructionevents>
+        </ShipPart>
         <ShipPart name="sidearmLfront" initialhealth="10" damageabsorption="0.5" />
         <ShipPart name="sidearmR" initialhealth="20" damageabsorption="0.2" />
         <ShipPart name="sidearmRfront" initialhealth="10" damageabsorption="0.5" />

@@ -89,6 +89,12 @@ namespace orxonox
         */
     }
 
+    /**
+    @brief
+        Is called when the ShipPart dies.
+        Executes PartDestructionEvents.
+        Tells the ModularSpaceShip to remove this ShipPart.
+    */
     void ShipPart::death()
     {
         if (!(this->isAlive()))

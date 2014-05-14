@@ -112,6 +112,8 @@ namespace orxonox
 
             virtual void damage(float damage, float healthdamage = 0.0f, float shielddamage = 0.0f, Pawn* originator = NULL, const btCollisionShape* cs = NULL);
 
+            static void killShipPart(std::string name);
+
             void addShipPart(ShipPart* part);
             ShipPart* getShipPart(unsigned int index);
             bool hasShipPart(ShipPart* part) const;
@@ -126,10 +128,9 @@ namespace orxonox
 
         private:
             void registerVariables();
-            std::vector<ShipPart*> partList_;  // The list of all Parts mounted on this ModularSpaceShip.
-            std::vector<SmartPtr<StaticEntity>*> entityPtrList_;
-            std::vector<SmartPtr<CollisionShape>*> csPtrList_;
-            std::map<StaticEntity*, ShipPart*> partMap_;
+            std::vector<ShipPart*> partList_;                       // The list of all Parts mounted on this ModularSpaceShip.
+            std::map<StaticEntity*, ShipPart*> partMap_;            // Map of Part-Entity-assignments
+            static std::map<StaticEntity*, ShipPart*>* partMap_s;
         
     };
 }

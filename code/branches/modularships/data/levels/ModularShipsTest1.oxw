@@ -30,7 +30,8 @@
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+    <!-- <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort /> -->
+    <SpawnPoint team=0 position="-500,0,0" lookat="0,0,0" spawnclass=ModularSpaceShip pawndesign=HeavyCruiser />
     
     <MovableEntity position="0,0,0" collisionType=dynamic scale=1 linearDamping=0.8 angularDamping=0  collisiondamage=0.005 enablecollisiondamage=true>
     <attached> 

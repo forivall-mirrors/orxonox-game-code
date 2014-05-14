@@ -36,6 +36,7 @@
 #include "core/XMLPort.h"
 #include "util/Math.h"
 #include "gametypes/Gametype.h"
+#include "core/command/ConsoleCommand.h"
 
 #include "items/ShipPart.h"
 #include "worldentities/StaticEntity.h"
@@ -47,13 +48,19 @@
 
 namespace orxonox
 {
+    SetConsoleCommand("ModularSpaceShip", "killshippart", &ModularSpaceShip::killShipPart);
+
     RegisterClass(ModularSpaceShip);
+
+    std::map<StaticEntity*, ShipPart*>* ModularSpaceShip::partMap_s = 0;
 
     ModularSpaceShip::ModularSpaceShip(Context* context) : SpaceShip(context)
     {
         RegisterObject(ModularSpaceShip);
 
         this->registerVariables();
+
+        ModularSpaceShip::partMap_s = &(this->partMap_);
 
     }
 
@@ -76,6 +83,10 @@ namespace orxonox
         return;
     }
 
+    /**
+    @brief
+        Searches for ShipParts matching to StaticEntities.
+    */
     void ModularSpaceShip::updatePartAssignment()
     {
         // iterate through all attached objects
@@ -114,6 +125,14 @@ namespace orxonox
         this->updatePartAssignment();
     }
 
+    /**
+    @brief
+        Creates a new assignment for the given StaticEntity and ShipPart in the partMap_
+    @param entity
+        A pointer to the StaticEntity
+    @param part
+        A pointer to the ShipPart.
+    */
     void ModularSpaceShip::addPartEntityAssignment(StaticEntity* entity, ShipPart* part)
     {
         if (!entity || !part)
@@ -149,71 +168,35 @@ namespace orxonox
         return NULL;
     }
 
-    //FIXME: (noep) finish
-    // void ModularSpaceShip::attach
-
+    /**
+    @brief
+        If the damage occurred on an attached StaticEntity, the damage is given to the corresponding ShipPart to handle.
+    */
     void ModularSpaceShip::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
-        /*orxout() << "Mdamage(): Collision detected on " << this->getRadarName() << ", btCS*: " << cs << endl;
-        orxout() << "UserPtr of said collisionShape: " << cs->getUserPointer() << endl;
-
-
-            // Print all attached objects & parts
-        /*
-        orxout() << "  " << this->getName() << " has the following Objects attached:" << endl;
-
-        for (int i=0; i<50; i++)
-        {
-            if (this->getAttachedObject(i)==NULL)
-                break;
-            orxout() << " " << i << ": " << this->getAttachedObject(i) << " (" << this->getAttachedObject(i)->getName() << ")";
-            orxout() << endl;
-        }
-
-        orxout() << "  Attached ShipParts:" << endl;
-        for(unsigned int i=0; i < this->partList_.size(); i++)
-        {
-            orxout() << "  " << i << ": " << this->partList_[i] << " (" << this->partList_[i]->getName() << ")" << endl;
-        }*/
-
-
-        //int collisionShapeIndex = this->isMyCollisionShape(cs);
-        //orxout() << collisionShapeIndex << endl;
-
-        //orxout() << "ShipPart of Entity " << cs->getUserPointer() << ": " << this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) << endl;
-
         if (this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
             this->getPartOfEntity((StaticEntity*)(cs->getUserPointer()))->handleHit(damage, healthdamage, shielddamage, originator);
         else
             SpaceShip::damage(damage, healthdamage, shielddamage, originator, cs);
+    }
 
-        /*
-        // Applies multiplier given by the DamageBoost Pickup.
-        if (originator)
-            damage *= originator->getDamageMultiplier();
-
-        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
+    /**
+    @brief
+        Kills the ShipPart with the given name. Used from the console-command "ModularSpaceShip killshippart [string]".
+    @param name
+        The name of the part to be killed.
+    */
+    void ModularSpaceShip::killShipPart(std::string name)
+    {
+        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = ModularSpaceShip::partMap_s->begin(); it != ModularSpaceShip::partMap_s->end(); ++it)
         {
-            if (shielddamage >= this->getShieldHealth())
+            if (it->second->getName() == name)
             {
-                this->setShieldHealth(0);
-                this->setHealth(this->health_ - (healthdamage + damage));
+                it->second->death();
+                return;
             }
-            else
-            {
-                this->setShieldHealth(this->shieldHealth_ - shielddamage);
-
-                // remove remaining shieldAbsorpton-Part of damage from shield
-                shielddamage = damage * this->shieldAbsorption_;
-                shielddamage = std::min(this->getShieldHealth(),shielddamage);
-                this->setShieldHealth(this->shieldHealth_ - shielddamage);
-
-                // set remaining damage to health
-                this->setHealth(this->health_ - (damage - shielddamage) - healthdamage);
-            }
-
-            this->lastHitOriginator_ = originator;
-        }*/
+        }
+        orxout(internal_warning) << "Could not apply damage to ShipPart \"" << name << "\". Part not found." << endl;
     }
 
     /**
@@ -260,6 +243,13 @@ namespace orxonox
         return false;
     }
 
+
+    /**
+    @brief
+        Removes a ShipPart from the SpaceShip, destroying the corresponding StaticEntity
+    @param part
+        The ShipPart to be removed.
+    */
     void ModularSpaceShip::removeShipPart(ShipPart* part)
     {
         // Remove the part from the partList_
@@ -308,7 +298,7 @@ namespace orxonox
         // collision shapes
         orxout() << "MSS: detach()" << endl;
 
-        this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
+        //this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
         this->detachCollisionShape(object->collisionShape_);  // after succeeding, causes a crash in the collision handling
         //this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
 

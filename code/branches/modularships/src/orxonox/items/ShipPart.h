@@ -101,7 +101,7 @@ namespace orxonox // tolua_export
 
         protected:
             ModularSpaceShip* parent_;
-            unsigned int parentID_; // Object ID of the SpaceShip the Part is mounted on.
+            unsigned int parentID_;     // Object ID of the SpaceShip the Part is mounted on.
 
             float damageAbsorption_;
             float health_;
@@ -109,7 +109,7 @@ namespace orxonox // tolua_export
             float initialHealth_;
 
         private:
-            std::vector<StaticEntity*> entityList_; // list of all entities which belong to this part
+            std::vector<StaticEntity*> entityList_;         // List of all entities which belong to this part
             std::vector<PartDestructionEvent*> eventList_;  // The list of all PartDestructionEvent assigned to this ShipPart.
 
             bool alive_;
