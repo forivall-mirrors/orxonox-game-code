@@ -29,6 +29,9 @@
 #include "Turret.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "Scene.h"
+#include <OgreSceneQuery.h>
+
 
 namespace orxonox
 {
@@ -72,22 +75,25 @@ namespace orxonox
 
     /**
         @brief
-        Checks, if a (world)position is inside the turret's range.
+        Checks, if a WorldEntity is inside the turret's range.
 
         This function is safe to use on turrets that are attached, rotated, etc.
-        The turret's range is determined with the maxPitch, maxYaw, and the two attackRadius'.
+        The turret's range is determined with the maxPitch, maxYaw, and the two attackRadius.
 
-        @param position
-        The position to check
+        @param target
+        The WorldEntity to check
+
+        @return
+        The squared distance to the position. -1, if it's ouside of range
     */
-    bool Turret::isInRange(const Vector3 &position)
+    float Turret::isInRange(const WorldEntity* target ) const
     {
         //Check distance
-        Vector3 distance = position - this->getWorldPosition();
+        Vector3 distance = target->getWorldPosition() - this->getWorldPosition();
         float distanceVal = distance.squaredLength();
         if(distanceVal > (this->maxAttackRadius_ * this->maxAttackRadius_) || distanceVal < (this->minAttackRadius_ * this->minAttackRadius_))
         {
-            return false;
+            return -1.f;
         }
 
         //Check pitch
@@ -99,7 +105,7 @@ namespace orxonox
         Ogre::Real angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
         if(angle > this->maxPitch_)
         {
-            return false;
+            return -1.f;
         }
 
         //Check yaw
@@ -110,9 +116,15 @@ namespace orxonox
         angle = startDirProjected.angleBetween(dirProjected).valueDegrees();
         if(angle > this->maxYaw_)
         {
-            return false;
+            return -1.f;
         }
-        return true;
+
+        Ogre::SceneManager* scenemanager = this->getScene()->getSceneManager();
+        Ogre::Ray ray = Ogre::Ray(this->getWorldPosition(), distance);
+        Ogre::DefaultRaySceneQuery rayscenequery = Ogre::DefaultRaySceneQuery(scenemanager);
+        rayscenequery.setRay(ray);
+
+        return distanceVal;
     }
 
     /**
@@ -214,12 +226,15 @@ namespace orxonox
         The turret's actions are done here.
 
         Every tick, the turret gets rotated if it should, and the local axes get updated with the parent's rotation.
+    
+        @param dt
+        Duration of the tick
     */
     void Turret::tick(float dt)
     {
         SUPER(Turret, tick, dt);
 
-
+        //Stuff isn't properly initialized in the c'tor, so we have to do it like this
         if(!this->once_)
         {
             //Account for rotations done in xml
@@ -255,6 +270,8 @@ namespace orxonox
         if(this->rotation_ != Quaternion::IDENTITY)
         {
             //Don't make the rotation instantaneous. Use an arbitrary interpolation, not that great...
+            //TODO: make the rotation better (constant velocity etc.). At the moment, the turret rotates
+            //      slower the closer it is to the destination
             Quaternion drot = Quaternion::nlerp(dt*this->rotationThrust_/20.f, Quaternion::IDENTITY, this->rotation_);
             this->rotate(drot, WorldEntity::World);
             this->rotation_ = Quaternion::IDENTITY;

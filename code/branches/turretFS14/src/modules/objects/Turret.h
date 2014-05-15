@@ -45,6 +45,11 @@ namespace orxonox
         a turret to a spaceship or a spacestation which is more or less completely autonomous in
         it's behaviour.
 
+        This class also contains a custom local coordinate system, which gets initially rotated through xml, and
+        afterwards is updated with the parent's rotation (if there is one). This allows for almost trivialal calculation
+        of pitch, yaw and roll through coordinate transformation. (TODO: Ogre should do something like this already, investigate...)
+        
+
     @note
         The rotation isn't limited "physically". You have to call isInRange to find out if the turret is allowed to shoot at a target.
     */
@@ -57,7 +62,7 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateYaw(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
-            virtual bool isInRange(const Vector3 &position);
+            virtual float isInRange(const WorldEntity* target) const;
             virtual void aimAtPosition(const Vector3 &position);
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

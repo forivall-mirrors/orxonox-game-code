@@ -2,7 +2,7 @@
 
 <LevelInfo
  name = "turret Test"
- description = "A level with a turret in it."
+ description = "A level to test turrets with."
  tags = "test"
  screenshot = "emptylevel.png"
 />
@@ -15,7 +15,6 @@
 
 <?lua
   include("templates/spaceshipAssff.oxt")
-  include("templates/spaceshipTransporter.oxt")
   include("templates/standardTurret.oxt")
 ?>
 
@@ -32,32 +31,55 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
-<SpaceShip>
+<SpaceShip position = "0,0,800" collisionType="dynamic" team=10>
+  <controller>
+    <TeamTargetProxy team=10/>
+  </controller>
   <attached>
-    <Turret position="10,2,0" pitch="90" yaw="0" roll="0" scale3D="0.2,0.2,0.2">
-      <templates>
-        <Template link=standardturret />
-      </templates>
-    </Turret>    
-    <Turret position="-10,2,0" pitch="90" yaw="0" roll="0" scale3D="0.2,0.2,0.2">
-      <templates>
-        <Template link=standardturret />
-      </templates>
-    </Turret>    
-    <Turret position="0,2,0" pitch="90" yaw="0" roll="0" scale3D="0.2,0.2,0.2">
-      <templates>
-        <Template link=standardturret />
-      </templates>
-    </Turret>    
+    <Model position="0,0,0" mesh="plane.mesh" scale3D="20,20,20" pitch=-90/>
+
+    <?lua for i = 1, 10, 1 do ?>
+      <Turret position="<?lua print(150-i*30) ?>,<?lua print(150-i*30) ?>,0" pitch="0" yaw="0" roll="0">
+        <templates>
+          <Template link=standardturret />
+        </templates>
+      </Turret>
+    <?lua end ?>
+
   </attached>
-  <templates>
-    <Template link=spaceshipassff />
-  </templates>
-<!--   <controller>
-    <AIController />
-  </controller> -->
+  <collisionShapes>
+    <BoxCollisionShape radius="10"   position="0,0,0" halfExtents="200, 200, 0"/>
+  </collisionShapes>
 </SpaceShip>
 
+<Turret collisionType="dynamic" pitch=90 position="30,0,0">
+    <attached>
+      <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" pitch=-90/>
+      <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" pitch=-90/>
+      <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" pitch=-90/>
+      <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" pitch=-90/>
+      <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" pitch=-90/>
+
+      <Turret position="0,0,-10" collisionType="dynamic" pitch=20 angularDamping=0.999999 mass=100 maxPitch=45 maxYaw=45 maxAttackRadius=2000 minAttackRadius=30>
+        <attached>
+          <Model position="0,0,0" pitch="-90" roll="0" mesh="turretHead.mesh" scale3D="10,10,10"/>
+        </attached>
+        <collisionShapes>
+          <SphereCollisionShape radius="10"   position = "0,0,0"/>
+        </collisionShapes>
+        <controller>
+          <TurretController/>
+        </controller>
+        <?lua
+          include("includes/weaponSettingsTurret.oxi")
+        ?>
+      </Turret>
+    </attached>
+    
+    <controller>
+      <TeamTargetProxy team=10/>
+    </controller>
+  </Turret>
 
     
   </Scene>

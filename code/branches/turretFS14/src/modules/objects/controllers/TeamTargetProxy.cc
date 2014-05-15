@@ -27,54 +27,73 @@
  */
 
 #include "TeamTargetProxy.h"
+#include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 
- namespace orxonox
- {
- 	RegisterClass(TeamTargetProxy);
+namespace orxonox
+{
+	RegisterClass(TeamTargetProxy);
 
- 	TeamTargetProxy::TeamTargetProxy(Context* context) : FormationController(context)
+   /**
+       @brief 
+       Sets default values for all variables.
+
+       @param context
+       The context
+    */
+	TeamTargetProxy::TeamTargetProxy(Context* context) : FormationController(context)
  	{
  		RegisterObject(TeamTargetProxy);
 
  		this->once_ = false;
  	}
 
+    /**
+        @brief 
+        Destructor. Nothing to see here.
+     */
  	TeamTargetProxy::~TeamTargetProxy()
  	{
  	}
 
+    /**
+        @brief
+        Copies the team and the target from the parent.
+
+        That's all there is.
+    */
  	void TeamTargetProxy::tick(float dt)
  	{
 	    if (!this->isActive() || !this->getControllableEntity())
 	        return;
 
         ControllableEntity* parent = orxonox_cast<ControllableEntity*> (this->getControllableEntity()->getParent());
- 		
 
+        if(this->getTeam() != -1 && !this->once_ && parent)
+        {
+            orxout(internal_warning) << "TeamTargetProxy: Team already set, may result in undesired behaviour. Will get overridden by the parent's team." << endl;
+        }
+
+        if(!this->once_)
+            this->once_ = true;
+
+        //Teams aren't set immediately, after creation, so we have to check every tick...
+        if(parent)
+        {
+            Controller* parentcontroller = parent->getController();
+            if(parentcontroller)
+            {
+                this->setTeam(parentcontroller->getTeam());
+            }
+            else
+            {
+                this->setTeam(parent->getTeam());
+            }
+            this->getControllableEntity()->setTeam(parent->getTeam());
+        }
 
         if(parent)
         {
-
-            if(!this->once_)
-            {
-                //Set the same team
-                if(parent)
-                {
-                    Controller* parentcontroller = parent->getController();
-                    if(parentcontroller)
-                    {
-                        this->setTeam(parentcontroller->getTeam());
-                    }
-                    else
-                    {
-                        this->setTeam(parent->getTeam());
-                    }
-                    this->getControllableEntity()->setTeam(parent->getTeam());
-                }
-                this->once_ = true;
-            }
-
             Pawn* parenttarget = orxonox_cast<Pawn*>(parent->getTarget());
             if(parenttarget)
             {
@@ -82,6 +101,5 @@
                 this->getControllableEntity()->setTarget(parenttarget);
             }
         }
-
  	}
- }
+}

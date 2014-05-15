@@ -56,8 +56,9 @@
 
  			void searchTarget();
  			bool isLookingAtTargetNew(float angle) const;
+ 			float targetScore(Pawn* pawn, float distance) const;
 
- 			bool once_;
+ 			bool once_; //!< Flag for executing code in the tick function only once.
  	};
  }
 
