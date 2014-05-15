@@ -39,6 +39,7 @@
 #include "core/command/ConsoleCommand.h"
 
 #include "items/ShipPart.h"
+#include "items/Engine.h"
 #include "worldentities/StaticEntity.h"
 #include "collisionshapes/WorldEntityCollisionShape.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
@@ -229,6 +230,27 @@ namespace orxonox
 
     /**
     @brief
+        Looks for an attached ShipPart with a certain name.
+    @param name
+        The name of the ShipPart to be returned.
+    @return
+        Pointer to the ShipPart with the given name, or NULL if not found.
+    */
+    ShipPart* ModularSpaceShip::getShipPartByName(std::string name)
+    {
+        for(std::vector<ShipPart*>::iterator it = this->partList_.begin(); it != this->partList_.end(); ++it)
+        {
+            if(orxonox_cast<ShipPart*>(*it)->getName() == name)
+            {
+                return orxonox_cast<ShipPart*>(*it);
+            }
+        }
+        orxout(internal_warning) << "Couldn't find ShipPart with name \"" << name << "\"." << endl;
+        return NULL;
+    }
+
+    /**
+    @brief
         Check whether the SpaceShip has a particular Engine.
     @param engine
         A pointer to the Engine to be checked.
@@ -284,6 +306,27 @@ namespace orxonox
 
     /**
     @brief
+        Looks for an attached Engine with a certain name.
+    @param name
+        The name of the engine to be returned.
+    @return
+        Pointer to the engine with the given name, or NULL if not found.
+    */
+    Engine* ModularSpaceShip::getEngineByName(std::string name)
+    {
+        for(std::vector<Engine*>::iterator it = this->engineList_.begin(); it != this->engineList_.end(); ++it)
+        {
+            if(orxonox_cast<Engine*>(*it)->getName() == name)
+            {
+                return orxonox_cast<Engine*>(*it);
+            }
+        }
+        orxout(internal_warning) << "Couldn't find Engine with name \"" << name << "\"." << endl;
+        return NULL;
+    }
+
+    /**
+    @brief
         Detaches a child WorldEntity from this instance.
     */
     void ModularSpaceShip::detach(WorldEntity* object)
@@ -296,7 +339,6 @@ namespace orxonox
         }
 
         // collision shapes
-        orxout() << "MSS: detach()" << endl;
 
         //this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
         this->detachCollisionShape(object->collisionShape_);  // after succeeding, causes a crash in the collision handling
@@ -313,6 +355,5 @@ namespace orxonox
         this->children_.erase(it);        // this causes a crash when unloading the level. Or not?
 
         object->notifyDetached();
-        orxout() << "MSS: detach() completed." << endl;
     }
 }

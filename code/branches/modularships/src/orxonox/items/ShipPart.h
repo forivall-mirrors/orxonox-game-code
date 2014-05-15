@@ -77,6 +77,11 @@ namespace orxonox // tolua_export
             inline bool isAlive()
                 { return this->alive_; }
 
+            inline void setEventExecution(bool var)
+                { this->eventExecution_ = var; }
+            inline bool isEventExecution()
+                { return this->eventExecution_; }
+
             virtual void setHealth(float health);
             inline void addHealth(float health)
                 { this->setHealth(this->health_ + health); }
@@ -113,6 +118,7 @@ namespace orxonox // tolua_export
             std::vector<PartDestructionEvent*> eventList_;  // The list of all PartDestructionEvent assigned to this ShipPart.
 
             bool alive_;
+            bool eventExecution_;
 
 
     }; // tolua_export

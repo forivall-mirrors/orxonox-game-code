@@ -42,8 +42,7 @@
    angularDamping    = 0.5
   >
     <engines>
-      <MultiStateEngine position="85,0,0" template=HeavyCruiser_body_engine1 />
-      <MultiStateEngine position="-85,0,0" template=HeavyCruiser_body_engine1 />
+      <MultiStateEngine position="0,0,0" template=HeavyCruiser_body_engine1 />
 
       <MultiStateEngine position="-140,0,308" template=HeavyCruiser_sidearmL_engine1 />
       <MultiStateEngine position="140,0,308" template=HeavyCruiser_sidearmR_engine1 />
@@ -63,21 +62,43 @@
         <ShipPart name="partL" initialhealth="10" damageabsorption="0.5">
             <destructionevents>
                 <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
-            </destructionevents>
+		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="speedfront" operation="-" value="50"/>
+            	<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="accelerationfront" operation="-" value="3"/>
+		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="boostfactor" operation="set" value="1"/>
+	    </destructionevents>
         </ShipPart>
         <ShipPart name="partR" initialhealth="10" damageabsorption="0.5">
             <destructionevents>
                 <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
+		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="speedfront" operation="-" value="50"/>
+            	<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="accelerationfront" operation="-" value="3"/>
+		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="boostfactor" operation="set" value="1"/>
             </destructionevents>
         </ShipPart>
         <ShipPart name="sidearmL" initialhealth="20" damageabsorption="0.2">
             <destructionevents>
-                <!-- <PartDestructionEvent targetType="engine" targetName="HeavyCruiser_sidearmL_engine1" operation="destroy"/> -->
+                <PartDestructionEvent targetType="engine" targetName="sidearmLengine" operation="destroy" message="The left auxiliary engine was destroyed!"/>
+		<PartDestructionEvent targetType="part" targetName="sidearmLfront" operation="destroy"/>
+		<PartDestructionEvent targetType="ship" targetParam="rotationthrust" operation="-" value="0.04" />
             </destructionevents>
         </ShipPart>
-        <ShipPart name="sidearmLfront" initialhealth="10" damageabsorption="0.5" />
-        <ShipPart name="sidearmR" initialhealth="20" damageabsorption="0.2" />
-        <ShipPart name="sidearmRfront" initialhealth="10" damageabsorption="0.5" />
+        <ShipPart name="sidearmLfront" initialhealth="10" damageabsorption="0.5">
+            <destructionevents>
+                <PartDestructionEvent targetType="engine" targetName="sidearmLengine" targetParam="boostfactor" operation="set" value="1" message="The left auxiliary engine lost it's booster!"/>
+            </destructionevents>
+	</ShipPart>
+        <ShipPart name="sidearmR" initialhealth="20" damageabsorption="0.2">
+            <destructionevents>
+                <PartDestructionEvent targetType="engine" targetName="sidearmRengine" operation="destroy" message="The right auxiliary engine was destroyed!"/>
+		<PartDestructionEvent targetType="part" targetName="sidearmRfront" operation="destroy"/> 
+		<PartDestructionEvent targetType="ship" targetParam="rotationthrust" operation="-" value="0.04" />           
+	    </destructionevents>
+	</ShipPart>
+        <ShipPart name="sidearmRfront" initialhealth="10" damageabsorption="0.5">
+            <destructionevents>
+                <PartDestructionEvent targetType="engine" targetName="sidearmRengine" targetParam="boostfactor" operation="set" value="1" message="The right auxiliary engine lost it's booster!"/>
+            </destructionevents>
+	</ShipPart>
     </parts>
     
     <attached>
@@ -389,6 +410,7 @@
 
 <Template name=HeavyCruiser_body_engine1 baseclass=MultiStateEngine>
   <MultiStateEngine
+   name		  = bodyengine
    boostfactor    = 2
 
    speedfront     = 150
@@ -483,6 +505,7 @@
 
 <Template name=HeavyCruiser_sidearmL_engine1 baseclass=MultiStateEngine>
   <MultiStateEngine
+   name		  = sidearmLengine
    boostfactor    = 2
 
    speedfront     = 300
@@ -532,6 +555,7 @@
 
 <Template name=HeavyCruiser_sidearmR_engine1 baseclass=MultiStateEngine>
   <MultiStateEngine
+   name		  = sidearmRengine
    boostfactor    = 2
 
    speedfront     = 300

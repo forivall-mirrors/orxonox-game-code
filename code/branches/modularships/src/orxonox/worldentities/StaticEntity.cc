@@ -33,6 +33,7 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "util/OrxAssert.h"
 #include "core/CoreIncludes.h"
+#include "worldentities/BigExplosion.h"
 
 namespace orxonox
 {
@@ -114,4 +115,5 @@ namespace orxonox
         worldTrans.setOrigin(btVector3(node_->getPosition().x, node_->getPosition().y, node_->getPosition().z));
         worldTrans.setRotation(btQuaternion(node_->getOrientation().x, node_->getOrientation().y, node_->getOrientation().z, node_->getOrientation().w));
     }
+
 }

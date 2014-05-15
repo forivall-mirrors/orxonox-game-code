@@ -89,6 +89,7 @@ namespace orxonox // tolua_export
                 shieldrechargerate,
                 boostpower,         // Amount of available boost
                 boostpowerrate,     // Recharge-rate of boost
+                rotationthrust,
                 boostfactor,
                 speedfront,
                 accelerationfront,

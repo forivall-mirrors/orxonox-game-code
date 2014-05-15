@@ -51,6 +51,7 @@ namespace orxonox
     {
         RegisterObject(ShipPart);
         this->setAlive(true);
+        this->setEventExecution(true);
     }
 
     ShipPart::~ShipPart()
@@ -102,11 +103,13 @@ namespace orxonox
 
         this->setAlive(false);
 
-        // Execute all destruction events
-        for (unsigned int i = 0; i < this->eventList_.size(); i++)
+        if(eventExecution_)
         {
-            orxout() << "executing" << endl;
-            this->getDestructionEvent(i)->execute();
+            // Execute all destruction events
+            for (unsigned int i = 0; i < this->eventList_.size(); i++)
+            {
+                this->getDestructionEvent(i)->execute();
+            }
         }
 
         // Remove this ShipPart from the parent.

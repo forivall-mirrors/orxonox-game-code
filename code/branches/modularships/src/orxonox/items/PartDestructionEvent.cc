@@ -82,8 +82,6 @@ namespace orxonox
     */
     void PartDestructionEvent::execute()
     {
-        orxout() << "Executing PartDestructionEvent " << this->getName() << endl;
-
         // Do not execute if this event is invalid
         if(!isValid())
         {
@@ -108,6 +106,9 @@ namespace orxonox
             case boostpowerrate:
                 this->parent_->getParent()->setBoostPowerRate(operate(this->parent_->getParent()->getBoostPowerRate()));
                 break;
+            case rotationthrust:
+                this->parent_->getParent()->setRotationThrust(operate(this->parent_->getParent()->getRotationThrust()));
+                break;
             default:
                 break;
             }
@@ -119,23 +120,30 @@ namespace orxonox
         {
             switch (this->targetParam_) {
             case null:
-                for(unsigned int i = 0; i < this->parent_->getParent()->getEngineList().size(); i++) // FIXME: (noep) segfault on .size()
-                {
-                    if(this->parent_->getParent()->getEngine(i)->getName() == this->targetName_)
-                    {
-                        orxout() << "engine found" << endl;
-                        this->parent_->getParent()->removeEngine(this->parent_->getParent()->getEngine(i));
-                        break;
-                    }
-                }
+                this->parent_->getParent()->removeEngine(this->parent_->getParent()->getEngineByName(targetName_));
                 break;
             case boostfactor:
-                for(unsigned int i = 0; i < this->parent_->getParent()->getEngineList().size(); i++)
-                {
-                    if(this->parent_->getParent()->getEngine(i)->getName() == this->targetName_)
-                        this->parent_->getParent()->getEngine(i)->setBoostFactor(operate(this->parent_->getParent()->getEngine(i)->getBoostFactor()));
-                    break;
-                }
+                this->parent_->getParent()->getEngineByName(targetName_)->setBoostFactor(operate(this->parent_->getParent()->getEngineByName(targetName_)->getBoostFactor()));
+                break;
+            case speedfront:
+                this->parent_->getParent()->getEngineByName(targetName_)->setMaxSpeedFront(operate(this->parent_->getParent()->getEngineByName(targetName_)->getMaxSpeedFront()));
+                break;
+            case accelerationfront:
+                this->parent_->getParent()->getEngineByName(targetName_)->setAccelerationFront(operate(this->parent_->getParent()->getEngineByName(targetName_)->getAccelerationFront()));
+                break;
+            default:
+                break;
+            }
+            this->setValid(false);
+            return;
+        }
+
+        if (this->targetType_ == "part")
+        {
+            switch (this->targetParam_) {
+            case null:
+                this->parent_->getParent()->getShipPartByName(targetName_)->setEventExecution(false);
+                this->parent_->getParent()->killShipPart(targetName_);
                 break;
             default:
                 break;
@@ -158,14 +166,14 @@ namespace orxonox
     */
     void PartDestructionEvent::setTargetType(std::string type)
     {
-        if ((type == "ship") || (type == "engine") || (type == "weapon"))
+        if ((type == "ship") || (type == "engine") || (type == "weapon") || (type == "part"))
         {
             this->targetType_ = type;
             return;
         }
 
         // Error, if invalid target-type was entered.
-        orxout(internal_warning) << "\"" << type << "\" is not a valid target-type for a PartDestructionEvent. Valid types are: ship engine weapon" << endl;
+        orxout(internal_warning) << "\"" << type << "\" is not a valid target-type for a PartDestructionEvent. Valid types are: ship engine weapon part" << endl;
         this->setValid(false);
         return;
     }
@@ -228,7 +236,7 @@ namespace orxonox
 
         // weapon:
 
-        // ship: shieldhealth (maxshieldhealth shieldabsorption shieldrechargerate) boostpower boostpowerrate
+        // ship: shieldhealth (maxshieldhealth shieldabsorption shieldrechargerate) boostpower boostpowerrate rotationthrust
         if (this->targetType_ == "ship")
         {
             if (param == "shieldhealth")
@@ -246,8 +254,25 @@ namespace orxonox
                 this->targetParam_ = boostpowerrate;
                 return;
             }
+            if (param == "rotationthrust")
+            {
+                this->targetParam_ = rotationthrust;
+                return;
+            }
 
-            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"ship\". Valid types are: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate boostpower boostpowerrate" << endl;
+            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"ship\". Valid types are: shieldhealth maxshieldhealth shieldabsorption shieldrechargerate boostpower boostpowerrate rotationthrust" << endl;
+            return;
+        }
+
+        if (this->targetType_ == "part")
+        {
+            if (param == "NULL")
+            {
+                this->targetParam_ = null;
+                return;
+            }
+
+            orxout(internal_warning) << "\"" << param << "\" is not a valid target-param for a PartDestructionEvent with target-type \"part\". Valid types are: NULL (set operation to \"destroy\")" << endl;
             return;
         }
 
@@ -264,13 +289,13 @@ namespace orxonox
     void PartDestructionEvent::setOperation(std::string operation)
     {
         // * + - destroy
-        if ((operation == "*") || (operation == "+") || (operation == "-") || (operation == "destroy"))
+        if ((operation == "*") || (operation == "+") || (operation == "-") || (operation == "set") || (operation == "destroy"))
         {
             this->operation_ = operation;
             return;
         }
         this->operation_ = "NULL";
-        orxout(internal_warning) << "\"" << operation << "\" is not a valid operation for a PartDestructionEvent. Valid operations are: * + - destroy" << endl;
+        orxout(internal_warning) << "\"" << operation << "\" is not a valid operation for a PartDestructionEvent. Valid operations are: * + - set destroy" << endl;
     }
 
     /**
@@ -291,7 +316,9 @@ namespace orxonox
     @param input
         The value which should be modified
     @return
-        Returns the product / sum / difference of input and configured value, or 0 if the operation is "destroy"
+        Returns the product / sum / difference of input and configured value,
+        the configured value if the operation is "set",
+        or 0 if the operation is "destroy"
     */
     float PartDestructionEvent::operate(float input)
     {
@@ -301,6 +328,8 @@ namespace orxonox
             return input + this->value_;
         if (this->operation_ == "-")
             return input - this->value_;
+        if (this->operation_ == "set")
+            return this->value_;
         if (this->operation_ == "destroy")
         {
             return 0;

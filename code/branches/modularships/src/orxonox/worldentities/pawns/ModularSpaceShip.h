@@ -116,9 +116,16 @@ namespace orxonox
 
             void addShipPart(ShipPart* part);
             ShipPart* getShipPart(unsigned int index);
+            ShipPart* getShipPartByName(std::string name);
             bool hasShipPart(ShipPart* part) const;
             void removeShipPart(ShipPart* part);
 
+            inline void setRotationThrust(float val)
+                { this->rotationThrust_ = val; }
+            inline float getRotationThrust()
+                { return this->rotationThrust_; }
+
+            Engine* getEngineByName(std::string name);
             void detach(WorldEntity* object);
 
             virtual void updatePartAssignment();
