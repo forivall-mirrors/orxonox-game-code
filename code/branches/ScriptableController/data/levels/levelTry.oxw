@@ -71,7 +71,7 @@
     </StaticEntity>
 
 
-    <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=100 />
+    <Billboard position="500,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=10 />
     <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
       beaconMode="exclude" targetname="bcnDestroyer" name="takeControl"
     />

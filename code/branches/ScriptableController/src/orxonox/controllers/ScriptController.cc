@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    float scTime=0;  /*initialise time, to coordinate eventTime*/
+    float scTime=0;  /*initialize time, to coordinate eventTime*/
 
 
 
@@ -116,6 +116,7 @@ namespace orxonox
     {
         if(ev.fctName=="moveToPosition_beta")
         {
+
             moveToPosition_beta(ev.xCoord,ev.yCoord,ev.zCoord);
         }
     }
@@ -136,7 +137,7 @@ namespace orxonox
         {
             /*TO DO: execute the function: eventList[0].fctName*/
 
-
+            execute(eventList[0]);
             eventList.erase(eventList.begin());
         }
 
@@ -166,6 +167,7 @@ namespace orxonox
 
     void ScriptController::eventScheduler(std::string instruction, float x, float y, float z, float executionTime)
     {
+
         /*put data (from LUA) into time-sorted eventList*/ 
         /*nimmt den befehl und die argumente aus luascript und ertellt einen struct pro event, diese structs werden sortiert nach eventTime*/
         struct event tmp;
@@ -193,6 +195,7 @@ namespace orxonox
             }
 
         }
+        
         
     }
 

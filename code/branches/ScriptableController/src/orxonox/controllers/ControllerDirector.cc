@@ -26,7 +26,9 @@ namespace orxonox
         RegisterObject(ControllerDirector);
 
         // output a message to ensure we know the constructor was run
-        orxout()<<"hello universe constructor"<< endl;
+        orxout()<<"hello universe constructor blablub"<< endl;
+
+
 
         // Initialize member variables
         this->player_ = NULL;
@@ -95,6 +97,7 @@ namespace orxonox
        /* Now run the script on this controller. This will still have the above
         * variable "newctrlid" defined, which means it can make use of it.
         */
+
        ls->doFile("testscript.lua");
 
        /* Increase the controller ID so we have a different one for

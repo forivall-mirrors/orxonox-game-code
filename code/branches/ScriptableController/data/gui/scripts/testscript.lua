@@ -14,8 +14,10 @@ local ctrl = orxonox.ScriptController:getScriptController()
 
 -- If it worked, call its "movetoposition" function
 if ctrl ~= nil then
-  ctrl:eventScheduler("moveToPosition_beta", x, y, z, 5)
+  ctrl:eventScheduler("moveToPosition_beta", x, y, z, 0.01)
 end
+
+
 
 -- Output the newctrlid variable we set from the C++ code
 if newctrlid ~= nil then
