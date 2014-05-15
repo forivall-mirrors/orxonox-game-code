@@ -124,6 +124,9 @@ namespace orxonox
 
     void ScriptController::tick(float dt)
     {
+
+        
+
         /* If this controller has no entity entry, do nothing */
         if( !(this->entity_) )
           return;
@@ -151,22 +154,37 @@ namespace orxonox
 
     void ScriptController::moveToPosition_beta(float x, float y, float z )
     {
+
+        orxout()<<"moveToPosition_beta executed"<<endl;
         //const Vector3 local = this->getPosition();
         const Vector3 target = Vector3(100*x,100*y,100*z);
         //Vector3 way = target-local;
         orxout() << "Moving This-pointer: " << this << endl;
        
         
-        this->entity_->lookAt(target);
-        this->entity_->moveFrontBack(-1000*target.length());      
+        //this->entity_->lookAt(target);
+        //this->entity_->moveFrontBack(-1000*target.length());      
 
-  
+        if(this->entity_!=NULL)
+            orxout()<<"not-NULL-entity"<<endl;
+
+        if(this->player_!=NULL)
+            orxout()<<"not-NULL-player"<<endl;
+
+        orxout() << this->player_->getClientID() << endl; // IMPOSSIBLE TO ACCESS this->player AND this->entity
+        
+        //this->entity_ = this->player_->getClientID();//getControllableEntity();
+
+            //if(this->entity_==this->player_->getControllableEntity())
+            //orxout()<<"same entity"<<endl;
+
         /* This works fine */
         orxout()<<x<<"  "<<y<<"  "<<z<<endl;
     }
 
     void ScriptController::eventScheduler(std::string instruction, float x, float y, float z, float executionTime)
     {
+
 
         /*put data (from LUA) into time-sorted eventList*/ 
         /*nimmt den befehl und die argumente aus luascript und ertellt einen struct pro event, diese structs werden sortiert nach eventTime*/
@@ -177,25 +195,34 @@ namespace orxonox
         tmp.zCoord=z;
         tmp.eventTime=executionTime;
 
-        for(unsigned int i=0;i<eventList.size();i++)
+        orxout()<<tmp.fctName<<endl;
+
+        if(eventList.size()==0)
         {
-            if(tmp.eventTime<eventList[i].eventTime)
-            {
-                std::vector<event>::iterator it = eventList.begin();
-
-                eventList.insert(it+(i+1),tmp);
-                break;
-            }
-            if(i==eventList.size()-1)
-            {
-                std::vector<event>::iterator it = eventList.end();
-
-                eventList.insert(it,tmp);
-
-            }
-
+            orxout()<<"eventList empty (01)"<<endl;
+            eventList.insert(eventList.begin(), tmp);
+            orxout()<<"first event added"<<endl;
         }
-        
+
+
+       for (std::vector<event>::iterator it=eventList.begin(); it<eventList.end(); it++)
+            {
+
+                if(tmp.eventTime<it->eventTime)
+                {
+                    eventList.insert(it,tmp);
+                    orxout()<<"new event added"<<endl;
+                }
+
+            }
+
+       
+       if(eventList.size()==0)
+            orxout()<<"eventList empty"<<endl;
+
+        else
+            orxout()<<"eventList is not empty"<<endl;
+
         
     }
 

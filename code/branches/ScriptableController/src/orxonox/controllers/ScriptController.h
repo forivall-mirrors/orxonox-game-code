@@ -63,6 +63,8 @@ namespace orxonox  // tolua_export
             void takeControl(int ctrlid);
             void setPlayer(PlayerInfo* player) { this->player_ = player; }
            
+           
+
             //void set_luasrc(std::string);
             //void set_controlled(ControllableEntity*);
 

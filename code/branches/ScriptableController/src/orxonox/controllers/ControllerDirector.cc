@@ -90,7 +90,7 @@ namespace orxonox
        std::stringstream tmp;
        tmp << "newctrlid = " << ctrlid;
        std::string todo = tmp.str();
-
+       
        /* Run the string using the luastate created earlier */
        ls->doString(todo);
 
