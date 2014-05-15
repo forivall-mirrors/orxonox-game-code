@@ -132,7 +132,7 @@ namespace orxonox
         //this->entity_->rotateYaw(-1.0f * 100.0f * dt);
         //this->entity_->rotatePitch(0.8f * 100.0f);
 
-        if(eventList[0].eventTime<=scTime)
+        if(eventList.size() > 0 && eventList[0].eventTime<=scTime)
         {
             /*TO DO: execute the function: eventList[0].fctName*/
 
