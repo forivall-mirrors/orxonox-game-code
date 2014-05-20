@@ -62,15 +62,17 @@ namespace orxonox
         this->rotation_ = Quaternion::IDENTITY;
 
         this->setRadarVisibility(false);
+
+        //this->rayTest_ = this->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
     }
 
     /**
         @brief 
-        Destructor. Nothing to see here.
+        Destructor. Destroys the rayTest_ element (if it was used)  .
      */
     Turret::~Turret()
     {
-
+        //this->getScene()->getSceneManager()->destroyQuery(this->rayTest_);
     }
 
     /**
@@ -86,7 +88,7 @@ namespace orxonox
         @return
         The squared distance to the position. -1, if it's ouside of range
     */
-    float Turret::isInRange(const WorldEntity* target ) const
+    float Turret::isInRange(const WorldEntity* target )
     {
         //Check distance
         Vector3 distance = target->getWorldPosition() - this->getWorldPosition();
@@ -119,11 +121,11 @@ namespace orxonox
             return -1.f;
         }
 
-        Ogre::SceneManager* scenemanager = this->getScene()->getSceneManager();
-        Ogre::Ray ray = Ogre::Ray(this->getWorldPosition(), distance);
-        Ogre::DefaultRaySceneQuery rayscenequery = Ogre::DefaultRaySceneQuery(scenemanager);
-        rayscenequery.setRay(ray);
-       //rayscenequery.execute();
+        //TODO: Finish this. Find a way to convert objects from Ogre to Orxonox
+        /*Ogre::Ray ray = Ogre::Ray(this->getWorldPosition(), distance);
+        this->rayTest_->setRay(ray);
+        Ogre::RaySceneQueryResult result = this->rayTest_->execute();*/
+
 
         return distanceVal;
     }
@@ -272,7 +274,7 @@ namespace orxonox
         {
             //Don't make the rotation instantaneous. Use an arbitrary interpolation, not that great...
             //TODO: make the rotation better (constant velocity etc.). At the moment, the turret rotates
-            //      slower the closer it is to the destination
+            //slower the closer it is to the destination
             Quaternion drot = Quaternion::nlerp(dt*this->rotationThrust_/20.f, Quaternion::IDENTITY, this->rotation_);
             this->rotate(drot, WorldEntity::World);
             this->rotation_ = Quaternion::IDENTITY;

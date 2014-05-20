@@ -36,6 +36,7 @@
 
 #include "objects/ObjectsPrereqs.h"
 #include "worldentities/pawns/Pawn.h"
+#include <OgreSceneQuery.h>
 
 namespace orxonox
 {
@@ -62,7 +63,7 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateYaw(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
-            virtual float isInRange(const WorldEntity* target) const;
+            virtual float isInRange(const WorldEntity* target);
             virtual void aimAtPosition(const Vector3 &position);
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -118,6 +119,7 @@ namespace orxonox
             Ogre::Real maxPitch_; //!< The maxmium pitch the turret can have (on one side).
             Ogre::Real maxYaw_; //!< The maxmium yaw the turret can have (on one side).
             float rotationThrust_;  //!< The velocity the turret rotates with.
+            Ogre::RaySceneQuery* rayTest_; //!< Used to perform a raytest, currently unused @see isInRange
 
     };
 }
