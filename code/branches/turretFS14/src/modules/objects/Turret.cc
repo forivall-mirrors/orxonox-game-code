@@ -30,7 +30,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "Scene.h"
-#include <OgreSceneQuery.h>
+#include <OgreSceneManager.h>
 
 
 namespace orxonox
@@ -123,6 +123,7 @@ namespace orxonox
         Ogre::Ray ray = Ogre::Ray(this->getWorldPosition(), distance);
         Ogre::DefaultRaySceneQuery rayscenequery = Ogre::DefaultRaySceneQuery(scenemanager);
         rayscenequery.setRay(ray);
+       //rayscenequery.execute();
 
         return distanceVal;
     }
