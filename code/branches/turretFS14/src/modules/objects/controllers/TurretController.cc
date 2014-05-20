@@ -96,9 +96,9 @@
         	}
         }
 
-        float maxScore = 0;
+        float minScore = FLT_MAX;
         float tempScore;
-        Pawn* maxScorePawn = 0;
+        Pawn* minScorePawn = 0;
 
   		for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)     
         {
@@ -108,15 +108,15 @@
             tempScore = turret->isInRange(entity);
             if(tempScore != -1.f)
             {
-            	if(tempScore > maxScore)
+            	if(tempScore < minScore)
             	{
-            		maxScore = tempScore;
-            		maxScorePawn = entity;
+            		minScore = tempScore;
+            		minScorePawn = entity;
             	}
             }
     	}
-        this->setTarget(maxScorePawn);
-        turret->setTarget(maxScorePawn);
+        this->setTarget(minScorePawn);
+        turret->setTarget(minScorePawn);
  	}
 
     /**
@@ -137,7 +137,7 @@
         @brief 
         Scores a pawn as a target, based on distance and health.
 
-        The more health and distance a pawn has, the higher the score. This means lower equals better target.
+        The more health and distance a pawn has, the higher the score. This means lower equals better.
 
 		@param pawn
 		The pawn to score
