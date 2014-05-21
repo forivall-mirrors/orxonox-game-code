@@ -49,56 +49,56 @@
     </engines>
     
     <parts>
-        <ShipPart name="frontL" initialhealth="10" damageabsorption="0.5">
+        <ShipPart name="frontL" initialhealth="10" maxhealth="10" damageabsorption="0.5" explosionposition="-76,30,-330">
             <destructionevents>
                 <PartDestructionEvent targetType="ship" targetParam="shieldhealth" operation="*" value="0.5"/>
             </destructionevents>
         </ShipPart>
-        <ShipPart name="frontR" initialhealth="10" damageabsorption="0.5">
+        <ShipPart name="frontR" initialhealth="10" maxhealth="10" damageabsorption="0.5" explosionposition="76,30,-330">
             <destructionevents>
                 <PartDestructionEvent targetType="ship" targetParam="shieldhealth" operation="*" value="0.5"/>
             </destructionevents>
         </ShipPart>
-        <ShipPart name="partL" initialhealth="10" damageabsorption="0.5">
+        <ShipPart name="partL" initialhealth="10" maxhealth="10" damageabsorption="0.5" explosionposition="-100,33,-200">
             <destructionevents>
                 <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
-		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="speedfront" operation="-" value="50"/>
-            	<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="accelerationfront" operation="-" value="3"/>
-		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="boostfactor" operation="set" value="1"/>
-	    </destructionevents>
-        </ShipPart>
-        <ShipPart name="partR" initialhealth="10" damageabsorption="0.5">
-            <destructionevents>
-                <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
-		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="speedfront" operation="-" value="50"/>
-            	<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="accelerationfront" operation="-" value="3"/>
-		<PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="boostfactor" operation="set" value="1"/>
+                <PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="speedfront" operation="-" value="50"/>
+                <PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="accelerationfront" operation="-" value="3"/>
+                <PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="boostfactor" operation="set" value="1"/>
             </destructionevents>
         </ShipPart>
-        <ShipPart name="sidearmL" initialhealth="20" damageabsorption="0.2">
+        <ShipPart name="partR" initialhealth="10" maxhealth="10" damageabsorption="0.5" explosionposition="100,33,-200">
+            <destructionevents>
+                <PartDestructionEvent targetType="ship" targetParam="boostpowerrate" operation="-" value="0.5" message="One of your ship's generators was destroyed!"/>
+                <PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="speedfront" operation="-" value="50"/>
+                <PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="accelerationfront" operation="-" value="3"/>
+                <PartDestructionEvent targetType="engine" targetName="bodyengine" targetParam="boostfactor" operation="set" value="1"/>
+            </destructionevents>
+        </ShipPart>
+        <ShipPart name="sidearmL" initialhealth="20" maxhealth="20" damageabsorption="0.2" explosionposition="-140,30,100">
             <destructionevents>
                 <PartDestructionEvent targetType="engine" targetName="sidearmLengine" operation="destroy" message="The left auxiliary engine was destroyed!"/>
-		<PartDestructionEvent targetType="part" targetName="sidearmLfront" operation="destroy"/>
-		<PartDestructionEvent targetType="ship" targetParam="rotationthrust" operation="-" value="0.04" />
+                <PartDestructionEvent targetType="part" targetName="sidearmLfront" operation="destroy"/>
+                <PartDestructionEvent targetType="ship" targetParam="rotationthrust" operation="-" value="0.04" />
             </destructionevents>
         </ShipPart>
-        <ShipPart name="sidearmLfront" initialhealth="10" damageabsorption="0.5">
+        <ShipPart name="sidearmLfront" initialhealth="10" maxhealth="10" damageabsorption="0.5" explosionposition="-140,20,-50">
             <destructionevents>
                 <PartDestructionEvent targetType="engine" targetName="sidearmLengine" targetParam="boostfactor" operation="set" value="1" message="The left auxiliary engine lost it's booster!"/>
             </destructionevents>
-	</ShipPart>
-        <ShipPart name="sidearmR" initialhealth="20" damageabsorption="0.2">
+        </ShipPart>
+        <ShipPart name="sidearmR" initialhealth="20" maxhealth="20" damageabsorption="0.2" explosionposition="140,30,100">
             <destructionevents>
                 <PartDestructionEvent targetType="engine" targetName="sidearmRengine" operation="destroy" message="The right auxiliary engine was destroyed!"/>
-		<PartDestructionEvent targetType="part" targetName="sidearmRfront" operation="destroy"/> 
-		<PartDestructionEvent targetType="ship" targetParam="rotationthrust" operation="-" value="0.04" />           
-	    </destructionevents>
-	</ShipPart>
-        <ShipPart name="sidearmRfront" initialhealth="10" damageabsorption="0.5">
+                <PartDestructionEvent targetType="part" targetName="sidearmRfront" operation="destroy"/> 
+                <PartDestructionEvent targetType="ship" targetParam="rotationthrust" operation="-" value="0.04" />           
+            </destructionevents>
+        </ShipPart>
+        <ShipPart name="sidearmRfront" initialhealth="10" maxhealth="10" damageabsorption="0.5" explosionposition="140,20,-50">
             <destructionevents>
                 <PartDestructionEvent targetType="engine" targetName="sidearmRengine" targetParam="boostfactor" operation="set" value="1" message="The right auxiliary engine lost it's booster!"/>
             </destructionevents>
-	</ShipPart>
+        </ShipPart>
     </parts>
     
     <attached>

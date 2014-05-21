@@ -40,6 +40,8 @@
 #include "gametypes/Gametype.h"
 #include "worldentities/StaticEntity.h"
 #include "items/PartDestructionEvent.h"
+#include "worldentities/BigExplosion.h"
+#include "chat/ChatManager.h"
 
 
 namespace orxonox
@@ -69,25 +71,9 @@ namespace orxonox
 
         XMLPortParam(ShipPart, "damageabsorption", setDamageAbsorption, getDamageAbsorption, xmlelement, mode).defaultValues(0.5);
 
+        XMLPortParamTemplate(ShipPart, "explosionposition", setExplosionPosition, getExplosionPosition, xmlelement, mode, Vector3);
+
         XMLPortObject(ShipPart, PartDestructionEvent, "destructionevents", addDestructionEvent, getDestructionEvent, xmlelement, mode);
-
-        /*
-        XMLPortParam(ShipPart, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
-        XMLPortParam(ShipPart, "initialshieldhealth", setInitialShieldHealth, getInitialShieldHealth, xmlelement, mode).defaultValues(0);
-        XMLPortParam(ShipPart, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
-        XMLPortParam(ShipPart, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode).defaultValues(0);
-
-        XMLPortParam(ShipPart, "sShipPartparticlesource", setSShipPartParticleSource, getSShipPartParticleSource, xmlelement, mode);
-        XMLPortParam(ShipPart, "sShipPartparticleduration", setSShipPartParticleDuration, getSShipPartParticleDuration, xmlelement, mode).defaultValues(3.0f);
-        XMLPortParam(ShipPart, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
-
-        XMLPortParam(ShipPart, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
-        XMLPortParam(ShipPart, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
-
-        XMLPortParam(ShipPart, "explosionSound",  setExplosionSound,  getExplosionSound,  xmlelement, mode);
-
-        XMLPortParam ( RadarViewable, "radarname", setRadarName, getRadarName, xmlelement, mode );
-        */
     }
 
     /**
@@ -101,6 +87,7 @@ namespace orxonox
         if (!(this->isAlive()))
             return;
 
+        this->explode();
         this->setAlive(false);
 
         if(eventExecution_)
@@ -114,7 +101,17 @@ namespace orxonox
 
         // Remove this ShipPart from the parent.
         this->parent_->removeShipPart(this);
-        orxout() << this->getName() << " has died." << endl;
+    }
+
+    void ShipPart::explode()
+    {
+        BigExplosion* chunk = new BigExplosion(this->getContext());
+        chunk->setPosition(this->parent_->getPosition() + this->parent_->getOrientation() * (this->explosionPosition_));
+        //chunk->setPosition(this->parent_->getPosition() + this->parent_->getOrientation() * Vector3(this->entityList_[0]->getLocalInertia()));
+        chunk->setVelocity(this->parent_->getVelocity());
+
+        // this->explosionSound_->setPosition(this->parent_->getPosition());
+        // this->explosionSound_->play();
     }
 
     /**
@@ -157,15 +154,6 @@ namespace orxonox
                 return true;
         }
         return false;
-    }
-
-    void ShipPart::printEntities()
-    {
-        orxout() << "ShipPart " << this->getName() << " has the following entities assigned:" << endl;
-        for(unsigned int j = 0; j < this->entityList_.size(); j++)
-        {
-            orxout() << "  " << this->entityList_[j]->getName() << endl;
-        }
     }
 
     /**
@@ -220,8 +208,6 @@ namespace orxonox
     */
     void ShipPart::handleHit(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
-        orxout() << "ShipPart " <<this->getName() << " is handling a hit!" << endl;
-
         if (parent_->getGametype() && parent_->getGametype()->allowPawnDamage(parent_, originator))
         {
             if (shielddamage >= parent_->getShieldHealth())
@@ -246,7 +232,28 @@ namespace orxonox
         }
         if (this->health_ < 0)
             this->death();
-        orxout() << "Health of ShipPart " << this->getName() << " is " << this->getHealth() << endl;
+
+        // (Ugly) Chatoutput of health, until a GUI for modularspaceships-shipparts is implemented.
+        if (this->health_ < 0.2 * this->maxHealth_)
+        {
+            ChatManager::message("ShipPart " + this->getName() + " remaining health is 20%!");
+            return;
+        }
+        if (this->health_ < 0.4 * this->maxHealth_)
+        {
+            ChatManager::message("ShipPart " + this->getName() + " remaining health is 40%!");
+            return;
+        }
+        if (this->health_ < 0.6 * this->maxHealth_)
+        {
+            ChatManager::message("ShipPart " + this->getName() + " remaining health is 60%!");
+            return;
+        }
+        if (this->health_ < 0.8 * this->maxHealth_)
+        {
+            ChatManager::message("ShipPart " + this->getName() + " remaining health is 80%!");
+            return;
+        }
     }
 
 

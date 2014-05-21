@@ -51,6 +51,7 @@ namespace orxonox // tolua_export
             virtual void handleHit(float damage, float healthdamage, float shielddamage, Pawn* originator);
 
             virtual void death();
+            virtual void explode();
 
             //virtual void attachTo(Pawn* newParent);
             //virtual void detach();
@@ -61,8 +62,6 @@ namespace orxonox // tolua_export
 
             void addDestructionEvent(PartDestructionEvent* event);
             PartDestructionEvent* getDestructionEvent(unsigned int index);
-
-            void printEntities(); // FIXME: (noep) remove debug
 
             virtual void setDamageAbsorption(float value);
             inline float getDamageAbsorption()
@@ -100,6 +99,11 @@ namespace orxonox // tolua_export
             inline float getInitialHealth() const
                 { return this->initialHealth_; }
 
+            inline void setExplosionPosition(Vector3 pos)
+                { this->explosionPosition_ = pos; }
+            inline Vector3 getExplosionPosition()
+                { return this->explosionPosition_; }
+
 
             // FIXME: (noep) Why doesn't this work? Works fine in Engine.h
             //void addToSpaceShip(ModularSpaceShip* ship);
@@ -119,6 +123,8 @@ namespace orxonox // tolua_export
 
             bool alive_;
             bool eventExecution_;
+
+            Vector3 explosionPosition_;
 
 
     }; // tolua_export

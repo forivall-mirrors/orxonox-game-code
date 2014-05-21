@@ -107,17 +107,9 @@ namespace orxonox
                     this->partList_[j]->addEntity(orxonox_cast<StaticEntity*>(this->getAttachedObject(i)));
                     // An entry in the partMap_ is created, assigning the part to the entity.
                     this->addPartEntityAssignment((StaticEntity*)(this->getAttachedObject(i)), this->partList_[j]);
-                    orxout() << "A matching part-entity-pair with name " << this->partList_[j]->getName() << " was found!" << endl;
-                    this->partList_[j]->printEntities(); // FIXME: (noep) remove debug
                 }
             }
         }
-
-        orxout() << "List of all assignments:" << endl;
-        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = this->partMap_.begin(); it != this->partMap_.end(); ++it)
-                {
-                    orxout() << "Entity: " << it->first << "   Part: " << it->second << endl;
-                }
     }
 
     void ModularSpaceShip::attach(WorldEntity* object)
@@ -146,8 +138,6 @@ namespace orxonox
                 }
 
         this->partMap_[entity] = part;
-
-        orxout() << "New entity-part assignment created!" << endl;
     }
 
 
