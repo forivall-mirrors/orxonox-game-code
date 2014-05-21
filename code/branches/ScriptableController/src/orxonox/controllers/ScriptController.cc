@@ -35,35 +35,63 @@
 
 namespace orxonox
 {
-    float scTime=0;  /*initialize time, to coordinate eventTime*/
-
-
-    std::vector<event> eventList;
-
-    
-
     RegisterClass(ScriptController);
 
-    //ScriptController::ScriptController(Context* context, ControllableEntity* CE) : ArtificialController(context)
     ScriptController::ScriptController(Context* context) : ArtificialController(context)
     {
         RegisterObject(ScriptController);
-        //set_controlled(CE);
+
+        /* By default, this controller has ID 0, which means it is not assigned
+         * to anything yet. 
+         */
         this->ctrlid_ = 0;
+
+
+        /* Set default values for all variables */
+        /* - pointers to zero */
+        this->player_ = NULL;
+        this->entity_ = NULL;
+
+        /* - times */
+        this->scTime = 0.0f;
+        this->timeToTarget = 0.0f;
+        this->eventTime = 0.0f;
+
+        /* - Points in space */
+        this->target = Vector3(0,0,0);
+        this->startpos = Vector3(0,0,0);
+        this->lookAtPosition = Vector3(0,0,0);
+
+        /* - Processing flag */
+        this->processing = false;
+
+        /* - Counters */
+        this->eventno = 0;
+
     }
 
     void ScriptController::takeControl(int ctrlid)
     {
+        /* Output some debugging information */
         orxout() << "ScriptController: Taking control" << endl;
         orxout() << "This-pointer: " << this << endl;
+
+        /* Set the controller ID (the argument here should be nonzero) */
         this->ctrlid_ = ctrlid;
+
+        /* Store the entity pointer in a private variable */
         this->entity_ = this->player_->getControllableEntity();
         assert(this->entity_);
-
+         
+        /* Add the controller here to this entity. Apparently this still leaves
+         * any preexisting human controllers in place. 
+         */
         this->entity_->setDestroyWhenPlayerLeft(false);
         this->player_->pauseControl();
         this->entity_->setController(this);
         this->setControllableEntity(this->entity_);
+        this->entity_->mouseLook();
+        this->entity_->setVisible(false);
     }
 
     /* Yet to be implemented and tested */
@@ -74,15 +102,9 @@ namespace orxonox
         //this->controllableEntity_ = NULL;
     //}
 
-    void ScriptController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-    	//XMLPortParam(ScriptController, BaseObject, "lsrc", set_luasrc, xmlelement, mode);
-
-    }
-
     const Vector3& ScriptController::getPosition()
     {
-        return this->entity_->getPosition();
+      return this->entity_->getPosition();
     }
 
     ScriptController* ScriptController::getScriptController()
@@ -103,7 +125,9 @@ namespace orxonox
       { 
         // TODO: do some selection here. Currently just returns the first one
         if( (*it)->getID() > 0 )
+        { orxout() << "Controller to return: " << *it << endl;
           return *it; 
+        }
       
       }
       return NULL;
@@ -111,125 +135,152 @@ namespace orxonox
 
     void ScriptController::execute(event ev)
     {
-        if(ev.fctName=="moveToPosition_beta")
-        {
+        orxout() << "Executing event " << ev.fctName 
+          << " with parameters:\n " 
+          << ev.x1 << " " << ev.y1 << " " << ev.z1 << "\n"
+          << ev.x2 << " " << ev.y2 << " " << ev.z2 << "\n"
+          << ev.duration << endl;
 
-            moveToPosition_beta(ev.xCoord,ev.yCoord,ev.zCoord);
-        }
+        this->eventTime = 0.0f;
+        this->startpos = this->entity_->getPosition();
+        this->processing = true;
+
+        if(ev.fctName == "mal")
+          moveAndLook(ev.x1, ev.y1, ev.z1, ev.x2, ev.y2, ev.z2, ev.duration);
     }
 
 
     void ScriptController::tick(float dt)
     {
-
-        
+        /* Call the tick function of the classes we derive from */
+        SUPER(ScriptController, tick, dt);
 
         /* If this controller has no entity entry, do nothing */
         if( !(this->entity_) )
           return;
 
-        //orxout() << "Rotating!" << endl;
+        //orxout() << "Size 0: " << this->eventList.size() << endl;
 
-        //this->entity_->rotateYaw(-1.0f * 100.0f * dt);
-        //this->entity_->rotatePitch(0.8f * 100.0f);
-
-        if(eventList.size() > 0 && eventList[0].eventTime<=scTime)
+        /* See if time has come for the next event to be run */
+        if(this->eventList.size() > 0 && this->eventList[0].eventTime <= scTime)
         {
-            /*TO DO: execute the function: eventList[0].fctName*/
-
-            execute(eventList[0]);
-            eventList.erase(eventList.begin());
+          /* Execute the next event on the list */
+          this->execute(this->eventList[0]);
+          this->eventList.erase(this->eventList.begin());
+          this->eventno -= 1;
+          //orxout() << "Size 1: " << this->eventList.size() << endl;
+          //orxout() << "Eventno is now: " << this->eventno << endl;
         }
 
-        SUPER(ScriptController, tick, dt);
+        /* Update the local timers in this object */
+        scTime += dt;
+        eventTime += dt;
 
-        scTime=scTime+dt;
-    }
+        /* If we've arrived at the target, stop processing */
+        if( eventTime > timeToTarget && this->processing == true)
+        { this->processing = false;
 
-
-
-
-    void ScriptController::moveToPosition_beta(float x, float y, float z )
-    {
-
-        orxout()<<"moveToPosition_beta executed"<<endl;
-        //const Vector3 local = this->getPosition();
-        const Vector3 target = Vector3(100*x,100*y,100*z);
-        //Vector3 way = target-local;
-        orxout() << "Moving This-pointer: " << this << endl;
-       
-        
-        //this->entity_->lookAt(target);
-        //this->entity_->moveFrontBack(-1000*target.length());      
-
-        if(this->entity_!=NULL)
-            orxout()<<"not-NULL-entity"<<endl;
-
-        if(this->player_!=NULL)
-            orxout()<<"not-NULL-player"<<endl;
-
-        orxout() << this->player_->getClientID() << endl; // IMPOSSIBLE TO ACCESS this->player AND this->entity
-        
-        //this->entity_ = this->player_->getClientID();//getControllableEntity();
-
-            //if(this->entity_==this->player_->getControllableEntity())
-            //orxout()<<"same entity"<<endl;
-
-        /* This works fine */
-        orxout()<<x<<"  "<<y<<"  "<<z<<endl;
-    }
-
-    void ScriptController::eventScheduler(std::string instruction, float x, float y, float z, float executionTime)
-    {
-
-
-        /*put data (from LUA) into time-sorted eventList*/ 
-        /*nimmt den befehl und die argumente aus luascript und ertellt einen struct pro event, diese structs werden sortiert nach eventTime*/
-        struct event tmp;
-        tmp.fctName=instruction;
-        tmp.xCoord=x;
-        tmp.yCoord=y;
-        tmp.zCoord=z;
-        tmp.eventTime=executionTime;
-
-        orxout()<<tmp.fctName<<endl;
-
-        if(eventList.size()==0)
-        {
-            orxout()<<"eventList empty (01)"<<endl;
-            eventList.insert(eventList.begin(), tmp);
-            orxout()<<"first event added"<<endl;
+          //orxout() << "Size 4: " << this->eventList.size() << endl;
+          //orxout() << "Eventno: " << this->eventno << endl;
+          
+          if( this->eventno == 0 )
+          {
+            this->entity_->mouseLook();
+            this->entity_->setVisible(true);
+          }
         }
 
+        /* Get a variable that specifies how far along the trajectory
+         * we are 
+         */
+        float dl = eventTime / timeToTarget; 
 
-       for (std::vector<event>::iterator it=eventList.begin(); it<eventList.end(); it++)
-            {
+        /* Do some moving */
+        if( this->processing )
+        { 
+          /* Set the position to the correct place in the trajectory */
+          this->entity_->setPosition( (1-dl)*startpos + dl * target );
 
-                if(tmp.eventTime<it->eventTime)
-                {
-                    eventList.insert(it,tmp);
-                    orxout()<<"new event added"<<endl;
-                }
+          /* Look at the specified position */
+          this->entity_->lookAt(lookAtPosition);
 
-            }
-
-       
-       if(eventList.size()==0)
-            orxout()<<"eventList empty"<<endl;
-
-        else
-            orxout()<<"eventList is not empty"<<endl;
-
-        
+          /* Force mouse look */
+          if( this->entity_->isInMouseLook() == false )
+            this->entity_->mouseLook();
+        }
     }
 
+    void ScriptController::moveAndLook(
+      float xm, float ym, float zm,
+      float xl, float yl, float zl,
+      float t )
+    {
+      orxout()<<"moveAndLook executed"<<endl;
+
+      /* Set the local variables required for this event */
+      this->target = Vector3(xm,ym,zm);
+      this->lookAtPosition = Vector3(xl,yl,zl);
+      this->timeToTarget = t;
 
 
-    /* TODO:    struct event erweitern um mehr funktionen benutzen zu koennen
+      orxout() << "Moving This-pointer: " << this << endl;
 
-                mehr funktionen definieren (und dann in  execute if(...))
-                NB: viele noetige funktionen sind schon in artificial- bzw formationcontroller vorhanden */        
+      if(this->entity_ != NULL)
+        orxout()<<"not-NULL-entity"<<endl;
+      else 
+        return;
 
+      if(this->player_ != NULL)
+        orxout()<<"not-NULL-player"<<endl;
+      else 
+        return;
+    }
 
+    void ScriptController::eventScheduler(std::string instruction, 
+      float x1, float y1, float z1, 
+      float x2, float y2, float z2, 
+      float duration, float executionTime)
+    {
+      /* put data (from LUA) into time-sorted eventList*/ 
+      /* Nimmt den befehl und die argumente aus luascript und ertellt einen
+       * struct pro event, diese structs werden sortiert nach eventTime
+       */
+      struct event tmp;
 
+      /* Fill the structure with all the provided information */
+      tmp.fctName = instruction;
+      tmp.x1 = x1; tmp.y1 = y1; tmp.z1 = z1;
+      tmp.x2 = x2; tmp.y2 = y2; tmp.z2 = z2;
+      tmp.duration = duration;
+      tmp.eventTime = executionTime;
+
+      orxout() << tmp.fctName << endl;
+
+      /* Add the created event to the event list */
+      if(eventList.size()==0)
+      { /* The list is still empty, just add it */
+        orxout() << "eventList empty (01)" << endl;
+        eventList.insert(eventList.begin(), tmp);
+        this->eventno += 1;
+        return; /* Nothing more to do, the event was added */
+      }
+
+      /* Event was not added yet since the list was not empty. Walk through
+       * the list of events and add it so that the events are correctly in
+       * order.
+       */
+      for (std::vector<event>::iterator it=eventList.begin(); it<eventList.end(); it++)
+      { if(tmp.eventTime < it->eventTime)
+        { eventList.insert(it,tmp);
+          this->eventno += 1;
+          orxout()<<"new event added"<<endl;
+          return;
+        }
+      }
+
+      /* If the event was still not added here, it belongs in the end of the list */
+      eventList.insert(eventList.end(), tmp);
+      this->eventno += 1;
+
+    }
 }

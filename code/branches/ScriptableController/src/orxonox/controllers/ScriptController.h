@@ -41,9 +41,15 @@ namespace orxonox  // tolua_export
     struct event 
     {   
         std::string fctName;
-        float xCoord;
-        float yCoord;
-        float zCoord;
+        float x1;
+        float y1;
+        float z1;
+
+        float x2;
+        float y2;
+        float z2;
+
+        float duration;
 
         float eventTime;
 
@@ -53,33 +59,30 @@ namespace orxonox  // tolua_export
        : public ArtificialController, public Tickable
     {  // tolua_export
         public:
-            //ScriptController(Context* context, ControllableEntity* CE);
             ScriptController(Context* context);
 
             virtual ~ScriptController() { }
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            //virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             
             void takeControl(int ctrlid);
             void setPlayer(PlayerInfo* player) { this->player_ = player; }
            
-           
-
-            //void set_luasrc(std::string);
-            //void set_controlled(ControllableEntity*);
-
             virtual void tick(float dt);
 
             // LUA interface
             // tolua_begin 
-            void moveToPosition_beta(float x, float y, float z);
+            void moveAndLook(float xm, float ym, float zm,
+              float xl, float yl, float zl, float t);
 
-            void eventScheduler(std::string instruction, float x, float y, float z, float time);
+            void eventScheduler(std::string instruction, 
+              float x1, float y1, float z1, 
+              float x2, float y2, float z2, 
+              float duration, float executionTime);
 
             static ScriptController* getScriptController();
 
             int getID() { return ctrlid_; }
-            
 
             // tolua_end
             const Vector3& getPosition();
@@ -87,12 +90,43 @@ namespace orxonox  // tolua_export
             void execute(event ev);
 
         private:
-            // name of the LUA-sourcefile that shall be executed->see XMLPort-function
-            std::string luasrc;		
+            /* Information about the player that this ScriptController will
+             * control */
+            /* - Player pointer */
             PlayerInfo* player_;
+
+            /* - Entity pointer, this is for convenience and will be the same as 
+             *   player_->getControllableEntity() 
+             */
             ControllableEntity* entity_;
+
+            /* Controller ID, defaults to 0 and is set using takeControl() */
             int ctrlid_;
 
+            /* List of events to walk through */
+            std::vector<event> eventList;
+            unsigned int eventno;
+
+            /* Time since the creation of this ScriptController object */
+            float scTime;  
+
+            /* Boolean that specifies whether we're processing an event right
+             * now */
+            bool processing;
+
+            /* Data about the point to go to and what to look at */
+            /* - Target position */
+            Vector3 target;
+
+            /* - Time it should take to get there */
+            float timeToTarget;
+
+            /* - Time this event has been going on for */
+            float eventTime;
+            Vector3 startpos;
+
+            /* - Position to look at during that transition */
+            Vector3 lookAtPosition;
 
     };// tolua_export
 } // tolua_export

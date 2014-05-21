@@ -88,7 +88,7 @@ namespace orxonox
        
        /* Assemble a string to define a controller id variable in lua space */
        std::stringstream tmp;
-       tmp << "newctrlid = " << ctrlid;
+       tmp << "newctrlid = " << ctrlid << endl;
        std::string todo = tmp.str();
        
        /* Run the string using the luastate created earlier */
