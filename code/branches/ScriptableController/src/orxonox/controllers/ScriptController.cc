@@ -46,7 +46,6 @@ namespace orxonox
          */
         this->ctrlid_ = 0;
 
-
         /* Set default values for all variables */
         /* - pointers to zero */
         this->player_ = NULL;
@@ -54,13 +53,11 @@ namespace orxonox
 
         /* - times */
         this->scTime = 0.0f;
-        this->timeToTarget = 0.0f;
         this->eventTime = 0.0f;
 
         /* - Points in space */
-        this->target = Vector3(0,0,0);
         this->startpos = Vector3(0,0,0);
-        this->lookAtPosition = Vector3(0,0,0);
+        //this->lookAtPosition = Vector3(0,0,0);
 
         /* - Processing flag */
         this->processing = false;
@@ -93,14 +90,6 @@ namespace orxonox
         this->entity_->mouseLook();
         this->entity_->setVisible(false);
     }
-
-    /* Yet to be implemented and tested */
-    //void ScriptController::yieldControl()
-    //{
-        //this->player_->startControl(this->entity_);
-        //this->setActive(false);
-        //this->controllableEntity_ = NULL;
-    //}
 
     const Vector3& ScriptController::getPosition()
     {
@@ -135,18 +124,22 @@ namespace orxonox
 
     void ScriptController::execute(event ev)
     {
-        orxout() << "Executing event " << ev.fctName 
-          << " with parameters:\n " 
-          << ev.x1 << " " << ev.y1 << " " << ev.z1 << "\n"
-          << ev.x2 << " " << ev.y2 << " " << ev.z2 << "\n"
-          << ev.duration << endl;
+        /* Debugging output */
+        //orxout() << "Executing event " << ev.fctName 
+          //<< " with parameters:\n " 
+          //<< ev.x1 << " " << ev.y1 << " " << ev.z1 << "\n"
+          //<< ev.x2 << " " << ev.y2 << " " << ev.z2 << "\n"
+          //<< ev.duration << endl;
 
+        /* Event is starting, hence set the time to 0 */
         this->eventTime = 0.0f;
-        this->startpos = this->entity_->getPosition();
         this->processing = true;
 
-        if(ev.fctName == "mal")
-          moveAndLook(ev.x1, ev.y1, ev.z1, ev.x2, ev.y2, ev.z2, ev.duration);
+        /* Copy the event into the currentEvent holder */
+        this->currentEvent = ev;
+
+        /* Store starting position */
+        this->startpos = this->entity_->getPosition();
     }
 
 
@@ -156,33 +149,26 @@ namespace orxonox
         SUPER(ScriptController, tick, dt);
 
         /* If this controller has no entity entry, do nothing */
-        if( !(this->entity_) )
-          return;
-
-        //orxout() << "Size 0: " << this->eventList.size() << endl;
+        if( !(this->entity_) ) return;
 
         /* See if time has come for the next event to be run */
         if(this->eventList.size() > 0 && this->eventList[0].eventTime <= scTime)
-        {
-          /* Execute the next event on the list */
+        { /* Execute the next event on the list */
           this->execute(this->eventList[0]);
           this->eventList.erase(this->eventList.begin());
           this->eventno -= 1;
-          //orxout() << "Size 1: " << this->eventList.size() << endl;
-          //orxout() << "Eventno is now: " << this->eventno << endl;
         }
 
         /* Update the local timers in this object */
-        scTime += dt;
-        eventTime += dt;
+        scTime += dt; eventTime += dt;
 
         /* If we've arrived at the target, stop processing */
-        if( eventTime > timeToTarget && this->processing == true)
+        if( eventTime > currentEvent.duration && this->processing == true)
         { this->processing = false;
 
-          //orxout() << "Size 4: " << this->eventList.size() << endl;
-          //orxout() << "Eventno: " << this->eventno << endl;
-          
+          /* If we reached the last event, also reenable the normal movement
+           * and make the model visible again
+           */
           if( this->eventno == 0 )
           {
             this->entity_->mouseLook();
@@ -193,47 +179,35 @@ namespace orxonox
         /* Get a variable that specifies how far along the trajectory
          * we are 
          */
-        float dl = eventTime / timeToTarget; 
+        float dl = eventTime / currentEvent.duration; 
 
+        /* Depending  */
         /* Do some moving */
         if( this->processing )
         { 
-          /* Set the position to the correct place in the trajectory */
-          this->entity_->setPosition( (1-dl)*startpos + dl * target );
+          if( this->currentEvent.fctName == "mal" )
+          {
+            /* Set the position to the correct place in the trajectory */
+            this->entity_->setPosition( (1-dl)*startpos + dl * this->currentEvent.v1);
 
-          /* Look at the specified position */
-          this->entity_->lookAt(lookAtPosition);
+            /* Look at the specified position */
+            this->entity_->lookAt(this->currentEvent.v2);
+
+            /* Update look at position */
+            //this->lookAtPosition = this->currentEvent.v2;
+          }
+          else if( this->currentEvent.fctName == "chl" )
+          {
+            /* Sweep the look from v1 to v2 */
+            this->entity_->lookAt( (1-dl)*this->currentEvent.v1 + 
+              dl * this->currentEvent.v2 );
+          }
+
 
           /* Force mouse look */
           if( this->entity_->isInMouseLook() == false )
             this->entity_->mouseLook();
         }
-    }
-
-    void ScriptController::moveAndLook(
-      float xm, float ym, float zm,
-      float xl, float yl, float zl,
-      float t )
-    {
-      orxout()<<"moveAndLook executed"<<endl;
-
-      /* Set the local variables required for this event */
-      this->target = Vector3(xm,ym,zm);
-      this->lookAtPosition = Vector3(xl,yl,zl);
-      this->timeToTarget = t;
-
-
-      orxout() << "Moving This-pointer: " << this << endl;
-
-      if(this->entity_ != NULL)
-        orxout()<<"not-NULL-entity"<<endl;
-      else 
-        return;
-
-      if(this->player_ != NULL)
-        orxout()<<"not-NULL-player"<<endl;
-      else 
-        return;
     }
 
     void ScriptController::eventScheduler(std::string instruction, 
@@ -249,8 +223,10 @@ namespace orxonox
 
       /* Fill the structure with all the provided information */
       tmp.fctName = instruction;
-      tmp.x1 = x1; tmp.y1 = y1; tmp.z1 = z1;
-      tmp.x2 = x2; tmp.y2 = y2; tmp.z2 = z2;
+      //tmp.x1 = x1; tmp.y1 = y1; tmp.z1 = z1;
+      //tmp.x2 = x2; tmp.y2 = y2; tmp.z2 = z2;
+      tmp.v1 = Vector3(x1,y1,z1);
+      tmp.v2 = Vector3(x2,y2,z2);
       tmp.duration = duration;
       tmp.eventTime = executionTime;
 

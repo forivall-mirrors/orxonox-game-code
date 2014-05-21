@@ -38,21 +38,20 @@
 namespace orxonox  // tolua_export
 {  // tolua_export
 
+    /** Structure to describe a single event */
     struct event 
     {   
+        /** Instruction for this event */
         std::string fctName;
-        float x1;
-        float y1;
-        float z1;
 
-        float x2;
-        float y2;
-        float z2;
+        Vector3 v1;
+        Vector3 v2;
 
+        /** Time span of the event */
         float duration;
 
+        /** Start point in time of the event */
         float eventTime;
-
     }; 
 
     class _OrxonoxExport ScriptController // tolua_export 
@@ -60,11 +59,8 @@ namespace orxonox  // tolua_export
     {  // tolua_export
         public:
             ScriptController(Context* context);
-
             virtual ~ScriptController() { }
 
-            //virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            
             void takeControl(int ctrlid);
             void setPlayer(PlayerInfo* player) { this->player_ = player; }
            
@@ -72,9 +68,6 @@ namespace orxonox  // tolua_export
 
             // LUA interface
             // tolua_begin 
-            void moveAndLook(float xm, float ym, float zm,
-              float xl, float yl, float zl, float t);
-
             void eventScheduler(std::string instruction, 
               float x1, float y1, float z1, 
               float x2, float y2, float z2, 
@@ -114,19 +107,16 @@ namespace orxonox  // tolua_export
              * now */
             bool processing;
 
-            /* Data about the point to go to and what to look at */
-            /* - Target position */
-            Vector3 target;
-
-            /* - Time it should take to get there */
-            float timeToTarget;
+            /* Data about the event currently being processed */
+            /* - The event itself */
+            event currentEvent;
 
             /* - Time this event has been going on for */
             float eventTime;
             Vector3 startpos;
 
             /* - Position to look at during that transition */
-            Vector3 lookAtPosition;
+            //Vector3 lookAtPosition;
 
     };// tolua_export
 } // tolua_export
