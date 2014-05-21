@@ -38,12 +38,9 @@ namespace orxonox
     float scTime=0;  /*initialize time, to coordinate eventTime*/
 
 
-
     std::vector<event> eventList;
 
     
-
-
 
     RegisterClass(ScriptController);
 
