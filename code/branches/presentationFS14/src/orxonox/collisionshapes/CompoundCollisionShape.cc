@@ -39,6 +39,8 @@
 #include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
 
+#include "collisionshapes/WorldEntityCollisionShape.h"
+
 namespace orxonox
 {
     RegisterClass(CompoundCollisionShape);
@@ -117,6 +119,11 @@ namespace orxonox
 
             this->updatePublicShape();
         }
+
+        // If the shape to be attached is not a CompoundCollisionShape (thus an actual physical shape) & this is a WorldEntity's CollisionShape,
+        // set it's userPointer to the WorldEntity this CompoundCollisionShape belongs to.
+        if (!orxonox_cast<CompoundCollisionShape*>(shape) && orxonox_cast<WorldEntityCollisionShape*>(this))
+            shape->getCollisionShape()->setUserPointer(orxonox_cast<WorldEntityCollisionShape*>(this)->getWorldEntityOwner());
     }
 
     /**
@@ -295,5 +302,10 @@ namespace orxonox
         }
 
         this->updatePublicShape();*/
+    }
+
+    int CompoundCollisionShape::getNumChildShapes()
+    {
+        return this->compoundShape_->getNumChildShapes();
     }
 }

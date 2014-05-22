@@ -20,6 +20,7 @@ subject to the following restrictions:
 #include "LinearMath/btIDebugDraw.h"
 #include "LinearMath/btAabbUtil2.h"
 #include "btManifoldResult.h"
+#include <iostream>
 
 btCompoundCollisionAlgorithm::btCompoundCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci,btCollisionObject* body0,btCollisionObject* body1,bool isSwapped)
 :btActivatingCollisionAlgorithm(ci,body0,body1),
@@ -114,7 +115,8 @@ public:
 
 	void	ProcessChildShape(btCollisionShape* childShape,int index)
 	{
-		btAssert(index>=0);
+		// std::cout << "PCS: " << childShape << std::endl; // FIXME: (noep) remove DEBUG
+	    btAssert(index>=0);
 		btCompoundShape* compoundShape = static_cast<btCompoundShape*>(m_compoundColObj->getCollisionShape());
 		btAssert(index<compoundShape->getNumChildShapes());
 

@@ -71,6 +71,7 @@ namespace orxonox
     class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
         friend class Scene;
+        friend class ModularSpaceShip;
 
         public:
             // Define our own transform space enum to avoid Ogre includes here
@@ -205,6 +206,9 @@ namespace orxonox
                 { return this->bDeleteWithParent_; }
 
             void notifyChildPropsChanged();
+
+            inline int getNumAttachedObj()
+                { return this->children_.size(); }
 
         protected:
             virtual void parentChanged() {}
@@ -373,7 +377,7 @@ namespace orxonox
             @note
                 Condition is that enableCollisionCallback() was called.
             */
-            virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+            virtual inline bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* ownCollisionShape, btManifoldPoint& contactPoint)
                 { return false; } /* With false, Bullet assumes no modification to the collision objects. */
 
             //! Enables the collidesAgainst(.) function. The object doesn't respond to collision otherwise!
@@ -404,6 +408,9 @@ namespace orxonox
                 don't yet exist in the constructor if a base class.
             */
             virtual bool isCollisionTypeLegal(CollisionType type) const = 0;
+
+            inline virtual WorldEntityCollisionShape* getWorldEntityCollisionShape()
+                { return this->collisionShape_; }
 
             btRigidBody*  physicalBody_; //!< Bullet rigid body. Everything physical is applied to this instance.
 

@@ -77,7 +77,7 @@ namespace orxonox
         Returns true if the collision resulted in a successful hit.
     @see Pawn.h
     */
-    bool BasicProjectile::processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    bool BasicProjectile::processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint, const btCollisionShape* cs)
     {
         if (!this->bDestroy_ && GameMode::isMaster())
         {
@@ -95,7 +95,7 @@ namespace orxonox
             // If visual effects after destruction cause problems, put this block below the effects code block
             if (victim)
             {
-                victim->hit(this->getShooter(), contactPoint, this->getDamage(), this->getHealthDamage(), this->getShieldDamage());
+                victim->hit(this->getShooter(), contactPoint, cs, this->getDamage(), this->getHealthDamage(), this->getShieldDamage());
                 victim->startReloadCountdown();
             }
 
@@ -139,6 +139,7 @@ namespace orxonox
         }
         return false;
     }
+
 
     /**
     @brief

@@ -190,9 +190,9 @@ namespace orxonox
        this->destroyCheck();
     }
 
-    bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    bool Rocket::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
     {
-        return this->processCollision(otherObject, contactPoint);
+        return this->processCollision(otherObject, contactPoint, cs);
     }
 
     /**

@@ -63,7 +63,7 @@ namespace orxonox
             virtual ~SimpleRocket();
             virtual void tick(float dt);
 
-            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            virtual bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
 
             void disableFire(); //!< Method to disable the fire and stop all acceleration
 

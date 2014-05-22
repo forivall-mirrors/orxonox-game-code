@@ -269,6 +269,8 @@ namespace orxonox
             float lift_;       //!< The amount of lift that is added.
             float stallSpeed_; //!< The forward speed where no more lift is added.
 
+            std::vector<Engine*> engineList_; //!< The list of all Engines mounted on this SpaceShip.
+
         private:
             void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
@@ -283,8 +285,6 @@ namespace orxonox
             void shakeCamera(float dt); // Shake the camera for a given time interval.
             void backupCamera(); // Save the original position and orientation of the camera.
             void resetCamera(); // Reset the camera to its original position.
-
-            std::vector<Engine*> engineList_; //!< The list of all Engines mounted on this SpaceShip.
 
             Timer timer_;                          //!< Timer for the cooldown duration.
             float shakeDt_;                        //!< Temporary variable for the shaking of the camera.
