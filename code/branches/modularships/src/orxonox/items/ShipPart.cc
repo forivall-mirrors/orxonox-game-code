@@ -84,8 +84,8 @@ namespace orxonox
     */
     void ShipPart::death()
     {
-        if (!(this->isAlive()))
-            return;
+        //if (!(this->isAlive()))
+            //return;
 
         this->explode();
         this->setAlive(false);
@@ -231,7 +231,8 @@ namespace orxonox
             }
         }
         if (this->health_ < 0)
-            this->death();
+            this->alive_ = false;
+            //this->death();
 
         // (Ugly) Chatoutput of health, until a GUI for modularspaceships-shipparts is implemented.
         if (this->health_ < 0.2 * this->maxHealth_)

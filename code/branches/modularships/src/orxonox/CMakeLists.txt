@@ -30,6 +30,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   MoodManager.cc
   PawnManager.cc
   PlayerManager.cc
+  ShipPartManager.cc
   Radar.cc
 #  Test.cc
 
