@@ -73,12 +73,12 @@
     -->
 
 
-    <Billboard position="3500,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=10 />
-    <DistanceTrigger position="3500,0,0" distance="200" target="Pawn"
+    <Billboard position="2500,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=10 />
+    <DistanceTrigger position="2500,0,0" distance="200" target="Pawn"
       beaconMode="exclude" targetname="bcnDestroyer" name="takeControl"
     />
 
-    <StaticEntity position  = "0,0,0" mass=10000 collisionType=static >
+    <StaticEntity position  = "2000,500,2000" mass=10000 collisionType=static >
       <attached>
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=10 />
       </attached>
@@ -89,6 +89,9 @@
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=80 />
       </attached>
     </StaticEntity>
+
+
+
 
 <!-- ControllerDirector waits for the event takeControl to attach a new Controller -->
     <ControllerDirector position="0,0,0">
