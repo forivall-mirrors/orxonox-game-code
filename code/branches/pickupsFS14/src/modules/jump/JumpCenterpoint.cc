@@ -54,8 +54,9 @@ namespace orxonox
         width_ = 200;
         height_ = 120;
         sectionLength_ = 120;
+        platformSpeed_ = 20.0;
 
-        this->checkGametype();
+        checkGametype();
     }
 
     /**
@@ -68,7 +69,8 @@ namespace orxonox
 
         XMLPortParam(JumpCenterpoint, "dimension", setFieldDimension, getFieldDimension, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "sectionLength", setSectionLength, getSectionLength, xmlelement, mode);
-        XMLPortParam(JumpCenterpoint, "platformLength", setPlatformLength, getPlatformLength, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "platformSpeed", setPlatformSpeed, getPlatformSpeed, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "cameraOffset", setCameraOffset, getCameraOffset, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "platformStaticTemplate", setPlatformStaticTemplate, getPlatformStaticTemplate, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "platformHMoveTemplate", setPlatformHMoveTemplate, getPlatformHMoveTemplate, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "platformVMoveTemplate", setPlatformVMoveTemplate, getPlatformVMoveTemplate, xmlelement, mode);
@@ -77,7 +79,15 @@ namespace orxonox
         XMLPortParam(JumpCenterpoint, "platformFakeTemplate", setPlatformFakeTemplate, getPlatformFakeTemplate, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "figureTemplate", setFigureTemplate, getFigureTemplate, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "projectileTemplate", setProjectileTemplate, getProjectileTemplate, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "springTemplate", setSpringTemplate, getSpringTemplate, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "rocketTemplate", setRocketTemplate, getRocketTemplate, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "propellerTemplate", setPropellerTemplate, getPropellerTemplate, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "bootsTemplate", setBootsTemplate, getBootsTemplate, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "shieldTemplate", setShieldTemplate, getShieldTemplate, xmlelement, mode);
         XMLPortParam(JumpCenterpoint, "enemy1Template", setEnemy1Template, getEnemy1Template, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "enemy2Template", setEnemy2Template, getEnemy2Template, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "enemy3Template", setEnemy3Template, getEnemy3Template, xmlelement, mode);
+        XMLPortParam(JumpCenterpoint, "enemy4Template", setEnemy4Template, getEnemy4Template, xmlelement, mode);
     }
 
     /**
@@ -89,7 +99,7 @@ namespace orxonox
         SUPER(JumpCenterpoint, changedGametype);
 
         // Check, whether it's still Jump.
-        this->checkGametype();
+        checkGametype();
     }
 
     /**

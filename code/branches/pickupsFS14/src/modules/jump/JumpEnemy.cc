@@ -55,11 +55,14 @@ namespace orxonox
     {
         RegisterObject(JumpEnemy);
 
-        this->figure_ = 0;
+        dead_ = false;
+        figure_ = 0;
+        width_ = 0.0;
+        height_ = 0.0;
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
+        setAcceleration(Vector3(0,0,0));
         setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-        this->setPosition(Vector3(0,0,0));
-        this->setVelocity(Vector3(0,0,0));
-        this->setAcceleration(Vector3(0,0,0));
     }
 
     /**
@@ -81,6 +84,9 @@ namespace orxonox
     void JumpEnemy::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpEnemy, XMLPort, xmlelement, mode);
+
+        XMLPortParam(JumpEnemy, "height", setHeight, getHeight, xmlelement, mode);
+        XMLPortParam(JumpEnemy, "width", setWidth, getWidth, xmlelement, mode);
     }
 
     /**
@@ -115,6 +121,17 @@ namespace orxonox
             setPosition(position);
 
 
+        // Interact with Figure
+        Vector3 enemyPosition = getPosition();
+
+        if (figure_ != NULL)
+        {
+            Vector3 figurePosition = figure_->getPosition();
+            if(figurePosition.x > enemyPosition.x-width_ && figurePosition.x < enemyPosition.x+width_ && figurePosition.z > enemyPosition.z-height_ && figurePosition.z < enemyPosition.z+height_)
+            {
+            	touchFigure();
+            }
+        }
     }
 
     void JumpEnemy::setProperties(float newLeftBoundary, float newRightBoundary, float newLowerBoundary, float newUpperBoundary, float newHSpeed, float newVSpeed)
@@ -140,6 +157,9 @@ namespace orxonox
 
     void JumpEnemy::touchFigure()
     {
-
+    	if (dead_ == false)
+    	{
+    		figure_->CollisionWithEnemy(this);
+    	}
     }
 }

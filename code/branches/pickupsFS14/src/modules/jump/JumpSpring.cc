@@ -27,15 +27,15 @@
  */
 
 /**
-    @file JumpPlatformDisappear.cc
-    @brief Implementation of the JumpPlatform class.
+    @file JumpSpring.cc
+    @brief Implementation of the JumpSpring class.
 */
 
-#include "JumpPlatformDisappear.h"
+#include "JumpSpring.h"
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-
+#include "graphics/Model.h"
 #include "gametypes/Gametype.h"
 
 #include "JumpFigure.h"
@@ -45,33 +45,38 @@
 
 namespace orxonox
 {
-    RegisterClass(JumpPlatformDisappear);
+    RegisterClass(JumpSpring);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    JumpPlatformDisappear::JumpPlatformDisappear(Context* context) : JumpPlatform(context)
+    JumpSpring::JumpSpring(Context* context) : JumpItem(context)
     {
-        RegisterObject(JumpPlatformDisappear);
+        RegisterObject(JumpSpring);
 
-        setProperties(true);
+        stretch_ = 1.0;
+
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
+        setAcceleration(Vector3(0,0,0));
+
+        setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
     /**
     @brief
         Destructor.
     */
-    JumpPlatformDisappear::~JumpPlatformDisappear()
+    JumpSpring::~JumpSpring()
     {
 
     }
 
-
     //xml port for loading sounds
-    void JumpPlatformDisappear::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void JumpSpring::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(JumpPlatformDisappear, XMLPort, xmlelement, mode);
+        SUPER(JumpSpring, XMLPort, xmlelement, mode);
     }
 
     /**
@@ -81,27 +86,44 @@ namespace orxonox
     @param dt
         The time since the last tick.
     */
-    void JumpPlatformDisappear::tick(float dt)
+    void JumpSpring::tick(float dt)
     {
-        SUPER(JumpPlatformDisappear, tick, dt);
+        SUPER(JumpSpring, tick, dt);
+
+        if (stretch_ > 1.0)
+        {
+        	stretch_ -= dt;
+        	setScale3D(1.0, 1.0, stretch_);
+        }
+
+        Vector3 springPosition = getWorldPosition();
+
+        if (figure_ != NULL)
+        {
+            Vector3 figurePosition = figure_->getWorldPosition();
+            Vector3 figureVelocity = figure_->getVelocity();
+
+            if(figureVelocity.z < 0 && figurePosition.x > springPosition.x-width_ && figurePosition.x < springPosition.x+width_ && figurePosition.z > springPosition.z-height_ && figurePosition.z < springPosition.z+height_)
+            {
+            	touchFigure();
+            }
+        }
     }
 
-    void JumpPlatformDisappear::setProperties(bool active)
+    void JumpSpring::touchFigure()
     {
-    	active_ = active;
+    	JumpItem::touchFigure();
+
+    	stretch_ = 3.0;
+
+    	accelerateFigure();
     }
 
-    bool JumpPlatformDisappear::isActive()
+    void JumpSpring::accelerateFigure()
     {
-    	return active_;
-    }
-
-    void JumpPlatformDisappear::touchFigure()
-    {
-    	if (isActive())
+    	if (figure_ != 0)
     	{
-    		figure_->JumpFromPlatform(this);
-        	active_ = false;
+			figure_->JumpFromSpring(this);
     	}
     }
 }

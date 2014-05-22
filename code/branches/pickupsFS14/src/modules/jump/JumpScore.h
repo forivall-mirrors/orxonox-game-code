@@ -63,10 +63,31 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void changedOwner(); //!< Is called when the owner changes.
 
+            void setShowScore(const bool showScore)
+                { showScore_ = showScore; }
+
+            const bool getShowScore() const
+                { return showScore_; }
+
+            void setShowMessages(const bool showMessages)
+                { showMessages_ = showMessages; }
+
+            const bool getShowMessages() const
+                { return showMessages_; }
+
+            void setGameOverText(const std::string& gameOverText)
+                { this->gameOverText_ = gameOverText; }
+
+            const std::string& getGameOverText() const
+                { return this->gameOverText_; }
+
         private:
             Jump* owner_; //!< The Jump game that owns this JumpScore.
             WeakPtr<PlayerInfo> player_; //!< Store information about left player permanently.
             WorldSound* scoreSound_;
+            bool showScore_;
+            bool showMessages_;
+            std::string gameOverText_;
 
     };
 }

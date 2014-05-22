@@ -12,6 +12,11 @@ BUILD_UNIT JumpBuildUnit.cc
   JumpEnemy.cc
   JumpFigure.cc
   JumpItem.cc
+  JumpSpring.cc
+  JumpRocket.cc
+  JumpShield.cc
+  JumpPropeller.cc
+  JumpBoots.cc
   JumpCenterpoint.cc
   JumpScore.cc
 END_BUILD_UNIT
@@ -23,5 +28,6 @@ ORXONOX_ADD_LIBRARY(jump
   LINK_LIBRARIES
     orxonox
     overlays
+    weapons
   SOURCE_FILES ${JUMP_SRC_FILES}
 )

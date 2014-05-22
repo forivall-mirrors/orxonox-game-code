@@ -57,28 +57,28 @@ namespace orxonox
     {
         RegisterObject(JumpPlatform);
 
-        this->figure_ = 0;
+        figure_ = 0;
 
         //initialize sound
         if (GameMode::isMaster())
 		 {
-			 this->defScoreSound_ = new WorldSound(this->getContext());
-			 this->defScoreSound_->setVolume(1.0f);
-			 this->defBatSound_ = new WorldSound(this->getContext());
-			 this->defBatSound_->setVolume(0.4f);
-			 this->defBoundarySound_ = new WorldSound(this->getContext());
-			 this->defBoundarySound_->setVolume(0.5f);
+			 defScoreSound_ = new WorldSound(this->getContext());
+			 defScoreSound_->setVolume(1.0f);
+			 defBatSound_ = new WorldSound(this->getContext());
+			 defBatSound_->setVolume(0.4f);
+			 defBoundarySound_ = new WorldSound(this->getContext());
+			 defBoundarySound_->setVolume(0.5f);
 		 }
 		 else
 		 {
-			 this->defScoreSound_ = 0;
-			 this->defBatSound_ = 0;
-			 this->defBoundarySound_ = 0;
+			 defScoreSound_ = 0;
+			 defBatSound_ = 0;
+			 defBoundarySound_ = 0;
 		 }
 
-        this->setPosition(Vector3(0,0,0));
-        this->setVelocity(Vector3(0,0,0));
-        this->setAcceleration(Vector3(0,0,0));
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
+        setAcceleration(Vector3(0,0,0));
     }
 
     /**
@@ -87,19 +87,17 @@ namespace orxonox
     */
     JumpPlatform::~JumpPlatform()
     {
-        /*if (this->isInitialized())
-        {
-            if (this->bDeleteBats_)
-                delete this->figure_;
 
-            delete[] this->batID_;
-        }*/
     }
 
     //xml port for loading sounds
     void JumpPlatform::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpPlatform, XMLPort, xmlelement, mode);
+
+        XMLPortParam(JumpPlatform, "height", setHeight, getHeight, xmlelement, mode);
+        XMLPortParam(JumpPlatform, "width", setWidth, getWidth, xmlelement, mode);
+
         XMLPortParam(JumpPlatform, "defScoreSound",  setDefScoreSound,  getDefScoreSound,  xmlelement, mode);
         XMLPortParam(JumpPlatform, "defBatSound",  setDefBatSound,  getDefBatSound,  xmlelement, mode);
         XMLPortParam(JumpPlatform, "defBoundarySound",  setDefBoundarySound,  getDefBoundarySound,  xmlelement, mode);
@@ -123,116 +121,18 @@ namespace orxonox
             Vector3 figurePosition = figure_->getPosition();
             Vector3 figureVelocity = figure_->getVelocity();
 
-            if(figureVelocity.z < 0 && figurePosition.x > platformPosition.x-10 && figurePosition.x < platformPosition.x+10 && figurePosition.z > platformPosition.z-4 && figurePosition.z < platformPosition.z+4)
+            float tolerance = 3.0;
+
+            if(figureVelocity.z < 0 && figurePosition.x > platformPosition.x-width_/2 && figurePosition.x < platformPosition.x+width_/2 && figurePosition.z > platformPosition.z-height_/2*tolerance && figurePosition.z < platformPosition.z+height_/2)
             {
             	touchFigure();
             }
         }
-
-
-
-
-
-        /*
-        // If the ball has gone over the top or bottom boundary of the playing field (i.e. the ball has hit the top or bottom delimiters).
-        if (position.z > this->fieldHeight_ / 2 || position.z < -this->fieldHeight_ / 2)
-        {
-            defBoundarySound_->play(); //play boundary sound
-            // Its velocity in z-direction is inverted (i.e. it bounces off).
-            velocity.z = -velocity.z;
-            // And its position is set as to not overstep the boundary it has just crossed.
-            if (position.z > this->fieldHeight_ / 2)
-                position.z = this->fieldHeight_ / 2;
-            if (position.z < -this->fieldHeight_ / 2)
-                position.z = -this->fieldHeight_ / 2;
-
-            this->fireEvent();
-        }
-
-        // If the ball has crossed the left or right boundary of the playing field (i.e. a player has just scored, if the bat isn't there to parry).
-        if (position.x > this->fieldWidth_ / 2 || position.x < -this->fieldWidth_ / 2)
-        {
-            float distance = 0;
-
-            if (this->bat_ != NULL) // If there are bats.
-            {
-                // If the right boundary has been crossed.
-                if (position.x > this->fieldWidth_ / 2 && this->bat_[1] != NULL)
-                {
-                    // Calculate the distance (in z-direction) between the ball and the center of the bat, weighted by half of the effective length of the bat (with additional 10%)
-                    distance = (position.z - this->bat_[1]->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
-                    if (fabs(distance) <= 1) // If the bat is there to parry.
-                    {
-                        defBatSound_->play(); //play bat sound
-                        // Set the ball to be exactly at the boundary.
-                        position.x = this->fieldWidth_ / 2;
-                        // Invert its velocity in x-direction (i.e. it bounces off).
-                        velocity.x = -velocity.x;
-                        // Adjust the velocity in the z-direction, depending on where the ball hit the bat.
-                        velocity.z = distance * distance * sgn(distance) * JumpPlatform::MAX_REL_Z_VELOCITY * this->speed_;
-                        acceleration = this->bat_[1]->getVelocity() * this->accelerationFactor_ * -1;
-
-                        this->fireEvent();
-                    }
-                    // If the left player scores.
-                    else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
-                    {
-                        defScoreSound_->play();//play score sound
-                        if (this->getGametype() && this->bat_[0])
-                        {
-                            this->getGametype()->playerScored(this->bat_[0]->getPlayer());
-                            return;
-                        }
-                    }
-                }
-                // If the left boundary has been crossed.
-                else if (position.x < -this->fieldWidth_ / 2 && this->bat_[0] != NULL)
-                {
-                    // Calculate the distance (in z-direction) between the ball and the center of the bat, weighted by half of the effective length of the bat (with additional 10%)
-                    distance = (position.z - this->figure_->getPosition().z) / (this->fieldHeight_ * (this->batlength_ * 1.10f) / 2);
-                    if (fabs(distance) <= 1) // If the bat is there to parry.
-                    {
-                        defBatSound_->play(); //play bat sound
-                        // Set the ball to be exactly at the boundary.
-                        position.x = -this->fieldWidth_ / 2;
-                        // Invert its velocity in x-direction (i.e. it bounces off).
-                        velocity.x = -velocity.x;
-                        // Adjust the velocity in the z-direction, depending on where the ball hit the bat.
-                        velocity.z = distance * distance * sgn(distance) * JumpPlatform::MAX_REL_Z_VELOCITY * this->speed_;
-                        acceleration = this->bat_[0]->getVelocity() * this->accelerationFactor_ * -1;
-
-                        this->fireEvent();
-                    }
-                    // If the right player scores.
-                    else if (GameMode::isMaster() && position.x < -this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))
-                    {
-                        defScoreSound_->play();//play score sound
-                        if (this->getGametype() && this->bat_[1])
-                        {
-                            this->getGametype()->playerScored(this->bat_[1]->getPlayer());
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-        */
     }
 
-    /**
-    @brief
-        Set the bats for the ball.
-    @param bats
-        An array (of size 2) of weak pointers, to be set as the new bats.
-    */
     void JumpPlatform::setFigure(WeakPtr<JumpFigure> newFigure)
     {
         figure_ = newFigure;
-    }
-
-    void JumpPlatform::accelerateFigure()
-    {
-    	figure_->JumpFromPlatform(this);
     }
 
     void JumpPlatform::touchFigure()

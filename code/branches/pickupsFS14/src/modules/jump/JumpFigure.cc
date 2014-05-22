@@ -48,11 +48,19 @@ namespace orxonox
     {
         RegisterObject(JumpFigure);
 
-        this->movement_ = 0;
-        this->bMoveLocal_ = false;
-        this->length_ = 0.25;
-        this->fieldWidth_ = 180;
-        this->bSteadiedPosition_ = false;
+        leftHand_ = NULL;
+        rightHand_ = NULL;
+
+        fieldHeight_ = 0;
+        fieldWidth_ = 0;
+
+        jumpSpeed_ = 0.0;
+        handSpeed_ = 0.0;
+        handMaxAngle_ = 0.0;
+        handMinAngle_ = 0.0;
+        rocketPos_ = 0.0;
+        propellerPos_ = 0.0;
+        bootsPos_ = 0.0;
 
         moveUpPressed = false;
         moveDownPressed = false;
@@ -65,6 +73,19 @@ namespace orxonox
         gravityAcceleration = 8.0;
         mouseFactor_ = 75.0;
         maxFireRate = 0.3;
+
+        handAngle_ = 0.0;
+        animateHands_ = false;
+        turnUp_ = false;
+
+        rocketActive_ = false;
+        propellerActive_ = false;
+        bootsActive_ = false;
+        shieldActive_ = false;
+        rocketSpeed_ = 0.0;
+        propellerSpeed_ = 0.0;
+
+        dead_ = false;
     }
 
     /**
@@ -75,6 +96,17 @@ namespace orxonox
     {
         SUPER(JumpFigure, XMLPort, xmlelement, mode);
         XMLPortParam(JumpFigure, "mouseFactor", setMouseFactor, getMouseFactor, xmlelement, mode);
+        XMLPortParam(JumpFigure, "modelLefthand", setModelLeftHand, getModelLeftHand, xmlelement, mode);
+        XMLPortParam(JumpFigure, "modelRighthand", setModelRightHand, getModelRightHand, xmlelement, mode);
+        XMLPortParam(JumpFigure, "rocketPos", setRocketPos, getRocketPos, xmlelement, mode);
+        XMLPortParam(JumpFigure, "propellerPos", setPropellerPos, getPropellerPos, xmlelement, mode);
+        XMLPortParam(JumpFigure, "bootsPos", setBootsPos, getBootsPos, xmlelement, mode);
+        XMLPortParam(JumpFigure, "jumpSpeed", setJumpSpeed, getJumpSpeed, xmlelement, mode);
+        XMLPortParam(JumpFigure, "rocketSpeed", setRocketSpeed, getRocketSpeed, xmlelement, mode);
+        XMLPortParam(JumpFigure, "propellerSpeed", setPropellerSpeed, getPropellerSpeed, xmlelement, mode);
+        XMLPortParam(JumpFigure, "handMinAngle", setHandMinAngle, getHandMinAngle, xmlelement, mode);
+        XMLPortParam(JumpFigure, "handMaxAngle", setHandMaxAngle, getHandMaxAngle, xmlelement, mode);
+        XMLPortParam(JumpFigure, "handSpeed", setHandSpeed, getHandSpeed, xmlelement, mode);
     }
 
     /**
@@ -89,55 +121,71 @@ namespace orxonox
     	SUPER(JumpFigure, tick, dt);
 
         // If the bat is controlled (but not over the network).
-        if (this->hasLocalController())
+        if (hasLocalController())
         {
         	timeSinceLastFire += dt;
 
-            /*if (this->movement_ != 0)
-            {
-                // The absolute value of the movement is restricted to be lesser or equal than the speed of the bat.
-                this->movement_ = clamp(this->movement_, -1.0f, 1.0f) * this->speed_;
-
-                // If moveRightLeft() is used the movement is dependento on wehther it is the right or the left bat, so, it is i.e. dependent on the orientation of the bat.
-                if (this->bMoveLocal_)
-                    this->setVelocity(this->getOrientation() * Vector3(this->movement_, 0, 0));
-                else
-                    this->setVelocity(0, 0, this->movement_);
-
-                this->movement_ = 0;
-                this->bSteadiedPosition_ = false;
-            }
-            // If there is no movement but the position has not been steadied, the velocity is set to zero and the position is reaffirmed.
-            else if (!this->bSteadiedPosition_)
-            {
-                // To ensure network synchronicity
-                this->setVelocity(0, 0, 0);
-                this->setPosition(this->getPosition());
-                this->bSteadiedPosition_ = true;
-            }*/
-
-
+        	// Move up/down
         	Vector3 velocity = getVelocity();
-
-        	velocity.z -= gravityAcceleration;
-
-        	/*if (moveLeftPressed == true)
+        	if (rocketActive_ == true)
         	{
-        		velocity.x = -accelerationFactor;
-        		moveLeftPressed = false;
+        		velocity.z = rocketSpeed_;
         	}
-        	if (moveRightPressed == true)
+        	else if (propellerActive_ == true)
         	{
-        		velocity.x = accelerationFactor;
-        		moveRightPressed = false;
-        	}*/
+        		velocity.z = propellerSpeed_;
+        	}
+        	else
+        	{
+        		velocity.z -= gravityAcceleration;
+        	}
 
-        	velocity.x = -mouseFactor_*horizontalSpeed;
+        	// Animate Hands
+        	if (animateHands_ == true)
+        	{
+        		if (turnUp_ == true)
+        		{
+        			handAngle_ += handSpeed_ * dt;
+        		}
+        		else
+				{
+					handAngle_ -= handSpeed_ * dt;
+				}
+            	if (handAngle_ > handMaxAngle_)
+            	{
+            		turnUp_ = false;
+            	}
+            	if (handAngle_ <= handMinAngle_)
+            	{
+            		animateHands_ = false;
+            	}
 
+				if (leftHand_ != NULL)
+				{
+					leftHand_->setOrientation(Vector3(0.0, 1.0, 0.0), Degree(-handAngle_));
+				}
+				if (rightHand_ != NULL)
+				{
+					rightHand_->setOrientation(Vector3(0.0, 1.0, 0.0), Degree(handAngle_));
+				}
+        	}
+
+        	// Move left/right
+        	if (dead_ == false)
+        	{
+        		velocity.x = -mouseFactor_*horizontalSpeed;
+        	}
+        	else
+        	{
+        		velocity.x = 0.0;
+        	}
+
+        	// Cheats
         	if (moveUpPressed == true)
         	{
         		velocity.z = 200.0f;
         		moveUpPressed = false;
+        		dead_ = false;
         	}
         	if (moveDownPressed == true)
         	{
@@ -145,6 +193,7 @@ namespace orxonox
         	}
 
         	setVelocity(velocity);
+
 
         	if (firePressed && timeSinceLastFire >= maxFireRate)
         	{
@@ -155,8 +204,8 @@ namespace orxonox
         	}
         }
 
-        Vector3 position = this->getPosition();
-
+        // Move through the left and right screen boundaries
+        Vector3 position = getPosition();
         if (position.x < -fieldWidth_*1.1)
         {
         	position.x = fieldWidth_*1.1;
@@ -165,9 +214,9 @@ namespace orxonox
         {
         	position.x = -fieldWidth_*1.1;
         }
+        setPosition(position);
 
-        this->setPosition(position);
-
+        // Reset key variables
         moveUpPressed = false;
         moveDownPressed = false;
         moveLeftPressed = false;
@@ -177,14 +226,146 @@ namespace orxonox
 
     void JumpFigure::JumpFromPlatform(JumpPlatform* platform)
     {
-    	Vector3 velocity = getVelocity();
-    	velocity.z = 200.0f;
-    	setVelocity(velocity);
+    	if (dead_ == false)
+    	{
+        	Vector3 velocity = getVelocity();
+        	velocity.z = (bootsActive_ ? 1.2*jumpSpeed_ : jumpSpeed_);
+        	setVelocity(velocity);
+
+        	animateHands_ = true;
+        	handAngle_ = 0.0;
+        	turnUp_ = true;
+    	}
     }
 
+    void JumpFigure::JumpFromSpring(JumpSpring* spring)
+    {
+    	if (dead_ == false)
+    	{
+        	Vector3 velocity = getVelocity();
+        	velocity.z = 1.2*jumpSpeed_;
+        	setVelocity(velocity);
+    	}
+    }
+
+    void JumpFigure::CollisionWithEnemy(JumpEnemy* enemy)
+	{
+    	if (rocketActive_ == false && propellerActive_ == false && shieldActive_ == false)
+		{
+			dead_ = true;
+		}
+	}
+
+    bool JumpFigure::StartRocket(JumpRocket* rocket)
+    {
+    	if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+    	{
+        	attach(rocket);
+        	rocket->setPosition(0.0, rocketPos_, 0.0);
+        	rocket->setVelocity(0.0, 0.0, 0.0);
+        	rocketActive_ = true;
+
+        	return true;
+    	}
+
+    	return false;
+    }
+
+    void JumpFigure::StopRocket(JumpRocket* rocket)
+    {
+		rocket->setPosition(0.0, 0.0, -1000.0);
+    	rocket->setVelocity(0.0, 0.0, 0.0);
+    	detach(rocket);
+		rocket->destroy();
+		rocketActive_ = false;
+    }
+
+    bool JumpFigure::StartPropeller(JumpPropeller* propeller)
+    {
+    	if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+    	{
+        	attach(propeller);
+        	propeller->setPosition(0.0, 0.0, propellerPos_);
+        	propeller->setVelocity(0.0, 0.0, 0.0);
+        	propellerActive_ = true;
+
+        	return true;
+    	}
+
+    	return false;
+    }
+
+    void JumpFigure::StopPropeller(JumpPropeller* propeller)
+    {
+    	propeller->setPosition(0.0, 0.0, -1000.0);
+    	propeller->setVelocity(0.0, 0.0, 0.0);
+    	detach(propeller);
+    	propeller->destroy();
+    	propellerActive_ = false;
+    }
+
+    bool JumpFigure::StartBoots(JumpBoots* boots)
+    {
+    	if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+    	{
+        	attach(boots);
+        	boots->setPosition(0.0, 0.0, bootsPos_);
+        	boots->setVelocity(0.0, 0.0, 0.0);
+        	bootsActive_ = true;
+
+        	return true;
+    	}
+
+    	return false;
+    }
+
+    void JumpFigure::StopBoots(JumpBoots* boots)
+    {
+    	boots->setPosition(0.0, 0.0, -1000.0);
+    	boots->setVelocity(0.0, 0.0, 0.0);
+    	detach(boots);
+    	boots->destroy();
+    	bootsActive_ = false;
+    }
+
+    bool JumpFigure::StartShield(JumpShield* shield)
+    {
+    	if (shieldActive_ == false)
+    	{
+        	attach(shield);
+        	shield->setPosition(0.0, 0.0, propellerPos_);
+        	shield->setVelocity(0.0, 0.0, 0.0);
+        	shieldActive_ = true;
+
+        	return true;
+    	}
+
+    	return false;
+    }
+
+    void JumpFigure::StopShield(JumpShield* shield)
+    {
+    	shield->setPosition(0.0, 0.0, -1000.0);
+    	shield->setVelocity(0.0, 0.0, 0.0);
+    	detach(shield);
+    	shield->destroy();
+    	shieldActive_ = false;
+    }
+
+    void JumpFigure::InitializeAnimation(Context* context)
+    {
+    	leftHand_ = new Model(context);
+    	rightHand_ = new Model(context);
+
+    	leftHand_->addTemplate(modelLeftHand_);
+    	rightHand_->addTemplate(modelRightHand_);
+
+		attach(leftHand_);
+		attach(rightHand_);
+    }
 
     /**
-    @brief
+    @briefhandPosition_
         Overloaded the function to steer the bat up and down.
     @param value
         A vector whose first component is the inverse direction in which we want to steer the bat.
@@ -215,24 +396,19 @@ namespace orxonox
     {
     	if (value.x > 0)
     	{
-    		//orxout() << "right pressed" << endl;
     		moveLeftPressed = false;
     		moveRightPressed = true;
     	}
     	else
     	{
-    		//orxout() << "left pressed" << endl;
     		moveLeftPressed = true;
     		moveRightPressed = false;
     	}
-        /*this->bMoveLocal_ = true;
-        this->movement_ = value.x;*/
     }
 
     void JumpFigure::rotateYaw(const Vector2& value)
     {
     	horizontalSpeed = value.x;
-
     }
 
     void JumpFigure::rotatePitch(const Vector2& value)
@@ -247,9 +423,14 @@ namespace orxonox
 
     }
 
+    void JumpFigure::fire(unsigned int firemode)
+    {
+    	//SUPER(JumpFigure, fire, firemode);
+    }
+
     void JumpFigure::fired(unsigned int firemode)
     {
-    	orxout() << "fire pressed" << endl;
+    	//SUPER(JumpFigure, fired, firemode);
     	firePressed = true;
     }
 }

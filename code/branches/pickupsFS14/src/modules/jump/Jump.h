@@ -80,52 +80,69 @@ namespace orxonox
             virtual void playerScored(PlayerInfo* player, int score = 1); //!< Is called when the player scored.
 
             int getScore(PlayerInfo* player) const;
+            bool getDead(PlayerInfo* player) const;
 
             /**
             @brief Set the JumpCenterpoint (the playing field).
             @param center A pointer to the JumpCenterpoint to be set.
             */
             void setCenterpoint(JumpCenterpoint* center)
-                { this->center_ = center; }
+                { center_ = center; }
             void setConfigValues(); //!< Makes scoreLimit configurable.
 
             PlayerInfo* getPlayer() const; //!< Get the left player.
 
         protected:
-            virtual void spawnPlayersIfRequested(); //!< Spawns players, and fills the rest up with bots.
-
             void startBall(); //!< Starts the ball with some default speed.
             void cleanup(); //!< Cleans up the Gametype by destroying the ball and the bats.
 
             virtual void addPlatform(JumpPlatform* newPlatform, std::string platformTemplate, float xPosition, float zPosition);
 
-            virtual void addPlatformStatic(float xPosition, float zPosition);
-            virtual void addPlatformHMove(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float speed);
-            virtual void addPlatformVMove(float xPosition, float zPosition, float lowerBoundary, float upperBoundary, float speed);
-            virtual void addPlatformDisappear(float xPosition, float zPosition);
-            virtual void addPlatformTimer(float xPosition, float zPosition, float time, float variance);
-            virtual void addPlatformFake(float xPosition, float zPosition);
-            virtual void addProjectile(float xPosition, float zPosition, float xVelocity, float zVelocity);
-            virtual void addEnemy1(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual JumpPlatformStatic* addPlatformStatic(float xPosition, float zPosition);
+            virtual JumpPlatformHMove* addPlatformHMove(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float speed);
+            virtual JumpPlatformVMove* addPlatformVMove(float xPosition, float zPosition, float lowerBoundary, float upperBoundary, float speed);
+            virtual JumpPlatformDisappear* addPlatformDisappear(float xPosition, float zPosition);
+            virtual JumpPlatformTimer* addPlatformTimer(float xPosition, float zPosition, float time, float variance);
+            virtual JumpPlatformFake* addPlatformFake(float xPosition, float zPosition);
+            virtual void addProjectile(float xPosition, float zPosition);
+            virtual void addEnemy(int type, float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual void addSpring(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual void addSpring(JumpPlatform* platform);
+            virtual void addRocket(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual void addRocket(JumpPlatform* platform);
+            virtual void addPropeller(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual void addPropeller(JumpPlatform* platform);
+            virtual void addBoots(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual void addBoots(JumpPlatform* platform);
+            virtual void addShield(float xPosition, float zPosition, float leftBoundary, float rightBoundary, float lowerBoundary, float upperBoundary, float xVelocity, float zVelocity);
+            virtual void addShield(JumpPlatform* platform);
 
             virtual void addStartSection();
             virtual void addSection();
+            virtual bool addAdventure(int number);
 
             virtual float randomXPosition();
             virtual float randomXPosition(int totalColumns, int culomn);
-            virtual float randomYPosition(float lowerBoundary, float upperBoundary);
+            virtual float randomXPositionLeft(int totalColumns, int culomn);
+            virtual float randomXPositionRight(int totalColumns, int culomn);
+            virtual float randomZPosition(int totalRows, int row, float sectionBegin, float SectionEnd);
+            virtual float randomZPositionLower(int totalRows, int row, float sectionBegin, float SectionEnd);
+            virtual float randomZPositionUpper(int totalRows, int row, float sectionBegin, float SectionEnd);
+
+            virtual float randomPosition(float lowerBoundary, float upperBoundary);
+            virtual float randomSpeed();
 
             WeakPtr<JumpCenterpoint> center_; //!< The playing field.
             WeakPtr<JumpFigure> figure_; //!< The two bats.
             WeakPtr<Camera> camera;
-            Timer starttimer_; //!< A timer to delay the start of the game.
             int scoreLimit_; //!< If a player scored that much points, the game is ended.
 
             float totalScreenShift;
             float screenShiftSinceLastUpdate;
-            int sectionNumber;
-
-            bool fakeAdded_;
+            int sectionNumber_;
+            int adventureNumber_;
+            float platformWidth_;
+            float platformHeight_;
     };
 }
 

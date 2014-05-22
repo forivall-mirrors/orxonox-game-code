@@ -66,31 +66,17 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            /**
-            @brief Set the dimensions of the playing field.
-            @param width The width of the playing field.
-            @param height The height of the playing field.
-            */
             void setFieldDimension(float width, float height)
                 { this->fieldWidth_ = width; this->fieldHeight_ = height; }
-            /**
-            @brief Get the dimensions of the playing field.
-            @param dimension A vector with the width as the first and height as the second component.
-            */
+
             void setFieldDimension(const Vector2& dimension)
                 { this->setFieldDimension(dimension.x, dimension.y); }
-            /**
-            @brief Get the dimensions of the playing field.
-            @return Returns a vector with the width as the first and height as the second component.
-            */
+
             Vector2 getFieldDimension() const
                 { return Vector2(this->fieldWidth_, this->fieldHeight_); }
 
 
-            void setFigure(WeakPtr<JumpFigure> bats); //!< Set the bats for the ball.
-
-            virtual void accelerateFigure();
-            virtual void touchFigure();
+            void setFigure(WeakPtr<JumpFigure> figure);
 
         protected:
             void registerVariables();

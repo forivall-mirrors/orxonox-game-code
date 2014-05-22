@@ -27,15 +27,15 @@
  */
 
 /**
-    @file JumpPlatformDisappear.cc
-    @brief Implementation of the JumpPlatform class.
+    @file JumpPropeller.cc
+    @brief Implementation of the JumpPropeller class.
 */
 
-#include "JumpPlatformDisappear.h"
+#include "JumpPropeller.h"
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-
+#include "graphics/Model.h"
 #include "gametypes/Gametype.h"
 
 #include "JumpFigure.h"
@@ -45,33 +45,37 @@
 
 namespace orxonox
 {
-    RegisterClass(JumpPlatformDisappear);
+    RegisterClass(JumpPropeller);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    JumpPlatformDisappear::JumpPlatformDisappear(Context* context) : JumpPlatform(context)
+    JumpPropeller::JumpPropeller(Context* context) : JumpItem(context)
     {
-        RegisterObject(JumpPlatformDisappear);
+        RegisterObject(JumpPropeller);
 
-        setProperties(true);
+        fuel_ = 3.0;
+
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
+        setAcceleration(Vector3(0,0,0));
+        setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
     /**
     @brief
         Destructor.
     */
-    JumpPlatformDisappear::~JumpPlatformDisappear()
+    JumpPropeller::~JumpPropeller()
     {
 
     }
 
-
     //xml port for loading sounds
-    void JumpPlatformDisappear::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void JumpPropeller::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(JumpPlatformDisappear, XMLPort, xmlelement, mode);
+        SUPER(JumpPropeller, XMLPort, xmlelement, mode);
     }
 
     /**
@@ -81,27 +85,39 @@ namespace orxonox
     @param dt
         The time since the last tick.
     */
-    void JumpPlatformDisappear::tick(float dt)
+    void JumpPropeller::tick(float dt)
     {
-        SUPER(JumpPlatformDisappear, tick, dt);
+        SUPER(JumpPropeller, tick, dt);
+
+        Vector3 PropellerPosition = getWorldPosition();
+
+        if (attachedToFigure_ == false && figure_ != NULL)
+        {
+            Vector3 figurePosition = figure_->getWorldPosition();
+
+            if(figurePosition.x > PropellerPosition.x-width_ && figurePosition.x < PropellerPosition.x+width_ && figurePosition.z > PropellerPosition.z-height_ && figurePosition.z < PropellerPosition.z+height_)
+            {
+            	touchFigure();
+            }
+        }
+        else if (attachedToFigure_ == true)
+        {
+        	fuel_ -= dt;
+        	if (fuel_ < 0.0)
+        	{
+        		figure_->StopPropeller(this);
+        	}
+        }
     }
 
-    void JumpPlatformDisappear::setProperties(bool active)
+    void JumpPropeller::touchFigure()
     {
-    	active_ = active;
-    }
+    	JumpItem::touchFigure();
 
-    bool JumpPlatformDisappear::isActive()
-    {
-    	return active_;
-    }
-
-    void JumpPlatformDisappear::touchFigure()
-    {
-    	if (isActive())
+    	attachedToFigure_ = figure_->StartPropeller(this);
+    	if (attachedToFigure_)
     	{
-    		figure_->JumpFromPlatform(this);
-        	active_ = false;
+    		setAngularVelocity(Vector3(0,0,10.0));
     	}
     }
 }

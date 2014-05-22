@@ -43,8 +43,6 @@
 #include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
-#include "graphics/Backlight.h"
-
 namespace orxonox
 {
     RegisterClass(JumpPlatformFake);

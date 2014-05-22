@@ -27,15 +27,15 @@
  */
 
 /**
-    @file JumpPlatformDisappear.cc
-    @brief Implementation of the JumpPlatform class.
+    @file JumpBoots.cc
+    @brief Implementation of the JumpBoots class.
 */
 
-#include "JumpPlatformDisappear.h"
+#include "JumpBoots.h"
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-
+#include "graphics/Model.h"
 #include "gametypes/Gametype.h"
 
 #include "JumpFigure.h"
@@ -45,33 +45,37 @@
 
 namespace orxonox
 {
-    RegisterClass(JumpPlatformDisappear);
+    RegisterClass(JumpBoots);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    JumpPlatformDisappear::JumpPlatformDisappear(Context* context) : JumpPlatform(context)
+    JumpBoots::JumpBoots(Context* context) : JumpItem(context)
     {
-        RegisterObject(JumpPlatformDisappear);
+        RegisterObject(JumpBoots);
 
-        setProperties(true);
+        fuel_ = 3.0;
+
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
+        setAcceleration(Vector3(0,0,0));
+        setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
     /**
     @brief
         Destructor.
     */
-    JumpPlatformDisappear::~JumpPlatformDisappear()
+    JumpBoots::~JumpBoots()
     {
 
     }
 
-
     //xml port for loading sounds
-    void JumpPlatformDisappear::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void JumpBoots::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(JumpPlatformDisappear, XMLPort, xmlelement, mode);
+        SUPER(JumpBoots, XMLPort, xmlelement, mode);
     }
 
     /**
@@ -81,27 +85,39 @@ namespace orxonox
     @param dt
         The time since the last tick.
     */
-    void JumpPlatformDisappear::tick(float dt)
+    void JumpBoots::tick(float dt)
     {
-        SUPER(JumpPlatformDisappear, tick, dt);
+        SUPER(JumpBoots, tick, dt);
+
+        Vector3 rocketPosition = getWorldPosition();
+
+        if (attachedToFigure_ == false && figure_ != NULL)
+        {
+            Vector3 figurePosition = figure_->getWorldPosition();
+
+            if(figurePosition.x > rocketPosition.x-width_ && figurePosition.x < rocketPosition.x+width_ && figurePosition.z > rocketPosition.z-height_ && figurePosition.z < rocketPosition.z+height_)
+            {
+            	touchFigure();
+            }
+        }
+        else if (attachedToFigure_ == true)
+        {
+        	fuel_ -= dt;
+        	if (fuel_ < 0.0)
+        	{
+        		figure_->StopBoots(this);
+        	}
+        }
     }
 
-    void JumpPlatformDisappear::setProperties(bool active)
+    void JumpBoots::touchFigure()
     {
-    	active_ = active;
-    }
+    	JumpItem::touchFigure();
 
-    bool JumpPlatformDisappear::isActive()
-    {
-    	return active_;
-    }
-
-    void JumpPlatformDisappear::touchFigure()
-    {
-    	if (isActive())
+    	attachedToFigure_ = figure_->StartBoots(this);
+    	if (attachedToFigure_)
     	{
-    		figure_->JumpFromPlatform(this);
-        	active_ = false;
+    		//Starte Feuer-Animation
     	}
     }
 }

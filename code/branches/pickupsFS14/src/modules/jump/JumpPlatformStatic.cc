@@ -86,6 +86,6 @@ namespace orxonox
 
     void JumpPlatformStatic::touchFigure()
     {
-    	accelerateFigure();
+    	figure_->JumpFromPlatform(this);
     }
 }

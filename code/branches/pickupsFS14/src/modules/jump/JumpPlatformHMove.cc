@@ -115,6 +115,6 @@ namespace orxonox
 
     void JumpPlatformHMove::touchFigure()
     {
-    	accelerateFigure();
+    	figure_->JumpFromPlatform(this);
     }
 }

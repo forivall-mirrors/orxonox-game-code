@@ -55,11 +55,14 @@ namespace orxonox
     {
         RegisterObject(JumpItem);
 
-        this->figure_ = 0;
-        setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-        this->setPosition(Vector3(0,0,0));
-        this->setVelocity(Vector3(0,0,0));
-        this->setAcceleration(Vector3(0,0,0));
+        attachedToFigure_ = false;
+
+        figure_ = 0;
+        height_ = 0.0;
+        width_ = 0.0;
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,0));
+        setAcceleration(Vector3(0,0,0));
     }
 
     /**
@@ -68,19 +71,16 @@ namespace orxonox
     */
     JumpItem::~JumpItem()
     {
-        /*if (this->isInitialized())
-        {
-            if (this->bDeleteBats_)
-                delete this->figure_;
 
-            delete[] this->batID_;
-        }*/
     }
 
     //xml port for loading sounds
     void JumpItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpItem, XMLPort, xmlelement, mode);
+
+        XMLPortParam(JumpItem, "height", setHeight, getHeight, xmlelement, mode);
+        XMLPortParam(JumpItem, "width", setWidth, getWidth, xmlelement, mode);
     }
 
     /**
@@ -93,9 +93,8 @@ namespace orxonox
     void JumpItem::tick(float dt)
     {
         SUPER(JumpItem, tick, dt);
-
-        // Get the current position, velocity and acceleration of the enemy.
-        Vector3 position = getPosition();
+        // Get the current position, velocity and acceleration of the item.
+        Vector3 position = getWorldPosition();
         Vector3 velocity = getVelocity();
 
         if ((position.x < leftBoundary_ && velocity.x < 0) || (position.x > rightBoundary_ && velocity.x > 0))
@@ -108,13 +107,11 @@ namespace orxonox
         	velocity.z = -velocity.z;
         }
 
-        // Set the position, velocity and acceleration of the enemy, if they have changed.
+        // Set the position, velocity and acceleration of the item, if they have changed.
         if (velocity != getVelocity())
+        {
             setVelocity(velocity);
-        if (position != getPosition())
-            setPosition(position);
-
-
+        }
     }
 
     void JumpItem::setProperties(float newLeftBoundary, float newRightBoundary, float newLowerBoundary, float newUpperBoundary, float newHSpeed, float newVSpeed)
@@ -124,7 +121,7 @@ namespace orxonox
         lowerBoundary_ = newLowerBoundary;
         upperBoundary_ = newUpperBoundary;
 
-        this->setVelocity(Vector3(newHSpeed,0,newVSpeed));
+        setVelocity(Vector3(newHSpeed,0,newVSpeed));
     }
 
     /**

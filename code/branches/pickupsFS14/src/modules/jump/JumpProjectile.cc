@@ -55,13 +55,13 @@ namespace orxonox
     {
         RegisterObject(JumpProjectile);
 
-        this->figure_ = 0;
+        figure_ = 0;
 
-        this->registerVariables();
+        registerVariables();
 
-        this->setPosition(Vector3(0,0,0));
-        this->setVelocity(Vector3(0,0,0));
-        this->setAcceleration(Vector3(0,0,0));
+        setPosition(Vector3(0,0,0));
+        setVelocity(Vector3(0,0,250.0));
+        setAcceleration(Vector3(0,0,0));
     }
 
     /**
@@ -107,18 +107,19 @@ namespace orxonox
     {
         SUPER(JumpProjectile, tick, dt);
 
-        Vector3 platformPosition = this->getPosition();
+        Vector3 projectilePosition = getPosition();
 
-        if (figure_ != NULL)
-        {
-            Vector3 figurePosition = figure_->getPosition();
-            Vector3 figureVelocity = figure_->getVelocity();
+		for (ObjectList<JumpEnemy>::iterator it = ObjectList<JumpEnemy>::begin(); it != ObjectList<JumpEnemy>::end(); ++it)
+		{
+			Vector3 enemyPosition = it->getPosition();
+			float enemyWidth = it->getWidth();
+			float enemyHeight = it->getHeight();
 
-            if(figureVelocity.z < 0 && figurePosition.x > platformPosition.x-10 && figurePosition.x < platformPosition.x+10 && figurePosition.z > platformPosition.z-4 && figurePosition.z < platformPosition.z+4)
-            {
-            	touchFigure();
-            }
-        }
+			if(projectilePosition.x > enemyPosition.x-enemyWidth && projectilePosition.x < enemyPosition.x+enemyWidth && projectilePosition.z > enemyPosition.z-enemyHeight && projectilePosition.z < enemyPosition.z+enemyHeight)
+			{
+				it->dead_ = true;
+			}
+		}
     }
 
     /**
@@ -127,18 +128,8 @@ namespace orxonox
     @param bats
         An array (of size 2) of weak pointers, to be set as the new bats.
     */
-    void JumpProjectile::setFigure(WeakPtr<JumpFigure> newFigure)
+    void JumpProjectile::setFigure(WeakPtr<JumpFigure> figure)
     {
-        figure_ = newFigure;
-    }
-
-    void JumpProjectile::accelerateFigure()
-    {
-
-    }
-
-    void JumpProjectile::touchFigure()
-    {
-
+        figure_ = figure;
     }
 }

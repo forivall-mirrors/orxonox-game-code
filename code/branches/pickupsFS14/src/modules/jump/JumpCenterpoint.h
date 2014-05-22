@@ -98,7 +98,7 @@ namespace orxonox
         </Template>
         @endcode
         As can be seen, there are actually two templates. The first template is needed to set the camera for the @ref orxonox::JumpFigure "JumpFigure". The second template ist the actual template for the @ref orxonox::JumpFigure "JumpFigure", the template for the camera position is added and a @ref orxonox::Model "Model" for the @ref orxonox::JumpFigure "JumpFigure" is attached.
-        
+        propellerTemplate_
         Finally the JumpCenterpoint is created.
         @code
         <JumpCenterpoint name="jumpcenter" dimension="200,120" balltemplate="jumpball" battemplate="jumpbat" ballspeed="200" ballaccfactor="1.0" batspeed="130" batlength="0.25">
@@ -170,6 +170,36 @@ namespace orxonox
             const std::string& getProjectileTemplate() const
                 { return this->projectileTemplate_; }
 
+            void setSpringTemplate(const std::string& newTemplate)
+                { this->springTemplate_ = newTemplate; }
+
+            const std::string& getSpringTemplate() const
+                { return this->springTemplate_; }
+
+            void setRocketTemplate(const std::string& newTemplate)
+                { this->rocketTemplate_ = newTemplate; }
+
+            const std::string& getRocketTemplate() const
+                { return this->rocketTemplate_; }
+
+            void setPropellerTemplate(const std::string& newTemplate)
+                { this->propellerTemplate_ = newTemplate; }
+
+            const std::string& getPropellerTemplate() const
+                { return this->propellerTemplate_; }
+
+            void setBootsTemplate(const std::string& newTemplate)
+                { this->bootsTemplate_ = newTemplate; }
+
+            const std::string& getBootsTemplate() const
+                { return this->bootsTemplate_; }
+
+            void setShieldTemplate(const std::string& newTemplate)
+                { this->shieldTemplate_ = newTemplate; }
+
+            const std::string& getShieldTemplate() const
+                { return this->shieldTemplate_; }
+
             void setFigureTemplate(const std::string& newTemplate)
                 { this->figureTemplate_ = newTemplate; }
 
@@ -181,6 +211,24 @@ namespace orxonox
 
             const std::string& getEnemy1Template() const
                 { return this->enemy1Template_; }
+
+            void setEnemy2Template(const std::string& newTemplate)
+                { this->enemy2Template_ = newTemplate; }
+
+            const std::string& getEnemy2Template() const
+                { return this->enemy2Template_; }
+
+            void setEnemy3Template(const std::string& newTemplate)
+                { this->enemy3Template_ = newTemplate; }
+
+            const std::string& getEnemy3Template() const
+                { return this->enemy3Template_; }
+
+            void setEnemy4Template(const std::string& newTemplate)
+                { this->enemy4Template_ = newTemplate; }
+
+            const std::string& getEnemy4Template() const
+                { return this->enemy4Template_; }
 
 
             /**
@@ -209,18 +257,18 @@ namespace orxonox
             float getSectionLength() const
                 { return sectionLength_; }
 
-            /**
-            @brief Set the dimensions of the playing field.
-            @param dimension A vector with the width of the playing field as first component and the height as second.
-            */
-            void setPlatformLength(const float platformLength)
-                { this->platformLength_ = platformLength; }
-            /**
-            @brief Get the dimensions of the playing field.
-            @return Returns a vector with the width of the playing field as first component and the height as second.
-            */
-            float getPlatformLength() const
-                { return platformLength_; }
+            void setPlatformSpeed(const float platformSpeed)
+                { this->platformSpeed_ = platformSpeed; }
+
+            float getPlatformSpeed() const
+                { return platformSpeed_; }
+
+            void setCameraOffset(const float cameraOffset)
+                { this->cameraOffset_ = cameraOffset; }
+
+            float getCameraOffset() const
+                { return cameraOffset_; }
+
 
         private:
             void checkGametype(); //!< Checks whether the gametype is Jump and if it is, sets its centerpoint.
@@ -232,13 +280,22 @@ namespace orxonox
             std::string platformTimerTemplate_; //!< The template for the ball.
             std::string platformFakeTemplate_; //!< The template for the ball.
             std::string projectileTemplate_; //!< The template for the ball.
+            std::string springTemplate_; //!< The template for the ball.
+            std::string rocketTemplate_; //!< The template for the ball.
+            std::string propellerTemplate_; //!< The template for the ball.
+            std::string bootsTemplate_; //!< The template for the ball.
+            std::string shieldTemplate_; //!< The template for the ball.
             std::string figureTemplate_; //!< The template for the bats.
             std::string enemy1Template_; //!< The template for the bats.
+            std::string enemy2Template_; //!< The template for the bats.
+            std::string enemy3Template_; //!< The template for the bats.
+            std::string enemy4Template_; //!< The template for the bats.
 
             float width_; //!< The height of the playing field.
             float height_; //!< The width of the playing field.
             float sectionLength_; //!< Height of one section
-            float platformLength_; // Avoids intersecting platforms
+            float platformSpeed_; //!< Height of one section
+            float cameraOffset_; //!< Height of one section
     };
 }
 

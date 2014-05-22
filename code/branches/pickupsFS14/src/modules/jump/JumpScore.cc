@@ -54,8 +54,9 @@ namespace orxonox
     {
         RegisterObject(JumpScore);
 
-        this->owner_ = NULL;
-
+        owner_ = NULL;
+        showScore_ = false;
+        showMessages_ = false;
     }
 
     /**
@@ -74,6 +75,10 @@ namespace orxonox
     void JumpScore::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpScore, XMLPort, xmlelement, mode);
+
+        XMLPortParam(JumpScore, "showScore", setShowScore, getShowScore, xmlelement, mode);
+        XMLPortParam(JumpScore, "showMessages", setShowMessages, getShowMessages, xmlelement, mode);
+        XMLPortParam(JumpScore, "gameOverText", setGameOverText, getGameOverText, xmlelement, mode);
     }
 
     /**
@@ -91,60 +96,24 @@ namespace orxonox
 
         if (this->owner_ != NULL)
         {
-        	/*
-            if (!this->owner_->hasEnded())
-            {
-                // Get the two players.
-                player1_ = this->owner_->getPlayer();
-            }
-
-            std::string name1;
-
-            std::string score1("0");
-
-            // Save the name and score of each player as a string.
-            if (player1_ != NULL)
-            {
-                name1 = player1_->getName();
-                score1 = multi_cast<std::string>(this->owner_->getScore(player1_));
-            }
-
-            // Assemble the strings, depending on what should all be displayed.
-            std::string output1;
-            if (this->bShowLeftPlayer_)
-            {
-                if (this->bShowName_ && this->bShowScore_ && player1_ != NULL)
-                    output1 = name1 + " - " + score1;
-                else if (this->bShowScore_)
-                    output1 = score1;
-                else if (this->bShowName_)
-                    output1 = name1;
-            }
-
-            std::string output("JUMP");
-            if (this->bShowName_ || this->bShowScore_)
-            {
-                if (this->bShowLeftPlayer_ && this->bShowRightPlayer_)
-                    output = output1 + ':' + output2;
-                else if (this->bShowLeftPlayer_ || this->bShowRightPlayer_)
-                    output = output1 + output2;
-            }
-
-            this->setCaption(output);*/
-
-
-
-
             if (!owner_->hasEnded())
             {
                 player_ = owner_->getPlayer();
 
                 if (player_ != NULL)
                 {
-                	int score = owner_->getScore(player_);
+                	if (showScore_ == true)
+                	{
+                    	int score = owner_->getScore(player_);
 
-                	std::string str = multi_cast<std::string>(score);
-                	setCaption(str);
+                    	std::string str = multi_cast<std::string>(score);
+                    	setCaption(str);
+                	}
+                	else if (showMessages_ == true)
+                	{
+
+                    	setCaption(owner_->getDead(player_) == true ? gameOverText_ : "");
+                	}
                 }
             }
         }

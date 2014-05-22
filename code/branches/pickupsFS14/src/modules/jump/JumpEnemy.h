@@ -86,13 +86,25 @@ namespace orxonox
             Vector2 getFieldDimension() const
                 { return Vector2(this->fieldWidth_, this->fieldHeight_); }
 
+            void setWidth(const float width)
+                { this->width_ = width; }
+            float getWidth() const
+                { return width_; }
+            void setHeight(const float height)
+                { this->height_ = height; }
+            float getHeight() const
+                { return height_; }
+
             virtual void setProperties(float newLeftBoundary, float newRightBoundary, float newLowerBoundary, float newUpperBoundary, float newHSpeed, float newVSpeed);
 
             void setFigure(WeakPtr<JumpFigure> bats); //!< Set the bats for the ball.
-
             virtual void touchFigure();
-
+            bool dead_;
         protected:
+
+            float width_;
+            float height_;
+
             float fieldWidth_; //!< The width of the playing field.
             float fieldHeight_; //!< The height of the playing field.
 

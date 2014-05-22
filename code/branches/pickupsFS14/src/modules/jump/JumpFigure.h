@@ -70,54 +70,116 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
 
+            void fire(unsigned int firemode);
             virtual void fired(unsigned int firemode);
 
             virtual void JumpFromPlatform(JumpPlatform* platform);
+            virtual void JumpFromSpring(JumpSpring* spring);
+            virtual void CollisionWithEnemy(JumpEnemy* enemy);
+            virtual bool StartRocket(JumpRocket* rocket);
+            virtual void StopRocket(JumpRocket* rocket);
+            virtual bool StartPropeller(JumpPropeller* propeller);
+            virtual void StopPropeller(JumpPropeller* propeller);
+            virtual bool StartBoots(JumpBoots* boots);
+            virtual void StopBoots(JumpBoots* boots);
+            virtual bool StartShield(JumpShield* shield);
+            virtual void StopShield(JumpShield* shield);
 
-            /**
-            @brief Set the height of the playing field.
-            @param height The height of the playing field.
-            */
+            virtual void InitializeAnimation(Context* context);
+
             void setFieldDimension(float width, float height)
-                { this->fieldWidth_ = width; this->fieldHeight_ = height; }
+                { fieldWidth_ = width; fieldHeight_ = height; }
 
             void setFieldDimension(const Vector2& dimension)
-                { this->setFieldDimension(dimension.x, dimension.y); }
+                { setFieldDimension(dimension.x, dimension.y); }
+
+            Vector2 getFieldDimension() const
+                { return Vector2(fieldWidth_, fieldHeight_); }
 
             void setMouseFactor(const float mouseFactor)
-                { this->mouseFactor_ = mouseFactor; }
+                { mouseFactor_ = mouseFactor; }
 
             const float getMouseFactor() const
-                { return this->mouseFactor_; }
+                { return mouseFactor_; }
 
-            /**
-            @brief Get the height of the playing field.
-            @return Returns the height of the playing field.
-            */
-            Vector2 getFieldDimension() const
-                { return Vector2(this->fieldWidth_, this->fieldHeight_); }
+            void setModelLeftHand(const std::string& modelLeftHand)
+                { modelLeftHand_ = modelLeftHand; }
 
-            /**
-            @brief Set the length of the bat.
-            @param length The length of the bat (in z-direction) as percentage of the height of the playing field.
-            */
-            void setLength(float length)
-                { this->length_ = length; }
-            /**
-            @brief Get the length of the bat.
-            @return Returns the length of the bat (in z-direction) as percentage of the height of the playing field.
-            */
-            float getLength() const
-                { return this->length_; }
+            const std::string& getModelLeftHand() const
+                { return modelLeftHand_; }
+
+            void setModelRightHand(const std::string& modelRightHand)
+                { modelRightHand_ = modelRightHand; }
+
+            const std::string& getModelRightHand() const
+                { return modelRightHand_; }
+
+            void setRocketPos(const float rocketPos)
+                { rocketPos_ = rocketPos; }
+
+            const float getRocketPos() const
+                { return rocketPos_; }
+
+			void setPropellerPos(const float propellerPos)
+				{ propellerPos_ = propellerPos; }
+
+			const float getPropellerPos() const
+				{ return propellerPos_; }
+
+			void setBootsPos(const float bootsPos)
+				{ bootsPos_ = bootsPos; }
+
+			const float getBootsPos() const
+				{ return bootsPos_; }
+
+            void setJumpSpeed(const float jumpSpeed)
+                { jumpSpeed_ = jumpSpeed; }
+
+            const float getJumpSpeed() const
+                { return jumpSpeed_; }
+
+            void setRocketSpeed(const float rocketSpeed)
+                { rocketSpeed_ = rocketSpeed; }
+
+            const float getRocketSpeed() const
+                { return rocketSpeed_; }
+
+            void setPropellerSpeed(const float propellerSpeed)
+                { propellerSpeed_ = propellerSpeed; }
+
+            const float getPropellerSpeed() const
+                { return propellerSpeed_; }
+
+            void setHandMinAngle(const float handMinAngle)
+                { handMinAngle_ = handMinAngle; }
+
+            const float getHandMinAngle() const
+                { return handMinAngle_; }
+
+            void setHandMaxAngle(const float handMaxAngle)
+                { handMaxAngle_ = handMaxAngle; }
+
+            const float getHandMaxAngle() const
+                { return handMaxAngle_; }
+
+            void setHandSpeed(const float handSpeed)
+                { handSpeed_ = handSpeed; }
+
+            const float getHandSpeed() const
+                { return handSpeed_; }
 
             bool fireSignal;
+            bool dead_;
+
         private:
-            float movement_; //!< The amount (and direction), in z-direction, of movement of the bat.
-            bool bMoveLocal_; //!< Helper to know whether the movement is caused by moveFrontBack() or moveRightLeft().
-            float length_; //!< The length of the bat (in z-direction) as percentage of the height of the playing field.
-            float fieldWidth_; //!< The height of the playing field.
+            std::string modelLeftHand_;
+            std::string modelRightHand_;
+
+            Model* leftHand_;
+            Model* rightHand_;
+
+            float fieldWidth_;
             float fieldHeight_;
-            bool bSteadiedPosition_; //!< Helper boolean, to keep track of when to steady the position, to ensure network synchronicity.
             float timeSinceLastFire;
 
             bool moveUpPressed;
@@ -128,9 +190,28 @@ namespace orxonox
 
             float gravityAcceleration;
             float mouseFactor_;
+
+            float jumpSpeed_;
+            float handSpeed_;
+            float handMaxAngle_;
+            float handMinAngle_;
+            float rocketPos_;
+            float propellerPos_;
+            float bootsPos_;
             float maxFireRate;
 
             float horizontalSpeed;
+
+            float handAngle_;
+            bool animateHands_;
+            bool turnUp_;
+
+            bool rocketActive_;
+            bool propellerActive_;
+            bool bootsActive_;
+            bool shieldActive_;
+            float rocketSpeed_;
+            float propellerSpeed_;
     };
 }
 

@@ -116,10 +116,9 @@ namespace orxonox
 
     void JumpPlatformTimer::touchFigure()
     {
-    	accelerateFigure();
     	if (isActive())
     	{
-    		accelerateFigure();
+    		figure_->JumpFromPlatform(this);
     	}
     }
 }

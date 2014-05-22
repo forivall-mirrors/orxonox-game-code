@@ -78,6 +78,11 @@ namespace orxonox
     class JumpProjectile;
     class JumpEnemy;
     class JumpItem;
+    class JumpSpring;
+    class JumpRocket;
+    class JumpPropeller;
+    class JumpBoots;
+    class JumpShield;
     class JumpFigure;
     class JumpCenterpoint;
     class JumpScore;

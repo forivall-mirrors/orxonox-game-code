@@ -27,13 +27,13 @@
  */
 
 /**
-    @file JumpItem.h
-    @brief Declaration of the JumpItem class.
+    @file JumpBoots.h
+    @brief Declaration of the JumpBoots class.
     @ingroup Jump
 */
 
-#ifndef _JumpItem_H__
-#define _JumpItem_H__
+#ifndef _JumpBoots_H__
+#define _JumpBoots_H__
 
 #include "jump/JumpPrereqs.h"
 
@@ -56,48 +56,18 @@ namespace orxonox
 
     @ingroup Jump
     */
-    class _JumpExport JumpItem : public MovableEntity
+    class _JumpExport JumpBoots : public JumpItem
     {
         public:
-            JumpItem(Context* context);
-            virtual ~JumpItem();
+            JumpBoots(Context* context);
+            virtual ~JumpBoots();
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void setProperties(float newLeftBoundary, float newRightBoundary, float newLowerBoundary, float newUpperBoundary, float newHSpeed, float newVSpeed);
-            virtual void setFigure(WeakPtr<JumpFigure> bats); //!< Set the bats for the ball.
             virtual void touchFigure();
-
-            void setFieldDimension(float width, float height)
-                { this->fieldWidth_ = width; this->fieldHeight_ = height; }
-            void setFieldDimension(const Vector2& dimension)
-                { this->setFieldDimension(dimension.x, dimension.y); }
-            Vector2 getFieldDimension() const
-                { return Vector2(this->fieldWidth_, this->fieldHeight_); }
-
-            void setWidth(const float width)
-                { this->width_ = width; }
-            float getWidth() const
-                { return width_; }
-            void setHeight(const float height)
-                { this->height_ = height; }
-            float getHeight() const
-                { return height_; }
-
-            bool attachedToFigure_;
-
         protected:
-            float fieldWidth_; //!< The width of the playing field.
-            float fieldHeight_; //!< The height of the playing field.
-
-            WeakPtr<JumpFigure> figure_; //!< An array with the two bats.
-            float height_;
-            float width_;
-
-            float leftBoundary_;
-            float rightBoundary_;
-            float lowerBoundary_;
-            float upperBoundary_;
+            float stretch_;
+            float fuel_;
     };
 }
 
-#endif /* _JumpItem_H__ */
+#endif /* _JumpBoots_H__ */
