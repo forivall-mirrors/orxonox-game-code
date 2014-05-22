@@ -49,7 +49,7 @@
 
 namespace orxonox
 {
-    SetConsoleCommand("ModularSpaceShip", "killshippart", &ModularSpaceShip::killShipPart);
+    SetConsoleCommand("ModularSpaceShip", "killshippart", &ModularSpaceShip::killShipPartStatic);
 
     RegisterClass(ModularSpaceShip);
 
@@ -173,17 +173,36 @@ namespace orxonox
 
     /**
     @brief
+        STATIC: Needed for consolecommand. Kills the ShipPart with the given name. Used from the console-command "ModularSpaceShip killshippart [string]".
+    @param name
+        The name of the part to be killed.
+    */
+    void ModularSpaceShip::killShipPartStatic(std::string name)
+    {
+        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = ModularSpaceShip::partMap_s->begin(); it != ModularSpaceShip::partMap_s->end(); ++it)
+        {
+            if (it->second->getName() == name)
+            {
+                it->second->setAlive(false);
+                return;
+            }
+        }
+        orxout(internal_warning) << "Could not apply damage to ShipPart \"" << name << "\". Part not found." << endl;
+    }
+
+    /**
+    @brief
         Kills the ShipPart with the given name. Used from the console-command "ModularSpaceShip killshippart [string]".
     @param name
         The name of the part to be killed.
     */
     void ModularSpaceShip::killShipPart(std::string name)
     {
-        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = ModularSpaceShip::partMap_s->begin(); it != ModularSpaceShip::partMap_s->end(); ++it)
+        for (std::map<StaticEntity*, ShipPart*>::const_iterator it = ModularSpaceShip::partMap_.begin(); it != ModularSpaceShip::partMap_.end(); ++it)
         {
             if (it->second->getName() == name)
             {
-                it->second->death();
+                it->second->setAlive(false);
                 return;
             }
         }

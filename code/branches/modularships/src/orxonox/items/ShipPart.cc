@@ -54,6 +54,7 @@ namespace orxonox
         RegisterObject(ShipPart);
         this->setAlive(true);
         this->setEventExecution(true);
+        this->healthMem_ = 100;
     }
 
     ShipPart::~ShipPart()
@@ -101,6 +102,7 @@ namespace orxonox
 
         // Remove this ShipPart from the parent.
         this->parent_->removeShipPart(this);
+        delete this;
     }
 
     void ShipPart::explode()
@@ -202,6 +204,12 @@ namespace orxonox
         this->health_ = health;
     }
 
+    void ShipPart::setAlive(bool var)
+    {
+        this->alive_ = var;
+        orxout() << "ShipPart " << this->getName() << " alive_: " << this->alive_ << endl;
+    }
+
     /**
     @brief
         Handles a received hit.
@@ -235,23 +243,27 @@ namespace orxonox
             //this->death();
 
         // (Ugly) Chatoutput of health, until a GUI for modularspaceships-shipparts is implemented.
-        if (this->health_ < 0.2 * this->maxHealth_)
+        if ((this->health_ < 0.2 * this->maxHealth_) && (this->healthMem_ == 40))
         {
+            this->healthMem_ = 20;
             ChatManager::message("ShipPart " + this->getName() + " remaining health is 20%!");
             return;
         }
-        if (this->health_ < 0.4 * this->maxHealth_)
+        if ((this->health_ < 0.4 * this->maxHealth_) && (this->healthMem_ == 60))
         {
+            this->healthMem_ = 40;
             ChatManager::message("ShipPart " + this->getName() + " remaining health is 40%!");
             return;
         }
-        if (this->health_ < 0.6 * this->maxHealth_)
+        if ((this->health_ < 0.6 * this->maxHealth_) && (this->healthMem_ == 80))
         {
+            this->healthMem_ = 60;
             ChatManager::message("ShipPart " + this->getName() + " remaining health is 60%!");
             return;
         }
-        if (this->health_ < 0.8 * this->maxHealth_)
+        if ((this->health_ < 0.8 * this->maxHealth_) && (this->healthMem_ == 100))
         {
+            this->healthMem_ = 80;
             ChatManager::message("ShipPart " + this->getName() + " remaining health is 80%!");
             return;
         }

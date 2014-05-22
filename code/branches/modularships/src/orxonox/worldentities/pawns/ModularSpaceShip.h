@@ -112,7 +112,8 @@ namespace orxonox
 
             virtual void damage(float damage, float healthdamage = 0.0f, float shielddamage = 0.0f, Pawn* originator = NULL, const btCollisionShape* cs = NULL);
 
-            static void killShipPart(std::string name);
+            static void killShipPartStatic(std::string name);
+            void killShipPart(std::string name);
 
             void addShipPart(ShipPart* part);
             ShipPart* getShipPart(unsigned int index);

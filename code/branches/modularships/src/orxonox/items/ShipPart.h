@@ -71,8 +71,7 @@ namespace orxonox // tolua_export
             inline ModularSpaceShip* getParent()
                 { return this->parent_; }
 
-            inline void setAlive(bool var)
-                { this->alive_ = var; }
+            void setAlive(bool var);
             inline bool isAlive()
                 { return this->alive_; }
 
@@ -123,6 +122,8 @@ namespace orxonox // tolua_export
 
             bool alive_;
             bool eventExecution_;
+
+            float healthMem_;
 
             Vector3 explosionPosition_;
 

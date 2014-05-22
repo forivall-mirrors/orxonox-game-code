@@ -142,6 +142,8 @@ namespace orxonox
         {
             switch (this->targetParam_) {
             case null:
+                if (!this->parent_->getParent()->getShipPartByName(targetName_))
+                    return;
                 this->parent_->getParent()->getShipPartByName(targetName_)->setEventExecution(false);
                 this->parent_->getParent()->killShipPart(targetName_);
                 break;
