@@ -93,7 +93,7 @@ namespace orxonox
 
         static const float hardcoded_projectile_speed = 1250;
 
-        this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(), hardcoded_projectile_speed, this->target_->getPosition(), this->target_->getVelocity());
+        this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getWorldPosition(), hardcoded_projectile_speed, this->target_->getWorldPosition(), this->target_->getVelocity());
         this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
 
         Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());

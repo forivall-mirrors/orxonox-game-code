@@ -2,7 +2,7 @@
 
 <LevelInfo
  name = "turret Test"
- description = "A level with a turret in it."
+ description = "A level to test turrets with."
  tags = "test"
  screenshot = "emptylevel.png"
 />
@@ -15,8 +15,7 @@
 
 <?lua
   include("templates/spaceshipAssff.oxt")
-  include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipTurret.oxt")
+  include("templates/standardTurret.oxt")
 ?>
 
 <Level>
@@ -32,31 +31,26 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
+<SpaceShip position = "0,0,800" collisionType="dynamic" team=10>
+  <controller>
+    <TeamTargetProxy team=10/>
+  </controller>
+  <attached>
+    <Model position="0,0,0" mesh="plane.mesh" scale3D="20,20,20" pitch=-90/>
 
-<StaticEntity position="0,0,0" yaw=0 pitch=0>
-    <attached>
-        <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" />
-        <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" />
-    </attached>
-</StaticEntity>
+    <?lua for i = 1, 10, 1 do ?>
+      <Turret position="<?lua print(150-i*30) ?>,<?lua print(150-i*30) ?>,0" pitch="0" yaw="0" roll="0">
+        <templates>
+          <Template link=standardturret />
+        </templates>
+      </Turret>
+    <?lua end ?>
 
-
-
-<Turret position="0,10,0" pitch="90" yaw="0" roll="0">
-    <templates>
-        <Template link=spaceshipturret />
-    </templates>
-    <controller>
-        <WaypointPatrolController alertnessradius=100 team=10>
-        </WaypointPatrolController>
-     </controller>
-</Turret>
-
-
-
+  </attached>
+  <collisionShapes>
+    <BoxCollisionShape radius="10"   position="0,0,0" halfExtents="200, 200, 0"/>
+  </collisionShapes>
+</SpaceShip>
     
   </Scene>
 </Level>
