@@ -26,7 +26,7 @@ namespace orxonox
         RegisterObject(ControllerDirector);
 
         // output a message to ensure we know the constructor was run
-        orxout()<<"hello universe constructor blablub"<< endl;
+        orxout(verbose)<<"hello universe constructor blablub"<< endl;
 
 
 
@@ -41,7 +41,7 @@ namespace orxonox
     {
         SUPER(ControllerDirector, XMLPort, xmlelement, mode);
 
-        orxout()<< "ControllerDirector::XMLPort " 
+        orxout(verbose)<< "ControllerDirector::XMLPort " 
           << "An instance of ControllerDirector has been created." << endl;
     }
 
@@ -62,7 +62,7 @@ namespace orxonox
     void ControllerDirector::takeControl(Controller * controller, BaseObject * trigger) 
     {
        /* Output a message confirming that the function was called */
-       orxout()<<"test takecontrol."<< endl;
+       orxout(verbose)<<"test takecontrol."<< endl;
 
        /* First, we set up a new controller to attach to the unit that
         * triggered our event. 
@@ -111,7 +111,7 @@ namespace orxonox
         this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
         this->player_ = NULL;
 
-        orxout() << "Preparation to take Control!" << endl; 
+        orxout(verbose) << "Preparation to take Control!" << endl; 
 
         // Check whether it is a player trigger and extract pawn from it
         if(this->pTrigger_ != NULL)
@@ -124,7 +124,7 @@ namespace orxonox
         }
         else
         {
-            orxout() << "ControllerDirector::preparationToTakeControl " 
+            orxout(verbose) << "ControllerDirector::preparationToTakeControl " 
               << "Not a player trigger, can't extract pawn from it.." << endl;
             return false;
         }

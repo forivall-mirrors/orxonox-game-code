@@ -70,8 +70,8 @@ namespace orxonox
     void ScriptController::takeControl(int ctrlid)
     {
         /* Output some debugging information */
-        orxout() << "ScriptController: Taking control" << endl;
-        orxout() << "This-pointer: " << this << endl;
+        orxout(verbose) << "ScriptController: Taking control" << endl;
+        orxout(verbose) << "This-pointer: " << this << endl;
 
         /* Set the controller ID (the argument here should be nonzero) */
         this->ctrlid_ = ctrlid;
@@ -99,13 +99,13 @@ namespace orxonox
     ScriptController* ScriptController::getScriptController()
     {
       /* Output a message that confirms this function was called */
-      orxout() << "Great success!" << std::endl;
+      orxout(verbose) << "Great success!" << std::endl;
 
       /* Debugging: print all the scriptcontroller object pointers */
       for(ObjectList<ScriptController>::iterator it = 
         ObjectList<ScriptController>::begin(); 
         it != ObjectList<ScriptController>::end(); ++it)
-      { orxout() << "Have object in list: " << *it << endl; }
+      { orxout(verbose) << "Have object in list: " << *it << endl; }
 
       /* Find the first one with a nonzero ID */
       for(ObjectList<ScriptController>::iterator it = 
@@ -114,7 +114,7 @@ namespace orxonox
       { 
         // TODO: do some selection here. Currently just returns the first one
         if( (*it)->getID() > 0 )
-        { orxout() << "Controller to return: " << *it << endl;
+        { orxout(verbose) << "Controller to return: " << *it << endl;
           return *it; 
         }
       
@@ -230,12 +230,12 @@ namespace orxonox
       tmp.duration = duration;
       tmp.eventTime = executionTime;
 
-      orxout() << tmp.fctName << endl;
+      orxout(verbose) << tmp.fctName << endl;
 
       /* Add the created event to the event list */
       if(eventList.size()==0)
       { /* The list is still empty, just add it */
-        orxout() << "eventList empty (01)" << endl;
+        orxout(verbose) << "eventList empty (01)" << endl;
         eventList.insert(eventList.begin(), tmp);
         this->eventno += 1;
         return; /* Nothing more to do, the event was added */
