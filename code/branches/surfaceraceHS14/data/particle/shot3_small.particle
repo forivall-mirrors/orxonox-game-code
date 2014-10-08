@@ -1,0 +1,56 @@
+
+particle_system Orxonox/shot3_small
+{
+	quota	25
+	material	PE/point_lensflare
+	particle_width	10
+	particle_height	25
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	oriented_self
+	billboard_origin	center
+	billboard_rotation_type	texcoord
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	true
+
+	emitter Point
+	{
+		angle	0
+		colour	0 0 0 1
+		colour_range_start	0.4 0.4 0.6 1
+		colour_range_end	0.5 0.5 0.7 1
+		direction	0 -1 0
+		emission_rate	80
+		position	0 0 0
+		velocity	1
+		velocity_min	1
+		velocity_max	1
+		time_to_live	0.25
+		time_to_live_min	0.25
+		time_to_live_max	0.25
+		duration	0
+		duration_min	0
+		duration_max	0
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+	}
+
+	affector Scaler
+	{
+		rate	-15
+	}
+
+	affector ColourFader
+	{
+		red	-1.6
+		green	-1.6
+		blue	-1.0
+		alpha	0
+	}
+}
