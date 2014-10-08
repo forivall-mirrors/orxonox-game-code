@@ -1,0 +1,478 @@
+<!---->
+
+<LevelInfo
+ name = "Presentation FS11"
+ description = "Presentation level spring semester '11"
+ tags = "presentation"
+ screenshot = "presentationfs11.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+<?lua
+include("templates/pickupRepresentationTemplates.oxt")
+?>
+
+<Level>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=1
+    displayTime=30
+    position="0.2, 0, 0.1, 0"
+    fontSize="24"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/skyboxempty"
+  >
+
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+    <!-- SOUND -->
+    <WorldAmbientSound source="Earth.ogg" looping="true" playOnLoad="true" />
+    <WorldAmbientSound source="Mars.ogg" looping="true">
+        <events>
+            <activity>
+                <DistanceTrigger position="-72369,803,2" distance=1700 target="Camera" />
+            </activity>
+        </events>
+    </WorldAmbientSound>
+    <WorldAmbientSound source="Jupiter.ogg" looping="true">
+        <events>
+            <activity>
+                <DistanceTrigger position="-73450,5067,-351" distance=800 target="Camera" />
+            </activity>
+        </events>
+    </WorldAmbientSound>
+
+    <!-- EARTH ORBIT -->
+
+    <DistanceTrigger name="spawntrigger" position="0,0,0" target="Pawn" distance=10 stayActive="true" />
+    <DistanceTrigger name="spawndelaytrigger1" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=1 />
+    <DistanceTrigger name="spawndelaytrigger2" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=7 />
+    <DistanceTrigger name="spawndelaytrigger3" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=12 />
+    <DistanceTrigger name="spawndelaytrigger4" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=15 />
+    <DistanceTrigger name="spawndelaytrigger5" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=25 />
+    <DistanceTrigger name="spawndelaytrigger6" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=35 />
+    <DistanceTrigger name="spawndelaytrigger7" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=40 />
+
+    <SpawnPoint position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff>
+        <events>
+            <activity>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="spawndelaytrigger1" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <SimpleNotification message="Welcome to Earth Orbit" >
+        <events>
+            <trigger>
+                <EventListener event=spawntrigger />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    <SimpleNotification message="Turn right to witness an explosion" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- EARTH -->
+    <Planet
+      position="80500,0,0"
+      scale="63000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5.9e21"
+      pitch="-90"
+      yaw="50"
+      mesh="planets/earth.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,1,0"
+      rotationrate="0.2"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="newtonianGravity" diameter="140000" massDiameter="126000" mass="5.9e21" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="63000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
+    <!-- PARTICLE EFFECT -->
+
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp" autostart="false" lifetime=500 loop=1 startdelay=2.5>
+        <events>
+            <spawn>
+                <EventListener event=spawndelaytrigger1 />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp2" autostart="false" lifetime=500 loop=1 startdelay=2>
+        <events>
+            <spawn>
+                <EventListener event=spawndelaytrigger1 />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp3" autostart="false" lifetime=500 loop=1 startdelay=2>
+        <events>
+            <spawn>
+                <EventListener event=spawndelaytrigger1 />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <StaticEntity collisionType = "static" position = "-50,50,-125" scale=1 >
+      <attached>
+        <Model position="0,0,0" scale="2" mesh="ast1.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="8" />
+      </collisionShapes>
+    </StaticEntity>
+       
+    <SimpleNotification message="A particle effect by Tibor" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- ENEMIES 1st ROUND -->
+
+    <SimpleNotification message="Enemies attacking" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Script code="addBots 3" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger3 />
+            </trigger>
+        </events>
+    </Script>
+
+    <SpawnPoint position="100,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+            <activity>
+                <EventListener event=spawnpointtrigger />
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <SpawnPoint position="0,-100,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+            <activity>
+                <EventListener event=spawnpointtrigger />
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <SpawnPoint position="0,0,100" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+            <activity>
+                <EventListener event=spawnpointtrigger />
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <Trigger name="spawnpointtrigger" mode="xor" invert="true" >
+        <EventTrigger>
+            <events>
+                <trigger>
+                    <EventListener event=spawndelaytrigger1 />
+                </trigger>
+            </events>
+        </EventTrigger>
+        <EventTrigger invert="true">
+            <events>
+                <trigger>
+                    <EventListener event=portaltrigger />
+                </trigger>
+            </events>
+        </EventTrigger>
+    </Trigger>
+
+    <!-- SPACE BOUNDARY -->
+
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-90000,0,0"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="0,10000,0"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="450" showDistance="300" healthDecrease="0.1" position="0,0,0"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-30000,0,0"/>
+
+    <SimpleNotification message="Notice the shields by Simon" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger4 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="and space boundaries by Maurus" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger5 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Let's get out of here" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger6 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Script code="killBots" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger6 />
+            </trigger>
+        </events>
+    </Script>
+
+    <SimpleNotification message="Boost enhancement by Dominik" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger7 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    
+    <!-- PORTALS -->
+
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="-350,0,0" id="3" distance="40" target="MobileEntity" design="PortalDefault" active="false">
+        <events>
+            <activity>
+                <EventListener event=spawndelaytrigger6 />
+            </activity>
+        </events>
+    </PortalEndPoint>
+    <PortalEndPoint position="-72000,0,0" id="4" distance="40" target="MobileEntity" design="PortalDefault" />
+    <PortalLink fromID="3" toID="4" />
+    <PortalLink fromID="4" toID="3" />
+
+    <DistanceTrigger name="portaltrigger" position="-72000,0,0" target="Pawn" distance=10 stayActive="true" />
+    <DistanceTrigger name="portaldelaytrigger1" position="-72000,0,0" target="Pawn" distance=10 stayActive="true" delay=5 />
+    <DistanceTrigger name="portaldelaytrigger2" position="-72000,0,0" target="Pawn" distance=10 stayActive="true" delay=10 />
+    <DistanceTrigger name="portaldelaytrigger3" position="-72000,0,0" target="Pawn" distance=10 stayActive="true" delay=15 />
+    <DistanceTrigger name="portaldelaytrigger4" position="-72000,0,0" target="Pawn" distance=10 stayActive="true" delay=17 />
+
+    <SimpleNotification message="Welcome to Moon Orbit" >
+        <events>
+            <trigger>
+                <EventListener event=portaltrigger />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Portals by Andreas" >
+        <events>
+            <trigger>
+                <EventListener event=portaldelaytrigger1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- MOON AREA -->
+    
+    <!-- MOON -->
+    <Planet
+      position="-80000,0,0"
+      scale="4000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="7.36e19"
+      pitch="0"
+      mesh="planets/moon.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,1,0"
+      rotationrate="0.2"
+      atmospheresize="0.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="newtonianGravity" diameter="40000" massDiameter="34740" mass="7.36e19" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="4000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
+    <SimpleNotification message="Hydrogen farmer/space station by Hans" >
+        <events>
+            <trigger>
+                <EventListener event=portaldelaytrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- HYDROGEN FARMER & DOCKING -->
+    <SpaceShip position="-74000,2500,0" roll=90 yaw=180 pitch=20 mass=10000 health=100000 >
+      <attached>
+        <!-- Docking -->
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=100 />
+        <!-- <Model mesh="cube.mesh" mass=10 position="-1120,0,0" scale3D="230,200,490"  /> -->
+        <!-- <Model mesh="cube.mesh" mass=10 position="580,0,-960" scale3D="230,200,490" yaw=-120 /> -->
+        <!-- <Model mesh="cube.mesh" mass=10 position="580,0,960" scale3D="230,200,490" yaw=-240 /> -->
+        <!-- <Model mesh="cube.mesh" mass=10 position="0,0,0" scale3D="600,200,100" /> -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-1120,0,0" halfExtents="230,200,490" />
+        <BoxCollisionShape  position="580,0,-960" halfExtents="230,200,490" yaw=-120 />
+        <BoxCollisionShape  position="580,0,960" halfExtents="230,200,490" yaw=-240 />
+      </collisionShapes>
+    </SpaceShip>
+
+    <Dock position="-73942, 1288, -255" roll=90 yaw=180 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+        </attached>
+    </Dock>
+
+    <SpaceShip template="spaceshipassff2" position="-73915,3786,67" orientation="-0.14045, 0.68254, 0.68144, 0.223774" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip>
+
+    <!-- PICKUPS -->
+    <SimpleNotification message="Oh, what have we here?" >
+        <events>
+            <trigger>
+                <EventListener event=portaldelaytrigger3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Shrink pickup by Sandro" >
+        <events>
+            <trigger>
+                <EventListener event=portaldelaytrigger4 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <PickupSpawner pickup="smallshrinkpickup" position="-72487,420,-63" respawnTime="10" triggerDistance="20" maxSpawnedItems="5" active="false">
+      <events>
+        <activity>
+            <EventListener event=portaldelaytrigger3 />
+        </activity>
+      </events>
+      <attached>
+        <ParticleSpawner position="0,0,0" source="Orxonox/Shield" autostart="false" lifetime=500 loop=0 >
+            <events>
+                <spawn>
+                    <EventListener event=portaldelaytrigger3 />
+                </spawn>
+            </events>
+        </ParticleSpawner>
+      </attached>
+    </PickupSpawner>
+
+    <SpaceBoundaries warnDistance="1" maxDistance="1700" showDistance="500" healthDecrease="0.1" position="-72369,803,2"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="800" showDistance="300" healthDecrease="0.1" position="-73450,5067,-351"/>
+
+    <!-- FINISH -->
+
+    <DistanceTrigger name="dockingtrigger" position="-73942, 1288, -255" target="Pawn" distance=20 stayActive="true" />
+    <DistanceTrigger name="dockingdelaytrigger1" position="-73942, 1288, -255" target="Pawn" distance=20 stayActive="true" delay=3 />
+    <DistanceTrigger name="dockingdelaytrigger2" position="-73942, 1288, -255" target="Pawn" distance=20 stayActive="true" delay=10 />
+
+    <SimpleNotification message="Docking by Sven" >
+        <events>
+            <trigger>
+                <EventListener event=dockingtrigger />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Weapons by Jonas" >
+        <events>
+            <trigger>
+                <EventListener event=dockingdelaytrigger1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Steering enhancement by Manuel" >
+        <events>
+            <trigger>
+                <EventListener event=dockingdelaytrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    
+  </Scene>
+</Level>
+
