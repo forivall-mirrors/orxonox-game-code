@@ -1,0 +1,145 @@
+<LevelInfo
+	name= "Total Anihilation"
+	description= "Save humanity from its total anihilation."
+	tags= "mission"
+	screenshot= "screenshot.png"
+/>
+
+
+ <?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+
+<?lua
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipGhost.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipAssff2.oxt")
+?>
+
+<Level 	gametype = "Mission" >
+ 
+<templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+  
+
+<?lua
+      include("includes/pickups.oxi")
+   ?>
+
+   <?lua
+    dofile("includes/CuboidSpaceStation.lua")
+   ?>
+
+
+
+<Scene
+    ambientlight = "0.5, 0.5, 0.5"
+    skybox       = "Orxonox/Starbox"
+    hasPhysics = true
+ >
+	
+  
+  <Light 
+  	type=directional position="0,0,0" 
+  	direction="0.522, 0.198, -0.354" 
+  	diffuse="1.0, 0.9, 0.9, 1.0" 
+  	specular="1.0, 0.9, 0.9, 1.0"/>
+  	
+  	
+  <SpawnPoint 
+	team=0 position="500,0,0" 
+	lookat="1,1,0" 
+	spawnclass=SpaceShip 
+	pawndesign=spaceshipswallow />
+	
+	
+	<Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Model mesh="Spacegate.mesh" yaw="90"/>
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="-1000,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalLink fromID="1" toID="2" />
+    <PortalLink fromID="2" toID="1" />
+	
+	<DistanceTrigger name="switchPlanets" position="-1100,0,0" target="Pawn" distance=70 stayActive="true" delay=1/>
+
+<!-- switchBillboards makes this billboard INVISIBLE -->
+<Planet
+      position="-100000,0,0"
+      scale="10000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5.9e21"
+      pitch="0"
+      mesh="planets/earth.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,1,0"
+      rotationrate="0.2"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+   <events>
+      <visibility>
+        <EventTrigger invert=true>
+          <events>
+           <trigger>
+             <EventListener event=switchPlanets />
+           </trigger>
+         </events>
+        </EventTrigger>
+      </visibility>
+   </events>
+</Planet>
+	
+	
+	 <!-- This is a model of Earth: mass=EarthMass/1000 and radius=EarthRadius[km]*10 -->
+    <Planet
+      position="-100000,0,0"
+      scale="10000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5.9e21"
+      pitch="0"
+      mesh="planets/earth.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,1,0"
+      rotationrate="0.2"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="newtonianGravity" diameter="140000" massDiameter="126000" mass="5.9e21" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="63000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+    
+	
+	
+	
+    
+   
+    
+  </Scene>
+</Level>
