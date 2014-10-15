@@ -45,13 +45,13 @@ namespace orxonox
     void Tower::rotateYaw(const Vector2& value)
     {
         static int yaw;
-        orxout() << "rotateYaw " << ++yaw << endl;
+        //orxout() << "rotateYaw " << ++yaw << endl;
     }
 
     void Tower::rotatePitch(const Vector2& value)
     {
         static int pitch;
-        orxout() << "rotatePitch " << ++pitch << endl;
+        //orxout() << "rotatePitch " << ++pitch << endl;
     }
 
     void Tower::rotateRoll(const Vector2& value)

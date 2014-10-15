@@ -53,6 +53,7 @@ namespace orxonox
         XMLPortParam(TowerDefenseController, "alertnessradius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues(500.0f);
     }
 
+
     void TowerDefenseController::tick(float dt)
     {
         if (!this->isActive())

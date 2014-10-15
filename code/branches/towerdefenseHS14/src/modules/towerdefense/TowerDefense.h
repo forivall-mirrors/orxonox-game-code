@@ -91,7 +91,7 @@ namespace orxonox
         } Coordinate;
 
         std::vector<Coordinate> addedTowersCoordinates_;
-        std::vector<Tower*> towers_;
+        std::vector<TowerTurret*> towers_;
     };
 }
 

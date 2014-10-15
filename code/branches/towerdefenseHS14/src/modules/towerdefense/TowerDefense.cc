@@ -74,7 +74,8 @@
  */
 
 #include "TowerDefense.h"
-#include "Tower.h"
+//#include "Tower.h"
+#include "TowerTurret.h"
 #include "TowerDefenseCenterpoint.h"
 
 #include "worldentities/SpawnPoint.h"
@@ -189,7 +190,7 @@ namespace orxonox
         this->stats_->buyTower(towerCost);
 
         // Create tower
-        Tower* newTower = new Tower(this->center_->getContext());
+        TowerTurret* newTower = new TowerTurret(this->center_->getContext());
         newTower->addTemplate(this->center_->getTowerTemplate());
 
         newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
