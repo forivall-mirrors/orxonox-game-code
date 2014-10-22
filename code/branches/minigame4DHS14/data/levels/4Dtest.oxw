@@ -9,18 +9,22 @@
   include("stats.oxo")
   include("HUDTemplates3.oxo")
   include("templates/lodInformation.oxt")
-  include("templates/spaceshipAssff.oxt")
-  include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipSpacecruiser.oxt")
-  include("templates/spaceshipTransporter.oxt")
 ?>
-<WorldAmbientSound source="Asteroid_rocks.ogg" looping="true" playOnLoad="true" />
 
+<!-- Templates here
+<Template name=mini4Dgamestone>
+  <Mini4DgameStone>
+    <attached>
+      <Model mesh="asteroid_UV.mesh" scale="2" />
+    </attached>
+  </Mini4DgameStone>
+</Template>
+ -->
 
 <Level
- name         = "Sample"
- description  = "Just a few tests"
+ gametype = "Mini4Dgame"
 >
+
   <templates>
     <Template link=lodtemplate_default />
   </templates>
@@ -29,11 +33,32 @@
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
-    hasPhysics   = true
   >
 
+	<WorldAmbientSound
+      source="Ganymede.ogg"
+      looping="true"
+      playOnLoad="true"
+    />
+    
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    
+    
+    <SpawnPoint position="-200,200,100" lookat="0,0,0" />
+
+	<Mini4DgameCenterpoint name=mini4Dgamecenter width=16 height=16 length=16 position="0,0,0">
+        <attached>
+            <Model position="1,1,1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-1,1,1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="1,-1,1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-1,-1,1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="1,1,-1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-1,1,-1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="1,-1,-1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-1,-1,-1" mesh="cube.mesh" scale3D="1,1,1" />
+        </attached>
+    </Mini4DgameCenterpoint>
+
 
 	<!-- Blinking Slot Selector -->
 	<BlinkingBillboard position="0,0,0" frequency=0.6 amplitude=0.4 material="Flares/lensflare" colour="1,1,0.05">
