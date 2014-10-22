@@ -38,6 +38,7 @@
 
 #include "tools/interfaces/Tickable.h"
 #include "controllers/Controller.h"
+#include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
@@ -77,6 +78,7 @@ namespace orxonox
             SimpleRocket* rocket_; //!< The Rocket it controls.
             Vector3 targetPosition_; //!< The position of the target.
             WeakPtr<PlayerInfo> player_; //!< The player the rocket belongs to.
+            //WeakPtr<Pawn> pawn_;
 
             WeakPtr<WorldEntity> target_; //!< The target.
     };

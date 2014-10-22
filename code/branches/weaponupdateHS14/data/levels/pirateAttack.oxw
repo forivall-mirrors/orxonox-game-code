@@ -423,7 +423,7 @@ gametype=Mission
         end
         ?>
     
-        <?lua
+<--     <?lua
         for i = 1,2, 1
         do
         ?>
@@ -442,6 +442,7 @@ gametype=Mission
         <?lua
         end
         ?>
+        -->
     
     <!-- Pirates at the end of wrong Navi line (get visible when you get near them)-->
      <SpaceShip position="1600,2300,-10000" active=true visible=true name=navipirate1>

@@ -40,6 +40,7 @@
 
 namespace orxonox
 {
+	RegisterClass(RocketController);
     /**
     @brief
         Constructor.
@@ -47,7 +48,7 @@ namespace orxonox
     RocketController::RocketController(Context* context) : Controller(context)
     {
         RegisterObject(RocketController);
-//        orxout() << "RocketController constructed" << endl;
+        //orxout() << "RocketController constructed" << endl;
 
         // Create a rocket for the controller.
         this->rocket_ = new SimpleRocket(this->getContext());
@@ -72,7 +73,7 @@ namespace orxonox
 
     RocketController::~RocketController()
     {
-//        orxout() << "RocketController destroyed" << endl;
+        orxout() << "RocketController destroyed" << endl;
     }
 
     /**
@@ -96,7 +97,7 @@ namespace orxonox
 
         if (distance > 1000 && this->rocket_->getVelocity().squaredLength()<160000)
             this->rocket_->setAcceleration(this->rocket_->getOrientation()*Vector3(-20,-20,-20));
-        if (distance <1000) this->rocket_->setAcceleration(0,0,0);
+        if (distance < 1000) this->rocket_->setAcceleration(0,0,0);
 
         this->rocket_->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
         this->rocket_->rotatePitch(sgn(coord.y)*coord.y*coord.y);
