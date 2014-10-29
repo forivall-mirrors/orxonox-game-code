@@ -402,7 +402,7 @@ gametype=Mission
             </EventDispatcher>
     <!--Change spawnoint end-->
     
-    <!-- pirates -->
+    <!-- pirates >
         <?lua
         for i = 1,1, 1
         do

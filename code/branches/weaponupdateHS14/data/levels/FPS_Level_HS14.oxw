@@ -43,13 +43,37 @@
     <?lua
       include("includes/pickups.oxi")
     ?>
+	
+	<!-- my ships -->
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0,1.0,1.0,0.5" specular="1.0, 0.9, 0.9, 1.0"/>
     
     <SpawnPoint team=1 position="3000,0,0" lookat="4000,-1000,-1000" spawnclass=SpaceShip pawndesign=spaceshipescort />
 	<!--6000,2000,500-->
-
-        
+	
+	<SpaceShip			
+        template            = "spaceshipassff"
+        team                = "1"
+        position            = "2830,20,50"
+        orientation         = "1,200,0,0"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "Tanis1"
+        radarname           = "Light-Destroyer" >
+       <attached>
+        <DockingTarget name="spaceShip" />
+        <DistanceTriggerBeacon name="bcnSpaceShip" />
+      </attached>
+    </SpaceShip>
+	
+	
         
     <StaticEntity position  = "2800,0,0" mass=10000 collisionType=static >
       <attached>
@@ -153,7 +177,8 @@
 
     </Dock>
 
- <!-- Enemy ship -->
+ <!-- Enemy ships -->
+ 
 	<SpaceShip			
         template            = "HeavyCruiser"
         team                = "0"
@@ -170,36 +195,55 @@
         reloadwaittime      = "1"
         name                = "Tanis1"
         radarname           = "Tanis Cruiser" >
-      <attached>
-        <DockingTarget name="spaceShip" />
-        <DistanceTriggerBeacon name="bcnSpaceShip" />
-      </attached>
-    </SpaceShip>
+   </SpaceShip>
     
-    <SpaceShip			
+    
+ <!--   <SpaceShip			
         template            = "spaceshippirate"
         team                = "0"
         position            = "4800,-200,-1200"
         orientation         = "1,200,0,0"
-        health              = "2000"
-        initialhealth       = "2000"
-        maxhealth           = "2000"
-        shieldhealth        = "200"
-        initialshieldhealth = "200"
-        maxshieldhealth     = "200"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
         shieldabsorption    = "0.8"
         reloadrate          = "1"
         reloadwaittime      = "1"
         name                = "Tanis1"
-        radarname           = "Pirate" >
+        radarname           = "Pirate1" >
         
         <controller>
             <AIController team=0/>           
         </controller>
+        
    </SpaceShip>
-
-
-
+   
+   <SpaceShip			
+        template            = "spaceshippirate"
+        team                = "0"
+        position            = "4800,-220,-1200"
+        orientation         = "1,200,0,0"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "Tanis1"
+        radarname           = "Pirate2" >
+        
+        <controller>
+            <AIController team=0/>           
+        </controller>
+        
+   </SpaceShip>
+   -->
 
 <!-- SpaceStation
 
@@ -207,7 +251,20 @@ The station can either be hidden outside of the skybox, within the hull of the s
 Complex spacestations can be placed very far away from the spaceship so it is rendered at low resolution while the player uses the space ship.
 
 -->
-  <StaticEntity position="0,-20000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 pitch=-90>
+<StaticEntity position="2800,-500,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 pitch=-90>
+<attached>
+
+<Model position="0,0,0" mesh="cube.mesh" scale3D="50,50,50" />
+
+</attached>
+</StaticEntity>
+
+<Model position="0,0,0" mesh="cube.mesh" scale3D="10000,10,10" />
+<Model position="0,0,0" mesh="cube.mesh" scale3D="10,10000,10" />
+<Model position="0,0,0" mesh="cube.mesh" scale3D="10,10,10000" />
+
+
+<StaticEntity position="0,-20000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 pitch=-90> 
       <attached>
     <Model position="0,0,0" mesh="ss_tube.mesh" scale3D="100,100,100" />
 	<Model position="500,0,0" mesh="ss_tube.mesh" scale3D="100,100,100" />
