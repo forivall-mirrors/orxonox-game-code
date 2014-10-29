@@ -38,7 +38,6 @@
 
 namespace orxonox
 {
-
     /**
     @brief
 
@@ -55,13 +54,12 @@ namespace orxonox
             virtual void end(void); ///!< Ends the Mini4Dgame minigame.
 
             virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
-            virtual bool playerLeft(PlayerInfo* player);
 
             void setCenterpoint(Mini4DgameCenterpoint* center)
             	{ this->center_ = center; }
 
-            PlayerInfo* getLeftPlayer() const; //!< Get the left player.
-            PlayerInfo* getRightPlayer() const; //!< Get the right player.
+//TODO: enum colors
+            PlayerInfo* getPlayer(int color) const; //!< Get the player with the specified color.
 
 
             //bool isValidMove(Vector4* move, const Mini4DgameBoard* board);//!< Checks if the move is valid
@@ -73,7 +71,7 @@ namespace orxonox
         private:
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
 
-            PlayerInfo* player_[2];//!< The two players
+          PlayerInfo* players[3];
 
             WeakPtr<Mini4DgameCenterpoint> center_; //!< The playing field.
 

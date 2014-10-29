@@ -59,8 +59,7 @@
         </attached>
     </Mini4DgameCenterpoint>
 
-
-	<!-- Blinking Slot Selector -->
+	<!-- Blinking Slot Selector 
 	<BlinkingBillboard position="0,0,0" frequency=0.6 amplitude=0.4 material="Flares/lensflare" colour="1,1,0.05">
           <events>
             <visibility>
@@ -74,7 +73,7 @@
             </visibility>
           </events>
 	</BlinkingBillboard>
-
+	-->
     <!-- Planet in the middle
     <Planet
       position="0,0,0"
