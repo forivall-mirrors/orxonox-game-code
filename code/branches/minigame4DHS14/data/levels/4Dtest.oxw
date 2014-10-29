@@ -19,6 +19,10 @@
     </attached>
   </Mini4DgameStone>
 </Template>
+
+
+	<BlinkingBillboard position="0,0,0" frequency=0.6 amplitude=0.4 material="Flares/lensflare" colour="0,1,0">
+	</BlinkingBillboard>
  -->
 
 <Level
@@ -48,51 +52,30 @@
 
 	<Mini4DgameCenterpoint name=mini4Dgamecenter width=16 height=16 length=16 position="0,0,0">
         <attached>
-            <Model position="10,10,10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-10,10,10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="10,-10,10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-10,-10,10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="10,10,-10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-10,10,-10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="10,-10,-10" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-10,-10,-10" mesh="cube.mesh" scale3D="1,1,1" />
+        	<?lua
+        	for i = -90, 90, 60
+        	?>
+        		<?lua
+        		for j = -90, 90, 60
+        		?>
+        			<?lua
+        			for k = -90, 90, 60
+        			?>
+        				<Model
+        				position="<?lua print(i) ?>,<?lua print(j) ?>,<?lua print(k) ?>"
+        				mesh="ast1.mesh"
+        				scale="1" />
+        			<?lua
+    		  		end
+    				?>
+    			<?lua
+    		  	end
+    			?>
+        	<?lua
+    		end
+    		?>
         </attached>
     </Mini4DgameCenterpoint>
-
-	<!-- Blinking Slot Selector 
-	<BlinkingBillboard position="0,0,0" frequency=0.6 amplitude=0.4 material="Flares/lensflare" colour="1,1,0.05">
-          <events>
-            <visibility>
-              <EventTrigger invert=true>
-                <events>
-                  <trigger>
-                    <EventListener event=flying4 />
-                  </trigger>
-                </events>
-              </EventTrigger>
-            </visibility>
-          </events>
-	</BlinkingBillboard>
-	-->
-    <!-- Planet in the middle
-    <Planet
-      position="0,0,0"
-      scale="50"
-      collisionType="dynamic"
-      linearDamping="0.8"
-      angularDamping="0"
-      mass="0"
-      pitch="0"
-      mesh="planets/muunilinst.mesh"
-      atmosphere="atmosphere1"
-      rotationaxis="1,0,0"
-      rotationrate="0"
-      atmospheresize="2.0f"
-      imagesize="1024.0f"
-    >
-    </Planet>
-     -->
-
 
 
   </Scene>
