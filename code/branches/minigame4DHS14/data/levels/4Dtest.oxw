@@ -22,7 +22,7 @@
  -->
 
 <Level
- gametype = "Mini4Dgame"
+ gametype=Mini4Dgame
 >
 
   <templates>
@@ -48,14 +48,14 @@
 
 	<Mini4DgameCenterpoint name=mini4Dgamecenter width=16 height=16 length=16 position="0,0,0">
         <attached>
-            <Model position="1,1,1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-1,1,1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="1,-1,1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-1,-1,1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="1,1,-1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-1,1,-1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="1,-1,-1" mesh="cube.mesh" scale3D="1,1,1" />
-            <Model position="-1,-1,-1" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="10,10,10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-10,10,10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="10,-10,10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-10,-10,10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="10,10,-10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-10,10,-10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="10,-10,-10" mesh="cube.mesh" scale3D="1,1,1" />
+            <Model position="-10,-10,-10" mesh="cube.mesh" scale3D="1,1,1" />
         </attached>
     </Mini4DgameCenterpoint>
 

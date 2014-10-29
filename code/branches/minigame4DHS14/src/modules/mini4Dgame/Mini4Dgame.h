@@ -35,6 +35,7 @@
 #define _Mini4Dgame_H__
 
 #include "gametypes/Deathmatch.h"
+#include "mini4Dgame/Mini4DgamePrereqs.h"
 
 namespace orxonox
 {
@@ -44,7 +45,7 @@ namespace orxonox
     @author
 
     */
-    class Mini4Dgame : public Deathmatch
+    class _Mini4DgameExport Mini4Dgame : public Deathmatch
     {
         public:
     		Mini4Dgame(Context* context); //!< Constructor. Registers and initializes the object.
@@ -71,7 +72,7 @@ namespace orxonox
         private:
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
 
-          PlayerInfo* players[3];
+          Player players[3];
 
             WeakPtr<Mini4DgameCenterpoint> center_; //!< The playing field.
 

@@ -39,6 +39,7 @@
 #include <util/Math.h>
 
 #include "worldentities/StaticEntity.h"
+#include "mini4Dgame/Mini4DgamePrereqs.h"
 
 namespace orxonox
 {
@@ -56,7 +57,7 @@ namespace orxonox
         - The <b>batspeed</b> is the speed with which the @ref orxonox::PongBat "PongBats" move. The default is <em>60</em>.
         - The <b>batlength</b> is the length of the @ref orxonox::PongBat "PongBats" as the percentage of the height of the playing field. The default is <em>0.25</em>.
     */
-    class Mini4DgameCenterpoint : public StaticEntity
+    class _Mini4DgameExport Mini4DgameCenterpoint : public StaticEntity
     {
         public:
             Mini4DgameCenterpoint(Context* context); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Mini4Dgame.

@@ -40,8 +40,10 @@
 #include "Mini4Dgame.h"
 
 #include "core/CoreIncludes.h"
+#include "core/EventIncludes.h"
 #include "core/command/Executor.h"
 #include "core/config/ConfigValueIncludes.h"
+#include "infos/PlayerInfo.h"
 
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
@@ -61,7 +63,7 @@ namespace orxonox
     {
         RegisterObject(Mini4Dgame);
 
-        this->center_ = NULL;
+        this->center_ = 0;
         //TODO: player Null setzen
     }
 
@@ -176,7 +178,7 @@ namespace orxonox
     //TODO: colors
     PlayerInfo* Mini4Dgame::getPlayer(int color) const
     {
-        return players[color];
+        return players[color].info_;
     	//for(int i=0;i<NUMBEROFPLAYERS;i++)
         	//if(color == this->mini4DgamePlayers[i].color)
         		//return this->mini4DgamePlayers[i].info;
