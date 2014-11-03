@@ -77,7 +77,7 @@
 //#include "Tower.h"
 #include "TowerTurret.h"
 #include "TowerDefenseCenterpoint.h"
-
+//#include "TDCoordinate.h"
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
@@ -130,12 +130,12 @@ namespace orxonox
         Deathmatch::start();
 
         const int kInitialTowerCount = 3;
-        Coordinate initialTowerCoordinates[kInitialTowerCount] = {{3,2}, {8,5}, {12,10}};
 
         for (int i = 0; i < kInitialTowerCount; i++)
         {
-            Coordinate coordinate = initialTowerCoordinates[i];
-            addTower(coordinate.x, coordinate.y);
+        	//{{3,2}, {8,5}, {12,10}}; old coordinates
+            TDCoordinate* coordinate = new TDCoordinate(i,(i*2));
+            addTower(coordinate->x, coordinate->y);
         }
 
         ChatManager::message("Use the console command addTower x y to add towers");
@@ -143,12 +143,17 @@ namespace orxonox
         //TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
     }
 
+    void TowerDefense::addEnemy(){}
+
+
     void TowerDefense::end()
     {
         Deathmatch::end();
 
         ChatManager::message("Match is over");
     }
+
+
 
     void TowerDefense::addTower(int x, int y)
     {
@@ -183,7 +188,11 @@ namespace orxonox
         orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
 
         // Add tower to coordinatesStack
-        Coordinate newTowerCoordinates = {x, y};
+        TDCoordinate newTowerCoordinates;
+        newTowerCoordinates.x=x;
+        newTowerCoordinates.y=y;
+
+
         addedTowersCoordinates_.push_back(newTowerCoordinates);
 
         // Reduce credit
@@ -204,9 +213,9 @@ namespace orxonox
 
     bool TowerDefense::towerExists(int x, int y)
     {
-        for(std::vector<Coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it)
+        for(std::vector<TDCoordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it)
         {
-            Coordinate currentCoordinates = (Coordinate) (*it);
+            TDCoordinate currentCoordinates = (TDCoordinate) (*it);
             if (currentCoordinates.x == x && currentCoordinates.y == y)
                 return true;
         }

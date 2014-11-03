@@ -36,7 +36,7 @@
 
 #ifndef _TowerDefense_H__
 #define _TowerDefense_H__
-
+#include "TDCoordinate.h"
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "gametypes/Deathmatch.h"
 
@@ -50,6 +50,7 @@ namespace orxonox
         TowerDefense(Context* context);
         virtual ~TowerDefense();
 
+        void addEnemy();
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
         virtual void tick(float dt);
@@ -85,12 +86,8 @@ namespace orxonox
 
         bool towerExists(int x, int y);
 
-        typedef struct {
-            int x;
-            int y;
-        } Coordinate;
 
-        std::vector<Coordinate> addedTowersCoordinates_;
+        std::vector<TDCoordinate> addedTowersCoordinates_;
         std::vector<TowerTurret*> towers_;
     };
 }
