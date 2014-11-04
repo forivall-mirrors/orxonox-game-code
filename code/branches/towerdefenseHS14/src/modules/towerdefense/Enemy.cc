@@ -45,7 +45,7 @@ namespace orxonox
     TDCoordinate Enemy::peekWaypoint()
     {
     	if(Waypointsvector_.size()<=0){
-    		TDCoordinate coord = {-1,-1};
+    		TDCoordinate coord = TDCoordinate(-1,-1);
     		return coord;
     	}else{
         	return Waypointsvector_.at(Waypointsvector_.size()-1);

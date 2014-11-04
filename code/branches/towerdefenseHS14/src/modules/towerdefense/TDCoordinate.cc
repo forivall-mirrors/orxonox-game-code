@@ -7,7 +7,7 @@
 
 namespace orxonox
 {
-    RegisterClass(TDCoordinate);
+    //RegisterClass(TDCoordinate);
 
     /**
     @brief
@@ -15,7 +15,7 @@ namespace orxonox
     */
     TDCoordinate::TDCoordinate()
     {
-        RegisterObject(TDCoordinate);
+        //RegisterObject(TDCoordinate);
         x=0;
         y=0;
 
@@ -32,11 +32,11 @@ namespace orxonox
     {
     	int tileScale = 100;
 
-    	Vector3 coord = new Vector3();
-    	coord.x= (x-8) * tileScale;
-    	coord.y= (y-8) * tileScale;
-    	coord.z=0;
+    	Vector3 *coord = new Vector3();
+    	coord->x= (x-8) * tileScale;
+    	coord->y= (y-8) * tileScale;
+    	coord->z=0;
 
-    	return coord;
+    	return *coord;
     }
 }
