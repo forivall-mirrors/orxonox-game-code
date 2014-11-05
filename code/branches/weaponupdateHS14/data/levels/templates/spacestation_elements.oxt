@@ -1,0 +1,262 @@
+<Template name=spacestation_elements>
+	<SpaceStation
+	normalTubetemplate		= ss_tube
+	curvedTubetemplate		= ss_curve
+	crossingTubetemplate	= ss_tube_x
+	>
+	</SpaceStation>
+</Template>
+			
+
+
+<Template name=ss_tube>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" scale3D="100,100,100" mesh="ss_tube.mesh" />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,0,50"  		halfExtents="300,300,0" />
+		<BoxCollisionShape position="0,0,-50"     	halfExtents="300,300,0" />
+		<BoxCollisionShape position="-150,-50,-50"     	halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="-150,-50,-50"     	halfExtents="6, 2, 18" />
+      
+     </collisionShapes>
+   
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_curve>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" yaw=0 scale3D="100,100,100" mesh="ss_curve.mesh" />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="50,0,0"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+     </collisionShapes>
+  
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_tube_x>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" scale3D="100,100,100" mesh="ss_tube_x.mesh" />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+     </collisionShapes>
+    
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_flag_room>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" yaw=0 pitch=-90 scale3D="100,100,100"  mesh="ss_flag_room.mesh" />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+     </collisionShapes>
+ 	   
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_machine>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 scale3D="0.15,0.15,0.15" mesh="ss_machine.mesh" />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+     </collisionShapes>
+ 	 -->   
+    
+ 	 </MovableEntity>   
+roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
+</Template>
+
+
+		
+<Template name=ss_table>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 scale3D="25,25,25" mesh="ss_table.mesh"  />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+	 </collisionShapes>
+
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_table_cracked>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 scale3D="25,25,25" mesh="ss_table_cracked.mesh"  />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+	 </collisionShapes>
+
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_cylinder>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 scale3D="25,25,25" mesh="ss_cylinder.mesh"  />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+	 </collisionShapes>
+
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_chair>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 pitch=0 scale3D="20,20,20" mesh="ss_chair.mesh"  />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+	 </collisionShapes>
+
+    
+ 	 </MovableEntity>   
+
+</Template>
+
+
+
+<Template name=ss_wall>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 scale3D="20,20,20" mesh="ss_wall.mesh"  />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+	 </collisionShapes>
+
+    
+ 	 </MovableEntity>   
+
+</Template>
+	
+
+
+<Template name=ss_flag_aean>
+
+	<MovableEntity position="0,0,0">
+	<attached>
+
+	<Model position="0,0,0" roll=0 scale3D="40,40,40" mesh="ss_flag_aean.mesh"  />
+
+	</attached>
+	 <collisionShapes>
+		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
+		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
+		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
+		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+      
+	 </collisionShapes>
+
+    
+ 	 </MovableEntity>   
+
+</Template>
+		

@@ -1,4 +1,4 @@
-<Template name=fps>
+<Template name=fps_HS14>
   <FpsPlayer
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3

@@ -20,8 +20,9 @@
   include("templates/bigship.oxt")
   include("templates/spaceshipTurret.oxt")
   include("templates/spaceshipCollateralDamage.oxt")
-  include("templates/FPS.oxt")
+  include("templates/FPS_HS14.oxt")
   include("templates/HeavyCruiser.oxt")
+  include("templates/spacestation_elements.oxt")
 ?>
 
 <Level
@@ -54,7 +55,7 @@
 	<SpaceShip			
         template            = "spaceshipassff"
         team                = "1"
-        position            = "2830,20,50"
+        position            = "3200,0,-200"
         orientation         = "1,200,0,0"
         health              = "200"
         initialhealth       = "200"
@@ -99,7 +100,7 @@
       </collisionShapes>
     </StaticEntity>
 
-<!-- Docking  -->
+<!-- Docking  I -->
     <Dock position="2830,20,50" roll=0 yaw=0 >
         <animations>
             <MoveToDockingTarget target="fistperson" />
@@ -112,18 +113,22 @@
                 <EventListener event="dockMe" />
             </execute>
 
-	    <undocking>
+<!--	<undocking>
 		<EventListener event="undockMe" />
-	    </undocking>
+	    </undocking> -->
 	
         </events>
         <attached>
+
 	<!-- Trigger for docking with billboard -->
+	
             <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
             <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
                 beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
             />
+
 	<!-- Trigger for undocking with billboard -->
+	
 	    <Billboard position="-2800,-20055,-700" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
 	    <DistanceTrigger position="-2800,-20055,-700" distance="150" target="Pawn"
                 beaconMode="identify" targetname="bcnDestroyer" name="undockMe"
@@ -133,7 +138,8 @@
     </Dock>
     
 <!-- FPS Player as destination of the dock -->
-    <FpsPlayer template = "fps" radarname = "First Person Player" position = "172,-20000,-676" >
+
+    <FpsPlayer template = "fps_HS14" radarname = "First Person Player" position = "172,-20000,-676" >
       <attached>
         <DistanceTriggerBeacon name="bcnDestroyer" />
         <DockingTarget name="fistperson" />
@@ -251,7 +257,7 @@ The station can either be hidden outside of the skybox, within the hull of the s
 Complex spacestations can be placed very far away from the spaceship so it is rendered at low resolution while the player uses the space ship.
 
 -->
-<StaticEntity position="2800,-500,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 pitch=-90>
+<StaticEntity position="2800,-500,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01 pitch=-90>
 <attached>
 
 <Model position="0,0,0" mesh="cube.mesh" scale3D="50,50,50" />
@@ -259,14 +265,28 @@ Complex spacestations can be placed very far away from the spaceship so it is re
 </attached>
 </StaticEntity>
 
-<Model position="0,0,0" mesh="cube.mesh" scale3D="10000,10,10" />
-<Model position="0,0,0" mesh="cube.mesh" scale3D="10,10000,10" />
+<Model position="0,0,0" mesh="cube_red.mesh" scale3D="10000,10,10" />
+<Model position="0,0,0" mesh="cube_green.mesh" scale3D="10,10000,10" />
 <Model position="0,0,0" mesh="cube.mesh" scale3D="10,10,10000" />
+
+<Model position="0,-20000,0" mesh="cube_red.mesh" scale3D="10000,10,10" />
+<Model position="0,-20000,0" mesh="cube_green.mesh" scale3D="10,10000,10" />
+<Model position="0,-20000,0" mesh="cube.mesh" scale3D="10,10,10000" />
+
+<Model position="0,-20010,0" mesh="cube_blue.mesh" scale3D="11,11,11" />
+<Model position="-10,-20000,0" mesh="cube_blue.mesh" scale3D="11,11,11" />
+<Model position="0,-20000,-10" mesh="cube_blue.mesh" scale3D="11,11,11" />
 
 
 <StaticEntity position="0,-20000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 pitch=-90> 
-      <attached>
-    <Model position="0,0,0" mesh="ss_tube.mesh" scale3D="100,100,100" />
+     
+ <attached>
+
+	<Model template	= "ss_flag_room" position="750,-16,703.5" />
+	<Model template	= "ss_tube" position="0,0,0" />
+	
+	
+ <!--   <Model position="0,0,0" mesh="ss_tube.mesh" scale3D="100,100,100" />
 	<Model position="500,0,0" mesh="ss_tube.mesh" scale3D="100,100,100" />
 	<Model position="1200,0,0" mesh="ss_tube_x.mesh" scale3D="100,100,100" />
 	<Model position="1900,0,0" mesh="ss_curve.mesh" scale3D="100,100,100" />
@@ -284,7 +304,7 @@ Complex spacestations can be placed very far away from the spaceship so it is re
 	<Model position="300,50,0" roll=180  pitch=20 mesh="ss_chair.mesh" scale3D="20,20,20" />
 	<Model position="1000,50,0" roll=180 mesh="ss_wall.mesh" scale3D="20,20,20" />
 	<Model position="-830,20,0" roll=180 mesh="ss_flag_aean.mesh" scale3D="40,40,40" />
-	
+-->	
 	<!--Model mesh="cube.mesh" mass=10 position="0,-100,0" scale3D="5000,0.5,1000" yaw=0 />
     <Model mesh="cube.mesh" mass=10 position="0,100,0" scale3D="2000,0.5,1000" yaw=0 />
     <!--Model mesh="cube.mesh" mass=10 position="0,0,100" scale3D="5000,100,0.5" yaw=0 />
