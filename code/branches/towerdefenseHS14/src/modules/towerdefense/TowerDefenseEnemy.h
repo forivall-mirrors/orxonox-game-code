@@ -1,5 +1,5 @@
 //
-//  Enemy.h
+//  TowerDefenseEnemy.h
 //  Orxonox
 //
 //  Created by Jonas Erb on 22.10.14.
@@ -17,23 +17,23 @@ See TowerDefenseReadme.txt for Information.
 #define Orxonox_Tower_h
 
 #include "TDCoordinate.h"
-#include "towerdefense/TowerDefense.h"
 #include "gametypes/Deathmatch.h"
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "worldentities/pawns/SpaceShip.h"
+#include "util/Output.h"
 
 namespace orxonox
 {
-/* Class to give the enemy spaceships waypoints and
+/* Class to give the TowerDefenseEnemy spaceships waypoints and
  *
  */
-	class _TowerDefenseExport Enemy : public Pawn
+	class _TowerDefenseExport TowerDefenseEnemy : public Pawn
 	{
 
 	public:
 
-		Enemy(Context* context);
-        virtual ~Enemy() {};
+		TowerDefenseEnemy(Context* context);
+        virtual ~TowerDefenseEnemy() {};
 
         //health gibt es unter: health_
 

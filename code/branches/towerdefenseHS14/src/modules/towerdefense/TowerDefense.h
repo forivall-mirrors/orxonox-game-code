@@ -39,6 +39,9 @@
 #include "TDCoordinate.h"
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "gametypes/Deathmatch.h"
+#include "TowerDefenseEnemy.h"
+#include "util/Output.h"
+
 
  #include "TowerDefensePlayerStats.h"
 
@@ -50,7 +53,9 @@ namespace orxonox
         TowerDefense(Context* context);
         virtual ~TowerDefense();
 
-        void addEnemy();
+        std::vector<TowerDefenseEnemy*> TowerDefenseEnemyvector;
+
+        void addTowerDefenseEnemy(std::vector<TDCoordinate> path);
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
         virtual void tick(float dt);

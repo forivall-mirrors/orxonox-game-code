@@ -1,5 +1,5 @@
 //
-//  Enemy.cc
+//  TowerDefenseEnemy.cc
 //  Orxonox
 //
 //  Created by Jonas Erb on 22.10.14.
@@ -10,39 +10,41 @@ See TowerDefenseReadme.txt for Information.
 
 @ingroup TowerDefense
 */
-#include "Enemy.h"
+#include "TowerDefenseEnemy.h"
 
 #include "core/CoreIncludes.h"
 //#include "core/XMLPort.h"
 
 namespace orxonox
 {
-    RegisterClass(Enemy);
+    RegisterClass(TowerDefenseEnemy);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    Enemy::Enemy(Context* context) : Pawn(context)
+    TowerDefenseEnemy::TowerDefenseEnemy(Context* context) : Pawn(context)
     {
-        RegisterObject(Enemy);
+        RegisterObject(TowerDefenseEnemy);
 
         this->setCollisionType(WorldEntity::Dynamic);
 
     }
 
-    void Enemy::addWaypoint(TDCoordinate coord)
+    void TowerDefenseEnemy::addWaypoint(TDCoordinate coord)
     {
+    	orxout() << "test4" << endl;
     	Waypointsvector_.push_back(coord);
+    	orxout() << "test5" << endl;
     }
 
-    void Enemy::popWaypoint()
+    void TowerDefenseEnemy::popWaypoint()
     {
     	if(Waypointsvector_.size()>0)
     		Waypointsvector_.pop_back();
     }
 
-    TDCoordinate Enemy::peekWaypoint()
+    TDCoordinate TowerDefenseEnemy::peekWaypoint()
     {
     	if(Waypointsvector_.size()<=0){
     		TDCoordinate coord = TDCoordinate(-1,-1);

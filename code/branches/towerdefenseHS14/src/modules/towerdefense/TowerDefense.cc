@@ -85,7 +85,6 @@
 
 #include "graphics/Model.h"
 #include "infos/PlayerInfo.h"
-
 #include "chat/ChatManager.h"
 #include "core/CoreIncludes.h"
 
@@ -127,6 +126,8 @@ namespace orxonox
 
     void TowerDefense::start()
     {
+    	orxout() << "test0" << endl;
+
         Deathmatch::start();
 
         const int kInitialTowerCount = 3;
@@ -138,12 +139,68 @@ namespace orxonox
             addTower(coordinate->x, coordinate->y);
         }
 
-        ChatManager::message("Use the console command addTower x y to add towers");
+        orxout() << "test3" << endl;
+
+        //add some TowerDefenseEnemys
+
+        TDCoordinate* coord1 = new TDCoordinate(1,1);
+        /*TDCoordinate* coord2 = new TDCoordinate(10,10);
+        TDCoordinate* coord3 = new TDCoordinate(1,2);*/
+        std::vector<TDCoordinate> path;
+        path.push_back(*coord1);
+        /*path.push_back(*coord2);
+        path.push_back(*coord3);*/
+
+        for(int i = 0 ; i <4 ; ++i)
+        {
+        	addTowerDefenseEnemy(path);
+        }
+
+        //ChatManager::message("Use the console command addTower x y to add towers");
 
         //TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
     }
 
-    void TowerDefense::addEnemy(){}
+    void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate> path){
+
+    	orxout() << "test1" << endl;
+
+    	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
+        // Model* TowerDefenseEnemymodel = new Model(this->center_->getContext());
+        //TowerDefenseEnemymodel->setMeshSource("crate.mesh");
+        //TowerDefenseEnemymodel->setPosition(0,0,0);
+        en1->setPosition(path.at(0).get3dcoordinate());
+        //TowerDefenseEnemymodel->setScale(0.2);
+
+        //en1->attach(TowerDefenseEnemymodel);
+
+        //TowerDefenseEnemyvector.push_back(en1);
+
+        orxout() << "test2" << endl;
+
+        /*for(unsigned int i = 0; i < path.size(); ++i)
+        {
+            en1->addWaypoint(path.at(i));
+        }*/
+
+        orxout() << "test6" << endl;
+
+        /*WaypointController *newController = new WaypointController(en1);
+        newController->setAccuracy(3);
+
+        for(int i =0; i < path.size(); ++i)
+        {
+
+            Model *wayPoint = new Model(newController);
+            wayPoint->setMeshSource("crate.mesh");
+            wayPoint->setPosition(path.at(i).get3dcoordinate());
+            wayPoint->setScale(0.2);
+
+            newController->addWaypoint(wayPoint);
+
+        }*/
+
+    }
 
 
     void TowerDefense::end()
@@ -157,7 +214,7 @@ namespace orxonox
 
     void TowerDefense::addTower(int x, int y)
     {
-        const TowerCost towerCost = TDDefaultTowerCost;
+        /*const TowerCost towerCost = TDDefaultTowerCost;
 
         if (!this->hasEnoughCreditForTower(towerCost))
         {
@@ -171,10 +228,10 @@ namespace orxonox
             return;
         }
 
-        /*
+
         unsigned int width = this->center_->getWidth();
         unsigned int height = this->center_->getHeight();
-        */
+
 
         int tileScale = (int) this->center_->getTileScale();
 
@@ -203,7 +260,7 @@ namespace orxonox
         newTower->addTemplate(this->center_->getTowerTemplate());
 
         newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
-        newTower->setGame(this);
+        newTower->setGame(this);*/
     }
 
     bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
@@ -226,7 +283,7 @@ namespace orxonox
 
     void TowerDefense::tick(float dt)
     {
-        SUPER(TowerDefense, tick, dt);
+        //SUPER(TowerDefense, tick, dt);
     }
 
     // Function to test if we can add waypoints using code only. Doesn't work yet

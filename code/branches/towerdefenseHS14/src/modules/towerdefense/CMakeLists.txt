@@ -6,7 +6,7 @@ SET_SOURCE_FILES(TOWERDEFENSE_SRC_FILES
   TowerDefenseHUDController.cc
   TowerDefensePlayerStats.cc
   TDCoordinate.cc
-  Enemy.cc
+  TowerDefenseEnemy.cc
 
 )
 
