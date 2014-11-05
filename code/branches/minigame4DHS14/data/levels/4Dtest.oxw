@@ -48,23 +48,26 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     
     
-    <SpawnPoint position="-200,200,100" lookat="0,0,0" />
+    <SpawnPoint position="-330,330,165" lookat="0,0,0" />
 
 	<Mini4DgameCenterpoint name=mini4Dgamecenter width=16 height=16 length=16 position="0,0,0">
         <attached>
         	<?lua
         	for i = -90, 90, 60
+        	do
         	?>
         		<?lua
         		for j = -90, 90, 60
+        		do
         		?>
         			<?lua
         			for k = -90, 90, 60
+        			do
         			?>
         				<Model
         				position="<?lua print(i) ?>,<?lua print(j) ?>,<?lua print(k) ?>"
-        				mesh="ast1.mesh"
-        				scale="1" />
+        				mesh="checkPoint.mesh"
+        				scale="5" />
         			<?lua
     		  		end
     				?>

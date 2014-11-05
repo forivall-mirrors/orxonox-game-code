@@ -39,6 +39,24 @@
 
 namespace orxonox
 {
+	namespace mini4DgamePlayerColor
+	{
+		enum color
+		{
+			none,
+			red,
+			blue,
+			green
+		};
+	}
+
+	struct Mini4DgamePlayer
+	{
+	    Player player;
+	    mini4DgamePlayerColor::color color_;
+	};
+
+
     /**
     @brief
 
@@ -72,7 +90,7 @@ namespace orxonox
         private:
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
 
-          Player players[3];
+          Mini4DgamePlayer players[2];
 
             WeakPtr<Mini4DgameCenterpoint> center_; //!< The playing field.
 

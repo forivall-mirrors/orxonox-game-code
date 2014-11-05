@@ -104,6 +104,23 @@ namespace orxonox
             Vector3 getFieldDimension() const
                 { return Vector3(this->width_, this->height_, this->length_); }
 
+            /**
+                    @brief checks if the move is valid
+                    @param the position where to put the stone plus the player who makes the move
+            */
+            bool isValidMove(const Vector4 move,const int playerColor);
+
+            /**
+               @brief makes a move on the logic playboard
+           	   @param the position where to put the stone plus the player who makes the move
+             */
+            void makeMove(const Vector4 move, const int player);
+
+            /**
+                @brief searches the board if somebody has won
+				@return the winner if somebody has won or mini4DgamePlayerColor::none if nobody has won so far
+             */
+            mini4DgamePlayerColor::color Mini4DgameCenterpoint::getWinner()
 
         private:
             void checkGametype(); //!< Checks whether the gametype is Mini4Dgame and if it is, sets its centerpoint.
@@ -114,6 +131,7 @@ namespace orxonox
             float width_; //!< The height of the playing field.
             float height_; //!< The width of the playing field.
             float length_; //!< The length of the playing field.
+            mini4DgamePlayerColor::color board[4][4][4][4]; //!< The logical board where the game takes place. board[row][column][height][number]
     };
 }
 
