@@ -1,0 +1,48 @@
+<LevelInfo
+ name = "Dodge Race Test x"
+ description = "A level with hardly anything in it (at the moment)."
+ tags = "minigame"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipDodgeRace.oxt")
+?>
+
+<Level gametype = Deathmatch>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "2.0, 2.0, 2.0"
+    skybox       = "Orxonox/skyBoxClouds"
+    gravity      = "0,0,0"
+    negativeWorldRange = "-100000, -100000, -100000"
+    positiveWorldRange = " 100000,  100000,  100000"
+    hasPhysics   = true
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=DodgeShip pawndesign=spaceshipDodgeRace />
+    
+  </Scene>
+</Level>
+
+  <!-- ------------------Boden----------------- -->
+  <StaticEntity position="0,0,0" direction="0,0,0" collisionType=static mass=100000 friction=0.01>
+     <attached>
+        <Model position="0,0,0" mesh="CubeGround.mesh" scale3D="8000,8000,8000" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,50,0" halfExtents="8000,8000,8000" />um j?:P"{
+
+      </collisionShapes>
+</StaticEntity>

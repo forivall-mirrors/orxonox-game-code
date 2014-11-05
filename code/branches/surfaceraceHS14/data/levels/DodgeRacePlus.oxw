@@ -1,0 +1,77 @@
+<LevelInfo
+ name = "DodgeRacePlus"
+ description = "Just a copy of SpaceInvaders so far"
+ tags = "minigame"
+ screenshot = "orxonoxArcade.png"
+/>
+<?lua
+  include("stats.oxo")
+  include("templates/lodInformation.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipInvader.oxt")
+  include("templates/spaceshipDodgeRace.oxt")
+  include("templates/enemyInvader.oxt")
+  include("overlays/InvaderHUD.oxo")
+?>
+
+<Level gametype = Invader>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+    <!-- ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox" -->
+  <Scene
+    ambientlight = "0.8, 0.7, 0.4"
+    skybox     = "Orxonox/skyBoxBasic"
+  >
+
+  <WorldAmbientSound
+    source="Earth.ogg"
+    looping="true"
+    playOnLoad="true"
+  />
+
+    <!-- <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/> -->
+    <Light type=directional position="1100, 11000, -7000" lookat="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=InvaderShip pawndesign=spaceshipDodgeRace />
+
+    <DistanceTrigger name="start" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=0 />
+
+
+    <InvaderCenterPoint name=invadercenter />
+    
+    <?lua
+      for i = 1, 300, 1 do
+        j = math.random()
+    ?>
+
+    <MovableEntity
+      position = "<?lua print(math.random()* 40000 + 1000) ?>,-1000,<?lua print(math.random() * 4000 - 2000) ?>"
+      collisionType = dynamic
+      linearDamping = 0.8
+      angularDamping = 0
+      scale = "<?lua print(j * 150)?>"
+      collisiondamage = 0
+      enablecollisiondamage = true
+    >
+      <attached>
+        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
+      </collisionShapes>
+    </MovableEntity>
+
+    <?lua
+      end
+    ?>
+    
+  </Scene>
+</Level>
+

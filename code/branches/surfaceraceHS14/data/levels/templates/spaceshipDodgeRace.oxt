@@ -1,45 +1,48 @@
 <Template name=spaceshipDodgeRace>
-  <SpaceShip
+  <InvaderShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipescortcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 4
 
-   health            = 120
+   health            = 80
    maxhealth         = 200
    initialhealth     = 80
 
    shieldhealth        = 35
    initialshieldhealth = 35
-   maxshieldhealth     = 0
-   shieldabsorption    = 0
-   reloadrate          = 1000
-   reloadwaittime      = 0
+   maxshieldhealth     = 60
+   shieldabsorption    = 0.9
+   reloadrate          = 1
+   reloadwaittime      = 1
 
    primaryThrust     = 150
    auxilaryThrust    = 30
-   rotationThrust    = 0
+   rotationThrust    = 50
 
    lift = 1;
    stallSpeed = 220;
 
-   boostPower            = 200
-   boostPowerRate        = 0
-   boostRate             = 0
-   boostCooldownDuration = 0
+   boostPower            = 20
+   boostPowerRate        = 1
+   boostRate             = 5
+   boostCooldownDuration = 10
 
-   shakeFrequency = 0
-   shakeAmplitude = 0
+   shakeFrequency = 15
+   shakeAmplitude = 6
 
    collisionType     = "dynamic"
-   mass              = 80
+   mass              = 4200000
    linearDamping     = 0.7
    angularDamping    = 0.9999999
+
+    collisiondamage = 100
+    enablecollisiondamage = true
   >
     <engines>
-      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipescortengine />
-      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipescortengine />
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipinvaderengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipinvaderengine />
     </engines>
     <attached>
       <Model position="0,0,0" yaw=90 pitch=0 roll=0 scale=4 mesh="escortShip.mesh" />
@@ -56,38 +59,39 @@
       <BoxCollisionShape position="0,     0,-12" halfExtents="4  , 4 ,7" />
     </collisionShapes>
 <?lua
-  include("../includes/weaponSettingsEscort.oxi")
+  include("../includes/invaderWeapon.oxi")
 ?>
-  </SpaceShip>
+  </InvaderShip>
 </Template>
 
 <Template name=spaceshipescortcameras defaults=0>
-  <SpaceShip>
+  <InvaderShip>
     <camerapositions>
-      <CameraPosition position="0,15, 60" drag=true mouselook=true />
-      <CameraPosition position="0,20, 90" drag=true mouselook=true />
-      <CameraPosition position="0,30,120" drag=true mouselook=true />
+ <!--       <CameraPosition position="0,15, 60" drag=true mouselook=true />
+     <CameraPosition position="0,20, 90" drag=true mouselook=true /> -->
+      <CameraPosition position="0,30,120" direction="0, 0, -1"  drag=false mouselook=true /> 
+      <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=false mouselook=true />
     </camerapositions>
-  </SpaceShip>
+  </InvaderShip>
 </Template>
 
-<Template name=spaceshipescortengine baseclass=MultiStateEngine>
+<Template name=spaceshipinvaderengine baseclass=MultiStateEngine>
   <MultiStateEngine
    boostfactor    = 2.2
 
    speedfront     = 200
-   speedback      = 700
-   speedleftright =  700
-   speedupdown    =  700
+   speedback      =  70
+   speedleftright =  70
+   speedupdown    =  70
 
    defEngineSndNormal = "sounds/Engine_low.ogg"
    defEngineSndBoost = "sounds/Engine_high.ogg"
 
-   accelerationfront     = 800
-   accelerationbrake     = 900
-   accelerationback      = 1000
-   accelerationleftright = 800
-   accelerationupdown    = 800
+   accelerationfront     = 700
+   accelerationbrake     = 700
+   accelerationback      =  125
+   accelerationleftright =  125
+   accelerationupdown    =  125
   >
     <EffectContainer condition="idle">
       <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
