@@ -76,7 +76,11 @@ namespace orxonox
         private:
             struct ObjectInfo
             {
-                Ogre::PanelOverlayElement* panel_;
+
+            	//manipulation bzw versuch !!! Jonas
+            	Ogre::PanelOverlayElement* health_;
+
+            	Ogre::PanelOverlayElement* panel_;
                 Ogre::PanelOverlayElement* target_;
                 Ogre::TextAreaOverlayElement* text_;
                 bool outOfView_;

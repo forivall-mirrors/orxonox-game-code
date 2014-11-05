@@ -35,7 +35,7 @@
      background        = "Orxonox/HealthBarBackground"
      size              = "0.35, 0.0875"
      position          = "0.0 , 0.9 "
-     pickpoint         = "0, 1"
+     pickpoint         = "0, 1"       
      bartexture        = "healthbar_bar.png"
      textfont          = "VeraMono"
      textusebarcolour  = true
@@ -81,14 +81,14 @@
      name              = "EnemyHealthBar"
      background        = "Orxonox/HealthBarBackground"
      size              = "0.35, 0.0875"
-     position          = "1.0 , 0.1 "
-     pickpoint         = "1, 1"
+     position          = "1 ,0"
+     pickpoint         = "0.6, 0.5"
      bartexture        = "healthbar_bar.png"
      textfont          = "VeraMono"
      textusebarcolour  = true
      textsize          = 0.039
      textoffset        = "0.315, 0.05"
-     textpickpoint     = "0, 0"
+     textpickpoint     = "2, 1"
      textalign         = "right"
      correctaspect     = false
      textcorrectaspect = false

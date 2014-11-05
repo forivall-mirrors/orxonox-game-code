@@ -297,7 +297,8 @@ namespace orxonox
                     // Change material only if outOfView changed
                     if (!it->second.wasOutOfView_)
                     {
-                        it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("arrows.png", it->first->getRadarObjectColour()));
+                    	it->second.health_->hide();
+                    	it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("arrows.png", it->first->getRadarObjectColour()));
                         it->second.wasOutOfView_ = true;
                         it->second.target_->hide();
                     }
@@ -363,8 +364,17 @@ namespace orxonox
                         it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("tdc.png", it->first->getRadarObjectColour()));
                         it->second.panel_->setDimensions(this->navMarkerSize_ * this->getActualSize().x, this->navMarkerSize_ * this->getActualSize().y);
                         it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
+
+                        //manipulation bzw versuch !!! Jonas
+                        it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2b.png", it->first->getRadarObjectColour()));
+
                         it->second.wasOutOfView_ = false;
                     }
+
+                    // Position health (versuch !!!!)
+                    it->second.health_->setLeft((pos.x + 1.0f - it->second.panel_->getWidth()) * 0.5f);
+                    it->second.health_->setTop((-pos.y + 1.0f - it->second.panel_->getHeight()) * 0.5f);
+
 
                     // Position marker
                     it->second.panel_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
@@ -376,6 +386,8 @@ namespace orxonox
                     it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
 
                     // Make sure the overlays are shown
+
+                    it->second.health_->show();
                     it->second.panel_->show();
                     it->second.text_->show();
 
@@ -418,6 +430,7 @@ namespace orxonox
             else // do not display on HUD
 
             {
+            	it->second.health_->hide()
                 it->second.panel_->hide();
                 it->second.text_->hide();
                 it->second.target_->hide();
@@ -441,6 +454,8 @@ namespace orxonox
 
         for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it != this->activeObjectList_.end(); ++it)
         {
+        	if (it->second.health_ != NULL)
+        	    it->second.health_->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
             if (it->second.panel_ != NULL)
                 it->second.panel_->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
             if (it->second.text_ != NULL)
@@ -467,6 +482,14 @@ namespace orxonox
         float yScale = this->getActualSize().y;
 
         // Create everything needed to display the object on the radar and add it to the map
+        // Create health
+                Ogre::PanelOverlayElement* health = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton()
+                        .createOverlayElement("Panel", "HUDNavigation_healthMarker_" + getUniqueNumberString()));
+                //panel->setMaterialName("Orxonox/NavTDC");
+                health->setMaterialName(TextureGenerator::getMaterialName("bar2b.png", object->getRadarObjectColour()));
+                health->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
+                //panel->setColour(object->getRadarObjectColour());
+
 
         // Create arrow/marker
         Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton()
@@ -489,14 +512,16 @@ namespace orxonox
         text->setCharHeight(text->getCharHeight() * yScale);
         text->setColour(object->getRadarObjectColour());
 
+        health->hide();
         panel->hide();
         target->hide();
         text->hide();
 
         ObjectInfo tempStruct =
-        {   panel, target, text, false, false, false};
+        {   health, panel, target, text, false, false, false, false};
         this->activeObjectList_[object] = tempStruct;
 
+        this->background_->addChild(health);
         this->background_->addChild(panel);
         this->background_->addChild(target);
         this->background_->addChild(text);
@@ -511,10 +536,12 @@ namespace orxonox
         if (this->activeObjectList_.find(viewable) != this->activeObjectList_.end())
         {
             // Detach overlays
+        	this->background_->removeChild(it->second.health_->getName());
             this->background_->removeChild(it->second.panel_->getName());
             this->background_->removeChild(it->second.target_->getName());
             this->background_->removeChild(it->second.text_->getName());
             // Properly destroy the overlay elements (do not use delete!)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.health_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.panel_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.target_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.text_);
