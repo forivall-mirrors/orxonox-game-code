@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpShield.cc
-    @brief Implementation of the JumpShield class.
+    @brief If this shield is created, attachedToFigure_ is set to false. When the figure picks it up, the variable is set to true and the figure is protected until the fuel is reduced to zero.
 */
 
 #include "JumpShield.h"
@@ -47,15 +47,12 @@ namespace orxonox
 {
     RegisterClass(JumpShield);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpShield::JumpShield(Context* context) : JumpItem(context)
     {
         RegisterObject(JumpShield);
 
         fuel_ = 7.0;
+        attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
         setVelocity(Vector3(0,0,0));
@@ -63,28 +60,16 @@ namespace orxonox
         setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpShield::~JumpShield()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpShield::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpShield, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpShield::tick(float dt)
     {
         SUPER(JumpShield, tick, dt);
@@ -115,9 +100,5 @@ namespace orxonox
     	JumpItem::touchFigure();
 
     	attachedToFigure_ = figure_->StartShield(this);
-    	if (attachedToFigure_)
-    	{
-    		//Starte Feuer-Animation
-    	}
     }
 }

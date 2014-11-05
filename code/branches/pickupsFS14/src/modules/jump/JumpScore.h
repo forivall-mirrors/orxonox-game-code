@@ -20,17 +20,11 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
  */
-
-/**
-    @file JumpScore.h
-    @brief Declaration of the JumpScore class.
-    @ingroup Jump
-*/
 
 #ifndef _JumpScore_H__
 #define _JumpScore_H__
@@ -43,25 +37,15 @@
 
 namespace orxonox
 {
-
-    /**
-    @brief
-        The JumpScore class displays the score for a game of @ref orxonox::Jump "Jump".
-
-    @author
-        Fabian 'x3n' Landau
-
-    @ingroup Jump
-    */
     class _JumpExport JumpScore : public OverlayText, public Tickable
     {
         public:
             JumpScore(Context* context);
             virtual ~JumpScore();
 
-            virtual void tick(float dt); //!< Creates and sets the caption to be displayed by the JumpScore.
+            virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void changedOwner(); //!< Is called when the owner changes.
+            virtual void changedOwner();
 
             void setShowScore(const bool showScore)
                 { showScore_ = showScore; }
@@ -82,13 +66,12 @@ namespace orxonox
                 { return this->gameOverText_; }
 
         private:
-            Jump* owner_; //!< The Jump game that owns this JumpScore.
-            WeakPtr<PlayerInfo> player_; //!< Store information about left player permanently.
+            Jump* owner_;
+            WeakPtr<PlayerInfo> player_;
             WorldSound* scoreSound_;
             bool showScore_;
             bool showMessages_;
             std::string gameOverText_;
-
     };
 }
 #endif /* _JumpScore_H__ */

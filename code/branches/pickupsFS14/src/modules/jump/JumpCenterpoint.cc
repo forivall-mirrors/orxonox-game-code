@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,41 +28,30 @@
 
 /**
     @file JumpCenterpoint.cc
-    @brief Implementation of the JumpCenterpoint class.
+    @brief The JumpCenterpoint is a StaticEntity which represents the level of the minigame. All platforms, enemies and items are attached to the JumpCenterpoint.
 */
 
 #include "JumpCenterpoint.h"
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-
 #include "Jump.h"
 
 namespace orxonox
 {
     RegisterClass(JumpCenterpoint);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object and checks whether the gametype is actually Jump.
-    */
     JumpCenterpoint::JumpCenterpoint(Context* context) : StaticEntity(context)
     {
         RegisterObject(JumpCenterpoint);
 
-        // Variablen hier veraendern nuetzt nichts! Diese Variablen koennen in Level-File initialisiert werden.
-        width_ = 200;
-        height_ = 120;
-        sectionLength_ = 120;
-        platformSpeed_ = 20.0;
+        width_ = 0.0;
+        height_ = 0.0;
+        sectionLength_ = 0.0;
+        platformSpeed_ = 0.0;
 
         checkGametype();
     }
 
-    /**
-    @brief
-        Method to create a JumpCenterpoint through XML.
-    */
     void JumpCenterpoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpCenterpoint, XMLPort, xmlelement, mode);
@@ -90,25 +79,16 @@ namespace orxonox
         XMLPortParam(JumpCenterpoint, "enemy4Template", setEnemy4Template, getEnemy4Template, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called when the gametype has changed.
-    */
     void JumpCenterpoint::changedGametype()
     {
         SUPER(JumpCenterpoint, changedGametype);
 
-        // Check, whether it's still Jump.
         checkGametype();
     }
 
-    /**
-    @brief
-        Checks whether the gametype is Jump and if it is, sets its centerpoint.
-    */
     void JumpCenterpoint::checkGametype()
     {
-        if (this->getGametype() != NULL && this->getGametype()->isA(Class(Jump)))
+        if (getGametype() != NULL && this->getGametype()->isA(Class(Jump)))
         {
             Jump* jumpGametype = orxonox_cast<Jump*>(this->getGametype().get());
             jumpGametype->setCenterpoint(this);

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,18 +28,15 @@
 
 /**
     @file JumpProjectile.cc
-    @brief Implementation of the JumpProjectile class.
+    @brief projectiles are created by the gametype if the figure shoots. All projectiles check every tick, whether they hit an enemy.
 */
 
 #include "JumpProjectile.h"
-
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "graphics/Model.h"
 #include "gametypes/Gametype.h"
-
 #include "JumpFigure.h"
-
 #include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
@@ -47,62 +44,26 @@ namespace orxonox
 {
     RegisterClass(JumpProjectile);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpProjectile::JumpProjectile(Context* context) : MovableEntity(context)
     {
         RegisterObject(JumpProjectile);
 
         figure_ = 0;
-
-        registerVariables();
-
         setPosition(Vector3(0,0,0));
         setVelocity(Vector3(0,0,250.0));
         setAcceleration(Vector3(0,0,0));
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpProjectile::~JumpProjectile()
     {
-        /*if (this->isInitialized())
-        {
-            if (this->bDeleteBats_)
-                delete this->figure_;
 
-            delete[] this->batID_;
-        }*/
     }
 
-    //xml port for loading sounds
     void JumpProjectile::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpProjectile, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Register variables to synchronize over the network.
-    */
-    void JumpProjectile::registerVariables()
-    {
-        registerVariable( this->fieldWidth_ );
-        registerVariable( this->fieldHeight_ );
-        //registerVariable( this->batID_[1], VariableDirection::ToClient, new NetworkCallback<JumpProjectile>( this, &JumpProjectile::applyBats) );
-    }
-
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpProjectile::tick(float dt)
     {
         SUPER(JumpProjectile, tick, dt);
@@ -122,12 +83,6 @@ namespace orxonox
 		}
     }
 
-    /**
-    @brief
-        Set the bats for the ball.
-    @param bats
-        An array (of size 2) of weak pointers, to be set as the new bats.
-    */
     void JumpProjectile::setFigure(WeakPtr<JumpFigure> figure)
     {
         figure_ = figure;

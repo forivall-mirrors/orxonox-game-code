@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,18 +28,15 @@
 
 /**
     @file JumpSpring.cc
-    @brief Implementation of the JumpSpring class.
+    @brief If this spring is touched by the figure, it jumps higher then from a platform.
 */
 
 #include "JumpSpring.h"
-
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "graphics/Model.h"
 #include "gametypes/Gametype.h"
-
 #include "JumpFigure.h"
-
 #include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
@@ -47,10 +44,6 @@ namespace orxonox
 {
     RegisterClass(JumpSpring);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpSpring::JumpSpring(Context* context) : JumpItem(context)
     {
         RegisterObject(JumpSpring);
@@ -64,28 +57,16 @@ namespace orxonox
         setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpSpring::~JumpSpring()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpSpring::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpSpring, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpSpring::tick(float dt)
     {
         SUPER(JumpSpring, tick, dt);

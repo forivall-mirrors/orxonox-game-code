@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -44,24 +44,11 @@
 
 namespace orxonox
 {
-
-    /**
-    @brief
-        This class manages the ball for @ref orxonox::Jump "Jump".
-
-        It is responsible for both the movement of the ball in the x,z-plane as well as its interaction with the boundaries of the playing field (defined by the @ref orxonox::JumpCenterpoint "JumpCenterpoint") and the @ref orxonox::JumpFigure "JumpFigures". Or more precisely, it makes the ball bounce off then upper and lower delimiters of the playing field, it makes the ball bounce off the bats and also detects when a player scores and takes appropriate measures.
-
-    @author
-        Fabian 'x3n' Landau
-
-    @ingroup Jump
-    */
     class _JumpExport JumpPlatformFake : public JumpPlatform
     {
         public:
     	    JumpPlatformFake(Context* context);
             virtual ~JumpPlatformFake();
-
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
     };

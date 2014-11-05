@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpBoots.cc
-    @brief Implementation of the JumpBoots class.
+    @brief These boots give the figure a speed bonus when it jumpes.
 */
 
 #include "JumpBoots.h"
@@ -47,15 +47,12 @@ namespace orxonox
 {
     RegisterClass(JumpBoots);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpBoots::JumpBoots(Context* context) : JumpItem(context)
     {
         RegisterObject(JumpBoots);
 
         fuel_ = 3.0;
+        attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
         setVelocity(Vector3(0,0,0));
@@ -63,28 +60,16 @@ namespace orxonox
         setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpBoots::~JumpBoots()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpBoots::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpBoots, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpBoots::tick(float dt)
     {
         SUPER(JumpBoots, tick, dt);
@@ -115,9 +100,5 @@ namespace orxonox
     	JumpItem::touchFigure();
 
     	attachedToFigure_ = figure_->StartBoots(this);
-    	if (attachedToFigure_)
-    	{
-    		//Starte Feuer-Animation
-    	}
     }
 }

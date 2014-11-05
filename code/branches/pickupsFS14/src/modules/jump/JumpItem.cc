@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpItem.cc
-    @brief Implementation of the JumpItem class.
+    @brief All items in this minigame inherit from this class. Items can move around like platforms and enemies.
 */
 
 #include "JumpItem.h"
@@ -47,10 +47,6 @@ namespace orxonox
 {
     RegisterClass(JumpItem);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpItem::JumpItem(Context* context) : MovableEntity(context)
     {
         RegisterObject(JumpItem);
@@ -65,16 +61,11 @@ namespace orxonox
         setAcceleration(Vector3(0,0,0));
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpItem::~JumpItem()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpItem, XMLPort, xmlelement, mode);
@@ -83,13 +74,6 @@ namespace orxonox
         XMLPortParam(JumpItem, "width", setWidth, getWidth, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpItem::tick(float dt)
     {
         SUPER(JumpItem, tick, dt);
@@ -124,12 +108,6 @@ namespace orxonox
         setVelocity(Vector3(newHSpeed,0,newVSpeed));
     }
 
-    /**
-    @brief
-        Set the bats for the ball.
-    @param bats
-        An array (of size 2) of weak pointers, to be set as the new bats.
-    */
     void JumpItem::setFigure(WeakPtr<JumpFigure> newFigure)
     {
         figure_ = newFigure;

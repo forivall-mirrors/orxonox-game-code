@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpEnemy.cc
-    @brief Implementation of the JumpEnemy class.
+    @brief All enemies in the minigame inherit from this class. This class manages the movement of all enemies and allows enemies to touch the figure to kill it.
 */
 
 #include "JumpEnemy.h"

@@ -20,17 +20,11 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
  */
-
-/**
-    @file JumpCenterpoint.h
-    @brief Declaration of the JumpCenterpoint class.
-    @ingroup Jump
-*/
 
 #ifndef _JumpCenterpoint_H__
 #define _JumpCenterpoint_H__
@@ -111,191 +105,123 @@ namespace orxonox
         All parameters are specified. And also two @ref orxonox::Model "Models" (for the upper and lower boundary) are attached.
         
         For a more elaborate example, have a look at the <code>jump.oxw</code> level file.
-    
-    @author
-        Fabian 'x3n' Landau
-        
-    @ingroup Jump
+
     */
     class _JumpExport JumpCenterpoint : public StaticEntity
     {
         public:
             JumpCenterpoint(Context* context); //!< Constructor. Registers and initializes the object and checks whether the gametype is actually Jump.
             virtual ~JumpCenterpoint() {}
-
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method to create a JumpCenterpoint through XML.
-
-            virtual void changedGametype(); //!< Is called when the gametype has changed.
-
-
+            virtual void changedGametype();
             void setPlatformStaticTemplate(const std::string& balltemplate)
                 { this->platformStaticTemplate_ = balltemplate; }
-
             const std::string& getPlatformStaticTemplate() const
                 { return this->platformStaticTemplate_; }
-
             void setPlatformHMoveTemplate(const std::string& balltemplate)
                 { this->platformHMoveTemplate_ = balltemplate; }
-
             const std::string& getPlatformHMoveTemplate() const
                 { return this->platformHMoveTemplate_; }
-
             void setPlatformVMoveTemplate(const std::string& balltemplate)
                 { this->platformVMoveTemplate_ = balltemplate; }
-
             const std::string& getPlatformVMoveTemplate() const
                 { return this->platformVMoveTemplate_; }
-
             void setPlatformDisappearTemplate(const std::string& balltemplate)
                 { this->platformDisappearTemplate_ = balltemplate; }
-
             const std::string& getPlatformDisappearTemplate() const
                 { return this->platformDisappearTemplate_; }
-
             void setPlatformTimerTemplate(const std::string& balltemplate)
                 { this->platformTimerTemplate_ = balltemplate; }
-
             const std::string& getPlatformTimerTemplate() const
                 { return this->platformTimerTemplate_; }
-
             void setPlatformFakeTemplate(const std::string& balltemplate)
                 { this->platformFakeTemplate_ = balltemplate; }
-
             const std::string& getPlatformFakeTemplate() const
                 { return this->platformFakeTemplate_; }
-
             void setProjectileTemplate(const std::string& newTemplate)
                 { this->projectileTemplate_ = newTemplate; }
-
             const std::string& getProjectileTemplate() const
                 { return this->projectileTemplate_; }
-
             void setSpringTemplate(const std::string& newTemplate)
                 { this->springTemplate_ = newTemplate; }
-
             const std::string& getSpringTemplate() const
                 { return this->springTemplate_; }
-
             void setRocketTemplate(const std::string& newTemplate)
                 { this->rocketTemplate_ = newTemplate; }
-
             const std::string& getRocketTemplate() const
                 { return this->rocketTemplate_; }
-
             void setPropellerTemplate(const std::string& newTemplate)
                 { this->propellerTemplate_ = newTemplate; }
-
             const std::string& getPropellerTemplate() const
                 { return this->propellerTemplate_; }
-
             void setBootsTemplate(const std::string& newTemplate)
                 { this->bootsTemplate_ = newTemplate; }
-
             const std::string& getBootsTemplate() const
                 { return this->bootsTemplate_; }
-
             void setShieldTemplate(const std::string& newTemplate)
                 { this->shieldTemplate_ = newTemplate; }
-
             const std::string& getShieldTemplate() const
                 { return this->shieldTemplate_; }
-
             void setFigureTemplate(const std::string& newTemplate)
                 { this->figureTemplate_ = newTemplate; }
-
             const std::string& getFigureTemplate() const
                 { return this->figureTemplate_; }
-
             void setEnemy1Template(const std::string& newTemplate)
                 { this->enemy1Template_ = newTemplate; }
-
             const std::string& getEnemy1Template() const
                 { return this->enemy1Template_; }
-
             void setEnemy2Template(const std::string& newTemplate)
                 { this->enemy2Template_ = newTemplate; }
-
             const std::string& getEnemy2Template() const
                 { return this->enemy2Template_; }
-
             void setEnemy3Template(const std::string& newTemplate)
                 { this->enemy3Template_ = newTemplate; }
-
             const std::string& getEnemy3Template() const
                 { return this->enemy3Template_; }
-
             void setEnemy4Template(const std::string& newTemplate)
                 { this->enemy4Template_ = newTemplate; }
-
             const std::string& getEnemy4Template() const
                 { return this->enemy4Template_; }
-
-
-            /**
-            @brief Set the dimensions of the playing field.
-            @param dimension A vector with the width of the playing field as first component and the height as second.
-            */
             void setFieldDimension(const Vector2& dimension)
                 { this->width_ = dimension.x; this->height_ = dimension.y; }
-            /**
-            @brief Get the dimensions of the playing field.
-            @return Returns a vector with the width of the playing field as first component and the height as second.
-            */
             Vector2 getFieldDimension() const
                 { return Vector2(this->width_, this->height_); }
-
-            /**
-            @brief Set the dimensions of the playing field.
-            @param dimension A vector with the width of the playing field as first component and the height as second.
-            */
             void setSectionLength(const float sectionLength)
                 { this->sectionLength_ = sectionLength; }
-            /**
-            @brief Get the dimensions of the playing field.
-            @return Returns a vector with the width of the playing field as first component and the height as second.
-            */
             float getSectionLength() const
                 { return sectionLength_; }
-
             void setPlatformSpeed(const float platformSpeed)
                 { this->platformSpeed_ = platformSpeed; }
-
             float getPlatformSpeed() const
                 { return platformSpeed_; }
-
             void setCameraOffset(const float cameraOffset)
                 { this->cameraOffset_ = cameraOffset; }
-
             float getCameraOffset() const
                 { return cameraOffset_; }
-
-
         private:
-            void checkGametype(); //!< Checks whether the gametype is Jump and if it is, sets its centerpoint.
-
-            std::string platformStaticTemplate_; //!< The template for the ball.
-            std::string platformHMoveTemplate_; //!< The template for the ball.
-            std::string platformVMoveTemplate_; //!< The template for the ball.
-            std::string platformDisappearTemplate_; //!< The template for the ball.
-            std::string platformTimerTemplate_; //!< The template for the ball.
-            std::string platformFakeTemplate_; //!< The template for the ball.
-            std::string projectileTemplate_; //!< The template for the ball.
-            std::string springTemplate_; //!< The template for the ball.
-            std::string rocketTemplate_; //!< The template for the ball.
-            std::string propellerTemplate_; //!< The template for the ball.
-            std::string bootsTemplate_; //!< The template for the ball.
-            std::string shieldTemplate_; //!< The template for the ball.
-            std::string figureTemplate_; //!< The template for the bats.
-            std::string enemy1Template_; //!< The template for the bats.
-            std::string enemy2Template_; //!< The template for the bats.
-            std::string enemy3Template_; //!< The template for the bats.
-            std::string enemy4Template_; //!< The template for the bats.
-
-            float width_; //!< The height of the playing field.
-            float height_; //!< The width of the playing field.
-            float sectionLength_; //!< Height of one section
-            float platformSpeed_; //!< Height of one section
-            float cameraOffset_; //!< Height of one section
+            void checkGametype();
+            std::string platformStaticTemplate_;
+            std::string platformHMoveTemplate_;
+            std::string platformVMoveTemplate_;
+            std::string platformDisappearTemplate_;
+            std::string platformTimerTemplate_;
+            std::string platformFakeTemplate_;
+            std::string projectileTemplate_;
+            std::string springTemplate_;
+            std::string rocketTemplate_;
+            std::string propellerTemplate_;
+            std::string bootsTemplate_;
+            std::string shieldTemplate_;
+            std::string figureTemplate_;
+            std::string enemy1Template_;
+            std::string enemy2Template_;
+            std::string enemy3Template_;
+            std::string enemy4Template_;
+            float width_;
+            float height_;
+            float sectionLength_;
+            float platformSpeed_;
+            float cameraOffset_;
     };
 }
 

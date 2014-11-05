@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpPlatformDisappear.cc
-    @brief Implementation of the JumpPlatform class.
+    @brief This platform disappears after contact with the figure.
 */
 
 #include "JumpPlatformDisappear.h"
@@ -47,10 +47,6 @@ namespace orxonox
 {
     RegisterClass(JumpPlatformDisappear);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpPlatformDisappear::JumpPlatformDisappear(Context* context) : JumpPlatform(context)
     {
         RegisterObject(JumpPlatformDisappear);
@@ -58,29 +54,16 @@ namespace orxonox
         setProperties(true);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpPlatformDisappear::~JumpPlatformDisappear()
     {
 
     }
 
-
-    //xml port for loading sounds
     void JumpPlatformDisappear::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpPlatformDisappear, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpPlatformDisappear::tick(float dt)
     {
         SUPER(JumpPlatformDisappear, tick, dt);

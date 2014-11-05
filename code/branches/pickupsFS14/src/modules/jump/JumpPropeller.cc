@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpPropeller.cc
-    @brief Implementation of the JumpPropeller class.
+    @brief If this propeller is created, attachedToFigure_ is set to false. When the figure picks it up, the variable is set to true and the figure starts flying until the fuel is reduced to zero.
 */
 
 #include "JumpPropeller.h"
@@ -47,15 +47,12 @@ namespace orxonox
 {
     RegisterClass(JumpPropeller);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpPropeller::JumpPropeller(Context* context) : JumpItem(context)
     {
         RegisterObject(JumpPropeller);
 
         fuel_ = 3.0;
+        attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
         setVelocity(Vector3(0,0,0));
@@ -63,28 +60,16 @@ namespace orxonox
         setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpPropeller::~JumpPropeller()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpPropeller::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpPropeller, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpPropeller::tick(float dt)
     {
         SUPER(JumpPropeller, tick, dt);

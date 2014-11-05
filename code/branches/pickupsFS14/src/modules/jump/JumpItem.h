@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -44,18 +44,6 @@
 
 namespace orxonox
 {
-
-    /**
-    @brief
-        This class manages the ball for @ref orxonox::Jump "Jump".
-
-        It is responsible for both the movement of the ball in the x,z-plane as well as its interaction with the boundaries of the playing field (defined by the @ref orxonox::JumpCenterpoint "JumpCenterpoint") and the @ref orxonox::JumpFigure "JumpFigures". Or more precisely, it makes the ball bounce off then upper and lower delimiters of the playing field, it makes the ball bounce off the bats and also detects when a player scores and takes appropriate measures.
-
-    @author
-        Fabian 'x3n' Landau
-
-    @ingroup Jump
-    */
     class _JumpExport JumpItem : public MovableEntity
     {
         public:
@@ -73,7 +61,6 @@ namespace orxonox
                 { this->setFieldDimension(dimension.x, dimension.y); }
             Vector2 getFieldDimension() const
                 { return Vector2(this->fieldWidth_, this->fieldHeight_); }
-
             void setWidth(const float width)
                 { this->width_ = width; }
             float getWidth() const
@@ -88,11 +75,9 @@ namespace orxonox
         protected:
             float fieldWidth_; //!< The width of the playing field.
             float fieldHeight_; //!< The height of the playing field.
-
             WeakPtr<JumpFigure> figure_; //!< An array with the two bats.
             float height_;
             float width_;
-
             float leftBoundary_;
             float rightBoundary_;
             float lowerBoundary_;

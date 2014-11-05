@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,28 +28,21 @@
 
 /**
     @file JumpScore.cc
-    @brief Implementation of the JumpScore class.
+    @brief HUD of thejump minigame. If showScore_ is set, it displays the score. If showMessages_ is set, it displays the game over message.
 */
 
 #include "JumpScore.h"
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"
-
 #include "infos/PlayerInfo.h"
-
 #include "Jump.h"
-#include "sound/WorldSound.h" /////////////////////////////
+#include "sound/WorldSound.h"
 
 namespace orxonox
 {
     RegisterClass(JumpScore);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpScore::JumpScore(Context* context) : OverlayText(context)
     {
         RegisterObject(JumpScore);
@@ -59,19 +52,11 @@ namespace orxonox
         showMessages_ = false;
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpScore::~JumpScore()
     {
 
     }
 
-    /**
-    @brief
-        Method to create a JumpScore through XML.
-    */
     void JumpScore::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpScore, XMLPort, xmlelement, mode);
@@ -81,20 +66,11 @@ namespace orxonox
         XMLPortParam(JumpScore, "gameOverText", setGameOverText, getGameOverText, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called each tick.
-        Creates and sets the caption to be displayed by the JumpScore.
-    @param dt
-        The time that has elapsed since the last tick.
-    */
     void JumpScore::tick(float dt)
     {
         SUPER(JumpScore, tick, dt);
 
-        // If the owner is set. The owner being a Jump game.
-
-        if (this->owner_ != NULL)
+        if (owner_ != NULL)
         {
             if (!owner_->hasEnded())
             {
@@ -119,11 +95,6 @@ namespace orxonox
         }
     }
 
-    /**
-    @brief
-        Is called when the owner changes.
-        Sets the owner to NULL, if it is not a pointer to a Jump game.
-    */
     void JumpScore::changedOwner()
     {
         SUPER(JumpScore, changedOwner);

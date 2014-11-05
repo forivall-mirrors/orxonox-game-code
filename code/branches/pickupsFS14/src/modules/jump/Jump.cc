@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,19 +28,16 @@
 
 /**
     @file Jump.cc
-    @brief Implementation of the Jump class.
+    @brief This is the gametype for the awesome minigame. Here the level is randomly created, the camera is shifted, ...
 */
 
 #include "Jump.h"
-
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/command/Executor.h"
 #include "core/config/ConfigValueIncludes.h"
-
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
-
 #include "JumpCenterpoint.h"
 #include "JumpPlatform.h"
 #include "JumpPlatformStatic.h"
@@ -58,21 +55,12 @@
 #include "JumpPropeller.h"
 #include "JumpBoots.h"
 #include "JumpShield.h"
-
 #include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
-    // Events to allow to react to scoring of a player, in the level-file.
-    CreateEventName(JumpCenterpoint, right);
-    CreateEventName(JumpCenterpoint, left);
-
     RegisterUnloadableClass(Jump);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     Jump::Jump(Context* context) : Deathmatch(context)
     {
         RegisterObject(Jump);
@@ -80,17 +68,11 @@ namespace orxonox
         center_ = 0;
         figure_ = 0;
         camera = 0;
-
         setHUDTemplate("JumpHUD");
 
-        scoreLimit_ = 10;
         setConfigValues();
     }
 
-    /**
-    @brief
-        Destructor. Cleans up, if initialized.
-    */
     Jump::~Jump()
     {
         if (isInitialized())
@@ -102,72 +84,65 @@ namespace orxonox
     void Jump::tick(float dt)
     {
     	SUPER(Jump, tick, dt);
+
     	if (figure_ != NULL)
     	{
     		Vector3 figurePosition = figure_->getPosition();
     		Vector3 figureVelocity = figure_->getVelocity();
 
-    		float boundary = totalScreenShift+center_->getCameraOffset();
+    		float boundary = totalScreenShift_+center_->getCameraOffset();
 
     		if (figurePosition.z > boundary)
     		{
-    			screenShiftSinceLastUpdate += figurePosition.z - boundary;
-    			totalScreenShift = figurePosition.z - center_->getCameraOffset();
+    			screenShiftSinceLastUpdate_ += figurePosition.z - boundary;
+    			totalScreenShift_ = figurePosition.z - center_->getCameraOffset();
 
-                // Falls noetig neue Platformen im neuen Bereich einfuegen
-                if (screenShiftSinceLastUpdate > center_->getSectionLength())
+                // Create new platforms if needed
+                if (screenShiftSinceLastUpdate_ > center_->getSectionLength())
                 {
-                	screenShiftSinceLastUpdate -= center_->getSectionLength();
-                	if (sectionNumber_ > 2 && sectionNumber_%4 == 0 && rand()%2 == 0)
+                	if (sectionNumber_ > 2 && sectionNumber_%4 == 0 && rand()%2 == 0 && figure_->propellerActive_ == false && figure_->rocketActive_ == false && addAdventure(adventureNumber_) == true)
                 	{
-                		if (addAdventure(adventureNumber_) == false)
-						{
-                			addSection();
-						}
-                		else
-                		{
-                			++ adventureNumber_;
-                		}
+                		screenShiftSinceLastUpdate_ -= 2*center_->getSectionLength();
+						++ adventureNumber_;
                 	}
                 	else
                 	{
+                		screenShiftSinceLastUpdate_ -= center_->getSectionLength();
                 		addSection();
                 	}
                 }
     		}
 
-    		// Spiel verloren wegen Ansturz?
-    		if (figurePosition.z < totalScreenShift - center_->getFieldDimension().y + platformHeight_ && figureVelocity.z < 0)
+    		if (figurePosition.z < totalScreenShift_ - center_->getFieldDimension().y + platformHeight_ && figureVelocity.z < 0)
     		{
-    			end();
+    			figure_->dead_ = true;
     		}
 
-    		// Schiessen
-
-    		if (figure_->fireSignal)
+    		if (figure_->fireSignal_ == true)
     		{
-    			figure_->fireSignal = false;
-    			addProjectile(figurePosition.x, figurePosition.z + figure_->getPropellerPos());
+    			if (figure_->dead_ == true)
+    			{
+        			end();
+    			}
+    			else
+    			{
+    				figure_->fireSignal_ = false;
+    				addProjectile(figurePosition.x, figurePosition.z + figure_->getPropellerPos());
+    			}
     		}
 
 
     		if (camera != NULL)
 			{
-				Vector3 cameraPosition = Vector3(0, totalScreenShift, 0);
+				Vector3 cameraPosition = Vector3(0, totalScreenShift_, 0);
 				camera->setPosition(cameraPosition);
 			}
 			else
 			{
 				orxout() << "No camera found." << endl;
-				//camera = figure_->getCamera();
 			}
     	}
-    	else
-    	{
-    		//orxout() << "No figure found." << endl;
-    	}
 
-		// Platformen, die zu weit unten sind entfernen
 		ObjectList<JumpPlatform>::iterator beginPlatform = ObjectList<JumpPlatform>::begin();
 		ObjectList<JumpPlatform>::iterator endPlatform = ObjectList<JumpPlatform>::end();
 		ObjectList<JumpPlatform>::iterator itPlatform = beginPlatform;
@@ -176,7 +151,7 @@ namespace orxonox
 		while (itPlatform != endPlatform)
 		{
 			platformPosition = itPlatform->getPosition();
-			if (platformPosition.z < totalScreenShift - center_->getFieldDimension().y)
+			if (platformPosition.z < totalScreenShift_ - center_->getFieldDimension().y)
 			{
 				ObjectList<JumpPlatform>::iterator temp = itPlatform;
 				++ itPlatform;
@@ -189,20 +164,7 @@ namespace orxonox
 			}
 		}
 
-		// DAS GEHT NICHT!!! it++ funktioniert nicht, falls eine Platform geloescht wurde -> Segmentation Error
-		/*
-		for (ObjectList<JumpPlatformDisappear>::iterator it = ObjectList<JumpPlatformDisappear>::begin(); orxout() << "E" << endl, it != ObjectList<JumpPlatformDisappear>::end(); orxout() << "F" << endl, ++it)
-		{
-			if (!it->isActive())
-			{
-				// Entferne Platform
-				center_->detach(*it);
-				it->destroy();
-			}
-		}
-		*/
-
-		// Deaktivierte Platformen entfernen
+		// Deleted deactivated platforms
 		ObjectList<JumpPlatformDisappear>::iterator beginDisappear = ObjectList<JumpPlatformDisappear>::begin();
 		ObjectList<JumpPlatformDisappear>::iterator endDisappear = ObjectList<JumpPlatformDisappear>::end();
 		ObjectList<JumpPlatformDisappear>::iterator itDisappear = beginDisappear;
@@ -222,7 +184,6 @@ namespace orxonox
 			}
 		}
 
-		// Abgelaufene Timer-Platformen entfernen
 		ObjectList<JumpPlatformTimer>::iterator beginTimer = ObjectList<JumpPlatformTimer>::begin();
 		ObjectList<JumpPlatformTimer>::iterator endTimer = ObjectList<JumpPlatformTimer>::end();
 		ObjectList<JumpPlatformTimer>::iterator itTimer = beginTimer;
@@ -242,7 +203,6 @@ namespace orxonox
 			}
 		}
 
-		// Projektile, die zu weit oben sind entfernen
 		ObjectList<JumpProjectile>::iterator beginProjectile = ObjectList<JumpProjectile>::begin();
 		ObjectList<JumpProjectile>::iterator endProjectile = ObjectList<JumpProjectile>::end();
 		ObjectList<JumpProjectile>::iterator itProjectile = beginProjectile;
@@ -251,7 +211,7 @@ namespace orxonox
 		while (itProjectile != endProjectile)
 		{
 			projectilePosition = itProjectile->getPosition();
-			if (projectilePosition.z > totalScreenShift + 5*center_->getFieldDimension().y)
+			if (projectilePosition.z > totalScreenShift_ + 5*center_->getFieldDimension().y)
 			{
 				ObjectList<JumpProjectile>::iterator temp = itProjectile;
 				++ itProjectile;
@@ -264,7 +224,6 @@ namespace orxonox
 			}
 		}
 
-		// Gegner, die zu weit unten oder abgeschossen sind entfernen
 		ObjectList<JumpEnemy>::iterator beginEnemy = ObjectList<JumpEnemy>::begin();
 		ObjectList<JumpEnemy>::iterator endEnemy = ObjectList<JumpEnemy>::end();
 		ObjectList<JumpEnemy>::iterator itEnemy = beginEnemy;
@@ -273,7 +232,7 @@ namespace orxonox
 		while (itEnemy != endEnemy)
 		{
 			enemyPosition = itEnemy->getPosition();
-			if (enemyPosition.z < totalScreenShift - center_->getFieldDimension().y || itEnemy->dead_ == true)
+			if (enemyPosition.z < totalScreenShift_ - center_->getFieldDimension().y || itEnemy->dead_ == true)
 			{
 				ObjectList<JumpEnemy>::iterator temp = itEnemy;
 				++ itEnemy;
@@ -286,7 +245,6 @@ namespace orxonox
 			}
 		}
 
-		// Items, die zu weit unten sind entfernen
 		ObjectList<JumpItem>::iterator beginItem = ObjectList<JumpItem>::begin();
 		ObjectList<JumpItem>::iterator endItem = ObjectList<JumpItem>::end();
 		ObjectList<JumpItem>::iterator itItem = beginItem;
@@ -298,7 +256,7 @@ namespace orxonox
 
 			WorldEntity* parent = itItem->getParent();
 
-			if (itItem->attachedToFigure_ == false && itemPosition.z < totalScreenShift - center_->getFieldDimension().y && parent == center_)
+			if (itItem->attachedToFigure_ == false && itemPosition.z < totalScreenShift_ - center_->getFieldDimension().y && parent == center_)
 			{
 				ObjectList<JumpItem>::iterator temp = itItem;
 				++ itItem;
@@ -312,22 +270,8 @@ namespace orxonox
 		}
     }
 
-    void Jump::setConfigValues()
-    {
-        SetConfigValue(scoreLimit_, 10).description("The player first reaching those points wins.");
-    }
-
-    /**
-    @brief
-        Cleans up the Gametype by destroying the ball and the bats.
-    */
     void Jump::cleanup()
     {
-		if (figure_ != NULL)
-		{
-			//this->figure_->destroy();
-			//this->figure_ = 0;
-		}
 		camera = 0;
     }
 
@@ -353,23 +297,16 @@ namespace orxonox
             return;
         }
 
-        // Set variable to temporarily force the player to spawn.
-        bool temp = bForceSpawn_;
-        bForceSpawn_ = true;
-
         // Call start for the parent class.
         Deathmatch::start();
-
-        // Reset the variable.
-        bForceSpawn_ = temp;
 
         if (figure_ != NULL)
         {
         	camera = figure_->getCamera();
         }
 
-        totalScreenShift = 0.0;
-        screenShiftSinceLastUpdate = 0.0;
+        totalScreenShift_ = 0.0;
+        screenShiftSinceLastUpdate_ = 0.0;
         sectionNumber_ = 0;
         adventureNumber_ = 0;
 
@@ -378,61 +315,25 @@ namespace orxonox
         addSection();
     }
 
-    /**
-    @brief
-        Ends the Jump minigame.
-    */
     void Jump::end()
     {
     	cleanup();
     	GSLevel::startMainMenu();
 
-        // Call end for the parent class.
         Deathmatch::end();
     }
 
-    /**
-    @brief
-        Spawns the input player.
-    @param player
-        The player to be spawned.
-    */
     void Jump::spawnPlayer(PlayerInfo* player)
     {
         assert(player);
 
-        // If the first (left) bat has no player.
-        if (this->figure_->getPlayer() == NULL)
+        if (figure_->getPlayer() == NULL)
         {
-            player->startControl(this->figure_);
-            this->players_[player].state_ = PlayerState::Alive;
+            player->startControl(figure_);
+            players_[player].state_ = PlayerState::Alive;
         }
     }
 
-    /**
-    @brief
-        Is called when the player scored.
-    */
-    void Jump::playerScored(PlayerInfo* player, int score)
-    {
-
-    }
-
-    /**
-    @brief
-        Starts the ball with some default speed.
-    */
-    void Jump::startBall()
-    {
-
-    }
-
-    /**
-    @brief
-        Get the left player.
-    @return
-        Returns a pointer to the player playing on the left. If there is no left player, NULL is returned.
-    */
     PlayerInfo* Jump::getPlayer() const
     {
         if (this->figure_ != NULL)
@@ -493,7 +394,7 @@ namespace orxonox
 
     JumpPlatformTimer* Jump::addPlatformTimer(float xPosition, float zPosition, float time, float variance)
     {
-		float additionalTime = (float)(rand()%100)/(100*variance) - variance/2;
+		float additionalTime = (float)(rand()%100)/100.0*variance - variance/2.0;
 
     	JumpPlatformTimer* newPlatform = new JumpPlatformTimer(center_->getContext());
 		newPlatform->setProperties(time + additionalTime);
@@ -751,23 +652,25 @@ namespace orxonox
 	    	itemType = ITEM_SPRING;
 	    }
 	    else if (rand()%2 == 0 && sectionNumber_ > 3)
-		switch(rand()%4)
-		{
-		case 0:
-			itemType = ITEM_PROPELLER;
-			break;
-		case 1:
-			itemType = ITEM_ROCKET;
-			break;
-		case 2:
-			itemType = ITEM_BOOTS;
-			break;
-		case 3:
-			itemType = ITEM_SHIELD;
-			break;
-		default:
-			break;
-		}
+	    {
+			switch(rand()%4)
+			{
+			case 0:
+				itemType = ITEM_PROPELLER;
+				break;
+			case 1:
+				itemType = ITEM_ROCKET;
+				break;
+			case 2:
+				itemType = ITEM_BOOTS;
+				break;
+			case 3:
+				itemType = ITEM_SHIELD;
+				break;
+			default:
+				break;
+			}
+	    }
 
 		switch((sectionNumber_ > 28) ? rand()%29 : rand()%(sectionNumber_+1))
 	    {
@@ -893,12 +796,12 @@ namespace orxonox
 	        break;
 	    }
 
-	    // Fill Matrix with selected platform types
+	    // Fill matrix with selected platform types
 	    for (int i = 0; i < numI; ++ i)
 	    {
 			  for (int j = 0; j < numJ; ++ j)
 			  {
-					if (rand()%(sectionNumber_+1) == 0)
+					if (rand()%3 == 0)
 					{
 					    matrix[i][j].type = platformtype1;
 					}
@@ -910,24 +813,69 @@ namespace orxonox
 			  }
 	    }
 
-	    // Delete some platforms or replace them with fake platforms
-	    if (platformtype1 == platformtype2 && sectionNumber_ > 10)
+	    if (platformtype1 == platformtype2 && sectionNumber_ > 10 && rand()%2 == 0)
 	    {
-	        int j = rand()%numJ;
-			if (rand()%2 == 0)
-			{
-				for (int i = 0; i <= j; ++ i)
-				{
-				    matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
-				}
-			}
-			else
-			{
-			    for (int i = 0; i <= j; ++ i)
-				{
-				      matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
-				}
-			}
+	    	matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+		    matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    }
+
+	    // Delete some planned platforms or replace them with fake platforms
+	    if (sectionNumber_ > 5)
+	    {
+	    	if (rand()%2 == 0)
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    	}
+	    	else
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
+	    	}
+	    }
+	    else if (sectionNumber_ > 10)
+	    {
+	    	if (rand()%2 == 0)
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    	}
+	    	else
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
+	    	}
+	    	if (rand()%2 == 0)
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    	}
+	    	else
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
+	    	}
+	    }
+	    else if (sectionNumber_ > 15)
+	    {
+	    	if (rand()%2 == 0)
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    	}
+	    	else
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
+	    	}
+	    	if (rand()%2 == 0)
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    	}
+	    	else
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
+	    	}
+	    	if (rand()%2 == 0)
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_EMPTY;
+	    	}
+	    	else
+	    	{
+	    		matrix[rand()%numI][rand()%numJ].type = PLATFORM_FAKE;
+	    	}
 	    }
 
 	    std::vector<JumpPlatform*> platformList;
@@ -967,7 +915,7 @@ namespace orxonox
 				    case PLATFORM_TIMER:
 						xPosition = randomXPosition(numJ, j);
 						zPosition = sectionBegin + i*sectionLength/numI;
-						platformList.push_back(addPlatformTimer(xPosition, zPosition, 10.0, 1.5));
+						platformList.push_back(addPlatformTimer(xPosition, zPosition, 12.0, 1.5));
 					    matrix[i][j].done = true;
 					break;
 				    case PLATFORM_DISAPPEAR:
@@ -1043,40 +991,10 @@ namespace orxonox
 					    }
 					    break;
 				    default:
-				    	// ERROR
+				    	//ERROR
 				    	break;
 
 	                }
-
-					/*if (platformtype1 != PLATFORM_TIMER && platformtype2 != PLATFORM_TIMER)
-					{
-						switch (itemType)
-						{
-						case ITEM_SPRING:
-							addSpring(xPosition, zPosition, leftBoundary, rightBoundary, lowerBoundary, upperBoundary, xVelocity, zVelocity);
-							itemType = ITEM_NOTHING;
-							break;
-						case ITEM_ROCKET:
-							addRocket(xPosition, zPosition, leftBoundary, rightBoundary, lowerBoundary, upperBoundary, xVelocity, zVelocity);
-							itemType = ITEM_NOTHING;
-							break;
-						case ITEM_PROPELLER:
-							addPropeller(xPosition, zPosition, leftBoundary, rightBoundary, lowerBoundary, upperBoundary, xVelocity, zVelocity);
-							itemType = ITEM_NOTHING;
-							break;
-						case ITEM_BOOTS:
-							addBoots(xPosition, zPosition, leftBoundary, rightBoundary, lowerBoundary, upperBoundary, xVelocity, zVelocity);
-							itemType = ITEM_NOTHING;
-							break;
-						case ITEM_SHIELD:
-							addShield(xPosition, zPosition, leftBoundary, rightBoundary, lowerBoundary, upperBoundary, xVelocity, zVelocity);
-							itemType = ITEM_NOTHING;
-							break;
-						default:
-							// ERROR
-							break;
-						}
-					}*/
 	            }
 	        }
 	    }
@@ -1084,50 +1002,93 @@ namespace orxonox
 	    //Add items
     	int numNewPlatforms = platformList.size();
 
-    	if (numNewPlatforms > 0)
+    	if (rand()%4 == 0)
     	{
-    		JumpPlatform* itemPlatform = platformList[rand()%numNewPlatforms];
-
-			switch (ITEM_BOOTS)
+			if (rand()%2 == 0)
 			{
-			case ITEM_SPRING:
-				addSpring(itemPlatform);
-				break;
-			case ITEM_ROCKET:
-				addRocket(itemPlatform);
-				break;
-			case ITEM_PROPELLER:
-				addPropeller(itemPlatform);
-				break;
-			case ITEM_BOOTS:
-				addBoots(itemPlatform);
-				break;
-			case ITEM_SHIELD:
-				addShield(itemPlatform);
-				break;
-			default:
-				break;
+	    		switch (itemType)
+				{
+				case ITEM_ROCKET:
+					addRocket(0.0, randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/2, fieldWidth/2, 0.0, 0.0, randomSpeed(), 0.0);
+					break;
+				case ITEM_PROPELLER:
+					addPropeller(0.0, randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/2, fieldWidth/2, 0.0, 0.0, randomSpeed(), 0.0);
+					break;
+				case ITEM_BOOTS:
+					addBoots(0.0, randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/2, fieldWidth/2, 0.0, 0.0, randomSpeed(), 0.0);
+					break;
+				case ITEM_SHIELD:
+					addShield(0.0, randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/2, fieldWidth/2, 0.0, 0.0, randomSpeed(), 0.0);
+					break;
+				default:
+					break;
+				}
 			}
+			else
+			{
+	    		switch (itemType)
+				{
+				case ITEM_ROCKET:
+					addRocket(randomPosition(-fieldWidth/2, fieldWidth/2), sectionBegin + sectionLength/2, 0.0, 0.0, sectionBegin, sectionEnd, 0.0, randomSpeed());
+					break;
+				case ITEM_PROPELLER:
+					addPropeller(randomPosition(-fieldWidth/2, fieldWidth/2), sectionBegin + sectionLength/2, 0.0, 0.0, sectionBegin, sectionEnd, 0.0, randomSpeed());
+					break;
+				case ITEM_BOOTS:
+					addBoots(randomPosition(-fieldWidth/2, fieldWidth/2), sectionBegin + sectionLength/2, 0.0, 0.0, sectionBegin, sectionEnd, 0.0, randomSpeed());
+					break;
+				case ITEM_SHIELD:
+					addShield(randomPosition(-fieldWidth/2, fieldWidth/2), sectionBegin + sectionLength/2, 0.0, 0.0, sectionBegin, sectionEnd, 0.0, randomSpeed());
+					break;
+				default:
+					break;
+				}
+			}
+    	}
+    	else
+    	{
+    		if (numNewPlatforms > 0)
+    		{
+    			JumpPlatform* itemPlatform = platformList[rand()%numNewPlatforms];
+
+    			switch (itemType)
+    			{
+    			case ITEM_SPRING:
+    				addSpring(itemPlatform);
+    				break;
+    			case ITEM_ROCKET:
+    				addRocket(itemPlatform);
+    				break;
+    			case ITEM_PROPELLER:
+    				addPropeller(itemPlatform);
+    				break;
+    			case ITEM_BOOTS:
+    				addBoots(itemPlatform);
+    				break;
+    			case ITEM_SHIELD:
+    				addShield(itemPlatform);
+    				break;
+    			default:
+    				break;
+    			}
+    		}
     	}
 
         if (sectionNumber_ >= 5 && rand()%3 == 0)
         {
-        	//  BEWEGUNG Verbessern, Grenzen anpassen !!!!!!!! Auch Vertikale Bewegung zulassen
-
-
     	    switch(rand()%4)
     		{
             case 0:
-            	addEnemy(1, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth, fieldWidth, sectionBegin, sectionBegin + sectionLength, 5.0, 0.0);
+            	addEnemy(1, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/3*2, fieldWidth/3*2, sectionBegin, sectionBegin + sectionLength, randomSpeed(), 0.0);
             	break;
             case 1:
-            	addEnemy(2, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth, fieldWidth, sectionBegin, sectionBegin + sectionLength, 5.0, 0.0);
+            	addEnemy(2, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/3*2, fieldWidth/3*2, sectionBegin, sectionBegin + sectionLength, randomSpeed(), 0.0);
             	break;
             case 2:
-            	addEnemy(3, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth, fieldWidth, sectionBegin, sectionBegin + sectionLength, 5.0, 0.0);
+            	addEnemy(3, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/3*2, fieldWidth/3*2, sectionBegin, sectionBegin + sectionLength, randomSpeed(), 0.0);
             	break;
             case 3:
-            	addEnemy(4, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth, fieldWidth, sectionBegin, sectionBegin + sectionLength, 5.0, 0.0);
+            	addEnemy(4, randomXPosition(), randomPosition(sectionBegin, sectionBegin + sectionLength), -fieldWidth/3*2, fieldWidth/3*2, sectionBegin, sectionBegin + sectionLength, randomSpeed(), 0.0);
             	break;
     		}
         }
@@ -1146,9 +1107,19 @@ namespace orxonox
         case 0:
 			{
 				int numI = 10;
-				for (int i = 0; i < numI; ++ i)
+				if (rand()%2 == 0)
 				{
-					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+i*sectionLength/numI);
+					for (int i = 0; i < numI; ++ i)
+					{
+						addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+i*sectionLength/numI);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < numI; ++ i)
+					{
+						addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+(numI-i)*sectionLength/numI);
+					}
 				}
 				break;
 			}
@@ -1157,25 +1128,49 @@ namespace orxonox
 			int numI = 7;
 
 			addPlatformStatic(0.0, sectionBegin);
-			for (int i = 1; i < numI; ++ i)
+			if (rand()%2 == 0)
 			{
-				addPlatformStatic((fieldWidth-platformWidth_/2)*i/numI, sectionBegin+i*sectionLength/numI);
-				addPlatformStatic(-(fieldWidth-platformWidth_/2)*i/numI, sectionBegin+i*sectionLength/numI);
+				for (int i = 1; i < numI; ++ i)
+				{
+					addPlatformStatic((fieldWidth-platformWidth_/2)*i/numI, sectionBegin+i*sectionLength/numI);
+					addPlatformStatic(-(fieldWidth-platformWidth_/2)*i/numI, sectionBegin+i*sectionLength/numI);
+				}
+			}
+			else
+			{
+				for (int i = 1; i < numI; ++ i)
+				{
+					addPlatformStatic((fieldWidth-platformWidth_/2)*i/numI, sectionBegin+(numI-i)*sectionLength/numI);
+					addPlatformStatic(-(fieldWidth-platformWidth_/2)*i/numI, sectionBegin+(numI-i)*sectionLength/numI);
+				}
 			}
 			break;
 		}
         case 2:
 			{
 				int numI = 5;
-				for (int i = 0; i < numI; ++ i)
+				for (int i = 0; i <= numI; ++ i)
 				{
-					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin);
-					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+sectionLength/5);
-					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+sectionLength*2/5);
-					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+sectionLength*3/5);
-					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+sectionLength*4/5);
+					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth, sectionBegin);
+					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth, sectionBegin+sectionLength/5);
+					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth, sectionBegin+sectionLength*2/5);
+					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth, sectionBegin+sectionLength*3/5);
+					addPlatformStatic((2*fieldWidth-platformWidth_)*i/numI-fieldWidth, sectionBegin+sectionLength*4/5);
 					addEnemy(4, (2*fieldWidth-platformWidth_)*i/numI-fieldWidth+platformWidth_/2, sectionBegin+sectionLength/2, -fieldWidth, fieldWidth, sectionBegin, sectionBegin + sectionLength, 0.0, 0.0);
 				}
+				break;
+			}
+        case 3:
+			{
+				addRocket(addPlatformStatic(0.0, sectionBegin));
+				addEnemy(2, 0.0, sectionBegin+sectionLength/5, 0.0,0.0, 0.0, 0.0, 0.0, 0.0);
+				break;
+			}
+        case 4:
+			{
+				addPropeller(addPlatformStatic(0.0, sectionBegin));
+				addPropeller(addPlatformStatic(-fieldWidth/2, sectionBegin));
+				addPropeller(addPlatformStatic(fieldWidth/2, sectionBegin));
 				break;
 			}
         default:
@@ -1194,10 +1189,10 @@ namespace orxonox
 
     float Jump::randomXPosition(int totalColumns, int culomn)
     {
-    	float fieldWidth = center_->getFieldDimension().x; //Width of the half field
+    	float fieldWidth = center_->getFieldDimension().x;
 
-    	float halfWidth = fieldWidth/totalColumns; //Width of a half column
-    	float leftBound = culomn*halfWidth*2-fieldWidth; //Left beginning of the column
+    	float halfWidth = fieldWidth/totalColumns;
+    	float leftBound = culomn*halfWidth*2-fieldWidth;
     	float rightBound = leftBound + 2*halfWidth;
 
     	return randomPosition(leftBound+platformWidth_/2, rightBound-platformWidth_/2);
@@ -1205,10 +1200,10 @@ namespace orxonox
 
     float Jump::randomXPositionLeft(int totalColumns, int culomn)
     {
-    	float fieldWidth = center_->getFieldDimension().x; //Width of the half field
+    	float fieldWidth = center_->getFieldDimension().x;
 
-    	float halfWidth = fieldWidth/totalColumns; //Width of a half column
-    	float leftBound = culomn*halfWidth*2-fieldWidth; //LeftBeginning of the column
+    	float halfWidth = fieldWidth/totalColumns;
+    	float leftBound = culomn*halfWidth*2-fieldWidth;
     	float rightBound = leftBound + 2*halfWidth/3;
 
     	return randomPosition(leftBound+platformWidth_/2, rightBound-platformWidth_/2);
@@ -1216,9 +1211,9 @@ namespace orxonox
 
     float Jump::randomXPositionRight(int totalColumns, int culomn)
     {
-    	float fieldWidth = center_->getFieldDimension().x; //Width of the half field
+    	float fieldWidth = center_->getFieldDimension().x;
 
-    	float halfWidth = fieldWidth/totalColumns; //Width of a half column
+    	float halfWidth = fieldWidth/totalColumns;
     	float rightBound = (culomn+1)*halfWidth*2-fieldWidth;
     	float leftBound = rightBound - 2*halfWidth/3;
     	return randomPosition(leftBound+platformWidth_/2, rightBound-platformWidth_/2);
@@ -1226,9 +1221,9 @@ namespace orxonox
 
     float Jump::randomZPosition(int totalRows, int row, float sectionBegin, float SectionEnd)
     {
-    	float fieldHeight = SectionEnd - sectionBegin; //Heigt of the half field
-    	float halfHeight = fieldHeight/totalRows; //Height of a half row
-    	float lowerBound = row*halfHeight*2+sectionBegin; //Lower beginning of the row
+    	float fieldHeight = SectionEnd - sectionBegin;
+    	float halfHeight = fieldHeight/totalRows;
+    	float lowerBound = row*halfHeight*2+sectionBegin;
     	float upperBound = lowerBound + 2*halfHeight;
 
     	return randomPosition(lowerBound+platformHeight_/2, upperBound-platformHeight_/2);
@@ -1236,9 +1231,9 @@ namespace orxonox
 
     float Jump::randomZPositionLower(int totalRows, int row, float sectionBegin, float SectionEnd)
     {
-    	float fieldHeight = SectionEnd - sectionBegin; //Heigt of the half field
-    	float rowHeight = fieldHeight/totalRows; //Height of a row
-    	float lowerBound = row*rowHeight+sectionBegin; //Lower beginning of the row
+    	float fieldHeight = SectionEnd - sectionBegin;
+    	float rowHeight = fieldHeight/totalRows;
+    	float lowerBound = row*rowHeight+sectionBegin;
     	float upperBound = lowerBound + rowHeight/3;
 
     	return randomPosition(lowerBound+platformHeight_/2, upperBound-platformHeight_/2);
@@ -1246,9 +1241,9 @@ namespace orxonox
 
     float Jump::randomZPositionUpper(int totalRows, int row, float sectionBegin, float SectionEnd)
     {
-    	float fieldHeight = SectionEnd - sectionBegin; //Heigt of the half field
-    	float rowHeight = fieldHeight/totalRows; //Height of a row
-    	float lowerBound = (row+1)*rowHeight+sectionBegin; //Upper end of the row
+    	float fieldHeight = SectionEnd - sectionBegin;
+    	float rowHeight = fieldHeight/totalRows;
+    	float lowerBound = (row+1)*rowHeight+sectionBegin;
     	float upperBound = lowerBound - rowHeight/3;
 
     	return randomPosition(lowerBound+platformHeight_/2, upperBound-platformHeight_/2);

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,18 +28,15 @@
 
 /**
     @file JumpRocket.cc
-    @brief Implementation of the JumpRocket class.
+    @brief If this rocket is created, attachedToFigure_ is set to false. When the figure picks it up, the variable is set to true and the figure starts flying fast until the fuel is reduced to zero.
 */
 
 #include "JumpRocket.h"
-
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "graphics/Model.h"
 #include "gametypes/Gametype.h"
-
 #include "JumpFigure.h"
-
 #include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
@@ -47,15 +44,12 @@ namespace orxonox
 {
     RegisterClass(JumpRocket);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpRocket::JumpRocket(Context* context) : JumpItem(context)
     {
         RegisterObject(JumpRocket);
 
         fuel_ = 3.0;
+        attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
         setVelocity(Vector3(0,0,0));
@@ -63,28 +57,16 @@ namespace orxonox
         setProperties(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpRocket::~JumpRocket()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpRocket::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpRocket, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpRocket::tick(float dt)
     {
         SUPER(JumpRocket, tick, dt);
@@ -115,9 +97,5 @@ namespace orxonox
     	JumpItem::touchFigure();
 
     	attachedToFigure_ = figure_->StartRocket(this);
-    	if (attachedToFigure_)
-    	{
-    		//Starte Feuer-Animation
-    	}
     }
 }

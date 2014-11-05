@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpFigure.cc
-    @brief Implementation of the JumpFigure class.
+    @brief This class represents your figure when you play the minigame. Here the movement of the figure, activating items, ... are handled.
 */
 
 #include "JumpFigure.h"
@@ -40,20 +40,15 @@ namespace orxonox
 {
     RegisterClass(JumpFigure);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpFigure::JumpFigure(Context* context) : ControllableEntity(context)
     {
         RegisterObject(JumpFigure);
 
+		// initialize variables
         leftHand_ = NULL;
         rightHand_ = NULL;
-
         fieldHeight_ = 0;
         fieldWidth_ = 0;
-
         jumpSpeed_ = 0.0;
         handSpeed_ = 0.0;
         handMaxAngle_ = 0.0;
@@ -61,37 +56,28 @@ namespace orxonox
         rocketPos_ = 0.0;
         propellerPos_ = 0.0;
         bootsPos_ = 0.0;
-
-        moveUpPressed = false;
-        moveDownPressed = false;
-        moveLeftPressed = false;
-        moveDownPressed = false;
-        firePressed = false;
-        fireSignal = false;
-        timeSinceLastFire = 0.0;
-
-        gravityAcceleration = 8.0;
+        moveUpPressed_ = false;
+        moveDownPressed_ = false;
+        moveLeftPressed_ = false;
+        moveDownPressed_ = false;
+        firePressed_ = false;
+        fireSignal_ = false;
+        timeSinceLastFire_ = 0.0;
+        gravityAcceleration_ = 8.0;
         mouseFactor_ = 75.0;
-        maxFireRate = 0.3;
-
+        maxFireRate_ = 0.3;
         handAngle_ = 0.0;
         animateHands_ = false;
         turnUp_ = false;
-
         rocketActive_ = false;
         propellerActive_ = false;
         bootsActive_ = false;
         shieldActive_ = false;
         rocketSpeed_ = 0.0;
         propellerSpeed_ = 0.0;
-
         dead_ = false;
     }
 
-    /**
-    @brief
-        Method to create a JumpCenterpoint through XML.
-    */
     void JumpFigure::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpFigure, XMLPort, xmlelement, mode);
@@ -109,21 +95,13 @@ namespace orxonox
         XMLPortParam(JumpFigure, "handSpeed", setHandSpeed, getHandSpeed, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called each tick.
-        Moves the bat.
-    @param dt
-        The time since last tick.
-    */
     void JumpFigure::tick(float dt)
     {
     	SUPER(JumpFigure, tick, dt);
 
-        // If the bat is controlled (but not over the network).
         if (hasLocalController())
         {
-        	timeSinceLastFire += dt;
+        	timeSinceLastFire_ += dt;
 
         	// Move up/down
         	Vector3 velocity = getVelocity();
@@ -137,7 +115,7 @@ namespace orxonox
         	}
         	else
         	{
-        		velocity.z -= gravityAcceleration;
+        		velocity.z -= gravityAcceleration_;
         	}
 
         	// Animate Hands
@@ -173,7 +151,7 @@ namespace orxonox
         	// Move left/right
         	if (dead_ == false)
         	{
-        		velocity.x = -mouseFactor_*horizontalSpeed;
+        		velocity.x = -mouseFactor_*horizontalSpeed_;
         	}
         	else
         	{
@@ -181,26 +159,25 @@ namespace orxonox
         	}
 
         	// Cheats
-        	if (moveUpPressed == true)
+        	/*if (moveUpPressed_ == true)
         	{
-        		velocity.z = 200.0f;
-        		moveUpPressed = false;
+        		velocity.z = 400.0f;
+        		moveUpPressed_ = false;
         		dead_ = false;
         	}
-        	if (moveDownPressed == true)
+        	if (moveDownPressed_ == true)
         	{
-        		moveDownPressed = false;
-        	}
+        		moveDownPressed_ = false;
+        	}*/
 
         	setVelocity(velocity);
 
 
-        	if (firePressed && timeSinceLastFire >= maxFireRate)
+        	if (firePressed_ && timeSinceLastFire_ >= maxFireRate_)
         	{
-				firePressed = false;
-				timeSinceLastFire = 0.0;
-				fireSignal = true;
-				//orxout() << "fired signal set" << endl;
+				firePressed_ = false;
+				timeSinceLastFire_ = 0.0;
+				fireSignal_ = true;
         	}
         }
 
@@ -217,11 +194,11 @@ namespace orxonox
         setPosition(position);
 
         // Reset key variables
-        moveUpPressed = false;
-        moveDownPressed = false;
-        moveLeftPressed = false;
-        moveDownPressed = false;
-        firePressed = false;
+        moveUpPressed_ = false;
+        moveDownPressed_ = false;
+        moveLeftPressed_ = false;
+        moveDownPressed_ = false;
+        firePressed_ = false;
     }
 
     void JumpFigure::JumpFromPlatform(JumpPlatform* platform)
@@ -364,51 +341,37 @@ namespace orxonox
 		attach(rightHand_);
     }
 
-    /**
-    @briefhandPosition_
-        Overloaded the function to steer the bat up and down.
-    @param value
-        A vector whose first component is the inverse direction in which we want to steer the bat.
-    */
     void JumpFigure::moveFrontBack(const Vector2& value)
     {
     	if (value.x > 0)
     	{
-    		//orxout() << "up pressed" << endl;
-    		moveUpPressed = true;
-    		moveDownPressed = false;
+    		moveUpPressed_ = true;
+    		moveDownPressed_ = false;
     	}
     	else
     	{
-    		//orxout() << "down pressed" << endl;
-    		moveUpPressed = false;
-    		moveDownPressed = true;
+    		moveUpPressed_ = false;
+    		moveDownPressed_ = true;
     	}
     }
 
-    /**
-    @brief
-        Overloaded the function to steer the bat up and down.
-    @param value
-        A vector whose first component is the direction in which we wnat to steer the bat.
-    */
     void JumpFigure::moveRightLeft(const Vector2& value)
     {
     	if (value.x > 0)
     	{
-    		moveLeftPressed = false;
-    		moveRightPressed = true;
+    		moveLeftPressed_ = false;
+    		moveRightPressed_ = true;
     	}
     	else
     	{
-    		moveLeftPressed = true;
-    		moveRightPressed = false;
+    		moveLeftPressed_ = true;
+    		moveRightPressed_ = false;
     	}
     }
 
     void JumpFigure::rotateYaw(const Vector2& value)
     {
-    	horizontalSpeed = value.x;
+    	horizontalSpeed_ = value.x;
     }
 
     void JumpFigure::rotatePitch(const Vector2& value)
@@ -425,12 +388,11 @@ namespace orxonox
 
     void JumpFigure::fire(unsigned int firemode)
     {
-    	//SUPER(JumpFigure, fire, firemode);
+
     }
 
     void JumpFigure::fired(unsigned int firemode)
     {
-    	//SUPER(JumpFigure, fired, firemode);
-    	firePressed = true;
+    	firePressed_ = true;
     }
 }

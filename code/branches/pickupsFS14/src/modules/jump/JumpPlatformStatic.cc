@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,18 +28,14 @@
 
 /**
     @file JumpPlatformStatic.cc
-    @brief Implementation of the JumpPlatformStatic class.
+    @brief This is the most simple platform in this minigame.
 */
 
 #include "JumpPlatformStatic.h"
-
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-
 #include "gametypes/Gametype.h"
-
 #include "JumpFigure.h"
-
 #include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
@@ -47,20 +43,12 @@ namespace orxonox
 {
     RegisterClass(JumpPlatformStatic);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpPlatformStatic::JumpPlatformStatic(Context* context) : JumpPlatform(context)
     {
         RegisterObject(JumpPlatformStatic);
 
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpPlatformStatic::~JumpPlatformStatic()
     {
 
@@ -72,13 +60,6 @@ namespace orxonox
         SUPER(JumpPlatformStatic, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpPlatformStatic::tick(float dt)
     {
         SUPER(JumpPlatformStatic, tick, dt);

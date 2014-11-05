@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,7 +28,7 @@
 
 /**
     @file JumpPlatform.cc
-    @brief Implementation of the JumpPlatform class.
+    @brief All platforms in this minigame inherit from this class. The basic functions of a platform (interact with figure) is implemented here. Special functions are implemented in the specialized classes.
 */
 
 #include "JumpPlatform.h"
@@ -47,12 +47,6 @@ namespace orxonox
 {
     RegisterClass(JumpPlatform);
 
-    const float JumpPlatform::MAX_REL_Z_VELOCITY = 1.5;
-
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpPlatform::JumpPlatform(Context* context) : MovableEntity(context)
     {
         RegisterObject(JumpPlatform);

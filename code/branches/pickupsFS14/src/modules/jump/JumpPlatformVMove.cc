@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -28,18 +28,14 @@
 
 /**
     @file JumpPlatformVMove.cc
-    @brief Implementation of the JumpPlatform class.
+    @brief This platform can move vertically.
 */
 
 #include "JumpPlatformVMove.h"
-
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-
 #include "gametypes/Gametype.h"
-
 #include "JumpFigure.h"
-
 #include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
@@ -47,10 +43,6 @@ namespace orxonox
 {
     RegisterClass(JumpPlatformVMove);
 
-    /**
-    @brief
-        Constructor. Registers and initializes the object.
-    */
     JumpPlatformVMove::JumpPlatformVMove(Context* context) : JumpPlatform(context)
     {
         RegisterObject(JumpPlatformVMove);
@@ -58,47 +50,38 @@ namespace orxonox
         setProperties(0,80,10);
     }
 
-    /**
-    @brief
-        Destructor.
-    */
     JumpPlatformVMove::~JumpPlatformVMove()
     {
 
     }
 
-    //xml port for loading sounds
     void JumpPlatformVMove::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(JumpPlatformVMove, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Is called every tick.
-        Handles the movement of the ball and its interaction with the boundaries and bats.
-    @param dt
-        The time since the last tick.
-    */
     void JumpPlatformVMove::tick(float dt)
     {
         SUPER(JumpPlatformVMove, tick, dt);
 
         // Get the current position, velocity and acceleration of the ball.
-        Vector3 position = this->getPosition();
-        Vector3 velocity = this->getVelocity();
+        Vector3 position = getPosition();
+        Vector3 velocity = getVelocity();
 
         if ((position.z < lowerBoundary_ && velocity.z < 0) || (position.z > upperBoundary_ && velocity.z > 0))
         {
-        	//orxout() << "refelected platformVMove at " << position.z << endl;
         	velocity.z = -velocity.z;
         }
 
         // Set the position, velocity and acceleration of the ball, if they have changed.
-        if (velocity != this->getVelocity())
-            this->setVelocity(velocity);
-        if (position != this->getPosition())
-            this->setPosition(position);
+        if (velocity != getVelocity())
+        {
+            setVelocity(velocity);
+        }
+        if (position != getPosition())
+        {
+            setPosition(position);
+        }
     }
 
     void JumpPlatformVMove::setProperties(float lowerBoundary, float upperBoundary, float speed)
@@ -106,7 +89,7 @@ namespace orxonox
     	lowerBoundary_ = lowerBoundary;
     	upperBoundary_ = upperBoundary;
 
-        this->setVelocity(Vector3(0,0,speed));
+        setVelocity(Vector3(0,0,speed));
 
     }
 
