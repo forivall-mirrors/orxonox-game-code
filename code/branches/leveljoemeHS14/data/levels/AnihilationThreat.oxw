@@ -70,10 +70,11 @@
   	
   <SpawnPoint 
 	team=0 position="0,0,0" 
-	lookat="1,0,0" 
+	lookat="0,1,0" 
 	spawnclass=SpaceShip 
-	pawndesign=spaceshipassff />
-	
+	pawndesign=spaceshipassff >
+	<DistanceTriggerBeacon name="coolSpaceship" />
+	</SpawnPoint>
 	
 	<Template name=PortalDefault>
         <PortalEndPoint>
@@ -92,11 +93,68 @@
     
     
     <!--Billboard which tirggers the next Quest and spawns the enemy ships-->
-     <Billboard position=" 5000,3000, 3500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />    
+<Billboard position=" 500,500, 500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 1500,1500, 1500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 2500,2500, 2500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 3500,3500, 3500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 4500,4500, 4500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 6500,6500, 6500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 8500,8500, 8500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
+<Billboard position=" 9500,9500, 9500" material="Examples/Flare" colour="1.0, 1.0, 0.0" />  
+
+
+
     
+    	    <!--******************************-Mission starts here****************************-->
+    			
+    			
+    			 <!------------On-screen texts---------->
+    			 
+
+    
+<DistanceTrigger name="flying2" position="0,0,0" target="Pawn" distance=40 stayActive="true" delay=7/>
+    <SimpleNotification message="in order to reach our fleet,">
+        <events>
+            <trigger>
+                <EventListener event="flying2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    
+    
+<DistanceTrigger name="flying2" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=7/>
+    <SimpleNotification message="read the quest description">
+        <events>
+            <trigger>
+                <EventListener event="flying2" />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    
+    <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=1/>
+    <SimpleNotification message="Welcome Mr. Walker">
+        <events>
+            <trigger>
+                <EventListener event="flying1" />
+            </trigger>
+        </events>
+    </SimpleNotification>        
+
+<DistanceTrigger name="flying3" position="500,500,500" target="Pawn" distance=50 stayActive="true" delay=1/>
+<SimpleNotification message="follow the red dots">
+    <events>
+        <trigger>
+            <EventListener event="flying3" />
+        </trigger>
+    </events>
+</SimpleNotification>        
+
+
+
+
 <!-- Meteoriten, die sich bewegen -->
    <?lua
-      for i = 1, 300, 1
+      for i = 1, 800, 1
       do
       j = math.random()
       x = math.random()
@@ -105,9 +163,9 @@
    ?>
 
    <MovableEntity    
-      position = "<?lua print(math.random()* 600-300) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random() * 600-300) ?>"
+      position = "<?lua print(math.random()* 10000) ?>,<?lua print(math.random() * 10000 + 0) ?>,<?lua print(math.random() * 10000) ?>"
       scale = "<?lua print(j * 40)?>"
-      velocity = "<?lua print(x*20-10)?>, <?lua print(y*60-160)?>, <?lua print(z*20-10)?>"
+      velocity = "0,0,0"
       collisionType = dynamic
       collisiondamage = 0.5
       enablecollisiondamage = true 
@@ -127,113 +185,136 @@
    <?lua
       end
    ?>
-      <!-- Fiese Meteoriten, die direkt auf den Spieler zufliegen-->
+      	<!--****************************In the Asteroid Field***************************-->
+ <!--Enemy team-->
+  
+ <!--*****Spaceship 1******* -->
+       
+  <SpaceShip position="1900,1500,1500" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
+	  <templates>
+            <Template link=spaceshipassff />
+      </templates>
+       <controller>
+          <WaypointPatrolController alertnessradius=300 team=1 >
+				<waypoints>
+	  	  	  	  <Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                  <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
+     	  	  	  <Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                  <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
+     	  	  	  <Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                  <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
+           	  	  <Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                  
+              </waypoints>
+						
+          </WaypointPatrolController>
 
-         <?lua
-            for i = 1, 240, 1
-            do
-            j = math.random()
-            x = math.random()
-            y = math.random()
-            z = math.random()
-         ?>
-         <MovableEntity    
-            position = "<?lua print(math.random()* 240-120) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random()* 240-120) ?>"
-            scale = "10"
-            velocity = "0, -160, 0"
-            collisionType = dynamic
-            collisiondamage = 0.05
-            enablecollisiondamage = true 
-            active = true
-            visible = true
-         >                     
-                <attached>           
-                    <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
+       </controller>
+	  
+  </SpaceShip>
+      
+      
+      <!--*****Spaceship 2 and 3******* -->
+      
+      <SpaceShip position="2900,2500,2500" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
+    	  <templates>
+                <Template link=spaceshippirate />
+          </templates>
+           <controller>
+              <WaypointPatrolController alertnessradius=300 team=1 >
+    				<waypoints>
+    	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2000,2500,2500" />
+                      <Model mesh="cube.mesh" scale=0 position="2900,2500,2500" />
+         	  	  	  <Model mesh="cube.mesh" scale=0 position="2000,2500,2500" />
+                      <Model mesh="cube.mesh" scale=0 position="2900,2500,2500" />
+         	  	  	  <Model mesh="cube.mesh" scale=0 position="2000,2500,2500" />
+                      <Model mesh="cube.mesh" scale=0 position="2900,2500,2500" />
+               	  	  <Model mesh="cube.mesh" scale=0 position="2000,2500,2500" />
                       
-                    </Model>                    
-                </attached> 
-               <collisionShapes>
-                   <SphereCollisionShape radius="10" />
-               </collisionShapes>   
-         </MovableEntity>
-         <?lua
-            end
-         ?>
+                  </waypoints>
+    						
+              </WaypointPatrolController>
 
+           </controller>
+    	  
+      </SpaceShip>
+      
+      <SpaceShip position="2020,2500,2500" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
+    	  <templates>
+                <Template link=spaceshippirate />
+          </templates>
+           <controller>
+              <WaypointPatrolController alertnessradius=300 team=1 >
+    				<waypoints>
+    	  	  	  	  
+                      <Model mesh="cube.mesh" scale=0 position="2920,2500,2500" />
+         	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+                      <Model mesh="cube.mesh" scale=0 position="2920,2500,2500" />
+         	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+                      <Model mesh="cube.mesh" scale=0 position="2920,2500,2500" />
+               	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+      	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2920,2500,2500" />
+                  </waypoints>
+    						
+              </WaypointPatrolController>
 
-    
-    
-    	    <!--******************************-Mission starts here****************************-->
-    			
-    			
-    			 <!------------On-screen texts---------->
-    
-<DistanceTrigger name="flying2" position="0,0,0" target="Pawn" distance=40 stayActive="true" delay=7/>
-    <SimpleNotification message="take the nearest portal">
-        <events>
-            <trigger>
-                <EventListener event="flying2" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-    
-    
-<DistanceTrigger name="flying2" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=7/>
-    <SimpleNotification message="In order to reach our fleet,">
-        <events>
-            <trigger>
-                <EventListener event="flying2" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-    
-    <DistanceTrigger name="flying1" position="0,0,0" target="Pawn" distance=100 stayActive="true" delay=1/>
-    <SimpleNotification message="Welcome Mr. Walker">
-        <events>
-            <trigger>
-                <EventListener event="flying1" />
-            </trigger>
-        </events>
-    </SimpleNotification>        
-        
+           </controller>
+    	  
+      </SpaceShip>
+ 
         <!--****************************After the Asteroid Field***************************-->
         
-        <DistanceTrigger name="afterPortal" position="3000,3000,3000" target="Pawn" distance=100 stayActive="true" delay=1/>
-    <SimpleNotification message="Reach the red chekpoint">
-        <events>
-            <trigger>
-                <EventListener event="afterPortal" />
-            </trigger>
-        </events>
-    </SimpleNotification>
-    
+   <DistanceTrigger name="afterPortal" position="9500,9500, 9500" target="Pawn"  distance=50 stayActive="true" delay=1/>
+      
     
 <!--Creating player's team OK-->
         <!--Spaceships team 0 (player:team=0)-->
         
-        <SpaceShip position="3500,3000,3000" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
-             <templates>
+        <SpaceShip position="10000,10000,10000" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
+      	  <templates>
                   <Template link=spaceshipassff />
             </templates>
              <controller>
                 <WaypointPatrolController alertnessradius=2000 team=0 >
-                    <waypoints>
+                    <events>
+                               <activity>
+                                   <EventListener event="afterPortal" />
+                                </activity>
+                           </events>
+					<waypoints>
+      	  	  	  	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
+           	  	  	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
+           	  	  	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
+                 	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
+                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
                         <Model mesh="cube.mesh" scale=0 position="2050,0,-1000" />
                         <Model mesh="cube.mesh" scale=0 position="6050,0,0" />
                         <Model mesh="cube.mesh" scale=0 position="10050,0,3000" />
                         <Model mesh="cube.mesh" scale=0 position="3050,0,3000" />
                         <Model mesh="cube.mesh" scale=0 position="-4050,0,3000" />
                     </waypoints>
+							
                 </WaypointPatrolController>
+  
              </controller>
+      	  
         </SpaceShip>
         <!--Second Spaceship team 0 (player: team 0)-->
-        <SpaceShip position="3500,3000,3600" lookat="2000,0,-950" name="allied" health="500" maxhealth="400" initialhealth="400" >
+        <SpaceShip position="10100,10000,10100" lookat="2000,0,-950" name="allied" health="500" maxhealth="400" initialhealth="400" >
              <templates>
                   <Template link=spaceshipassff />
             </templates>
              <controller>
                 <WaypointPatrolController alertnessradius=2000 team=0 >
+      	  	  	  	  <events>
+      	  	  	  	  	  <activity>
+                                     <EventListener event="afterPortal" />
+                          </activity>
+                       </events>
+
                     <waypoints>
                         <Model mesh="cube.mesh" scale=0 position="2000,0,-900" />
                         <Model mesh="cube.mesh" scale=0 position="6000,0,0" />
@@ -245,12 +326,17 @@
              </controller>
         </SpaceShip>
         <!--third Spaceship team 0 (player: team 0)-->
-        <SpaceShip position="3500,3000,34000" lookat="2000,0,-1050" name="allied" health="500" maxhealth="400" initialhealth="400" >
+        <SpaceShip position="9900,10000,9900" lookat="2000,0,-1050" name="allied" health="500" maxhealth="400" initialhealth="400" >
              <templates>
                   <Template link=spaceshipassff />
             </templates>
              <controller>
                 <WaypointPatrolController alertnessradius=2000 team=0 >
+      	  	  	  <events>
+                        <activity>
+                             <EventListener event="afterPortal" />
+                         </activity>
+                  </events>
                     <waypoints>
                         <Model mesh="cube.mesh" scale=0 position="2000,0,-1100" />
                         <Model mesh="cube.mesh" scale=0 position="6000,0,-100" />
@@ -287,7 +373,7 @@
 <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
 
 <GlobalQuest id="quest0">
-		<QuestDescription title="Mission" description="Humanity is at war! Recently, an ashrocian ship attacked two transporters carrying highly expensive ETHium. Despite the fact, that the Ashrocs are a technological superpower, we, the human race cannot allow them to treat us like insects. Your mission's to group up with yout fellow soldiers and retaliate even harder." />
+		<QuestDescription title="Mission" description="Humanity is at war! Recently, an ashrocian ship attacked two transporters carrying highly expensive ETHium. Despite the fact, that the Ashrocs are a technological superpower, we, the human race cannot allow them to treat us like insects. Your mission's to group up with yout fellow soldiers and retaliate even harder. Follow the red marks which were left by the star fleet. But beware, there might be spies on your way. See to it, that you terminate their mission ;)" />
 	<hints>
                 <QuestHint id="quest1hint0">
                     <QuestDescription title="The super Hint." description="Be proud of yourself." />
@@ -318,35 +404,6 @@
 
 
 
-
-<?lua for i=0,0,1 do
-x=800
-health=1100
-?>
-    <!--Transporter 1-->
-    <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
-    <events>
-    <trigger>
-        <SpaceShip position="<?lua print(5000-i*x) ?>,3000,3000" lookat="<?lua print(4800-i*x) ?>,0,4000" health="<?lua print(health) ?>" maxhealth="<?lua print(health) ?>" initialhealth="<?lua print(health) ?>" >
-            <templates>
-                   <Template link=spaceshipTransporter />
-             </templates>
-			  <controller>
-                <WaypointPatrolController alertnessradius=2000 team=1 >
-                    <waypoints>
-                        <Model mesh="cube.mesh" scale=0 position="2000,0,-1100" />
-                        <Model mesh="cube.mesh" scale=0 position="6000,0,-100" />
-                        <Model mesh="cube.mesh" scale=0 position="10000,0,2900" />
-                        <Model mesh="cube.mesh" scale=0 position="3000,0,2900" />
-                        <Model mesh="cube.mesh" scale=0 position="-4000,0,2900" />
-                    </waypoints>
-                </WaypointPatrolController>
-             </controller>
-        </SpaceShip><!---->
-    </trigger>
-    </events>
-    </EventTrigger>
-<?lua end ?>
 
     
     
