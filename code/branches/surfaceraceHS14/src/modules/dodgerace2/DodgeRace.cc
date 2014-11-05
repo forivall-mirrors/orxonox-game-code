@@ -27,8 +27,8 @@
  */
 
 /**
-    @file Invader.cc
-    @brief Implementation of the Invader class.
+    @file DodgeRace.cc
+    @brief Implementation of the DodgeRace class.
 */
 
 #include "DodgeRace.h"
@@ -44,17 +44,17 @@
 // ! HACK
 #include "infos/PlayerInfo.h"
 
-#include "InvaderCenterPoint.h"
-#include "InvaderShip.h"
-#include "InvaderEnemy.h"
-#include "InvaderEnemyShooter.h"
-
+#include "DodgeRaceCenterPoint.h"
+/*#include "DodgeRaceShip.h"
+#include "DodgeRaceEnemy.h"
+#include "DodgeRaceEnemyShooter.h"
+*/
 #include "core/command/ConsoleCommand.h"
 #include "worldentities/BigExplosion.h"
 
 namespace orxonox
 {
-    RegisterUnloadableClass(Invader);
+    RegisterClass(DodgeRace);
 
     DodgeRace::DodgeRace(Context* context) : Deathmatch(context)
     {
@@ -62,7 +62,7 @@ namespace orxonox
         this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
         this->center_ = 0;
         init();
-        this->setHUDTemplate("InvaderHUD");
+        this->setHUDTemplate("InvaderHUD"); // !!!!!!!!!!!!!!!INVADERHUD	change later
     }
 
     void DodgeRace::init()
@@ -75,13 +75,13 @@ namespace orxonox
         multiplier = 1;
         b_combo = false;
         // spawn enemy every 3.5 seconds
-        enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&Invader::spawnEnemy, this)));
-        comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&Invader::comboControll, this)));
+        //enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&DodgeRace::spawnEnemy, this)));
+        //comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&DodgeRace::comboControll, this)));
     }
 
     void DodgeRace::levelUp()
     {
-        level++;
+        level++;/*
         if (getPlayer() != NULL)
         {
             for (int i = 0; i < 7; i++)
@@ -95,15 +95,15 @@ namespace orxonox
         addPoints(multiplier * 42);
         multiplier *= 2;
         toggleShowLevel();
-        showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&DodgeRace::toggleShowLevel, this)));
+        showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&DodgeRace::toggleShowLevel, this)));*/
     }
 
-    WeakPtr<InvaderShip> DodgeRace::getPlayer()
+    /*WeakPtr<DodgeRaceShip> DodgeRace::getPlayer()
     {
         if (player == NULL)
         {
-            for (ObjectList<InvaderShip>::iterator it = ObjectList<InvaderShip>::begin(); it != ObjectList<InvaderShip>::end(); ++it)
-                player = *it;
+            //for (ObjectList<DodgeRaceShip>::iterator it = ObjectList<DodgeRaceShip>::begin(); it != ObjectList<DodgeRaceShip>::end(); ++it)
+              //  player = *it;
         }
         return player;
     }
@@ -115,15 +115,15 @@ namespace orxonox
 
         for (int i = 0; i < (3*log10(static_cast<double>(level)) + 1); i++)
         {
-            WeakPtr<InvaderEnemy> newPawn;
+            WeakPtr<DodgeRaceEnemy> newPawn;
             if (rand() % 42/(1 + level*level) == 0)
             {
-                newPawn = new InvaderEnemyShooter(this->center_->getContext());
+                newPawn = new DodgeRaceEnemyShooter(this->center_->getContext());
                 newPawn->addTemplate("enemyinvadershooter");
             }
             else
             {
-                newPawn = new InvaderEnemy(this->center_->getContext());
+                newPawn = new DodgeRaceEnemy(this->center_->getContext());
                 newPawn->addTemplate("enemyinvader");
             }
             newPawn->setPlayer(player);
@@ -131,15 +131,15 @@ namespace orxonox
             // spawn enemy at random points in front of player.
             newPawn->setPosition(player->getPosition() + Vector3(500.f + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
         }
-    }
+    }*/
 
     void DodgeRace::costLife()
     {
         lives--;
         multiplier = 1;
         // end the game in 30 seconds.
-        if (lives <= 0)
-            enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
+       // if (lives <= 0)
+         //   enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
     };
 
     void DodgeRace::comboControll()

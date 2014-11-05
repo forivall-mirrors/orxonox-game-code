@@ -27,15 +27,15 @@
  */
 
 /**
-    @file DodgeRace.h
+    @file Invader.h
     @brief Gametype.
-    @ingroup DodgeRace
+    @ingroup Invader
 */
 
-#ifndef _DodgeRace_H__
-#define _DodgeRace_H__
+#ifndef _Invader_H__
+#define _Invader_H__
 
-#include "dodgerace/InvaderPrereqs.h"
+#include "invader/InvaderPrereqs.h"
 
 #include "gametypes/Deathmatch.h"
 
@@ -46,10 +46,10 @@
 namespace orxonox
 {
 
-    class _InvaderExport DodgeRace : public Deathmatch
+    class _InvaderExport Invader : public Deathmatch
     {
         public:
-    	DodgeRace(Context* context);
+            Invader(Context* context);
 
             virtual void start();
             virtual void end();
@@ -91,4 +91,4 @@ namespace orxonox
     };
 }
 
-#endif /* _DodgeRace_H__ */
+#endif /* _Invader_H__ */
