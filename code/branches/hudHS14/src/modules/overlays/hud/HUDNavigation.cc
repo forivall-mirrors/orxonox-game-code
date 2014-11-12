@@ -81,6 +81,7 @@ namespace orxonox
         this->setTextSize(0.05f);
         this->setNavMarkerSize(0.03f);
         this->setAimMarkerSize(0.02f);
+        this->setHealthMarkerSize(0.08f);
 
         this->setDetectionLimit(10000.0f);
         this->currentMunitionSpeed_ = 2500.0f;
@@ -115,6 +116,8 @@ namespace orxonox
         XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode);
         XMLPortParam(HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode);
         XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlelement, mode);
+        XMLPortParam(HUDNavigation, "healthMarkerSize", setHealthMarkerSize, getHealthMarkerSize, xmlelement, mode);
+
     }
 
     void HUDNavigation::setFont(const std::string& font)
@@ -205,6 +208,7 @@ namespace orxonox
 
         for (std::list<std::pair<RadarViewable*, unsigned int> >::iterator listIt = this->sortedObjectList_.begin(); listIt != this->sortedObjectList_.end(); ++markerCount, ++listIt)
         {
+
             std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.find(listIt->first);
             closeEnough = listIt->second < this->detectionLimit_;
             // display radarviewables on HUD if the marker limit and max-distance is not exceeded
@@ -272,6 +276,8 @@ namespace orxonox
                         listIt--;
                     }
                 }
+
+
 
 
                 // Transform to screen coordinates
@@ -357,7 +363,12 @@ namespace orxonox
                 {
                     // Object is in view
 
-                    // Change material only if outOfView changed
+
+
+
+
+
+                	// Change material only if outOfView changed
                     if (it->second.wasOutOfView_)
                     {
                         //it->second.panel_->setMaterialName("Orxonox/NavTDC");
@@ -366,12 +377,19 @@ namespace orxonox
                         it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
 
                         //manipulation bzw versuch !!! Jonas
-                        it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2b.png", it->first->getRadarObjectColour()));
+                        it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2.png", it->first->getRadarObjectColour()));
+                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x, this->healthMarkerSize_ * this->getActualSize().y);
 
                         it->second.wasOutOfView_ = false;
                     }
 
+
+                    //i need to find the place where the amount of health is saved!!!
+                    //this->selectedTarget_->getWorldEntity()->
+
+
                     // Position health (versuch !!!!)
+                    it->second.health_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
                     it->second.health_->setLeft((pos.x + 1.0f - it->second.panel_->getWidth()) * 0.5f);
                     it->second.health_->setTop((-pos.y + 1.0f - it->second.panel_->getHeight()) * 0.5f);
 
@@ -430,7 +448,7 @@ namespace orxonox
             else // do not display on HUD
 
             {
-            	it->second.health_->hide()
+            	it->second.health_->hide();
                 it->second.panel_->hide();
                 it->second.text_->hide();
                 it->second.target_->hide();
@@ -486,7 +504,7 @@ namespace orxonox
                 Ogre::PanelOverlayElement* health = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton()
                         .createOverlayElement("Panel", "HUDNavigation_healthMarker_" + getUniqueNumberString()));
                 //panel->setMaterialName("Orxonox/NavTDC");
-                health->setMaterialName(TextureGenerator::getMaterialName("bar2b.png", object->getRadarObjectColour()));
+                health->setMaterialName(TextureGenerator::getMaterialName("bar2.png", object->getRadarObjectColour()));
                 health->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
                 //panel->setColour(object->getRadarObjectColour());
 
@@ -518,7 +536,7 @@ namespace orxonox
         text->hide();
 
         ObjectInfo tempStruct =
-        {   health, panel, target, text, false, false, false, false};
+        {   health, panel, target, text, false, false, false};
         this->activeObjectList_[object] = tempStruct;
 
         this->background_->addChild(health);
