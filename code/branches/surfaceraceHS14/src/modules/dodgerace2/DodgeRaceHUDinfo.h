@@ -42,10 +42,10 @@ namespace orxonox
     {
      public:
             DodgeRaceHUDinfo(Context* context);
-  /*
-            virtual void tick(float dt);
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void changedOwner();
+
+         //   virtual void tick(float dt);
+           // virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            //virtual void changedOwner();
 
             inline void setShowLives(bool value)
                 { this->bShowLives_ = value; }
@@ -73,7 +73,7 @@ namespace orxonox
             bool bShowLives_;
             bool bShowLevel_;
             bool bShowPoints_;
-            bool bShowMultiplier_;*/
+            bool bShowMultiplier_;
     };
 }
 #endif /* _DodgeRaceHUDinfo_H__ */

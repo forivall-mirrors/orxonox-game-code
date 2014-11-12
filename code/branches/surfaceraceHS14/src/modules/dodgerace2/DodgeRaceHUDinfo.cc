@@ -38,12 +38,12 @@ namespace orxonox
     DodgeRaceHUDinfo::DodgeRaceHUDinfo(Context* context) : OverlayText(context)
     {
         RegisterObject(DodgeRaceHUDinfo);
-/*
+
         this->DodgeRaceGame = 0;
         this->bShowLives_ = false;
         this->bShowLevel_ = false;
         this->bShowPoints_ = false;
-        this->bShowMultiplier_ = false;*/
+        this->bShowMultiplier_ = false;
     }
 /*
     void DodgeRaceHUDinfo::XMLPort(Element& xmlelement, XMLPort::Mode mode)

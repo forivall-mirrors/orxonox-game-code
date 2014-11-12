@@ -45,6 +45,7 @@ namespace orxonox
         isFireing = false;
         damping = 10;
 
+        // not sure if has to be zero?
         lastTimeFront = 0;
         lastTimeLeft = 0;
         lastTime = 0;
@@ -105,14 +106,14 @@ namespace orxonox
 
         setPosition(pos);
         setOrientation(Vector3::UNIT_Y, Degree(270));
-/*
+
         // Level up!
         if (pos.x > 42000)
         {
             updateLevel();
             setPosition(Vector3(0, 0, pos.z)); // pos - Vector3(30000, 0, 0)
         }
-*/
+
         SUPER(DodgeRaceShip, tick, dt);
     }
 
@@ -182,10 +183,10 @@ namespace orxonox
         }
         return game;
     }
-/*
+
     void DodgeRaceShip::death()
     {
         getGame()->costLife();
         SpaceShip::death();
-    }*/
+    }
 }

@@ -74,9 +74,13 @@ namespace orxonox
             float speed, damping, posforeward;
             bool isFireing;
 
+        protected:
+            virtual void death();
+
         private:
             WeakPtr<DodgeRace> getGame();
             WeakPtr<DodgeRace> game;
+            WeakPtr<Projectile> lastShot;
             Camera* camera;
             float lastTimeFront, lastTimeLeft, lastTime;
             struct Velocity
@@ -89,23 +93,12 @@ namespace orxonox
 
 
 /*
-
-
-            //virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
-
-        protected:
-            virtual void death();
+ 	 	 	 virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
         private:
 
-
-
-
-
-
-
-           // WeakPtr<DodgeRaceEnemy> lastEnemy;
-            WeakPtr<Projectile> lastShot;*/
+            WeakPtr<DodgeRaceEnemy> lastEnemy;
+           */
 
     };
 }

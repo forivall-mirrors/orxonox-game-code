@@ -66,7 +66,7 @@ namespace orxonox
     void DodgeRace::levelUp()
     {
         level++;
-       /* if (getPlayer() != NULL)
+        if (getPlayer() != NULL)
         {
             for (int i = 0; i < 7; i++)
             {
@@ -75,7 +75,7 @@ namespace orxonox
                 chunk->setVelocity(Vector3(1000, 0, 0));  //player->getVelocity()
                 chunk->setScale(20);
             }
-        }*/
+        }
         addPoints(multiplier * 42);
         multiplier *= 2;
         toggleShowLevel();
@@ -118,7 +118,7 @@ namespace orxonox
             newPawn->setPosition(player->getPosition() + Vector3(500.f + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
         }
     }
-
+*/
     void DodgeRace::costLife()
     {
         lives--;
@@ -127,7 +127,7 @@ namespace orxonox
        // if (lives <= 0)
          //   enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
     };
-*/
+
     void DodgeRace::comboControll()
     {
         if (b_combo)
@@ -144,12 +144,12 @@ namespace orxonox
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = true;
 
-        /*if (this->center_ == NULL)  // abandon mission!
+        if (this->center_ == NULL)  // abandon mission!
         {
             orxout(internal_error) << "DodgeRace: No Centerpoint specified." << endl;
             GSLevel::startMainMenu();
             return;
-        }*/
+        }
         // Call start for the parent class.
         Deathmatch::start();
     }
@@ -161,7 +161,7 @@ namespace orxonox
             b_combo = true;
         }
     }
-/*
+
     void DodgeRace::end()
     {
         // DON'T CALL THIS!
@@ -169,5 +169,5 @@ namespace orxonox
         // It will misteriously crash the game!
         // Instead startMainMenu, this won't crash.
         GSLevel::startMainMenu();
-    }*/
+    }
 }

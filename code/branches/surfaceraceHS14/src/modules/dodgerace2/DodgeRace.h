@@ -38,7 +38,7 @@
 #include "dodgerace2/DodgeRacePrereqs.h"
 
 #include "DodgeRaceCenterPoint.h" // Necessary for WeakPointer??
-//#include "DodgeRaceShip.h" // DO NOT include in Header. Will cause forward declaration issues
+//#include "DodgeRaceShip.h" 		DO NOT include in Header. Will cause forward declaration issues
 
 //#include "DodgeRaceHUDinfo.h"
 
@@ -71,7 +71,7 @@ namespace orxonox
             void init();
 
             virtual void start();
-            //virtual void end();
+            virtual void end();
 
             void levelUp();
 
@@ -82,9 +82,11 @@ namespace orxonox
 
             void setCenterpoint(DodgeRaceCenterPoint* center)
                        { this->center_ = center; }
+            virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
 
             // checks if multiplier should be reset.
             void comboControll();
+            void costLife();
 
             bool bEndGame;
             bool bShowLevel;
@@ -107,7 +109,7 @@ namespace orxonox
 			Timer showLevelTimer;
 
 
-         /* virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
+         /*
 
             //void spawnEnemy();
 
@@ -115,7 +117,7 @@ namespace orxonox
 
 
 
-            void costLife();
+
 
 
 
