@@ -147,8 +147,8 @@ namespace orxonox
         //add some TowerDefenseEnemys
 
         TDCoordinate* coord1 = new TDCoordinate(1,1);
-        TDCoordinate* coord2 = new TDCoordinate(1,1);
-        TDCoordinate* coord3 = new TDCoordinate(1,2);
+        TDCoordinate* coord2 = new TDCoordinate(1,3);
+        TDCoordinate* coord3 = new TDCoordinate(10,3);
 
 
         std::vector<TDCoordinate*> path;
@@ -162,7 +162,7 @@ namespace orxonox
 
 
 
-        for(int i = 0 ; i < 20 ; ++i)
+        for(int i = 0 ; i < 1 ; ++i)
         {
         	addTowerDefenseEnemy(path);
         }
@@ -174,13 +174,18 @@ namespace orxonox
         //TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
     }
 
+    // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
+
     void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path){
 
     	orxout() << "test1" << endl;
 
     	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
-    	en1->addTemplate("spaceshipassff");
-    	/*en1->setInitialHealth(1000);
+        en1->addTemplate("enemytowerdefense");
+        en1->setScale(3);
+
+
+        /*en1->setInitialHealth(1000);
     	en1->setHealth(1000);
     	en1->setMaxHealth(1000);
     	en1->setInitialShieldHealth(1000);
@@ -189,16 +194,17 @@ namespace orxonox
     	orxout() << "en1 " << en1->getHealth() << endl;
 
 
-        Model* TowerDefenseEnemymodel = new Model(this->center_->getContext());
+        //Model* TowerDefenseEnemymodel = new Model(this->center_->getContext());
 
-        TowerDefenseEnemymodel->setMeshSource("cube.mesh");
+        //TowerDefenseEnemymodel->setMeshSource("cube.mesh");
 
-        TowerDefenseEnemymodel->setPosition(0,0,75);
-        en1->setPosition(0,0,150);
-        TowerDefenseEnemymodel->setScale(10);
+        //TowerDefenseEnemymodel->setPosition(0,0,75);
+        en1->setPosition(path.at(0)->get3dcoordinate());
+
+        //TowerDefenseEnemymodel->setScale(10);
 
 
-        en1->attach(TowerDefenseEnemymodel);
+        //en1->attach(TowerDefenseEnemymodel);
 
         TowerDefenseEnemyvector.push_back(en1);
 

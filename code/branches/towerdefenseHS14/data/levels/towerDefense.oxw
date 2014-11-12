@@ -20,6 +20,7 @@
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/tower.oxt")
+  include("templates/enemyTowerdefense.oxt")
 ?>
 
 <!-- Specify the position of the camera -->
@@ -77,7 +78,7 @@
 
     <SpaceShip position="-700,-500, 100" lookat="0,0,0" scale=3 team=1 >
       <templates>
-        <Template link=spaceshipassff />
+        <Template link=enemytowerdefense />
       </templates>
       <controller>
         <WaypointController accuracy=60>
@@ -131,9 +132,8 @@
     position="0,0,0"
     direction="0,0,0"
     collisionType=dynamic
-    mass=100000>
-
-    </TowerDefenseCenterpoint>
+    mass=100000
+    />
 
   </Scene>
 </Level>

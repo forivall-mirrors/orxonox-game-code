@@ -35,7 +35,7 @@ namespace orxonox
     	Vector3 *coord = new Vector3();
     	coord->x= (x-8) * tileScale;
     	coord->y= (y-8) * tileScale;
-    	coord->z=0;
+    	coord->z=100;
 
     	return *coord;
     }
