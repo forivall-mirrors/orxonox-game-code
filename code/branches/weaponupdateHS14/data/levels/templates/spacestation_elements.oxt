@@ -8,7 +8,7 @@
 </Template>
 			
 
-
+<!-- Spacestation Element Tube -->
 <Template name=ss_tube>
 
 	<MovableEntity position="0,0,0">
@@ -16,12 +16,13 @@
 
 	<Model position="0,0,0" scale3D="100,100,100" mesh="ss_tube.mesh" />
 
+
 	</attached>
 	 <collisionShapes>
-		<BoxCollisionShape position="0,0,50"  		halfExtents="300,300,0" />
-		<BoxCollisionShape position="0,0,-50"     	halfExtents="300,300,0" />
-		<BoxCollisionShape position="-150,-50,-50"     	halfExtents="12, 2, 20" />
-		<BoxCollisionShape position="-150,-50,-50"     	halfExtents="6, 2, 18" />
+		<BoxCollisionShape position="0,0,100"  			halfExtents="250,100,0" />	<!--Wand links-->
+		<BoxCollisionShape position="0,0,-100"     		halfExtents="250,100,0" />	<!--Wand rechts-->
+		<BoxCollisionShape position="0,-100,0"    	 	halfExtents="250,0,100" />	<!--Decke-->
+		<BoxCollisionShape position="0,100,0"     		halfExtents="250,0,100" />	<!--Boden-->
       
      </collisionShapes>
    
@@ -31,20 +32,22 @@
 </Template>
 
 
-
+<!-- Spacestation Element Curve -->
 <Template name=ss_curve>
 
 	<MovableEntity position="0,0,0">
 	<attached>
 
+	<Model position="-325,-100,125" mesh="cube_red.mesh" scale3D="225,1,225" />
 	<Model position="0,0,0" yaw=0 scale3D="100,100,100" mesh="ss_curve.mesh" />
 
 	</attached>
 	 <collisionShapes>
-		<BoxCollisionShape position="50,0,0"      halfExtents="8,10,10" />
-		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
-		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
-		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+	<BoxCollisionShape position="-300,0,-100"  			halfExtents="150,100,0" />	<!--Wand rechts-->
+	<BoxCollisionShape position="-100,0,100"  			halfExtents="150,100,0" />	<!--Wand rechts-->
+	<BoxCollisionShape position="-200,0,100"   yaw=45	halfExtents="150,100,0" />	<!--Wand rechts-->
+	<BoxCollisionShape position="-325,-100,125"   	 	halfExtents="225,0,225" />	<!--Boden-->
+	<BoxCollisionShape position="-325,100,125"     		halfExtents="250,0,100" />	<!--Decke-->
       
      </collisionShapes>
   
@@ -54,7 +57,7 @@
 </Template>
 
 
-
+<!-- Spacestation Element Crossing -->
 <Template name=ss_tube_x>
 
 	<MovableEntity position="0,0,0">
@@ -77,7 +80,7 @@
 </Template>
 
 
-
+<!-- Spacestation Element Flagroom -->
 <Template name=ss_flag_room>
 
 	<MovableEntity position="0,0,0">
@@ -100,7 +103,7 @@
 </Template>
 
 
-
+<!-- Spacestation Element Machine -->
 <Template name=ss_machine>
 
 	<MovableEntity position="0,0,0">
@@ -123,7 +126,7 @@ roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
 </Template>
 
 
-		
+<!-- Spacestation Element Table-->		
 <Template name=ss_table>
 
 	<MovableEntity position="0,0,0">
@@ -146,7 +149,7 @@ roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
 </Template>
 
 
-
+<!-- Spacestation Element Table (cracked) -->
 <Template name=ss_table_cracked>
 
 	<MovableEntity position="0,0,0">
@@ -169,7 +172,7 @@ roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
 </Template>
 
 
-
+<!-- Spacestation Element Cylinder -->
 <Template name=ss_cylinder>
 
 	<MovableEntity position="0,0,0">
@@ -192,7 +195,7 @@ roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
 </Template>
 
 
-
+<!-- Spacestation Element Chair -->
 <Template name=ss_chair>
 
 	<MovableEntity position="0,0,0">
@@ -215,7 +218,7 @@ roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
 </Template>
 
 
-
+<!-- Spacestation Element Wall -->
 <Template name=ss_wall>
 
 	<MovableEntity position="0,0,0">
@@ -238,7 +241,7 @@ roll=180 mesh="ss_table.mesh" scale3D="25,25,25"
 </Template>
 	
 
-
+<!-- Spacestation Element Flag -->
 <Template name=ss_flag_aean>
 
 	<MovableEntity position="0,0,0">
