@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(INVADER_STATIC_BUILD)
-#  ifdef INVADER_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(DODGERACE_STATIC_BUILD)
+#  ifdef DODGERACE_SHARED_BUILD
 #    define _DodgeRaceExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
@@ -67,14 +67,14 @@
 
 namespace orxonox
 {
-    //class DodgeRace;
-    class DodgeRaceCenterPoint;/*
+    class DodgeRace;
+    class DodgeRaceCenterPoint;
     class DodgeRaceShip;
-    class DodgeRaceEnemy;
-    class DodgeRaceEnemyShooter;
-    class DodgeRaceWeapon;
-    class DodgeRaceWeaponEnemy;*/
+    //class DodgeRaceEnemy;
+    //class DodgeRaceEnemyShooter;
+    //class DodgeRaceWeapon;
+    //class DodgeRaceWeaponEnemy;
     class DodgeRaceHUDinfo;
 }
 
-#endif /* _DodgeRacePrereqs_H__ */
+#endif /* _DodgeRacePrereqs_H__*/

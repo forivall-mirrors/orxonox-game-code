@@ -35,7 +35,7 @@
 
 #include "core/CoreIncludes.h"
 
-//#include "DodgeRace.h"
+#include "DodgeRace.h"
 
 namespace orxonox
 {

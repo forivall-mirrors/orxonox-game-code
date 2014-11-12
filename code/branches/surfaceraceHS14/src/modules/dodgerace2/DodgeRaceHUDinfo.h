@@ -27,9 +27,11 @@
 #ifndef _DodgeRaceHUDinfo_H__
 #define _DodgeRaceHUDinfo_H__
 
-//#include "DodgeRacePrereqs.h"
+//#include "DodgeRaceShip.h"
 #include "DodgeRace.h"
-#include "DodgeRaceCenterPoint.h"
+//#include "DodgeRaceCenterPoint.h"
+
+#include "dodgerace2/DodgeRacePrereqs.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"

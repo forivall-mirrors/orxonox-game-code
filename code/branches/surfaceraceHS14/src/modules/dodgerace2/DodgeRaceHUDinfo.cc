@@ -29,7 +29,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"
-#include "DodgeRace.h"
+//#include "DodgeRace.h"
 
 namespace orxonox
 {

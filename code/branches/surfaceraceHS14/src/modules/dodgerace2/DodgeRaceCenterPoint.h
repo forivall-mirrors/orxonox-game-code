@@ -35,9 +35,10 @@
 #ifndef _DodgeRaceCenterPoint_H__
 #define _DodgeRaceCenterPoint_H__
 
-//#include "dodgerace2/DodgeRacePrereqs.h"
-#include "DodgeRace.h"
-#include "DodgeRaceHUDinfo.h"
+#include "dodgerace2/DodgeRacePrereqs.h"
+
+//#include "DodgeRace.h"
+//#include "DodgeRaceHUDinfo.h"
 
 #include "worldentities/StaticEntity.h"
 

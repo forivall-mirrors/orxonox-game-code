@@ -35,15 +35,13 @@
 #ifndef _DodgeRace_H__
 #define _DodgeRace_H__
 
-//#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace2/DodgeRacePrereqs.h"
 
-#include "DodgeRaceCenterPoint.h"
-#include "DodgeRaceHUDinfo.h"
+//#include "DodgeRaceCenterPoint.h"
+//#include "DodgeRaceHUDinfo.h"
+//#include "DodgeRaceShip.h"
 
 #include "gametypes/Deathmatch.h"
-
-#include "DodgeRaceCenterPoint.h"
-
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -81,9 +79,9 @@ namespace orxonox
             bool bShowLevel;
         private:
             void toggleShowLevel(){bShowLevel = !bShowLevel;}
-            //WeakPtr<DodgeRaceShip> getPlayer();
+            WeakPtr<DodgeRaceShip> getPlayer();
             WeakPtr<DodgeRaceCenterPoint> center_;
-            //WeakPtr<DodgeRaceShip> player;
+            WeakPtr<DodgeRaceShip> player;
 
             Timer enemySpawnTimer;
             Timer comboTimer;

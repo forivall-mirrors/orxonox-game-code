@@ -44,8 +44,8 @@
 // ! HACK
 #include "infos/PlayerInfo.h"
 
-#include "DodgeRaceCenterPoint.h"
-/*#include "DodgeRaceShip.h"
+/*#include "DodgeRaceCenterPoint.h"
+#include "DodgeRaceShip.h"
 #include "DodgeRaceEnemy.h"
 #include "DodgeRaceEnemyShooter.h"
 */
@@ -60,7 +60,7 @@ namespace orxonox
     {
         RegisterObject(DodgeRace);
         this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
-        this->center_ = 0;
+        this->center_ = NULL;
         init();
         this->setHUDTemplate("DodgeRaceHUD"); // !!!!!!!!!!!!!!!	change later
     }
@@ -81,7 +81,7 @@ namespace orxonox
 
     void DodgeRace::levelUp()
     {
-        level++;/*
+        level++;
         if (getPlayer() != NULL)
         {
             for (int i = 0; i < 7; i++)
@@ -95,20 +95,22 @@ namespace orxonox
         addPoints(multiplier * 42);
         multiplier *= 2;
         toggleShowLevel();
-        showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&DodgeRace::toggleShowLevel, this)));*/
+        showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&DodgeRace::toggleShowLevel, this)));
     }
 
-    /*WeakPtr<DodgeRaceShip> DodgeRace::getPlayer()
+    WeakPtr<DodgeRaceShip> DodgeRace::getPlayer()
     {
         if (player == NULL)
         {
-            //for (ObjectList<DodgeRaceShip>::iterator it = ObjectList<DodgeRaceShip>::begin(); it != ObjectList<DodgeRaceShip>::end(); ++it)
-              //  player = *it;
+            for (ObjectList<DodgeRaceShip>::iterator it = ObjectList<DodgeRaceShip>::begin(); it != ObjectList<DodgeRaceShip>::end(); ++it)
+            {
+            	player = *it;
+            }
         }
         return player;
     }
 
-    void DodgeRace::spawnEnemy()
+    /*void DodgeRace::spawnEnemy()
     {
         if (getPlayer() == NULL)
             return;
