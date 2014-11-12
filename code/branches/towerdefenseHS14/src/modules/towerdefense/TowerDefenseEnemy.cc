@@ -31,13 +31,13 @@ namespace orxonox
 
     }
 
-    void TowerDefenseEnemy::addWaypoint(TDCoordinate coord)
+    void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
     {
     	orxout() << "test4" << endl;
     	Waypointsvector_.push_back(coord);
     	orxout() << "test5" << endl;
     }
-
+/*
     void TowerDefenseEnemy::popWaypoint()
     {
     	if(Waypointsvector_.size()>0)
@@ -47,7 +47,7 @@ namespace orxonox
     TDCoordinate TowerDefenseEnemy::peekWaypoint()
     {
     	if(Waypointsvector_.size()<=0){
-    		TDCoordinate coord = TDCoordinate(-1,-1);
+    		TDCoordinate* coord = TDCoordinate(-1,-1);
     		return coord;
     	}else{
         	return Waypointsvector_.at(Waypointsvector_.size()-1);
@@ -56,5 +56,5 @@ namespace orxonox
 
 
     }
-
+*/
 }

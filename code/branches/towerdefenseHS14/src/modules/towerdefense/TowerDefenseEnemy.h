@@ -37,12 +37,12 @@ namespace orxonox
 
         //health gibt es unter: health_
 
-        void addWaypoint(TDCoordinate coord);
+        void addWaypoint(TDCoordinate* coord);
         void popWaypoint();
         TDCoordinate peekWaypoint();
 	private:
 
-        std::vector<TDCoordinate> Waypointsvector_;
+        std::vector<TDCoordinate*> Waypointsvector_;
 
 	};
 
