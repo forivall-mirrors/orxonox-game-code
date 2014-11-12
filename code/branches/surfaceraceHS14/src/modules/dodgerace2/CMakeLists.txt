@@ -1,8 +1,8 @@
 SET_SOURCE_FILES(Dodgerace2_SRC_FILES
 DodgeRace.cc
 DodgeRaceCenterPoint.cc
-DodgeRaceHUDinfo.cc
 DodgeRaceShip.cc
+DodgeRaceHUDinfo.cc
 )
 
 ORXONOX_ADD_LIBRARY(dodgerace2

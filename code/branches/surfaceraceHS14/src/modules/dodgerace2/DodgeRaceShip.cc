@@ -33,10 +33,6 @@
 
 #include "DodgeRaceShip.h"
 
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-//#include "DodgeRace.h"
-
 namespace orxonox
 {
     RegisterClass(DodgeRaceShip);
@@ -48,6 +44,10 @@ namespace orxonox
         speed = 500;
         isFireing = false;
         damping = 10;
+
+        lastTimeFront = 0;
+        lastTimeLeft = 0;
+        lastTime = 0;
     }
 
     void DodgeRaceShip::tick(float dt)
@@ -105,14 +105,14 @@ namespace orxonox
 
         setPosition(pos);
         setOrientation(Vector3::UNIT_Y, Degree(270));
-
+/*
         // Level up!
         if (pos.x > 42000)
         {
             updateLevel();
             setPosition(Vector3(0, 0, pos.z)); // pos - Vector3(30000, 0, 0)
         }
-
+*/
         SUPER(DodgeRaceShip, tick, dt);
     }
 
@@ -138,7 +138,8 @@ namespace orxonox
     {
         isFireing = bBoost;
     }
-   /* inline bool DodgeRaceShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    /*
+    inline bool DodgeRaceShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         // orxout() << "touch!!! " << endl; //<< otherObject << " at " << contactPoint;
         WeakPtr<DodgeRaceEnemy> enemy = orxonox_cast<DodgeRaceEnemy*>(otherObject);
@@ -168,21 +169,23 @@ namespace orxonox
         }
         return false;
         // SUPER(DodgeRaceShip, collidesAgainst, otherObject, contactPoint);
-    }*/
-
+    }
+*/
     WeakPtr<DodgeRace> DodgeRaceShip::getGame()
     {
         if (game == NULL)
         {
             for (ObjectList<DodgeRace>::iterator it = ObjectList<DodgeRace>::begin(); it != ObjectList<DodgeRace>::end(); ++it)
-                game = *it;
+            {
+            	game = *it;
+            }
         }
         return game;
     }
-
+/*
     void DodgeRaceShip::death()
     {
         getGame()->costLife();
         SpaceShip::death();
-    }
+    }*/
 }

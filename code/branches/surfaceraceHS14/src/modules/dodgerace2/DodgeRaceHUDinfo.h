@@ -38,11 +38,11 @@
 
 namespace orxonox
 {
-    class DodgeRaceHUDinfo : public OverlayText, public Tickable
+    class _DodgeRaceExport DodgeRaceHUDinfo : public OverlayText, public Tickable
     {
-        public:
+     public:
             DodgeRaceHUDinfo(Context* context);
-
+  /*
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void changedOwner();
@@ -73,7 +73,7 @@ namespace orxonox
             bool bShowLives_;
             bool bShowLevel_;
             bool bShowPoints_;
-            bool bShowMultiplier_;
+            bool bShowMultiplier_;*/
     };
 }
 #endif /* _DodgeRaceHUDinfo_H__ */

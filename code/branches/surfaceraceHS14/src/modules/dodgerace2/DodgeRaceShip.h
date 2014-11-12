@@ -37,15 +37,18 @@
 
 #include "dodgerace2/DodgeRacePrereqs.h"
 
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "worldentities/pawns/SpaceShip.h"
 #include "graphics/Camera.h"
 #include "weapons/projectiles/Projectile.h"
-//#include "DodgeRace.h"
+
+#include "DodgeRace.h" // Is necessary for getGame function
 //#include "DodgeRaceCenterPoint.h"
 
 namespace orxonox
 {
-    class DodgeRaceShip : public SpaceShip
+    class _DodgeRaceExport DodgeRaceShip : public SpaceShip
     {
         public:
             DodgeRaceShip(Context* context);
@@ -53,19 +56,40 @@ namespace orxonox
             virtual void tick(float dt);
 
             // overwrite for 2d movement
-            virtual void moveFrontBack(const Vector2& value);
-            virtual void moveRightLeft(const Vector2& value);
+		    virtual void moveFrontBack(const Vector2& value);
+		    virtual void moveRightLeft(const Vector2& value);
 
-            // Starts or stops fireing
-            virtual void boost(bool bBoost);
+	 	    // Starts or stops fireing
+		    virtual void boost(bool bBoost);
 
-            //no rotation!
-            virtual void rotateYaw(const Vector2& value){};
-            virtual void rotatePitch(const Vector2& value){};
-            //return to main menu if game has ended.
-            virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
+		    //no rotation!
+		    virtual void rotateYaw(const Vector2& value){};
+		    virtual void rotatePitch(const Vector2& value){};
 
-            virtual void updateLevel();
+		    //return to main menu if game has ended.
+		    virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
+
+		    virtual void updateLevel();
+
+            float speed, damping, posforeward;
+            bool isFireing;
+
+        private:
+            WeakPtr<DodgeRace> getGame();
+            WeakPtr<DodgeRace> game;
+            Camera* camera;
+            float lastTimeFront, lastTimeLeft, lastTime;
+            struct Velocity
+            {
+			   float x;
+			   float y;
+            } velocity, desiredVelocity;
+
+
+
+
+/*
+
 
             //virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
@@ -73,20 +97,15 @@ namespace orxonox
             virtual void death();
 
         private:
-            WeakPtr<DodgeRace> getGame();
-            WeakPtr<DodgeRace> game;
-            Camera* camera;
-            bool isFireing;
-            float speed, damping, posforeward;
-            float lastTimeFront, lastTimeLeft, lastTime;
-            struct Velocity
-            {
-                float x;
-                float y;
-            } velocity, desiredVelocity;
+
+
+
+
+
+
 
            // WeakPtr<DodgeRaceEnemy> lastEnemy;
-            WeakPtr<Projectile> lastShot;
+            WeakPtr<Projectile> lastShot;*/
 
     };
 }

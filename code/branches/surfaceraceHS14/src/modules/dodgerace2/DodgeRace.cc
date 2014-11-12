@@ -32,37 +32,20 @@
 */
 
 #include "DodgeRace.h"
-
-#include "core/CoreIncludes.h"
-#include "core/EventIncludes.h"
-#include "core/command/Executor.h"
-#include "core/config/ConfigValueIncludes.h"
-
-#include "gamestates/GSLevel.h"
-#include "chat/ChatManager.h"
-
-// ! HACK
-#include "infos/PlayerInfo.h"
-
-/*#include "DodgeRaceCenterPoint.h"
-#include "DodgeRaceShip.h"
-#include "DodgeRaceEnemy.h"
-#include "DodgeRaceEnemyShooter.h"
-*/
-#include "core/command/ConsoleCommand.h"
-#include "worldentities/BigExplosion.h"
+#include "DodgeRaceShip.h" // Necessary for getPlayer function. Do NOT include this in Header!
 
 namespace orxonox
 {
-    RegisterClass(DodgeRace);
+    RegisterUnloadableClass(DodgeRace);
 
     DodgeRace::DodgeRace(Context* context) : Deathmatch(context)
     {
         RegisterObject(DodgeRace);
-        this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
-        this->center_ = NULL;
         init();
-        this->setHUDTemplate("DodgeRaceHUD"); // !!!!!!!!!!!!!!!	change later
+        this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
+        this->center_ = 0;
+        /*
+        this->setHUDTemplate("DodgeRaceHUD"); // !!!!!!!!!!!!!!!	change later*/
     }
 
     void DodgeRace::init()
@@ -74,15 +57,16 @@ namespace orxonox
         bShowLevel = false;
         multiplier = 1;
         b_combo = false;
+
         // spawn enemy every 3.5 seconds
         //enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&DodgeRace::spawnEnemy, this)));
-        //comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&DodgeRace::comboControll, this)));
+        comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&DodgeRace::comboControll, this)));
     }
 
     void DodgeRace::levelUp()
     {
         level++;
-        if (getPlayer() != NULL)
+       /* if (getPlayer() != NULL)
         {
             for (int i = 0; i < 7; i++)
             {
@@ -91,7 +75,7 @@ namespace orxonox
                 chunk->setVelocity(Vector3(1000, 0, 0));  //player->getVelocity()
                 chunk->setScale(20);
             }
-        }
+        }*/
         addPoints(multiplier * 42);
         multiplier *= 2;
         toggleShowLevel();
@@ -109,8 +93,8 @@ namespace orxonox
         }
         return player;
     }
-
-    /*void DodgeRace::spawnEnemy()
+/*
+    void DodgeRace::spawnEnemy()
     {
         if (getPlayer() == NULL)
             return;
@@ -133,7 +117,7 @@ namespace orxonox
             // spawn enemy at random points in front of player.
             newPawn->setPosition(player->getPosition() + Vector3(500.f + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
         }
-    }*/
+    }
 
     void DodgeRace::costLife()
     {
@@ -143,7 +127,7 @@ namespace orxonox
        // if (lives <= 0)
          //   enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
     };
-
+*/
     void DodgeRace::comboControll()
     {
         if (b_combo)
@@ -160,12 +144,12 @@ namespace orxonox
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = true;
 
-        if (this->center_ == NULL)  // abandon mission!
+        /*if (this->center_ == NULL)  // abandon mission!
         {
             orxout(internal_error) << "DodgeRace: No Centerpoint specified." << endl;
             GSLevel::startMainMenu();
             return;
-        }
+        }*/
         // Call start for the parent class.
         Deathmatch::start();
     }
@@ -177,7 +161,7 @@ namespace orxonox
             b_combo = true;
         }
     }
-
+/*
     void DodgeRace::end()
     {
         // DON'T CALL THIS!
@@ -185,5 +169,5 @@ namespace orxonox
         // It will misteriously crash the game!
         // Instead startMainMenu, this won't crash.
         GSLevel::startMainMenu();
-    }
+    }*/
 }

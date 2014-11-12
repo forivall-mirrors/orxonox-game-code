@@ -37,9 +37,25 @@
 
 #include "dodgerace2/DodgeRacePrereqs.h"
 
-//#include "DodgeRaceCenterPoint.h"
+#include "DodgeRaceCenterPoint.h" // Necessary for WeakPointer??
+//#include "DodgeRaceShip.h" // DO NOT include in Header. Will cause forward declaration issues
+
 //#include "DodgeRaceHUDinfo.h"
-//#include "DodgeRaceShip.h"
+
+
+#include "core/CoreIncludes.h"
+#include "core/EventIncludes.h"
+#include "core/command/Executor.h"
+#include "core/config/ConfigValueIncludes.h"
+
+#include "gamestates/GSLevel.h"
+#include "chat/ChatManager.h"
+
+// ! HACK
+#include "infos/PlayerInfo.h"
+
+#include "core/command/ConsoleCommand.h"
+#include "worldentities/BigExplosion.h"
 
 #include "gametypes/Deathmatch.h"
 #include "tools/Timer.h"
@@ -47,49 +63,72 @@
 namespace orxonox
 {
 
-    class DodgeRace : public Deathmatch
+    class _DodgeRaceExport DodgeRace : public Deathmatch
     {
-        public:
+       public:
             DodgeRace(Context* context);
 
+            void init();
+
             virtual void start();
-            virtual void end();
-            virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
+            //virtual void end();
 
-            //void spawnEnemy();
-
-            void setCenterpoint(DodgeRaceCenterPoint* center)
-            { this->center_ = center; }
+            void levelUp();
 
             int getLives(){return this->lives;}
             int getLevel(){return this->level;}
             int getPoints(){return this->point;}
             int getMultiplier(){return this->multiplier;}
 
-            void costLife();
-            void levelUp();
-            void addPoints(int numPoints);
+            void setCenterpoint(DodgeRaceCenterPoint* center)
+                       { this->center_ = center; }
 
             // checks if multiplier should be reset.
             void comboControll();
-            void init();
-            int lives;
-            int multiplier;
+
             bool bEndGame;
             bool bShowLevel;
-        private:
-            void toggleShowLevel(){bShowLevel = !bShowLevel;}
-            WeakPtr<DodgeRaceShip> getPlayer();
-            WeakPtr<DodgeRaceCenterPoint> center_;
-            WeakPtr<DodgeRaceShip> player;
+            int lives;
+            int multiplier;
 
-            Timer enemySpawnTimer;
-            Timer comboTimer;
-            Timer showLevelTimer;
-            //Context* context;
+       private:
+            WeakPtr<DodgeRaceShip> getPlayer();
+            WeakPtr<DodgeRaceShip> player;
+            void toggleShowLevel(){bShowLevel = !bShowLevel;}
+            void addPoints(int numPoints);
+
+            WeakPtr<DodgeRaceCenterPoint> center_;
             int level;
             int point;
             bool b_combo;
+
+            Timer enemySpawnTimer;
+			Timer comboTimer;
+			Timer showLevelTimer;
+
+
+         /* virtual void addBots(unsigned int amount){} //<! overwrite function in order to bypass the addbots command
+
+            //void spawnEnemy();
+
+
+
+
+
+            void costLife();
+
+
+
+
+
+
+        private:
+
+
+
+
+            //Context* context;
+            */
     };
 }
 

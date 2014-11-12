@@ -74,7 +74,7 @@ namespace orxonox
     //class DodgeRaceEnemyShooter;
     //class DodgeRaceWeapon;
     //class DodgeRaceWeaponEnemy;
-    class DodgeRaceHUDinfo;
+    //class DodgeRaceHUDinfo;
 }
 
 #endif /* _DodgeRacePrereqs_H__*/

@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    class DodgeRaceCenterPoint : public StaticEntity
+    class _DodgeRaceExport DodgeRaceCenterPoint : public StaticEntity
     {
         public:
             DodgeRaceCenterPoint(Context* context); //checks whether the gametype is actually DodgeRace.
