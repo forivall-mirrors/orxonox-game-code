@@ -56,7 +56,14 @@ namespace orxonox
 	    mini4DgamePlayerColor::color color_;
 	};
 
-
+	struct Mini4DgameWinner
+	{
+		int winningRow[4];
+		int winningColumn[4];
+		int winningHeight[4];
+		int winningNumber[4];
+		mini4DgamePlayerColor::color color_;
+	};
     /**
     @brief
 
@@ -77,11 +84,7 @@ namespace orxonox
             void setCenterpoint(Mini4DgameCenterpoint* center)
             	{ this->center_ = center; }
 
-//TODO: enum colors
-            PlayerInfo* getPlayer(int color) const; //!< Get the player with the specified color.
-
-
-            //bool isValidMove(Vector4* move, const Mini4DgameBoard* board);//!< Checks if the move is valid
+            void win(Mini4DgameWinner winner);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.
@@ -90,11 +93,9 @@ namespace orxonox
         private:
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
 
-          Mini4DgamePlayer players[2];
+            Mini4DgamePlayer players[2];
 
             WeakPtr<Mini4DgameCenterpoint> center_; //!< The playing field.
-
-            //TODO: Board is missing up to now
     };
 }
 

@@ -121,72 +121,147 @@ namespace orxonox
     	if(this->isValidMove(move))
     	{
     		this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = playerColor;
-    		mini4DgamePlayerColor::color winner = this->getWinner();
-    		if(winner != mini4DgamePlayerColor::none)
+    		Mini4DgameWinner winner = this->getWinner();
+    		if(winner.color_ != mini4DgamePlayerColor::none)
     		{
     			Mini4Dgame->win(winner);
     		}
     	}
     }
 
-    mini4DgamePlayerColor::color Mini4DgameCenterpoint::getWinner()
+    Mini4DgameWinner Mini4DgameCenterpoint::getWinner()
     {
+    	Mini4DgameWinner winner;
+		winner.color_ = mini4DgamePlayerColor::none;
+
     	//check diagonals rows-columns-height-numbers
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[i][i][i][i]==mini4DgamePlayerColor::none || this->board[0][0][0][0] != this->board[i][i][i][i])
 				break;
 			if(i==3)
-				return this->board[0][0][0][0];
+			{
+				winner.color_ = this->board[0][0][0][0];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = x;
+					winner.winningColumn[x] = x;
+					winner.winningHeight[x] = x;
+					winner.winningNumber[x] = x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[3-i][i][i][i]==mini4DgamePlayerColor::none || this->board[3][0][0][0] != this->board[3-i][i][i][i])
 				break;
 			if(i==3)
-				return this->board[3][0][0][0];
+			{
+				winner.color_ = this->board[3][0][0][0];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = 3-x;
+					winner.winningColumn[x] = x;
+					winner.winningHeight[x] = x;
+					winner.winningNumber[x] = x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[i][3-i][i][i]==mini4DgamePlayerColor::none || this->board[0][3][0][0] != this->board[i][3-i][i][i])
 				break;
 			if(i==3)
-				return this->board[0][3][0][0];
+			{
+				winner.color_ = this->board[0][3][0][0];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = x;
+					winner.winningColumn[x] = 3-x;
+					winner.winningHeight[x] = x;
+					winner.winningNumber[x] = x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[i][i][3-i][i]==mini4DgamePlayerColor::none || this->board[0][0][3][0] != this->board[i][i][3-i][i])
 				break;
 			if(i==3)
-				return this->board[0][0][3][0];
+			{
+				winner.color_ = this->board[0][0][3][0];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = x;
+					winner.winningColumn[x] = x;
+					winner.winningHeight[x] = 3-x;
+					winner.winningNumber[x] = x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[i][i][i][3-i]==mini4DgamePlayerColor::none || this->board[0][0][0][3] != this->board[i][i][i][3-i])
 				break;
 			if(i==3)
-				return this->board[0][0][0][3];
+			{
+				winner.color_ = this->board[0][0][0][3];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = x;
+					winner.winningColumn[x] = x;
+					winner.winningHeight[x] = x;
+					winner.winningNumber[x] = 3-x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[3-i][3-i][i][i]==mini4DgamePlayerColor::none || this->board[3][3][0][0] != this->board[3-i][3-i][i][i])
 				break;
 			if(i==3)
-				return this->board[3][3][0][0];
+			{
+				winner.color_ = this->board[3][3][0][0];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = 3-x;
+					winner.winningColumn[x] = 3-x;
+					winner.winningHeight[x] = x;
+					winner.winningNumber[x] = x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[3-i][i][3-i][i]==mini4DgamePlayerColor::none || this->board[3][0][3][0] != this->board[3-i][i][3-i][i])
 				break;
 			if(i==3)
-				return this->board[3][0][3][0];
+			{
+				winner.color_ = this->board[3][0][3][0];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = 3-x;
+					winner.winningColumn[x] = x;
+					winner.winningHeight[x] = 3-x;
+					winner.winningNumber[x] = x;
+				}
+				return winner;
+			}
 		}
 		for(int i=1; i<4; i++)
 		{
 			if(this->board[3-i][i][i][3-i]==mini4DgamePlayerColor::none || this->board[3][0][0][3] != this->board[3-i][i][i][3-i])
 				break;
 			if(i==3)
-				return this->board[3][0][0][3];
+			{
+				winner.color_ = this->board[3][0][0][3];
+				for(int x=0; x<4; x++){
+					winner.winningRow[x] = 3-x;
+					winner.winningColumn[x] = x;
+					winner.winningHeight[x] = x;
+					winner.winningNumber[x] = 3-x;
+				}
+				return winner;
+			}
 		}
 
 		//check diagonals rows-columns-height
@@ -197,28 +272,64 @@ namespace orxonox
 				if(this->board[i][i][i][l]==mini4DgamePlayerColor::none || this->board[0][0][0][l] != this->board[i][i][i][l])
 					break;
 				if(i==3)
-					return this->board[0][0][0][l];
+				{
+					winner.color_ = this->board[0][0][0][l];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = l;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[3-i][i][i][l]==mini4DgamePlayerColor::none || this->board[3][0][0][l] != this->board[3-i][i][i][l])
 					break;
 				if(i==3)
-					return this->board[3][0][0][l];
+				{
+					winner.color_ = this->board[3][0][0][l];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = 3-x;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = l;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[i][3-i][i][l]==mini4DgamePlayerColor::none || this->board[0][3][0][l] != this->board[i][3-i][i][l])
 					break;
 				if(i==3)
-					return this->board[0][3][0][l];
+				{
+					winner.color_ = this->board[0][3][0][l];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = 3-x;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = l;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[i][i][3-i][l]==mini4DgamePlayerColor::none || this->board[0][0][3][l] != this->board[i][i][3-i][l])
 					break;
 				if(i==3)
-					return this->board[0][0][3][l];
+				{
+					winner.color_ = this->board[0][0][3][l];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = 3-x;
+						winner.winningNumber[x] = l;
+					}
+					return winner;
+				}
 			}
 		}
 
@@ -230,28 +341,64 @@ namespace orxonox
 				if(this->board[i][i][l][i]==mini4DgamePlayerColor::none || this->board[0][0][l][0] != this->board[i][i][l][i])
 					break;
 				if(i==3)
-					return this->board[0][0][l][0];
+				{
+					winner.color_ = this->board[0][0][l][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = l;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[3-i][i][l][i]==mini4DgamePlayerColor::none || this->board[3][0][l][0] != this->board[3-i][i][l][i])
 					break;
 				if(i==3)
-					return this->board[3][0][l][0];
+				{
+					winner.color_ = this->board[3][0][l][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = 3-x;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = l;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[i][3-i][l][i]==mini4DgamePlayerColor::none || this->board[0][3][l][0] != this->board[i][3-i][l][i])
 					break;
 				if(i==3)
-					return this->board[0][3][l][0];
+				{
+					winner.color_ = this->board[0][3][l][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = 3-x;
+						winner.winningHeight[x] = l;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[i][i][l][3-i]==mini4DgamePlayerColor::none || this->board[0][0][l][3] != this->board[i][i][l][3-i])
 					break;
 				if(i==3)
-					return this->board[0][0][l][3];
+				{
+					winner.color_ = this->board[0][0][l][3];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = l;
+						winner.winningNumber[x] = 3-x;
+					}
+					return winner;
+				}
 			}
 		}
 
@@ -263,28 +410,64 @@ namespace orxonox
 				if(this->board[i][l][i][i]==mini4DgamePlayerColor::none || this->board[0][l][0][0] != this->board[i][l][i][i])
 					break;
 				if(i==3)
-					return this->board[0][l][0][0];
+				{
+					winner.color_ = this->board[0][l][0][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = l;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[3-i][l][i][i]==mini4DgamePlayerColor::none || this->board[3][l][0][0] != this->board[3-i][l][i][i])
 					break;
 				if(i==3)
-					return this->board[3][l][0][0];
+				{
+					winner.color_ = this->board[3][l][0][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = 3-x;
+						winner.winningColumn[x] = l;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[i][l][3-i][i]==mini4DgamePlayerColor::none || this->board[0][l][3][0] != this->board[i][l][3-i][i])
 					break;
 				if(i==3)
-					return this->board[0][l][3][0];
+				{
+					winner.color_ = this->board[0][l][3][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = l;
+						winner.winningHeight[x] = 3-x;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[i][l][i][3-i]==mini4DgamePlayerColor::none || this->board[0][l][0][3] != this->board[i][l][i][3-i])
 					break;
 				if(i==3)
-					return this->board[0][l][0][3];
+				{
+					winner.color_ = this->board[0][l][0][3];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = x;
+						winner.winningColumn[x] = l;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = 3-x;
+					}
+					return winner;
+				}
 			}
 		}
 
@@ -296,42 +479,270 @@ namespace orxonox
 				if(this->board[l][i][i][i]==mini4DgamePlayerColor::none || this->board[l][0][0][0] != this->board[l][i][i][i])
 					break;
 				if(i==3)
-					return this->board[l][0][0][0];
+				{
+					winner.color_ = this->board[l][0][0][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = l;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[l][3-i][i][i]==mini4DgamePlayerColor::none || this->board[l][3][0][0] != this->board[l][3-i][i][i])
 					break;
 				if(i==3)
-					return this->board[l][3][0][0];
+				{
+					winner.color_ = this->board[l][3][0][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = l;
+						winner.winningColumn[x] = 3-x;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[l][i][3-i][i]==mini4DgamePlayerColor::none || this->board[l][0][3][0] != this->board[l][i][3-i][i])
 					break;
 				if(i==3)
-					return this->board[l][0][3][0];
+				{
+					winner.color_ = this->board[l][0][3][0];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = l;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = 3-x;
+						winner.winningNumber[x] = x;
+					}
+					return winner;
+				}
 			}
 			for(int i=1; i<4; i++)
 			{
 				if(this->board[l][i][i][3-i]==mini4DgamePlayerColor::none || this->board[l][0][0][3] != this->board[l][i][i][3-i])
 					break;
 				if(i==3)
-					return this->board[l][0][0][3];
+				{
+					winner.color_ = this->board[l][0][0][3];
+					for(int x=0; x<4; x++){
+						winner.winningRow[x] = l;
+						winner.winningColumn[x] = x;
+						winner.winningHeight[x] = x;
+						winner.winningNumber[x] = 3-x;
+					}
+					return winner;
+				}
 			}
 		}
 
-		//check diagonals rows-columns
+		//check 2d diagonals
 		for(int k=0;k<4;k++){
     		for(int l=0;l<4;l++){
+    			//rows-columns
     			for(int i=1; i<4; i++)
 				{
-					if(this->board[i][i][k][l]==mini4DgamePlayerColor::none || this->board[0][0][l][0] != this->board[i][i][l][i])
+					if(this->board[i][i][k][l]==mini4DgamePlayerColor::none || this->board[0][0][k][l] != this->board[i][i][k][l])
 						break;
 					if(i==3)
-						return this->board[0][0][l][0];
-				}}}
-    	//-------------------------------------------------------------------------------------------------------
+					{
+						winner.color_ = this->board[0][0][k][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = x;
+							winner.winningColumn[x] = x;
+							winner.winningHeight[x] = k;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
+					}
+				}
+				for(int i=1; i<4; i++)
+				{
+					if(this->board[3-i][i][k][l]==mini4DgamePlayerColor::none || this->board[3][0][k][l] != this->board[3-i][i][k][l])
+						break;
+					if(i==3)
+					{
+						winner.color_ = this->board[3][0][k][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = 3-x;
+							winner.winningColumn[x] = x;
+							winner.winningHeight[x] = k;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
+					}
+				}
+				//rows-height
+    			for(int i=1; i<4; i++)
+    			{
+    				if(this->board[i][k][i][l]==mini4DgamePlayerColor::none || this->board[0][k][0][l] != this->board[i][k][i][l])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[0][k][0][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = x;
+							winner.winningColumn[x] = k;
+							winner.winningHeight[x] = x;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
+					}
+				}
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[3-i][k][i][l]==mini4DgamePlayerColor::none || this->board[3][k][0][l] != this->board[3-i][k][i][l])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[3][k][0][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = 3-x;
+							winner.winningColumn[x] = k;
+							winner.winningHeight[x] = x;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
+					}
+				}
+				//rows-numbers
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[i][k][l][i]==mini4DgamePlayerColor::none || this->board[0][k][l][0] != this->board[i][k][l][i])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[0][k][l][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = x;
+							winner.winningColumn[x] = k;
+							winner.winningHeight[x] = l;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
+					}
+				}
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[3-i][k][l][i]==mini4DgamePlayerColor::none || this->board[3][k][l][0] != this->board[3-i][k][l][i])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[3][k][l][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = 3-x;
+							winner.winningColumn[x] = k;
+							winner.winningHeight[x] = l;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
+					}
+				}
+				//column-height
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[k][i][i][l]==mini4DgamePlayerColor::none || this->board[k][0][0][l] != this->board[k][i][i][l])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[k][0][0][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = k;
+							winner.winningColumn[x] = x;
+							winner.winningHeight[x] = x;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
+					}
+				}
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[k][3-i][i][l]==mini4DgamePlayerColor::none || this->board[k][3][0][l] != this->board[k][3-i][i][l])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[k][3][0][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = k;
+							winner.winningColumn[x] = 3-x;
+							winner.winningHeight[x] = x;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
+					}
+				}
+				//column-numbers
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[k][i][l][i]==mini4DgamePlayerColor::none || this->board[k][0][l][0] != this->board[k][i][l][i])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[k][0][l][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = k;
+							winner.winningColumn[x] = x;
+							winner.winningHeight[x] = l;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
+					}
+				}
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[k][3-i][l][i]==mini4DgamePlayerColor::none || this->board[k][3][l][0] != this->board[k][3-i][l][i])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[k][3][l][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = k;
+							winner.winningColumn[x] = 3-x;
+							winner.winningHeight[x] = l;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
+					}
+				}
+				//height-numbers
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[k][l][i][i]==mini4DgamePlayerColor::none || this->board[k][l][0][0] != this->board[k][l][i][i])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[k][l][0][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = k;
+							winner.winningColumn[x] = l;
+							winner.winningHeight[x] = x;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
+					}
+				}
+				for(int i=1; i<4; i++)
+    			{
+    				if(this->board[k][l][3-i][i]==mini4DgamePlayerColor::none || this->board[k][l][3][0] != this->board[k][l][3-i][i])
+    					break;
+    				if(i==3)
+    				{
+						winner.color_ = this->board[k][l][3][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = k;
+							winner.winningColumn[x] = l;
+							winner.winningHeight[x] = 3-x;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
+					}
+				}
+    		}
+    	}
 
     	//check rows
     	for(int j=0;j<4;j++){
@@ -342,7 +753,14 @@ namespace orxonox
     				   && this->board[1][j][k][l]==this->board[2][j][k][l]
     				   && this->board[2][j][k][l]==this->board[3][j][k][l])
     				{
-    					return this->board[0][j][k][l];
+    					winner.color_ = this->board[0][j][k][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = x;
+							winner.winningColumn[x] = j;
+							winner.winningHeight[x] = k;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
     				}
     			}
     		}
@@ -357,7 +775,14 @@ namespace orxonox
     	    				   && this->board[i][1][k][l]==this->board[i][2][k][l]
     	    				   && this->board[i][2][k][l]==this->board[i][3][k][l])
     				{
-    	    			return this->board[i][0][k][l];
+    	    			winner.color_ = this->board[i][0][k][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = i;
+							winner.winningColumn[x] = x;
+							winner.winningHeight[x] = k;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
     				}
     			}
     		}
@@ -372,7 +797,14 @@ namespace orxonox
     	    	    				   && this->board[i][j][1][l]==this->board[i][j][2][l]
     	    	    				   && this->board[i][j][2][l]==this->board[i][j][3][l])
     				{
-    					return this->board[i][j][0][l];
+    					winner.color_ = this->board[i][j][0][l];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = i;
+							winner.winningColumn[x] = j;
+							winner.winningHeight[x] = x;
+							winner.winningNumber[x] = l;
+						}
+						return winner;
     				}
     			}
     		}
@@ -387,13 +819,18 @@ namespace orxonox
     	    	    				   && this->board[i][j][k][1]==this->board[i][j][k][2]
     	    	    				   && this->board[i][j][k][2]==this->board[i][j][k][3])
     				{
-    					return this->board[i][j][k][0];
+    					winner.color_ = this->board[i][j][k][0];
+						for(int x=0; x<4; x++){
+							winner.winningRow[x] = i;
+							winner.winningColumn[x] = j;
+							winner.winningHeight[x] = k;
+							winner.winningNumber[x] = x;
+						}
+						return winner;
     				}
     			}
     		}
     	}
-
-
-    	return mini4DgamePlayerColor::none;
+    	return winner;
     }
 }

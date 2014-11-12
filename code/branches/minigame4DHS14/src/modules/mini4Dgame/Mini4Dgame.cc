@@ -169,19 +169,4 @@ namespace orxonox
     }
 
 
-    /**
-    @brief
-        Get the player.
-    @return
-        Returns a pointer to the player. If there is no player, NULL is returned.
-    */
-    //TODO: colors
-    PlayerInfo* Mini4Dgame::getPlayer(int color) const
-    {
-        return players[color].info_;
-    	//for(int i=0;i<NUMBEROFPLAYERS;i++)
-        	//if(color == this->mini4DgamePlayers[i].color)
-        		//return this->mini4DgamePlayers[i].info;
-    }
-
 }

@@ -1,5 +1,6 @@
 SET_SOURCE_FILES(Mini4Dgame_SRC_FILES
   Mini4Dgame.cc
+  Mini4DgameAI.cc
   Mini4DgameCenterpoint.cc
 )
 

@@ -40,6 +40,7 @@
 
 #include "worldentities/StaticEntity.h"
 #include "mini4Dgame/Mini4DgamePrereqs.h"
+#include "mini4Dgame/Mini4Dgame.h"
 
 namespace orxonox
 {
@@ -108,19 +109,19 @@ namespace orxonox
                     @brief checks if the move is valid
                     @param the position where to put the stone plus the player who makes the move
             */
-            bool isValidMove(const Vector4 move,const int playerColor);
+            bool isValidMove(const Vector4 move);
 
             /**
                @brief makes a move on the logic playboard
            	   @param the position where to put the stone plus the player who makes the move
              */
-            void makeMove(const Vector4 move, const int player);
+            void makeMove(const Vector4 move, const mini4DgamePlayerColor::color playerColor);
 
             /**
-                @brief searches the board if somebody has won
-				@return the winner if somebody has won or mini4DgamePlayerColor::none if nobody has won so far
-             */
-            mini4DgamePlayerColor::color Mini4DgameCenterpoint::getWinner()
+               @brief checks if somebody has won
+               @return the winner with the winning fields or a winner with winner.color_ == mini4DgamePlayerColor::none if nobody has won so far.
+            */
+            Mini4DgameWinner Mini4DgameCenterpoint::getWinner();
 
         private:
             void checkGametype(); //!< Checks whether the gametype is Mini4Dgame and if it is, sets its centerpoint.
