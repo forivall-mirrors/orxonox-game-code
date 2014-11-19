@@ -78,9 +78,11 @@ namespace orxonox
             virtual void death();
 
         private:
+            virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             WeakPtr<DodgeRace> getGame();
             WeakPtr<DodgeRace> game;
             WeakPtr<Projectile> lastShot;
+            WeakPtr<WorldEntity> lastEntity;
             Camera* camera;
             float lastTimeFront, lastTimeLeft, lastTime;
             struct Velocity
@@ -88,17 +90,6 @@ namespace orxonox
 			   float x;
 			   float y;
             } velocity, desiredVelocity;
-
-
-
-
-/*
- 	 	 	 virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
-
-        private:
-
-            WeakPtr<DodgeRaceEnemy> lastEnemy;
-           */
 
     };
 }

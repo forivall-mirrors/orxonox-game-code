@@ -88,7 +88,11 @@ namespace orxonox
 
         // shoot!
         if (isFireing)
-            ControllableEntity::fire(0);
+        {
+        	//pos += Vector3(900, 0, 0) * dt;
+            //ControllableEntity::fire(0);
+        }
+
 
         // Camera
         WeakPtr<Camera> camera = this->getCamera();
@@ -102,7 +106,9 @@ namespace orxonox
 
         // bring back on track!
         if(pos.y != 0)
-            pos.y = 0;
+        {
+        	pos.y = 0;
+        }
 
         setPosition(pos);
         setOrientation(Vector3::UNIT_Y, Degree(270));
@@ -134,45 +140,25 @@ namespace orxonox
     void DodgeRaceShip::moveRightLeft(const Vector2& value)
     {
     	lastTimeLeft = 0;
-    	desiredVelocity.x = -value.x * speed;
+    	desiredVelocity.x = value.x * speed;
     }
     void DodgeRaceShip::boost(bool bBoost)
     {
         isFireing = bBoost;
     }
-    /*
+
     inline bool DodgeRaceShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        // orxout() << "touch!!! " << endl; //<< otherObject << " at " << contactPoint;
-        WeakPtr<DodgeRaceEnemy> enemy = orxonox_cast<DodgeRaceEnemy*>(otherObject);
-        WeakPtr<Projectile> shot = orxonox_cast<Projectile*>(otherObject);
-        // ensure that this gets only called once per enemy.
-        if (enemy != NULL && lastEnemy != enemy)
+        if (otherObject != NULL && lastEntity != otherObject)
         {
-            lastEnemy = enemy;
+        	lastEntity = otherObject;
+        	removeHealth(20);
+            //this->death();
+        }
 
-            removeHealth(20);
-            if (getGame())
-            {
-                getGame()->multiplier = 1;
-            }
-        }
-        // was shot, decrease multiplier
-        else if (shot != NULL  && lastShot != shot)
-        {
-            if (getGame() && orxonox_cast<DodgeRaceEnemy*>(shot->getShooter()) != NULL)
-            {
-                if (getGame()->multiplier > 1)
-                {
-                    lastShot = shot;
-                    getGame()->multiplier -= 1;
-                }
-            }
-        }
         return false;
-        // SUPER(DodgeRaceShip, collidesAgainst, otherObject, contactPoint);
     }
-*/
+
     WeakPtr<DodgeRace> DodgeRaceShip::getGame()
     {
         if (game == NULL)
