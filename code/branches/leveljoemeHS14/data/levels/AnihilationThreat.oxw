@@ -1,6 +1,6 @@
 <LevelInfo
-	name= "Total Anihilation"
-	description= "Save humanity from its total anihilation."
+	name= "Total Annihilation"
+	description= "Save humanity from its total annihilation."
 	tags= "mission"
 	screenshot= "screenshot.png"
 />
@@ -69,7 +69,7 @@
   	
   	
   <SpawnPoint 
-	team=0 position="0,0,0" 
+	team=0 position="9000,9000,9000" 
 	lookat="0,1,0" 
 	spawnclass=SpaceShip 
 	pawndesign=spaceshipassff >
@@ -149,7 +149,27 @@
     </events>
 </SimpleNotification>        
 
+<DistanceTrigger name="flying4" position="9500,9500,9500" target="Pawn" distance=50 stayActive="true" delay=1/>
+<SimpleNotification message="You're late!">
+    <events>
+        <trigger>
+            <EventListener event="flying4" />
+        </trigger>
+    </events>
+</SimpleNotification>
 
+
+
+
+
+<DistanceTrigger name="flying5" position="9550,9550,9550" target="Pawn" distance=50 stayActive="true" delay=1/>
+<SimpleNotification message="The enemy is eager to be beaten">
+    <events>
+        <trigger>
+            <EventListener event="flying5" />
+        </trigger>
+    </events>
+</SimpleNotification>
 
 
 <!-- Meteoriten, die sich bewegen -->
@@ -239,7 +259,7 @@
     	  
       </SpaceShip>
       
-      <SpaceShip position="2020,2500,2500" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
+      <SpaceShip position="2020,2400,2500" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
     	  <templates>
                 <Template link=spaceshippirate />
           </templates>
@@ -264,89 +284,207 @@
  
         <!--****************************After the Asteroid Field***************************-->
         
-   <DistanceTrigger name="afterPortal" position="9500,9500, 9500" target="Pawn"  distance=50 stayActive="true" delay=1/>
+   <DistanceTrigger name="afterPortal" position="10000,10000, 10000" target="Pawn"  distance=50 stayActive="true" delay=1/>
       
     
 <!--Creating player's team OK-->
         <!--Spaceships team 0 (player:team=0)-->
-        
-        <SpaceShip position="10000,10000,10000" lookat="2050,0,-1000" name="allied" health="500" maxhealth="500" initialhealth="500" >
-      	  <templates>
-                  <Template link=spaceshipassff />
-            </templates>
-             <controller>
-                <WaypointPatrolController alertnessradius=2000 team=0 >
-                    <events>
-                               <activity>
-                                   <EventListener event="afterPortal" />
-                                </activity>
-                           </events>
-					<waypoints>
-      	  	  	  	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
-                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
-           	  	  	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
-                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
-           	  	  	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
-                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
-                 	  	<Model mesh="cube.mesh" scale=0 position="1000,1500,1500" />
-                        <Model mesh="cube.mesh" scale=0 position="1900,1500,1500" />
-                        <Model mesh="cube.mesh" scale=0 position="2050,0,-1000" />
-                        <Model mesh="cube.mesh" scale=0 position="6050,0,0" />
-                        <Model mesh="cube.mesh" scale=0 position="10050,0,3000" />
-                        <Model mesh="cube.mesh" scale=0 position="3050,0,3000" />
-                        <Model mesh="cube.mesh" scale=0 position="-4050,0,3000" />
-                    </waypoints>
-							
-                </WaypointPatrolController>
-  
-             </controller>
-      	  
-        </SpaceShip>
-        <!--Second Spaceship team 0 (player: team 0)-->
-        <SpaceShip position="10100,10000,10100" lookat="2000,0,-950" name="allied" health="500" maxhealth="400" initialhealth="400" >
-             <templates>
-                  <Template link=spaceshipassff />
-            </templates>
-             <controller>
-                <WaypointPatrolController alertnessradius=2000 team=0 >
-      	  	  	  	  <events>
-      	  	  	  	  	  <activity>
-                                     <EventListener event="afterPortal" />
-                          </activity>
-                       </events>
+               
+               <SpaceShip position="10000,10000,10000" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+             	  <templates>
+                         <Template link=spaceshipassff />
+                   </templates>
+                    <controller>
+      	  	  	  	  <WaypointPatrolController alertnessradius=2000 team=0 >
+                               <events>
+                                          <activity>
+                                              <EventListener event="afterPortal" />
+                                           </activity>
+                                      </events>
+             					<waypoints>
+            	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
 
-                    <waypoints>
-                        <Model mesh="cube.mesh" scale=0 position="2000,0,-900" />
-                        <Model mesh="cube.mesh" scale=0 position="6000,0,0" />
-                        <Model mesh="cube.mesh" scale=0 position="10000,0,3100" />
-                        <Model mesh="cube.mesh" scale=0 position="3000,0,3100" />
-                        <Model mesh="cube.mesh" scale=0 position="-4000,0,3100"/>
-                    </waypoints>
-                </WaypointPatrolController>
-             </controller>
-        </SpaceShip>
-        <!--third Spaceship team 0 (player: team 0)-->
-        <SpaceShip position="9900,10000,9900" lookat="2000,0,-1050" name="allied" health="500" maxhealth="400" initialhealth="400" >
-             <templates>
-                  <Template link=spaceshipassff />
-            </templates>
-             <controller>
-                <WaypointPatrolController alertnessradius=2000 team=0 >
-      	  	  	  <events>
-                        <activity>
-                             <EventListener event="afterPortal" />
-                         </activity>
-                  </events>
-                    <waypoints>
-                        <Model mesh="cube.mesh" scale=0 position="2000,0,-1100" />
-                        <Model mesh="cube.mesh" scale=0 position="6000,0,-100" />
-                        <Model mesh="cube.mesh" scale=0 position="10000,0,2900" />
-                        <Model mesh="cube.mesh" scale=0 position="3000,0,2900" />
-                        <Model mesh="cube.mesh" scale=0 position="-4000,0,2900" />
-                    </waypoints>
-                </WaypointPatrolController>
-             </controller>
-        </SpaceShip>
+                               </waypoints>
+             							
+                           </WaypointPatrolController>
+                    </controller>
+             </SpaceShip>
+
+
+             <SpaceShip position="10150,10000,9850" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+           	  <templates>
+                       <Template link=spaceshipassff />
+                 </templates>
+                  <controller>
+                     <WaypointPatrolController alertnessradius=2000 team=0 >
+                         <events>
+                                    <activity>
+                                        <EventListener event="afterPortal" />
+                                     </activity>
+                                </events>
+       					<waypoints>
+      	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="15150,15000,14850" />
+
+                         </waypoints>
+       							
+                     </WaypointPatrolController>
+
+                  </controller>
+             </SpaceShip>
+
+             
+             
+             
+
+             <SpaceShip position="10150,10150,10150" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+           	  <templates>
+                       <Template link=spaceshipassff />
+                 </templates>
+                  <controller>
+                     <WaypointPatrolController alertnessradius=2000 team=0 >
+                         <events>
+                                    <activity>
+                                        <EventListener event="afterPortal" />
+                                     </activity>
+                                </events>
+       					<waypoints>
+      	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                         </waypoints>
+       							
+                     </WaypointPatrolController>
+
+                  </controller>
+             </SpaceShip>
+
+      
+      <SpaceShip position="10300,10000,10300" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+                 	  <templates>
+                             <Template link=spaceshipassff />
+                       </templates>
+                        <controller>
+                           <WaypointPatrolController alertnessradius=2000 team=0 >
+                               <events>
+                                          <activity>
+                                              <EventListener event="afterPortal" />
+                                           </activity>
+                                      </events>
+             					<waypoints>
+            	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                               </waypoints>
+             							
+                           </WaypointPatrolController>
+
+                        </controller>
+                   </SpaceShip>
+      
+      <SpaceShip position="10450,10000,10300" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+                      	  <templates>
+                                  <Template link=spaceshipassff />
+                            </templates>
+                             <controller>
+                                <WaypointPatrolController alertnessradius=2000 team=0 >
+                                    <events>
+                                               <activity>
+                                                   <EventListener event="afterPortal" />
+                                                </activity>
+                                           </events>
+                  					<waypoints>
+                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                                    </waypoints>
+                  							
+                                </WaypointPatrolController>
+
+                             </controller>
+                        </SpaceShip>
+      
+      <SpaceShip position="10450,10000,10450" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+                            	  <templates>
+                                        <Template link=spaceshipassff />
+                                  </templates>
+                                   <controller>
+                                      <WaypointPatrolController alertnessradius=2000 team=0 >
+                                          <events>
+                                                     <activity>
+                                                         <EventListener event="afterPortal" />
+                                                      </activity>
+                                                 </events>
+                        					<waypoints>
+                       	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                                          </waypoints>
+                        							
+                                      </WaypointPatrolController>
+
+                                   </controller>
+                              </SpaceShip>
+      
+      
+      <SpaceShip position="10300,10000,9850" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+                                	  <templates>
+                                            <Template link=spaceshipassff />
+                                      </templates>
+                                       <controller>
+                                          <WaypointPatrolController alertnessradius=2000 team=0 >
+                                              <events>
+                                                         <activity>
+                                                             <EventListener event="afterPortal" />
+                                                          </activity>
+                                                     </events>
+                            					<waypoints>
+                           	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                                              </waypoints>
+                            							
+                                          </WaypointPatrolController>
+
+                                       </controller>
+                                  </SpaceShip>
+      
+      <SpaceShip position="10150,10000,9700" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+                                      	  <templates>
+                                                  <Template link=spaceshipassff />
+                                            </templates>
+                                             <controller>
+                                                <WaypointPatrolController alertnessradius=2000 team=0 >
+                                                    <events>
+                                                               <activity>
+                                                                   <EventListener event="afterPortal" />
+                                                                </activity>
+                                                           </events>
+                                  					<waypoints>
+                                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                                                    </waypoints>
+                                  							
+                                                </WaypointPatrolController>
+
+                                             </controller>
+                                        </SpaceShip>
+      
+      <SpaceShip position="10300,10000,9700" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
+                                      	  <templates>
+                                                  <Template link=spaceshipassff />
+                                            </templates>
+                                             <controller>
+                                                <WaypointPatrolController alertnessradius=2000 team=0 >
+                                                    <events>
+                                                               <activity>
+                                                                   <EventListener event="afterPortal" />
+                                                                </activity>
+                                                           </events>
+                                  					<waypoints>
+                                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="2020,2500,2500" />
+
+                                                    </waypoints>
+                                  							
+                                                </WaypointPatrolController>
+
+                                             </controller>
+                                        </SpaceShip>
+      
 <!--Creating player's team END  -->
 
         
