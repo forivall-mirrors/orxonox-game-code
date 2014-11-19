@@ -84,6 +84,7 @@ namespace orxonox
 
     private:
         TowerDefenseCenterpoint *center_;
+        float time;
 
         /* handles stats */
         TowerDefensePlayerStats *stats_;

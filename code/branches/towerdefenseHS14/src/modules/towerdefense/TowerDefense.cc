@@ -128,8 +128,9 @@ namespace orxonox
     {
     	orxout() << "test0" << endl;
 
-
         Deathmatch::start();
+
+        time=0.0;
 
 /*
         const int kInitialTowerCount = 3;
@@ -142,32 +143,12 @@ namespace orxonox
         }
 */
 
-        orxout() << "test3" << endl;
 
         //add some TowerDefenseEnemys
 
-        TDCoordinate* coord1 = new TDCoordinate(1,1);
-        TDCoordinate* coord2 = new TDCoordinate(1,3);
-        TDCoordinate* coord3 = new TDCoordinate(10,3);
-
-
-        std::vector<TDCoordinate*> path;
-
-
-        path.push_back(coord1);
-
-        path.push_back(coord2);
-
-        path.push_back(coord3);
 
 
 
-        for(int i = 0 ; i < 20 ; ++i)
-        {
-        	addTowerDefenseEnemy(path);
-        }
-
-        orxout() << "test7" << endl;
 
         //ChatManager::message("Use the console command addTower x y to add towers");
 
@@ -178,51 +159,24 @@ namespace orxonox
 
     void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path){
 
-    	orxout() << "test1" << endl;
-
     	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
         en1->addTemplate("enemytowerdefense");
         en1->setScale(3);
         en1->getController();
 
-
-        /*en1->setInitialHealth(1000);
-    	en1->setHealth(1000);
-    	en1->setMaxHealth(1000);
-    	en1->setInitialShieldHealth(1000);
-    	en1->setShieldHealth(1000);
-    	en1->setMaxShieldHealth(1000);*/
-    	orxout() << "en1 " << en1->getHealth() << endl;
-
-
-        //Model* TowerDefenseEnemymodel = new Model(this->center_->getContext());
-
-        //TowerDefenseEnemymodel->setMeshSource("cube.mesh");
-
-        //TowerDefenseEnemymodel->setPosition(0,0,75);
         en1->setPosition(path.at(0)->get3dcoordinate());
 
-        //TowerDefenseEnemymodel->setScale(10);
-
-
-        //en1->attach(TowerDefenseEnemymodel);
 
         TowerDefenseEnemyvector.push_back(en1);
 
-        orxout() << "test2" << endl;
 
         for(unsigned int i = 0; i < path.size(); ++i)
         {
             en1->addWaypoint((path.at(i)));
         }
-        orxout() << "test6" << endl;
 
 
-       /* for (int i = 0; i < TowerDefenseEnemyvector.size(); ++i )
-               {
-               	orxout() <<i << " " << TowerDefenseEnemyvector.at(i)->getHealth() << endl;
-               }
-
+       /*
         WaypointController *newController = new WaypointController(en1->getContext());//
         newController->setAccuracy(3);
 
@@ -320,12 +274,18 @@ namespace orxonox
     void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
+        time +=dt;
 
-       /* for (int i = 0; i < TowerDefenseEnemyvector.size(); ++i )
-        {
-        	orxout() <<i << " " << TowerDefenseEnemyvector.at(i)->getHealth() << endl;
-        }
-*/
+        TDCoordinate* coord1 = new TDCoordinate(1,1);
+        std::vector<TDCoordinate*> path;
+        path.push_back(coord1);
+
+            if(time>1 && TowerDefenseEnemyvector.size() < 30)
+            {
+            	addTowerDefenseEnemy(path);
+            	time = time-1;
+            }
+
 
     }
 

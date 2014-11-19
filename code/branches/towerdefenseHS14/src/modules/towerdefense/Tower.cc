@@ -39,7 +39,7 @@ namespace orxonox
     void Tower::setOrientation(const Quaternion& orientation)
     {
         static int ori;
-        orxout() << "orientation " << ++ori << endl;
+        //orxout() << "orientation " << ++ori << endl;
     }
 
     void Tower::rotateYaw(const Vector2& value)
@@ -57,7 +57,7 @@ namespace orxonox
     void Tower::rotateRoll(const Vector2& value)
     {
         static int roll;
-        orxout() << "rotateRoll" << ++roll << endl;
+        //orxout() << "rotateRoll" << ++roll << endl;
     }
 
     // This function is called whenever a player presses the up or the down key.

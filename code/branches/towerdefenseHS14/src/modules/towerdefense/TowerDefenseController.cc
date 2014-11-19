@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "worldentities/pawns/Pawn.h"
+#include "controllers/WaypointController.h"
 
 namespace orxonox
 {

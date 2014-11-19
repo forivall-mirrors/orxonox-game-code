@@ -21,6 +21,7 @@ See TowerDefenseReadme.txt for Information.
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "worldentities/pawns/SpaceShip.h"
 #include "util/Output.h"
+#include "controllers/ArtificialController.h"
 
 namespace orxonox
 {
@@ -37,6 +38,7 @@ namespace orxonox
 
         //health gibt es unter: health_
 
+        virtual void tick(float dt);
         void addWaypoint(TDCoordinate* coord);
         void popWaypoint();
         TDCoordinate peekWaypoint();
