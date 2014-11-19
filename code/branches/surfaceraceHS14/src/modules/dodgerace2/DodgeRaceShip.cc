@@ -95,7 +95,7 @@ namespace orxonox
         if (camera != NULL)
         {
             camera->setPosition(Vector3(-pos.z, -posforeward, 0));
-            camera->setOrientation(Vector3::UNIT_Z, Degree(90));
+            camera->setOrientation(Vector3::UNIT_Z, Degree(0));
         }
 
 
@@ -126,14 +126,15 @@ namespace orxonox
 
     void DodgeRaceShip::moveFrontBack(const Vector2& value)
     {
-        lastTimeLeft = 0;
-        desiredVelocity.x = -value.x * speed;
+    	//lastTimeFront = 0;
+    	//desiredVelocity.y = value.y * speed * 42;
+
     }
 
     void DodgeRaceShip::moveRightLeft(const Vector2& value)
     {
-        lastTimeFront = 0;
-        desiredVelocity.y = value.y * speed * 42;
+    	lastTimeLeft = 0;
+    	desiredVelocity.x = -value.x * speed;
     }
     void DodgeRaceShip::boost(bool bBoost)
     {

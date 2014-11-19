@@ -1,5 +1,5 @@
-<Template name=spaceshipDodgeRace>
-  <InvaderShip
+<Template name=spaceshipdodgerace>
+  <DodgeRaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipescortcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
@@ -61,18 +61,17 @@
 <?lua
   include("../includes/invaderWeapon.oxi")
 ?>
-  </InvaderShip>
+  </DodgeRaceShip>
 </Template>
 
 <Template name=spaceshipescortcameras defaults=0>
-  <InvaderShip>
+  <DodgeRaceShip>
     <camerapositions>
- <!--       <CameraPosition position="0,15, 60" drag=true mouselook=true />
-     <CameraPosition position="0,20, 90" drag=true mouselook=true /> -->
-      <CameraPosition position="0,30,120" direction="0, 0, -1"  drag=false mouselook=true /> 
+      <CameraPosition position="0,30,120" direction="0, 0, -1" drag=false mouselook=true /> 
       <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=false mouselook=true />
+      <CameraPosition position="0,300,-100" direction="1, 0, 0" drag=false mouselook=true />
     </camerapositions>
-  </InvaderShip>
+  </DodgeRaceShip>
 </Template>
 
 <Template name=spaceshipinvaderengine baseclass=MultiStateEngine>
