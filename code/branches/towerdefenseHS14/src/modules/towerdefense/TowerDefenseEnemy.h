@@ -27,7 +27,7 @@ namespace orxonox
 /* Class to give the TowerDefenseEnemy spaceships waypoints and
  *
  */
-	class _TowerDefenseExport TowerDefenseEnemy : public Pawn
+	class _TowerDefenseExport TowerDefenseEnemy : public SpaceShip 
 	{
 
 	public:
@@ -40,6 +40,8 @@ namespace orxonox
         void addWaypoint(TDCoordinate* coord);
         void popWaypoint();
         TDCoordinate peekWaypoint();
+
+
 	private:
 
         std::vector<TDCoordinate*> Waypointsvector_;

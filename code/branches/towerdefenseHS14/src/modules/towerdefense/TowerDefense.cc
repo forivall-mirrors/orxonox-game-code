@@ -162,7 +162,7 @@ namespace orxonox
 
 
 
-        for(int i = 0 ; i < 1 ; ++i)
+        for(int i = 0 ; i < 20 ; ++i)
         {
         	addTowerDefenseEnemy(path);
         }
@@ -183,6 +183,7 @@ namespace orxonox
     	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
         en1->addTemplate("enemytowerdefense");
         en1->setScale(3);
+        en1->getController();
 
 
         /*en1->setInitialHealth(1000);

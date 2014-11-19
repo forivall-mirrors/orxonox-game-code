@@ -23,7 +23,7 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    TowerDefenseEnemy::TowerDefenseEnemy(Context* context) : Pawn(context)
+    TowerDefenseEnemy::TowerDefenseEnemy(Context* context) : SpaceShip(context)
     {
         RegisterObject(TowerDefenseEnemy);
 
@@ -34,7 +34,7 @@ namespace orxonox
     void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
     {
     	orxout() << "test4" << endl;
-    	Waypointsvector_.push_back(coord);
+    	this->Waypointsvector_.push_back(coord);
     	orxout() << "test5" << endl;
     }
 /*
@@ -57,4 +57,5 @@ namespace orxonox
 
     }
 */
+
 }
