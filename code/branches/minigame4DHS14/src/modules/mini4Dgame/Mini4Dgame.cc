@@ -44,6 +44,7 @@
 #include "core/command/Executor.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "infos/PlayerInfo.h"
+#include "core/command/ConsoleCommand.h"
 
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
@@ -52,6 +53,8 @@
 
 namespace orxonox
 {
+
+	SetConsoleCommand("Mini4Dgame", "setStone", &Mini4Dgame::setStone).addShortcut();
 
     RegisterUnloadableClass(Mini4Dgame);
 
@@ -64,7 +67,10 @@ namespace orxonox
         RegisterObject(Mini4Dgame);
 
         this->center_ = 0;
-        //TODO: player Null setzen
+        this->board_ = 0;
+
+        // Set the type of Bots for this particular Gametype.
+        //this->botclass_ = Class(Mini4DgameBot);
     }
 
     /**
@@ -86,23 +92,25 @@ namespace orxonox
 
     }
 
-    /*
-    bool Mini4Dgame::isValidMove(Vector4* move, const Mini4DgameBoard* board)
-    {
-
-    }
-    */
-
-
     /**
     @brief
-        Starts the Tetris minigame.
+        Starts the mini4Dgame.
     */
     void Mini4Dgame::start()
     {
         if (this->center_ != NULL) // There needs to be a Mini4DgameCenterpoint, i.e. the area the game takes place.
         {
-            //TODO: create all objects if they don't exist so far and attach the parameters specified in the centerpoint to them
+        	if (this->board_ == NULL)
+        	{
+        		this->board_ = new Mini4DgameBoard(this->center_->getContext());
+        		// Apply the template for the ball specified by the centerpoint.
+        		this->board_->addTemplate(this->center_->getBoardtemplate());
+        	}
+
+        	// Attach the board to the centerpoint and set the parameters as specified in the centerpoint, the ball is attached to.
+        	this->center_->attach(this->board_);
+        	this->board_->setPosition(0, 0, 0);
+
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
@@ -168,5 +176,13 @@ namespace orxonox
         }
     }
 
+    static void Mini4Dgame::setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board)
+    {
+    	board->makeMove(move,playerColor);
+    }
 
+    void Mini4Dgame::win(Mini4DgameWinner winner)
+    {
+
+    }
 }

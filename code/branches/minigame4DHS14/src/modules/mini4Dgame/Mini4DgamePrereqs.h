@@ -68,6 +68,7 @@
 namespace orxonox
 {
     class Mini4Dgame;
+    class Mini4DgameBoard;
     class Mini4DgameCenterpoint;
 }
 

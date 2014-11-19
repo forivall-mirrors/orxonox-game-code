@@ -40,23 +40,14 @@
 
 #include "worldentities/StaticEntity.h"
 #include "mini4Dgame/Mini4DgamePrereqs.h"
-#include "mini4Dgame/Mini4Dgame.h"
+//#include "mini4Dgame/Mini4Dgame.h"
 
 namespace orxonox
 {
-    
     /**
     @brief
         The Mini4DgameCenterpoint implements the playing field @ref orxonox::Mini4Dgame "Mini4Dgame" takes place in and allows for many parameters of the minigame to be set.
         
-        Various parameters can be set:
-        - The <b>dimension</b> is a vector, that defines the width and height of the playing field. The default is <em>(200, 120)</em>.
-        - The <b>balltemplate</b> is a template that is applied to the @ref orxonox::PongBall "PongBall", it can be used to attach different things to it, e.g. its @ref orxonox::Model "Model". See below for a usage example.
-        - The <b>battemplate</b> is a template that is applied to the @ref orxonox::PongBall "PongBat", it can be used to attach different things to it, e.g. its @ref orxonox::Model "Model". See below for a usage example.
-        - The <b>ballspeed</b> is the speed with which the @ref orxonox::PongBall "PongBall" moves. The default is <em>100</em>.
-        - The <b>ballaccfactor</b> is the acceleration factor for the @ref orxonox::PongBall "PongBall". The default is <em>1.0</em>.
-        - The <b>batspeed</b> is the speed with which the @ref orxonox::PongBat "PongBats" move. The default is <em>60</em>.
-        - The <b>batlength</b> is the length of the @ref orxonox::PongBat "PongBats" as the percentage of the height of the playing field. The default is <em>0.25</em>.
     */
     class _Mini4DgameExport Mini4DgameCenterpoint : public StaticEntity
     {
@@ -69,28 +60,20 @@ namespace orxonox
             virtual void changedGametype(); //!< Is called when the gametype has changed.
 
             /**
-            @brief Set the template for the ball. (e.g. to attach the model of the ball, but also to attach an EventListener to it to detect, when it hits the boundaries, and e.g. display some ParticleEffets, when it does.)
-            @param balltemplate The name of the template to be set.
-
-            void setBalltemplate(const std::string& balltemplate)
-                { this->balltemplate_ = balltemplate; }
+            @brief Get the template of the board.
+            @return Returns the name of the template of the board.
             */
+            const std::string& getBoardtemplate() const
+                { return this->boardtemplate_; }
+
 
             /**
-            @brief Get the template of the ball.
-            @return Returns the name of the template of the ball. 
-
-            const std::string& getBalltemplate() const
-                { return this->balltemplate_; }
+            @brief Set the template for the board.
+            @param boardtemplate The name of the template to be set.
             */
+            void setBoardtemplate(const std::string& boardtemplate)
+                { this->boardtemplate_ = boardtemplate; }
 
-            /**
-            @brief Set the template for the bats. (e.g. to attach the model of the bat, but also to attach CameraPositions to it, to be able to view the game from the bats perspective)
-            @param battemplate The name of the template to be set.
-
-            void setBattemplate(const std::string& battemplate)
-                { this->battemplate_ = battemplate; }
-            */
 
             /**
             @brief Set the dimensions of the playing field.
@@ -105,34 +88,14 @@ namespace orxonox
             Vector3 getFieldDimension() const
                 { return Vector3(this->width_, this->height_, this->length_); }
 
-            /**
-                    @brief checks if the move is valid
-                    @param the position where to put the stone plus the player who makes the move
-            */
-            bool isValidMove(const Vector4 move);
-
-            /**
-               @brief makes a move on the logic playboard
-           	   @param the position where to put the stone plus the player who makes the move
-             */
-            void makeMove(const Vector4 move, const mini4DgamePlayerColor::color playerColor);
-
-            /**
-               @brief checks if somebody has won
-               @return the winner with the winning fields or a winner with winner.color_ == mini4DgamePlayerColor::none if nobody has won so far.
-            */
-            Mini4DgameWinner Mini4DgameCenterpoint::getWinner();
-
         private:
             void checkGametype(); //!< Checks whether the gametype is Mini4Dgame and if it is, sets its centerpoint.
 
-            //std::string balltemplate_; //!< The template for the ball.
-            //std::string battemplate_; //!< The template for the bats.
+            std::string boardtemplate_; //!< The template for the board.
 
             float width_; //!< The height of the playing field.
             float height_; //!< The width of the playing field.
             float length_; //!< The length of the playing field.
-            mini4DgamePlayerColor::color board[4][4][4][4]; //!< The logical board where the game takes place. board[row][column][height][number]
     };
 }
 

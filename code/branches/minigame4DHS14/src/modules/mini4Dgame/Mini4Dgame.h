@@ -36,9 +36,12 @@
 
 #include "gametypes/Deathmatch.h"
 #include "mini4Dgame/Mini4DgamePrereqs.h"
+#include "Mini4DgameCenterpoint.h"
+#include "Mini4DgameBoard.h"
 
 namespace orxonox
 {
+
 	namespace mini4DgamePlayerColor
 	{
 		enum color
@@ -50,20 +53,6 @@ namespace orxonox
 		};
 	}
 
-	struct Mini4DgamePlayer
-	{
-	    Player player;
-	    mini4DgamePlayerColor::color color_;
-	};
-
-	struct Mini4DgameWinner
-	{
-		int winningRow[4];
-		int winningColumn[4];
-		int winningHeight[4];
-		int winningNumber[4];
-		mini4DgamePlayerColor::color color_;
-	};
     /**
     @brief
 
@@ -84,6 +73,8 @@ namespace orxonox
             void setCenterpoint(Mini4DgameCenterpoint* center)
             	{ this->center_ = center; }
 
+            static void setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board);
+
             void win(Mini4DgameWinner winner);
 
         protected:
@@ -93,9 +84,10 @@ namespace orxonox
         private:
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
 
-            Mini4DgamePlayer players[2];
+            //Player players[2];
 
-            WeakPtr<Mini4DgameCenterpoint> center_; //!< The playing field.
+            WeakPtr<Mini4DgameCenterpoint> center_; //!< The centerpoint to which the objects are attached
+            WeakPtr<Mini4DgameBoard> board_;
     };
 }
 

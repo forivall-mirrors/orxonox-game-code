@@ -70,7 +70,7 @@ namespace orxonox
                 @return move
                 	The move that the AI decided to make.
             */
-            Vector4 Mini4DgameAI::makeMove(float timeout);
+            Vector4 makeMove(float timeout);
 
 
             virtual void tick(float dt);
@@ -85,8 +85,8 @@ namespace orxonox
 
         private:
 
-            std::list<Vector4> Mini4DgameAI::getPossibleMoves();
-            void Mini4DgameAI::copyBoard();
+            std::list<Vector4> getPossibleMoves();
+            void copyBoard();
             mini4DgamePlayerColor::color board_[4][4][4][4];
     };
 }
