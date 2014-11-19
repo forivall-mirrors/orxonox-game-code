@@ -14,19 +14,19 @@
 	<MovableEntity position="0,0,0">
 	<attached>
 
-	<Model position="0,0,0" scale3D="100,100,100" mesh="ss_tube.mesh" />
-
+	<Model position="0,0,0" yaw=0 scale3D="100,100,100" mesh="ss_tube.mesh" />
 
 	</attached>
 	 <collisionShapes>
 		<BoxCollisionShape position="0,0,100"  			halfExtents="250,100,0" />	<!--Wand links-->
 		<BoxCollisionShape position="0,0,-100"     		halfExtents="250,100,0" />	<!--Wand rechts-->
-		<BoxCollisionShape position="0,-100,0"    	 	halfExtents="250,0,100" />	<!--Decke-->
-		<BoxCollisionShape position="0,100,0"     		halfExtents="250,0,100" />	<!--Boden-->
+		<BoxCollisionShape position="0,100,0"    	 	halfExtents="250,0,100" />	<!--Decke-->
+		<BoxCollisionShape position="0,-100,0"     		halfExtents="250,0,100" />	<!--Boden-->
+		
       
      </collisionShapes>
    
-    
+<Model position="-200,0,-275"  mesh="cube_green.mesh" scale3D="0,100,75" />
  	 </MovableEntity>   
 
 </Template>
@@ -38,16 +38,32 @@
 	<MovableEntity position="0,0,0">
 	<attached>
 
-	<Model position="-325,-100,125" mesh="cube_red.mesh" scale3D="225,1,225" />
+<!-- Boxes helps to place collisionShapes -->
+
+<!--<Model position="0,0,-200"  mesh="cube_green.mesh" scale3D="0,100,150" />
+	<Model position="-300,0,100"  mesh="cube_green.mesh" scale3D="150,100,0" />
+	<Model position="-100,0,0" yaw=45 mesh="cube_red.mesh" scale3D="150,100,0" />
+
+	<Model position="-200,0,-275"  mesh="cube_green.mesh" scale3D="0,100,75" />
+	<Model position="-375,0,-100"  mesh="cube_green.mesh" scale3D="75,100,0" />
+	<Model position="-245,0,-148" yaw=45 mesh="cube_red.mesh" scale3D="70.71,100,0" />
+
+	<Model position="-225,100,-125"  mesh="cube_red.mesh" scale3D="225,0,225" /> -->
+
+
 	<Model position="0,0,0" yaw=0 scale3D="100,100,100" mesh="ss_curve.mesh" />
+
 
 	</attached>
 	 <collisionShapes>
-	<BoxCollisionShape position="-300,0,-100"  			halfExtents="150,100,0" />	<!--Wand rechts-->
-	<BoxCollisionShape position="-100,0,100"  			halfExtents="150,100,0" />	<!--Wand rechts-->
-	<BoxCollisionShape position="-200,0,100"   yaw=45	halfExtents="150,100,0" />	<!--Wand rechts-->
-	<BoxCollisionShape position="-325,-100,125"   	 	halfExtents="225,0,225" />	<!--Boden-->
-	<BoxCollisionShape position="-325,100,125"     		halfExtents="250,0,100" />	<!--Decke-->
+	<BoxCollisionShape position="0,0,-200"  				halfExtents="0,100,150" />	<!--Wand rechts-->
+	<BoxCollisionShape position="-300,0,100"  				halfExtents="150,100,0" />	<!--Wand rechts-->
+	<BoxCollisionShape position="-100,0,0"   	yaw=45		halfExtents="150,100,0" />	<!--Wand rechts-->
+	<BoxCollisionShape position="-200,0,-275"  				halfExtents="0,100,75" />	<!--Wand links-->
+	<BoxCollisionShape position="-375,0,-100"  				halfExtents="75,100,0" />	<!--Wand links-->
+	<BoxCollisionShape position="-245,0,-148"  	yaw=45		halfExtents="70.7,100,0" />	<!--Wand links-->
+	<BoxCollisionShape position="-225,100,-125" 			halfExtents="225,0,225" />	<!--Boden-->
+	<BoxCollisionShape position="-225,-100,-125"     		halfExtents="250,0,225" />	<!--Decke-->
       
      </collisionShapes>
   
@@ -63,14 +79,46 @@
 	<MovableEntity position="0,0,0">
 	<attached>
 
+	<!-- Boxes helps to place collisionShapes -->
+
+<!--<Model position="175,0,100" 	mesh="cube_green.mesh" scale3D="75,100,0" />
+	<Model position="-0,0,275"  	mesh="cube_green.mesh" scale3D="0,100,75" />
+	<Model position="-200,0,275" 	mesh="cube_red.mesh" scale3D="0,100,75" />
+	<Model position="-375,0,100" 	mesh="cube_red.mesh" scale3D="75,100,0" />
+
+	<Model position="175,0,-100"  	mesh="cube_green.mesh" scale3D="75,100,0" />
+	<Model position="0,0,-275" 		mesh="cube_green.mesh" scale3D="0,100,75" />
+	<Model position="-200,0,-275" 	mesh="cube_red.mesh" scale3D="0,100,75" />
+	<Model position="-375,0,-100" 	mesh="cube_red.mesh" scale3D="75,100,0" />
+
+	<Model position="-245,0,-147"  	yaw=45		mesh="cube_red.mesh" scale3D="70.7,100,0" />
+	<Model position="50,0,-147"  	yaw=-45		mesh="cube_red.mesh" scale3D="70.7,100,0" />
+	<Model position="-245,0,149" 	yaw=-45		mesh="cube_orange.mesh" scale3D="70.7,100,0" />
+	<Model position="50,0,148"  	yaw=45		mesh="cube_orange.mesh" scale3D="70.7,100,0" /> -->
+	
 	<Model position="0,0,0" scale3D="100,100,100" mesh="ss_tube_x.mesh" />
 
 	</attached>
 	 <collisionShapes>
-		<BoxCollisionShape position="0,8,17"      halfExtents="8,10,10" />
-		<BoxCollisionShape position="0,0,22"      halfExtents="18, 2, 10" />
-		<BoxCollisionShape position="0,0,9"      halfExtents="12, 2, 20" />
-		<BoxCollisionShape position="0,0,-18"      halfExtents="6, 2, 18" />
+		<BoxCollisionShape position="175,0,100"  			halfExtents="75,100,0" />	<!--Wand links-->
+		<BoxCollisionShape position="0,0,275"  				halfExtents="0,100,75" />	<!--Wand links-->
+		<BoxCollisionShape position="-200,0,275"  			halfExtents="0,100,75" />	<!--Wand links-->
+		<BoxCollisionShape position="-375,0,100"  			halfExtents="75,100,0" />	<!--Wand links-->
+		
+		<BoxCollisionShape position="175,0,-100"     		halfExtents="75,100,0" />	<!--Wand rechts-->
+		<BoxCollisionShape position="0,0,-275"     			halfExtents="0,100,75" />	<!--Wand rechts-->
+		<BoxCollisionShape position="-200,0,-275"     		halfExtents="0,100,75" />	<!--Wand rechts-->
+		<BoxCollisionShape position="-375,0,-100"     		halfExtents="75,100,0" />	<!--Wand rechts-->
+		
+		<BoxCollisionShape position="-245,0,-147"   yaw=45  	halfExtents="70.7,100,0" />	<!--Wand schraeg rechts-->
+		<BoxCollisionShape position="50,0,-149"     yaw=-45		halfExtents="70.7,100,0" />	<!--Wand schraeg rechts-->
+		<BoxCollisionShape position="-245,0,149"  	yaw=-45  	halfExtents="70.7,100,0" />	<!--Wand schraeg links-->
+		<BoxCollisionShape position="50,0,148" 		yaw=45 	halfExtents="70.7,100,0" />	<!--Wand schraeg links-->
+		
+		
+		
+		<BoxCollisionShape position="-100,100,0"    	 	halfExtents="350,0,350" />	<!--Boden-->
+		<BoxCollisionShape position="-100,-110,0"     		halfExtents="350,0,350" />	<!--decke-->
       
      </collisionShapes>
     

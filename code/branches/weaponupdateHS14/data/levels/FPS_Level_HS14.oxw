@@ -140,6 +140,7 @@
     
 
 <!-- FPS Player as destination of the dock -->
+<!-- My position after docking -->
 
     <FpsPlayer template = "fps_HS14" radarname = "First Person Player" position = "500,-20000,0"  >
 	<!--"500,-20000,0"-->
@@ -284,10 +285,17 @@ Complex spacestations can be placed very far away from the spaceship so it is re
      
  <attached>
 
-	<Model template	= "ss_flag_room" position="750,-16,703.5" />
-	<!--<Model template	= "ss_tube" position="0,0,0" />-->
-	<Model template	= "ss_tube" position="500,0,0" />
-	<Model template	= "ss_curve" position="0,0,0" yaw=0 />
+	<Model template	= "ss_flag_room" position="750,-16,0"	yaw=180 />
+	
+	<Model template	= "ss_tube"	 	position="500,0,0" />
+	
+
+<!--<Model template	= "ss_curve" 	position="-200,0,0" yaw=180 />
+	<Model template	= "ss_curve" 	position="-10,0,700" yaw=0 />
+	<Model template	= "ss_tube"		position="-700,0,700" />
+	<Model template	= "ss_tube"	 	position="-700,0,700" />
+	<Model template	= "ss_tube_x"	position="1200,0,0" /> -->
+	
 	
 	
  <!--   <Model position="0,0,0" mesh="ss_tube.mesh" scale3D="100,100,100" />
