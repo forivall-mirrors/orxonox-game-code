@@ -73,6 +73,8 @@ namespace orxonox
             virtual void start();
             virtual void end();
 
+            virtual void tick(float dt);
+
             void levelUp();
 
             int getLives(){return this->lives;}
@@ -92,6 +94,9 @@ namespace orxonox
             bool bShowLevel;
             int lives;
             int multiplier;
+            int counter;
+            int currentPosition;
+            int lastPosition;
 
        private:
             WeakPtr<DodgeRaceShip> getPlayer();

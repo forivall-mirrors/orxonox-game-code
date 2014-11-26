@@ -57,7 +57,8 @@ namespace orxonox
         bShowLevel = false;
         multiplier = 1;
         b_combo = false;
-
+        counter = 0;
+        lastPosition = 0;
         // spawn enemy every 3.5 seconds
         //enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&DodgeRace::spawnEnemy, this)));
         comboTimer.setTimer(3.0f, true, createExecutor(createFunctor(&DodgeRace::comboControll, this)));
@@ -80,6 +81,30 @@ namespace orxonox
         multiplier *= 2;
         toggleShowLevel();
         showLevelTimer.setTimer(1.0f, false, createExecutor(createFunctor(&DodgeRace::toggleShowLevel, this)));
+    }
+
+    void DodgeRace::tick(float dt)
+    {
+    	if (getPlayer() != NULL)
+    	{
+			//WeakPtr<DodgeRaceShip> ship = getPlayer();
+
+			currentPosition = getPlayer()->getWorldPosition().x;
+			counter = counter + (currentPosition - lastPosition);
+			lastPosition = currentPosition;
+
+			if(counter >= 5000)
+			{
+				counter = 0;
+
+				WeakPtr<StaticEntity> stentity = new StaticEntity(this->center_->getContext()); //this->center_->getContext()
+				stentity->addTemplate("DodgeRaceCube01");
+
+				stentity->setPosition(getPlayer()->getWorldPosition() + Vector3(5000, 0, 0));
+				//stentity->setScale3D(50,50,50);
+			}
+    	}
+    	SUPER(DodgeRace, tick, dt);
     }
 
     WeakPtr<DodgeRaceShip> DodgeRace::getPlayer()

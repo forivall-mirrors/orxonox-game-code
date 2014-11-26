@@ -68,7 +68,8 @@
 <Template name=spaceshipescortcameras defaults=0>
   <DodgeRaceShip>
     <camerapositions>
-      <CameraPosition position="0,30,150" direction="0, 0, -1" drag=false mouselook=true /> 
+      <CameraPosition position="0,30,150" direction="0, 0, -1" drag=false mouselook=true />
+      <CameraPosition position="0,100,180" direction="0, -0.2, -1" drag=false mouselook=true />
       <CameraPosition position="0,1300,-100" direction="0, -1, 0" drag=false mouselook=true />
     </camerapositions>
   </DodgeRaceShip>

@@ -41,7 +41,7 @@ namespace orxonox
     {
         RegisterObject(DodgeRaceShip);
 
-        speed = 500;
+        speed = 800;
         isFireing = false;
         damping = 10;
 
@@ -81,8 +81,12 @@ namespace orxonox
                         return;
                     }
             }
+            /*
             if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)
-                velocity.x = 0;
+            {
+            	velocity.x = 0;
+            }
+            */
             pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
         }
 
@@ -98,7 +102,7 @@ namespace orxonox
         WeakPtr<Camera> camera = this->getCamera();
         if (camera != NULL)
         {
-            camera->setPosition(Vector3(-pos.z, -posforeward, 0));
+            // camera->setPosition(Vector3(-pos.z, -posforeward, 0));
             camera->setOrientation(Vector3::UNIT_Z, Degree(0));
         }
 
@@ -144,18 +148,21 @@ namespace orxonox
     }
     void DodgeRaceShip::boost(bool bBoost)
     {
-        isFireing = bBoost;
+        //isFireing = bBoost;
     }
 
     inline bool DodgeRaceShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
+    	/*
         if (otherObject != NULL && lastEntity != otherObject)
         {
         	lastEntity = otherObject;
         	removeHealth(20);
-            //this->death();
         }
+		*/
 
+
+    	this->death();
         return false;
     }
 

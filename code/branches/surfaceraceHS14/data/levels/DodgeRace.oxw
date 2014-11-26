@@ -14,6 +14,7 @@
   include("templates/spaceshipPirate.oxt")
   include("templates/spaceshipDodgeRace.oxt")
   include("templates/enemyInvader.oxt")
+  include("templates/DodgeRacePattern.oxt")
   include("overlays/InvaderHUD.oxo")
 ?>
 
@@ -37,7 +38,7 @@
   />
 
     <!-- <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/> -->
-    <Light type=directional position="1100, 11000, -7000" lookat="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+    <Light type=directional position="-100, 10000, -700" lookat="0.2, -1, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=DodgeRaceShip pawndesign=spaceshipdodgerace />
 
     <DistanceTrigger name="start" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=0 />
@@ -46,7 +47,7 @@
     <DodgeRaceCenterPoint name=invadercenter />
     
     
-  <StaticEntity position="1500,0,50" direction="0,0,0"   scale="1" collisionType=static mass=0 friction=0.01 >
+  <StaticEntity position="1500,40,50" direction="0,0,0"   scale="1" collisionType=static mass=0 friction=0.01 >
       <attached>
         <Model position="0,0,0" mesh="blackcube.mesh" scale3D="50,50,50" />
       </attached>
@@ -56,13 +57,24 @@
       </collisionShapes>
 
   </StaticEntity>
-  <StaticEntity position="4500,0,-30" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
+  <StaticEntity position="4500,50,-30" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
       <attached>
-        <Model position="0,0,0" mesh="blackcube.mesh" scale3D="50,50,50" />
+        <Model position="0,0,0" mesh="blackcube.mesh" scale3D="50,40,50" />
       </attached>
 
       <collisionShapes>
         <BoxCollisionShape position="0,0,0" halfExtents="50,50,50" />
+      </collisionShapes>
+
+  </StaticEntity>
+  
+  <StaticEntity position="0,-10,0" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="CubeGround.mesh" scale3D="100000,2,100000" />
+      </attached>
+
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="1,1,1" />
       </collisionShapes>
 
   </StaticEntity>

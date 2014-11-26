@@ -1,0 +1,19 @@
+<Template name=DodgeRaceCube01>
+  
+	<StaticEntity position="0,0,0" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" 	mesh="blackcube.mesh" 		scale3D="600,50,50" />
+		<Model position="0,0,950" 	mesh="blackcube.mesh" 		scale3D="600,50,50" />
+		<Model position="800,0,50" 	mesh="blackcube.mesh" 		scale3D="100,50,100" />
+		<Model position="800,0,850"	mesh="blackcube.mesh" 		scale3D="100,50,100" />
+		<Model position="850,0,250"	mesh="blackcube.mesh" 		scale3D="50,40,100" />
+		<Model position="850,0,450"	mesh="blackcube.mesh" 		scale3D="50,40,100" />
+		<Model position="850,0,650"	mesh="blackcube.mesh" 		scale3D="50,40,100" />
+      </attached>
+
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="1,1,1" />
+      </collisionShapes>
+	</StaticEntity>
+
+</Template>
