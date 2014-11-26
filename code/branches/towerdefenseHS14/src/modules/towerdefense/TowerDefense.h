@@ -54,7 +54,7 @@ namespace orxonox
         virtual ~TowerDefense();
 
         std::vector<TowerDefenseEnemy*> TowerDefenseEnemyvector;
-
+        bool towermatrix[16][16];
         void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr); 
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
@@ -93,10 +93,6 @@ namespace orxonox
         TowerDefensePlayerStats *stats_;
         bool hasEnoughCreditForTower(TowerCost towerCost);
 
-        bool towerExists(int x, int y);
-
-
-        std::vector<TDCoordinate> addedTowersCoordinates_;
         std::vector<TowerTurret*> towers_;
     };
 }

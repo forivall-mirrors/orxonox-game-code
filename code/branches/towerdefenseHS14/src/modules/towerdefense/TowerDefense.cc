@@ -74,7 +74,7 @@
  */
 
 #include "TowerDefense.h"
-//#include "Tower.h"
+#include "TowerDefenseTower.h"
 #include "TowerTurret.h"
 #include "TowerDefenseCenterpoint.h"
 //#include "TDCoordinate.h"
@@ -129,21 +129,37 @@ namespace orxonox
     	orxout() << "test0" << endl;
 
         Deathmatch::start();
+
+// Waypoints: [1,3] [10,3] [10,11] [13,11]
+        for (int i=0; i < 16 ; i++){
+        	for (int j = 0; j< 16 ; j++){
+        		towermatrix[i][j] = false;
+        	}
+        }
+        for (int k=0; k<3; k++)
+        	towermatrix[1][k]=true;
+        for (int l=1; l<11; l++)
+                towermatrix[l][3]=true;
+        for (int m=3; m<12; m++)
+                towermatrix[10][m]=true;
+        for (int n=10; n<14; n++)
+                towermatrix[n][11]=true;
+        for (int o=13; o<16; o++)
+                towermatrix[13][o]=true;
+
+
         credits = 5000;
         life = 20;
         waves = 0;
         time=0.0;
 
-/*
-        const int kInitialTowerCount = 3;
+ 	const int kInitialTowerCount = 3;
 
         for (int i = 0; i < kInitialTowerCount; i++)
         {
-        	//{{3,2}, {8,5}, {12,10}}; old coordinates
-            TDCoordinate* coordinate = new TDCoordinate(i,(i*2));
-            addTower(coordinate->x, coordinate->y);
+            addTower(i+4,(i+5));
         }
-*/
+
 
 
         //add some TowerDefenseEnemys
@@ -220,7 +236,7 @@ namespace orxonox
 
 
     void TowerDefense::addTower(int x, int y)
-    {/*
+    {
         const TowerCost towerCost = TDDefaultTowerCost;
 
         if (!this->hasEnoughCreditForTower(towerCost))
@@ -229,9 +245,9 @@ namespace orxonox
             return;
         }
 
-        if (this->towerExists(x,y))
+        if (towermatrix [x][y]==true)
         {
-            orxout() << "tower exists!!" << endl;
+            orxout() << "not possible to put tower here!!" << endl;
             return;
         }
 
@@ -251,23 +267,20 @@ namespace orxonox
 
         orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
 
-        // Add tower to coordinatesStack
-        TDCoordinate newTowerCoordinates;
-        newTowerCoordinates.x=x;
-        newTowerCoordinates.y=y;
+        
 
-
-        addedTowersCoordinates_.push_back(newTowerCoordinates);
-
-        // Reduce credit
+       //Reduce credit
         this->stats_->buyTower(towerCost);
 
-        // Create tower
-        TowerTurret* newTower = new TowerTurret(this->center_->getContext());
-        newTower->addTemplate(this->center_->getTowerTemplate());
+        orxout() << "Credit: " << this->stats_->getCredit() << endl;
 
-        newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
-        newTower->setGame(this);*/
+  //    Create tower
+        TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
+        towernew->addTemplate("tower");
+        towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
+        towernew->setGame(this);
+
+        towermatrix[x][y]=true;
     }
 
     bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
@@ -275,19 +288,7 @@ namespace orxonox
         return ((this->stats_->getCredit()) >= towerCost);
     }
 
-    bool TowerDefense::towerExists(int x, int y)
-    {
-        for(std::vector<TDCoordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it)
-        {
-            TDCoordinate currentCoordinates = (TDCoordinate) (*it);
-            if (currentCoordinates.x == x && currentCoordinates.y == y)
-                return true;
-        }
-
-        return false;
-    }
-
-
+ 
     void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);

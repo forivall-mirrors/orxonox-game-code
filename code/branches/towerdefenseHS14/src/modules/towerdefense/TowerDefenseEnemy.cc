@@ -47,9 +47,9 @@ namespace orxonox
 
         float distance = ship.distance(*endpoint);
 
-        orxout() << "distance" << distance << endl;
+        //orxout() << "distance" << distance << endl;
         if(distance <50){
-        	orxout() << "ENEMY KILLED!!!!" << endl;
+        //	orxout() << "ENEMY KILLED!!!!" << endl;
         	this->destroy(); }
     }
 

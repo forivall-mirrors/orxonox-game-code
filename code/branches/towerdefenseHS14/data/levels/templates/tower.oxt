@@ -1,5 +1,5 @@
 <Template name=tower>
-  <Tower
+  <TowerDefenseTower
 
 
    explosionchunks        = 6
@@ -8,7 +8,7 @@
    reloadwaittime      = 1
 
    collisionType     = "dynamic"
-   team = 0
+   team = 2
 
 
   >
@@ -19,10 +19,24 @@
             </waypoints>
         </WaypointPatrolController>
     </controller>
+    
 
 
     <attached>
         <Model position="0,0,0" scale=45 mesh="Tower.mesh" />
+        
+        <Turret position="0,0,-100" collisionType="dynamic" angularDamping=0.999999 mass=100 maxPitch=90 maxYaw=90 maxAttackRadius=2000 minAttackRadius=30>
+        
+	        <collisionShapes>
+	          	<SphereCollisionShape radius="10"   position = "0,0,0"/>
+	        </collisionShapes>
+	       	<controller>
+          		<TurretController/>
+        	</controller>
+	        <?lua
+	          	include("../includes/weaponSettingsTurret.oxi")
+	        ?>
+      	</Turret>
     </attached>
 
     <!--collisionShapes>
@@ -32,6 +46,6 @@
 <?lua
   include("../includes/towerWeaponSettings.oxi")
 ?>
-  </Tower>
+  </TowerDefenseTower>
 </Template>
 
