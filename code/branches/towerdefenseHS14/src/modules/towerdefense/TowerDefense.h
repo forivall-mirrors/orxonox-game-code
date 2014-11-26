@@ -55,7 +55,7 @@ namespace orxonox
 
         std::vector<TowerDefenseEnemy*> TowerDefenseEnemyvector;
 
-        void addTowerDefenseEnemy(std::vector<TDCoordinate*> path);
+        void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr);
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
         virtual void tick(float dt);
