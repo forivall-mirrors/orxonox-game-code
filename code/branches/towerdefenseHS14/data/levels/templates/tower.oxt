@@ -8,7 +8,7 @@
    reloadwaittime      = 1
 
    collisionType     = "dynamic"
-   team = 2
+   team = 0
 
 
   >

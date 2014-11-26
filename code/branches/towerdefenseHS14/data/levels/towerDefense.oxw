@@ -20,7 +20,7 @@
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/tower.oxt")
-  include("templates/enemytowerdefense.oxt")
+  include("templates/enemyTowerdefense.oxt")
 ?>
 
 <!-- Specify the position of the camera -->

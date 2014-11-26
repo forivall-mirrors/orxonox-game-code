@@ -129,7 +129,9 @@ namespace orxonox
     	orxout() << "test0" << endl;
 
         Deathmatch::start();
-
+        credits = 5000;
+        life = 20;
+        waves = 0;
         time=0.0;
 
 /*
@@ -157,26 +159,11 @@ namespace orxonox
 
     // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
 
-    void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr){
+    void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path){
 
     	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
-
-    	switch(templatenr)
-    	{
-    	case 1 :
-    		en1->addTemplate("enemytowerdefense1");
-            en1->setScale(3);
-    		break;
-    	case 2 :
-			en1->addTemplate("enemytowerdefense2");
-	        en1->setScale(2);
-			break;
-    	case 3 :
-			en1->addTemplate("enemytowerdefense3");
-	        en1->setScale(1);
-			break;
-    	}
-
+        en1->addTemplate("enemytowerdefense");
+        en1->setScale(3);
         en1->getController();
 
         en1->setPosition(path.at(0)->get3dcoordinate());
@@ -297,8 +284,7 @@ namespace orxonox
 
             if(time>1 && TowerDefenseEnemyvector.size() < 30)
             {
-
-            	addTowerDefenseEnemy(path, rand() %3 +1 );
+            	addTowerDefenseEnemy(path);
             	time = time-1;
             }
 

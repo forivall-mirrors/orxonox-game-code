@@ -31,7 +31,6 @@
 #include "core/XMLPort.h"
 #include "util/Convert.h"
 
-
 namespace orxonox
 {
     RegisterClass(TowerDefenseHUDController);
@@ -49,22 +48,41 @@ namespace orxonox
     void TowerDefenseHUDController::tick(float dt)
     {
         SUPER(TowerDefenseHUDController, tick, dt);
+
+        if(showlives == true)
+          this->setCaption(multi_cast<std::string>(this->td->life));
+        else if(showcredits == true)
+          this->setCaption(multi_cast<std::string>(this->td->credits));
+        else if(showwaves == true)
+          this->setCaption(multi_cast<std::string>(this->td->waves));
+
+
     }
 
     void TowerDefenseHUDController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(TowerDefenseHUDController, XMLPort, xmlelement, mode);
+
+        XMLPortParam(TowerDefenseHUDController, "showlives", setShowlives, getShowlives, xmlelement, mode);
+        XMLPortParam(TowerDefenseHUDController, "showcredits", setShowcredits, getShowcredits, xmlelement, mode);
+        XMLPortParam(TowerDefenseHUDController, "showwaves", setShowwaves, getShowwaves, xmlelement, mode);
+
     }
 
     void TowerDefenseHUDController::changedOwner()
-    {
-        SUPER(TowerDefenseHUDController, changedOwner);
-        /*
-        if (this->getOwner() != NULL && this->getOwner()->getGametype())
-            this->owner_ = orxonox_cast<Pong*>(this->getOwner()->getGametype().get());
-        else
-            this->owner_ = 0;
-        */
-    }
+        {
+            SUPER(TowerDefenseHUDController, changedOwner);
+
+            td = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
+
+            /*if (this->getOwner() != NULL && this->getOwner()->getGametype())
+            {
+                this->owner_ = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
+            }
+            else
+            {
+                this->owner_ = NULL;
+            }*/
+        }
 
 }
