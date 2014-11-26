@@ -368,6 +368,7 @@ namespace orxonox
 
 
 
+
                 	// Change material only if outOfView changed
                     if (it->second.wasOutOfView_)
                     {
@@ -376,22 +377,27 @@ namespace orxonox
                         it->second.panel_->setDimensions(this->navMarkerSize_ * this->getActualSize().x, this->navMarkerSize_ * this->getActualSize().y);
                         it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
 
-                        //manipulation bzw versuch !!! Jonas
+                        //
                         it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2.png", it->first->getRadarObjectColour()));
-                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x, this->healthMarkerSize_ * this->getActualSize().y);
-
+                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x , this->healthMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
                     }
 
 
-                    //i need to find the place where the amount of health is saved!!!
-                    //this->selectedTarget_->getWorldEntity()->
+                    //calculate the health of the actual selected radarViewable (while (0) is no health left, (1) is the initial health)
+
+                    Pawn* pawnPtr = (Pawn*) (it->first->getWorldEntity());
+                    float health = pawnPtr->getHealth();
+                    float initHealth = pawnPtr->getMaxHealth();
+                    float relativHealthScale = health/initHealth;
 
 
-                    // Position health (versuch !!!!)
+                    // Position and Dimensions (amount) health
                     it->second.health_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
-                    it->second.health_->setLeft((pos.x + 1.0f - it->second.panel_->getWidth()) * 0.5f);
-                    it->second.health_->setTop((-pos.y + 1.0f - it->second.panel_->getHeight()) * 0.5f);
+                    it->second.health_->setLeft((pos.x + 0.975f - it->second.panel_->getWidth()) * 0.5f);
+                    it->second.health_->setTop((-pos.y + 1.025f - it->second.panel_->getHeight()) * 0.5f);
+                    it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x * relativHealthScale, this->healthMarkerSize_ * this->getActualSize().y);
+                    orxout() << relativHealthScale << endl;
 
 
                     // Position marker

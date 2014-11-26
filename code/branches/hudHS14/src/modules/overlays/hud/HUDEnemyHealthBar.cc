@@ -59,9 +59,8 @@ namespace orxonox
 
 
 
-
 /*
-        //--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
         //first try to place a healthbar under the enemy ship
         //getting all the parameters (direction, position, angle) to place the health bar on the screen
 
@@ -95,15 +94,10 @@ namespace orxonox
         this->setPosition(screenCoordinates);
 
         this->setTextOffset(screenCoordinates);
-
-
-
-
-
         }
-
         //--------------------------------------------------------------------------
 */
+
 
 
         SUPER(HUDEnemyHealthBar, tick, dt);
@@ -120,13 +114,6 @@ namespace orxonox
             while (target && !target->isA(Class(Pawn)))
                 target = target->getParent();
             pawn = orxonox_cast<Pawn*>(target);
-
-
-
-            /*Vector3 tempPosition = target->getWorldPosition();
-            Vector2 tempPos2D = Vector2(tempPosition.x, tempPosition.y);
-                     this->pickPoint_(tempPos2D);
-                     this->position_(tempPos2D);*/
 
 
             // Don't show the HealthBar if the pawn is invisible
