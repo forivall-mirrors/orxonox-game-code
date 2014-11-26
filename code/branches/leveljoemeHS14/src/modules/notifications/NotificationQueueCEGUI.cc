@@ -72,7 +72,7 @@ namespace orxonox
         this->displaySize_ = Vector4(1.0, 0.0, 0.0, 0.0);
         this->position_ = Vector4(0.0, 0.0, 0.0, 0.0);
         this->alignment_ = "LeftAligned";
-        this->fontSize_ = 12;
+        this->fontSize_ = 10;
         this->fontColor_ = Vector4(1.0, 1.0, 1.0, 1.0);
         this->fontColorStr_ = "FFFFFFFF";
     }
