@@ -162,7 +162,7 @@ namespace orxonox
         }
 		*/
 
-
+    	removeHealth(100);
     	this->death();
         return false;
     }

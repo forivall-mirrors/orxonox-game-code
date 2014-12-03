@@ -10,10 +10,10 @@
    maxhealth         = 40
    initialhealth     = 40
 
-   shieldhealth        = 80
-   initialshieldhealth = 80
-   maxshieldhealth     = 80
-   shieldabsorption    = 0.9
+   shieldhealth        = 20
+   initialshieldhealth = 20
+   maxshieldhealth     = 20
+   shieldabsorption    = 0.1
    reloadrate          = 1
    reloadwaittime      = 1
 

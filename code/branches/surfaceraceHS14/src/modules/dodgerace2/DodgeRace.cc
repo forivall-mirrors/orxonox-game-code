@@ -174,11 +174,10 @@ namespace orxonox
 */
     void DodgeRace::costLife()
     {
-        lives--;
+    	orxout() << "CostLife" << endl;
+    	endGameTimer.setTimer(3.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
+
         multiplier = 1;
-        // end the game in 30 seconds.
-       // if (lives <= 0)
-         //   enemySpawnTimer.setTimer(30.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
     };
 
     void DodgeRace::comboControll()

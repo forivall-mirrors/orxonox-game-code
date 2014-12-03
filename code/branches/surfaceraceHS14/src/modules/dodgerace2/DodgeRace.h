@@ -101,6 +101,8 @@ namespace orxonox
             int lastPosition;
 
        private:
+            Timer endGameTimer;
+
             WeakPtr<DodgeRaceShip> getPlayer();
             WeakPtr<DodgeRaceShip> player;
             std::vector<DodgeRaceCube*> cubeList;
