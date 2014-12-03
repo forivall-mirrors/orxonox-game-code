@@ -136,26 +136,53 @@
 
 	<!-- Boxes helps to place collisionShapes -->
 
-	<Model position="-125,116,0" 				mesh="cube_green.mesh" scale3D="130,0,125" />
-	<Model position="-275,116,235" 	yaw=-35		mesh="cube_red.mesh" scale3D="75,0,25" />
-	<Model position="-275,116,-235"	yaw=35		mesh="cube_red.mesh" scale3D="75,0,25" />
-	<Model position="150,116,0" 	yaw=-55		mesh="cube_red.mesh" scale3D="75,0,25" />
-	<Model position="150,116,0" 	yaw=55		mesh="cube_red.mesh" scale3D="75,0,25" />
+<!--<Model position="-125,116,0" 				mesh="cube_green.mesh" 	scale3D="130,0,125" />
+	<Model position="-275,116,235" 	yaw=55		mesh="cube_green.mesh" 	scale3D="140,0,50" />
+	<Model position="-275,116,-235"	yaw=-55		mesh="cube_red.mesh"	scale3D="140,0,50" />
+	<Model position="-365,116,320" 	yaw=35		mesh="cube_green.mesh"	scale3D="100,0,50" />
+	<Model position="-365,116,-320"	yaw=-35		mesh="cube_red.mesh" 	scale3D="100,0,50" />
+	<Model position="-520,156,380" 	roll=-25	mesh="cube_green.mesh" 	scale3D="100,0,50" />
+	<Model position="-520,156,-380"	roll=-25	mesh="cube_red.mesh" 	scale3D="100,0,50" />	-->
+
+
+	<Model position="-80,0,100" 				mesh="cube_green.mesh" 	scale3D="80,100,0" />
+	<Model position="-160,0,150" 	yaw=90		mesh="cube_green.mesh" 	scale3D="50,200,0" />
+	<Model position="-220,0,260" 	yaw=55		mesh="cube_green.mesh" 	scale3D="140,200,0" />
+	<Model position="-360,0,390" 	yaw=33		mesh="cube_green.mesh" 	scale3D="110,200,0" />
+	<Model position="-600,16,430" 				mesh="cube_green.mesh" 	scale3D="200,200,0" />
+	<Model position="-810,156,400"	yaw=-33		mesh="cube_green.mesh" 	scale3D="150,50,0" />
+	<Model position="-810,156,270"	yaw=-55		mesh="cube_green.mesh" 	scale3D="150,50,0" />
+
+	<Model position="-80,0,-100" 				mesh="cube_red.mesh" 	scale3D="80,100,0" />
+	<Model position="-160,0,-150" 	yaw=-90		mesh="cube_red.mesh" 	scale3D="50,200,0" />
+	<Model position="-220,0,-260" 	yaw=-55		mesh="cube_red.mesh" 	scale3D="140,200,0" />
+	<Model position="-360,0,-390" 	yaw=-33		mesh="cube_red.mesh" 	scale3D="110,200,0" />
+	<Model position="-600,16,-430" 				mesh="cube_red.mesh" 	scale3D="200,200,0" />
+	<Model position="-810,156,-400" yaw=33		mesh="cube_red.mesh" 	scale3D="150,50,0" />
+	<Model position="-810,156,-270" yaw=55		mesh="cube_red.mesh" 	scale3D="150,50,0" />
+
+	<Model position="-1050,156,0" 				mesh="cube_orange.mesh" 	scale3D="0,50,160" />
+
+
+<!--<Model position="-650,200,0"  	mesh="cube_green.mesh" scale3D="400,0,450" />
+
+	<Model position="-500,-200,0" 	mesh="cube_green.mesh" scale3D="400,0,400" />	
+	<Model position="-60,-84,0" 	mesh="cube_green.mesh" scale3D="60,0,100" />	-->
 	
-
-	<Model position="-650,200,0"  	mesh="cube_green.mesh" scale3D="400,0,450" />
-
-	<Model position="-500,-200,0" 	mesh="cube_green.mesh" scale3D="400,0,400" />
+	<Model position="-1015,156,0" 	mesh="cube_orange.mesh" scale3D="25,25,120" />
 
 
-	<Model position="-255,121,0" 				mesh="cube_green.mesh" scale3D="0,85,125" />
-	<Model position="-300,116,190" 	yaw=-35		mesh="cube_green.mesh" scale3D="0,80,75" />	
-	<Model position="-300,116,-190"	yaw=35		mesh="cube_green.mesh" scale3D="0,80,75" />
-	<Model position="-410,116,290" 	yaw=-55		mesh="cube_green.mesh" scale3D="0,80,75" />	
-	<Model position="-410,116,-290"	yaw=55		mesh="cube_green.mesh" scale3D="0,80,75" />
+<!--<Model position="-255,121,0" 				mesh="cube_green.mesh" 	scale3D="0,85,125" />
+	<Model position="-300,116,190" 	yaw=-35		mesh="cube_green.mesh" 	scale3D="0,80,75" />	
+	<Model position="-300,116,-190"	yaw=35		mesh="cube_green.mesh" 	scale3D="0,80,75" />
+	<Model position="-410,116,290" 	yaw=-55		mesh="cube_green.mesh" 	scale3D="0,80,75" />	
+	<Model position="-410,116,-290"	yaw=55		mesh="cube_green.mesh" 	scale3D="0,80,75" />	
+	<Model position="-500,185,328"  yaw=2		roll=-25	mesh="cube_green.mesh" 	scale3D="100,35,0" />
+	<Model position="-500,185,-328"	yaw=-2		roll=-25	mesh="cube_red.mesh"	scale3D="100,35,0" />	-->
 
 
 
+	<!-- points for the orientation -->
 	<Model position="0,0,0" 			mesh="cube_orange.mesh" scale3D="10,10,10" />
 	<Model position="-260,0,0" 			mesh="cube_orange.mesh" scale3D="10,10,10" />
 	<Model position="-580,0,400" 		mesh="cube_orange.mesh" scale3D="10,10,10" />
@@ -168,16 +195,41 @@
 
 	</attached>
 	 <collisionShapes>
-		<BoxCollisionShape position="-125,116,0"    	 		halfExtents="130,0,125" />	<!--Boden oben-->
-		<BoxCollisionShape position="-100,116,0"   yaw=-35 	 	halfExtents="75,0,25" />	<!--Boden oben-->
-		<BoxCollisionShape position="-100,116,0"   yaw=35 	 	halfExtents="75,0,25" />	<!--Boden oben-->
-		<BoxCollisionShape position="-100,116,0"   yaw=-65	 	halfExtents="75,0,25" />	<!--Boden oben-->
-		<BoxCollisionShape position="-100,116,0"   yaw=65	 	halfExtents="75,0,25" />	<!--Boden oben-->	
+		<BoxCollisionShape position="-125,116,0"    	 		halfExtents="130,0,125" />	<!--Boden oben mitte-->
+		<BoxCollisionShape position="-275,116,235"   yaw=55 	halfExtents="140,0,50" />	<!--Boden oben rechts-->
+		<BoxCollisionShape position="-275,116,-235"  yaw=-55  	halfExtents="140,0,50" />	<!--Boden oben links-->
+		<BoxCollisionShape position="-365,116,320"   yaw=35	 	halfExtents="100,0,50" />	<!--Boden oben rechts-->
+		<BoxCollisionShape position="-365,116,-320"  yaw=-35 	halfExtents="100,0,50" />	<!--Boden oben links-->
+		<BoxCollisionShape position="-520,156,380"   roll=-25	halfExtents="100,0,50" />	<!--Boden oben rechts-->
+		<BoxCollisionShape position="-520,156,-380"  roll=-25 	halfExtents="100,0,50" />	<!--Boden oben links-->
+		
+		
+		<BoxCollisionShape position="-80,0,100"    	 			halfExtents="80,100,0" />	<!--Wand oben rechts-->
+		<BoxCollisionShape position="-160,0,150"  	yaw=90 		halfExtents="50,200,0" />	<!--Wand oben rechts-->	
+		<BoxCollisionShape position="-220,0,260"  	yaw=55 		halfExtents="100,200,0" />	<!--Wand oben rechts-->
+		<BoxCollisionShape position="-360,0,390"  	yaw=33 		halfExtents="110,200,0" />	<!--Wand oben rechts-->
+		<BoxCollisionShape position="-600,16,430"  		 		halfExtents="200,200,0" />	<!--Wand unten rechts-->
+		<BoxCollisionShape position="-810,156,400"  yaw=-33 	halfExtents="100,50,0" />	<!--Wand unten rechts-->
+		<BoxCollisionShape position="-810,156,270"  yaw=-55 	halfExtents="100,50,0" />	<!--Wand unten rechts-->		
+		
+		<BoxCollisionShape position="-80,0,-100"    	 		halfExtents="80,100,0" />	<!--Wand oben links-->
+		<BoxCollisionShape position="-160,0,-150" 	yaw=-90		halfExtents="50,200,0" />	<!--Wand oben links-->	
+		<BoxCollisionShape position="-220,0,-260" 	yaw=-55		halfExtents="100,200,0" />	<!--Wand oben links-->
+		<BoxCollisionShape position="-360,0,-390" 	yaw=-33		halfExtents="110,200,0" />	<!--Wand oben links-->
+		<BoxCollisionShape position="-600,16,-430" 				halfExtents="200,200,0" />	<!--Wand unten links-->
+		<BoxCollisionShape position="-810,156,-400" yaw=33		halfExtents="100,50,0" />	<!--Wand unten links-->
+		<BoxCollisionShape position="-810,156,-270" yaw=55		halfExtents="100,50,0" />	<!--Wand unten links-->
+		
+		<BoxCollisionShape position="-1050,156,0" 				halfExtents="0,50,160" />	<!--Wand unten mitte-->
+		
 			
 	
 		<BoxCollisionShape position="-650,200,0"    	 		halfExtents="400,0,450" />	<!--Boden unten-->
 	
 		<BoxCollisionShape position="-500,-200,0"     			halfExtents="400,0,400" />	<!--decke-->
+		<BoxCollisionShape position="-60,-84,0"     			halfExtents="60,0,100" />	<!--decke oben-->
+		
+		<BoxCollisionShape position="-1015,156,0"     			halfExtents="25,25,120" />	<!--Tisch-->
 		
 		
 		<BoxCollisionShape position="-255,121,0"    	 		halfExtents="0,85,125" />	<!--Wand innen-->
@@ -185,6 +237,13 @@
 		<BoxCollisionShape position="-300,116,-190"   yaw=35	halfExtents="0,80,75" />	<!--Wand innen-->		
 		<BoxCollisionShape position="-410,116,290"    yaw=-55	halfExtents="0,80,75" />	<!--Wand innen-->
 		<BoxCollisionShape position="-410,116,-290"   yaw=55	halfExtents="0,80,75" />	<!--Wand innen-->
+		<BoxCollisionShape position="-500,185,328"    yaw=2		roll=-25	halfExtents="100,35,0" />	<!--Wand innen-->
+		<BoxCollisionShape position="-500,185,-328"   yaw=-2  	roll=-25	halfExtents="100,35,0" />	<!--Wand innen-->
+		
+		
+		
+		<!--<BoxCollisionShape position="-255,121,0"    	 		halfExtents="0,85,125" />	<!--Wand aussen-->-->
+
 		
       
      </collisionShapes>
