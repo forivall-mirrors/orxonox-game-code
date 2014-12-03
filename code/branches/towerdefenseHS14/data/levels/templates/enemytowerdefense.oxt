@@ -6,9 +6,9 @@
    spawnparticleduration  = 3
    explosionchunks        = 6
 
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
+   health            = 1
+   maxhealth         = 2
+   initialhealth     = 1
 
    shieldhealth        = 30
    initialshieldhealth = 30

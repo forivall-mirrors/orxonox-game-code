@@ -157,7 +157,7 @@ namespace orxonox
 
         for (int i = 0; i < kInitialTowerCount; i++)
         {
-            addTower(i+4,(i+5));
+            addTower(i+4,i+5);
         }
 
 
@@ -276,7 +276,7 @@ namespace orxonox
 
   //    Create tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
-        towernew->addTemplate("tower");
+        towernew->addTemplate("towerturret");
         towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
         towernew->setGame(this);
 
