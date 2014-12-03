@@ -81,7 +81,7 @@ namespace orxonox
         this->setTextSize(0.05f);
         this->setNavMarkerSize(0.03f);
         this->setAimMarkerSize(0.02f);
-        this->setHealthMarkerSize(0.08f);
+        this->setHealthMarkerSize(0.06f);
 
         this->setDetectionLimit(10000.0f);
         this->currentMunitionSpeed_ = 2500.0f;
@@ -366,6 +366,15 @@ namespace orxonox
 
 
 
+                	//calculate the health of the actual selected radarViewable (while (0) is no health left, (1) is the initial health)
+
+                    Pawn* pawnPtr = (Pawn*) (it->first->getWorldEntity());
+                    float health = pawnPtr->getHealth();
+                    float initHealth = pawnPtr->getMaxHealth();
+                    float relativHealthScale = health/initHealth;
+
+                    //values from 0 to 10
+                    int discreteHealthScale = 10*relativHealthScale;
 
 
 
@@ -378,26 +387,31 @@ namespace orxonox
                         it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
 
                         //
-                        it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2.png", it->first->getRadarObjectColour()));
-                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x , this->healthMarkerSize_ * this->getActualSize().y);
+                        //it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2_1.png", it->first->getRadarObjectColour()));
+                        it->second.health_->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", it->first->getRadarObjectColour()));
+                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x , 0.75*this->healthMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
+
+                        if(1<=discreteHealthScale){
+                        	it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
+                        	it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1*discreteHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
+                        }
                     }
 
-
-                    //calculate the health of the actual selected radarViewable (while (0) is no health left, (1) is the initial health)
-
-                    Pawn* pawnPtr = (Pawn*) (it->first->getWorldEntity());
-                    float health = pawnPtr->getHealth();
-                    float initHealth = pawnPtr->getMaxHealth();
-                    float relativHealthScale = health/initHealth;
 
 
                     // Position and Dimensions (amount) health
                     it->second.health_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
                     it->second.health_->setLeft((pos.x + 0.975f - it->second.panel_->getWidth()) * 0.5f);
-                    it->second.health_->setTop((-pos.y + 1.025f - it->second.panel_->getHeight()) * 0.5f);
-                    it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x * relativHealthScale, this->healthMarkerSize_ * this->getActualSize().y);
-                    orxout() << relativHealthScale << endl;
+                    it->second.health_->setTop((-pos.y + 1.04f - it->second.panel_->getHeight()) * 0.5f);
+                   // it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x * relativHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
+
+
+                    if(1<=discreteHealthScale){
+                    it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
+                    it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1*discreteHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
+                    }
+
 
 
                     // Position marker
@@ -506,11 +520,12 @@ namespace orxonox
         float yScale = this->getActualSize().y;
 
         // Create everything needed to display the object on the radar and add it to the map
+
         // Create health
                 Ogre::PanelOverlayElement* health = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton()
                         .createOverlayElement("Panel", "HUDNavigation_healthMarker_" + getUniqueNumberString()));
                 //panel->setMaterialName("Orxonox/NavTDC");
-                health->setMaterialName(TextureGenerator::getMaterialName("bar2.png", object->getRadarObjectColour()));
+                health->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", object->getRadarObjectColour()));
                 health->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
                 //panel->setColour(object->getRadarObjectColour());
 
