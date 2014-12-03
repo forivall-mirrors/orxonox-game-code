@@ -25,7 +25,7 @@
   <?lua include("includes/notifications.oxi") ?>
 
   <Scene
-    ambientlight = "2.0, 2.0, 2.0"
+    ambientlight = "1.0, 1.0, 1.0"
     skybox       = "Orxonox/skyBoxClouds"
     negativeWorldRange = "-100000, -100000, -100000"
     positiveWorldRange = " 100000,  100000,  100000"
@@ -45,32 +45,10 @@
 
 
     <DodgeRaceCenterPoint name=invadercenter />
-    
-    
-  <StaticEntity position="1500,40,50" direction="0,0,0"   scale="1" collisionType=static mass=0 friction=0.01 >
-      <attached>
-        <Model position="0,0,0" mesh="blackcube.mesh" scale3D="50,50,50" />
-      </attached>
-
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="50,50,50" />
-      </collisionShapes>
-
-  </StaticEntity>
-  <StaticEntity position="4500,50,-30" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
-      <attached>
-        <Model position="0,0,0" mesh="blackcube.mesh" scale3D="50,40,50" />
-      </attached>
-
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="50,50,50" />
-      </collisionShapes>
-
-  </StaticEntity>
   
-  <StaticEntity position="0,-10,0" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
+  <StaticEntity position="0,-50,0" direction="0,0,0"   scale="1" collisionType=static mass=1 friction=0.01 >
       <attached>
-        <Model position="0,0,0" mesh="CubeGround.mesh" scale3D="100000,2,100000" />
+        <Model position="0,0,0" mesh="plane.mesh" scale3D="100000,0,100000" />
       </attached>
 
       <collisionShapes>

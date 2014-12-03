@@ -2,6 +2,7 @@ SET_SOURCE_FILES(Dodgerace2_SRC_FILES
 DodgeRace.cc
 DodgeRaceCenterPoint.cc
 DodgeRaceShip.cc
+DodgeRaceCube.cc
 DodgeRaceHUDinfo.cc
 )
 

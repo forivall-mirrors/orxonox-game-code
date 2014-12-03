@@ -74,12 +74,13 @@ namespace orxonox
             {
                 velocity.y = 0;
                 // restart if game ended
+                /*
                 if (getGame())
                     if (getGame()->bEndGame)
                     {
                         getGame()->start();
                         return;
-                    }
+                    }*/
             }
             /*
             if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)

@@ -50,6 +50,7 @@
 
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
+#include <vector>
 
 // ! HACK
 #include "infos/PlayerInfo.h"
@@ -95,12 +96,14 @@ namespace orxonox
             int lives;
             int multiplier;
             int counter;
+            int pattern;
             int currentPosition;
             int lastPosition;
 
        private:
             WeakPtr<DodgeRaceShip> getPlayer();
             WeakPtr<DodgeRaceShip> player;
+            std::vector<DodgeRaceCube*> cubeList;
             void toggleShowLevel(){bShowLevel = !bShowLevel;}
             void addPoints(int numPoints);
 

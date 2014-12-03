@@ -70,6 +70,7 @@ namespace orxonox
     class DodgeRace;
     class DodgeRaceCenterPoint;
     class DodgeRaceShip;
+    class DodgeRaceCube;
     //class DodgeRaceEnemy;
     //class DodgeRaceEnemyShooter;
     //class DodgeRaceWeapon;

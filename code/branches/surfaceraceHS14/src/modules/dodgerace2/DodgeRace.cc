@@ -33,6 +33,7 @@
 
 #include "DodgeRace.h"
 #include "DodgeRaceShip.h" // Necessary for getPlayer function. Do NOT include this in Header!
+#include "DodgeRaceCube.h"
 
 namespace orxonox
 {
@@ -58,6 +59,7 @@ namespace orxonox
         multiplier = 1;
         b_combo = false;
         counter = 0;
+        pattern = 1;
         lastPosition = 0;
         // spawn enemy every 3.5 seconds
         //enemySpawnTimer.setTimer(3.5f, true, createExecutor(createFunctor(&DodgeRace::spawnEnemy, this)));
@@ -93,16 +95,42 @@ namespace orxonox
 			counter = counter + (currentPosition - lastPosition);
 			lastPosition = currentPosition;
 
-			if(counter >= 5000)
+			for(int i=0; i< cubeList.size();i++)
+			{
+				if(cubeList.at(i)->getPosition().x < currentPosition-3000)
+				{
+					cubeList.at(i)->destroy();
+					cubeList.erase(cubeList.begin()+i);
+				}
+			}
+
+			if(counter >= 3000)
 			{
 				counter = 0;
 
-				WeakPtr<StaticEntity> stentity = new StaticEntity(this->center_->getContext()); //this->center_->getContext()
-				stentity->addTemplate("DodgeRaceCube01");
+				for(int i = 0; i<6; i++)
+				{
+					WeakPtr<DodgeRaceCube> cube = new DodgeRaceCube(this->center_->getContext());
+					cubeList.push_back(cube);
+					switch(pattern)
+					{
+					case 1: cube->addTemplate("DodgeRaceCube01");
+					break;
+					case 2:	cube->addTemplate("DodgeRaceCube02");
+					break;
 
-				stentity->setPosition(getPlayer()->getWorldPosition() + Vector3(5000, 0, 0));
-				//stentity->setScale3D(50,50,50);
+					}
+
+					cube->setPosition(getPlayer()->getWorldPosition() + Vector3(5000, 0, -3600 + (i*1200)));
+					//stEntity->setScale3D(50,50,50);
+				}
+
+
+				pattern %= 2;
+				pattern ++;
+
 			}
+
     	}
     	SUPER(DodgeRace, tick, dt);
     }
@@ -165,7 +193,15 @@ namespace orxonox
 
     void DodgeRace::start()
     {
+    	orxout() << "start function called." << endl;
         init();
+		for(int i=0; i< cubeList.size();i++)
+		{
+			cubeList.at(i)->destroy();
+			cubeList.erase(cubeList.begin()+i);
+
+		}
+        cubeList.clear();
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = true;
 
