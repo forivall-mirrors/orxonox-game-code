@@ -57,6 +57,7 @@
   <attached>
 
     <Model position="0,0,0" scale=45 mesh="Tower.mesh" />
+
     <Turret collisionType="dynamic" position="0,0,10" direction="0,0,1" pitch="0" yaw="0" roll="0" angularDamping=0.999999 mass=100 maxPitch=90 maxYaw=90 maxAttackRadius=1000 minAttackRadius=30>
 
       <controller>
@@ -66,6 +67,7 @@
         include("../includes/weaponSettingsTurret.oxi")
       ?>
     </Turret>
+    
   </attached>
     
 
