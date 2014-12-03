@@ -73,7 +73,7 @@
   	
   	
   <SpawnPoint 
-	team=0 position="1000,1000,1000" 
+	team=0 position="9500,9500,9500" 
 	lookat="0,1,0" 
 	spawnclass=SpaceShip 
 	pawndesign=spaceshipassff >
@@ -109,12 +109,12 @@
 
 						<!--#########Pickups##########-->
 			
-
+<PickupSpawner pickup=largedamageboostpickup position="1000,1000,1000" triggerDistance="20" respawnTime="30" maxSpawnedItems="10" />
 <PickupSpawner pickup=crazyhealthpickup position="3500,3500, 3500" triggerDistance="20" respawnTime="30" maxSpawnedItems="10" />
-<PickupSpawner pickup=hugeshieldpickup position="3500,4500, 4500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
+<PickupSpawner pickup=hugeshieldpickup position="4000,4500, 4500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10" />
 <PickupSpawner pickup=smalljumppickup position="6500,6500, 6000" triggerDistance="20" respawnTime="10" maxSpawnedItems="99" />
 <PickupSpawner pickup=largedamageboostpickup position="9500,9500, 9500" triggerDistance="20" respawnTime="30" maxSpawnedItems="10" />
-<PickupSpawner pickup=triplehealthspeedinvisibilitypickup position="13500,13500,13500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
+<PickupSpawner pickup=largedamageboostpickup position="13000,13000,13000" triggerDistance="10" respawnTime="30" maxSpawnedItems="10" />
 
     
     	    <!--******************************-Mission starts here****************************-->
@@ -217,8 +217,25 @@
     </events>
 </SimpleNotification>
 
+<DistanceTrigger name="flying11" position="13000,13000,13000" target="Pawn" distance=200 stayActive="true" delay=1/>
+<SimpleNotification message="There they are. Destroy them!">
+    <events>
+        <trigger>
+            <EventListener event="flying11" />
+        </trigger>
+    </events>
+</SimpleNotification>
 
 
+<SimpleNotification message="Congratulations! You saved humanity!">
+	<EventTrigger  stayActive="true">
+              <events>
+                <trigger>
+                  <EventListener event="endboss"/>
+                </trigger>
+              </events>
+            </EventTrigger>
+</SimpleNotification>
 
 
 
@@ -318,6 +335,25 @@
     	  
       </SpaceShip>
  
+      <!--######################## Spaceship 4 ####################--> 
+      <SpaceShip position="3520,3520, 3500" lookat="2050,0,-1000" name="allied" health="150" maxhealth="150" initialhealth="150" >
+         	  <templates>
+                     <Template link=spaceshippirate />
+               </templates>
+                <controller>
+                   <WaypointPatrolController alertnessradius=300 team=1 >
+         				<waypoints>
+         	  	  	  	  
+                           <Model mesh="cube.mesh" scale=0 position="3920,3500,3500" />
+              	  	  	  <Model mesh="cube.mesh" scale=0 position="3020,3500,3500" />
+                         
+                       </waypoints>
+         						
+                   </WaypointPatrolController>
+
+                </controller>
+         	  
+           </SpaceShip>
         <!--****************************After the Asteroid Field***************************-->
         
    <DistanceTrigger name="afterPortal" position="9500,9500, 9500" target="Pawn"  distance=50 stayActive="true" delay=1/>
@@ -325,7 +361,10 @@
     
 <!--Creating player's team OK-->
         <!--Spaceships team 0 (player:team=0)-->
-               
+
+        
+<!--####################################### too many allied  ################################################
+
                <SpaceShip position="10000,10000,10000" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
              	  <templates>
                          <Template link=spaceshipassff />
@@ -393,6 +432,7 @@
                   </controller>
              </SpaceShip>
 
+############################################################-->
       
       <SpaceShip position="10300,10000,10300" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
                  	  <templates>
@@ -470,7 +510,7 @@
                                                           </activity>
                                                      </events>
                             					<waypoints>
-                           	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="15300,15000,14850" />
+                           	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="17300,17000,17850" />
 
                                               </waypoints>
                             							
@@ -491,7 +531,7 @@
                                                                 </activity>
                                                            </events>
                                   					<waypoints>
-                                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="15150,15000,14700" />
+                                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="17150,17000,17700" />
 
                                                     </waypoints>
                                   							
@@ -512,7 +552,7 @@
                                                                 </activity>
                                                            </events>
                                   					<waypoints>
-                                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="15300,15000,14700" />
+                                 	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="17300,17000,17700" />
 
                                                     </waypoints>
                                   							
@@ -523,7 +563,7 @@
       
 <!--Creating player's team END  -->
 
-<!--#########################################Creating enemy's team END #################################33  -->
+<!--#########################################Creating enemy's team END #################################  -->
         
 
 <SpaceShip position="15500,15500,15500" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
@@ -577,7 +617,7 @@
                
                
                
-               <SpaceShip position="15250,15500,15250" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
+               <SpaceShip position="15250,15500,15250" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
                                                	  <templates>
                                                     <Template link=spaceshipghost />
                                                      </templates>
@@ -595,7 +635,7 @@
                
                
                
-               <SpaceShip position="15000,15500,15000" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
+               <SpaceShip position="15000,15500,15000" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
                                                	  <templates>
                                                    <Template link=spaceshipghost />
                                                      </templates>
@@ -613,7 +653,7 @@
                
                
                
-               <SpaceShip position="15500,15500,15750" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
+               <SpaceShip position="15500,15500,15750" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
                                                	  <templates>
                                                    <Template link=spaceshipghost />
                                                      </templates>
@@ -629,8 +669,39 @@
                                                       </controller>
                                                  </SpaceShip>
 
-          
-          
+      <SpaceShip position="16000,15500,16250" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
+                                                  	  <templates>
+                                                      <Template link=spaceshipghost />
+                                                        </templates>
+                                                         <controller>
+                  	  	  	  	  	  	  	  	  	  	  	 <WaypointPatrolController alertnessradius=2000 team=1 >
+                                                               <waypoints>
+                                             	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="16000,15500,16250" />
+
+                                                                </waypoints>
+                                              							
+                                                            </WaypointPatrolController>
+
+                                                         </controller>
+                                                    </SpaceShip>
+      
+      <SpaceShip position="16500,16500,16500" lookat="2050,0,-1000" name="endboss" health="800" maxhealth="800" initialhealth="800" >
+                                                              	  <templates>
+                                                                  <Template link=spaceshipTransporter />
+                                                                    </templates>
+                                                                     <controller>
+      	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  <WaypointPatrolController alertnessradius=2000 team=1 >
+                                                                           <waypoints>
+                                                         	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="16500,16500,16500" />
+
+                                                                            </waypoints>
+                                                          							
+                                                                        </WaypointPatrolController>
+
+                                                                     </controller>
+                                                                </SpaceShip>
+      
+                
          
 		 <!------------Quest---------->
 
