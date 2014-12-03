@@ -53,7 +53,7 @@ namespace orxonox
         TowerDefense(Context* context);
         virtual ~TowerDefense();
 
-        std::vector<TowerDefenseEnemy*> TowerDefenseEnemyvector;
+        std::vector<orxonox::WeakPtr<TowerDefenseEnemy> > TowerDefenseEnemyvector;
         bool towermatrix[16][16];
         void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr); 
         virtual void start(); //<! The function is called when the gametype starts
@@ -88,6 +88,7 @@ namespace orxonox
     private:
         TowerDefenseCenterpoint *center_;
         float time;
+        float time2;
 
         /* handles stats */
         TowerDefensePlayerStats *stats_;

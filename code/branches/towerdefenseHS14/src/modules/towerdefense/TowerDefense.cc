@@ -298,11 +298,61 @@ namespace orxonox
         std::vector<TDCoordinate*> path;
         path.push_back(coord1);
 
-            if(time>1 && TowerDefenseEnemyvector.size() < 30)
-            {
-            	addTowerDefenseEnemy(path, rand() %3 +1 ); 
-            	time = time-1;
-            }
+        if(time>1 && TowerDefenseEnemyvector.size() < 30)
+        {
+            addTowerDefenseEnemy(path, rand() %3 +1 );
+            time = time-1;
+        }
+
+        Vector3* endpoint = new Vector3(500, 700, 150);
+
+        for(int i =0; i < TowerDefenseEnemyvector.size(); ++i)
+        {
+
+        	//orxout() << TowerDefenseEnemyvector.at(i) << endl;
+        	//continue;
+
+			//ArtificialController* controller = (ArtificialController*)this->getController();
+			if(TowerDefenseEnemyvector.at(i) != NULL && TowerDefenseEnemyvector.at(i)->isAlive())
+			{
+				orxout() << "Variable i: " << i << endl;
+
+				Vector3 ship = TowerDefenseEnemyvector.at(i)->getRVWorldPosition();
+
+				float distance = ship.distance(*endpoint);
+
+				//orxout() << "distance" << distance << endl;
+				if(distance <50){
+				  //	orxout() << "ENEMY KILLED!!!!" << endl;
+				  TowerDefenseEnemyvector.at(i)->destroy();
+				}
+			}
+			else
+			{
+				//TowerDefenseEnemyvector.erase(TowerDefenseEnemyvector.begin() +i);
+			}
+		}
+
+        int count= 0;
+        for(int i =0; i < TowerDefenseEnemyvector.size(); ++i)
+        {
+        	if(TowerDefenseEnemyvector.at(i)!= NULL)
+        	{
+        		++count;
+        	}
+        }
+
+        if(count== 0)
+        {
+        	time2 +=dt;
+        	if(time2 > 10)
+        	{
+        		TowerDefenseEnemyvector.clear();
+        		time=0;
+        		time2=0;
+        	}
+        }
+
 
 
     }
