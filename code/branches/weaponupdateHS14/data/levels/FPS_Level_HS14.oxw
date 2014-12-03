@@ -287,13 +287,16 @@ Complex spacestations can be placed very far away from the spaceship so it is re
 
 	<Model template	= "ss_flag_room" position="750,-16,0"	yaw=180 />
 	
+	<Model template	= "ss_machine" position="1545,190,370"	yaw=32 	pitch=180 />
+	<Model template	= "ss_flag_aean" position="1330,16,0"	pitch=180 />
 	
 	<Model template	= "ss_tube"	 	position="500,0,0" />
+	<Model template	= "ss_curve" 	position="-200,0,0" yaw=180 />
+	<Model template	= "ss_tube_x" 	position="-200,0,600" />
 
 <!--<Model template	= "ss_curve" 	position="-200,0,0" yaw=180 />
 	<Model template	= "ss_curve" 	position="-10,0,700" yaw=0 />
 	<Model template	= "ss_tube"		position="-700,0,700" />
-	<Model template	= "ss_tube"	 	position="-700,0,700" />
 	<Model template	= "ss_tube_x"	position="1200,0,0" />-->
 	
 	
