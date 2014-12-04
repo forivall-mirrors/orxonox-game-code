@@ -49,8 +49,6 @@
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"
 
-#include "Mini4DgameCenterpoint.h"
-
 namespace orxonox
 {
 
@@ -66,8 +64,8 @@ namespace orxonox
     {
         RegisterObject(Mini4Dgame);
 
-        this->center_ = 0;
         this->board_ = 0;
+        //ConsoleCommand("Mini4Dgame", "setStone", &Mini4Dgame::setStone).addShortcut().setAsInputCommand();
 
         // Set the type of Bots for this particular Gametype.
         //this->botclass_ = Class(Mini4DgameBot);
@@ -98,17 +96,19 @@ namespace orxonox
     */
     void Mini4Dgame::start()
     {
-        if (this->center_ != NULL) // There needs to be a Mini4DgameCenterpoint, i.e. the area the game takes place.
+        if (this->board_ != NULL) // There needs to be a Mini4DgameCenterpoint, i.e. the area the game takes place.
         {
+        	/*
         	if (this->board_ == NULL)
         	{
-        		this->board_ = new Mini4DgameBoard(this->center_->getContext());
+        		this->board_ = new Mini4DgameBoard(this->board_->getContext());
         		// Apply the template for the ball specified by the centerpoint.
         		this->board_->addTemplate(this->center_->getBoardtemplate());
         	}
+        	*/
 
         	// Attach the board to the centerpoint and set the parameters as specified in the centerpoint, the ball is attached to.
-        	this->center_->attach(this->board_);
+
         	this->board_->setPosition(0, 0, 0);
 
         }
@@ -176,9 +176,12 @@ namespace orxonox
         }
     }
 
-    static void Mini4Dgame::setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board)
+    //void Mini4Dgame::setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board)
+    void Mini4Dgame::setStone(int x,int y,int z,int w)//Vector4 move, const int playerColor)
     {
-    	board->makeMove(move,playerColor);
+    	Vector4 move = Vector4(x,y,z,w);
+        ObjectList<Mini4DgameBoard>::iterator it = ObjectList<Mini4DgameBoard>::begin();
+    	it->makeMove(move,1);//playerColor);
     }
 
     void Mini4Dgame::win(Mini4DgameWinner winner)

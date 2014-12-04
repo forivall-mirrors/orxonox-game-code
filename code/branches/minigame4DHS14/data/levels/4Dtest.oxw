@@ -12,42 +12,7 @@
 ?>
 
 <!-- Templates here -->
-<Template name=mini4Dgameboard>
-  <Mini4DgameBoard>
-    <attached>
-      <?lua
-        	for i = -90, 90, 60
-        	do
-        	?>
-        		<?lua
-        		for j = -90, 90, 60
-        		do
-        		?>
-        			<?lua
-        			for k = -90, 90, 60
-        			do
-        			?>
-        				<Model
-        				position="<?lua print(i) ?>,<?lua print(j) ?>,<?lua print(k) ?>"
-        				mesh="checkPoint.mesh"
-        				scale="5" />
-        			<?lua
-    		  		end
-    				?>
-    			<?lua
-    		  	end
-    			?>
-        	<?lua
-    		end
-    		?>
-    </attached>
-  </Mini4DgameBoard>
-</Template>
 
-<!--
-	<BlinkingBillboard position="0,0,0" frequency=0.6 amplitude=0.4 material="Flares/lensflare" colour="0,1,0">
-	</BlinkingBillboard>
- -->
 
 <Level
  gametype=Mini4Dgame
@@ -74,10 +39,43 @@
     
     <SpawnPoint position="-330,330,165" lookat="0,0,0" />
 
-	<Mini4DgameCenterpoint name=mini4Dgamecenter boardtemplate=mini4Dgameboard width=16 height=16 length=16 position="0,0,0">
+	<Mini4DgameBoard>
+    	<attached>
+      	<?lua
+        	for i = -90, 90, 60
+        	do
+        	?>
+        		<?lua
+        		for j = -90, 90, 60
+        		do
+        		?>
+        			<?lua
+        			for k = -90, 90, 60
+        			do
+        			?>
+        				<Model
+        				position="<?lua print(i) ?>,<?lua print(j) ?>,<?lua print(k) ?>"
+        				mesh="checkPoint.mesh"
+        				scale="5" />
+        			<?lua
+    		  		end
+    				?>
+    			<?lua
+    		  	end
+    			?>
+        	<?lua
+    		end
+    		?>
+    	</attached>
+    	
+  	</Mini4DgameBoard>
 
-    </Mini4DgameCenterpoint>
-
+<!--
+<attached>
+    <BlinkingBillboard position="0,0,0" frequency=0.6 amplitude=0.4 material="Flares/lensflare" colour="0,1,0" visabilaty=gone>
+	</BlinkingBillboard>
+</attached>
+-->
 
   </Scene>
 </Level>

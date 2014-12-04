@@ -36,7 +36,6 @@
 
 #include "gametypes/Deathmatch.h"
 #include "mini4Dgame/Mini4DgamePrereqs.h"
-#include "Mini4DgameCenterpoint.h"
 #include "Mini4DgameBoard.h"
 
 namespace orxonox
@@ -70,10 +69,14 @@ namespace orxonox
 
             virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
 
-            void setCenterpoint(Mini4DgameCenterpoint* center)
-            	{ this->center_ = center; }
+            void setGameboard(Mini4DgameBoard* board)
+            	{ this->board_ = board; }
 
-            static void setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board);
+            Mini4DgameBoard* getBoard(void)
+            	{ return this->board_; }
+
+            //static void setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board);
+            static void setStone(int x,int y, int z, int w);//Vector4 move, const int playerColor);
 
             void win(Mini4DgameWinner winner);
 
@@ -85,9 +88,7 @@ namespace orxonox
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
 
             //Player players[2];
-
-            WeakPtr<Mini4DgameCenterpoint> center_; //!< The centerpoint to which the objects are attached
-            WeakPtr<Mini4DgameBoard> board_;
+            Mini4DgameBoard* board_;
     };
 }
 

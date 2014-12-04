@@ -2,7 +2,6 @@ SET_SOURCE_FILES(Mini4Dgame_SRC_FILES
   Mini4Dgame.cc
   #Mini4DgameAI.cc
   Mini4DgameBoard.cc
-  Mini4DgameCenterpoint.cc
 )
 
 ORXONOX_ADD_LIBRARY(mini4Dgame

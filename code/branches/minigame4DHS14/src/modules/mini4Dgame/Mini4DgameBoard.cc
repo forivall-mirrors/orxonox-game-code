@@ -37,6 +37,7 @@
 #include "core/GameMode.h"
 
 #include "gametypes/Gametype.h"
+#include "graphics/BlinkingBillboard.h"
 
 #include "core/XMLPort.h"
 
@@ -56,7 +57,7 @@ namespace orxonox
 
         //this->registerVariables();
 
-        //initialize sound
+        //initialize board
         for(int i=0;i<4;i++){
         	for(int j=0;j<4;j++){
         		for(int k=0;k<4;k++){
@@ -66,6 +67,8 @@ namespace orxonox
         		}
         	}
         }
+
+        this->checkGametype();
     }
 
     /**
@@ -122,11 +125,23 @@ namespace orxonox
     	if(this->isValidMove(move))
     	{
     		this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = (mini4DgamePlayerColor::color) playerColor;
-    		//BlinkingBillboard* bb = new BlinkingBillboard(this->getContext());
-    		//bb->setPosition(0,0,0);
+			BlinkingBillboard* bb = new BlinkingBillboard(this->getContext());
+			orxout(user_status) << "Mini4Dgame: move.x " << move.x << endl;
+
+			bb->setPosition(60*(int)move.x-90,60*(int)move.y-90,60*(int)move.z-90);
+			bb->setFrequency(0.6);
+			bb->setAmplitude(0.1);
+			//bb->setMaterial("Flares/lensflare");
+			bb->setMaterial("Numbers/One");
+			bb->setColour(ColourValue(0,1,0));
+
+			this->attach(bb);
+
+
     		Mini4DgameWinner winner = this->getWinner();
     		if(winner.color_ != mini4DgamePlayerColor::none)
     		{
+    			orxout(user_status) << "Mini4Dgame: win!!!!!!!" << endl;
     			//win(winner);
     		}
     	}
@@ -835,5 +850,30 @@ namespace orxonox
     		}
     	}
     	return winner;
+    }
+
+    /**
+    @brief
+        Is called when the gametype has changed.
+    */
+    void Mini4DgameBoard::changedGametype()
+    {
+        SUPER(Mini4DgameBoard, changedGametype);
+
+        // Check, whether it's still Mini4Dgame.
+        this->checkGametype();
+    }
+
+    /**
+    @brief
+        Checks whether the gametype is Mini4Dgame and if it is, sets its centerpoint.
+    */
+    void Mini4DgameBoard::checkGametype()
+    {
+        if (this->getGametype() != NULL && this->getGametype()->isA(Class(Mini4Dgame)))
+        {
+            Mini4Dgame* Mini4DgameGametype = orxonox_cast<Mini4Dgame*>(this->getGametype().get());
+            Mini4DgameGametype->setGameboard(this);
+        }
     }
 }

@@ -39,8 +39,6 @@
 
 #include "worldentities/StaticEntity.h"
 
-#include "Mini4DgameCenterpoint.h"
-
 namespace orxonox
 {
 
@@ -71,6 +69,9 @@ namespace orxonox
             bool isValidMove(const Vector4 move);
             void makeMove(const Vector4 move, const int playerColor);
             Mini4DgameWinner getWinner();
+
+            void changedGametype();
+            void checkGametype();
 
         private:
             //void registerVariables();
