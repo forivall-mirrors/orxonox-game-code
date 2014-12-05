@@ -61,10 +61,18 @@ namespace orxonox
         virtual void tick(float dt);
         //virtual void playerEntered(PlayerInfo* player);
         //virtual bool playerLeft(PlayerInfo* player);
+        //Player Stats (set,get, reduce)
+        int getCredit(){	return this->credit_;	}
+        int getLifes(){		return this->lifes_;	}
+        int getWaveNumber(){	return this->waves_;	}
+        void setCredit(int credit){ credit_ = credit; }
+        void setLifes(int lifes){ lifes_ = lifes; }
+        void setWaveNumber(int wavenumber){waves_=wavenumber;	}
+        void buyTower(int cost){ credit_ -= cost;}
+        void addCredit(int credit) {	credit_+=credit;	}
+        void nextwave(){ waves_++;}
+        int reduceLifes(int NumberofLifes){	return lifes_-=NumberofLifes;	}
 
-        int credits;
-        int life;
-        int waves;
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);
 
@@ -91,10 +99,12 @@ namespace orxonox
         TowerDefenseCenterpoint *center_;
         float time;
         float time2;
+        int credit_;
+        int waves_;
+        int lifes_;
 
         /* handles stats */
-        TowerDefensePlayerStats *stats_;
-        bool hasEnoughCreditForTower(TowerCost towerCost);
+        bool hasEnoughCreditForTower(int towerCost);
         bool hasEnoughCreditForUpgrade();
 
         std::vector<TowerTurret*> towers_;

@@ -38,6 +38,7 @@ namespace orxonox
     TowerDefenseHUDController::TowerDefenseHUDController(Context* context) : OverlayText(context)
     {
         RegisterObject(TowerDefenseHUDController);
+        this->td = 0;
     }
 
     TowerDefenseHUDController::~TowerDefenseHUDController()
@@ -48,13 +49,16 @@ namespace orxonox
     void TowerDefenseHUDController::tick(float dt)
     {
         SUPER(TowerDefenseHUDController, tick, dt);
+        const std::string& lifes = multi_cast<std::string>(this->td->getLifes());
+        const std::string& credits = multi_cast<std::string>(this->td->getCredit());
+        const std::string& waves = multi_cast<std::string>(this->td->getWaveNumber());
 
         if(showlives == true)
-          this->setCaption(multi_cast<std::string>(this->td->life));
+          this->setCaption(multi_cast<std::string>(lifes));
         else if(showcredits == true)
-          this->setCaption(multi_cast<std::string>(this->td->credits));
+          this->setCaption(multi_cast<std::string>(credits));
         else if(showwaves == true)
-          this->setCaption(multi_cast<std::string>(this->td->waves));
+          this->setCaption(multi_cast<std::string>(waves));
 
 
     }
@@ -73,8 +77,15 @@ namespace orxonox
         {
             SUPER(TowerDefenseHUDController, changedOwner);
 
-            td = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
-
+            if (this->getOwner() && this->getOwner()->getGametype())
+                    {
+                        this->td = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
+                    }
+                    else
+                    {
+                        this->td = 0;
+                    }
+                }
             /*if (this->getOwner() != NULL && this->getOwner()->getGametype())
             {
                 this->owner_ = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
@@ -85,4 +96,3 @@ namespace orxonox
             }*/
         }
 
-}

@@ -36,7 +36,7 @@
      colour    = "1.0, 1.0, 1.0, 1.0"
      align     = "left"
 
-     caption = "Lives:"
+     caption = "Lifes:"
     />
     
          <TowerDefenseHUDController

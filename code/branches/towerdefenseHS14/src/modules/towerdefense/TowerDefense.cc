@@ -101,7 +101,7 @@ namespace orxonox
 
         this->setHUDTemplate("TowerDefenseHUD");
 
-        this->stats_ = new TowerDefensePlayerStats();
+        //this->stats_ = new TowerDefensePlayerStats();
 
         /* Temporary hack to allow the player to add towers */
         this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
@@ -130,10 +130,10 @@ namespace orxonox
     	orxout() << "test0" << endl;
 
         Deathmatch::start();
-        credits = 5000;
+        /*credits = 5000;
         life = 20;
         waves = 0;
-        time=0.0;
+        time=0.0;*/
 
 // Waypoints: [1,3] [10,3] [10,11] [13,11]
         for (int i=0; i < 16 ; i++){
@@ -153,9 +153,9 @@ namespace orxonox
                 towermatrix[13][o]=true;
 
 
-        credits = 5000;
-        life = 20;
-        waves = 0;
+        this->setCredit(200);
+        this->setLifes(10);
+        this->setWaveNumber(0);
         time=0.0;
 
  	const int kInitialTowerCount = 3;
@@ -235,16 +235,16 @@ namespace orxonox
     {
         Deathmatch::end();
 
-        ChatManager::message("Match is over");
+        ChatManager::message("Match is over! Gameover!");
     }
 
     void TowerDefense::upgradeTower(int x,int y)
-    {
-    	const TowerCost upgraeCost = TDDefaultUpgradeCost;
+    {/*
+    	const TowerCost upgradeCost = TDDefaultUpgradeCost;
 
-        if (!this->hasEnoughCreditForTower(upgraeCost))
+        if (!this->hasEnoughCreditForTower(upgradeCost))
         {
-            orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
+            orxout() << "not enough credit: " << (this->getCredit()) << " available, " << upgradeCost << " needed.";
             return;
         }
 
@@ -257,17 +257,17 @@ namespace orxonox
         else
         {
         	(towermatrix [x][y])->upgradeTower();
-        }
+        }*/
     }
 
 
     void TowerDefense::addTower(int x, int y)
     {
-        const TowerCost towerCost = TDDefaultTowerCost;
+        const int towerCost = 20;
 
         if (!this->hasEnoughCreditForTower(towerCost))
         {
-            orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
+            orxout() << "not enough credit: " << (this->getCredit()) << " available, " << towerCost << " needed.";
             return;
         }
 
@@ -277,10 +277,10 @@ namespace orxonox
             return;
         }
 
-
+/*
         unsigned int width = this->center_->getWidth();
         unsigned int height = this->center_->getHeight();
-
+*/
 
         int tileScale = (int) this->center_->getTileScale();
 
@@ -296,9 +296,10 @@ namespace orxonox
         
 
        //Reduce credit
-        this->stats_->buyTower(towerCost);
+        this->buyTower(towerCost);
 
-        orxout() << "Credit: " << this->stats_->getCredit() << endl;
+        towermatrix [x][y]=true;
+
 
   //    Create tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
@@ -306,12 +307,11 @@ namespace orxonox
         towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
         towernew->setGame(this);
 
-        towermatrix[x][y]=true;
     }
 
-    bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
+    bool TowerDefense::hasEnoughCreditForTower(int towerCost)
     {
-        return ((this->stats_->getCredit()) >= towerCost);
+        return ((this->getCredit()) >= towerCost);
     }
 
     bool TowerDefense::hasEnoughCreditForUpgrade()

@@ -67,6 +67,12 @@ namespace orxonox
         inline void didLoadNextWave()
             { waveNumber_++; }
 
+        inline int getLifes()
+        	{return lifes_;	}
+
+        inline void reduceLifes(int NumberofLifes)
+        {lifes_-=NumberofLifes; }
+
         inline void upgradeTower(int upgradecost)
         	{ credit_ -= upgradecost;}
 
@@ -76,6 +82,7 @@ namespace orxonox
         int credit_;
         int waveNumber_;
         int upgradecost;
+        int lifes_;
         //int baseHealth_;
     };
 }

@@ -22,6 +22,7 @@ See TowerDefenseReadme.txt for Information.
 #include "worldentities/pawns/SpaceShip.h"
 #include "util/Output.h"
 #include "controllers/ArtificialController.h"
+#include "TowerDefense.h"
 
 namespace orxonox
 {
@@ -34,7 +35,7 @@ namespace orxonox
 	public:
 
 		TowerDefenseEnemy(Context* context);
-        virtual ~TowerDefenseEnemy() {};
+        virtual ~TowerDefenseEnemy();
 
         //health gibt es unter: health_
 
@@ -46,6 +47,8 @@ namespace orxonox
 
 	private:
 
+        TowerDefense* td;
+        bool once_;
         std::vector<TDCoordinate*> Waypointsvector_;
 
 	};

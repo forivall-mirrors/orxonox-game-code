@@ -28,8 +28,12 @@ namespace orxonox
         RegisterObject(TowerDefenseEnemy);
 
         this->setCollisionType(WorldEntity::Dynamic);
+        this->td = orxonox_cast<TowerDefense*>(this->getGametype().get());
+        once_ = false;
 
     }
+
+    TowerDefenseEnemy::~TowerDefenseEnemy(){this->td->addCredit(20);}
 
     void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
     {
@@ -48,9 +52,17 @@ namespace orxonox
         float distance = ship.distance(*endpoint);
 
         //orxout() << "distance" << distance << endl;
-        if(distance <50){
+        if(distance < 50 && once_ == false){
+        	this->td->reduceLifes(1);
+        	once_=true;
         	orxout() << "ENEMY KILLED!!!!" << endl;
-        	this->destroy(); }
+        	this->td->buyTower(20);
+        	if (this->td->getLifes()==0)
+		{
+		    this->td->end();
+        	}
+
+        }
     }
 
 /*

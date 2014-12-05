@@ -38,7 +38,7 @@
 #define _TowerDefenseHUDController_H__
 
 #include "towerdefense/TowerDefensePrereqs.h"
-
+#include "TowerDefensePlayerStats.h"
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
 #include "TowerDefense.h"
@@ -72,7 +72,6 @@ namespace orxonox
 
     private:
         TowerDefense* td;
-
         bool showcredits;
         bool showlives;
         bool showwaves;
