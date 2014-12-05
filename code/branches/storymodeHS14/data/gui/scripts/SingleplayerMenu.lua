@@ -1,7 +1,7 @@
 -- SingleplayerMenu.lua
 
 local P = createMenuSheet("SingleplayerMenu")
-P.loadAlong = {"ShipSelectionMenu"}
+P.loadAlong = {"ShipSelectionMenu","CampaignMenu"}
 P.levelList = {}
 P.activeTabIndexes = {}
 P.scrollbarWidth = 13
@@ -18,11 +18,12 @@ function P.onLoad()
     P.createFilterTab("Presentations", "presentation")
     P.createFilterTab("Tests", "test")
     P.createFilterTab("Show All", nil)
+   
 
     -- update description and screenshot boxes
     P.SingleplayerSelectionChanged()
 
-    --buttons are arranged in a 1x3 matrix
+    --buttons are arranged in a 1x4 matrix
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
             ["callback"]  = P.SingleplayerStartButton_clicked
@@ -36,6 +37,10 @@ function P.onLoad()
     P:setButton(1, 3, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerBackButton"),
             ["callback"]  = P.SingleplayerBackButton_clicked
+    })
+    P:setButton(1, 4,{
+    		["button"] = winMgr:getWindow("orxonox/CampaignButton"),
+    		["callback"] = P.CampaignButton_clicked
     })
 end
 
@@ -163,6 +168,10 @@ end
 
 function P.SingleplayerBackButton_clicked(e)
     hideMenuSheet(P.name)
+end
+
+function P.CampaignButton_clicked(e)
+	showMenuSheet("CampaignMenu", true)
 end
 
 return P
