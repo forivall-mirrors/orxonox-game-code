@@ -43,7 +43,8 @@ namespace orxonox
 {
     typedef enum _TowerCosts {
         // Set to 0 for debug...
-        TDDefaultTowerCost = 20
+        TDDefaultTowerCost = 20 ,
+        TDDefaultUpgradeCost = 15
     } TowerCost;
 
     class _TowerDefenseExport TowerDefensePlayerStats
@@ -66,9 +67,15 @@ namespace orxonox
         inline void didLoadNextWave()
             { waveNumber_++; }
 
+        inline void upgradeTower(int upgradecost)
+        	{ credit_ -= upgradecost;}
+
+
+
     private:
         int credit_;
         int waveNumber_;
+        int upgradecost;
         //int baseHealth_;
     };
 }

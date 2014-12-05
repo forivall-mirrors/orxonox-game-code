@@ -46,8 +46,8 @@
 
    explosionchunks        = 6
 
-   reloadrate          = 3
-   reloadwaittime      = 1
+   reloadrate          = 10
+   reloadwaittime      = 5
 
    collisionType     = "dynamic"
    team = 1
@@ -58,13 +58,57 @@
 
     <Model position="0,0,0" scale=45 mesh="Tower.mesh" />
 
-    <Turret collisionType="dynamic" position="0,0,10" direction="0,0,1" pitch="0" yaw="0" roll="0" angularDamping=0.999999 mass=100 maxPitch=90 maxYaw=90 maxAttackRadius=1000 minAttackRadius=30>
+    <Turret reloadrate=10 reloadwaittime=5 collisionType="dynamic" position="0,0,10" direction="0,0,1" pitch="0" yaw="0" roll="0" angularDamping=0.999999 mass=100 maxPitch=90 maxYaw=90 maxAttackRadius=1000 minAttackRadius=30>
 
       <controller>
         <TurretController/>
       </controller>
       <?lua
         include("../includes/weaponSettingsTurret.oxi")
+      ?>
+    </Turret>
+    
+  </attached>
+    
+
+
+
+    <!--collisionShapes>
+
+    </collisionShapes-->
+
+<?lua
+  include("../includes/towerWeaponSettings.oxi")
+?>
+  </TowerDefenseTower>
+</Template>
+
+
+
+<Template name=towerturret1>
+  <TowerDefenseTower
+
+
+   explosionchunks        = 6
+
+   reloadrate          = 10
+   reloadwaittime      = 5
+
+   collisionType     = "dynamic"
+   team = 1
+
+
+  >
+  <attached>
+
+
+    <Turret reloadrate=10 reloadwaittime=5 collisionType="dynamic" position="0,0,10" direction="0,0,1" pitch="0" yaw="0" roll="0" angularDamping=0.999999 mass=100 maxPitch=90 maxYaw=90 maxAttackRadius=1000 minAttackRadius=30>
+
+      <controller>
+        <TurretController/>
+      </controller>
+      <?lua
+        include("../includes/weaponSettingsTurret1.oxi")
       ?>
     </Turret>
     

@@ -40,11 +40,14 @@ namespace orxonox
         virtual void rotateYaw(const Vector2& value);
         virtual void rotatePitch(const Vector2& value);
         virtual void rotateRoll(const Vector2& value);
+        virtual bool upgradeTower();
+
 
         void setGame(TowerDefense* Towerdefense)
         { assert(Towerdefense); game_ = Towerdefense; }
     private:
         TowerDefense* game_;
+        int upgrade;
     };
 }
 

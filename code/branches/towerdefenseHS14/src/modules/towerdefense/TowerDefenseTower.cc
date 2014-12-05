@@ -26,6 +26,7 @@ namespace orxonox
         RegisterObject(TowerDefenseTower);
 
         this->setCollisionType(WorldEntity::Dynamic);
+        upgrade = 0;
 
         //this->removeAllEngines();
 
@@ -59,6 +60,29 @@ namespace orxonox
         static int roll;
         //orxout() << "rotateRoll" << ++roll << endl;
     }
+
+    bool TowerDefenseTower::upgradeTower()
+       {
+       	if(upgrade < 3)
+       	{
+       		upgrade++;
+       		float reloadrate = getReloadRate();
+       		float reloadwaittime = getReloadWaitTime();
+       		this->setDamageMultiplier(5000);
+
+       		reloadrate = 0.5*reloadrate;
+       		reloadwaittime = 0.5*reloadwaittime;
+       		setReloadRate(reloadrate);
+       		setReloadWaitTime(reloadwaittime);
+       		this->addTemplate("towerturret1");
+       	}
+       	else
+       	{
+       		orxout() << "Tower fully upgraded" << endl;
+       		return false;
+       	}
+       	return true;
+       }
 
     // This function is called whenever a player presses the up or the down key.
     // You have to implement what happens when the up or the down key is pressed.

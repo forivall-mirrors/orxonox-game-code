@@ -105,6 +105,7 @@ namespace orxonox
 
         /* Temporary hack to allow the player to add towers */
         this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
+	this->dedicatedUpgradeTower_ = createConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
     }
 
     TowerDefense::~TowerDefense()
@@ -129,6 +130,10 @@ namespace orxonox
     	orxout() << "test0" << endl;
 
         Deathmatch::start();
+        credits = 5000;
+        life = 20;
+        waves = 0;
+        time=0.0;
 
 // Waypoints: [1,3] [10,3] [10,11] [13,11]
         for (int i=0; i < 16 ; i++){
@@ -233,6 +238,27 @@ namespace orxonox
         ChatManager::message("Match is over");
     }
 
+    void TowerDefense::upgradeTower(int x,int y)
+    {
+    	const TowerCost upgraeCost = TDDefaultUpgradeCost;
+
+        if (!this->hasEnoughCreditForTower(upgraeCost))
+        {
+            orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
+            return;
+        }
+
+        if (towermatrix [x][y] == NULL)
+        {
+            orxout() << "no tower on this position" << endl;
+            return;
+        }
+
+        else
+        {
+        	(towermatrix [x][y])->upgradeTower();
+        }
+    }
 
 
     void TowerDefense::addTower(int x, int y)
@@ -286,6 +312,11 @@ namespace orxonox
     bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
     {
         return ((this->stats_->getCredit()) >= towerCost);
+    }
+
+    bool TowerDefense::hasEnoughCreditForUpgrade()
+    {
+    	return true;
     }
 
  

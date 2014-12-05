@@ -41,6 +41,16 @@ namespace orxonox
     {
         SUPER(TowerDefenseEnemy, tick, dt);
 
+        //ArtificialController* controller = (ArtificialController*)this->getController();
+        Vector3 ship = this->getRVWorldPosition();
+        Vector3* endpoint = new Vector3(500, 700, 150);
+
+        float distance = ship.distance(*endpoint);
+
+        //orxout() << "distance" << distance << endl;
+        if(distance <50){
+        	orxout() << "ENEMY KILLED!!!!" << endl;
+        	this->destroy(); }
     }
 
 /*
