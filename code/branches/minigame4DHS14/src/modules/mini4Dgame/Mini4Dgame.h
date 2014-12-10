@@ -75,6 +75,8 @@ namespace orxonox
             Mini4DgameBoard* getBoard(void)
             	{ return this->board_; }
 
+            static void undoStone();
+
             //static void setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board);
             static void setStone(int x,int y, int z, int w);//Vector4 move, const int playerColor);
 

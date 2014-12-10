@@ -63,25 +63,15 @@ namespace orxonox
         		for(int k=0;k<4;k++){
         			for(int l=0;l<4;l++){
         				this->board[i][j][k][l]=mini4DgamePlayerColor::none;
+        				this->blinkingBillboards[i][j][k][l] = 0;
         			}
         		}
         	}
         }
-
+        this->player_toggle_ = false;
         this->checkGametype();
     }
 
-    /**
-    @brief
-        Destructor.
-    */
-    Mini4DgameBoard::~Mini4DgameBoard()
-    {
-        if (this->isInitialized())
-        {
-
-        }
-    }
 
     //xml port for loading sounds
     void Mini4DgameBoard::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -89,61 +79,117 @@ namespace orxonox
         SUPER(Mini4DgameBoard, XMLPort, xmlelement, mode);
     }
 
-    /**
-    @brief
-        Register variables to synchronize over the network.
-
-    void Mini4DgameBoard::registerVariables()
-    {
-        registerVariable( this->fieldWidth_ );
-        registerVariable( this->fieldHeight_ );
-        registerVariable( this->batlength_ );
-        registerVariable( this->speed_ );
-        registerVariable( this->relMercyOffset_ );
-        registerVariable( this->batID_[0] );
-        registerVariable( this->batID_[1], VariableDirection::ToClient, new NetworkCallback<PongBall>( this, &PongBall::applyBats) );
-    }
-     */
-
 	/**
         @brief checks if the move is valid
         @param the position where to put the stone plus the player who makes the move
     */
     bool Mini4DgameBoard::isValidMove(const Vector4 move)
     {
-    	return (this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] == mini4DgamePlayerColor::none);
+    	return (move.x<4 && move.y<4 && move.z<4 && move.w<4
+    			&& move.x>=0 && move.y>=0 && move.z>=0 && move.w>=0
+    			&& this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] == mini4DgamePlayerColor::none);
     }
 
-
+	void Mini4DgameBoard::undoMove()
+	{
+		Vector4 move = moves.back();
+		moves.pop_back();
+    	this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = mini4DgamePlayerColor::none;
+    	this->blinkingBillboards[(int)move.x][(int)move.y][(int)move.z][(int)move.w]->destroy();
+    	this->blinkingBillboards[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = 0;
+    	if(player_toggle_){
+    		this->player_toggle_ = false;
+    	}else{
+    		this->player_toggle_ = true;
+    	}
+	}
 
     /**
     @brief makes a move on the logic playboard
     @param the position where to put the stone plus the player who makes the move
     */
-    void Mini4DgameBoard::makeMove(const Vector4 move, const int playerColor)
+    void Mini4DgameBoard::makeMove(const Vector4 move)
     {
     	if(this->isValidMove(move))
     	{
-    		this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = (mini4DgamePlayerColor::color) playerColor;
-			BlinkingBillboard* bb = new BlinkingBillboard(this->getContext());
-			orxout(user_status) << "Mini4Dgame: move.x " << move.x << endl;
+    		if(!moves.empty())
+    		{
+    			//stop blinking of last move
+    			Vector4 lastMove = moves.back();
+    			this->blinkingBillboards[(int)lastMove.x][(int)lastMove.y][(int)lastMove.z][(int)lastMove.w]
+    					->setActive(false);
+    			this->blinkingBillboards[(int)lastMove.x][(int)lastMove.y][(int)lastMove.z][(int)lastMove.w]
+    					->setScale(0.1);
+    		}
 
-			bb->setPosition(60*(int)move.x-90,60*(int)move.y-90,60*(int)move.z-90);
-			bb->setFrequency(0.6);
+    		moves.push_back(move);
+    		mini4DgamePlayerColor::color playerColor = mini4DgamePlayerColor::none;
+    		if(player_toggle_){
+    			playerColor = mini4DgamePlayerColor::blue;
+    			this->player_toggle_ = false;
+    		}else{
+    			playerColor = mini4DgamePlayerColor::green;
+    			this->player_toggle_ = true;
+    		}
+
+    		this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = (mini4DgamePlayerColor::color) playerColor;
+
+    		BlinkingBillboard* bb = new BlinkingBillboard(this->getContext());
+			bb->setFrequency(0.3);
 			bb->setAmplitude(0.1);
-			//bb->setMaterial("Flares/lensflare");
-			bb->setMaterial("Numbers/One");
-			bb->setColour(ColourValue(0,1,0));
+
+			switch((int)move.w){
+			case 0:	bb->setMaterial("Numbers/One");
+					bb->setPosition(60*(int)move.x-95,60*(int)move.y-95,60*(int)move.z-95);
+					break;
+			case 1:	bb->setMaterial("Numbers/Two");
+					bb->setPosition(60*(int)move.x-85,60*(int)move.y-85,60*(int)move.z-95);
+					break;
+			case 2:	bb->setMaterial("Numbers/Three");
+					bb->setPosition(60*(int)move.x-85,60*(int)move.y-95,60*(int)move.z-85);
+					break;
+			case 3:	bb->setMaterial("Numbers/Four");
+					bb->setPosition(60*(int)move.x-85,60*(int)move.y-85,60*(int)move.z-85);
+					break;
+			}
+
+			switch(playerColor){
+			case mini4DgamePlayerColor::red:
+				bb->setColour(ColourValue(1,0,0)); break;
+			case mini4DgamePlayerColor::green:
+				bb->setColour(ColourValue(0,1,0)); break;
+			case mini4DgamePlayerColor::blue:
+				bb->setColour(ColourValue(0,0,1)); break;
+			default:	break;
+			}
 
 			this->attach(bb);
+			this->blinkingBillboards[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = bb;
 
 
     		Mini4DgameWinner winner = this->getWinner();
     		if(winner.color_ != mini4DgamePlayerColor::none)
     		{
     			orxout(user_status) << "Mini4Dgame: win!!!!!!!" << endl;
-    			//win(winner);
+    			for(int i=0;i<4;i++){
+    				BlinkingBillboard* redFlare = new BlinkingBillboard(this->getContext());
+					redFlare->setFrequency(0.5);
+					redFlare->setAmplitude(3);
+					redFlare->setPosition(60*(int)winner.winningRow[i]-90,
+									60*(int)winner.winningColumn[i]-90,
+									60*(int)winner.winningHeight[i]-90);
+					redFlare->setMaterial("Flares/lensflare");
+					redFlare->setColour(ColourValue(1,0,0));
+					this->attach(redFlare);
+					BlinkingBillboard* bb = this->blinkingBillboards[winner.winningRow[i]]
+																	[winner.winningColumn[i]]
+																	[winner.winningHeight[i]]
+																	[winner.winningNumber[i]];
+					bb->setActive(true);//start blinking
+				}
     		}
+    	}else{
+			orxout(internal_error) << "Mini4Dgame: not a valid move"<< endl;
     	}
     }
 

@@ -53,6 +53,7 @@ namespace orxonox
 {
 
 	SetConsoleCommand("Mini4Dgame", "setStone", &Mini4Dgame::setStone).addShortcut();
+	SetConsoleCommand("Mini4Dgame", "undoStone", &Mini4Dgame::undoStone).addShortcut();
 
     RegisterUnloadableClass(Mini4Dgame);
 
@@ -65,7 +66,6 @@ namespace orxonox
         RegisterObject(Mini4Dgame);
 
         this->board_ = 0;
-        //ConsoleCommand("Mini4Dgame", "setStone", &Mini4Dgame::setStone).addShortcut().setAsInputCommand();
 
         // Set the type of Bots for this particular Gametype.
         //this->botclass_ = Class(Mini4DgameBot);
@@ -87,7 +87,11 @@ namespace orxonox
     */
     void Mini4Dgame::cleanup()
     {
-
+    	if(this->board_ != NULL)// Destroy the board, if present.
+    	{
+    		//this->board_->destroy();
+    		this->board_ = 0;
+    	}
     }
 
     /**
@@ -176,12 +180,18 @@ namespace orxonox
         }
     }
 
+    void Mini4Dgame::undoStone()//Vector4 move, const int playerColor)
+    {
+    	ObjectList<Mini4DgameBoard>::iterator it = ObjectList<Mini4DgameBoard>::begin();
+        it->undoMove();
+    }
+
     //void Mini4Dgame::setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board)
     void Mini4Dgame::setStone(int x,int y,int z,int w)//Vector4 move, const int playerColor)
     {
     	Vector4 move = Vector4(x,y,z,w);
         ObjectList<Mini4DgameBoard>::iterator it = ObjectList<Mini4DgameBoard>::begin();
-    	it->makeMove(move,1);//playerColor);
+        it->makeMove(move);
     }
 
     void Mini4Dgame::win(Mini4DgameWinner winner)

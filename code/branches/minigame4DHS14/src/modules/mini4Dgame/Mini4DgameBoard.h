@@ -62,12 +62,13 @@ namespace orxonox
     {
         public:
     		Mini4DgameBoard(Context* context);
-            virtual ~Mini4DgameBoard();
+            //virtual ~Mini4DgameBoard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             bool isValidMove(const Vector4 move);
-            void makeMove(const Vector4 move, const int playerColor);
+            void undoMove();
+            void makeMove(const Vector4 move);
             Mini4DgameWinner getWinner();
 
             void changedGametype();
@@ -75,6 +76,9 @@ namespace orxonox
 
         private:
             //void registerVariables();
+            std::vector<Vector4> moves;
+            bool player_toggle_;
+            BlinkingBillboard* blinkingBillboards[4][4][4][4];
             int board[4][4][4][4]; //!< The logical board where the game takes place. board[row][column][height][number]
     };
 }
