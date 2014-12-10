@@ -4,7 +4,7 @@
 	tags= "mission"
 	screenshot= "screenshot.png"
 />
-
+<!--########################  ALL INCLUSIONS #############################-->
 
  <?lua
   include("stats.oxo")
@@ -73,7 +73,7 @@
   	
   	
   <SpawnPoint 
-	team=0 position="9500,9500,9500" 
+	team=0 position="0,0,0" 
 	lookat="0,1,0" 
 	spawnclass=SpaceShip 
 	pawndesign=spaceshipassff >
@@ -90,7 +90,11 @@
     
     				
     
-    		<!----------------Objects------------------>
+
+
+
+
+<!--########################  Billboards and Pickups #############################-->
     
     
   
@@ -105,6 +109,7 @@
 <Billboard position=" 6500,6500, 6500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
 <Billboard position=" 8500,8500, 8500" material="Examples/Flare" colour="1.0, 0.0, 0.0" />  
 <Billboard position=" 9500,9500, 9500" material="Examples/Flare" colour="1.0, 1.0, 0.0" />  
+<Billboard position=" 16700,16700,16700" material="Examples/Flare" colour="0.8, 0.2, 1.0" />  
 
 
 						<!--#########Pickups##########-->
@@ -120,7 +125,7 @@
     	    <!--******************************-Mission starts here****************************-->
     			
     			
-    			 <!------------On-screen texts---------->
+    	    <!--########################  On screen notifications and distance triggers #############################-->
     			 
 
     
@@ -226,20 +231,30 @@
     </events>
 </SimpleNotification>
 
-
-<SimpleNotification message="Congratulations! You saved humanity!">
-	<EventTrigger  stayActive="true">
-              <events>
-                <trigger>
-                  <EventListener event="endboss"/>
-                </trigger>
-              </events>
-            </EventTrigger>
+<DistanceTrigger name="flying12" position="13050,13050,13050" target="Pawn" distance=200 stayActive="true" delay=1/>
+<SimpleNotification message="Don't fotget to loot the final boss">
+    <events>
+        <trigger>
+            <EventListener event="flying12" />
+        </trigger>
+    </events>
 </SimpleNotification>
 
+<SimpleNotification message="Congratulations! You saved humanity!" broadcast="true">
+    <events>
+        <trigger>
+            <EventListener event="endboss" />
+        </trigger>
+    </events>
+</SimpleNotification>
+
+<DistanceTrigger name="endMissio" position="16700,16700,16700" target="Pawn" distance=50 stayActive="true" delay=1/>
 
 
-<!-- Meteoriten, die sich bewegen -->
+
+
+<!--######################## Meteoriten #############################-->
+
    <?lua
       for i = 1, 800, 1
       do
@@ -275,7 +290,8 @@
       	<!--****************************In the Asteroid Field***************************-->
  <!--Enemy team-->
   
- <!--*****Spaceship 1******* -->
+ <!--########################  spaceships within the asteroid field #############################-->
+
        
   <SpaceShip position="1900,1500,1500" lookat="2050,0,-1000" name="allied" health="200" maxhealth="200" initialhealth="200" >
 	  <templates>
@@ -295,9 +311,7 @@
 	  
   </SpaceShip>
       
-      
-      <!--*****Spaceship 2 and 3******* -->
-      
+            
       <SpaceShip position="2900,2500,2500" lookat="2050,0,-1000" name="allied" health="200" maxhealth="200" initialhealth="200" >
     	  <templates>
                 <Template link=spaceshippirate />
@@ -335,7 +349,6 @@
     	  
       </SpaceShip>
  
-      <!--######################## Spaceship 4 ####################--> 
       <SpaceShip position="3520,3520, 3500" lookat="2050,0,-1000" name="allied" health="150" maxhealth="150" initialhealth="150" >
          	  <templates>
                      <Template link=spaceshippirate />
@@ -354,6 +367,7 @@
                 </controller>
          	  
            </SpaceShip>
+      
         <!--****************************After the Asteroid Field***************************-->
         
    <DistanceTrigger name="afterPortal" position="9500,9500, 9500" target="Pawn"  distance=50 stayActive="true" delay=1/>
@@ -363,51 +377,9 @@
         <!--Spaceships team 0 (player:team=0)-->
 
         
-<!--####################################### too many allied  ################################################
-
-               <SpaceShip position="10000,10000,10000" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
-             	  <templates>
-                         <Template link=spaceshipassff />
-                   </templates>
-                    <controller>
-      	  	  	  	  <WaypointPatrolController alertnessradius=2000 team=0 >
-                               <events>
-                                          <activity>
-                                              <EventListener event="afterPortal" />
-                                           </activity>
-                                      </events>
-             					<waypoints>
-            	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="15000,15000,15000" />
-
-                               </waypoints>
-             							
-                           </WaypointPatrolController>
-                    </controller>
-             </SpaceShip>
+<!--####################################### allied team  ################################################-->
 
 
-             <SpaceShip position="10150,10000,9850" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
-           	  <templates>
-                       <Template link=spaceshipassff />
-                 </templates>
-                  <controller>
-                     <WaypointPatrolController alertnessradius=2000 team=0 >
-                         <events>
-                                    <activity>
-                                        <EventListener event="afterPortal" />
-                                     </activity>
-                                </events>
-       					<waypoints>
-      	  	  	  	  	  <Model mesh="cube.mesh" scale=0 position="15150,15000,14850" />
-
-                         </waypoints>
-       							
-                     </WaypointPatrolController>
-
-                  </controller>
-             </SpaceShip>
-
-             
              
              
 
@@ -432,7 +404,6 @@
                   </controller>
              </SpaceShip>
 
-############################################################-->
       
       <SpaceShip position="10300,10000,10300" lookat="2050,0,-1000" name="allied" health="800" maxhealth="800" initialhealth="800" >
                  	  <templates>
@@ -563,10 +534,10 @@
       
 <!--Creating player's team END  -->
 
-<!--#########################################Creating enemy's team END #################################  -->
+<!--#########################################Creating enemy team END #################################  -->
         
 
-<SpaceShip position="15500,15500,15500" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
+<SpaceShip position="15500,15500,15500" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
                                 	  <templates>
                                             <Template link=spaceshipghost />
                                       </templates>
@@ -583,7 +554,7 @@
                                   </SpaceShip>
       
       
-      <SpaceShip position="15750,15500,15750" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
+      <SpaceShip position="15750,15500,15750" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
                                           	  <templates>
                                                       <Template link=spaceshipghost />
                                                 </templates>
@@ -598,7 +569,7 @@
 
                                                  </controller>
                                             </SpaceShip>
-      <SpaceShip position="16000,15500,16000" lookat="2050,0,-1000" name="enemy" health="400" maxhealth="400" initialhealth="400" >
+      <SpaceShip position="16000,15500,16000" lookat="2050,0,-1000" name="enemy" health="200" maxhealth="200" initialhealth="200" >
                                                	  <templates>
                                                    <Template link=spaceshipghost />
                                                      </templates>
@@ -701,9 +672,20 @@
                                                                      </controller>
                                                                 </SpaceShip>
       
-                
+      <!-- ##################### End the Mission (success) ##########################################-->
+     
+
+      
+      
+      <Script code="Mission endMission true" onLoad="false">
+          <events>
+              <trigger>
+                  <EventListener event="endMissio" />
+              </trigger>
+          </events>
+      </Script> 
          
-		 <!------------Quest---------->
+      <!--########################  Quests #############################-->
 
 
  <QuestEffectBeacon times=1>
