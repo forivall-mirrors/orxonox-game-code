@@ -43,37 +43,19 @@ namespace orxonox
      public:
             DodgeRaceHUDinfo(Context* context);
 
-         //   virtual void tick(float dt);
-           // virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            //virtual void changedOwner();
-
-            inline void setShowLives(bool value)
-                { this->bShowLives_ = value; }
-            inline bool getShowLives() const
-                { return this->bShowLives_; }
-
-            inline void setShowLevel(bool value)
-                { this->bShowLevel_ = value; }
-            inline bool getShowLevel() const
-                { return this->bShowLevel_; }
+            virtual void tick(float dt);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedOwner();
 
             inline void setShowPoints(bool value)
                 { this->bShowPoints_ = value; }
             inline bool getShowPoints() const
                 { return this->bShowPoints_; }
 
-            inline void setShowMultiplier(bool value)
-                { this->bShowMultiplier_ = value; }
-            inline bool getShowMultiplier() const
-                { return this->bShowMultiplier_; }
-
 
         private:
             DodgeRace* DodgeRaceGame;
-            bool bShowLives_;
-            bool bShowLevel_;
             bool bShowPoints_;
-            bool bShowMultiplier_;
     };
 }
 #endif /* _DodgeRaceHUDinfo_H__ */

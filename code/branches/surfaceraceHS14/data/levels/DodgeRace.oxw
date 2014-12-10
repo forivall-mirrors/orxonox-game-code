@@ -1,8 +1,8 @@
 <LevelInfo
  name = "Dodge Race"
- description = "2D Arcade shooter. Maximise your points!!!\nTip: try to keep the multiplier high by avoiding shots and enemies."
+ description = "Try to come as far as possible"
  tags = "minigame"
- screenshot = "orxonoxArcade.png"
+ screenshot = "DodgeRace.png"
 />
 <?lua
   include("stats.oxo")
@@ -15,7 +15,7 @@
   include("templates/spaceshipDodgeRace.oxt")
   include("templates/enemyInvader.oxt")
   include("templates/DodgeRacePattern.oxt")
-  include("overlays/InvaderHUD.oxo")
+  include("overlays/DodgeRaceHUD.oxo")
 ?>
 
 <Level gametype = DodgeRace>

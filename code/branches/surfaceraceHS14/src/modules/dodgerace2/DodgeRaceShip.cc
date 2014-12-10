@@ -41,7 +41,7 @@ namespace orxonox
     {
         RegisterObject(DodgeRaceShip);
 
-        speed = 800;
+        speed = 830;
         isFireing = false;
         damping = 10;
 
@@ -67,14 +67,14 @@ namespace orxonox
         if (this->hasLocalController())
         {
             float dist_y = velocity.y * dt;
-            float dist_x = velocity.x * dt;
+            //float dist_x = velocity.x * dt;
             if(dist_y + posforeward > -42*3 && dist_y + posforeward < 42*6)
                 posforeward += dist_y;
             else
             {
                 velocity.y = 0;
                 // restart if game ended
-                /*
+/*
                 if (getGame())
                     if (getGame()->bEndGame)
                     {
@@ -82,20 +82,8 @@ namespace orxonox
                         return;
                     }*/
             }
-            /*
-            if (pos.z + dist_x > 42*2.5 || pos.z + dist_x < -42*3)
-            {
-            	velocity.x = 0;
-            }
-            */
-            pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
-        }
 
-        // shoot!
-        if (isFireing)
-        {
-        	//pos += Vector3(900, 0, 0) * dt;
-            //ControllableEntity::fire(0);
+            pos += Vector3(1000 + velocity.y, 0, velocity.x) * dt;
         }
 
 
@@ -149,18 +137,11 @@ namespace orxonox
     }
     void DodgeRaceShip::boost(bool bBoost)
     {
-        //isFireing = bBoost;
+        //getGame()->bEndGame = bBoost;
     }
 
     inline bool DodgeRaceShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-    	/*
-        if (otherObject != NULL && lastEntity != otherObject)
-        {
-        	lastEntity = otherObject;
-        	removeHealth(20);
-        }
-		*/
 
     	removeHealth(100);
     	this->death();

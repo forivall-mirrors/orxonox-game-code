@@ -76,6 +76,8 @@ namespace orxonox
 
             virtual void tick(float dt);
 
+            virtual void playerPreSpawn(PlayerInfo* player);
+
             void levelUp();
 
             int getLives(){return this->lives;}

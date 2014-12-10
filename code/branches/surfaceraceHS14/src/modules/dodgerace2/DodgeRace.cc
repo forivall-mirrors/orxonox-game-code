@@ -45,20 +45,20 @@ namespace orxonox
         init();
         this->numberOfBots_ = 0; //sets number of default bots temporarly to 0
         this->center_ = 0;
-        /*
-        this->setHUDTemplate("DodgeRaceHUD"); // !!!!!!!!!!!!!!!	change later*/
+
+        this->setHUDTemplate("DodgeRaceHUD");
     }
 
     void DodgeRace::init()
     {
         bEndGame = false;
-        lives = 3;
+        lives = 1;
         level = 1;
         point = 0;
         bShowLevel = false;
         multiplier = 1;
         b_combo = false;
-        counter = 0;
+        counter = 5000;
         pattern = 1;
         lastPosition = 0;
         // spawn enemy every 3.5 seconds
@@ -94,8 +94,10 @@ namespace orxonox
 			currentPosition = getPlayer()->getWorldPosition().x;
 			counter = counter + (currentPosition - lastPosition);
 			lastPosition = currentPosition;
+			point = currentPosition;
+			getPlayer()->speed = 830 - (point / 1000);
 
-			for(int i=0; i< cubeList.size();i++)
+			for(uint i=0; i < cubeList.size();i++)
 			{
 				if(cubeList.at(i)->getPosition().x < currentPosition-3000)
 				{
@@ -107,7 +109,6 @@ namespace orxonox
 			if(counter >= 3000)
 			{
 				counter = 0;
-
 				for(int i = 0; i<6; i++)
 				{
 					WeakPtr<DodgeRaceCube> cube = new DodgeRaceCube(this->center_->getContext());
@@ -146,38 +147,11 @@ namespace orxonox
         }
         return player;
     }
-/*
-    void DodgeRace::spawnEnemy()
-    {
-        if (getPlayer() == NULL)
-            return;
 
-        for (int i = 0; i < (3*log10(static_cast<double>(level)) + 1); i++)
-        {
-            WeakPtr<DodgeRaceEnemy> newPawn;
-            if (rand() % 42/(1 + level*level) == 0)
-            {
-                newPawn = new DodgeRaceEnemyShooter(this->center_->getContext());
-                newPawn->addTemplate("enemyinvadershooter");
-            }
-            else
-            {
-                newPawn = new DodgeRaceEnemy(this->center_->getContext());
-                newPawn->addTemplate("enemyinvader");
-            }
-            newPawn->setPlayer(player);
-            newPawn->level = level;
-            // spawn enemy at random points in front of player.
-            newPawn->setPosition(player->getPosition() + Vector3(500.f + 100 * i, 0, float(rand())/RAND_MAX * 400 - 200));
-        }
-    }
-*/
     void DodgeRace::costLife()
     {
-    	orxout() << "CostLife" << endl;
-    	endGameTimer.setTimer(3.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
-
-        multiplier = 1;
+    	//endGameTimer.setTimer(8.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
+    	lives = 0;
     };
 
     void DodgeRace::comboControll()
@@ -192,9 +166,9 @@ namespace orxonox
 
     void DodgeRace::start()
     {
-    	orxout() << "start function called." << endl;
+    	orxout() << "start" << endl;
         init();
-		for(int i=0; i< cubeList.size();i++)
+		for(uint i=0; i< cubeList.size();i++)
 		{
 			cubeList.at(i)->destroy();
 			cubeList.erase(cubeList.begin()+i);
@@ -202,7 +176,7 @@ namespace orxonox
 		}
         cubeList.clear();
         // Set variable to temporarily force the player to spawn.
-        this->bForceSpawn_ = true;
+        this->bForceSpawn_ = false;
 
         if (this->center_ == NULL)  // abandon mission!
         {
@@ -213,6 +187,30 @@ namespace orxonox
         // Call start for the parent class.
         Deathmatch::start();
     }
+
+	void DodgeRace::playerPreSpawn(PlayerInfo* player)
+	{
+		if(lives <= 0)
+		{
+			this->end();
+		}
+
+		// Reset all the cubes
+		/*
+		orxout() << "prespawn" << endl;
+		init();
+		for(int i=0; i< cubeList.size();i++)
+		{
+			cubeList.at(i)->destroy();
+			cubeList.erase(cubeList.begin()+i);
+		}
+		cubeList.clear();
+        lives = 1;
+        point = 0;
+        lastPosition = 0;
+        */
+	}
+
     void DodgeRace::addPoints(int numPoints)
     {
         if (!bEndGame)
