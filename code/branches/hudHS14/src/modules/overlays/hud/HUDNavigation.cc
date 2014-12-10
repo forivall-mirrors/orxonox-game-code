@@ -82,6 +82,7 @@ namespace orxonox
         this->setNavMarkerSize(0.03f);
         this->setAimMarkerSize(0.02f);
         this->setHealthMarkerSize(0.06f);
+        this->setHealthLevelMarkerSize(0.06f);
 
         this->setDetectionLimit(10000.0f);
         this->currentMunitionSpeed_ = 2500.0f;
@@ -117,6 +118,7 @@ namespace orxonox
         XMLPortParam(HUDNavigation, "detectionLimit", setDetectionLimit, getDetectionLimit, xmlelement, mode);
         XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlelement, mode);
         XMLPortParam(HUDNavigation, "healthMarkerSize", setHealthMarkerSize, getHealthMarkerSize, xmlelement, mode);
+        XMLPortParam(HUDNavigation, "healthLevelMarkerSize", setHealthLevelMarkerSize, getHealthLevelMarkerSize, xmlelement, mode);
 
     }
 
@@ -304,6 +306,7 @@ namespace orxonox
                     if (!it->second.wasOutOfView_)
                     {
                     	it->second.health_->hide();
+                    	it->second.healthLevel_->hide();
                     	it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("arrows.png", it->first->getRadarObjectColour()));
                         it->second.wasOutOfView_ = true;
                         it->second.target_->hide();
@@ -366,15 +369,29 @@ namespace orxonox
 
 
 
-                	//calculate the health of the actual selected radarViewable (while (0) is no health left, (1) is the initial health)
-
+                	//calculate the health of the actual selected radarViewable (relativHealthScale: while (0) is no health left, (1) is the initial health)
                     Pawn* pawnPtr = (Pawn*) (it->first->getWorldEntity());
                     float health = pawnPtr->getHealth();
                     float initHealth = pawnPtr->getMaxHealth();
                     float relativHealthScale = health/initHealth;
 
-                    //values from 0 to 10
+                    //integer values from 0 to 10 (0 is no health and 10 is full health)
                     int discreteHealthScale = 10*relativHealthScale;
+
+                    //calculate the HealthLevel (= OponentLevel or Strength) there are 5 Levels
+                    //Level 1, Level 2,... , Level 5
+                    int HealthLevel = 1;
+
+                    if(initHealth < 200)
+                    	HealthLevel = 1;
+                    if(200 <= initHealth && initHealth < 500)
+                    	HealthLevel = 2;
+                    if(500 <= initHealth && initHealth < 1000)
+                    	HealthLevel = 3;
+                    if(1000 <= initHealth && initHealth < 2500)
+                    	HealthLevel = 4;
+                    if(2500 <= initHealth)
+                    	HealthLevel = 5;
 
 
 
@@ -386,32 +403,53 @@ namespace orxonox
                         it->second.panel_->setDimensions(this->navMarkerSize_ * this->getActualSize().x, this->navMarkerSize_ * this->getActualSize().y);
                         it->second.target_->setDimensions(this->aimMarkerSize_ * this->getActualSize().x, this->aimMarkerSize_ * this->getActualSize().y);
 
-                        //
+
                         //it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2_1.png", it->first->getRadarObjectColour()));
                         it->second.health_->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", it->first->getRadarObjectColour()));
                         it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x , 0.75*this->healthMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
 
+                        // because as soon as relative health drops below 10% (0.1) the descrete value is 0 but as long as the
+                        // spaceship is still intact there should be at least one part of the bar left.
                         if(1<=discreteHealthScale){
                         	it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
                         	it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1*discreteHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
                         }
+
+
+
+                        //healthLevel
+                        it->second.healthLevel_->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", it->first->getRadarObjectColour()));
+                        it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x , 0.75*this->healthLevelMarkerSize_ * this->getActualSize().y);
+                        it->second.wasOutOfView_ = false;
+                        it->second.healthLevel_->setTiling((float)HealthLevel , 1 ,0);
+                        it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x *0.1*HealthLevel, 0.25*this->healthLevelMarkerSize_ * this->getActualSize().y);
                     }
 
 
 
-                    // Position and Dimensions (amount) health
+                    // sets Position and Dimensions (amount) health
                     it->second.health_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
                     it->second.health_->setLeft((pos.x + 0.975f - it->second.panel_->getWidth()) * 0.5f);
                     it->second.health_->setTop((-pos.y + 1.04f - it->second.panel_->getHeight()) * 0.5f);
-                   // it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x * relativHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
 
 
+                    // because as soon as relative health drops below 10% (0.1) the descrete value is 0 but as long as the
+                    // spaceship is still intact there should be at least one part of the bar left.
                     if(1<=discreteHealthScale){
                     it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
                     it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1*discreteHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
                     }
 
+
+                    //sets Position and Dimensions (level) of healthLevel
+                    it->second.healthLevel_->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", it->first->getRadarObjectColour()));
+                    it->second.healthLevel_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
+                    it->second.healthLevel_->setLeft((pos.x + 0.975f - it->second.panel_->getWidth()) * 0.5f);
+                    it->second.healthLevel_->setTop((-pos.y + 1.125f - it->second.panel_->getHeight()) * 0.5f);
+
+                    it->second.healthLevel_->setTiling((float)HealthLevel , 1 ,0);
+                    it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x *0.1*HealthLevel, 0.25*this->healthLevelMarkerSize_ * this->getActualSize().y);
 
 
                     // Position marker
@@ -423,9 +461,12 @@ namespace orxonox
                     it->second.text_->setLeft((pos.x + 1.0f + it->second.panel_->getWidth()) * 0.5f);
                     it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
 
-                    // Make sure the overlays are shown
 
+
+
+                    // Make sure the overlays are shown
                     it->second.health_->show();
+                    it->second.healthLevel_->show();
                     it->second.panel_->show();
                     it->second.text_->show();
 
@@ -469,7 +510,8 @@ namespace orxonox
 
             {
             	it->second.health_->hide();
-                it->second.panel_->hide();
+                it->second.healthLevel_->hide();
+            	it->second.panel_->hide();
                 it->second.text_->hide();
                 it->second.target_->hide();
             }
@@ -494,6 +536,8 @@ namespace orxonox
         {
         	if (it->second.health_ != NULL)
         	    it->second.health_->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
+        	if (it->second.healthLevel_ != NULL)
+        		it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * xScale, this->healthLevelMarkerSize_ * yScale);
             if (it->second.panel_ != NULL)
                 it->second.panel_->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
             if (it->second.text_ != NULL)
@@ -522,12 +566,17 @@ namespace orxonox
         // Create everything needed to display the object on the radar and add it to the map
 
         // Create health
-                Ogre::PanelOverlayElement* health = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton()
-                        .createOverlayElement("Panel", "HUDNavigation_healthMarker_" + getUniqueNumberString()));
-                //panel->setMaterialName("Orxonox/NavTDC");
-                health->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", object->getRadarObjectColour()));
-                health->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
-                //panel->setColour(object->getRadarObjectColour());
+        Ogre::PanelOverlayElement* health = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "HUDNavigation_healthMarker_" + getUniqueNumberString()));
+        //panel->setMaterialName("Orxonox/NavTDC");
+        health->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", object->getRadarObjectColour()));
+        health->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
+        //panel->setColour(object->getRadarObjectColour());
+
+        // Create healthLevel
+        Ogre::PanelOverlayElement* healthLevel = static_cast<Ogre::PanelOverlayElement*>( Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "HUDNavigation_healthLevelMarker_" + getUniqueNumberString()));
+        //panel->setMaterialName("Orxonox/NavTDC");
+        health->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", object->getRadarObjectColour()));
+        health->setDimensions(this->healthLevelMarkerSize_ * xScale, this->healthLevelMarkerSize_ * yScale);
 
 
         // Create arrow/marker
@@ -552,15 +601,17 @@ namespace orxonox
         text->setColour(object->getRadarObjectColour());
 
         health->hide();
+        healthLevel->hide();
         panel->hide();
         target->hide();
         text->hide();
 
         ObjectInfo tempStruct =
-        {   health, panel, target, text, false, false, false};
+        {   health, healthLevel, panel, target, text, false, false, false};
         this->activeObjectList_[object] = tempStruct;
 
         this->background_->addChild(health);
+        this->background_->addChild(healthLevel);
         this->background_->addChild(panel);
         this->background_->addChild(target);
         this->background_->addChild(text);
@@ -576,11 +627,13 @@ namespace orxonox
         {
             // Detach overlays
         	this->background_->removeChild(it->second.health_->getName());
+        	this->background_->removeChild(it->second.healthLevel_->getName());
             this->background_->removeChild(it->second.panel_->getName());
             this->background_->removeChild(it->second.target_->getName());
             this->background_->removeChild(it->second.text_->getName());
             // Properly destroy the overlay elements (do not use delete!)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.health_);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.healthLevel_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.panel_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.target_);
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.text_);

@@ -77,8 +77,10 @@ namespace orxonox
             struct ObjectInfo
             {
 
-            	//manipulation bzw versuch !!! health additional
+
+
             	Ogre::PanelOverlayElement* health_;
+            	Ogre::PanelOverlayElement* healthLevel_;
             	Ogre::PanelOverlayElement* panel_;
                 Ogre::PanelOverlayElement* target_;
                 Ogre::TextAreaOverlayElement* text_;
@@ -97,6 +99,14 @@ namespace orxonox
                         }
             inline float getHealthMarkerSize() const
                         	{ return healthMarkerSize_; }
+
+            inline void setHealthLevelMarkerSize(float size)
+                                    {
+                                        this->healthLevelMarkerSize_ = size;
+                                        this->sizeChanged();
+                                    }
+                        inline float getHealthLevelMarkerSize() const
+                                    	{ return healthLevelMarkerSize_; }
 
             inline void setNavMarkerSize(float size)
             {
@@ -133,6 +143,7 @@ namespace orxonox
             std::list<std::pair<RadarViewable*, unsigned int> > sortedObjectList_;
 
             float healthMarkerSize_;
+            float healthLevelMarkerSize_;
             float navMarkerSize_;
             float aimMarkerSize_;
             std::string fontName_;
