@@ -2,11 +2,10 @@
  name = "kecks"
  description = "Save your planet."
  tags = "Test"
- screenshot = "pirateattack.png"
+ screenshot = "kecks.png"
  gametype=Mission
 />
 
-<!--"screenShot_12102014_144326778.png"-->
 
 <?lua
   include("stats.oxo")
