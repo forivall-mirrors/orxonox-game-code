@@ -1,10 +1,12 @@
 <LevelInfo
  name = "kecks"
- description = "A level with nothing in it."
+ description = "Save your planet."
  tags = "Test"
  screenshot = "pirateattack.png"
  gametype=Mission
 />
+
+<!--"screenShot_12102014_144326778.png"-->
 
 <?lua
   include("stats.oxo")
@@ -28,8 +30,20 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
-  
-  <?lua include("includes/notifications.oxi") ?>
+
+<?lua include("includes/notifications.oxi") ?>
+
+<NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
 
 <Scene
 	ambientlight = "0.8, 0.8, 0.8"
@@ -39,7 +53,7 @@
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
-    <SpawnPoint roll="180" position="0, 0, 0" lookat="0, 1000, 0" spawnclass=SpaceShip pawndesign=spaceshipHXY team=0 active="true" />
+    <SpawnPoint roll="180" position="0,0, 0" lookat="0, 1000, 0" spawnclass=SpaceShip pawndesign=spaceshipHXY team=0 active="true" />
 
 <!-- 2. Spawnpoint
 	<SpawnPoint roll="180" position="0, 114500, 0" lookat="0, 150000, 0" spawnclass=SpaceShip pawndesign=spaceshipHXY team=0 active="false" />	
@@ -50,18 +64,43 @@
            </events>
        </SpawnPoint>
 -->
-<DistanceTrigger name="startmission" position="0,0,0" target="SpaceShip" targetname="spaceshipHXY" distance=100 activations=1 stayActive=true />
-	<!--Funktioniert nicht
-	<SimpleNotification message="Follow the spaceships to escape" broadcast="true">
+<DistanceTrigger name="startmission" position="0,100,0" target="SpaceShip" targetname="spaceshipHXY"  distance=90 activations=1 stayActive=true />
+
+	<SimpleNotification message="Follow the spaceships to escape" boadcast="true">
 		<events>
 			  <trigger>
 				  <EventListener event="startmission" />
 			  </trigger>
 		  </events>
-	</SimpleNotification>-->
+	</SimpleNotification>
+
+<SimpleNotification message="Destroy the box to free the spaceships." boadcast="true">
+	<events>
+		  <trigger>
+			  <EventListener event="atPortal1" />
+		  </trigger>
+	  </events>
+</SimpleNotification>
+
+	<SimpleNotification message="Defend your planet." broadcast="true">
+		<events>
+			  <trigger>
+				  <EventListener event="boxDestroyed" />
+			  </trigger>
+		  </events>
+	</SimpleNotification>
+
+
 	<!-- Distance Trigger-->
 	
 	<DistanceTrigger name="atPortal1" position="0,112000,0" target="SpaceShip" targetname="spaceshipHXY" distance=100 activations=1 stayActive=true />
+	<EventTrigger name="boxtrigger" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="boxDestroyed" />
+              </trigger>
+            </events>
+          </EventTrigger>
 
     <!--Asteroiden-Guertel Versuch Schlaufe
     <?lua
@@ -75,6 +114,7 @@
 	end
 	?>
     -->
+ 
     
     <!-- Asteroidenguertel-->
     <?lua
@@ -100,7 +140,7 @@
 		  <controller>
 			 <WaypointPatrolController alertnessradius=1500 active=true team=0>
 			   <waypoints>
-				 <StaticEntity position="50,10250,0"/>
+				 <StaticEntity position="0,10350,0"/>
 			   </waypoints>
 			 </WaypointPatrolController>
 		  </controller>
@@ -161,7 +201,7 @@
 			   <WaypointPatrolController alertnessradius=1500 active=true team=1>
 			   <waypoints>
 					   <?lua
-						 for k = 0, (59*math.pi/30), (math.pi/30)
+						 for k = 0, (29*math.pi/15), (math.pi/15)
 							   do 
 						?>  
 				   
@@ -194,14 +234,14 @@
 			for i = 0, 4, 1
 				do
 		?>
-		<SpaceShip position="<?lua print (40*i)?>, 120000 ,<?lua print (-200*j)?>" roll="180" lookat="0, 0, 0">
+		<SpaceShip position="<?lua print (50*i-100)?>, 120000 ,<?lua print (-200*j+150)?>" roll="180" lookat="0, 0, 0">
 		  <templates>
 			  <Template link=spaceshippirate />
 		  </templates>
 			  <controller>
-			<WaypointPatrolController alertnessradius=1550 active=false team=1>
+			<WaypointPatrolController alertnessradius=1000 active=false team=1>
 			  <waypoints>
-				<StaticEntity position="0,111000,0"/>
+				<StaticEntity position="<?lua print (5000*i-10000)?>, 0 ,<?lua print (-20000*j+15000)?>"/>
 			  </waypoints>
 				 <events>
 					  <activity>
@@ -226,14 +266,14 @@
 				for i = 0, 6, 1
 					do
 		?>
-			<SpaceShip position="<?lua print (40*i-40)?>, 120000 ,<?lua print (-40-80*j)?>" roll="180" lookat="0, 0, 0">
+			<SpaceShip position="<?lua print (50*i-150)?>, 120000 ,<?lua print (100-100*j)?>" roll="180" lookat="0, 0, 0">
 			  <templates>
 				  <Template link=spaceshippirate />
 			  </templates>
 				  <controller>
-				<WaypointPatrolController alertnessradius=1450 active=false team=1>
+				<WaypointPatrolController alertnessradius=1250 active=false team=1>
 				  <waypoints>
-					<StaticEntity position="0,110000,0"/>
+					<StaticEntity position="<?lua print (5000*i-15000)?>, 0 ,<?lua print (10000-10000*j)?>"/>
 				  </waypoints>
 					 <events>
 					  <activity>
@@ -254,14 +294,14 @@
 		for i = 0, 6, 3
 			do
 	?>
-			<SpaceShip position="<?lua print (40*i-40)?>, 120000 ,-80" roll="180" lookat="0, 0, 0">
+			<SpaceShip position="<?lua print (50*i-150)?>, 120000 ,50" roll="180" lookat="0, 0, 0">
 			  <templates>
 				  <Template link=spaceshippirate />
 			  </templates>
 				  <controller>
-				<WaypointPatrolController alertnessradius=1550 active=false team=1>
+				<WaypointPatrolController alertnessradius=1500 active=false team=1>
 				  <waypoints>
-					<StaticEntity position="0,110000,0"/>
+					<StaticEntity position="<?lua print (5000*i-15000)?>, 0 ,5000"/>
 				  </waypoints>
 			 <events>
 				  <activity>
@@ -275,47 +315,20 @@
 	end
 	?>
 			
-	
-	<?lua
-		for i = 0, 6, 1
-			do
-	?>
-			
-		<SpaceShip position="<?lua print (40*i-40)?>, 120000 ,-160" roll="180" lookat="0, 0, 0">
-		  <templates>
-			  <Template link=spaceshippirate />
-		  </templates>
-			  <controller>
-			<WaypointPatrolController alertnessradius=1450 active=false team=1>
-			  <waypoints>
-				<StaticEntity position="0,110000,0"/>
-			  </waypoints>
-			 <events>
-				  <activity>
-					  <EventListener event="atPortal1" stayActiv=1 />
-				  </activity>
-			  </events>
-			</WaypointPatrolController>
-			  </controller>
-		</SpaceShip>
-			
-	<?lua
-	end
-	?>
 		
 	<?lua
 		for i = 1, 5, 2
 			do
 	?>
 			
-		<SpaceShip position="<?lua print (40*i-40)?>, 120000 ,-240" roll="180" lookat="0, 0, 0">
+		<SpaceShip position="<?lua print (50*i-150)?>, 120000 ,-100" roll="180" lookat="0, 0, 0">
 		  <templates>
 			  <Template link=spaceshippirate />
 		  </templates>
 			  <controller>
-			<WaypointPatrolController alertnessradius=1550 active=false team=1>
+			<WaypointPatrolController alertnessradius=1000 active=false team=1>
 			  <waypoints>
-				<StaticEntity position="0,110000,0"/>
+				<StaticEntity position="<?lua print (5000*i-15000)?>, 0 ,-10000"/>
 			  </waypoints>
 			 <events>
 				  <activity>
@@ -334,18 +347,10 @@
 	
 	<!-- Boxen um Flotte zu befreien -->
 
-	<?lua
-			for j = 0, 1, 1
-				  do       
-	?>
-		<?lua
-			for i = 0, 1, 1
-				  do       
-		?>
 
-			<Pawn health=10 position="<?lua print(25-i*50) ?>, <?lua print(116000) ?>,<?lua print(25-j*50) ?>" direction="0,-1,0" collisionType=dynamic mass=100000 name=box radarname = "Gravitation Box" >
+			<Pawn health=20 position="0, 112900, 0" direction="0,-1,0" name="boxDestroyed" collisionType=dynamic mass=100000  radarname = "Gravitation Box" >
 				<attached>
-					<Model position="0,0,0" scale="10" mesh="CuboidBody.mesh" />
+					<Model position="0,0,0" scale="10" mesh="CuboidBody.mesh"  />
 				</attached>
 				<collisionShapes>
 					<BoxCollisionShape position="0,0,0" halfExtents="5,5,5" />
@@ -355,14 +360,7 @@
 					</WaypointController>
 				</controller>
 			 </Pawn>
-				  
-		<?lua
-		end
-		?>
-								  
-	<?lua
-	end
-	?>
+
 	
 	<!-- Flotte Erde-->
 	<?lua
@@ -375,23 +373,23 @@
 		?>
 				
 
-			<SpaceShip position="<?lua print(50-i*50) ?>, <?lua print(116000) ?>,<?lua print(50-j*50) ?>" lookat="0,150000,0" maxhealt="200" initialhealth="200" >
+			<SpaceShip position="<?lua print(50-i*50) ?>, 113000,<?lua print(50-j*50) ?>" lookat="0,150000,0" maxhealt="200" initialhealth="200" >
 				<templates>
 				  <Template link=spaceshipassff2 /> <!--spaceshipTransporter -->
 				</templates>
 				  <controller>
-					 <WaypointPatrolController alertnessradius=1500 active=false team=0>
+					 <WaypointPatrolController alertnessradius=5000 active=false team=0>
 					   <waypoints>
-						 <StaticEntity position="0,150000,0"/>
+						 <StaticEntity position="<?lua print(200-i*200) ?>,113000,<?lua print(400-j*400) ?>"/>
 					   </waypoints>
 				  <events>
 					  <activity>
-						  <EventListener event="atPortal1" />
+						  <EventListener event="boxtrigger" />
 					  </activity>
 				  </events>
 					 </WaypointPatrolController>
 				  </controller>
-			</SpaceShip>
+			</SpaceShip>  
    
 					
 		<?lua
@@ -414,7 +412,7 @@
 		</Template>
 	
 		<PortalEndPoint position="0,112000,0" id="1" pitch="90" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
-		<PortalEndPoint position="50,10250,0" id="2"  pitch="90" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+		<PortalEndPoint position="0,10350,0" id="2"  pitch="90" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
 		<PortalLink fromID="1" toID="2" />
 		<PortalLink fromID="2" toID="1" />
 	<!--ENDE Portal-->
@@ -427,7 +425,7 @@
 		  linearDamping="0.8"
 		  angularDamping="0"
 		  mass="5000000"
-		  pitch="0"
+		  pitch="180"
 		  yaw="0"
 		  roll="0"
 		  mesh="planets/earth.mesh"
