@@ -35,7 +35,10 @@
 #include "infos/PlayerInfo.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"
-
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <ios>
 
 namespace orxonox
 {
@@ -77,16 +80,76 @@ namespace orxonox
 
     void Mission::start()
     {
+    	std::fstream myfile;
+    	    	myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
+    	    	std::string line;
+    	    	std::string mission=this->getFilename();
+    	    	int k=58-mission.length();
+    	    	std::string helperstring = "";
+    	    	if(myfile.is_open()){
+    	    	    	while (k>1) {
+    	    	    		helperstring=helperstring+" ";
+    	    	    		k=k-1;
+    	    	    	}
+    	    	    	helperstring=helperstring+".";
+    	    	       while(getline (myfile,line)){
+    	    	    	  if(line==mission+" 0"+helperstring){
+    	    	    		  long pos = myfile.tellp();
+    	    	    		  myfile.seekp (pos-61);
+    	    	    		  myfile << mission+" 1"+helperstring;
+    	    	    	  }
+    	    	    	}}
+    	    	else{
+    	    		this->end();
+    	    	}
+    	    	        myfile.flush();
+    	    	        myfile.clear();
+    	    	        myfile.close();
         Gametype::start();
         this->setTeams();
 
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
     }
 
+    std::string GenerateHelperString(int number){
+    	std::string helperstring = "";
+    	while (number>1) {
+    		helperstring=helperstring+" ";
+    		number=number-1;
+    	}
+    	helperstring=helperstring+".";
+    	return helperstring;
+    }
+
     void Mission::end()
     {
-        if (this->missionAccomplished_ && !this->gtinfo_->hasEnded())
+
+        if (this->missionAccomplished_ && !this->gtinfo_->hasEnded()){
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
+            std::fstream myfile;
+                	    	myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
+                	    	std::string line;
+                	    	std::string mission=this->getFilename();
+                	    	int k=58-mission.length();
+                	    	std::string helperstring = "";
+                	    	if(myfile.is_open()){
+                	    	    	while (k>1) {
+                	    	    		helperstring=helperstring+" ";
+                	    	    		k=k-1;
+                	    	    	}
+                	    	    	helperstring=helperstring+".";
+                	    	       while(getline (myfile,line)){
+                	    	    	  if(line==mission+" 0"+helperstring){
+                	    	    		  long pos = myfile.tellp();
+                	    	    		  myfile.seekp (pos-61);
+                	    	    		  myfile << mission+" 1"+helperstring;
+                	    	    	  }
+                	    	    	}}
+                	    	        myfile.flush();
+                	    	        myfile.clear();
+                	    	        myfile.close();
+                  }
+
         else if (!this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
         Gametype::end();
@@ -105,11 +168,37 @@ namespace orxonox
     {
         for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
         {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
-            it->setMissionAccomplished(accomplished);
+            if(accomplished){
+            	std::fstream myfile;
+            		myfile.open("/home/maxima/maxima-extra-0/orxonox/presentationHS14/data/gui/scripts/campaign.txt");
+            		std::string line;
+           	    	std::string mission=it->getFilename();
+  	    	    	int k=58-mission.length();
+            	    std::string helperstring = "";
+            	    if(myfile.is_open()){
+            	    	while (k>1) {
+            	    		helperstring=helperstring+" ";
+            	    	    k=k-1;
+            	    	    	    }
+            	    helperstring=helperstring+".";
+            	    	while(getline (myfile,line)){
+            	    		if(line==mission+" 0"+helperstring){
+            	    		long pos = myfile.tellp();
+            	    	    myfile.seekp (pos-61);
+            	    	    myfile << mission+" 1"+helperstring;
+            	    	    	    	  }
+            	    	}
+            	    }
+            	    myfile.flush();
+            	    myfile.clear();
+            	    myfile.close();
+            }
+        	it->setMissionAccomplished(accomplished);
             it->end();
+
         }
     }
-    
+
     void Mission::setLivesWrapper(unsigned int amount)
     {
         for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)

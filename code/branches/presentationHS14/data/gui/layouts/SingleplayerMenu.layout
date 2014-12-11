@@ -52,7 +52,13 @@
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.6,0},{0.725,0},{0.75,0},{0.775,0}}" />
-            <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerBackButton_clicked"/>
+            <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerBackButton_clicked"/> 
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/CampaignButton" >
+            <Property Name="Text" Value="Campaign" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.8,0},{0.6,0},{0.85,0}}" />
+            <Event Name="Clicked" Function="SingleplayerMenu.CampaignButton_clicked"/>
         </Window>
     </Window>
 </GUILayout>
