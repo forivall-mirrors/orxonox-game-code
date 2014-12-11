@@ -51,7 +51,7 @@ function P.FindLevel(filename)
 end
     
 function P.CheckLevel(filename)
-	local file = io.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt", "r+")
+	local file = io.open("/home/pmao/pmao-extra-0/orxonox/storymode/campaign.txt", "r+")
 	local index = 0
 	local returnvalue = false
 	local numberoflines = 58-string.len(filename)
@@ -132,5 +132,7 @@ end
 function P.CampaignMenuBackButton_clicked(e)
     hideMenuSheet(P.name)
 end
+
+
 
 return P
