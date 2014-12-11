@@ -1,0 +1,451 @@
+<LevelInfo
+ name = "kecks"
+ description = "Save your planet."
+ tags = "Test"
+ screenshot = "kecks.png"
+ gametype=Mission
+/>
+
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+
+?>
+
+<?lua
+    dofile("includes/asteroidField.lua")
+?>
+
+<?lua
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipHXY.oxt")
+?>
+
+<Level gametype = "Mission">
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
+<?lua include("includes/notifications.oxi") ?>
+
+<NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=3
+    displayTime=3.9
+    position="0.2, 0, 0.1, 0"
+    fontSize="23"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
+
+<Scene
+	ambientlight = "0.8, 0.8, 0.8"
+	skybox       = "Orxonox/skyBoxBasic"
+>
+<!-- TODO: Trigger fuer Boxen, SimpleNotification, Gegner sollen nicht explodieren, Spawnpoint 2 -->
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+
+    <SpawnPoint roll="180" position="0,0, 0" lookat="0, 1000, 0" spawnclass=SpaceShip pawndesign=spaceshipHXY team=0 active="true" />
+
+<!-- 2. Spawnpoint
+	<SpawnPoint roll="180" position="0, 114500, 0" lookat="0, 150000, 0" spawnclass=SpaceShip pawndesign=spaceshipHXY team=0 active="false" />	
+		<events>
+               <activity>
+                   <EventListener event="atPortal1" />
+               </activity>
+           </events>
+       </SpawnPoint>
+-->
+<DistanceTrigger name="startmission" position="0,100,0" target="SpaceShip" targetname="spaceshipHXY"  distance=90 activations=1 stayActive=true />
+
+	<SimpleNotification message="Follow the spaceships to escape" boadcast="true">
+		<events>
+			  <trigger>
+				  <EventListener event="startmission" />
+			  </trigger>
+		  </events>
+	</SimpleNotification>
+
+<SimpleNotification message="Destroy the box to free the spaceships." boadcast="true">
+	<events>
+		  <trigger>
+			  <EventListener event="atPortal1" />
+		  </trigger>
+	  </events>
+</SimpleNotification>
+
+	<SimpleNotification message="Defend your planet." broadcast="true">
+		<events>
+			  <trigger>
+				  <EventListener event="boxDestroyed" />
+			  </trigger>
+		  </events>
+	</SimpleNotification>
+
+
+	<!-- Distance Trigger-->
+	
+	<DistanceTrigger name="atPortal1" position="0,112000,0" target="SpaceShip" targetname="spaceshipHXY" distance=100 activations=1 stayActive=true />
+	<EventTrigger name="boxtrigger" activations="1" stayactive="true" delay=0.1>
+            <events>
+              <trigger>
+                <EventListener event="boxDestroyed" />
+              </trigger>
+            </events>
+          </EventTrigger>
+
+    <!--Asteroiden-Guertel Versuch Schlaufe
+    <?lua
+    	for i = 1, 3, 1
+    		do
+    ?>
+
+     asteroidBelt(0, 0, 0, 0, 0, 100, 50+10*i, 100+10*i, 3000*i+500, 3000*i, 100+100*i	, 0)
+
+	<?lua
+	end
+	?>
+    -->
+ 
+    
+    <!-- Asteroidenguertel-->
+    <?lua
+	asteroidBelt(0, 0, 0, 0, 0, 50, 60, 110, 3300, 3000, 100	, 1)
+	asteroidBelt(0, 0, 0, 0, 0, 50, 70, 120, 6400, 6000, 125	, 1)
+	asteroidBelt(0, 0, 0, 0, 0, 50, 80, 130, 9500, 9000, 150	, 1)
+	?>
+    <!--ENDE Asteroidenguertel-->
+
+	<!-- Beschuetzer und Wegweiser Innen-->		 
+				
+	<?lua
+			for i = 0, (3*math.pi/2), (math.pi/2)
+				  do       
+	?>
+				
+				
+	
+	<SpaceShip position="<?lua print(250*math.sin(i)) ?>, <?lua print(250*math.cos(i)) ?>,0" lookat="<?lua print(1500*math.sin(i)) ?>,  <?lua print(1500*math.cos(i)) ?>,0" maxhealt="150" initialhealth="150" roll="<?lua print(180-i*180/math.pi)?>"  >
+		<templates>
+		  <Template link=spaceshipassff2 /> <!--spaceshipTransporter -->
+		</templates>
+		  <controller>
+			 <WaypointPatrolController alertnessradius=1500 active=true team=0>
+			   <waypoints>
+				 <StaticEntity position="0,10350,0"/>
+			   </waypoints>
+			 </WaypointPatrolController>
+		  </controller>
+	</SpaceShip>
+		  
+				  
+	<?lua
+	end
+	?>
+				  
+	<!-- ENDE Beschuetzer und Wegweiser Innen-->	
+	
+	<!-- Gegner Innen-->		
+	
+	 <?lua
+			for i = 0, (3*math.pi/2), (math.pi/2)
+				  do
+	?>
+				  
+				  
+	<SpaceShip position="<?lua print(1500*math.sin(i)) ?>,<?lua print(1500*math.cos(i)) ?>,0" roll="<?lua print(180-i*180/math.pi)?>" lookat="0, 0, 0">
+	
+	  <templates>
+		  <Template link=spaceshippirate />
+	  </templates>
+		  <controller>
+		<WaypointPatrolController alertnessradius=1500 active=true team=1>
+		  <waypoints>
+			<StaticEntity position="0,0,0"/>
+		  </waypoints>
+		</WaypointPatrolController>
+		  </controller>
+	</SpaceShip>
+								  
+	<?lua
+	end
+	?>
+				  
+	<!-- ENDE Gegner Innen-->
+				 
+	<!-- Gegnerische Patrouille -->	
+			  
+	<?lua
+		for i = 0, (7*math.pi/4), (math.pi/4)
+			do
+	?>
+	
+		 <?lua
+			for j = 1, 3, 1
+			   do
+		 ?>
+			<SpaceShip position="<?lua print((600+3200*j)*math.sin(i)) ?>,<?lua print((600+3200*j)*math.cos(i)) ?>,0" roll="<?lua print(180-i*180/math.pi)?>" lookat="0, 0, 0" >
+	
+			   <templates>
+			   <Template link=spaceshippirate />
+			   </templates>
+				<controller>
+			   <WaypointPatrolController alertnessradius=1500 active=true team=1>
+			   <waypoints>
+					   <?lua
+						 for k = 0, (29*math.pi/15), (math.pi/15)
+							   do 
+						?>  
+				   
+						   <Model mesh="cube.mesh" scale=0 position="<?lua print((600+3200*j)*math.sin(i+k)) ?>,<?lua print((600+3200*j)*math.cos(i+k)) ?>,0" />
+	
+					   <?lua	
+						end
+						?>
+									
+			   </waypoints>
+				</WaypointPatrolController>
+			   </controller>
+			</SpaceShip>
+		<?lua
+		end
+		?>
+	<?lua
+	end
+	?>
+	
+	<!-- ENDE Gegnerische Patrouille -->							   
+							   
+	<!-- Gegnerische Flotte/ Totenkopfflotte-->						   
+	
+	<?lua
+		for j = 0, 1, 1
+			do
+	?>
+		<?lua
+			for i = 0, 4, 1
+				do
+		?>
+		<SpaceShip position="<?lua print (50*i-100)?>, 120000 ,<?lua print (-200*j+150)?>" roll="180" lookat="0, 0, 0">
+		  <templates>
+			  <Template link=spaceshippirate />
+		  </templates>
+			  <controller>
+			<WaypointPatrolController alertnessradius=1000 active=false team=1>
+			  <waypoints>
+				<StaticEntity position="<?lua print (5000*i-10000)?>, 0 ,<?lua print (-20000*j+15000)?>"/>
+			  </waypoints>
+				 <events>
+					  <activity>
+						  <EventListener event="atPortal1" />
+					  </activity>
+				  </events>
+			</WaypointPatrolController>
+			  </controller>
+		</SpaceShip>			
+		<?lua
+		end
+		?>
+	<?lua
+	end
+	?>
+				
+	<?lua
+		for j = 0, 1, 1
+			do
+	?>
+		<?lua
+				for i = 0, 6, 1
+					do
+		?>
+			<SpaceShip position="<?lua print (50*i-150)?>, 120000 ,<?lua print (100-100*j)?>" roll="180" lookat="0, 0, 0">
+			  <templates>
+				  <Template link=spaceshippirate />
+			  </templates>
+				  <controller>
+				<WaypointPatrolController alertnessradius=1250 active=false team=1>
+				  <waypoints>
+					<StaticEntity position="<?lua print (5000*i-15000)?>, 0 ,<?lua print (10000-10000*j)?>"/>
+				  </waypoints>
+					 <events>
+					  <activity>
+						  <EventListener event="atPortal1" />
+					  </activity>
+				  </events>
+				</WaypointPatrolController>
+				  </controller>
+			</SpaceShip>			
+		<?lua
+		end
+		?>
+	<?lua
+	end
+	?>
+	
+	<?lua
+		for i = 0, 6, 3
+			do
+	?>
+			<SpaceShip position="<?lua print (50*i-150)?>, 120000 ,50" roll="180" lookat="0, 0, 0">
+			  <templates>
+				  <Template link=spaceshippirate />
+			  </templates>
+				  <controller>
+				<WaypointPatrolController alertnessradius=1500 active=false team=1>
+				  <waypoints>
+					<StaticEntity position="<?lua print (5000*i-15000)?>, 0 ,5000"/>
+				  </waypoints>
+			 <events>
+				  <activity>
+					  <EventListener event="atPortal1" />
+				  </activity>
+			  </events>
+				</WaypointPatrolController>
+				  </controller>
+			</SpaceShip>			
+	<?lua
+	end
+	?>
+			
+		
+	<?lua
+		for i = 1, 5, 2
+			do
+	?>
+			
+		<SpaceShip position="<?lua print (50*i-150)?>, 120000 ,-100" roll="180" lookat="0, 0, 0">
+		  <templates>
+			  <Template link=spaceshippirate />
+		  </templates>
+			  <controller>
+			<WaypointPatrolController alertnessradius=1000 active=false team=1>
+			  <waypoints>
+				<StaticEntity position="<?lua print (5000*i-15000)?>, 0 ,-10000"/>
+			  </waypoints>
+			 <events>
+				  <activity>
+					  <EventListener event="atPortal1" />
+				  </activity>
+			  </events>
+			</WaypointPatrolController>
+			  </controller>
+		</SpaceShip>
+			
+	<?lua
+	end
+	?>
+			
+	<!-- ENDE Gegnerische Flotte/ Totenkopfflotte-->	
+	
+	<!-- Boxen um Flotte zu befreien -->
+
+
+			<Pawn health=20 position="0, 112900, 0" direction="0,-1,0" name="boxDestroyed" collisionType=dynamic mass=100000  radarname = "Gravitation Box" >
+				<attached>
+					<Model position="0,0,0" scale="10" mesh="CuboidBody.mesh"  />
+				</attached>
+				<collisionShapes>
+					<BoxCollisionShape position="0,0,0" halfExtents="5,5,5" />
+				</collisionShapes>
+				<controller>
+					<WaypointController team=1>
+					</WaypointController>
+				</controller>
+			 </Pawn>
+
+	
+	<!-- Flotte Erde-->
+	<?lua
+			for j = 0, 2, 1
+				  do       
+	?>
+		<?lua
+			for i = 0, 2, 1
+				  do       
+		?>
+				
+
+			<SpaceShip position="<?lua print(50-i*50) ?>, 113000,<?lua print(50-j*50) ?>" lookat="0,150000,0" maxhealt="200" initialhealth="200" >
+				<templates>
+				  <Template link=spaceshipassff2 /> <!--spaceshipTransporter -->
+				</templates>
+				  <controller>
+					 <WaypointPatrolController alertnessradius=5000 active=false team=0>
+					   <waypoints>
+						 <StaticEntity position="<?lua print(200-i*200) ?>,113000,<?lua print(400-j*400) ?>"/>
+					   </waypoints>
+				  <events>
+					  <activity>
+						  <EventListener event="boxtrigger" />
+					  </activity>
+				  </events>
+					 </WaypointPatrolController>
+				  </controller>
+			</SpaceShip>  
+   
+					
+		<?lua
+		end
+		?>
+				  
+	<?lua
+	end
+	?>
+					  
+	<!-- ENDE Flotte Erde-->
+			
+	<!--Portal-->
+		<Template name=PortalDefault>
+			<PortalEndPoint>
+				<attached>
+					<Model mesh="Spacegate.mesh" />
+				</attached>
+			</PortalEndPoint>
+		</Template>
+	
+		<PortalEndPoint position="0,112000,0" id="1" pitch="90" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+		<PortalEndPoint position="0,10350,0" id="2"  pitch="90" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+		<PortalLink fromID="1" toID="2" />
+		<PortalLink fromID="2" toID="1" />
+	<!--ENDE Portal-->
+	   
+	<!--Heimatplanet-->
+		<Planet
+		  position="0,100000,0"
+		  scale="10000"
+		  collisionType="dynamic"
+		  linearDamping="0.8"
+		  angularDamping="0"
+		  mass="5000000"
+		  pitch="180"
+		  yaw="0"
+		  roll="0"
+		  mesh="planets/earth.mesh"
+		  atmosphere="atmosphere1"
+		  rotationaxis="0,0,1"
+		  rotationrate="5.0"
+		  atmospheresize="80.0f"
+		  imagesize="1024.0f"
+		  collisiondamage = 1
+		  enablecollisiondamage = true
+		  >
+		  <attached>
+			  <ForceField position="0,0,0" mode="sphere" diameter="1000" velocity="-500" />
+			</attached>
+			<collisionShapes>
+			  <SphereCollisionShape radius="10000" position="0,0,0" />
+			</collisionShapes>
+		  </Planet>	 
+	<!--ENDE Heimatplanet-->	
+
+  </Scene>
+						   
+</Level>
+
