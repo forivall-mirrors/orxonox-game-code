@@ -82,6 +82,10 @@ namespace orxonox
     {
         SUPER(HUDHealthBar, tick, dt);
 
+
+
+
+
         if (this->owner_)
         {
             this->setValue(this->owner_->getHealth() / this->owner_->getInitialHealth());

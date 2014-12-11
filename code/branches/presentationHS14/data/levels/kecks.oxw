@@ -2,7 +2,7 @@
  name = "kecks"
  description = "Save your planet."
  tags = "Test"
- screenshot = "kecks.png"
+ screenshot = "missionOne.png"
  gametype=Mission
 />
 

@@ -30,6 +30,7 @@
 
 #include "core/config/ConfigValueIncludes.h"
 #include "worldentities/pawns/Pawn.h"
+#include "graphics/Camera.h"
 
 namespace orxonox
 {
@@ -56,6 +57,49 @@ namespace orxonox
     {
         this->updateTarget();
 
+
+
+/*
+//--------------------------------------------------------------------------
+        //first try to place a healthbar under the enemy ship
+        //getting all the parameters (direction, position, angle) to place the health bar on the screen
+
+        Camera* camera = this->owner_->getCamera();
+
+        //position and orientation relative to the root space
+        Vector3 cameraPosition = camera->getWorldPosition();
+        Quaternion cameraOrientation = camera->getWorldOrientation();
+
+        Vector3 cameraDirection = camera->FRONT;
+        Vector3 cameraOrthonormal = camera->UP;
+
+        //get target
+        //if there is one get it's position (relative to the root space(
+        WorldEntity* target = this->owner_->getTarget();
+
+        if(target != NULL){
+        Vector3 targetPosition = target->getWorldPosition();
+
+
+        //try 1
+        Vector2 screenCoordinates = get2DViewcoordinates(cameraPosition, cameraOrientation * WorldEntity::FRONT, cameraOrientation * WorldEntity::UP, targetPosition);
+
+        orxout() << screenCoordinates.x << endl;
+
+        //shift coordinates because the screen has it's root in the upper left corner (0,0) but get2Dviewcoordiantes return values between -0.5 and 0.5
+        screenCoordinates.x += 0.5;
+        screenCoordinates.y += 0.5;
+        orxout() << screenCoordinates.x << endl;
+
+        this->setPosition(screenCoordinates);
+
+        this->setTextOffset(screenCoordinates);
+        }
+        //--------------------------------------------------------------------------
+*/
+
+
+
         SUPER(HUDEnemyHealthBar, tick, dt);
     }
 
@@ -70,10 +114,13 @@ namespace orxonox
             while (target && !target->isA(Class(Pawn)))
                 target = target->getParent();
             pawn = orxonox_cast<Pawn*>(target);
+
+
             // Don't show the HealthBar if the pawn is invisible
             if (pawn && !pawn->isVisible())
                 pawn = NULL;
         }
+
         // Set the pawn as owner of the HealthBar
         this->setHealthBarOwner(pawn);
         this->setVisible(pawn != NULL);
