@@ -26,12 +26,12 @@
  *
  */
 
- /**
+ /*
     @brief
         This manages the stats of the player. It is used by 'TowerDefense', the gametype
 
     @ingroup TowerDefense
- */
+
 
 
 #ifndef _TowerDefensePlayerStats_H__
@@ -87,4 +87,4 @@ namespace orxonox
     };
 }
 
-#endif /* _TowerDefensePlayerStats_H__ */
+#endif  _TowerDefensePlayerStats_H__ */

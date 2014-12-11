@@ -11,7 +11,6 @@ See TowerDefenseReadme.txt for Information.
 @ingroup TowerDefense
 */
 #include "TowerDefenseEnemy.h"
-
 #include "core/CoreIncludes.h"
 //#include "core/XMLPort.h"
 
@@ -28,12 +27,14 @@ namespace orxonox
         RegisterObject(TowerDefenseEnemy);
 
         this->setCollisionType(WorldEntity::Dynamic);
+        //needed to keep track of the PlayerStats coded in TowerDefense.h
         this->td = orxonox_cast<TowerDefense*>(this->getGametype().get());
-        once_ = false;
 
     }
-
-    TowerDefenseEnemy::~TowerDefenseEnemy(){this->td->addCredit(20);}
+    //add credit if enemy is destroyed
+    TowerDefenseEnemy::~TowerDefenseEnemy(){
+    		this->td->addCredit(1);
+    }
 
     void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
     {
@@ -44,25 +45,6 @@ namespace orxonox
     void TowerDefenseEnemy::tick(float dt)
     {
         SUPER(TowerDefenseEnemy, tick, dt);
-
-        //ArtificialController* controller = (ArtificialController*)this->getController();
-        Vector3 ship = this->getRVWorldPosition();
-        Vector3* endpoint = new Vector3(500, 700, 150);
-
-        float distance = ship.distance(*endpoint);
-
-        //orxout() << "distance" << distance << endl;
-        if(distance < 50 && once_ == false){
-        	this->td->reduceLifes(1);
-        	once_=true;
-        	orxout() << "ENEMY KILLED!!!!" << endl;
-        	this->td->buyTower(20);
-        	if (this->td->getLifes()==0)
-		{
-		    this->td->end();
-        	}
-
-        }
     }
 
 /*

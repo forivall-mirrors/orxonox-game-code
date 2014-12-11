@@ -41,9 +41,7 @@
 #include "gametypes/Deathmatch.h"
 #include "TowerDefenseEnemy.h"
 #include "util/Output.h"
-
-
- #include "TowerDefensePlayerStats.h"
+#include "core/object/WeakPtr.h"
 
 namespace orxonox
 {
@@ -55,7 +53,7 @@ namespace orxonox
 
         std::vector<orxonox::WeakPtr<TowerDefenseEnemy> > TowerDefenseEnemyvector;
         bool towermatrix[16][16];
-        void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr); 
+        void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr);
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
         virtual void tick(float dt);
@@ -106,6 +104,8 @@ namespace orxonox
         /* handles stats */
         bool hasEnoughCreditForTower(int towerCost);
         bool hasEnoughCreditForUpgrade();
+
+
 
         std::vector<TowerTurret*> towers_;
     };

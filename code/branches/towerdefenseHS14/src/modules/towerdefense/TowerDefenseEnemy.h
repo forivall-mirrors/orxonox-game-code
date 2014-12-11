@@ -31,9 +31,7 @@ namespace orxonox
  */
 	class _TowerDefenseExport TowerDefenseEnemy : public SpaceShip 
 	{
-
 	public:
-
 		TowerDefenseEnemy(Context* context);
         virtual ~TowerDefenseEnemy();
 
@@ -46,7 +44,6 @@ namespace orxonox
 
 
 	private:
-
         TowerDefense* td;
         bool once_;
         std::vector<TDCoordinate*> Waypointsvector_;

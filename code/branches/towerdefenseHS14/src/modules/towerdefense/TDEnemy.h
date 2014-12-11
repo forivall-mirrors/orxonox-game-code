@@ -4,7 +4,7 @@
  *  Created on: Mar 30, 2012
  *      Author: weigeltm
  */
-
+/*
 #ifndef TDENEMY_H_
 #define TDENEMY_H_
 
@@ -23,4 +23,4 @@ private:
 };
 
 
-#endif /* TDENEMY_H_ */
+#endif  TDENEMY_H_ */

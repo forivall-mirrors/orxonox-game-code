@@ -51,14 +51,14 @@ namespace orxonox
         SUPER(TowerDefenseHUDController, tick, dt);
         const std::string& lifes = multi_cast<std::string>(this->td->getLifes());
         const std::string& credits = multi_cast<std::string>(this->td->getCredit());
-        const std::string& waves = multi_cast<std::string>(this->td->getWaveNumber());
+        const std::string& wave = multi_cast<std::string>(this->td->getWaveNumber());
 
         if(showlives == true)
           this->setCaption(multi_cast<std::string>(lifes));
         else if(showcredits == true)
           this->setCaption(multi_cast<std::string>(credits));
         else if(showwaves == true)
-          this->setCaption(multi_cast<std::string>(waves));
+          this->setCaption(multi_cast<std::string>(wave));
 
 
     }
@@ -86,13 +86,5 @@ namespace orxonox
                         this->td = 0;
                     }
                 }
-            /*if (this->getOwner() != NULL && this->getOwner()->getGametype())
-            {
-                this->owner_ = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
-            }
-            else
-            {
-                this->owner_ = NULL;
-            }*/
         }
 
