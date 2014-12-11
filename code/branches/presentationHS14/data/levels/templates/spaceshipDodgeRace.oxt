@@ -1,19 +1,19 @@
-<Template name=spaceshipinvader>
-  <InvaderShip
+<Template name=spaceshipdodgerace>
+  <DodgeRaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipescortcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 4
 
-   health            = 80
-   maxhealth         = 200
-   initialhealth     = 80
+   health            = 40
+   maxhealth         = 40
+   initialhealth     = 40
 
-   shieldhealth        = 35
-   initialshieldhealth = 35
-   maxshieldhealth     = 60
-   shieldabsorption    = 0.9
+   shieldhealth        = 20
+   initialshieldhealth = 20
+   maxshieldhealth     = 20
+   shieldabsorption    = 0.1
    reloadrate          = 1
    reloadwaittime      = 1
 
@@ -34,11 +34,12 @@
 
    collisionType     = "dynamic"
    mass              = 4200000
-   linearDamping     = 0.7
+   linearDamping     = 0.9999999
    angularDamping    = 0.9999999
 
-    collisiondamage = 100
-    enablecollisiondamage = true
+   collisiondamage = 100
+   enablecollisiondamage = true
+   
   >
     <engines>
       <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipinvaderengine />
@@ -61,18 +62,18 @@
 <?lua
   include("../includes/invaderWeapon.oxi")
 ?>
-  </InvaderShip>
+  </DodgeRaceShip>
 </Template>
 
 <Template name=spaceshipescortcameras defaults=0>
-  <InvaderShip>
+  <DodgeRaceShip>
     <camerapositions>
- <!--       <CameraPosition position="0,15, 60" drag=true mouselook=true />
-     <CameraPosition position="0,20, 90" drag=true mouselook=true /> 
-      <CameraPosition position="0,30,120" direction="0, 0, -1" drag=false mouselook=true /> -->
-      <CameraPosition position="0,300,-100" direction="0, -1, 0" drag=false mouselook=true />
+		<CameraPosition position="0,100,180" direction="0, -0.2, -1" drag=false mouselook=true />
+		<CameraPosition position="0,200,250" direction="0, -0.4, -1" drag=false mouselook=true />
+		<CameraPosition position="0,30,150" direction="0, 0, -1" drag=false mouselook=true />
+		<CameraPosition position="0,1300,-100" direction="0, -1, 0" drag=false mouselook=true />
     </camerapositions>
-  </InvaderShip>
+  </DodgeRaceShip>
 </Template>
 
 <Template name=spaceshipinvaderengine baseclass=MultiStateEngine>
