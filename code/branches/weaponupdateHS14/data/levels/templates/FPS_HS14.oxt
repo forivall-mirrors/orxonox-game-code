@@ -21,7 +21,7 @@
    weapon            = "hs-w01.mesh"
   >
     <collisionShapes>
-   <!--Normal values: position="0,-20,0" halfExtents="15,25,15" -->
+   <!--Normal values: position="0,-45,0" halfExtents="15,50,15" -->
       <BoxCollisionShape position="0,-45,0" halfExtents="15,50,15" /> 
     </collisionShapes>
 

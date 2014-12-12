@@ -50,10 +50,31 @@
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0,1.0,1.0,0.5" specular="1.0, 0.9, 0.9, 1.0"/>
     
-    <SpawnPoint team=1 position="3000,0,0" lookat="4000,-1000,-1000" spawnclass=SpaceShip pawndesign=spaceshipescort />
-	<!--6000,2000,500-->
+    <SpawnPoint team=1 position="6000,2000,500" lookat="4000,-1000,-1000" spawnclass=SpaceShip pawndesign=spaceshipescort />
+	<!--Position normal Level: "6000,2000,500"; postion for work at the spacesation: "3000,0,0 "-->
 	
-
+	<!--1,200,0-->
+	<SpaceShip			
+        template            = "spaceshipassff"
+        team                = "1"
+        position            = "3337,-19,-320"
+        orientation         = "5800,-200,-1200,0"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
+        shieldabsorption    = "0.8"
+        reloadrate          = "100"
+        reloadwaittime      = "0.1"
+        name                = "Tanis1"
+        radarname           = "Light Destroyer" >
+		<attached>
+        	<DockingTarget name="spaceShip" />
+        	<DistanceTriggerBeacon name="bcnSpaceShip" />
+		</attached>
+    </SpaceShip>
 	
 	
         
@@ -82,7 +103,7 @@
     </StaticEntity>
 
 
-	<!-- Docking  -->
+	<!-- Docking I -->
 	    <Dock position="2830,20,50" roll=0 yaw=0 >
 	        <animations>
 	            <MoveToDockingTarget target="fistperson" />
@@ -107,8 +128,8 @@
 	                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
 	            />
 		<!-- Trigger for undocking with billboard -2800,-20055,-700-->
-		    <Billboard position="-1500,-20100,-50" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
-		    <DistanceTrigger position="-1500,-20100,-50" distance="150" target="Pawn"
+		    <Billboard position="-1500,-20021,-50" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+		    <DistanceTrigger position="-1500,-20021,-50" distance="150" target="Pawn"
 	                beaconMode="identify" targetname="bcnDestroyer" name="undockMe"
 	            />
 	        </attached>
@@ -128,7 +149,7 @@
 
 
 	<!-- Docking  II -->
-	    <Dock position="86,-20055,-700" roll=0 yaw=0 >
+	    <Dock position="86,-20005,-700" roll=0 yaw=0 >
 	        <animations>
 	            <MoveToDockingTarget target="spaceShip" />
 	        </animations>
@@ -147,44 +168,23 @@
 	        </events>
 	        <attached>
 		<!-- Trigger for docking with billboard -->
-	            <Billboard position="0,50,0" material="Flares/ringflare2" colour="0.3,0.4,0.5" scale=1 />
+	            <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.3,0.4,0.5" scale=1 />
 	            <DistanceTrigger position="0,0,0" distance="100" target="Pawn"
 	                beaconMode="exclude" targetname="bcnSpaceShip" name="dockMe"
 	            />
 		<!-- Trigger for undocking with billboard -->
-		    <Billboard position="3251,20036,380" material="Flares/ringflare2" colour="0.3,0.4,0.5" scale=1 />
-		    <DistanceTrigger position="3251,20036,380" distance="100" target="Pawn"
+		    <Billboard position="3251,20006,380" material="Flares/ringflare2" colour="0.3,0.4,0.5" scale=1 />
+		    <DistanceTrigger position="3251,20006,380" distance="100" target="Pawn"
 	                beaconMode="identify" targetname="bcnSpaceShip" name="undockMe"
 	            />
 	        </attached>	
 	 </Dock>
 	
 
-	<SpaceShip			
-        template            = "spaceshipAssff"
-        team                = "0"
-        position            = "3337,-19,-320"
-        orientation         = "1,200,0,0"
-        health              = "200"
-        initialhealth       = "200"
-        maxhealth           = "200"
-        shieldhealth        = "50"
-        initialshieldhealth = "50"
-        maxshieldhealth     = "50"
-        shieldabsorption    = "0.8"
-        reloadrate          = "1"
-        reloadwaittime      = "1"
-        name                = "Tanis1"
-        radarname           = "Light Destroyer" >
-       <attached>
-        <DockingTarget name="spaceShip" />
-        <DistanceTriggerBeacon name="bcnSpaceShip" />
-      </attached>
-    </SpaceShip>
 
  <!-- Enemy ships -->
  
-<!--	<SpaceShip			
+ 	<SpaceShip			
         template            = "HeavyCruiser"
         team                = "0"
         position            = "5800,-200,-1200"
@@ -201,12 +201,12 @@
         name                = "Tanis0"
         radarname           = "Tanis big ship" >
    </SpaceShip>
-    -->
+		-->
     
- <!--   <SpaceShip			
+	<SpaceShip			
         template            = "spaceshippirate"
         team                = "0"
-        position            = "4800,-200,-1200"
+        position            = "11000,0,-2500"
         orientation         = "1,200,0,0"
         health              = "200"
         initialhealth       = "200"
@@ -229,7 +229,7 @@
    <SpaceShip			
         template            = "spaceshippirate"
         team                = "0"
-        position            = "4800,-220,-1200"
+        position            = "11000,0,-2500"
         orientation         = "1,200,0,0"
         health              = "200"
         initialhealth       = "200"
@@ -248,7 +248,7 @@
         </controller>
         
    </SpaceShip>
-   -->
+	
 
 <!-- SpaceStation
 
