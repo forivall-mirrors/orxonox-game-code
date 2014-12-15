@@ -1,4 +1,4 @@
-<Template name=fps>
+<Template name=fps_HS14>
   <FpsPlayer
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
@@ -20,8 +20,9 @@
 
    weapon            = "hs-w01.mesh"
   >
-    <collisionShapes>			<!-- old values: position="0,-20,0"  halfExtents="15,25,15"  -->
-      <BoxCollisionShape position="0,-25,0" halfExtents="15,20,15" />
+    <collisionShapes>
+   <!--Normal values: position="0,-45,0" halfExtents="15,50,15" -->
+      <BoxCollisionShape position="0,-45,0" halfExtents="15,50,15" /> 
     </collisionShapes>
 
     <camerapositions>
@@ -29,7 +30,7 @@
     </camerapositions>
 
     <?lua
-        include("../includes/weaponSettingsFPS.oxi")
+        include("../includes/weaponSettingsFPS_HS14.oxi")
     ?>
 
   </FpsPlayer>
