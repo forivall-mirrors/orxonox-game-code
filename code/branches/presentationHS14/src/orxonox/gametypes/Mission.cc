@@ -80,31 +80,6 @@ namespace orxonox
 
     void Mission::start()
     {
-    	std::fstream myfile;
-    	    	myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
-    	    	std::string line;
-    	    	std::string mission=this->getFilename();
-    	    	int k=58-mission.length();
-    	    	std::string helperstring = "";
-    	    	if(myfile.is_open()){
-    	    	    	while (k>1) {
-    	    	    		helperstring=helperstring+" ";
-    	    	    		k=k-1;
-    	    	    	}
-    	    	    	helperstring=helperstring+".";
-    	    	       while(getline (myfile,line)){
-    	    	    	  if(line==mission+" 0"+helperstring){
-    	    	    		  long pos = myfile.tellp();
-    	    	    		  myfile.seekp (pos-61);
-    	    	    		  myfile << mission+" 1"+helperstring;
-    	    	    	  }
-    	    	    	}}
-    	    	else{
-    	    		this->end();
-    	    	}
-    	    	        myfile.flush();
-    	    	        myfile.clear();
-    	    	        myfile.close();
         Gametype::start();
         this->setTeams();
 
@@ -127,28 +102,29 @@ namespace orxonox
         if (this->missionAccomplished_ && !this->gtinfo_->hasEnded()){
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
             std::fstream myfile;
-                	    	myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
-                	    	std::string line;
-                	    	std::string mission=this->getFilename();
-                	    	int k=58-mission.length();
-                	    	std::string helperstring = "";
-                	    	if(myfile.is_open()){
-                	    	    	while (k>1) {
-                	    	    		helperstring=helperstring+" ";
-                	    	    		k=k-1;
-                	    	    	}
-                	    	    	helperstring=helperstring+".";
-                	    	       while(getline (myfile,line)){
-                	    	    	  if(line==mission+" 0"+helperstring){
-                	    	    		  long pos = myfile.tellp();
-                	    	    		  myfile.seekp (pos-61);
-                	    	    		  myfile << mission+" 1"+helperstring;
-                	    	    	  }
-                	    	    	}}
-                	    	        myfile.flush();
-                	    	        myfile.clear();
-                	    	        myfile.close();
-                  }
+            myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
+            std::string line;
+            std::string mission=this->getFilename();
+            int k=58-mission.length();
+            std::string helperstring = "";
+            if(myfile.is_open()){
+    	    	while (k>1) {
+    	    		helperstring=helperstring+" ";
+    	    		k=k-1;
+    	    	}
+    	    	helperstring=helperstring+".";
+                while(getline (myfile,line)){
+                    if(line==mission+" 0"+helperstring){
+                        long pos = myfile.tellp();
+                        myfile.seekp (pos-61); 
+                        myfile << mission+" 1"+helperstring;
+                    }
+                }
+            }
+            myfile.flush();
+            myfile.clear();
+            myfile.close();
+        }
 
         else if (!this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
@@ -170,7 +146,7 @@ namespace orxonox
         {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
             if(accomplished){
             	std::fstream myfile;
-            		myfile.open("/home/maxima/maxima-extra-0/orxonox/presentationHS14/data/gui/scripts/campaign.txt");
+            		myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
             		std::string line;
            	    	std::string mission=it->getFilename();
   	    	    	int k=58-mission.length();
