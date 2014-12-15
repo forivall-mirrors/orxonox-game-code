@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "worldentities/pawns/Pawn.h"
+#include "controllers/WaypointController.h"
 
 namespace orxonox
 {
@@ -52,6 +53,7 @@ namespace orxonox
 
         XMLPortParam(TowerDefenseController, "alertnessradius", setAlertnessRadius, getAlertnessRadius, xmlelement, mode).defaultValues(500.0f);
     }
+
 
     void TowerDefenseController::tick(float dt)
     {

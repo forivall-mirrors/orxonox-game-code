@@ -174,13 +174,13 @@ namespace orxonox
         paramList.insert(StringPair("XAutoRepeatOn", "true"));
 
         if (exclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
-        {
+        {   // HACK MARTIN for debugging, changed values here to true
             if (CommandLineParser::getValue("keyboard_no_grab").get<bool>())
                 paramList.insert(StringPair("x11_keyboard_grab", "false"));
             else
-                paramList.insert(StringPair("x11_keyboard_grab", "true"));
-            paramList.insert(StringPair("x11_mouse_grab",  "true"));
-            paramList.insert(StringPair("x11_mouse_hide", "true"));
+                paramList.insert(StringPair("x11_keyboard_grab", "false"));
+            paramList.insert(StringPair("x11_mouse_grab",  "false"));
+            paramList.insert(StringPair("x11_mouse_hide", "false"));
         }
         else
         {

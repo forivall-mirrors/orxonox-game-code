@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *   Author:
+ *  Author:
  *
  *   Co-authors:
  *      ...
@@ -72,22 +72,19 @@
  *
  *
  */
-
 #include "TowerDefense.h"
-#include "Tower.h"
+#include "TowerDefenseTower.h"
 #include "TowerDefenseCenterpoint.h"
-
+//#include "TDCoordinate.h"
+#include "TowerTurret.h"
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
 #include "controllers/WaypointController.h"
-
 #include "graphics/Model.h"
 #include "infos/PlayerInfo.h"
-
 #include "chat/ChatManager.h"
 #include "core/CoreIncludes.h"
-
 /* Part of a temporary hack to allow the player to add towers */
 #include "core/command/ConsoleCommand.h"
 
@@ -98,13 +95,20 @@ namespace orxonox
     TowerDefense::TowerDefense(Context* context) : Deathmatch(context)
     {
         RegisterObject(TowerDefense);
+/*
+        for (int i=0; i < 16 ; i++){
+        	for (int j = 0; j< 16 ; j++){
+        		towermatrix[i][j] = NULL;
+        	}
+        }*/
 
         this->setHUDTemplate("TowerDefenseHUD");
 
-        this->stats_ = new TowerDefensePlayerStats();
+        //this->stats_ = new TowerDefensePlayerStats();
 
-        /* Temporary hack to allow the player to add towers */
+        /* Temporary hack to allow the player to add towers and upgrade them */
         this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
+	this->dedicatedUpgradeTower_ = createConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
     }
 
     TowerDefense::~TowerDefense()
@@ -126,49 +130,136 @@ namespace orxonox
 
     void TowerDefense::start()
     {
+
         Deathmatch::start();
 
-        const int kInitialTowerCount = 3;
-        Coordinate initialTowerCoordinates[kInitialTowerCount] = {{3,2}, {8,5}, {12,10}};
-
-        for (int i = 0; i < kInitialTowerCount; i++)
-        {
-            Coordinate coordinate = initialTowerCoordinates[i];
-            addTower(coordinate.x, coordinate.y);
+// Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
+        for (int i=0; i < 16 ; i++){
+        	for (int j = 0; j< 16 ; j++){
+        		towermatrix[i][j] = false;
+        	}
         }
 
-        ChatManager::message("Use the console command addTower x y to add towers");
+        for (int k=0; k<3; k++)
+        	towermatrix[1][k]=true;
+        for (int l=1; l<11; l++)
+                towermatrix[l][3]=true;
+        for (int m=3; m<12; m++)
+                towermatrix[10][m]=true;
+        for (int n=10; n<14; n++)
+                towermatrix[n][11]=true;
+        for (int o=13; o<16; o++)
+                towermatrix[13][o]=true;
 
-        //TODO: let the player control his controllable entity && TODO: create a new ControllableEntity for the player
+//set initial credits, lifes and WaveNumber
+        this->setCredit(200);
+        this->setLifes(50);
+        this->setWaveNumber(0);
+        time=0.0;
+
+//adds initial towers
+for (int i=0; i <7; i++){
+          addTower(i+3,4);
+    	}/*
+for (int j=0; j < 7; j++){
+          addTower(9,j+5);
+        }*/
+}
+    // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
+     void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr){ 
+
+
+    	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
+        
+	switch(templatenr) 
+	{ 
+	case 1 : 
+		en1->addTemplate("enemytowerdefense1"); 
+		en1->setScale(3); 
+	    en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+
+		break; 
+	case 2 : 
+	 	en1->addTemplate("enemytowerdefense2");
+ 		en1->setScale(2); 
+	    en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+	  //  en1->setShieldHealth(en1->getShield() = this->getWaveNumber()*2))
+
+		break; 
+	case 3 : 
+	    en1->addTemplate("enemytowerdefense3");
+	    en1->setScale(1);
+	    en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+	    break;
+	} 
+
+        en1->getController();
+        en1->setPosition(path.at(0)->get3dcoordinate());
+        TowerDefenseEnemyvector.push_back(en1);
+
+        for(unsigned int i = 0; i < path.size(); ++i)
+        	{
+            	en1->addWaypoint((path.at(i)));
+        	}
     }
+
 
     void TowerDefense::end()
-    {
-        Deathmatch::end();
 
-        ChatManager::message("Match is over");
+    {
+
+        Deathmatch::end();
+        ChatManager::message("Match is over! Gameover!");
+
     }
 
+    //not working yet
+    void TowerDefense::upgradeTower(int x,int y)
+    {/*
+    	const int upgradeCost = 20;
+
+        if (!this->hasEnoughCreditForTower(upgradeCost))
+        {
+            orxout() << "not enough credit: " << (this->getCredit()) << " available, " << upgradeCost << " needed.";
+            return;
+        }
+
+        if (towermatrix [x][y] == NULL)
+        {
+            orxout() << "no tower on this position" << endl;
+            return;
+        }
+
+        else
+        {
+        	(towermatrix [x][y])->upgradeTower();
+        }*/
+    }
+
+    /*adds Tower at Position (x,y) and reduces credit and adds the point to the towermatrix. template ("towerturret")
+    so towers have ability if the turrets
+
+    */
     void TowerDefense::addTower(int x, int y)
     {
-        const TowerCost towerCost = TDDefaultTowerCost;
+        const int towerCost = 20;
 
         if (!this->hasEnoughCreditForTower(towerCost))
         {
-            orxout() << "not enough credit: " << (this->stats_->getCredit()) << " available, " << TDDefaultTowerCost << " needed.";
+            orxout() << "not enough credit: " << (this->getCredit()) << " available, " << towerCost << " needed.";
             return;
         }
 
-        if (this->towerExists(x,y))
+        if (towermatrix [x][y]==true)
         {
-            orxout() << "tower exists!!" << endl;
+            orxout() << "not possible to put tower here!!" << endl;
             return;
         }
 
-        /*
+/*
         unsigned int width = this->center_->getWidth();
         unsigned int height = this->center_->getHeight();
-        */
+*/
 
         int tileScale = (int) this->center_->getTileScale();
 
@@ -181,42 +272,89 @@ namespace orxonox
 
         orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
 
-        // Add tower to coordinatesStack
-        Coordinate newTowerCoordinates = {x, y};
-        addedTowersCoordinates_.push_back(newTowerCoordinates);
+       //Reduce credit
+        this->buyTower(towerCost);
+        towermatrix [x][y]=true;
 
-        // Reduce credit
-        this->stats_->buyTower(towerCost);
-
-        // Create tower
-        Tower* newTower = new Tower(this->center_->getContext());
-        newTower->addTemplate(this->center_->getTowerTemplate());
-
-        newTower->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
-        newTower->setGame(this);
+        //Creates tower
+        TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
+        towernew->addTemplate("towerturret");
+        towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
+        towernew->setGame(this);
     }
 
-    bool TowerDefense::hasEnoughCreditForTower(TowerCost towerCost)
+    bool TowerDefense::hasEnoughCreditForTower(int towerCost)
     {
-        return ((this->stats_->getCredit()) >= towerCost);
+        return ((this->getCredit()) >= towerCost);
     }
 
-    bool TowerDefense::towerExists(int x, int y)
+
+    bool TowerDefense::hasEnoughCreditForUpgrade()
     {
-        for(std::vector<Coordinate>::iterator it = addedTowersCoordinates_.begin(); it != addedTowersCoordinates_.end(); ++it)
-        {
-            Coordinate currentCoordinates = (Coordinate) (*it);
-            if (currentCoordinates.x == x && currentCoordinates.y == y)
-                return true;
-        }
-
-        return false;
+    	return true;
     }
 
-
+ 
     void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
+        time +=dt;
+
+        TDCoordinate* coord1 = new TDCoordinate(1,1);
+        std::vector<TDCoordinate*> path;
+        path.push_back(coord1);
+        if(time>1 && TowerDefenseEnemyvector.size() < 30)
+        {
+        	//adds different types of enemys depending on the WaveNumber
+        	addTowerDefenseEnemy(path, this->getWaveNumber() % 3 +1 );
+        	time = time-1;
+        }
+
+		Vector3* endpoint = new Vector3(500, 700, 150);
+		//if ships are at the end they get destroyed
+		for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
+		{
+			if(TowerDefenseEnemyvector.at(i) != NULL && TowerDefenseEnemyvector.at(i)->isAlive())
+				{
+				//destroys enemys at the end of teh path and reduces the life by 1. no credits gifted
+
+					Vector3 ship = TowerDefenseEnemyvector.at(i)->getRVWorldPosition();
+					float distance = ship.distance(*endpoint);
+
+					if(distance <50){
+						TowerDefenseEnemyvector.at(i)->destroy();
+						this->reduceLifes(1);
+						this->buyTower(1);
+						if (this->getLifes()==0)
+								{
+								    this->end();
+								}
+					}
+				}
+			}
+			//goes thorugh vector to see if an enemy is still alive. if not next wave is launched
+			int count= 0;
+			for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
+			{
+				if(TowerDefenseEnemyvector.at(i)!= NULL)
+				{
+					++count;
+				}
+			}
+
+			if(count== 0)
+			{
+				time2 +=dt;
+				if(time2 > 10)
+				{
+					TowerDefenseEnemyvector.clear();
+					this->nextwave();
+					time=0;
+					time2=0;
+				}
+			}
+
+
     }
 
     // Function to test if we can add waypoints using code only. Doesn't work yet

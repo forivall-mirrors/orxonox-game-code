@@ -38,10 +38,10 @@
 #define _TowerDefenseHUDController_H__
 
 #include "towerdefense/TowerDefensePrereqs.h"
-
+#include "TowerDefensePlayerStats.h"
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"
-
+#include "TowerDefense.h"
 
 namespace orxonox
 {
@@ -51,9 +51,30 @@ namespace orxonox
         TowerDefenseHUDController(Context* context);
         virtual ~TowerDefenseHUDController();
 
+
         virtual void tick(float dt);
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedOwner();
+        void setShowlives(bool temp)
+            { this->showlives = temp; }
+        unsigned int getShowlives(void) const
+            { return this->showlives; }
+
+        void setShowcredits(bool temp)
+            { this->showcredits = temp; }
+        unsigned int getShowcredits(void) const
+            { return this->showcredits; }
+
+        void setShowwaves(bool temp)
+            { this->showwaves = temp; }
+        unsigned int getShowwaves(void) const
+            { return this->showwaves; }
+
+    private:
+        TowerDefense* td;
+        bool showcredits;
+        bool showlives;
+        bool showwaves;
     };
 }
 

@@ -1,5 +1,5 @@
 //
-//  Tower.cc
+//  TowerDefenseTower.cc
 //  Orxonox
 //
 //  Created by Fabian Mentzer on 29.04.12.
@@ -8,24 +8,25 @@
 
 /* Not implemented fully */
 
-#include "Tower.h"
+#include "TowerDefenseTower.h"
 
 #include "core/CoreIncludes.h"
 //#include "core/XMLPort.h"
 
 namespace orxonox
 {
-    RegisterClass(Tower);
+    RegisterClass(TowerDefenseTower);
 
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
-    Tower::Tower(Context* context) : Pawn(context)
+    TowerDefenseTower::TowerDefenseTower(Context* context) : Pawn(context)
     {
-        RegisterObject(Tower);
+        RegisterObject(TowerDefenseTower);
 
         this->setCollisionType(WorldEntity::Dynamic);
+        upgrade = 0;
 
         //this->removeAllEngines();
 
@@ -36,42 +37,65 @@ namespace orxonox
         */
     }
 
-    void Tower::setOrientation(const Quaternion& orientation)
+    void TowerDefenseTower::setOrientation(const Quaternion& orientation)
     {
         static int ori;
         //orxout() << "orientation " << ++ori << endl;
     }
 
-    void Tower::rotateYaw(const Vector2& value)
+    void TowerDefenseTower::rotateYaw(const Vector2& value)
     {
         static int yaw;
         //orxout() << "rotateYaw " << ++yaw << endl;
     }
 
-    void Tower::rotatePitch(const Vector2& value)
+    void TowerDefenseTower::rotatePitch(const Vector2& value)
     {
         static int pitch;
         //orxout() << "rotatePitch " << ++pitch << endl;
     }
 
-    void Tower::rotateRoll(const Vector2& value)
+    void TowerDefenseTower::rotateRoll(const Vector2& value)
     {
         static int roll;
         //orxout() << "rotateRoll" << ++roll << endl;
     }
 
+    bool TowerDefenseTower::upgradeTower()
+       {
+       	if(upgrade < 3)
+       	{
+       		upgrade++;
+       		float reloadrate = getReloadRate();
+       		float reloadwaittime = getReloadWaitTime();
+       		this->setDamageMultiplier(5000);
+
+       		reloadrate = 0.5*reloadrate;
+       		reloadwaittime = 0.5*reloadwaittime;
+       		setReloadRate(reloadrate);
+       		setReloadWaitTime(reloadwaittime);
+       		this->addTemplate("towerturret1");
+       	}
+       	else
+       	{
+       		orxout() << "Tower fully upgraded" << endl;
+       		return false;
+       	}
+       	return true;
+       }
+
     // This function is called whenever a player presses the up or the down key.
     // You have to implement what happens when the up or the down key is pressed.
     // value.x < 0 means: down key is pressed.
-    // I suggest to create a new class which is a controllable entity I will refer to as "TowerMover". This is the controllable entity that the
-    // player controls in order to move the tower along the centerpoint and in order to place the tower at the appropriate position.
+    // I suggest to create a new class which is a controllable entity I will refer to as "TowerDefenseTowerMover". This is the controllable entity that the
+    // player controls in order to move the TowerDefenseTower along the centerpoint and in order to place the TowerDefenseTower at the appropriate position.
     //
 
-    // The tower itsself is controlled by a WayPointPatroController at the instance you place it on the centerpoint.
-    //(don't forget to set the team_ parameter such that all tower are in the same team)
+    // The TowerDefenseTower itsself is controlled by a WayPointPatroController at the instance you place it on the centerpoint.
+    //(don't forget to set the team_ parameter such that all TowerDefenseTower are in the same team)
 
-    //How to move a tower: simply attach the tower to the TowerMover
-    //How to place a tower: detach the tower from the TowerMover
+    //How to move a TowerDefenseTower: simply attach the TowerDefenseTower to the TowerDefenseTowerMover
+    //How to place a TowerDefenseTower: detach the TowerDefenseTower from the TowerDefenseTowerMover
 
     /**
     @brief
@@ -80,7 +104,7 @@ namespace orxonox
         A vector whose first component is the angle by which to rotate.
     */
     /*
-    void Tower::moveFrontBack(const Vector2& value)
+    void TowerDefenseTower::moveFrontBack(const Vector2& value)
     {
         //orxout() << "frontBack.x: " << value.x << endl;
     }
@@ -93,7 +117,7 @@ namespace orxonox
         A vector whose first component is the direction in which we want to steer the stone.
     */
     /*
-    void Tower::moveRightLeft(const Vector2& value)
+    void TowerDefenseTower::moveRightLeft(const Vector2& value)
     {
         //orxout() << "rightLeft.x: " << value.x << endl;
 

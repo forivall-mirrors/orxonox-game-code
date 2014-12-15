@@ -20,27 +20,46 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *
+ *      Martin Mueller
  *   Co-authors:
  *      ...
+ *
  */
-/*
-#include "TowerDefensePlayerStats.h"
 
-namespace orxonox
-{
-    const int kDefaultCredit = 200;
-    const int kDefaultLifes=20;
-    TowerDefensePlayerStats::TowerDefensePlayerStats()
-    {
-        this->credit_ = kDefaultCredit;
-        this->waveNumber_ = 0;
-        this->lifes_=kDefaultLifes;
-    }
-
-    TowerDefensePlayerStats::~TowerDefensePlayerStats()
-    {
-    }
-
-}
+/**
+    @brief Definition for the controller for turrets.
 */
+
+#ifndef _TurretController_H__
+#define _TurretController_H__
+
+#include "OrxonoxPrereqs.h"
+#include "controllers/ArtificialController.h"
+
+ namespace orxonox
+ {
+ 	/**
+ 		@brief
+ 		Controller for turrets. Chooses a target, and makes the turret aim/shoot at it.
+
+ 		The controllableEntity gets casted to Turret, so this controller won't work for anything else.
+ 	*/
+ 	class _OrxonoxExport TurretController : public ArtificialController, public Tickable
+ 	{
+ 		public:
+ 			TurretController(Context* context);
+ 			virtual ~TurretController();
+
+ 			virtual void tick(float dt);
+
+ 		private:
+
+ 			void searchTarget();
+ 			bool isLookingAtTargetNew(float angle) const;
+ 			float targetScore(Pawn* pawn, float distance) const;
+
+ 			bool once_; //!< Flag for executing code in the tick function only once.
+ 	};
+ }
+
+ #endif
