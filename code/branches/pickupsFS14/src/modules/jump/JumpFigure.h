@@ -30,7 +30,6 @@
 #define _JumpFigure_H__
 
 #include "jump/JumpPrereqs.h"
-
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox
@@ -118,9 +117,12 @@ namespace orxonox
                 { return handSpeed_; }
 
             bool fireSignal_;
-            bool rocketActive_;
-            bool propellerActive_;
             bool dead_;
+
+            JumpRocket* rocketActive_;
+            JumpPropeller* propellerActive_;
+            JumpBoots* bootsActive_;
+            JumpShield* shieldActive_;
         private:
             std::string modelLeftHand_;
             std::string modelRightHand_;
@@ -148,8 +150,6 @@ namespace orxonox
             float handAngle_;
             bool animateHands_;
             bool turnUp_;
-            bool bootsActive_;
-            bool shieldActive_;
             float rocketSpeed_;
             float propellerSpeed_;
     };

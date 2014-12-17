@@ -51,7 +51,8 @@ namespace orxonox
     {
         RegisterObject(JumpShield);
 
-        fuel_ = 7.0;
+        initialFuel_ = 7.0;
+        fuel_ = initialFuel_;
         attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
@@ -100,5 +101,10 @@ namespace orxonox
     	JumpItem::touchFigure();
 
     	attachedToFigure_ = figure_->StartShield(this);
+    }
+
+    float JumpShield::getFuelState()
+    {
+        return fuel_/initialFuel_;
     }
 }

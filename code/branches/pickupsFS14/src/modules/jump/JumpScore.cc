@@ -49,6 +49,7 @@ namespace orxonox
 
         owner_ = NULL;
         showScore_ = false;
+        showFuel_ = false;
         showMessages_ = false;
     }
 
@@ -62,6 +63,7 @@ namespace orxonox
         SUPER(JumpScore, XMLPort, xmlelement, mode);
 
         XMLPortParam(JumpScore, "showScore", setShowScore, getShowScore, xmlelement, mode);
+        XMLPortParam(JumpScore, "showFuel", setShowFuel, getShowFuel, xmlelement, mode);
         XMLPortParam(JumpScore, "showMessages", setShowMessages, getShowMessages, xmlelement, mode);
         XMLPortParam(JumpScore, "gameOverText", setGameOverText, getGameOverText, xmlelement, mode);
     }
@@ -85,9 +87,24 @@ namespace orxonox
                     	std::string str = multi_cast<std::string>(score);
                     	setCaption(str);
                 	}
+                    else if (showFuel_ == true)
+                    {
+                        float fuel = owner_->getFuel();
+                        orxout() <<  fuel << endl;
+                        std::string str;
+
+                        if (fuel <= 0.0)
+                        {
+                            str = "";
+                        }
+                        else
+                        {
+                            str = multi_cast<std::string>(fuel);
+                        }
+                        setCaption(str);
+                    }                    
                 	else if (showMessages_ == true)
                 	{
-
                     	setCaption(owner_->getDead(player_) == true ? gameOverText_ : "");
                 	}
                 }

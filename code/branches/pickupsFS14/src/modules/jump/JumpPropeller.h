@@ -46,9 +46,11 @@ namespace orxonox
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void touchFigure();
+            virtual float getFuelState();
         protected:
             float stretch_;
             float fuel_;
+            float initialFuel_;
     };
 }
 

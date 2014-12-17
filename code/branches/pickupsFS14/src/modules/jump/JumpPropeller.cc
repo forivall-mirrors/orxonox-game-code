@@ -51,7 +51,8 @@ namespace orxonox
     {
         RegisterObject(JumpPropeller);
 
-        fuel_ = 3.0;
+        initialFuel_ = 3.0;
+        fuel_ = initialFuel_;
         attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
@@ -104,5 +105,10 @@ namespace orxonox
     	{
     		setAngularVelocity(Vector3(0,0,10.0));
     	}
+    }
+
+    float JumpPropeller::getFuelState()
+    {
+        return fuel_/initialFuel_;
     }
 }

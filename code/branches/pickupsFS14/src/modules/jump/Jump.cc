@@ -1270,6 +1270,31 @@ namespace orxonox
         return sectionNumber_ - 2;
     }
 
+    float Jump::getFuel() const
+    {
+        if (this->figure_ != NULL)
+        {
+            if (this->figure_->rocketActive_ != NULL)
+            {
+                return this->figure_->rocketActive_->getFuelState();
+            }
+            else if (this->figure_->propellerActive_ != NULL)
+            {
+                return this->figure_->propellerActive_->getFuelState();
+            }
+            else if (this->figure_->shieldActive_ != NULL)
+            {
+                return this->figure_->shieldActive_->getFuelState();
+            }
+            else if (this->figure_->bootsActive_ != NULL)
+            {
+                return this->figure_->bootsActive_->getFuelState();
+            }            
+        }
+
+        return 0.0;
+    }
+
     bool Jump::getDead(PlayerInfo* player) const
     {
         return figure_->dead_;
