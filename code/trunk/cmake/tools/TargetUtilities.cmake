@@ -446,11 +446,15 @@ ENDMACRO(TU_ADD_TARGET)
 FUNCTION(ADD_MODULE _target)
   # We use the properties to get the name because the librarys name may differ from
   # the target name (for example orxonox <-> liborxonox)
-
-  CMAKE_POLICY(SET CMP0026 OLD) # we only use the file's name, not its actual location, so the old policy is fine
+  IF (POLICY CMP0026)
+    CMAKE_POLICY(PUSH)
+    CMAKE_POLICY(SET CMP0026 OLD) # we only use the file's name, not its actual location, so the old policy is fine
+  ENDIF()
   GET_TARGET_PROPERTY(_target_loc ${_target} LOCATION)
   GET_FILENAME_COMPONENT(_target_name ${_target_loc} NAME_WE)
-  CMAKE_POLICY(SET CMP0026 NEW) # set policy back to 'new'
+  IF (POLICY CMP0026)
+    CMAKE_POLICY(POP) # set policy back to original settings
+  ENDIF()
 
   IF(CMAKE_CONFIGURATION_TYPES)
     FOREACH(_config ${CMAKE_CONFIGURATION_TYPES})
