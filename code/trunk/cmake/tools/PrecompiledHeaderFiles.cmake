@@ -97,20 +97,8 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
 
   ELSEIF(CMAKE_COMPILER_IS_GNU)
 
-    SET(_pch_file "${CMAKE_CURRENT_BINARY_DIR}/${_pch_header_filename}.gch")
-    SET(_pch_dep_helper_file "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}PCHDependencyHelper.h")
-
     # Append the gch-dir to make sure gcc finds the pch file
     INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
-    # Get compiler flags of the source files (target does not yet exist!)
-    # This is just the best possible opportunity to address this dependency issue
-    GET_GCC_COMPILER_FLAGS(${_target_name} _pch_gcc_flags)
-    # Make sure we recompile the pch file even if only the flags change
-    IF(NOT "${_pch_gcc_flags}" STREQUAL "${_INTERNAL_${_target_name}_PCH_GCC_FLAGS}" OR NOT EXISTS "${_pch_dep_helper_file}")
-      SET(_INTERNAL_${_target_name}_PCH_GCC_FLAGS "${_pch_gcc_flags}" CACHE INTERNAL "")
-      FILE(WRITE ${_pch_dep_helper_file} "/* ${_pch_gcc_flags} */")
-    ENDIF()
 
     # Set Compile flags for the other source files
     FOREACH(_file ${_source_files})
@@ -135,14 +123,23 @@ FUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET _target_name)
     # This macro is only necessary for GCC
     IF(CMAKE_COMPILER_IS_GNU)
 
+      SET(_pch_file "${CMAKE_CURRENT_BINARY_DIR}/${_pch_header_filename}.gch")
+      SET(_pch_dep_helper_file "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}PCHDependencyHelper.h")
+
       # Workaround for distcc
       IF(CMAKE_CXX_COMPILER_ARG1)
         # remove leading space in compiler argument
         STRING(REGEX REPLACE "^ +" "" _pch_cmake_cxx_compiler_arg1 "${CMAKE_CXX_COMPILER_ARG1}")
       ENDIF()
 
-      # Get compiler flags of the source files again (target exists this time)
+      # Get compiler flags of the source files
       GET_GCC_COMPILER_FLAGS(${_target_name} _pch_gcc_flags)
+
+      # Make sure we recompile the pch file even if only the flags change
+      IF(NOT "${_pch_gcc_flags}" STREQUAL "${_INTERNAL_${_target_name}_PCH_GCC_FLAGS}" OR NOT EXISTS "${_pch_dep_helper_file}")
+        SET(_INTERNAL_${_target_name}_PCH_GCC_FLAGS "${_pch_gcc_flags}" CACHE INTERNAL "")
+        FILE(WRITE ${_pch_dep_helper_file} "/* ${_pch_gcc_flags} */")
+      ENDIF()
 
       # Compile the header file
       ADD_CUSTOM_COMMAND(
