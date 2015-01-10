@@ -27,6 +27,6 @@ ORXONOX_ADD_EXECUTABLE(
     object/SmartPtrTest.cc
     object/WeakPtrTest.cc
 )
-ADD_DEPENDENCIES(test core_test)
+ADD_DEPENDENCIES(all_tests core_test)
 
 ADD_TEST(core_test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/core_test --gtest_output=xml)

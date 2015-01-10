@@ -30,6 +30,6 @@ ORXONOX_ADD_EXECUTABLE(
     output/OutputStreamTest.cc
     output/SubcontextOutputListenerTest.cc
 )
-ADD_DEPENDENCIES(test util_test)
+ADD_DEPENDENCIES(all_tests util_test)
 
 ADD_TEST(util_test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/util_test --gtest_output=xml)
