@@ -33,7 +33,20 @@ INCLUDE(../src/SourceConfig.cmake)
 
 ENABLE_TESTING()
 
+# A target to execute tests. This override the native 'test' target of cmake and allows us to
+# define dependences (i.e. to let cmake build the tests before executing them)
+IF (POLICY CMP0037)
+  CMAKE_POLICY(PUSH)
+  CMAKE_POLICY(SET CMP0037 OLD) # we currently have to override the original 'test' target until cmake provides a better way to define dependencies to the test target
+ENDIF()
 ADD_CUSTOM_TARGET(test COMMAND ${CMAKE_CTEST_COMMAND} "$(ARGS)" COMMENT "Running tests")
+IF (POLICY CMP0037)
+  CMAKE_POLICY(POP) # restore policy settings
+ENDIF()
+
+# A target to build all tests
+ADD_CUSTOM_TARGET(all_tests)
+ADD_DEPENDENCIES(test all_tests) # build tests before executing them
 
 CONFIGURE_FILE("CTestCustom.cmake" "CTestCustom.cmake" @ONLY)
 
