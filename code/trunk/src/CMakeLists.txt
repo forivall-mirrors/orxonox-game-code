@@ -72,9 +72,11 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
 ADD_DEPENDENCIES(orxonox-main ${ORXONOX_MODULES})
 
 # Get name to configure the run scripts
+CMAKE_POLICY(SET CMP0026 OLD) # we only use the file's name, not its actual location, so the old policy is fine
 GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
 GET_FILENAME_COMPONENT(_exec_name ${_exec_loc} NAME)
 SET(ORXONOX_EXECUTABLE_NAME ${_exec_name} CACHE INTERNAL "")
+CMAKE_POLICY(SET CMP0026 NEW) # set policy back to 'new'
 
 
 # Apple Mac OS X specific build settings
