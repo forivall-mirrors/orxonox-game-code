@@ -58,12 +58,13 @@ namespace orxonox
 
     void BulletDebugDrawer::drawSphere(const btVector3& p, btScalar radius, const btVector3& color)
     {
-        this->drawer->drawSphere(vector3(p), radius, colour(color, 1.0f), true);
+        this->drawer->drawSphere(vector3(p), Ogre::Quaternion::IDENTITY, radius, colour(color, 1.0f), true);
     }
 
     void BulletDebugDrawer::drawSphere(btScalar radius, const btTransform& transform, const btVector3& color)
     {
-        this->drawSphere(transform.getOrigin(), radius, color);
+        Ogre::Matrix4 matrix = matrix4(transform);
+        this->drawer->drawSphere(matrix.getTrans(), matrix.extractQuaternion(), radius, colour(color, 1.0f), true);
     }
 
     void BulletDebugDrawer::drawBox(const btVector3& bbMin, const btVector3& bbMax, const btVector3& color)
@@ -92,6 +93,18 @@ namespace orxonox
         corners[6]  = Ogre::Vector3(trans * btVector3(bbMin[0], bbMin[1], bbMax[2]));
         corners[7]  = Ogre::Vector3(trans * btVector3(bbMax[0], bbMin[1], bbMax[2]));
         this->drawer->drawCuboid(corners, colour(color, 1.0f), true);
+    }
+
+    void BulletDebugDrawer::drawCylinder(btScalar radius, btScalar halfHeight, int upAxis, const btTransform& transform, const btVector3& color)
+    {
+        Ogre::Matrix4 matrix = matrix4(transform);
+        this->drawer->drawCylinder(matrix.getTrans(), matrix.extractQuaternion(), radius, halfHeight * 2, colour(color, 1.0f), true);
+    }
+
+    void BulletDebugDrawer::drawCone(btScalar radius, btScalar height, int upAxis, const btTransform& transform, const btVector3& color)
+    {
+        Ogre::Matrix4 matrix = matrix4(transform);
+        this->drawer->drawCone(matrix.getTrans(), matrix.extractQuaternion(), radius, height, colour(color, 1.0f), true);
     }
 
     void BulletDebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)

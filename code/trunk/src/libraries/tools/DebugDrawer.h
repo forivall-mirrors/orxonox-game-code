@@ -34,11 +34,13 @@ namespace orxonox
             void build();
 
             void drawLine(const Ogre::Vector3& start, const Ogre::Vector3& end, const Ogre::ColourValue& colour);
-            void drawCircle(const Ogre::Vector3& centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, bool isFilled = false);
-            void drawCylinder(const Ogre::Vector3& centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, bool isFilled = false);
+            void drawCircle(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, const Ogre::ColourValue& colour, bool isFilled = false);
+            void drawCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, float height, const Ogre::ColourValue& colour, bool isFilled = false);
+            void drawCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, float height, const Ogre::ColourValue& colour, bool isFilled = false);
+
             void drawQuad(const Ogre::Vector3* vertices, const Ogre::ColourValue& colour, bool isFilled = false);
             void drawCuboid(const Ogre::Vector3* vertices, const Ogre::ColourValue& colour, bool isFilled = false);
-            void drawSphere(const Ogre::Vector3& centre, float radius, const Ogre::ColourValue& colour, bool isFilled = false);
+            void drawSphere(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, const Ogre::ColourValue& colour, bool isFilled = false);
             void drawTetrahedron(const Ogre::Vector3& centre, float scale, const Ogre::ColourValue& colour, bool isFilled = false);
 
             bool getEnabled()
@@ -85,11 +87,14 @@ namespace orxonox
             void buildCuboid(const Ogre::Vector3* vertices, const Ogre::ColourValue& colour, float alpha = 1.0f);
             void buildFilledCuboid(const Ogre::Vector3* vertices, const Ogre::ColourValue& colour, float alpha = 1.0f);
 
-            void buildCircle(const Ogre::Vector3& centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, float alpha = 1.0f);
-            void buildFilledCircle(const Ogre::Vector3& centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, float alpha = 1.0f);
+            void buildCircle(const Ogre::Matrix4& transform, float radius, int segmentsCount, const Ogre::ColourValue& colour, float alpha = 1.0f);
+            void buildFilledCircle(const Ogre::Matrix4& transform, float radius, int segmentsCount, const Ogre::ColourValue& colour, bool up, float alpha = 1.0f);
 
-            void buildCylinder(const Ogre::Vector3& centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha = 1.0f);
-            void buildFilledCylinder(const Ogre::Vector3& centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha = 1.0f);
+            void buildCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha = 1.0f);
+            void buildFilledCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha = 1.0f);
+
+            void buildCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha = 1.0f);
+            void buildFilledCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha = 1.0f);
 
             void buildTetrahedron(const Ogre::Vector3& centre, float scale, const Ogre::ColourValue& colour, float alpha = 1.0f);
             void buildFilledTetrahedron(const Ogre::Vector3& centre, float scale, const Ogre::ColourValue& colour, float alpha = 1.0f);

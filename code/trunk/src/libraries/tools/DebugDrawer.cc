@@ -83,7 +83,7 @@ namespace orxonox
             addLineIndices(index + i, index + ((i + 1) % 4));
     }
 
-    void DebugDrawer::buildCircle(const Ogre::Vector3& centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, float alpha)
+    void DebugDrawer::buildCircle(const Ogre::Matrix4& transform, float radius, int segmentsCount, const Ogre::ColourValue& colour, float alpha)
     {
         int index = linesIndex;
         float increment = 2 * Ogre::Math::PI / segmentsCount;
@@ -91,7 +91,7 @@ namespace orxonox
 
         for (int i = 0; i < segmentsCount; i++)
         {
-            addLineVertex(Ogre::Vector3(centre.x + radius * Ogre::Math::Cos(angle), centre.y, centre.z + radius * Ogre::Math::Sin(angle)),
+            addLineVertex(transform * Ogre::Vector3(radius * Ogre::Math::Cos(angle), 0, radius * Ogre::Math::Sin(angle)),
                     Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
             angle += increment;
         }
@@ -100,7 +100,7 @@ namespace orxonox
             addLineIndices(index + i, i + 1 < segmentsCount ? index + i + 1 : index);
     }
 
-    void DebugDrawer::buildFilledCircle(const Ogre::Vector3& centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, float alpha)
+    void DebugDrawer::buildFilledCircle(const Ogre::Matrix4& transform, float radius, int segmentsCount, const Ogre::ColourValue& colour, bool up, float alpha)
     {
         int index = trianglesIndex;
         float increment = 2 * Ogre::Math::PI / segmentsCount;
@@ -108,88 +108,85 @@ namespace orxonox
 
         for (int i = 0; i < segmentsCount; i++)
         {
-            addTriangleVertex(Ogre::Vector3(centre.x + radius * Ogre::Math::Cos(angle), centre.y, centre.z + radius * Ogre::Math::Sin(angle)),
+            addTriangleVertex(transform * Ogre::Vector3(radius * Ogre::Math::Cos(angle), 0, radius * Ogre::Math::Sin(angle)),
                     Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
             angle += increment;
         }
 
-        addTriangleVertex(centre, Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
+        addTriangleVertex(transform.getTrans(), Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
 
         for (int i = 0; i < segmentsCount; i++)
-            addTriangleIndices(i + 1 < segmentsCount ? index + i + 1 : index, index + i, index + segmentsCount);
+        {
+            if (up)
+                addTriangleIndices(i + 1 < segmentsCount ? index + i + 1 : index, index + i, index + segmentsCount);
+            else
+                addTriangleIndices(index + i, i + 1 < segmentsCount ? index + i + 1 : index, index + segmentsCount);
+        }
     }
 
-    void DebugDrawer::buildCylinder(const Ogre::Vector3& centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha)
+    void DebugDrawer::buildCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha)
     {
         int index = linesIndex;
-        float increment = 2 * Ogre::Math::PI / segmentsCount;
-        float angle = 0.0f;
 
-        // Top circle
-        for (int i = 0; i < segmentsCount; i++)
-        {
-            addLineVertex(Ogre::Vector3(centre.x + radius * Ogre::Math::Cos(angle), centre.y + height / 2, centre.z + radius * Ogre::Math::Sin(angle)),
-                    Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
-            angle += increment;
-        }
-
-        angle = 0.0f;
-
-        // Bottom circle
-        for (int i = 0; i < segmentsCount; i++)
-        {
-            addLineVertex(Ogre::Vector3(centre.x + radius * Ogre::Math::Cos(angle), centre.y - height / 2, centre.z + radius * Ogre::Math::Sin(angle)),
-                    Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
-            angle += increment;
-        }
+        Ogre::Matrix4 transform(rotation);
+        transform.setTrans(centre + rotation * Ogre::Vector3(0, height / 2, 0));
+        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        transform.setTrans(centre + rotation * Ogre::Vector3(0, -height / 2, 0));
+        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
 
         for (int i = 0; i < segmentsCount; i++)
-        {
-            addLineIndices(index + i, i + 1 < segmentsCount ? index + i + 1 : index);
-            addLineIndices(segmentsCount + index + i, i + 1 < segmentsCount ? segmentsCount + index + i + 1 : segmentsCount + index);
             addLineIndices(index + i, segmentsCount + index + i);
-        }
     }
 
-    void DebugDrawer::buildFilledCylinder(const Ogre::Vector3& centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour,
+    void DebugDrawer::buildFilledCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour,
             float alpha)
     {
         int index = trianglesIndex;
-        float increment = 2 * Ogre::Math::PI / segmentsCount;
-        float angle = 0.0f;
 
-        // Top circle
-        for (int i = 0; i < segmentsCount; i++)
-        {
-            addTriangleVertex(Ogre::Vector3(centre.x + radius * Ogre::Math::Cos(angle), centre.y + height / 2, centre.z + radius * Ogre::Math::Sin(angle)),
-                    Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
-            angle += increment;
-        }
+        Ogre::Matrix4 transform(rotation);
+        transform.setTrans(centre + rotation * Ogre::Vector3(0, height / 2, 0));
+        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        this->buildFilledCircle(transform, radius, segmentsCount, colour, true, alpha);
 
-        addTriangleVertex(Ogre::Vector3(centre.x, centre.y + height / 2, centre.z), Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
-
-        angle = 0.0f;
-
-        // Bottom circle
-        for (int i = 0; i < segmentsCount; i++)
-        {
-            addTriangleVertex(Ogre::Vector3(centre.x + radius * Ogre::Math::Cos(angle), centre.y - height / 2, centre.z + radius * Ogre::Math::Sin(angle)),
-                    Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
-            angle += increment;
-        }
-
-        addTriangleVertex(Ogre::Vector3(centre.x, centre.y - height / 2, centre.z), Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
+        transform.setTrans(centre + rotation * Ogre::Vector3(0, -height / 2, 0));
+        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        this->buildFilledCircle(transform, radius, segmentsCount, colour, false, alpha);
 
         for (int i = 0; i < segmentsCount; i++)
         {
-            addTriangleIndices(i + 1 < segmentsCount ? index + i + 1 : index, index + i, index + segmentsCount);
-
-            addTriangleIndices(i + 1 < segmentsCount ? (segmentsCount + 1) + index + i + 1 : (segmentsCount + 1) + index,
-                    (segmentsCount + 1) + index + segmentsCount, (segmentsCount + 1) + index + i);
-
             addQuadIndices(index + i, i + 1 < segmentsCount ? index + i + 1 : index,
                     i + 1 < segmentsCount ? (segmentsCount + 1) + index + i + 1 : (segmentsCount + 1) + index, (segmentsCount + 1) + index + i);
         }
+    }
+
+    void DebugDrawer::buildCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, float alpha)
+    {
+        int index = linesIndex;
+
+        Ogre::Matrix4 transform(rotation);
+        transform.setTrans(centre + rotation * Ogre::Vector3(0, -height / 2, 0));
+        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+
+        addLineVertex(centre + rotation * Ogre::Vector3(0, height / 2, 0), Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
+
+        for (int i = 0; i < segmentsCount; i++)
+            addLineIndices(index + i, index + segmentsCount);
+    }
+
+    void DebugDrawer::buildFilledCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour,
+            float alpha)
+    {
+        int index = trianglesIndex;
+
+        Ogre::Matrix4 transform(rotation);
+        transform.setTrans(centre + rotation * Ogre::Vector3(0, -height / 2, 0));
+        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        this->buildFilledCircle(transform, radius, segmentsCount, colour, false, alpha);
+
+        addTriangleVertex(centre + rotation * Ogre::Vector3(0, height / 2, 0), Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
+
+        for (int i = 0; i < segmentsCount; i++)
+            addTriangleIndices(index + i, index + segmentsCount + 1, i + 1 < segmentsCount ? index + i + 1 : index);
     }
 
     void DebugDrawer::buildCuboid(const Ogre::Vector3* vertices, const Ogre::ColourValue& colour, float alpha)
@@ -300,18 +297,36 @@ namespace orxonox
         buildLine(start, end, colour);
     }
 
-    void DebugDrawer::drawCircle(const Ogre::Vector3& centre, float radius, int segmentsCount, const Ogre::ColourValue& colour, bool isFilled)
+    void DebugDrawer::drawCircle(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, const Ogre::ColourValue& colour, bool isFilled)
     {
-        buildCircle(centre, radius, segmentsCount, colour);
+        int segmentsCount = std::min(100.0, radius / 2.5);
+
+        Ogre::Matrix4 transform(rotation);
+        transform.setTrans(centre);
+
+        buildCircle(transform, radius, segmentsCount, colour);
         if (isFilled)
-            buildFilledCircle(centre, radius, segmentsCount, colour, fillAlpha);
+            buildFilledCircle(transform, radius, segmentsCount, colour, fillAlpha);
     }
 
-    void DebugDrawer::drawCylinder(const Ogre::Vector3& centre, float radius, int segmentsCount, float height, const Ogre::ColourValue& colour, bool isFilled)
+    void DebugDrawer::drawCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, float height, const Ogre::ColourValue& colour, bool isFilled)
     {
-        buildCylinder(centre, radius, segmentsCount, height, colour);
+        int segmentsCount = std::min(100.0, radius / 2.5);
+
         if (isFilled)
-            buildFilledCylinder(centre, radius, segmentsCount, height, colour, fillAlpha);
+            buildFilledCylinder(centre, rotation, radius, segmentsCount, height, colour, fillAlpha);
+        else
+            buildCylinder(centre, rotation, radius, segmentsCount, height, colour);
+    }
+
+    void DebugDrawer::drawCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, float height, const Ogre::ColourValue& colour, bool isFilled)
+    {
+        int segmentsCount = std::min(100.0, radius / 2.5);
+
+        if (isFilled)
+            buildFilledCone(centre, rotation, radius, segmentsCount, height, colour, fillAlpha);
+        else
+            buildCone(centre, rotation, radius, segmentsCount, height, colour);
     }
 
     void DebugDrawer::drawQuad(const Ogre::Vector3* vertices, const Ogre::ColourValue& colour, bool isFilled)
@@ -328,19 +343,25 @@ namespace orxonox
             buildFilledCuboid(vertices, colour, fillAlpha);
     }
 
-    void DebugDrawer::drawSphere(const Ogre::Vector3& centre, float radius, const Ogre::ColourValue& colour, bool isFilled)
+    void DebugDrawer::drawSphere(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, const Ogre::ColourValue& colour, bool isFilled)
     {
         const IcoSphere& sphere = this->getIcoSphere(radius);
 
-        int baseIndex = linesIndex;
-        linesIndex += sphere.addToVertices(&lineVertices, centre, colour, radius);
-        sphere.addToLineIndices(baseIndex, &lineIndices);
-
         if (isFilled)
         {
-            baseIndex = trianglesIndex;
+            this->drawCircle(centre, rotation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(1, 0, 0)), radius, colour, false);
+            this->drawCircle(centre, rotation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(0, 1, 0)), radius, colour, false);
+            this->drawCircle(centre, rotation * Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(0, 0, 1)), radius, colour, false);
+
+            int baseIndex = trianglesIndex;
             trianglesIndex += sphere.addToVertices(&triangleVertices, centre, Ogre::ColourValue(colour.r, colour.g, colour.b, fillAlpha), radius);
             sphere.addToTriangleIndices(baseIndex, &triangleIndices);
+        }
+        else
+        {
+            int baseIndex = linesIndex;
+            linesIndex += sphere.addToVertices(&lineVertices, centre, colour, radius);
+            sphere.addToLineIndices(baseIndex, &lineIndices);
         }
     }
 

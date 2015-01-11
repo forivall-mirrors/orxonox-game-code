@@ -33,11 +33,11 @@
     
 	<StaticEntity position="1000,0,0" collisionType="static">
 		<collisionShapes>
-			<SphereCollisionShape   position="0,-600,0" radius="100" />
-			<CylinderCollisionShape position="0,-300,0" radius="50" height="150" />
-			<BoxCollisionShape      position="0,-100,0" halfExtents="30, 50, 80" />
-			<ConeCollisionShape     position="0,+100,0" radius="50" height="150" />
-			<PlaneCollisionShape    position="0,+300,0" normal="0, -1, 0" offset="30" />
+			<SphereCollisionShape   yaw="20" pitch="20" roll="20" position="0,-300,0" radius="100" />
+			<CylinderCollisionShape yaw="20" pitch="20" roll="20" position="0,+000,0" radius="50" height="150" />
+			<BoxCollisionShape      yaw="20" pitch="20" roll="20" position="0,+200,0" halfExtents="30, 50, 80" />
+			<ConeCollisionShape     yaw="20" pitch="20" roll="20" position="0,+400,0" radius="50" height="150" />
+			<PlaneCollisionShape    yaw="20" pitch="20" roll="20" position="0,+600,0" normal="0, -1, 0" offset="30" />
 		</collisionShapes>
 	</StaticEntity>
 	
