@@ -10,8 +10,11 @@ END_BUILD_UNIT
 
 BUILD_UNIT OgreBuildUnit.cc
   BillboardSet.cc
+  BulletDebugDrawer.cc
+  DebugDrawer.cc
   DynamicLines.cc
   DynamicRenderable.cc
+  IcoSphere.cc
   Mesh.cc
   ParticleInterface.cc
   Shader.cc
@@ -28,6 +31,7 @@ ORXONOX_ADD_LIBRARY(tools
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
     tinyxml_orxonox
+    bullet_orxonox
     util
     core
   SOURCE_FILES
