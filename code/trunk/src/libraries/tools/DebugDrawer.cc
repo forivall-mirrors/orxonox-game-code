@@ -145,11 +145,11 @@ namespace orxonox
 
         Ogre::Matrix4 transform(rotation);
         transform.setTrans(centre + rotation * Ogre::Vector3(0, height / 2, 0));
-        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        this->buildCircle(transform, radius, segmentsCount, colour);
         this->buildFilledCircle(transform, radius, segmentsCount, colour, true, alpha);
 
         transform.setTrans(centre + rotation * Ogre::Vector3(0, -height / 2, 0));
-        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        this->buildCircle(transform, radius, segmentsCount, colour);
         this->buildFilledCircle(transform, radius, segmentsCount, colour, false, alpha);
 
         for (int i = 0; i < segmentsCount; i++)
@@ -180,7 +180,7 @@ namespace orxonox
 
         Ogre::Matrix4 transform(rotation);
         transform.setTrans(centre + rotation * Ogre::Vector3(0, -height / 2, 0));
-        this->buildCircle(transform, radius, segmentsCount, colour, alpha);
+        this->buildCircle(transform, radius, segmentsCount, colour);
         this->buildFilledCircle(transform, radius, segmentsCount, colour, false, alpha);
 
         addTriangleVertex(centre + rotation * Ogre::Vector3(0, height / 2, 0), Ogre::ColourValue(colour.r, colour.g, colour.b, alpha));
@@ -299,7 +299,7 @@ namespace orxonox
 
     void DebugDrawer::drawCircle(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, const Ogre::ColourValue& colour, bool isFilled)
     {
-        int segmentsCount = std::min(100.0, radius / 2.5);
+        int segmentsCount = std::min<int>(100, (int) (radius / 2.5));
 
         Ogre::Matrix4 transform(rotation);
         transform.setTrans(centre);
@@ -311,7 +311,7 @@ namespace orxonox
 
     void DebugDrawer::drawCylinder(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, float height, const Ogre::ColourValue& colour, bool isFilled)
     {
-        int segmentsCount = std::min(100.0, radius / 2.5);
+        int segmentsCount = std::min<int>(100, (int) (radius / 2.5));
 
         if (isFilled)
             buildFilledCylinder(centre, rotation, radius, segmentsCount, height, colour, fillAlpha);
@@ -321,7 +321,7 @@ namespace orxonox
 
     void DebugDrawer::drawCone(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, float height, const Ogre::ColourValue& colour, bool isFilled)
     {
-        int segmentsCount = std::min(100.0, radius / 2.5);
+        int segmentsCount = std::min<int>(100, (int) (radius / 2.5));
 
         if (isFilled)
             buildFilledCone(centre, rotation, radius, segmentsCount, height, colour, fillAlpha);

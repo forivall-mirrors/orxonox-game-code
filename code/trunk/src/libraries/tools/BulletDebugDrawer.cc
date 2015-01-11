@@ -20,11 +20,10 @@ namespace orxonox
 {
     BulletDebugDrawer::BulletDebugDrawer(Ogre::SceneManager* sceneManager)
     {
-        this->drawer = new DebugDrawer(sceneManager, 0.5f);
+        this->drawer_ = new DebugDrawer(sceneManager, 0.5f);
+        this->bFill_ = true;
 
         mContactPoints = &mContactPoints1;
-        //mLines->estimateVertexCount(100000);
-        //mLines->estimateIndexCount(0);
 
         static const char* matName = "OgreBulletCollisionsDebugDefault";
         Ogre::MaterialPtr mtl = Ogre::MaterialManager::getSingleton().getDefaultSettings()->clone(matName);
@@ -43,12 +42,12 @@ namespace orxonox
     BulletDebugDrawer::~BulletDebugDrawer()
     {
         Ogre::Root::getSingleton().removeFrameListener(this);
-        delete this->drawer;
+        delete this->drawer_;
     }
 
     void BulletDebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
     {
-        this->drawer->drawLine(vector3(from), vector3(to), colour(color, 1.0f));
+        this->drawer_->drawLine(vector3(from), vector3(to), colour(color, 1.0f));
     }
 
 //    void BulletDebugDrawer::drawTriangle(const btVector3& v0, const btVector3& v1, const btVector3& v2, const btVector3& color, btScalar alpha)
@@ -58,13 +57,13 @@ namespace orxonox
 
     void BulletDebugDrawer::drawSphere(const btVector3& p, btScalar radius, const btVector3& color)
     {
-        this->drawer->drawSphere(vector3(p), Ogre::Quaternion::IDENTITY, radius, colour(color, 1.0f), true);
+        this->drawer_->drawSphere(vector3(p), Ogre::Quaternion::IDENTITY, radius, colour(color, 1.0f), this->bFill_);
     }
 
     void BulletDebugDrawer::drawSphere(btScalar radius, const btTransform& transform, const btVector3& color)
     {
         Ogre::Matrix4 matrix = matrix4(transform);
-        this->drawer->drawSphere(matrix.getTrans(), matrix.extractQuaternion(), radius, colour(color, 1.0f), true);
+        this->drawer_->drawSphere(matrix.getTrans(), matrix.extractQuaternion(), radius, colour(color, 1.0f), this->bFill_);
     }
 
     void BulletDebugDrawer::drawBox(const btVector3& bbMin, const btVector3& bbMax, const btVector3& color)
@@ -78,7 +77,7 @@ namespace orxonox
         corners[5]  = Ogre::Vector3(bbMin[0], bbMax[1], bbMax[2]);
         corners[6]  = Ogre::Vector3(bbMin[0], bbMin[1], bbMax[2]);
         corners[7]  = Ogre::Vector3(bbMax[0], bbMin[1], bbMax[2]);
-        this->drawer->drawCuboid(corners, colour(color, 1.0f), true);
+        this->drawer_->drawCuboid(corners, colour(color, 1.0f), this->bFill_);
     }
 
     void BulletDebugDrawer::drawBox(const btVector3& bbMin, const btVector3& bbMax, const btTransform& trans, const btVector3& color)
@@ -92,19 +91,19 @@ namespace orxonox
         corners[5]  = Ogre::Vector3(trans * btVector3(bbMin[0], bbMax[1], bbMax[2]));
         corners[6]  = Ogre::Vector3(trans * btVector3(bbMin[0], bbMin[1], bbMax[2]));
         corners[7]  = Ogre::Vector3(trans * btVector3(bbMax[0], bbMin[1], bbMax[2]));
-        this->drawer->drawCuboid(corners, colour(color, 1.0f), true);
+        this->drawer_->drawCuboid(corners, colour(color, 1.0f), this->bFill_);
     }
 
     void BulletDebugDrawer::drawCylinder(btScalar radius, btScalar halfHeight, int upAxis, const btTransform& transform, const btVector3& color)
     {
         Ogre::Matrix4 matrix = matrix4(transform);
-        this->drawer->drawCylinder(matrix.getTrans(), matrix.extractQuaternion(), radius, halfHeight * 2, colour(color, 1.0f), true);
+        this->drawer_->drawCylinder(matrix.getTrans(), matrix.extractQuaternion(), radius, halfHeight * 2, colour(color, 1.0f), this->bFill_);
     }
 
     void BulletDebugDrawer::drawCone(btScalar radius, btScalar height, int upAxis, const btTransform& transform, const btVector3& color)
     {
         Ogre::Matrix4 matrix = matrix4(transform);
-        this->drawer->drawCone(matrix.getTrans(), matrix.extractQuaternion(), radius, height, colour(color, 1.0f), true);
+        this->drawer_->drawCone(matrix.getTrans(), matrix.extractQuaternion(), radius, height, colour(color, 1.0f), this->bFill_);
     }
 
     void BulletDebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
@@ -126,7 +125,7 @@ namespace orxonox
         for (std::vector<ContactPoint>::iterator i = mContactPoints->begin(); i < mContactPoints->end(); i++ )
         {
             ContactPoint& cp = *i;
-            this->drawer->drawLine(cp.from, cp.to, cp.color);
+            this->drawer_->drawLine(cp.from, cp.to, cp.color);
             if (now <= cp.dieTime)
                 newCP->push_back(cp);
         }
@@ -134,14 +133,14 @@ namespace orxonox
         mContactPoints = newCP;
 
         // Right before the frame is rendered, call DebugDrawer::build().
-        this->drawer->build();
+        this->drawer_->build();
         return true;
     }
 
     bool BulletDebugDrawer::frameEnded(const Ogre::FrameEvent& evt)
     {
         // After the frame is rendered, call DebugDrawer::clear()
-        this->drawer->clear();
+        this->drawer_->clear();
         return true;
     }
 
@@ -164,5 +163,11 @@ namespace orxonox
     int BulletDebugDrawer::getDebugMode() const
     {
         return mDebugMode;
+    }
+
+    void BulletDebugDrawer::configure(bool bFill, float fillAlpha)
+    {
+        this->bFill_ = bFill;
+        this->drawer_->setFillAlpha(fillAlpha);
     }
 }

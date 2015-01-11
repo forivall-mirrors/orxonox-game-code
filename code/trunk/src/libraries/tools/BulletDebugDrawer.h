@@ -37,6 +37,8 @@ namespace orxonox
             virtual void setDebugMode(int debugMode);
             virtual int getDebugMode() const;
 
+            void configure(bool bFill, float fillAlpha);
+
         protected:
             bool frameStarted(const Ogre::FrameEvent& evt);
             bool frameEnded(const Ogre::FrameEvent& evt);
@@ -50,7 +52,9 @@ namespace orxonox
                 size_t dieTime;
             };
 
-            DebugDrawer* drawer;
+            bool bFill_;
+            DebugDrawer* drawer_;
+
             DebugDrawModes mDebugMode;
             std::vector<ContactPoint>* mContactPoints;
             std::vector<ContactPoint> mContactPoints1;

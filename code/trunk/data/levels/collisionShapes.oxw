@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Collision shapes"
  description = "A level with some collision shapes."
- tags = "showcase"
+ tags = "test"
  screenshot = "emptylevel.png"
 />
 
