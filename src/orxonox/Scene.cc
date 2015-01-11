@@ -95,15 +95,15 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (GameMode::showsGraphics())
-                Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
-            else
-                delete this->sceneManager_;
+            this->setPhysicalWorld(false);
 
             if (this->radar_)
                 this->radar_->destroy();
 
-            this->setPhysicalWorld(false);
+            if (GameMode::showsGraphics())
+                Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
+            else
+                delete this->sceneManager_;
         }
     }
 
