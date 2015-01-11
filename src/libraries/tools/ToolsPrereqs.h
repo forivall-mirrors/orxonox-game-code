@@ -85,6 +85,9 @@ namespace orxonox
 namespace orxonox
 {
     class BillboardSet;
+    class BulletDebugDrawer;
+    class DebugDrawer;
+    class IcoSphere;
     class Mesh;
     class ParticleInterface;
     class RealTimer;
