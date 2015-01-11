@@ -43,6 +43,11 @@ namespace orxonox
             void drawSphere(const Ogre::Vector3& centre, const Ogre::Quaternion& rotation, float radius, const Ogre::ColourValue& colour, bool isFilled = false);
             void drawTetrahedron(const Ogre::Vector3& centre, float scale, const Ogre::ColourValue& colour, bool isFilled = false);
 
+            void setFillAlpha(float alpha)
+            {
+                fillAlpha = alpha;
+            }
+
             bool getEnabled()
             {
                 return isEnabled;
