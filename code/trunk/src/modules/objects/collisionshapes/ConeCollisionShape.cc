@@ -36,7 +36,6 @@
 #include <BulletCollision/CollisionShapes/btConeShape.h>
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 #include "tools/BulletConversions.h"
 
 namespace orxonox
@@ -47,57 +46,17 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    ConeCollisionShape::ConeCollisionShape(Context* context) : CollisionShape(context)
+    ConeCollisionShape::ConeCollisionShape(Context* context) : AbstractRadiusHeightCollisionShape(context)
     {
         RegisterObject(ConeCollisionShape);
 
-        this->radius_ = 1.0f;
-        this->height_ = 1.0f;
         updateShape();
-
-        this->registerVariables();
     }
 
     ConeCollisionShape::~ConeCollisionShape()
     {
         if (this->isInitialized())
             delete this->collisionShape_;
-    }
-
-    void ConeCollisionShape::registerVariables()
-    {
-        registerVariable(this->radius_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
-        registerVariable(this->height_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
-    }
-
-    void ConeCollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-    {
-        SUPER(ConeCollisionShape, XMLPort, xmlelement, mode);
-
-        XMLPortParam(ConeCollisionShape, "radius", setRadius, getRadius, xmlelement, mode);
-        XMLPortParam(ConeCollisionShape, "height", setHeight, getHeight, xmlelement, mode);
-    }
-
-    /**
-    @brief
-        Is called when the scale of the ConeCollisionShape has changed.
-    */
-    void ConeCollisionShape::changedScale()
-    {
-        CollisionShape::changedScale();
-
-        // Resize the internal collision shape
-        // TODO: Assuming setLocalScaling works.
-        //this->collisionShape_->setLocalScaling(multi_cast<btVector3>(this->getScale3D()));
-        if(!this->hasUniformScaling())
-        {
-            orxout(internal_error) << "ConeCollisionShape: Non-uniform scaling is not yet supported." << endl;
-            return;
-        }
-
-        this->radius_ *= this->getScale();
-        this->height_ *= this->getScale();
-        this->updateShape();
     }
 
     /**
@@ -108,6 +67,6 @@ namespace orxonox
     */
     btCollisionShape* ConeCollisionShape::createNewShape() const
     {
-        return new btConeShape(this->radius_, this->height_);
+        return new btConeShape(this->getRadius(), this->getHeight());
     }
 }

@@ -113,7 +113,7 @@
     RegisterClassWithFactory(ClassName, new orxonox::ClassFactoryWithContext<ClassName>(), false)
 
 /**
-    @brief Registers an abstract class in the framework.
+    @brief Registers an abstract class in the framework. Should be used in combination with inheritsFrom(base-class-identifier).
     @param ClassName The name of the class
 */
 #define RegisterAbstractClass(ClassName) \

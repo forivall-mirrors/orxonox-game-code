@@ -75,8 +75,10 @@ namespace orxonox
     class Turret;
 
     // collisionshapes
+    class AbstractRadiusHeightCollisionShape;
     class BoxCollisionShape;
     class ConeCollisionShape;
+    class CylinderCollisionShape;
     class PlaneCollisionShape;
     class SphereCollisionShape;
 
