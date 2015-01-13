@@ -10,7 +10,6 @@
 
 #include <OgreRoot.h>
 #include <OgreManualObject.h>
-#include <OgreMaterialManager.h>
 #include <OgreSceneManager.h>
 
 #include "util/Output.h"
@@ -24,16 +23,6 @@ namespace orxonox
         this->bFill_ = true;
 
         mContactPoints = &mContactPoints1;
-
-        static const char* matName = "OgreBulletCollisionsDebugDefault";
-        Ogre::MaterialPtr mtl = Ogre::MaterialManager::getSingleton().getDefaultSettings()->clone(matName);
-        mtl->setReceiveShadows(false);
-        mtl->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-        mtl->setDepthBias(0.1, 0);
-        Ogre::TextureUnitState* tu = mtl->getTechnique(0)->getPass(0)->createTextureUnitState();
-        tu->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_DIFFUSE);
-        mtl->getTechnique(0)->setLightingEnabled(false);
-        //mtl->getTechnique(0)->setSelfIllumination(Ogre::ColourValue::White);
 
         mDebugMode = (DebugDrawModes) DBG_DrawWireframe;
         Ogre::Root::getSingleton().addFrameListener(this);
@@ -134,6 +123,7 @@ namespace orxonox
 
         // Right before the frame is rendered, call DebugDrawer::build().
         this->drawer_->build();
+
         return true;
     }
 
@@ -141,6 +131,7 @@ namespace orxonox
     {
         // After the frame is rendered, call DebugDrawer::clear()
         this->drawer_->clear();
+
         return true;
     }
 

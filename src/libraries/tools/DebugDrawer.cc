@@ -15,8 +15,6 @@
 #include <OgreManualObject.h>
 #include <OgreAxisAlignedBox.h>
 
-#include "util/Output.h"
-
 #define DEFAULT_ICOSPHERE_RECURSION_LEVEL 1
 
 namespace orxonox
@@ -401,6 +399,8 @@ namespace orxonox
             for (std::list<int>::iterator i = lineIndices.begin(); i != lineIndices.end(); i++)
                 manualObject->index(*i);
         }
+        else
+            manualObject->index(0); // this is necessary to avoid crashes with ogre 1.7 if there's a light source in the level
         manualObject->end();
 
         manualObject->beginUpdate(1);
@@ -416,6 +416,8 @@ namespace orxonox
             for (std::list<int>::iterator i = triangleIndices.begin(); i != triangleIndices.end(); i++)
                 manualObject->index(*i);
         }
+        else
+            manualObject->index(0); // this is necessary to avoid crashes with ogre 1.7 if there's a light source in the level
         manualObject->end();
     }
 
