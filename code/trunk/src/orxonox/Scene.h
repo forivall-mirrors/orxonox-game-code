@@ -128,6 +128,10 @@ namespace orxonox
             void addPhysicalObject(WorldEntity* object);
             void removePhysicalObject(WorldEntity* object);
 
+            void setDebugDrawPhysics(bool bDraw, bool bFill, float fillAlpha);
+
+            static void consoleCommand_debugDrawPhysics(bool bDraw, bool bFill, float fillAlpha);
+
         private:
             inline void networkcallback_hasPhysics()
                 { this->setPhysicalWorld(this->bHasPhysics_); }
@@ -155,6 +159,9 @@ namespace orxonox
             Vector3                              negativeWorldRange_;
             Vector3                              positiveWorldRange_;
             Vector3                              gravity_;
+
+            BulletDebugDrawer*                   debugDrawer_;
+            bool                                 bDebugDrawPhysics_;
     };
 }
 

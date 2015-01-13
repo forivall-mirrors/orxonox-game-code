@@ -43,7 +43,10 @@
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
 #include "core/XMLPort.h"
+#include "core/command/ConsoleCommand.h"
 #include "tools/BulletConversions.h"
+#include "tools/BulletDebugDrawer.h"
+#include "tools/DebugDrawer.h"
 #include "Radar.h"
 #include "worldentities/WorldEntity.h"
 #include "Level.h"
@@ -52,12 +55,16 @@ namespace orxonox
 {
     RegisterClass(Scene);
 
+    SetConsoleCommand("Scene", "debugDrawPhysics", &Scene::consoleCommand_debugDrawPhysics).addShortcut().defaultValue(1, true).defaultValue(2, 0.5f);
+
     Scene::Scene(Context* context) : BaseObject(context), Synchronisable(context), Context(context)
     {
         RegisterObject(Scene);
 
         this->setScene(SmartPtr<Scene>(this, false), OBJECTID_UNKNOWN);
         this->bShadows_ = true;
+        this->bDebugDrawPhysics_ = false;
+        this->debugDrawer_ = NULL;
         this->soundReferenceDistance_ = 20.0;
 
         if (GameMode::showsGraphics())
@@ -197,6 +204,9 @@ namespace orxonox
             this->physicalWorld_   = new btDiscreteDynamicsWorld(this->dispatcher_, this->broadphase_, this->solver_, this->collisionConfig_);
             this->physicalWorld_->setGravity(multi_cast<btVector3>(this->gravity_));
 
+            this->debugDrawer_ = new BulletDebugDrawer(this->sceneManager_);
+            this->physicalWorld_->setDebugDrawer(this->debugDrawer_);
+
             // also set the collision callback variable.
             // Note: This is a global variable which we assign a static function.
             // TODO: Check whether this (or anything about Bullet) works with multiple physics engine instances.
@@ -213,6 +223,7 @@ namespace orxonox
             }
             this->physicalObjects_.clear();
 
+            delete this->debugDrawer_;
             delete this->physicalWorld_;
             delete this->solver_;
             delete this->dispatcher_;
@@ -252,6 +263,9 @@ namespace orxonox
             // Note: 60 means that Bullet will do physics correctly down to 1 frames per seconds.
             //       Under that mark, the simulation will "loose time" and get unusable.
             physicalWorld_->stepSimulation(dt, 60);
+
+            if (this->bDebugDrawPhysics_)
+                physicalWorld_->debugDrawWorld();
         }
     }
 
@@ -356,5 +370,18 @@ namespace orxonox
             modified |= object1->collidesAgainst(object0, cp);
 
         return modified;
+    }
+
+    void Scene::setDebugDrawPhysics(bool bDraw, bool bFill, float fillAlpha)
+    {
+        this->bDebugDrawPhysics_ = bDraw;
+        if (this->debugDrawer_)
+            this->debugDrawer_->configure(bFill, fillAlpha);
+    }
+
+    /*static*/ void Scene::consoleCommand_debugDrawPhysics(bool bDraw, bool bFill, float fillAlpha)
+    {
+        for (ObjectListIterator<Scene> it = ObjectList<Scene>::begin(); it != ObjectList<Scene>::end(); ++it)
+            it->setDebugDrawPhysics(bDraw, bFill, fillAlpha);
     }
 }
