@@ -347,37 +347,15 @@ namespace orxonox
             /// Checks if the MT contains no value.
             inline bool null() const { return !this->value_; }
 
-            inline operator char()                 const { return (this->value_ ? this->value_->get<char>()                 : 0); }
-            inline operator unsigned char()        const { return (this->value_ ? this->value_->get<unsigned char>()        : 0); }
-            inline operator short()                const { return (this->value_ ? this->value_->get<short>()                : 0); }
-            inline operator unsigned short()       const { return (this->value_ ? this->value_->get<unsigned short>()       : 0); }
-            inline operator int()                  const { return (this->value_ ? this->value_->get<int>()                  : 0); }
-            inline operator unsigned int()         const { return (this->value_ ? this->value_->get<unsigned int>()         : 0); }
-            inline operator long()                 const { return (this->value_ ? this->value_->get<long>()                 : 0); }
-            inline operator unsigned long()        const { return (this->value_ ? this->value_->get<unsigned long>()        : 0); }
-            inline operator long long()            const { return (this->value_ ? this->value_->get<long long>()            : 0); }
-            inline operator unsigned long long()   const { return (this->value_ ? this->value_->get<unsigned long long>()   : 0); }
-            inline operator float()                const { return (this->value_ ? this->value_->get<float>()                : 0); }
-            inline operator double()               const { return (this->value_ ? this->value_->get<double>()               : 0); }
-            inline operator long double()          const { return (this->value_ ? this->value_->get<long double>()          : 0); }
-            inline operator bool()                 const { return (this->value_ ? this->value_->get<bool>()                 : 0); }
-            inline operator void*()                const { return (this->value_ ? this->value_->get<void*>()                : 0); }
-            inline operator std::string()          const { return (this->value_ ? this->value_->get<std::string>()          : NilValue<std::string>()); }
-            inline operator orxonox::Vector2()     const { return (this->value_ ? this->value_->get<orxonox::Vector2>()     : NilValue<orxonox::Vector2>()); }
-            inline operator orxonox::Vector3()     const { return (this->value_ ? this->value_->get<orxonox::Vector3>()     : NilValue<orxonox::Vector3>()); }
-            inline operator orxonox::Vector4()     const { return (this->value_ ? this->value_->get<orxonox::Vector4>()     : NilValue<orxonox::Vector4>()); }
-            inline operator orxonox::ColourValue() const { return (this->value_ ? this->value_->get<orxonox::ColourValue>() : NilValue<orxonox::ColourValue>()); }
-            inline operator orxonox::Quaternion()  const { return (this->value_ ? this->value_->get<orxonox::Quaternion>()  : NilValue<orxonox::Quaternion>()); }
-            inline operator orxonox::Radian()      const { return (this->value_ ? this->value_->get<orxonox::Radian>()      : NilValue<orxonox::Radian>()); }
-            inline operator orxonox::Degree()      const { return (this->value_ ? this->value_->get<orxonox::Degree>()      : NilValue<orxonox::Degree>()); }
-            /// Returns the current value, converted to a T* pointer.
-            template <class T> operator T*() const { return (static_cast<T*>(this->operator void*())); }
+            /// Conversion operator for all types
+            template <class T> operator T()  const { return this->get<T>(); }
 
             /// Assigns the value to the given pointer. The value gets converted if the types don't match.
             template <typename T> inline bool getValue(T* value) const { if (this->value_) { return this->value_->getValue(value); } return false; }
 
-            /// Returns the current value, converted to the requested type.
-            template <typename T> inline T get() const { return *this; }
+            /// Returns the current value, converted to the requested type. This base implementation works only for pointers. All other supported types are
+            /// implemented in  specialized functions at the bottom of this file.
+            template <typename T> inline T get() const { return static_cast<T>(this->get<void*>()); }
 
 
             ///////////////////////////////
@@ -492,6 +470,30 @@ namespace orxonox
     // Spezializations for void
     template <> inline bool MultiType::isType<void>() const { return this->null(); }
     template <> inline bool MultiType::convert<void>() { this->reset(); return true; }
+
+    template <> inline char                 MultiType::get() const { return (this->value_ ? this->value_->get<char>()                 : 0); }
+    template <> inline unsigned char        MultiType::get() const { return (this->value_ ? this->value_->get<unsigned char>()        : 0); }
+    template <> inline short                MultiType::get() const { return (this->value_ ? this->value_->get<short>()                : 0); }
+    template <> inline unsigned short       MultiType::get() const { return (this->value_ ? this->value_->get<unsigned short>()       : 0); }
+    template <> inline int                  MultiType::get() const { return (this->value_ ? this->value_->get<int>()                  : 0); }
+    template <> inline unsigned int         MultiType::get() const { return (this->value_ ? this->value_->get<unsigned int>()         : 0); }
+    template <> inline long                 MultiType::get() const { return (this->value_ ? this->value_->get<long>()                 : 0); }
+    template <> inline unsigned long        MultiType::get() const { return (this->value_ ? this->value_->get<unsigned long>()        : 0); }
+    template <> inline long long            MultiType::get() const { return (this->value_ ? this->value_->get<long long>()            : 0); }
+    template <> inline unsigned long long   MultiType::get() const { return (this->value_ ? this->value_->get<unsigned long long>()   : 0); }
+    template <> inline float                MultiType::get() const { return (this->value_ ? this->value_->get<float>()                : 0); }
+    template <> inline double               MultiType::get() const { return (this->value_ ? this->value_->get<double>()               : 0); }
+    template <> inline long double          MultiType::get() const { return (this->value_ ? this->value_->get<long double>()          : 0); }
+    template <> inline bool                 MultiType::get() const { return (this->value_ ? this->value_->get<bool>()                 : 0); }
+    template <> inline void*                MultiType::get() const { return (this->value_ ? this->value_->get<void*>()                : 0); }
+    template <> inline std::string          MultiType::get() const { return (this->value_ ? this->value_->get<std::string>()          : NilValue<std::string>()); }
+    template <> inline orxonox::Vector2     MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::Vector2>()     : NilValue<orxonox::Vector2>()); }
+    template <> inline orxonox::Vector3     MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::Vector3>()     : NilValue<orxonox::Vector3>()); }
+    template <> inline orxonox::Vector4     MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::Vector4>()     : NilValue<orxonox::Vector4>()); }
+    template <> inline orxonox::ColourValue MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::ColourValue>() : NilValue<orxonox::ColourValue>()); }
+    template <> inline orxonox::Quaternion  MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::Quaternion>()  : NilValue<orxonox::Quaternion>()); }
+    template <> inline orxonox::Radian      MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::Radian>()      : NilValue<orxonox::Radian>()); }
+    template <> inline orxonox::Degree      MultiType::get() const { return (this->value_ ? this->value_->get<orxonox::Degree>()      : NilValue<orxonox::Degree>()); }
 
     template <> _UtilExport void MultiType::createNewValueContainer(const char& value);
     template <> _UtilExport void MultiType::createNewValueContainer(const unsigned char& value);
