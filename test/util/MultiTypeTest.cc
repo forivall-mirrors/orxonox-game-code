@@ -59,6 +59,7 @@ namespace orxonox
     TEST(MultiType, ValueLongDouble)        { long double value = 0.123456789123456789;         MultiType mt(value);    EXPECT_TRUE(mt.isType<long double>());          EXPECT_EQ(0.123456789123456789, mt.get<long double>()); }
     TEST(MultiType, ValueBool)              { bool value = true;                                MultiType mt(value);    EXPECT_TRUE(mt.isType<bool>());                 EXPECT_EQ(true, mt.get<bool>()); }
     TEST(MultiType, ValueVoidpointer)       { int* pointer = new int; void* value = pointer;    MultiType mt(value);    EXPECT_TRUE(mt.isType<void*>());                EXPECT_EQ(value, mt.get<void*>()); delete pointer; }
+    TEST(MultiType, ValueSomepointer)       { int* value = new int;                             MultiType mt(value);    EXPECT_TRUE(mt.isType<void*>());                EXPECT_EQ(value, mt.get<int*>()); delete value; }
     TEST(MultiType, ValueString)            { std::string value = "Hello World";                MultiType mt(value);    EXPECT_TRUE(mt.isType<std::string>());          EXPECT_EQ("Hello World", mt.get<std::string>()); }
     TEST(MultiType, ValueVector2)           { Vector2 value = Vector2(11, 22);                  MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector2>());              EXPECT_EQ(Vector2(11, 22), mt.get<Vector2>()); }
     TEST(MultiType, ValueVector3)           { Vector3 value = Vector3(11, 22, 33);              MultiType mt(value);    EXPECT_TRUE(mt.isType<Vector3>());              EXPECT_EQ(Vector3(11, 22, 33), mt.get<Vector3>()); }
