@@ -1,4 +1,0 @@
-#!/bin/sh
-# convenience script for starting orxonox on Linux
-
-exec @CURRENT_RUNTIME_DIR@/@ORXONOX_EXECUTABLE_NAME@ --dedicatedClient --writingPathSuffix dedicatedClient $@
