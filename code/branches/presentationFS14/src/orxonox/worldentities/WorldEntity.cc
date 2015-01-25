@@ -414,9 +414,8 @@ namespace orxonox
             }
             else if (this->isDynamic())
             {
-                //***HACKY HACK (to allow turrets to be attached)***
-                //orxout(internal_warning) << "Cannot attach a dynamic object to a WorldEntity." << endl;
-                //return false;
+                orxout(internal_warning) << "Cannot attach a dynamic object to a WorldEntity." << endl;
+                return false;
             }
             else if (this->isKinematic() && newParent->isDynamic())
             {
