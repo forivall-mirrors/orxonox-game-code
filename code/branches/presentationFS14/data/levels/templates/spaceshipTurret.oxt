@@ -1,32 +1,52 @@
-<Template name=standardturret>
-  <Turret collisionType="dynamic">
-    <attached>
-      <Model position="0,0,0" mesh="turretSocketFront.mesh" scale3D="10,10,10" pitch=-90/>
-      <Model position="0,0,0" mesh="turretSocketIn.mesh" scale3D="10,10,10" pitch=-90/>
-      <Model position="0,0,0" mesh="turretSocketTop.mesh" scale3D="10,10,10" pitch=-90/>
-      <Model position="0,0,0" mesh="turretSocketLeft.mesh" scale3D="10,10,10" pitch=-90/>
-      <Model position="0,0,0" mesh="turretSocketRight.mesh" scale3D="10,10,10" pitch=-90/>
+<Template name=spaceshipturret>
+  <SpaceShip
+   hudtemplate            = spaceshiphud
+   camerapositiontemplate = spaceshipturretcameras
+   spawnparticlesource    = "Orxonox/fairytwirl"
+   spawnparticleduration  = 3
+   explosionchunks        = 6
 
-      <Turret position="0,0,-10" collisionType="dynamic" angularDamping=0.999999 mass=100 maxPitch=90 maxYaw=90 maxAttackRadius=2000 minAttackRadius=30>
-        <attached>
-          <Model position="0,0,0" pitch="-90" roll="0" mesh="turretHead.mesh" scale3D="10,10,10"/>
-        </attached>
-        <collisionShapes>
-          <SphereCollisionShape radius="10"   position = "0,0,0"/>
-        </collisionShapes>
-        <controller>
-          <TurretController/>
-        </controller>
-        <?lua
-          include("../includes/weaponSettingsTurret.oxi")
-        ?>
-      </Turret>
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   shieldhealth        = 30
+   initialshieldhealth = 30
+   maxshieldhealth     = 50
+   shieldabsorption    = 0.8
+   reloadrate          = 1
+   reloadwaittime      = 1
+
+   primaryThrust     = 100
+   auxilaryThrust    = 30
+   rotationThrust    = 50
+
+   lift = 1;
+   stallSpeed = 220;
+
+   boostPower            = 15
+   boostPowerRate        = 1
+   boostRate             = 5
+   boostCooldownDuration = 10
+
+   shakeFrequency = 15
+   shakeAmplitude = 9
+
+   collisionType     = "dynamic"
+   mass              = 100
+   linearDamping     = 0.7
+   angularDamping    = 0.9999999
+  >
+    <attached>
+        <Model position="0,0,0" yaw="90" roll="-90" mesh="turretHead.mesh" scale3D="10,10,10"/>
     </attached>
-    
-    <controller>
-      <TeamTargetProxy/>
-    </controller>
-  </Turret>
+    <collisionShapes>
+        <SphereCollisionShape radius="10"   position = "0,0,0"/>
+    </collisionShapes>
+<?lua
+  include("../includes/weaponSettingsTurret.oxi")
+?>
+  </SpaceShip>
 </Template>
 
 <Template name=spaceshipturretcameras defaults=0>
