@@ -45,7 +45,6 @@
 #include "core/XMLPort.h"
 #include "Scene.h"
 #include "collisionshapes/WorldEntityCollisionShape.h"
-#include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
 namespace orxonox
 {

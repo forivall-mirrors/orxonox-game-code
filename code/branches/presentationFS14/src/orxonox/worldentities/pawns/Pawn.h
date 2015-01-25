@@ -228,11 +228,6 @@ namespace orxonox // tolua_export
             float spawnparticleduration_;
             unsigned int numexplosionchunks_;
 
-            virtual int isMyCollisionShape(const btCollisionShape* cs); // FIXME: (noep) remove debug
-            void printBtChildShapes(btCompoundShape* cs, int indent, int subshape); // FIXME: (noep) remove debug
-            void printSpaces(int num);   // FIXME: (noep) remove debug
-            int entityOfCollisionShape(const btCollisionShape* cs);
-
         private:
             void registerVariables();
             inline void setWeaponSystem(WeaponSystem* weaponsystem)
