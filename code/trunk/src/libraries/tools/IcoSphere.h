@@ -80,7 +80,7 @@ namespace orxonox
             std::list<LineIndices> lineIndices;
             std::list<int> triangleIndices;
             std::list<TriangleIndices> faces;
-            std::map<__int64, int> middlePointIndexCache;
+            std::map<int64_t, int> middlePointIndexCache;
             int index;
     };
 }
