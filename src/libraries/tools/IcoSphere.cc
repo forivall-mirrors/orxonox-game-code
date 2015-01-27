@@ -170,9 +170,9 @@ namespace orxonox
     int IcoSphere::getMiddlePoint(int index0, int index1)
     {
         bool isFirstSmaller = index0 < index1;
-        __int64 smallerIndex = isFirstSmaller ? index0 : index1;
-        __int64 largerIndex = isFirstSmaller ? index1 : index0;
-        __int64 key = (smallerIndex << 32) | largerIndex;
+        int64_t smallerIndex = isFirstSmaller ? index0 : index1;
+        int64_t largerIndex = isFirstSmaller ? index1 : index0;
+        int64_t key = (smallerIndex << 32) | largerIndex;
 
         if (middlePointIndexCache.find(key) != middlePointIndexCache.end())
             return middlePointIndexCache[key];
