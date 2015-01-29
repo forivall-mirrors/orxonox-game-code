@@ -53,24 +53,7 @@ IF(MSVC)
 
   # Sets the library path for the FIND_LIBRARY
   SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
-
-  # Certain find scripts don't behave as ecpected to we have
-  # to specify the libraries ourselves.
-  IF(MSVC10)
-    SET(TCL_LIBRARY
-      optimized ${DEP_LIBRARY_DIR}/tcl85t.lib
-      debug     ${DEP_LIBRARY_DIR}/tcl85tg.lib
-      CACHE FILEPATH ""
-    )
-    SET(ZLIB_LIBRARY
-      optimized ${DEP_LIBRARY_DIR}/zlib-vc100.lib
-      debug     ${DEP_LIBRARY_DIR}/zlib-vc100_d.lib
-      CACHE FILEPATH ""
-    )
-  ELSE()
-    SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
-    SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
-  ENDIF()
+  
   # Part of Platform SDK and usually gets linked automatically
   SET(WMI_LIBRARY  wbemuuid.lib)
 
