@@ -86,6 +86,7 @@
 
 // resolve macro conflict on windows
 #if defined(ORXONOX_PLATFORM_WINDOWS)
+#   define WIN32_LEAN_AND_MEAN
 #   include <windows.h>
 #   undef RegisterClass
 #endif
