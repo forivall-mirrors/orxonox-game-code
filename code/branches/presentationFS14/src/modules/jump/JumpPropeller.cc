@@ -82,27 +82,27 @@ namespace orxonox
 
             if(figurePosition.x > PropellerPosition.x-width_ && figurePosition.x < PropellerPosition.x+width_ && figurePosition.z > PropellerPosition.z-height_ && figurePosition.z < PropellerPosition.z+height_)
             {
-            	touchFigure();
+                touchFigure();
             }
         }
         else if (attachedToFigure_ == true)
         {
-        	fuel_ -= dt;
-        	if (fuel_ < 0.0)
-        	{
-        		figure_->StopPropeller(this);
-        	}
+            fuel_ -= dt;
+            if (fuel_ < 0.0)
+            {
+                figure_->StopPropeller(this);
+            }
         }
     }
 
     void JumpPropeller::touchFigure()
     {
-    	JumpItem::touchFigure();
+        JumpItem::touchFigure();
 
-    	attachedToFigure_ = figure_->StartPropeller(this);
-    	if (attachedToFigure_)
-    	{
-    		setAngularVelocity(Vector3(0,0,10.0));
-    	}
+        attachedToFigure_ = figure_->StartPropeller(this);
+        if (attachedToFigure_)
+        {
+            setAngularVelocity(Vector3(0,0,10.0));
+        }
     }
 }

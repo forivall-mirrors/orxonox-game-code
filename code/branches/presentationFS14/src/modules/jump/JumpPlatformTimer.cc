@@ -74,8 +74,8 @@ namespace orxonox
         if (time_ < effectStartTime_ && particleSpawner_ == NULL)
         {
 
-        	particleSpawner_ = new ParticleSpawner(getContext());
-        	particleSpawner_->setSource(effectPath_);
+            particleSpawner_ = new ParticleSpawner(getContext());
+            particleSpawner_->setSource(effectPath_);
             particleSpawner_->setLoop(false);
             particleSpawner_->setLOD(LODParticle::Low);
             particleSpawner_->setLifetime(effectStartTime_);
@@ -86,19 +86,19 @@ namespace orxonox
 
     void JumpPlatformTimer::setProperties(float time)
     {
-    	time_ = time;
+        time_ = time;
     }
 
     bool JumpPlatformTimer::isActive(void)
     {
-    	return time_ > 0.0;
+        return time_ > 0.0;
     }
 
     void JumpPlatformTimer::touchFigure()
     {
-    	if (isActive())
-    	{
-    		figure_->JumpFromPlatform(this);
-    	}
+        if (isActive())
+        {
+            figure_->JumpFromPlatform(this);
+        }
     }
 }

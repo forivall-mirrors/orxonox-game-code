@@ -44,7 +44,7 @@ namespace orxonox
     {
         RegisterObject(JumpFigure);
 
-		// initialize variables
+        // initialize variables
         leftHand_ = NULL;
         rightHand_ = NULL;
         fieldHeight_ = 0;
@@ -97,99 +97,99 @@ namespace orxonox
 
     void JumpFigure::tick(float dt)
     {
-    	SUPER(JumpFigure, tick, dt);
+        SUPER(JumpFigure, tick, dt);
 
         if (hasLocalController())
         {
-        	timeSinceLastFire_ += dt;
+            timeSinceLastFire_ += dt;
 
-        	// Move up/down
-        	Vector3 velocity = getVelocity();
-        	if (rocketActive_ == true)
-        	{
-        		velocity.z = rocketSpeed_;
-        	}
-        	else if (propellerActive_ == true)
-        	{
-        		velocity.z = propellerSpeed_;
-        	}
-        	else
-        	{
-        		velocity.z -= gravityAcceleration_;
-        	}
+            // Move up/down
+            Vector3 velocity = getVelocity();
+            if (rocketActive_ == true)
+            {
+                velocity.z = rocketSpeed_;
+            }
+            else if (propellerActive_ == true)
+            {
+                velocity.z = propellerSpeed_;
+            }
+            else
+            {
+                velocity.z -= gravityAcceleration_;
+            }
 
-        	// Animate Hands
-        	if (animateHands_ == true)
-        	{
-        		if (turnUp_ == true)
-        		{
-        			handAngle_ += handSpeed_ * dt;
-        		}
-        		else
-				{
-					handAngle_ -= handSpeed_ * dt;
-				}
-            	if (handAngle_ > handMaxAngle_)
-            	{
-            		turnUp_ = false;
-            	}
-            	if (handAngle_ <= handMinAngle_)
-            	{
-            		animateHands_ = false;
-            	}
+            // Animate Hands
+            if (animateHands_ == true)
+            {
+                if (turnUp_ == true)
+                {
+                    handAngle_ += handSpeed_ * dt;
+                }
+                else
+                {
+                    handAngle_ -= handSpeed_ * dt;
+                }
+                if (handAngle_ > handMaxAngle_)
+                {
+                    turnUp_ = false;
+                }
+                if (handAngle_ <= handMinAngle_)
+                {
+                    animateHands_ = false;
+                }
 
-				if (leftHand_ != NULL)
-				{
-					leftHand_->setOrientation(Vector3(0.0, 1.0, 0.0), Degree(-handAngle_));
-				}
-				if (rightHand_ != NULL)
-				{
-					rightHand_->setOrientation(Vector3(0.0, 1.0, 0.0), Degree(handAngle_));
-				}
-        	}
+                if (leftHand_ != NULL)
+                {
+                    leftHand_->setOrientation(Vector3(0.0, 1.0, 0.0), Degree(-handAngle_));
+                }
+                if (rightHand_ != NULL)
+                {
+                    rightHand_->setOrientation(Vector3(0.0, 1.0, 0.0), Degree(handAngle_));
+                }
+            }
 
-        	// Move left/right
-        	if (dead_ == false)
-        	{
-        		velocity.x = -mouseFactor_*horizontalSpeed_;
-        	}
-        	else
-        	{
-        		velocity.x = 0.0;
-        	}
+            // Move left/right
+            if (dead_ == false)
+            {
+                velocity.x = -mouseFactor_*horizontalSpeed_;
+            }
+            else
+            {
+                velocity.x = 0.0;
+            }
 
-        	// Cheats
-        	/*if (moveUpPressed_ == true)
-        	{
-        		velocity.z = 400.0f;
-        		moveUpPressed_ = false;
-        		dead_ = false;
-        	}
-        	if (moveDownPressed_ == true)
-        	{
-        		moveDownPressed_ = false;
-        	}*/
+            // Cheats
+            /*if (moveUpPressed_ == true)
+            {
+                velocity.z = 400.0f;
+                moveUpPressed_ = false;
+                dead_ = false;
+            }
+            if (moveDownPressed_ == true)
+            {
+                moveDownPressed_ = false;
+            }*/
 
-        	setVelocity(velocity);
+            setVelocity(velocity);
 
 
-        	if (firePressed_ && timeSinceLastFire_ >= maxFireRate_)
-        	{
-				firePressed_ = false;
-				timeSinceLastFire_ = 0.0;
-				fireSignal_ = true;
-        	}
+            if (firePressed_ && timeSinceLastFire_ >= maxFireRate_)
+            {
+                firePressed_ = false;
+                timeSinceLastFire_ = 0.0;
+                fireSignal_ = true;
+            }
         }
 
         // Move through the left and right screen boundaries
         Vector3 position = getPosition();
         if (position.x < -fieldWidth_*1.1)
         {
-        	position.x = fieldWidth_*1.1;
+            position.x = fieldWidth_*1.1;
         }
         else if (position.x > fieldWidth_*1.1)
         {
-        	position.x = -fieldWidth_*1.1;
+            position.x = -fieldWidth_*1.1;
         }
         setPosition(position);
 
@@ -203,175 +203,175 @@ namespace orxonox
 
     void JumpFigure::JumpFromPlatform(JumpPlatform* platform)
     {
-    	if (dead_ == false)
-    	{
-        	Vector3 velocity = getVelocity();
-        	velocity.z = (bootsActive_ ? 1.2*jumpSpeed_ : jumpSpeed_);
-        	setVelocity(velocity);
+        if (dead_ == false)
+        {
+            Vector3 velocity = getVelocity();
+            velocity.z = (bootsActive_ ? 1.2*jumpSpeed_ : jumpSpeed_);
+            setVelocity(velocity);
 
-        	animateHands_ = true;
-        	handAngle_ = 0.0;
-        	turnUp_ = true;
-    	}
+            animateHands_ = true;
+            handAngle_ = 0.0;
+            turnUp_ = true;
+        }
     }
 
     void JumpFigure::JumpFromSpring(JumpSpring* spring)
     {
-    	if (dead_ == false)
-    	{
-        	Vector3 velocity = getVelocity();
-        	velocity.z = 1.2*jumpSpeed_;
-        	setVelocity(velocity);
-    	}
+        if (dead_ == false)
+        {
+            Vector3 velocity = getVelocity();
+            velocity.z = 1.2*jumpSpeed_;
+            setVelocity(velocity);
+        }
     }
 
     void JumpFigure::CollisionWithEnemy(JumpEnemy* enemy)
-	{
-    	if (rocketActive_ == false && propellerActive_ == false && shieldActive_ == false)
-		{
-			dead_ = true;
-		}
-	}
+    {
+        if (rocketActive_ == false && propellerActive_ == false && shieldActive_ == false)
+        {
+            dead_ = true;
+        }
+    }
 
     bool JumpFigure::StartRocket(JumpRocket* rocket)
     {
-    	if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
-    	{
-        	attach(rocket);
-        	rocket->setPosition(0.0, rocketPos_, 0.0);
-        	rocket->setVelocity(0.0, 0.0, 0.0);
-        	rocketActive_ = true;
+        if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+        {
+            attach(rocket);
+            rocket->setPosition(0.0, rocketPos_, 0.0);
+            rocket->setVelocity(0.0, 0.0, 0.0);
+            rocketActive_ = true;
 
-        	return true;
-    	}
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
     void JumpFigure::StopRocket(JumpRocket* rocket)
     {
-		rocket->setPosition(0.0, 0.0, -1000.0);
-    	rocket->setVelocity(0.0, 0.0, 0.0);
-    	detach(rocket);
-		rocket->destroy();
-		rocketActive_ = false;
+        rocket->setPosition(0.0, 0.0, -1000.0);
+        rocket->setVelocity(0.0, 0.0, 0.0);
+        detach(rocket);
+        rocket->destroy();
+        rocketActive_ = false;
     }
 
     bool JumpFigure::StartPropeller(JumpPropeller* propeller)
     {
-    	if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
-    	{
-        	attach(propeller);
-        	propeller->setPosition(0.0, 0.0, propellerPos_);
-        	propeller->setVelocity(0.0, 0.0, 0.0);
-        	propellerActive_ = true;
+        if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+        {
+            attach(propeller);
+            propeller->setPosition(0.0, 0.0, propellerPos_);
+            propeller->setVelocity(0.0, 0.0, 0.0);
+            propellerActive_ = true;
 
-        	return true;
-    	}
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
     void JumpFigure::StopPropeller(JumpPropeller* propeller)
     {
-    	propeller->setPosition(0.0, 0.0, -1000.0);
-    	propeller->setVelocity(0.0, 0.0, 0.0);
-    	detach(propeller);
-    	propeller->destroy();
-    	propellerActive_ = false;
+        propeller->setPosition(0.0, 0.0, -1000.0);
+        propeller->setVelocity(0.0, 0.0, 0.0);
+        detach(propeller);
+        propeller->destroy();
+        propellerActive_ = false;
     }
 
     bool JumpFigure::StartBoots(JumpBoots* boots)
     {
-    	if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
-    	{
-        	attach(boots);
-        	boots->setPosition(0.0, 0.0, bootsPos_);
-        	boots->setVelocity(0.0, 0.0, 0.0);
-        	bootsActive_ = true;
+        if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+        {
+            attach(boots);
+            boots->setPosition(0.0, 0.0, bootsPos_);
+            boots->setVelocity(0.0, 0.0, 0.0);
+            bootsActive_ = true;
 
-        	return true;
-    	}
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
     void JumpFigure::StopBoots(JumpBoots* boots)
     {
-    	boots->setPosition(0.0, 0.0, -1000.0);
-    	boots->setVelocity(0.0, 0.0, 0.0);
-    	detach(boots);
-    	boots->destroy();
-    	bootsActive_ = false;
+        boots->setPosition(0.0, 0.0, -1000.0);
+        boots->setVelocity(0.0, 0.0, 0.0);
+        detach(boots);
+        boots->destroy();
+        bootsActive_ = false;
     }
 
     bool JumpFigure::StartShield(JumpShield* shield)
     {
-    	if (shieldActive_ == false)
-    	{
-        	attach(shield);
-        	shield->setPosition(0.0, 0.0, propellerPos_);
-        	shield->setVelocity(0.0, 0.0, 0.0);
-        	shieldActive_ = true;
+        if (shieldActive_ == false)
+        {
+            attach(shield);
+            shield->setPosition(0.0, 0.0, propellerPos_);
+            shield->setVelocity(0.0, 0.0, 0.0);
+            shieldActive_ = true;
 
-        	return true;
-    	}
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
     void JumpFigure::StopShield(JumpShield* shield)
     {
-    	shield->setPosition(0.0, 0.0, -1000.0);
-    	shield->setVelocity(0.0, 0.0, 0.0);
-    	detach(shield);
-    	shield->destroy();
-    	shieldActive_ = false;
+        shield->setPosition(0.0, 0.0, -1000.0);
+        shield->setVelocity(0.0, 0.0, 0.0);
+        detach(shield);
+        shield->destroy();
+        shieldActive_ = false;
     }
 
     void JumpFigure::InitializeAnimation(Context* context)
     {
-    	leftHand_ = new Model(context);
-    	rightHand_ = new Model(context);
+        leftHand_ = new Model(context);
+        rightHand_ = new Model(context);
 
-    	leftHand_->addTemplate(modelLeftHand_);
-    	rightHand_->addTemplate(modelRightHand_);
+        leftHand_->addTemplate(modelLeftHand_);
+        rightHand_->addTemplate(modelRightHand_);
 
-		attach(leftHand_);
-		attach(rightHand_);
+        attach(leftHand_);
+        attach(rightHand_);
     }
 
     void JumpFigure::moveFrontBack(const Vector2& value)
     {
-    	if (value.x > 0)
-    	{
-    		moveUpPressed_ = true;
-    		moveDownPressed_ = false;
-    	}
-    	else
-    	{
-    		moveUpPressed_ = false;
-    		moveDownPressed_ = true;
-    	}
+        if (value.x > 0)
+        {
+            moveUpPressed_ = true;
+            moveDownPressed_ = false;
+        }
+        else
+        {
+            moveUpPressed_ = false;
+            moveDownPressed_ = true;
+        }
     }
 
     void JumpFigure::moveRightLeft(const Vector2& value)
     {
-    	if (value.x > 0)
-    	{
-    		moveLeftPressed_ = false;
-    		moveRightPressed_ = true;
-    	}
-    	else
-    	{
-    		moveLeftPressed_ = true;
-    		moveRightPressed_ = false;
-    	}
+        if (value.x > 0)
+        {
+            moveLeftPressed_ = false;
+            moveRightPressed_ = true;
+        }
+        else
+        {
+            moveLeftPressed_ = true;
+            moveRightPressed_ = false;
+        }
     }
 
     void JumpFigure::rotateYaw(const Vector2& value)
     {
-    	horizontalSpeed_ = value.x;
+        horizontalSpeed_ = value.x;
     }
 
     void JumpFigure::rotatePitch(const Vector2& value)
@@ -393,6 +393,6 @@ namespace orxonox
 
     void JumpFigure::fired(unsigned int firemode)
     {
-    	firePressed_ = true;
+        firePressed_ = true;
     }
 }

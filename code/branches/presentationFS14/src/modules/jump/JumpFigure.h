@@ -84,14 +84,14 @@ namespace orxonox
                 { rocketPos_ = rocketPos; }
             const float getRocketPos() const
                 { return rocketPos_; }
-			void setPropellerPos(const float propellerPos)
-				{ propellerPos_ = propellerPos; }
-			const float getPropellerPos() const
-				{ return propellerPos_; }
-			void setBootsPos(const float bootsPos)
-				{ bootsPos_ = bootsPos; }
-			const float getBootsPos() const
-				{ return bootsPos_; }
+            void setPropellerPos(const float propellerPos)
+                { propellerPos_ = propellerPos; }
+            const float getPropellerPos() const
+                { return propellerPos_; }
+            void setBootsPos(const float bootsPos)
+                { bootsPos_ = bootsPos; }
+            const float getBootsPos() const
+                { return bootsPos_; }
             void setJumpSpeed(const float jumpSpeed)
                 { jumpSpeed_ = jumpSpeed; }
             const float getJumpSpeed() const

@@ -48,7 +48,7 @@ namespace orxonox
     class _JumpExport JumpPlatformTimer : public JumpPlatform
     {
         public:
-    	    JumpPlatformTimer(Context* context);
+            JumpPlatformTimer(Context* context);
             virtual ~JumpPlatformTimer();
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

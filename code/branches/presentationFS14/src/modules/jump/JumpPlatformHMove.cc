@@ -71,7 +71,7 @@ namespace orxonox
         if ((position.x < leftBoundary_ && velocity.x < 0) || (position.x > rightBoundary_ && velocity.x > 0))
 
         {
-        	velocity.x = -velocity.x;
+            velocity.x = -velocity.x;
         }
 
         // Set the position, velocity and acceleration of the ball, if they have changed.
@@ -87,13 +87,13 @@ namespace orxonox
 
     void JumpPlatformHMove::setProperties(float leftBoundary, float rightBoundary, float speed)
     {
-    	leftBoundary_ = leftBoundary;
-    	rightBoundary_ = rightBoundary;
+        leftBoundary_ = leftBoundary;
+        rightBoundary_ = rightBoundary;
         setVelocity(Vector3(speed,0,0));
     }
 
     void JumpPlatformHMove::touchFigure()
     {
-    	figure_->JumpFromPlatform(this);
+        figure_->JumpFromPlatform(this);
     }
 }

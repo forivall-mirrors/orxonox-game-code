@@ -41,7 +41,7 @@ namespace orxonox
     class _JumpExport JumpPlatformStatic : public JumpPlatform
     {
         public:
-    	    JumpPlatformStatic(Context* context);
+            JumpPlatformStatic(Context* context);
             virtual ~JumpPlatformStatic();
 
             virtual void tick(float dt);

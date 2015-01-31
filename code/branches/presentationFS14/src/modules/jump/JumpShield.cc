@@ -82,23 +82,23 @@ namespace orxonox
 
             if(figurePosition.x > shieldPosition.x-width_ && figurePosition.x < shieldPosition.x+width_ && figurePosition.z > shieldPosition.z-height_ && figurePosition.z < shieldPosition.z+height_)
             {
-            	touchFigure();
+                touchFigure();
             }
         }
         else if (attachedToFigure_ == true)
         {
-        	fuel_ -= dt;
-        	if (fuel_ < 0.0)
-        	{
-        		figure_->StopShield(this);
-        	}
+            fuel_ -= dt;
+            if (fuel_ < 0.0)
+            {
+                figure_->StopShield(this);
+            }
         }
     }
 
     void JumpShield::touchFigure()
     {
-    	JumpItem::touchFigure();
+        JumpItem::touchFigure();
 
-    	attachedToFigure_ = figure_->StartShield(this);
+        attachedToFigure_ = figure_->StartShield(this);
     }
 }

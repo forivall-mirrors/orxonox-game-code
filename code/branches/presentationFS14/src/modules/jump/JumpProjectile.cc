@@ -70,17 +70,17 @@ namespace orxonox
 
         Vector3 projectilePosition = getPosition();
 
-		for (ObjectList<JumpEnemy>::iterator it = ObjectList<JumpEnemy>::begin(); it != ObjectList<JumpEnemy>::end(); ++it)
-		{
-			Vector3 enemyPosition = it->getPosition();
-			float enemyWidth = it->getWidth();
-			float enemyHeight = it->getHeight();
+        for (ObjectList<JumpEnemy>::iterator it = ObjectList<JumpEnemy>::begin(); it != ObjectList<JumpEnemy>::end(); ++it)
+        {
+            Vector3 enemyPosition = it->getPosition();
+            float enemyWidth = it->getWidth();
+            float enemyHeight = it->getHeight();
 
-			if(projectilePosition.x > enemyPosition.x-enemyWidth && projectilePosition.x < enemyPosition.x+enemyWidth && projectilePosition.z > enemyPosition.z-enemyHeight && projectilePosition.z < enemyPosition.z+enemyHeight)
-			{
-				it->dead_ = true;
-			}
-		}
+            if(projectilePosition.x > enemyPosition.x-enemyWidth && projectilePosition.x < enemyPosition.x+enemyWidth && projectilePosition.z > enemyPosition.z-enemyHeight && projectilePosition.z < enemyPosition.z+enemyHeight)
+            {
+                it->dead_ = true;
+            }
+        }
     }
 
     void JumpProjectile::setFigure(WeakPtr<JumpFigure> figure)

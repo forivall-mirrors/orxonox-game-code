@@ -83,12 +83,12 @@ namespace orxonox
 
         if ((position.x < leftBoundary_ && velocity.x < 0) || (position.x > rightBoundary_ && velocity.x > 0))
         {
-        	velocity.x = -velocity.x;
+            velocity.x = -velocity.x;
         }
 
         if ((position.z < lowerBoundary_ && velocity.z < 0) || (position.z > upperBoundary_ && velocity.z > 0))
         {
-        	velocity.z = -velocity.z;
+            velocity.z = -velocity.z;
         }
 
         // Set the position, velocity and acceleration of the item, if they have changed.

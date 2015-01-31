@@ -55,20 +55,20 @@ namespace orxonox
 
         //initialize sound
         if (GameMode::isMaster())
-		 {
-			 defScoreSound_ = new WorldSound(this->getContext());
-			 defScoreSound_->setVolume(1.0f);
-			 defBatSound_ = new WorldSound(this->getContext());
-			 defBatSound_->setVolume(0.4f);
-			 defBoundarySound_ = new WorldSound(this->getContext());
-			 defBoundarySound_->setVolume(0.5f);
-		 }
-		 else
-		 {
-			 defScoreSound_ = 0;
-			 defBatSound_ = 0;
-			 defBoundarySound_ = 0;
-		 }
+        {
+            defScoreSound_ = new WorldSound(this->getContext());
+            defScoreSound_->setVolume(1.0f);
+            defBatSound_ = new WorldSound(this->getContext());
+            defBatSound_->setVolume(0.4f);
+            defBoundarySound_ = new WorldSound(this->getContext());
+            defBoundarySound_->setVolume(0.5f);
+        }
+        else
+        {
+            defScoreSound_ = 0;
+            defBatSound_ = 0;
+            defBoundarySound_ = 0;
+        }
 
         setPosition(Vector3(0,0,0));
         setVelocity(Vector3(0,0,0));
@@ -119,7 +119,7 @@ namespace orxonox
 
             if(figureVelocity.z < 0 && figurePosition.x > platformPosition.x-width_/2 && figurePosition.x < platformPosition.x+width_/2 && figurePosition.z > platformPosition.z-height_/2*tolerance && figurePosition.z < platformPosition.z+height_/2)
             {
-            	touchFigure();
+                touchFigure();
             }
         }
     }

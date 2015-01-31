@@ -71,20 +71,20 @@ namespace orxonox
 
     void JumpPlatformDisappear::setProperties(bool active)
     {
-    	active_ = active;
+        active_ = active;
     }
 
     bool JumpPlatformDisappear::isActive()
     {
-    	return active_;
+        return active_;
     }
 
     void JumpPlatformDisappear::touchFigure()
     {
-    	if (isActive())
-    	{
-    		figure_->JumpFromPlatform(this);
-        	active_ = false;
-    	}
+        if (isActive())
+        {
+            figure_->JumpFromPlatform(this);
+            active_ = false;
+        }
     }
 }

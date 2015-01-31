@@ -44,26 +44,21 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             bool party(bool bTriggered, BaseObject* trigger);
-	    virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
-	
-	
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+
+
             /* Take over control of a given object */
-	    void takeControl(Controller * controller, BaseObject * trigger);
-	    bool preparationToTakeControl(BaseObject * trigger);
+            void takeControl(Controller * controller, BaseObject * trigger);
+            bool preparationToTakeControl(BaseObject * trigger);
 
             // currently unused
-	    //void setNewController(Controller * controller);
-	
-
+            //void setNewController(Controller * controller);
 
         private:
-	   
             PlayerInfo* player_;
             ControllableEntity* entity_; 
             PlayerTrigger * pTrigger_;
             Context* context_;
-	
-
     };
 }
 

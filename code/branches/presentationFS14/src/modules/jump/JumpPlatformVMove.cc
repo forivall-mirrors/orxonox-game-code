@@ -70,7 +70,7 @@ namespace orxonox
 
         if ((position.z < lowerBoundary_ && velocity.z < 0) || (position.z > upperBoundary_ && velocity.z > 0))
         {
-        	velocity.z = -velocity.z;
+            velocity.z = -velocity.z;
         }
 
         // Set the position, velocity and acceleration of the ball, if they have changed.
@@ -86,8 +86,8 @@ namespace orxonox
 
     void JumpPlatformVMove::setProperties(float lowerBoundary, float upperBoundary, float speed)
     {
-    	lowerBoundary_ = lowerBoundary;
-    	upperBoundary_ = upperBoundary;
+        lowerBoundary_ = lowerBoundary;
+        upperBoundary_ = upperBoundary;
 
         setVelocity(Vector3(0,0,speed));
 
@@ -95,6 +95,6 @@ namespace orxonox
 
     void JumpPlatformVMove::touchFigure()
     {
-    	figure_->JumpFromPlatform(this);
+        figure_->JumpFromPlatform(this);
     }
 }

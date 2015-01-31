@@ -73,8 +73,8 @@ namespace orxonox
 
         if (stretch_ > 1.0)
         {
-        	stretch_ -= dt;
-        	setScale3D(1.0, 1.0, stretch_);
+            stretch_ -= dt;
+            setScale3D(1.0, 1.0, stretch_);
         }
 
         Vector3 springPosition = getWorldPosition();
@@ -86,25 +86,25 @@ namespace orxonox
 
             if(figureVelocity.z < 0 && figurePosition.x > springPosition.x-width_ && figurePosition.x < springPosition.x+width_ && figurePosition.z > springPosition.z-height_ && figurePosition.z < springPosition.z+height_)
             {
-            	touchFigure();
+                touchFigure();
             }
         }
     }
 
     void JumpSpring::touchFigure()
     {
-    	JumpItem::touchFigure();
+        JumpItem::touchFigure();
 
-    	stretch_ = 3.0;
+        stretch_ = 3.0;
 
-    	accelerateFigure();
+        accelerateFigure();
     }
 
     void JumpSpring::accelerateFigure()
     {
-    	if (figure_ != 0)
-    	{
-			figure_->JumpFromSpring(this);
-    	}
+        if (figure_ != 0)
+        {
+            figure_->JumpFromSpring(this);
+        }
     }
 }

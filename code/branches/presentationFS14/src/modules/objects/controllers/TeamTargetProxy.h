@@ -34,27 +34,27 @@
 
  namespace orxonox
  {
- 	/**
- 		@brief
- 		A controller, that just copies the team and the target of a parent for itself and it's controllable entity.
+    /**
+        @brief
+        A controller, that just copies the team and the target of a parent for itself and it's controllable entity.
 
- 		Useful for following (and similar) situations: (-> means attached to)
-			turret (rotates) -> some kind of turret base (looks nice) -> spaceship (flies around)
-			The turret has a controller that wants to copy the spaceship's target and team. In this case it doesn't work though,
-			because the turret isn't directly attached to the spaceship. Here's where this controller comes in. Drawback: the base
-			has to be controllable and ticks every second (performance?)
- 	*/
- 	class _OrxonoxExport TeamTargetProxy : public FormationController, public Tickable
- 	{
- 		public:
- 			TeamTargetProxy(Context* context);
- 			virtual ~TeamTargetProxy();
+        Useful for following (and similar) situations: (-> means attached to)
+            turret (rotates) -> some kind of turret base (looks nice) -> spaceship (flies around)
+            The turret has a controller that wants to copy the spaceship's target and team. In this case it doesn't work though,
+            because the turret isn't directly attached to the spaceship. Here's where this controller comes in. Drawback: the base
+            has to be controllable and ticks every second (performance?)
+    */
+    class _OrxonoxExport TeamTargetProxy : public FormationController, public Tickable
+    {
+        public:
+            TeamTargetProxy(Context* context);
+            virtual ~TeamTargetProxy();
 
- 			virtual void tick(float dt);
+            virtual void tick(float dt);
 
- 		private:
- 			bool once_; //!< Flag for executing code in the tick function only once.
- 	};
+        private:
+            bool once_; //!< Flag for executing code in the tick function only once.
+    };
  }
 
  #endif

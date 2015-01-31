@@ -44,7 +44,7 @@ namespace orxonox
     class _JumpExport JumpPlatformDisappear : public JumpPlatform
     {
         public:
-    	    JumpPlatformDisappear(Context* context);
+            JumpPlatformDisappear(Context* context);
             virtual ~JumpPlatformDisappear();
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

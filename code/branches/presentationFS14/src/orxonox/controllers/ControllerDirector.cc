@@ -105,7 +105,6 @@ namespace orxonox
        ctrlid += 1;
     } 
 
-	
     bool ControllerDirector::preparationToTakeControl(BaseObject * trigger) 
     {
         this->pTrigger_ = orxonox_cast<PlayerTrigger*>(trigger);
@@ -129,8 +128,8 @@ namespace orxonox
             return false;
         }
 
-	this->entity_ = this->player_->getControllableEntity();
-	assert(this->entity_);
+        this->entity_ = this->player_->getControllableEntity();
+        assert(this->entity_);
 
         return true;
     }

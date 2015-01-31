@@ -67,6 +67,6 @@ namespace orxonox
 
     void JumpPlatformStatic::touchFigure()
     {
-    	figure_->JumpFromPlatform(this);
+        figure_->JumpFromPlatform(this);
     }
 }

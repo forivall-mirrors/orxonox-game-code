@@ -78,18 +78,18 @@ namespace orxonox
 
                 if (player_ != NULL)
                 {
-                	if (showScore_ == true)
-                	{
-                    	int score = owner_->getScore(player_);
+                    if (showScore_ == true)
+                    {
+                        int score = owner_->getScore(player_);
 
-                    	std::string str = multi_cast<std::string>(score);
-                    	setCaption(str);
-                	}
-                	else if (showMessages_ == true)
-                	{
+                        std::string str = multi_cast<std::string>(score);
+                        setCaption(str);
+                    }
+                    else if (showMessages_ == true)
+                    {
 
-                    	setCaption(owner_->getDead(player_) == true ? gameOverText_ : "");
-                	}
+                        setCaption(owner_->getDead(player_) == true ? gameOverText_ : "");
+                    }
                 }
             }
         }

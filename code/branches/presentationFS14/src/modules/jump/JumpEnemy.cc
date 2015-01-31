@@ -106,12 +106,12 @@ namespace orxonox
 
         if ((position.x < leftBoundary_ && velocity.x < 0) || (position.x > rightBoundary_ && velocity.x > 0))
         {
-        	velocity.x = -velocity.x;
+            velocity.x = -velocity.x;
         }
 
         if ((position.z < lowerBoundary_ && velocity.z < 0) || (position.z > upperBoundary_ && velocity.z > 0))
         {
-        	velocity.z = -velocity.z;
+            velocity.z = -velocity.z;
         }
 
         // Set the position, velocity and acceleration of the enemy, if they have changed.
@@ -129,7 +129,7 @@ namespace orxonox
             Vector3 figurePosition = figure_->getPosition();
             if(figurePosition.x > enemyPosition.x-width_ && figurePosition.x < enemyPosition.x+width_ && figurePosition.z > enemyPosition.z-height_ && figurePosition.z < enemyPosition.z+height_)
             {
-            	touchFigure();
+                touchFigure();
             }
         }
     }
@@ -157,9 +157,9 @@ namespace orxonox
 
     void JumpEnemy::touchFigure()
     {
-    	if (dead_ == false)
-    	{
-    		figure_->CollisionWithEnemy(this);
-    	}
+        if (dead_ == false)
+        {
+            figure_->CollisionWithEnemy(this);
+        }
     }
 }
