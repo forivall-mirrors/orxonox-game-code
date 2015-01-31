@@ -183,13 +183,13 @@ namespace orxonox
 
         // Move through the left and right screen boundaries
         Vector3 position = getPosition();
-        if (position.x < -fieldWidth_*1.1)
+        if (position.x < -fieldWidth_*1.1f)
         {
-            position.x = fieldWidth_*1.1;
+            position.x = fieldWidth_*1.1f;
         }
-        else if (position.x > fieldWidth_*1.1)
+        else if (position.x > fieldWidth_*1.1f)
         {
-            position.x = -fieldWidth_*1.1;
+            position.x = -fieldWidth_*1.1f;
         }
         setPosition(position);
 
@@ -206,7 +206,7 @@ namespace orxonox
         if (dead_ == false)
         {
             Vector3 velocity = getVelocity();
-            velocity.z = (bootsActive_ ? 1.2*jumpSpeed_ : jumpSpeed_);
+            velocity.z = (bootsActive_ ? 1.2f*jumpSpeed_ : jumpSpeed_);
             setVelocity(velocity);
 
             animateHands_ = true;
@@ -220,7 +220,7 @@ namespace orxonox
         if (dead_ == false)
         {
             Vector3 velocity = getVelocity();
-            velocity.z = 1.2*jumpSpeed_;
+            velocity.z = 1.2f*jumpSpeed_;
             setVelocity(velocity);
         }
     }

@@ -594,7 +594,7 @@ namespace orxonox
         float sectionLength = center_->getSectionLength();
 
         newPlatform = new JumpPlatformStatic(center_->getContext());
-        addPlatform(newPlatform, center_->getPlatformStaticTemplate(), 0.0, -0.05*sectionLength);
+        addPlatform(newPlatform, center_->getPlatformStaticTemplate(), 0.0, -0.05f*sectionLength);
 
         platformWidth_ = newPlatform->getWidth();
         platformHeight_ = newPlatform->getHeight();
@@ -602,9 +602,9 @@ namespace orxonox
         for (float xPosition = platformWidth_; xPosition <= center_->getFieldDimension().x; xPosition += platformWidth_)
         {
             newPlatform = new JumpPlatformStatic(center_->getContext());
-            addPlatform(newPlatform, center_->getPlatformStaticTemplate(), xPosition, -0.05*sectionLength);
+            addPlatform(newPlatform, center_->getPlatformStaticTemplate(), xPosition, -0.05f*sectionLength);
             newPlatform = new JumpPlatformStatic(center_->getContext());
-            addPlatform(newPlatform, center_->getPlatformStaticTemplate(), -xPosition, -0.05*sectionLength);
+            addPlatform(newPlatform, center_->getPlatformStaticTemplate(), -xPosition, -0.05f*sectionLength);
         }
     }
 
@@ -615,8 +615,8 @@ namespace orxonox
         float sectionBegin = sectionNumber_ * sectionLength;
         float sectionEnd = (1 + sectionNumber_) * sectionLength;
 
-        int numI = 6;
-        int numJ = 4;
+        const int numI = 6;
+        const int numJ = 4;
 
         enum PlatformType
         {
@@ -1262,7 +1262,7 @@ namespace orxonox
     float Jump::randomSpeed()
     {
         float platformSpeed = center_->getPlatformSpeed();
-        return randomPosition(0.5*platformSpeed, 1.5*platformSpeed);
+        return randomPosition(0.5f*platformSpeed, 1.5f*platformSpeed);
     }
 
     int Jump::getScore(PlayerInfo* player) const
