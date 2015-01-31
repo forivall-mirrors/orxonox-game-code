@@ -97,7 +97,7 @@ namespace orxonox
 			point = currentPosition;
 			getPlayer()->speed = 830 - (point / 1000);
 
-			for(uint i=0; i < cubeList.size();i++)
+			for(unsigned int i=0; i < cubeList.size();i++)
 			{
 				if(cubeList.at(i)->getPosition().x < currentPosition-3000)
 				{
@@ -168,7 +168,7 @@ namespace orxonox
     {
     	orxout() << "start" << endl;
         init();
-		for(uint i=0; i< cubeList.size();i++)
+		for(unsigned int i=0; i< cubeList.size();i++)
 		{
 			cubeList.at(i)->destroy();
 			cubeList.erase(cubeList.begin()+i);

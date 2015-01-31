@@ -39,26 +39,18 @@ namespace orxonox
 
     void TowerDefenseTower::setOrientation(const Quaternion& orientation)
     {
-        static int ori;
-        //orxout() << "orientation " << ++ori << endl;
     }
 
     void TowerDefenseTower::rotateYaw(const Vector2& value)
     {
-        static int yaw;
-        //orxout() << "rotateYaw " << ++yaw << endl;
     }
 
     void TowerDefenseTower::rotatePitch(const Vector2& value)
     {
-        static int pitch;
-        //orxout() << "rotatePitch " << ++pitch << endl;
     }
 
     void TowerDefenseTower::rotateRoll(const Vector2& value)
     {
-        static int roll;
-        //orxout() << "rotateRoll" << ++roll << endl;
     }
 
     bool TowerDefenseTower::upgradeTower()
