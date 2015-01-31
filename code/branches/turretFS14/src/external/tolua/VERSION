@@ -1,9 +1,0 @@
-Tolua++ v1.0.92 (generator application only) with changes:
-
-- Exception handling by CEGUI team
-- Corrected all indentation by Orxonox
-- Added more command line arguments by Orxonox
-- Several small changes considering the output files by Orxonox
-
-The changes to the C source files are stored in changes_orxonox.diff
-
