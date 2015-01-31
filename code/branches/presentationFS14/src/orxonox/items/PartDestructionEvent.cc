@@ -120,7 +120,7 @@ namespace orxonox
         {
             switch (this->targetParam_) {
             case null:
-                this->parent_->getParent()->removeEngine(this->parent_->getParent()->getEngineByName(targetName_));
+                this->parent_->getParent()->getEngineByName(targetName_)->destroy();
                 break;
             case boostfactor:
                 this->parent_->getParent()->getEngineByName(targetName_)->setBoostFactor(operate(this->parent_->getParent()->getEngineByName(targetName_)->getBoostFactor()));

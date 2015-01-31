@@ -372,6 +372,8 @@ namespace orxonox
         Remove a particular Engine from the SpaceShip.
     @param engine
         A pointer to the Engine to be removed.
+    @note
+        Don't forget to reset the Engine's ship pointer after it was removed (or destroy the engine).
     */
     void SpaceShip::removeEngine(Engine* engine)
     {
