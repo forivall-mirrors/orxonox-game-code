@@ -33,7 +33,7 @@
 #ifndef _TurretController_H__
 #define _TurretController_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 #include "controllers/ArtificialController.h"
 
  namespace orxonox
@@ -44,7 +44,7 @@
 
         The controllableEntity gets casted to Turret, so this controller won't work for anything else.
     */
-    class _OrxonoxExport TurretController : public ArtificialController, public Tickable
+    class _ObjectsExport TurretController : public ArtificialController, public Tickable
     {
         public:
             TurretController(Context* context);

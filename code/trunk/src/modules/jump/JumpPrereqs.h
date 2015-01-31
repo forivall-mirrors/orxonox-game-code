@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(PONG_STATIC_BUILD)
-#  ifdef PONG_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(JUMP_STATIC_BUILD)
+#  ifdef JUMP_SHARED_BUILD
 #    define _JumpExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )

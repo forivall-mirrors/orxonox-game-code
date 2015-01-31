@@ -29,7 +29,7 @@
 #ifndef _TeamTargetProxy_H__
 #define _TeamTargetProxy_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 #include "controllers/FormationController.h"
 
  namespace orxonox
@@ -44,7 +44,7 @@
             because the turret isn't directly attached to the spaceship. Here's where this controller comes in. Drawback: the base
             has to be controllable and ticks every second (performance?)
     */
-    class _OrxonoxExport TeamTargetProxy : public FormationController, public Tickable
+    class _ObjectsExport TeamTargetProxy : public FormationController, public Tickable
     {
         public:
             TeamTargetProxy(Context* context);
