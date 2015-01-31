@@ -63,7 +63,7 @@ namespace orxonox
 
             virtual void tick(float dt); //!< Defines which actions the Rocket has to take in each tick.
 
-            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            virtual bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
             virtual void destroyObject(void);
             void destructionEffect();
 

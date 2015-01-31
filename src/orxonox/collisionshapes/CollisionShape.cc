@@ -120,10 +120,19 @@ namespace orxonox
         // TODO: Why?
         WorldEntityCollisionShape* parentWECCS = orxonox_cast<WorldEntityCollisionShape*>(newParent);
         if (parentWECCS)
+        {
             this->parentID_ = parentWECCS->getWorldEntityOwner()->getObjectID();
-        // Else it is set to the objectID of the CompoundCollisionShape.
+
+            // If this shape is not a CompoundCollisionShape (thus an actual physical shape) & the parent is a WorldEntity's CollisionShape,
+            // set it's userPointer to the WorldEntity this CompoundCollisionShape belongs to.
+            if (!orxonox_cast<CompoundCollisionShape*>(this))
+                this->getCollisionShape()->setUserPointer(parentWECCS->getWorldEntityOwner());
+        }
         else
+        {
+            // Else it is set to the objectID of the CompoundCollisionShape.
             this->parentID_ = newParent->getObjectID();
+        }
 
         return true;
     }

@@ -341,6 +341,24 @@ namespace orxonox
 
     /**
     @brief
+        Looks for an attached Engine with a certain name.
+    @param name
+        The name of the engine to be returned.
+    @return
+        Pointer to the engine with the given name, or NULL if not found.
+    */
+    Engine* SpaceShip::getEngineByName(const std::string& name)
+    {
+        for(size_t i = 0; i < this->engineList_.size(); ++i)
+            if(this->engineList_[i]->getName() == name)
+                return this->engineList_[i];
+
+        orxout(internal_warning) << "Couldn't find Engine with name \"" << name << "\"." << endl;
+        return NULL;
+    }
+
+    /**
+    @brief
         Remove and destroy all Engines of the SpaceShip.
     */
     void SpaceShip::removeAllEngines()
@@ -354,6 +372,8 @@ namespace orxonox
         Remove a particular Engine from the SpaceShip.
     @param engine
         A pointer to the Engine to be removed.
+    @note
+        Don't forget to reset the Engine's ship pointer after it was removed (or destroy the engine).
     */
     void SpaceShip::removeEngine(Engine* engine)
     {

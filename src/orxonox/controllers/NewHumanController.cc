@@ -219,7 +219,7 @@ namespace orxonox
 
                 if (!controlPaused_ )
                 {
-                    if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
+                    if (this->getControllableEntity() && ((this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || (this->getControllableEntity()->isExactlyA(ClassByString("ModularSpaceShip")))) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
                         this->showOverlays();
                     else if (this->getControllableEntity() &&  this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
                     {
@@ -497,7 +497,7 @@ namespace orxonox
     {
         this->controlMode_ = 0;
         this->centerCursor();
-        if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
+        if (this->getControllableEntity() && ((this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || (this->getControllableEntity()->isExactlyA(ClassByString("ModularSpaceShip")))) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
         {
             this->showOverlays_ = true;
             if (!this->controlPaused_)

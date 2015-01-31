@@ -56,7 +56,10 @@ namespace orxonox
         RegisterObject(InvaderWeapon);
     }
 
-    InvaderWeapon::~InvaderWeapon(){}
+    InvaderWeapon::~InvaderWeapon()
+    {
+
+    }
 
     void InvaderWeapon::shot()
     {

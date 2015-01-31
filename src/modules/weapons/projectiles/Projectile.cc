@@ -87,9 +87,9 @@ namespace orxonox
         this->destroyCheck();
     }
 
-    bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    bool Projectile::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
     {
-        return this->processCollision(otherObject, contactPoint);
+        return this->processCollision(otherObject, contactPoint, cs);
     }
 
 }
