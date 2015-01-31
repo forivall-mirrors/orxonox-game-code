@@ -126,8 +126,6 @@ namespace orxonox
             inline float getRotationThrust()
                 { return this->rotationThrust_; }
 
-            void detach(WorldEntity* object);
-
             virtual void updatePartAssignment();
 
         protected:

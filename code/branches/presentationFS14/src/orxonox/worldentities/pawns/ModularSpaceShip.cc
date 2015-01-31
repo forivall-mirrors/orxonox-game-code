@@ -41,7 +41,6 @@
 #include "items/ShipPart.h"
 #include "items/Engine.h"
 #include "worldentities/StaticEntity.h"
-#include "collisionshapes/WorldEntityCollisionShape.h"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
@@ -91,7 +90,7 @@ namespace orxonox
     void ModularSpaceShip::updatePartAssignment()
     {
         // iterate through all attached objects
-        for (unsigned int i=0; i < (unsigned int)(this->getNumAttachedObj()); i++)
+        for (unsigned int i=0; i < this->getAttachedObjects().size(); i++)
         {
             if (this->getAttachedObject(i) == NULL)
             {
@@ -311,37 +310,5 @@ namespace orxonox
                 ++itt;
             }
         }
-    }
-
-    /**
-    @brief
-        Detaches a child WorldEntity from this instance.
-    */
-    void ModularSpaceShip::detach(WorldEntity* object)
-    {
-        std::set<WorldEntity*>::iterator it = this->children_.find(object);
-        if (it == this->children_.end())
-        {
-            orxout(internal_warning) << "Cannot detach an object that is not a child." << endl;
-            return;
-        }
-
-        // collision shapes
-
-        //this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
-        this->detachCollisionShape(object->collisionShape_);  // after succeeding, causes a crash in the collision handling
-        //this->printBtChildShapes((btCompoundShape*)(this->getWorldEntityCollisionShape()->getCollisionShape()), 2, 0);
-
-        // mass
-        if (object->getMass() > 0.0f)
-        {
-            this->childrenMass_ -= object->getMass();
-            recalculateMassProps();
-        }
-
-        this->detachNode(object->node_);
-        this->children_.erase(it);        // this causes a crash when unloading the level. Or not?
-
-        object->notifyDetached();
     }
 }

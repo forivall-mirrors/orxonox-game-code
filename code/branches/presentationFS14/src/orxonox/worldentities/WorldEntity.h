@@ -71,7 +71,6 @@ namespace orxonox
     class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
         friend class Scene;
-        friend class ModularSpaceShip;
 
         public:
             // Define our own transform space enum to avoid Ogre includes here
@@ -206,9 +205,6 @@ namespace orxonox
                 { return this->bDeleteWithParent_; }
 
             void notifyChildPropsChanged();
-
-            inline int getNumAttachedObj()
-                { return this->children_.size(); }
 
         protected:
             virtual void parentChanged() {}
