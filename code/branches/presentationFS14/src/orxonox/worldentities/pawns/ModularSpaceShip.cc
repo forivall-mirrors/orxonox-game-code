@@ -315,27 +315,6 @@ namespace orxonox
 
     /**
     @brief
-        Looks for an attached Engine with a certain name.
-    @param name
-        The name of the engine to be returned.
-    @return
-        Pointer to the engine with the given name, or NULL if not found.
-    */
-    Engine* ModularSpaceShip::getEngineByName(std::string name)
-    {
-        for(std::vector<Engine*>::iterator it = this->engineList_.begin(); it != this->engineList_.end(); ++it)
-        {
-            if(orxonox_cast<Engine*>(*it)->getName() == name)
-            {
-                return orxonox_cast<Engine*>(*it);
-            }
-        }
-        orxout(internal_warning) << "Couldn't find Engine with name \"" << name << "\"." << endl;
-        return NULL;
-    }
-
-    /**
-    @brief
         Detaches a child WorldEntity from this instance.
     */
     void ModularSpaceShip::detach(WorldEntity* object)

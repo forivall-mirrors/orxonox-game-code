@@ -126,7 +126,6 @@ namespace orxonox
             inline float getRotationThrust()
                 { return this->rotationThrust_; }
 
-            Engine* getEngineByName(std::string name);
             void detach(WorldEntity* object);
 
             virtual void updatePartAssignment();

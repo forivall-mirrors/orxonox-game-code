@@ -123,6 +123,7 @@ namespace orxonox
             void addEngine(Engine* engine); // Add an Engine to the SpaceShip.
             bool hasEngine(Engine* engine) const; // Check whether the SpaceShip has a particular Engine.
             Engine* getEngine(unsigned int i); // Get the i-th Engine of the SpaceShip.
+            Engine* getEngineByName(const std::string& name);
             /**
             @brief Get the list of all Engines that are mounted on the SpaceShip.
             @return Returns a vector of all Engines of the SpaceShip.
@@ -269,8 +270,6 @@ namespace orxonox
             float lift_;       //!< The amount of lift that is added.
             float stallSpeed_; //!< The forward speed where no more lift is added.
 
-            std::vector<Engine*> engineList_; //!< The list of all Engines mounted on this SpaceShip.
-
         private:
             void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
@@ -285,6 +284,8 @@ namespace orxonox
             void shakeCamera(float dt); // Shake the camera for a given time interval.
             void backupCamera(); // Save the original position and orientation of the camera.
             void resetCamera(); // Reset the camera to its original position.
+
+            std::vector<Engine*> engineList_; //!< The list of all Engines mounted on this SpaceShip.
 
             Timer timer_;                          //!< Timer for the cooldown duration.
             float shakeDt_;                        //!< Temporary variable for the shaking of the camera.
