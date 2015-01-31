@@ -111,12 +111,6 @@ namespace orxonox
         }
     }
 
-    void ModularSpaceShip::attach(WorldEntity* object)
-    {
-        SpaceShip::attach(object);
-        this->updatePartAssignment();
-    }
-
     /**
     @brief
         Creates a new assignment for the given StaticEntity and ShipPart in the partMap_

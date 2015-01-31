@@ -105,8 +105,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void attach(WorldEntity* object);
-
             void addPartEntityAssignment(StaticEntity* entity, ShipPart* part);
             ShipPart* getPartOfEntity(StaticEntity* entity) const;
 
