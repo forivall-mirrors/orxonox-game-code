@@ -123,6 +123,7 @@ namespace orxonox
             void addEngine(Engine* engine); // Add an Engine to the SpaceShip.
             bool hasEngine(Engine* engine) const; // Check whether the SpaceShip has a particular Engine.
             Engine* getEngine(unsigned int i); // Get the i-th Engine of the SpaceShip.
+            Engine* getEngineByName(const std::string& name);
             /**
             @brief Get the list of all Engines that are mounted on the SpaceShip.
             @return Returns a vector of all Engines of the SpaceShip.

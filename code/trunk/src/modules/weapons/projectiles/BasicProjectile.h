@@ -118,7 +118,7 @@ namespace orxonox
             virtual void destroyObject(void);
 
         protected:
-            bool processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            bool processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint, const btCollisionShape* cs);
             void destroyCheck(void);
 
         private:

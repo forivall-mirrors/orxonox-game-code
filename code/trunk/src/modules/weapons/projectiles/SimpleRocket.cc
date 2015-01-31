@@ -171,9 +171,9 @@ namespace orxonox
         this->player_ = this->getShooter()->getPlayer();
     }
 
-    bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
     {
-        return this->processCollision(otherObject, contactPoint);
+        return this->processCollision(otherObject, contactPoint, cs);
     }
 
     /**

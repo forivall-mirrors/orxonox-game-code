@@ -243,7 +243,7 @@ namespace orxonox
         this->reloadWaitCountdown_ -= dt;
     }
 
-    void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
+    void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
         // Applies multiplier given by the DamageBoost Pickup.
         if (originator)
@@ -278,21 +278,20 @@ namespace orxonox
     Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
 
 */
-    void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
+    void Pawn::hit(Pawn* originator, const Vector3& force, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
-            this->damage(damage, healthdamage, shielddamage, originator);
+            this->damage(damage, healthdamage, shielddamage, originator, cs);
             this->setVelocity(this->getVelocity() + force);
         }
     }
 
-
-    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
+    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, const btCollisionShape* cs, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
-            this->damage(damage, healthdamage, shielddamage, originator);
+            this->damage(damage, healthdamage, shielddamage, originator, cs);
 
             if ( this->getController() )
                 this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
@@ -558,6 +557,4 @@ namespace orxonox
             assert(0);
         return BLANKSTRING;
     }
-
-
 }

@@ -30,6 +30,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   MoodManager.cc
   PawnManager.cc
   PlayerManager.cc
+  ShipPartManager.cc
   Radar.cc
 #  Test.cc
 
@@ -63,6 +64,7 @@ ORXONOX_ADD_LIBRARY(orxonox
     controllers/HumanController.h
     infos/PlayerInfo.h
     sound/SoundManager.h
+    controllers/ScriptController.h
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
   LINK_LIBRARIES
