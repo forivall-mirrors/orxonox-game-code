@@ -33,12 +33,12 @@ namespace orxonox
     }
     //add credit if enemy is destroyed
     TowerDefenseEnemy::~TowerDefenseEnemy(){
-    		this->td->addCredit(1);
+        this->td->addCredit(1);
     }
 
     void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
     {
-    	this->Waypointsvector_.push_back(coord);
+        this->Waypointsvector_.push_back(coord);
     }
 
 
@@ -50,19 +50,19 @@ namespace orxonox
 /*
     void TowerDefenseEnemy::popWaypoint()
     {
-    	if(Waypointsvector_.size()>0)
-    		Waypointsvector_.pop_back();
+        if(Waypointsvector_.size()>0)
+            Waypointsvector_.pop_back();
     }
 
     TDCoordinate TowerDefenseEnemy::peekWaypoint()
     {
-    	if(Waypointsvector_.size()<=0){
-    		TDCoordinate* coord = TDCoordinate(-1,-1);
-    		return coord;
-    	}else{
-        	return Waypointsvector_.at(Waypointsvector_.size()-1);
+        if(Waypointsvector_.size()<=0){
+            TDCoordinate* coord = TDCoordinate(-1,-1);
+            return coord;
+        }else{
+            return Waypointsvector_.at(Waypointsvector_.size()-1);
 
-    	}
+        }
 
 
     }

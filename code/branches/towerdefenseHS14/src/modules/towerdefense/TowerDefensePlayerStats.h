@@ -68,13 +68,13 @@ namespace orxonox
             { waveNumber_++; }
 
         inline int getLifes()
-        	{return lifes_;	}
+            {return lifes_; }
 
         inline void reduceLifes(int NumberofLifes)
         {lifes_-=NumberofLifes; }
 
         inline void upgradeTower(int upgradecost)
-        	{ credit_ -= upgradecost;}
+            { credit_ -= upgradecost;}
 
 
 

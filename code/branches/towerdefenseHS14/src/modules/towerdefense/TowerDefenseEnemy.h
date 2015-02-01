@@ -29,10 +29,10 @@ namespace orxonox
 /* Class to give the TowerDefenseEnemy spaceships waypoints and
  *
  */
-	class _TowerDefenseExport TowerDefenseEnemy : public SpaceShip 
-	{
-	public:
-		TowerDefenseEnemy(Context* context);
+    class _TowerDefenseExport TowerDefenseEnemy : public SpaceShip
+    {
+    public:
+        TowerDefenseEnemy(Context* context);
         virtual ~TowerDefenseEnemy();
 
         //health gibt es unter: health_
@@ -43,12 +43,12 @@ namespace orxonox
         TDCoordinate peekWaypoint();
 
 
-	private:
+    private:
         TowerDefense* td;
         bool once_;
         std::vector<TDCoordinate*> Waypointsvector_;
 
-	};
+    };
 
 
 

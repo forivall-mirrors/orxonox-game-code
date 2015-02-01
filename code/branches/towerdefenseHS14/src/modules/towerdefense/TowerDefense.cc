@@ -97,9 +97,9 @@ namespace orxonox
         RegisterObject(TowerDefense);
 /*
         for (int i=0; i < 16 ; i++){
-        	for (int j = 0; j< 16 ; j++){
-        		towermatrix[i][j] = NULL;
-        	}
+            for (int j = 0; j< 16 ; j++){
+                towermatrix[i][j] = NULL;
+            }
         }*/
 
         this->setHUDTemplate("TowerDefenseHUD");
@@ -108,7 +108,7 @@ namespace orxonox
 
         /* Temporary hack to allow the player to add towers and upgrade them */
         this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
-	this->dedicatedUpgradeTower_ = createConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
+        this->dedicatedUpgradeTower_ = createConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
     }
 
     TowerDefense::~TowerDefense()
@@ -135,77 +135,77 @@ namespace orxonox
 
 // Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
         for (int i=0; i < 16 ; i++){
-        	for (int j = 0; j< 16 ; j++){
-        		towermatrix[i][j] = false;
-        	}
+            for (int j = 0; j< 16 ; j++){
+                towermatrix[i][j] = false;
+            }
         }
 
         for (int k=0; k<3; k++)
-        	towermatrix[1][k]=true;
+            towermatrix[1][k]=true;
         for (int l=1; l<11; l++)
-                towermatrix[l][3]=true;
+            towermatrix[l][3]=true;
         for (int m=3; m<12; m++)
-                towermatrix[10][m]=true;
+            towermatrix[10][m]=true;
         for (int n=10; n<14; n++)
-                towermatrix[n][11]=true;
+            towermatrix[n][11]=true;
         for (int o=13; o<16; o++)
-                towermatrix[13][o]=true;
+            towermatrix[13][o]=true;
 
-//set initial credits, lifes and WaveNumber
+        //set initial credits, lifes and WaveNumber
         this->setCredit(200);
         this->setLifes(50);
         this->setWaveNumber(0);
         time=0.0;
 
-//adds initial towers
-for (int i=0; i <7; i++){
-          addTower(i+3,4);
-    	}/*
-for (int j=0; j < 7; j++){
-          addTower(9,j+5);
+        //adds initial towers
+        for (int i=0; i <7; i++){
+            addTower(i+3,4);
+        }/*
+        for (int j=0; j < 7; j++){
+            addTower(9,j+5);
         }*/
-}
+    }
+
     // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
-     void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr){ 
+    void TowerDefense::addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr){
 
 
-    	TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
+        TowerDefenseEnemy* en1 = new TowerDefenseEnemy(this->center_->getContext());
         
-	switch(templatenr) 
-	{ 
-	case 1 : 
-		en1->addTemplate("enemytowerdefense1"); 
-		en1->setScale(3); 
-	    en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+        switch(templatenr)
+        {
+        case 1 :
+            en1->addTemplate("enemytowerdefense1");
+            en1->setScale(3);
+            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            break;
 
-		break; 
-	case 2 : 
-	 	en1->addTemplate("enemytowerdefense2");
- 		en1->setScale(2); 
-	    en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
-	  //  en1->setShieldHealth(en1->getShield() = this->getWaveNumber()*2))
+        case 2 :
+            en1->addTemplate("enemytowerdefense2");
+            en1->setScale(2);
+            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            //  en1->setShieldHealth(en1->getShield() = this->getWaveNumber()*2))
+            break;
 
-		break; 
-	case 3 : 
-	    en1->addTemplate("enemytowerdefense3");
-	    en1->setScale(1);
-	    en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
-	    break;
-	} 
+        case 3 :
+            en1->addTemplate("enemytowerdefense3");
+            en1->setScale(1);
+            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            break;
+        }
 
         en1->getController();
         en1->setPosition(path.at(0)->get3dcoordinate());
         TowerDefenseEnemyvector.push_back(en1);
 
         for(unsigned int i = 0; i < path.size(); ++i)
-        	{
-            	en1->addWaypoint((path.at(i)));
-        	}
+        {
+            en1->addWaypoint((path.at(i)));
+        }
     }
 
 
     void TowerDefense::end()
-
     {
 
         Deathmatch::end();
@@ -216,7 +216,7 @@ for (int j=0; j < 7; j++){
     //not working yet
     void TowerDefense::upgradeTower(int x,int y)
     {/*
-    	const int upgradeCost = 20;
+        const int upgradeCost = 20;
 
         if (!this->hasEnoughCreditForTower(upgradeCost))
         {
@@ -232,7 +232,7 @@ for (int j=0; j < 7; j++){
 
         else
         {
-        	(towermatrix [x][y])->upgradeTower();
+            (towermatrix [x][y])->upgradeTower();
         }*/
     }
 
@@ -291,7 +291,7 @@ for (int j=0; j < 7; j++){
 
     bool TowerDefense::hasEnoughCreditForUpgrade()
     {
-    	return true;
+        return true;
     }
 
  
@@ -305,54 +305,54 @@ for (int j=0; j < 7; j++){
         path.push_back(coord1);
         if(time>1 && TowerDefenseEnemyvector.size() < 30)
         {
-        	//adds different types of enemys depending on the WaveNumber
-        	addTowerDefenseEnemy(path, this->getWaveNumber() % 3 +1 );
-        	time = time-1;
+            //adds different types of enemys depending on the WaveNumber
+            addTowerDefenseEnemy(path, this->getWaveNumber() % 3 +1 );
+            time = time-1;
         }
 
-		Vector3* endpoint = new Vector3(500, 700, 150);
-		//if ships are at the end they get destroyed
-		for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
-		{
-			if(TowerDefenseEnemyvector.at(i) != NULL && TowerDefenseEnemyvector.at(i)->isAlive())
-				{
-				//destroys enemys at the end of teh path and reduces the life by 1. no credits gifted
+        Vector3* endpoint = new Vector3(500, 700, 150);
+        //if ships are at the end they get destroyed
+        for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
+        {
+            if(TowerDefenseEnemyvector.at(i) != NULL && TowerDefenseEnemyvector.at(i)->isAlive())
+            {
+                //destroys enemys at the end of teh path and reduces the life by 1. no credits gifted
 
-					Vector3 ship = TowerDefenseEnemyvector.at(i)->getRVWorldPosition();
-					float distance = ship.distance(*endpoint);
+                Vector3 ship = TowerDefenseEnemyvector.at(i)->getRVWorldPosition();
+                float distance = ship.distance(*endpoint);
 
-					if(distance <50){
-						TowerDefenseEnemyvector.at(i)->destroy();
-						this->reduceLifes(1);
-						this->buyTower(1);
-						if (this->getLifes()==0)
-								{
-								    this->end();
-								}
-					}
-				}
-			}
-			//goes thorugh vector to see if an enemy is still alive. if not next wave is launched
-			int count= 0;
-			for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
-			{
-				if(TowerDefenseEnemyvector.at(i)!= NULL)
-				{
-					++count;
-				}
-			}
+                if(distance <50){
+                    TowerDefenseEnemyvector.at(i)->destroy();
+                    this->reduceLifes(1);
+                    this->buyTower(1);
+                    if (this->getLifes()==0)
+                    {
+                        this->end();
+                    }
+                }
+            }
+        }
+        //goes thorugh vector to see if an enemy is still alive. if not next wave is launched
+        int count= 0;
+        for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
+        {
+            if(TowerDefenseEnemyvector.at(i)!= NULL)
+            {
+                ++count;
+            }
+        }
 
-			if(count== 0)
-			{
-				time2 +=dt;
-				if(time2 > 10)
-				{
-					TowerDefenseEnemyvector.clear();
-					this->nextwave();
-					time=0;
-					time2=0;
-				}
-			}
+        if(count== 0)
+        {
+            time2 +=dt;
+            if(time2 > 10)
+            {
+                TowerDefenseEnemyvector.clear();
+                this->nextwave();
+                time=0;
+                time2=0;
+            }
+        }
 
 
     }

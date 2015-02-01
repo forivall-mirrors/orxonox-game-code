@@ -60,16 +60,16 @@ namespace orxonox
         //virtual void playerEntered(PlayerInfo* player);
         //virtual bool playerLeft(PlayerInfo* player);
         //Player Stats (set,get, reduce)
-        int getCredit(){	return this->credit_;	}
-        int getLifes(){		return this->lifes_;	}
-        int getWaveNumber(){	return this->waves_;	}
+        int getCredit(){ return this->credit_; }
+        int getLifes(){ return this->lifes_; }
+        int getWaveNumber(){ return this->waves_; }
         void setCredit(int credit){ credit_ = credit; }
         void setLifes(int lifes){ lifes_ = lifes; }
-        void setWaveNumber(int wavenumber){waves_=wavenumber;	}
+        void setWaveNumber(int wavenumber){ waves_=wavenumber; }
         void buyTower(int cost){ credit_ -= cost;}
-        void addCredit(int credit) {	credit_+=credit;	}
+        void addCredit(int credit) { credit_+=credit; }
         void nextwave(){ waves_++;}
-        int reduceLifes(int NumberofLifes){	return lifes_-=NumberofLifes;	}
+        int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);
