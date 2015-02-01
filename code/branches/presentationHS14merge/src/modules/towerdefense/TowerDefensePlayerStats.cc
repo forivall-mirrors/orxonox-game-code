@@ -24,21 +24,23 @@
  *   Co-authors:
  *      ...
  */
-
+/*
 #include "TowerDefensePlayerStats.h"
 
 namespace orxonox
 {
     const int kDefaultCredit = 200;
-
+    const int kDefaultLifes=20;
     TowerDefensePlayerStats::TowerDefensePlayerStats()
     {
         this->credit_ = kDefaultCredit;
         this->waveNumber_ = 0;
+        this->lifes_=kDefaultLifes;
     }
-    /*
+
     TowerDefensePlayerStats::~TowerDefensePlayerStats()
     {
     }
-    */
+
 }
+*/

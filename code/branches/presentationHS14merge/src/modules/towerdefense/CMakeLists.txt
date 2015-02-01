@@ -1,9 +1,12 @@
 SET_SOURCE_FILES(TOWERDEFENSE_SRC_FILES
   TowerDefense.cc
-  Tower.cc
+  TowerDefenseTower.cc
+  TowerTurret.cc
   TowerDefenseCenterpoint.cc
   TowerDefenseHUDController.cc
   TowerDefensePlayerStats.cc
+  TDCoordinate.cc
+  TowerDefenseEnemy.cc
 
 )
 

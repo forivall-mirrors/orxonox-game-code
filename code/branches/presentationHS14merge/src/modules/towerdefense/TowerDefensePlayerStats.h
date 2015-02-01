@@ -26,12 +26,12 @@
  *
  */
 
- /**
+ /*
     @brief
         This manages the stats of the player. It is used by 'TowerDefense', the gametype
 
     @ingroup TowerDefense
- */
+
 
 
 #ifndef _TowerDefensePlayerStats_H__
@@ -43,7 +43,8 @@ namespace orxonox
 {
     typedef enum _TowerCosts {
         // Set to 0 for debug...
-        TDDefaultTowerCost = 0
+        TDDefaultTowerCost = 20 ,
+        TDDefaultUpgradeCost = 15
     } TowerCost;
 
     class _TowerDefenseExport TowerDefensePlayerStats
@@ -66,11 +67,24 @@ namespace orxonox
         inline void didLoadNextWave()
             { waveNumber_++; }
 
+        inline int getLifes()
+            {return lifes_; }
+
+        inline void reduceLifes(int NumberofLifes)
+        {lifes_-=NumberofLifes; }
+
+        inline void upgradeTower(int upgradecost)
+            { credit_ -= upgradecost;}
+
+
+
     private:
         int credit_;
         int waveNumber_;
+        int upgradecost;
+        int lifes_;
         //int baseHealth_;
     };
 }
 
-#endif /* _TowerDefensePlayerStats_H__ */
+#endif  _TowerDefensePlayerStats_H__ */
