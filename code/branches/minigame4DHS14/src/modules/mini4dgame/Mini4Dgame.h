@@ -35,7 +35,7 @@
 #define _Mini4Dgame_H__
 
 #include "gametypes/Deathmatch.h"
-#include "mini4Dgame/Mini4DgamePrereqs.h"
+#include "mini4dgame/Mini4DgamePrereqs.h"
 #include "Mini4DgameBoard.h"
 
 namespace orxonox

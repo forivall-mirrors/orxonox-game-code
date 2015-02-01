@@ -35,7 +35,7 @@
 #ifndef _Mini4DgameBoard_H__
 #define _Mini4DgameBoard_H__
 
-#include "mini4Dgame/Mini4DgamePrereqs.h"
+#include "mini4dgame/Mini4DgamePrereqs.h"
 
 #include "worldentities/StaticEntity.h"
 

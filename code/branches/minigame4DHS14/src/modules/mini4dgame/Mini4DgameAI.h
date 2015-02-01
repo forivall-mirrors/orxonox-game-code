@@ -34,7 +34,7 @@
 #ifndef _Mini4DgameAI_H__
 #define _Mini4DgameAI_H__
 
-#include "mini4Dgame/Mini4DgamePrereqs.h"
+#include "mini4dgame/Mini4DgamePrereqs.h"
 
 #include <list>
 
