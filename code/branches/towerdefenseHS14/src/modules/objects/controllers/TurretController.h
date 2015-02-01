@@ -33,33 +33,33 @@
 #ifndef _TurretController_H__
 #define _TurretController_H__
 
-#include "OrxonoxPrereqs.h"
+#include "objects/ObjectsPrereqs.h"
 #include "controllers/ArtificialController.h"
 
  namespace orxonox
  {
- 	/**
- 		@brief
- 		Controller for turrets. Chooses a target, and makes the turret aim/shoot at it.
+    /**
+        @brief
+        Controller for turrets. Chooses a target, and makes the turret aim/shoot at it.
 
- 		The controllableEntity gets casted to Turret, so this controller won't work for anything else.
- 	*/
- 	class _OrxonoxExport TurretController : public ArtificialController, public Tickable
- 	{
- 		public:
- 			TurretController(Context* context);
- 			virtual ~TurretController();
+        The controllableEntity gets casted to Turret, so this controller won't work for anything else.
+    */
+    class _ObjectsExport TurretController : public ArtificialController, public Tickable
+    {
+        public:
+            TurretController(Context* context);
+            virtual ~TurretController();
 
- 			virtual void tick(float dt);
+            virtual void tick(float dt);
 
- 		private:
+        private:
 
- 			void searchTarget();
- 			bool isLookingAtTargetNew(float angle) const;
- 			float targetScore(Pawn* pawn, float distance) const;
+            void searchTarget();
+            bool isLookingAtTargetNew(float angle) const;
+            float targetScore(Pawn* pawn, float distance) const;
 
- 			bool once_; //!< Flag for executing code in the tick function only once.
- 	};
+            bool once_; //!< Flag for executing code in the tick function only once.
+    };
  }
 
  #endif

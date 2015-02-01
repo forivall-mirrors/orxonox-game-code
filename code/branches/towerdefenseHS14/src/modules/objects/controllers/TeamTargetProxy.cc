@@ -32,7 +32,7 @@
 
 namespace orxonox
 {
-	RegisterClass(TeamTargetProxy);
+    RegisterClass(TeamTargetProxy);
 
    /**
        @brief 
@@ -41,20 +41,20 @@ namespace orxonox
        @param context
        The context
     */
-	TeamTargetProxy::TeamTargetProxy(Context* context) : FormationController(context)
- 	{
- 		RegisterObject(TeamTargetProxy);
+    TeamTargetProxy::TeamTargetProxy(Context* context) : FormationController(context)
+    {
+        RegisterObject(TeamTargetProxy);
 
- 		this->once_ = false;
- 	}
+        this->once_ = false;
+    }
 
     /**
         @brief 
         Destructor. Nothing to see here.
      */
- 	TeamTargetProxy::~TeamTargetProxy()
- 	{
- 	}
+    TeamTargetProxy::~TeamTargetProxy()
+    {
+    }
 
     /**
         @brief
@@ -62,10 +62,10 @@ namespace orxonox
 
         That's all there is.
     */
- 	void TeamTargetProxy::tick(float dt)
- 	{
-	    if (!this->isActive() || !this->getControllableEntity())
-	        return;
+    void TeamTargetProxy::tick(float dt)
+    {
+        if (!this->isActive() || !this->getControllableEntity())
+            return;
 
         ControllableEntity* parent = orxonox_cast<ControllableEntity*> (this->getControllableEntity()->getParent());
 
@@ -101,5 +101,5 @@ namespace orxonox
                 this->getControllableEntity()->setTarget(parenttarget);
             }
         }
- 	}
+    }
 }
