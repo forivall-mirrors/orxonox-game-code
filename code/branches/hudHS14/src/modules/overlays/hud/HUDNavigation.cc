@@ -376,7 +376,7 @@ namespace orxonox
                     float relativHealthScale = health/initHealth;
 
                     //integer values from 0 to 10 (0 is no health and 10 is full health)
-                    int discreteHealthScale = 10*relativHealthScale;
+                    int discreteHealthScale = (int)(10*relativHealthScale);
 
                     //calculate the HealthLevel (= OponentLevel or Strength) there are 5 Levels
                     //Level 1, Level 2,... , Level 5
@@ -406,24 +406,24 @@ namespace orxonox
 
                         //it->second.health_->setMaterialName(TextureGenerator::getMaterialName("bar2_1.png", it->first->getRadarObjectColour()));
                         it->second.health_->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", it->first->getRadarObjectColour()));
-                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x , 0.75*this->healthMarkerSize_ * this->getActualSize().y);
+                        it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x , 0.75f*this->healthMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
 
                         // because as soon as relative health drops below 10% (0.1) the descrete value is 0 but as long as the
                         // spaceship is still intact there should be at least one part of the bar left.
                         if(1<=discreteHealthScale){
                         	it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
-                        	it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1*discreteHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
+                        	it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1f*discreteHealthScale, 0.75f*this->healthMarkerSize_ * this->getActualSize().y);
                         }
 
 
 
                         //healthLevel
                         it->second.healthLevel_->setMaterialName(TextureGenerator::getMaterialName("barSquare.png", it->first->getRadarObjectColour()));
-                        it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x , 0.75*this->healthLevelMarkerSize_ * this->getActualSize().y);
+                        it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x , 0.75f*this->healthLevelMarkerSize_ * this->getActualSize().y);
                         it->second.wasOutOfView_ = false;
                         it->second.healthLevel_->setTiling((float)HealthLevel , 1 ,0);
-                        it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x *0.1*HealthLevel, 0.25*this->healthLevelMarkerSize_ * this->getActualSize().y);
+                        it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x *0.1f*HealthLevel, 0.25f*this->healthLevelMarkerSize_ * this->getActualSize().y);
                     }
 
 
@@ -438,7 +438,7 @@ namespace orxonox
                     // spaceship is still intact there should be at least one part of the bar left.
                     if(1<=discreteHealthScale){
                     it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
-                    it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1*discreteHealthScale, 0.75*this->healthMarkerSize_ * this->getActualSize().y);
+                    it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1f*discreteHealthScale, 0.75f*this->healthMarkerSize_ * this->getActualSize().y);
                     }
 
 
@@ -449,7 +449,7 @@ namespace orxonox
                     it->second.healthLevel_->setTop((-pos.y + 1.125f - it->second.panel_->getHeight()) * 0.5f);
 
                     it->second.healthLevel_->setTiling((float)HealthLevel , 1 ,0);
-                    it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x *0.1*HealthLevel, 0.25*this->healthLevelMarkerSize_ * this->getActualSize().y);
+                    it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * this->getActualSize().x *0.1f*HealthLevel, 0.25f*this->healthLevelMarkerSize_ * this->getActualSize().y);
 
 
                     // Position marker
