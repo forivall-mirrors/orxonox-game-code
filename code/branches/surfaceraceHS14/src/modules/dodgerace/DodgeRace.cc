@@ -87,53 +87,53 @@ namespace orxonox
 
     void DodgeRace::tick(float dt)
     {
-    	if (getPlayer() != NULL)
-    	{
-			//WeakPtr<DodgeRaceShip> ship = getPlayer();
+        if (getPlayer() != NULL)
+        {
+            //WeakPtr<DodgeRaceShip> ship = getPlayer();
 
-			currentPosition = getPlayer()->getWorldPosition().x;
-			counter = counter + (currentPosition - lastPosition);
-			lastPosition = currentPosition;
-			point = (int) currentPosition;
-			getPlayer()->speed = 830.0f - (point / 1000);
+            currentPosition = getPlayer()->getWorldPosition().x;
+            counter = counter + (currentPosition - lastPosition);
+            lastPosition = currentPosition;
+            point = (int) currentPosition;
+            getPlayer()->speed = 830.0f - (point / 1000);
 
-			for(unsigned int i=0; i < cubeList.size();i++)
-			{
-				if(cubeList.at(i)->getPosition().x < currentPosition-3000)
-				{
-					cubeList.at(i)->destroy();
-					cubeList.erase(cubeList.begin()+i);
-				}
-			}
+            for(unsigned int i=0; i < cubeList.size();i++)
+            {
+                if(cubeList.at(i)->getPosition().x < currentPosition-3000)
+                {
+                    cubeList.at(i)->destroy();
+                    cubeList.erase(cubeList.begin()+i);
+                }
+            }
 
-			if(counter >= 3000)
-			{
-				counter = 0;
-				for(int i = 0; i<6; i++)
-				{
-					WeakPtr<DodgeRaceCube> cube = new DodgeRaceCube(this->center_->getContext());
-					cubeList.push_back(cube);
-					switch(pattern)
-					{
-					case 1: cube->addTemplate("DodgeRaceCube01");
-					break;
-					case 2:	cube->addTemplate("DodgeRaceCube02");
-					break;
+            if(counter >= 3000)
+            {
+                counter = 0;
+                for(int i = 0; i<6; i++)
+                {
+                    WeakPtr<DodgeRaceCube> cube = new DodgeRaceCube(this->center_->getContext());
+                    cubeList.push_back(cube);
+                    switch(pattern)
+                    {
+                    case 1: cube->addTemplate("DodgeRaceCube01");
+                    break;
+                    case 2: cube->addTemplate("DodgeRaceCube02");
+                    break;
 
-					}
+                    }
 
-					cube->setPosition(getPlayer()->getWorldPosition() + Vector3(5000.0f, 0.0f, -3600.0f + (i*1200)));
-					//stEntity->setScale3D(50,50,50);
-				}
+                    cube->setPosition(getPlayer()->getWorldPosition() + Vector3(5000.0f, 0.0f, -3600.0f + (i*1200)));
+                    //stEntity->setScale3D(50,50,50);
+                }
 
 
-				pattern %= 2;
-				pattern ++;
+                pattern %= 2;
+                pattern ++;
 
-			}
+            }
 
-    	}
-    	SUPER(DodgeRace, tick, dt);
+        }
+        SUPER(DodgeRace, tick, dt);
     }
 
     WeakPtr<DodgeRaceShip> DodgeRace::getPlayer()
@@ -142,7 +142,7 @@ namespace orxonox
         {
             for (ObjectList<DodgeRaceShip>::iterator it = ObjectList<DodgeRaceShip>::begin(); it != ObjectList<DodgeRaceShip>::end(); ++it)
             {
-            	player = *it;
+                player = *it;
             }
         }
         return player;
@@ -150,8 +150,8 @@ namespace orxonox
 
     void DodgeRace::costLife()
     {
-    	//endGameTimer.setTimer(8.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
-    	lives = 0;
+        //endGameTimer.setTimer(8.0f, false, createExecutor(createFunctor(&DodgeRace::end, this)));
+        lives = 0;
     };
 
     void DodgeRace::comboControll()
@@ -166,14 +166,14 @@ namespace orxonox
 
     void DodgeRace::start()
     {
-    	orxout() << "start" << endl;
+        orxout() << "start" << endl;
         init();
-		for(unsigned int i=0; i< cubeList.size();i++)
-		{
-			cubeList.at(i)->destroy();
-			cubeList.erase(cubeList.begin()+i);
+        for(unsigned int i=0; i< cubeList.size();i++)
+        {
+            cubeList.at(i)->destroy();
+            cubeList.erase(cubeList.begin()+i);
 
-		}
+        }
         cubeList.clear();
         // Set variable to temporarily force the player to spawn.
         this->bForceSpawn_ = false;
@@ -188,28 +188,28 @@ namespace orxonox
         Deathmatch::start();
     }
 
-	void DodgeRace::playerPreSpawn(PlayerInfo* player)
-	{
-		if(lives <= 0)
-		{
-			this->end();
-		}
+    void DodgeRace::playerPreSpawn(PlayerInfo* player)
+    {
+        if(lives <= 0)
+        {
+            this->end();
+        }
 
-		// Reset all the cubes
-		/*
-		orxout() << "prespawn" << endl;
-		init();
-		for(int i=0; i< cubeList.size();i++)
-		{
-			cubeList.at(i)->destroy();
-			cubeList.erase(cubeList.begin()+i);
-		}
-		cubeList.clear();
+        // Reset all the cubes
+        /*
+        orxout() << "prespawn" << endl;
+        init();
+        for(int i=0; i< cubeList.size();i++)
+        {
+            cubeList.at(i)->destroy();
+            cubeList.erase(cubeList.begin()+i);
+        }
+        cubeList.clear();
         lives = 1;
         point = 0;
         lastPosition = 0;
         */
-	}
+    }
 
     void DodgeRace::addPoints(int numPoints)
     {

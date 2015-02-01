@@ -38,7 +38,7 @@
 #include "dodgerace/DodgeRacePrereqs.h"
 
 #include "DodgeRaceCenterPoint.h" // Necessary for WeakPointer??
-//#include "DodgeRaceShip.h" 		DO NOT include in Header. Will cause forward declaration issues
+//#include "DodgeRaceShip.h"        DO NOT include in Header. Will cause forward declaration issues
 
 //#include "DodgeRaceHUDinfo.h"
 
@@ -117,8 +117,8 @@ namespace orxonox
             bool b_combo;
 
             Timer enemySpawnTimer;
-			Timer comboTimer;
-			Timer showLevelTimer;
+            Timer comboTimer;
+            Timer showLevelTimer;
 
 
          /*

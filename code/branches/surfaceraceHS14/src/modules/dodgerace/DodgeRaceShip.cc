@@ -100,7 +100,7 @@ namespace orxonox
         // bring back on track!
         if(pos.y != 0)
         {
-        	pos.y = 0;
+            pos.y = 0;
         }
 
         setPosition(pos);
@@ -125,15 +125,15 @@ namespace orxonox
 
     void DodgeRaceShip::moveFrontBack(const Vector2& value)
     {
-    	//lastTimeFront = 0;
-    	//desiredVelocity.y = value.y * speed * 42;
+        //lastTimeFront = 0;
+        //desiredVelocity.y = value.y * speed * 42;
 
     }
 
     void DodgeRaceShip::moveRightLeft(const Vector2& value)
     {
-    	lastTimeLeft = 0;
-    	desiredVelocity.x = value.x * speed;
+        lastTimeLeft = 0;
+        desiredVelocity.x = value.x * speed;
     }
     void DodgeRaceShip::boost(bool bBoost)
     {
@@ -143,8 +143,8 @@ namespace orxonox
     inline bool DodgeRaceShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
 
-    	removeHealth(100);
-    	this->death();
+        removeHealth(100);
+        this->death();
         return false;
     }
 
@@ -154,7 +154,7 @@ namespace orxonox
         {
             for (ObjectList<DodgeRace>::iterator it = ObjectList<DodgeRace>::begin(); it != ObjectList<DodgeRace>::end(); ++it)
             {
-            	game = *it;
+                game = *it;
             }
         }
         return game;

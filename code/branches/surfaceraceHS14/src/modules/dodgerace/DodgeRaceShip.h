@@ -56,20 +56,20 @@ namespace orxonox
             virtual void tick(float dt);
 
             // overwrite for 2d movement
-		    virtual void moveFrontBack(const Vector2& value);
-		    virtual void moveRightLeft(const Vector2& value);
+            virtual void moveFrontBack(const Vector2& value);
+            virtual void moveRightLeft(const Vector2& value);
 
-	 	    // Starts or stops fireing
-		    virtual void boost(bool bBoost);
+            // Starts or stops fireing
+            virtual void boost(bool bBoost);
 
-		    //no rotation!
-		    virtual void rotateYaw(const Vector2& value){};
-		    virtual void rotatePitch(const Vector2& value){};
+            //no rotation!
+            virtual void rotateYaw(const Vector2& value){};
+            virtual void rotatePitch(const Vector2& value){};
 
-		    //return to main menu if game has ended.
-		    virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
+            //return to main menu if game has ended.
+            virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
 
-		    virtual void updateLevel();
+            virtual void updateLevel();
 
             float speed, damping, posforeward;
             bool isFireing;
@@ -87,8 +87,8 @@ namespace orxonox
             float lastTimeFront, lastTimeLeft, lastTime;
             struct Velocity
             {
-			   float x;
-			   float y;
+                float x;
+                float y;
             } velocity, desiredVelocity;
 
     };

@@ -35,12 +35,12 @@
 
 namespace orxonox
 {
-	RegisterClass(DodgeRaceCube);
+    RegisterClass(DodgeRaceCube);
 
-	DodgeRaceCube::DodgeRaceCube(Context* context) : MovableEntity(context)
-	{
-		RegisterObject(DodgeRaceCube);
-	}
+    DodgeRaceCube::DodgeRaceCube(Context* context) : MovableEntity(context)
+    {
+        RegisterObject(DodgeRaceCube);
+    }
 
 
 }

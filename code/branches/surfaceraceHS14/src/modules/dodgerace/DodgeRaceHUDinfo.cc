@@ -55,24 +55,24 @@ namespace orxonox
         SUPER(DodgeRaceHUDinfo, tick, dt);
 
 
-		if(this->bShowPoints_)
-		{
-			const std::string& points = multi_cast<std::string>(this->DodgeRaceGame->getPoints());
-			if (this->DodgeRaceGame->lives <= 0)
-			{
-				setTextSize(0.2);
-				setPosition(Vector2(0.1, 0.02));
-				this->setCaption("Final score:\n" + points);
-				this->setColour(ColourValue(1, 0, 0, 1));
-			}
-			else
-			{
-				setTextSize(0.04);
-				setPosition(Vector2(0.14, 0.02));
-				this->setColour(ColourValue(1, 1, 1, 1));
-				this->setCaption(points);
-			}
-		}
+        if(this->bShowPoints_)
+        {
+            const std::string& points = multi_cast<std::string>(this->DodgeRaceGame->getPoints());
+            if (this->DodgeRaceGame->lives <= 0)
+            {
+                setTextSize(0.2);
+                setPosition(Vector2(0.1, 0.02));
+                this->setCaption("Final score:\n" + points);
+                this->setColour(ColourValue(1, 0, 0, 1));
+            }
+            else
+            {
+                setTextSize(0.04);
+                setPosition(Vector2(0.14, 0.02));
+                this->setColour(ColourValue(1, 1, 1, 1));
+                this->setCaption(points);
+            }
+        }
     }
 
     void DodgeRaceHUDinfo::changedOwner()
