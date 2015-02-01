@@ -72,7 +72,7 @@ namespace orxonox
 
     void Mission::pawnKilled(Pawn* victim, Pawn* killer)
     {
-        if (victim && victim->getPlayer() && victim->getPlayer()->isHumanPlayer() )
+        if (victim && victim->getPlayer() && victim->getPlayer()->isHumanPlayer())
         {
             this->lives_--;
         }
@@ -80,7 +80,7 @@ namespace orxonox
 
     void Mission::start()
     {
-    	std::fstream myfile;
+        std::fstream myfile;
 
         Gametype::start();
         this->setTeams();
@@ -89,44 +89,52 @@ namespace orxonox
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
     }
 
-    std::string GenerateHelperString(int number){
-    	std::string helperstring = "";
-    	while (number>1) {
-    		helperstring=helperstring+" ";
-    		number=number-1;
-    	}
-    	helperstring=helperstring+".";
-    	return helperstring;
+    std::string GenerateHelperString(int number)
+    {
+        std::string helperstring = "";
+        while (number > 1)
+        {
+            helperstring = helperstring + " ";
+            number = number - 1;
+        }
+        helperstring = helperstring + ".";
+        return helperstring;
     }
 
     void Mission::end()
     {
 
-        if (this->missionAccomplished_ && !this->gtinfo_->hasEnded()){
+        if (this->missionAccomplished_ && !this->gtinfo_->hasEnded())
+        {
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
             std::fstream myfile;
-                	    	myfile.open("/home/maxima/maxima-extra-0/orxonox/storymodeHS14/campaign.txt");
-                	    	std::string line;
-                	    	std::string mission=this->getFilename();
-                	    	int k=58-mission.length();
-                	    	std::string helperstring = "";
-                	    	if(myfile.is_open()){
-                	    	    	while (k>1) {
-                	    	    		helperstring=helperstring+" ";
-                	    	    		k=k-1;
-                	    	    	}
-                	    	    	helperstring=helperstring+".";
-                	    	       while(getline (myfile,line)){
-                	    	    	  if(line==mission+" 0"+helperstring){
-                	    	    		  long pos = myfile.tellp();
-                	    	    		  myfile.seekp (pos-61);
-                	    	    		  myfile << mission+" 1"+helperstring;
-                	    	    	  }
-                	    	    	}}
-                	    	        myfile.flush();
-                	    	        myfile.clear();
-                	    	        myfile.close();
-                  }
+            myfile.open("/home/maxima/maxima-extra-0/orxonox/storymodeHS14/campaign.txt");
+            std::string line;
+            std::string mission = this->getFilename();
+            int k = 58 - mission.length();
+            std::string helperstring = "";
+            if (myfile.is_open())
+            {
+                while (k > 1)
+                {
+                    helperstring = helperstring + " ";
+                    k = k - 1;
+                }
+                helperstring = helperstring + ".";
+                while (getline(myfile, line))
+                {
+                    if (line == mission + " 0" + helperstring)
+                    {
+                        long pos = myfile.tellp();
+                        myfile.seekp(pos - 61);
+                        myfile << mission + " 1" + helperstring;
+                    }
+                }
+            }
+            myfile.flush();
+            myfile.clear();
+            myfile.close();
+        }
 
         else if (!this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
@@ -134,44 +142,20 @@ namespace orxonox
     }
 
     void Mission::setTeams()
-    {//Set pawn-colours
+    { //Set pawn-colours
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
         {
             Pawn* pawn = static_cast<Pawn*>(*it);
-            if(!pawn) continue;
-                this->setDefaultObjectColour(pawn);
+            if (!pawn)
+                continue;
+            this->setDefaultObjectColour(pawn);
         }
     }
     void Mission::endMission(bool accomplished)
     {
         for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
-        {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
-           /* if(accomplished){
-            	std::fstream myfile;
-            		myfile.open("/home/pmao/pmao-extra-0/orxonox/storymodeHS14/data/gui/scripts/campaign.txt");
-            		std::string line;
-           	    	std::string mission=it->getFilename();
-  	    	    	int k=58-mission.length();
-            	    std::string helperstring = "";
-            	    if(myfile.is_open()){
-            	    	while (k>1) {
-            	    		helperstring=helperstring+" ";
-            	    	    k=k-1;
-            	    	    	    }
-            	    helperstring=helperstring+".";
-            	    	while(getline (myfile,line)){
-            	    		if(line==mission+" 0"+helperstring){
-            	    		long pos = myfile.tellp();
-            	    	    myfile.seekp (pos-61);
-            	    	    myfile << mission+" 1"+helperstring;
-            	    	    	    	  }
-            	    	}
-            	    }
-            	    myfile.flush();
-            	    myfile.clear();
-            	    myfile.close();
-            }*/
-        	it->setMissionAccomplished(accomplished);
+        { //TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
+            it->setMissionAccomplished(accomplished);
             it->end();
 
         }
@@ -180,10 +164,9 @@ namespace orxonox
     void Mission::setLivesWrapper(unsigned int amount)
     {
         for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
-        {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would affect ALL missions!
+        { //TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would affect ALL missions!
             it->setLives(amount);
         }
     }
-
 
 }
