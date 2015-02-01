@@ -31,7 +31,7 @@
 #include "DodgeRace.h"
 //#include "DodgeRaceCenterPoint.h"
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OverlayText.h"

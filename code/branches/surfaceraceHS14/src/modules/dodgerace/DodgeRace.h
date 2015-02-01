@@ -35,7 +35,7 @@
 #ifndef _DodgeRace_H__
 #define _DodgeRace_H__
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
 #include "DodgeRaceCenterPoint.h" // Necessary for WeakPointer??
 //#include "DodgeRaceShip.h" 		DO NOT include in Header. Will cause forward declaration issues

@@ -35,7 +35,7 @@
 #ifndef _DodgeRaceCube_H__
 #define _DodgeRaceCube_H__
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
 #include "worldentities/MovableEntity.h"
 
