@@ -41,16 +41,16 @@
 namespace orxonox
 {
 
-	namespace mini4DgamePlayerColor
-	{
-		enum color
-		{
-			none,
-			red,
-			blue,
-			green
-		};
-	}
+    namespace mini4DgamePlayerColor
+    {
+        enum color
+        {
+            none,
+            red,
+            blue,
+            green
+        };
+    }
 
     /**
     @brief
@@ -61,7 +61,7 @@ namespace orxonox
     class _Mini4DgameExport Mini4Dgame : public Deathmatch
     {
         public:
-    		Mini4Dgame(Context* context); //!< Constructor. Registers and initializes the object.
+            Mini4Dgame(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~Mini4Dgame(); //!< Destructor. Cleans up, if initialized.
 
             virtual void start(void); //!< Starts the Mini4Dgame minigame.
@@ -70,10 +70,10 @@ namespace orxonox
             virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
 
             void setGameboard(Mini4DgameBoard* board)
-            	{ this->board_ = board; }
+                { this->board_ = board; }
 
             Mini4DgameBoard* getBoard(void)
-            	{ return this->board_; }
+                { return this->board_; }
 
             static void undoStone();
 

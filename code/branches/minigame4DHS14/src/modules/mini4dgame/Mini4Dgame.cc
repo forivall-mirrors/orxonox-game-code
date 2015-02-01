@@ -52,8 +52,8 @@
 namespace orxonox
 {
 
-	SetConsoleCommand("Mini4Dgame", "setStone", &Mini4Dgame::setStone).addShortcut();
-	SetConsoleCommand("Mini4Dgame", "undoStone", &Mini4Dgame::undoStone).addShortcut();
+    SetConsoleCommand("Mini4Dgame", "setStone", &Mini4Dgame::setStone).addShortcut();
+    SetConsoleCommand("Mini4Dgame", "undoStone", &Mini4Dgame::undoStone).addShortcut();
 
     RegisterUnloadableClass(Mini4Dgame);
 
@@ -87,11 +87,11 @@ namespace orxonox
     */
     void Mini4Dgame::cleanup()
     {
-    	if(this->board_ != NULL)// Destroy the board, if present.
-    	{
-    		//this->board_->destroy();
-    		this->board_ = 0;
-    	}
+        if(this->board_ != NULL)// Destroy the board, if present.
+        {
+            //this->board_->destroy();
+            this->board_ = 0;
+        }
     }
 
     /**
@@ -102,18 +102,18 @@ namespace orxonox
     {
         if (this->board_ != NULL) // There needs to be a Mini4DgameCenterpoint, i.e. the area the game takes place.
         {
-        	/*
-        	if (this->board_ == NULL)
-        	{
-        		this->board_ = new Mini4DgameBoard(this->board_->getContext());
-        		// Apply the template for the ball specified by the centerpoint.
-        		this->board_->addTemplate(this->center_->getBoardtemplate());
-        	}
-        	*/
+            /*
+            if (this->board_ == NULL)
+            {
+                this->board_ = new Mini4DgameBoard(this->board_->getContext());
+                // Apply the template for the ball specified by the centerpoint.
+                this->board_->addTemplate(this->center_->getBoardtemplate());
+            }
+            */
 
-        	// Attach the board to the centerpoint and set the parameters as specified in the centerpoint, the ball is attached to.
+            // Attach the board to the centerpoint and set the parameters as specified in the centerpoint, the ball is attached to.
 
-        	this->board_->setPosition(0, 0, 0);
+            this->board_->setPosition(0, 0, 0);
 
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
@@ -140,7 +140,7 @@ namespace orxonox
     */
     void Mini4Dgame::end()
     {
-    	this->cleanup();
+        this->cleanup();
 
         // Call end for the parent class.
         Deathmatch::end();
@@ -182,7 +182,7 @@ namespace orxonox
 
     void Mini4Dgame::undoStone()//Vector4 move, const int playerColor)
     {
-    	ObjectList<Mini4DgameBoard>::iterator it = ObjectList<Mini4DgameBoard>::begin();
+        ObjectList<Mini4DgameBoard>::iterator it = ObjectList<Mini4DgameBoard>::begin();
         it->undoMove();
     }
 

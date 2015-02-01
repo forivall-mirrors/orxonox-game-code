@@ -57,7 +57,7 @@ namespace orxonox
     class _Mini4DgameExport Mini4DgameAI : public Controller, public Tickable
     {
         public:
-    		Mini4DgameAI(Context* context); //!< Constructor. Registers and initializes the object.
+            Mini4DgameAI(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~Mini4DgameAI();
 
             //void setConfigValues();
@@ -68,7 +68,7 @@ namespace orxonox
                 @param timeout
                     The time the AI has to decide on a move. (Sets the strength of the AI)
                 @return move
-                	The move that the AI decided to make.
+                    The move that the AI decided to make.
             */
             Vector4 makeMove(float timeout);
 
@@ -76,7 +76,7 @@ namespace orxonox
             virtual void tick(float dt);
 
             void setCenterpoint(Mini4DgameCenterpoint* center)
-                        	{ this->center_ = center; }
+                            { this->center_ = center; }
 
         protected:
 

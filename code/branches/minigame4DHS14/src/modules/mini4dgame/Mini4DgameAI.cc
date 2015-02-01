@@ -73,43 +73,43 @@ namespace orxonox
 
     Vector4 Mini4DgameAI::makeMove(float timeout)
     {
-    	this->copyBoard();
-    	std::list<Vector4> possibleMoves = this->getPossibleMoves();
+        this->copyBoard();
+        std::list<Vector4> possibleMoves = this->getPossibleMoves();
 
-    	//TODO: alphabeta ueber possibleMoves
+        //TODO: alphabeta ueber possibleMoves
 
-    	//when timeout
-    	Vector4 move = possibleMoves.front();
-    	return move;
+        //when timeout
+        Vector4 move = possibleMoves.front();
+        return move;
     }
 
     void Mini4DgameAI::copyBoard()
     {
-		for(int i=0;i<4;i++){
-			for(int j=0;j<4;j++){
-				for(int k=0;k<4;k++){
-					for(int l=0;l<4;l++){
-						this->board_[i][j][k][l]=this->center_->board[i][j][k][l];
-					}
-				}
-			}
-		}
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                for(int k=0;k<4;k++){
+                    for(int l=0;l<4;l++){
+                        this->board_[i][j][k][l]=this->center_->board[i][j][k][l];
+                    }
+                }
+            }
+        }
     }
 
     std::list<Vector4> Mini4DgameAI::getPossibleMoves()
     {
-    	std::list<Vector4> possibleMoves = new std::list<Vector4>;
-    	for(int i=0;i<4;i++){
-			for(int j=0;j<4;j++){
-				for(int k=0;k<4;k++){
-					for(int l=0;l<4;l++){
-						if (this->board_[i][j][k][l]==mini4DgamePlayerColor::none)
-							possibleMoves.push_back(Vector4(i,j,k,l));
-					}
-				}
-			}
-		}
-    	return possibleMoves;
+        std::list<Vector4> possibleMoves = new std::list<Vector4>;
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                for(int k=0;k<4;k++){
+                    for(int l=0;l<4;l++){
+                        if (this->board_[i][j][k][l]==mini4DgamePlayerColor::none)
+                            possibleMoves.push_back(Vector4(i,j,k,l));
+                    }
+                }
+            }
+        }
+        return possibleMoves;
     }
 
     /**

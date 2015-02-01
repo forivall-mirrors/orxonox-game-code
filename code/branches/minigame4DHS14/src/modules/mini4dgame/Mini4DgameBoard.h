@@ -51,14 +51,14 @@ namespace orxonox
         int w;
     };
 
-	struct Mini4DgameWinner
-	{
-		int winningRow[4];
-		int winningColumn[4];
-		int winningHeight[4];
-		int winningNumber[4];
-		int color_;
-	};
+    struct Mini4DgameWinner
+    {
+        int winningRow[4];
+        int winningColumn[4];
+        int winningHeight[4];
+        int winningNumber[4];
+        int color_;
+    };
 
     /**
     @brief
@@ -70,7 +70,7 @@ namespace orxonox
     class _Mini4DgameExport Mini4DgameBoard : public StaticEntity
     {
         public:
-    		Mini4DgameBoard(Context* context);
+            Mini4DgameBoard(Context* context);
             //virtual ~Mini4DgameBoard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
