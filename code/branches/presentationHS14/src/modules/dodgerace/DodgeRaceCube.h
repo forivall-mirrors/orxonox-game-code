@@ -20,42 +20,35 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Florian Zinggeler
+ *      Samuel Riedel
+ *   Co-authors:
+ *      ...
  *
  */
 
-#ifndef _DodgeRaceHUDinfo_H__
-#define _DodgeRaceHUDinfo_H__
+/**
+    @file DodgeRace.h
+    @brief Gametype.
+    @ingroup DodgeRace
+*/
 
-//#include "DodgeRaceShip.h"
-#include "DodgeRace.h"
-//#include "DodgeRaceCenterPoint.h"
+#ifndef _DodgeRaceCube_H__
+#define _DodgeRaceCube_H__
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
-#include "tools/interfaces/Tickable.h"
-#include "overlays/OverlayText.h"
+#include "worldentities/MovableEntity.h"
+
 
 namespace orxonox
 {
-    class _DodgeRaceExport DodgeRaceHUDinfo : public OverlayText, public Tickable
+    class _DodgeRaceExport DodgeRaceCube : public MovableEntity
     {
-     public:
-            DodgeRaceHUDinfo(Context* context);
+       public:
+            DodgeRaceCube(Context* context);
 
-            virtual void tick(float dt);
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void changedOwner();
-
-            inline void setShowPoints(bool value)
-                { this->bShowPoints_ = value; }
-            inline bool getShowPoints() const
-                { return this->bShowPoints_; }
-
-
-        private:
-            DodgeRace* DodgeRaceGame;
-            bool bShowPoints_;
+       private:
     };
 }
-#endif /* _DodgeRaceHUDinfo_H__ */
+
+#endif /* _DodgeRaceCube_H__ */

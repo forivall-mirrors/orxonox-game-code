@@ -35,7 +35,7 @@
 #define _DodgeRaceShip_H__
 
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

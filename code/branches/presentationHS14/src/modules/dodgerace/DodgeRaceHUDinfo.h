@@ -21,41 +21,41 @@
  *
  *   Author:
  *      Florian Zinggeler
- *   Co-authors:
- *      ...
  *
  */
 
-/**
-    @file DodgeRaceCenterPoint.h
-    @brief Declaration of the DodgeRaceCenterPoint class.
-    @ingroup DodgeRace
-*/
+#ifndef _DodgeRaceHUDinfo_H__
+#define _DodgeRaceHUDinfo_H__
 
-#ifndef _DodgeRaceCenterPoint_H__
-#define _DodgeRaceCenterPoint_H__
+//#include "DodgeRaceShip.h"
+#include "DodgeRace.h"
+//#include "DodgeRaceCenterPoint.h"
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
-//#include "DodgeRace.h"
-//#include "DodgeRaceHUDinfo.h"
-
-#include "worldentities/StaticEntity.h"
+#include "tools/interfaces/Tickable.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _DodgeRaceExport DodgeRaceCenterPoint : public StaticEntity
+    class _DodgeRaceExport DodgeRaceHUDinfo : public OverlayText, public Tickable
     {
-        public:
-            DodgeRaceCenterPoint(Context* context); //checks whether the gametype is actually DodgeRace.
+     public:
+            DodgeRaceHUDinfo(Context* context);
 
+            virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedOwner();
 
-            virtual void changedGametype(); //!< Is called when the gametype has changed.
+            inline void setShowPoints(bool value)
+                { this->bShowPoints_ = value; }
+            inline bool getShowPoints() const
+                { return this->bShowPoints_; }
+
+
         private:
-            void checkGametype();
-
+            DodgeRace* DodgeRaceGame;
+            bool bShowPoints_;
     };
 }
-
-#endif /* _DodgeRaceCenterPoint_H__ */
+#endif /* _DodgeRaceHUDinfo_H__ */

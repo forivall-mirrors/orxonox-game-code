@@ -20,35 +20,42 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Samuel Riedel
+ *      Florian Zinggeler
  *   Co-authors:
  *      ...
  *
  */
 
 /**
-    @file DodgeRace.h
-    @brief Gametype.
+    @file DodgeRaceCenterPoint.h
+    @brief Declaration of the DodgeRaceCenterPoint class.
     @ingroup DodgeRace
 */
 
-#ifndef _DodgeRaceCube_H__
-#define _DodgeRaceCube_H__
+#ifndef _DodgeRaceCenterPoint_H__
+#define _DodgeRaceCenterPoint_H__
 
-#include "dodgerace2/DodgeRacePrereqs.h"
+#include "dodgerace/DodgeRacePrereqs.h"
 
-#include "worldentities/MovableEntity.h"
+//#include "DodgeRace.h"
+//#include "DodgeRaceHUDinfo.h"
 
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _DodgeRaceExport DodgeRaceCube : public MovableEntity
+    class _DodgeRaceExport DodgeRaceCenterPoint : public StaticEntity
     {
-       public:
-            DodgeRaceCube(Context* context);
+        public:
+            DodgeRaceCenterPoint(Context* context); //checks whether the gametype is actually DodgeRace.
 
-       private:
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
+            virtual void changedGametype(); //!< Is called when the gametype has changed.
+        private:
+            void checkGametype();
+
     };
 }
 
-#endif /* _DodgeRaceCube_H__ */
+#endif /* _DodgeRaceCenterPoint_H__ */
