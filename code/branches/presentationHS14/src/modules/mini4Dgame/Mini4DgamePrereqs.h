@@ -29,7 +29,7 @@
 /**
 @file
 @brief
-    Shared library macros, enums, constants and forward declarations for the pong module
+    Shared library macros, enums, constants and forward declarations for the Mini4Dgame module
 */
 
 #ifndef _Mini4DgamePrereqs_H__
@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(Mini4Dgame_STATIC_BUILD)
-#  ifdef Mini4Dgame_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(MINI4DGAME_STATIC_BUILD)
+#  ifdef MINI4DGAME_SHARED_BUILD
 #    define _Mini4DgameExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
@@ -71,4 +71,4 @@ namespace orxonox
     class Mini4DgameBoard;
 }
 
-#endif /* _PongPrereqs_H__ */
+#endif /* _Mini4DgamePrereqs_H__ */

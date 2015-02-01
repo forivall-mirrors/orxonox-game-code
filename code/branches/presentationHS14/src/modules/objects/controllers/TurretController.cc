@@ -28,7 +28,7 @@
 
 #include "TurretController.h"
 #include "worldentities/pawns/Pawn.h"
-#include "Turret.h"
+#include "objects/Turret.h"
 
  namespace orxonox
  {
