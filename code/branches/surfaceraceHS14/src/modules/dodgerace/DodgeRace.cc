@@ -94,10 +94,10 @@ namespace orxonox
 			currentPosition = getPlayer()->getWorldPosition().x;
 			counter = counter + (currentPosition - lastPosition);
 			lastPosition = currentPosition;
-			point = currentPosition;
-			getPlayer()->speed = 830 - (point / 1000);
+			point = (int) currentPosition;
+			getPlayer()->speed = 830.0f - (point / 1000);
 
-			for(uint i=0; i < cubeList.size();i++)
+			for(unsigned int i=0; i < cubeList.size();i++)
 			{
 				if(cubeList.at(i)->getPosition().x < currentPosition-3000)
 				{
@@ -122,7 +122,7 @@ namespace orxonox
 
 					}
 
-					cube->setPosition(getPlayer()->getWorldPosition() + Vector3(5000, 0, -3600 + (i*1200)));
+					cube->setPosition(getPlayer()->getWorldPosition() + Vector3(5000.0f, 0.0f, -3600.0f + (i*1200)));
 					//stEntity->setScale3D(50,50,50);
 				}
 
@@ -168,7 +168,7 @@ namespace orxonox
     {
     	orxout() << "start" << endl;
         init();
-		for(uint i=0; i< cubeList.size();i++)
+		for(unsigned int i=0; i< cubeList.size();i++)
 		{
 			cubeList.at(i)->destroy();
 			cubeList.erase(cubeList.begin()+i);

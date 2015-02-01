@@ -97,10 +97,10 @@ namespace orxonox
             bool bShowLevel;
             int lives;
             int multiplier;
-            int counter;
+            float counter;
             int pattern;
-            int currentPosition;
-            int lastPosition;
+            float currentPosition;
+            float lastPosition;
 
        private:
             Timer endGameTimer;
