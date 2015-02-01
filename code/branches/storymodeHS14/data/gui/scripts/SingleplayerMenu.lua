@@ -39,8 +39,8 @@ function P.onLoad()
             ["callback"]  = P.SingleplayerBackButton_clicked
     })
     P:setButton(1, 4,{
-    		["button"] = winMgr:getWindow("orxonox/CampaignButton"),
-    		["callback"] = P.CampaignButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/CampaignButton"),
+            ["callback"] = P.CampaignButton_clicked
     })
 end
 
@@ -171,7 +171,7 @@ function P.SingleplayerBackButton_clicked(e)
 end
 
 function P.CampaignButton_clicked(e)
-	showMenuSheet("CampaignMenu", true)
+    showMenuSheet("CampaignMenu", true)
 end
 
 return P

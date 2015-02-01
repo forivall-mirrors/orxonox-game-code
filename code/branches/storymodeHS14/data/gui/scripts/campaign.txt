@@ -1,7 +1,0 @@
-1f you want to insert a new level do not use tab use       .
-spacebar!!!                                                .
-missionOne.oxw 1                                           .
-fightInOurBack.oxw 0                                       .
-pirateAttack.oxw 0                                         .
-iJohnVane_TriptoArea51.oxw 0                               .
-............................................................
