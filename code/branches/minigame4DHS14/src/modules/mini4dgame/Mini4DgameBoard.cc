@@ -83,20 +83,20 @@ namespace orxonox
         @brief checks if the move is valid
         @param the position where to put the stone plus the player who makes the move
     */
-    bool Mini4DgameBoard::isValidMove(const Vector4 move)
+    bool Mini4DgameBoard::isValidMove(const Mini4DgamePosition& move)
     {
     	return (move.x<4 && move.y<4 && move.z<4 && move.w<4
     			&& move.x>=0 && move.y>=0 && move.z>=0 && move.w>=0
-    			&& this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] == mini4DgamePlayerColor::none);
+    			&& this->board[move.x][move.y][move.z][move.w] == mini4DgamePlayerColor::none);
     }
 
 	void Mini4DgameBoard::undoMove()
 	{
-		Vector4 move = moves.back();
+	    const Mini4DgamePosition& move = moves.back();
 		moves.pop_back();
-    	this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = mini4DgamePlayerColor::none;
-    	this->blinkingBillboards[(int)move.x][(int)move.y][(int)move.z][(int)move.w]->destroy();
-    	this->blinkingBillboards[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = 0;
+    	this->board[move.x][move.y][move.z][move.w] = mini4DgamePlayerColor::none;
+    	this->blinkingBillboards[move.x][move.y][move.z][move.w]->destroy();
+    	this->blinkingBillboards[move.x][move.y][move.z][move.w] = 0;
     	if(player_toggle_){
     		this->player_toggle_ = false;
     	}else{
@@ -108,17 +108,17 @@ namespace orxonox
     @brief makes a move on the logic playboard
     @param the position where to put the stone plus the player who makes the move
     */
-    void Mini4DgameBoard::makeMove(const Vector4 move)
+    void Mini4DgameBoard::makeMove(const Mini4DgamePosition& move)
     {
     	if(this->isValidMove(move))
     	{
     		if(!moves.empty())
     		{
     			//stop blinking of last move
-    			Vector4 lastMove = moves.back();
-    			this->blinkingBillboards[(int)lastMove.x][(int)lastMove.y][(int)lastMove.z][(int)lastMove.w]
+    		    const Mini4DgamePosition& lastMove = moves.back();
+    			this->blinkingBillboards[lastMove.x][lastMove.y][lastMove.z][lastMove.w]
     					->setActive(false);
-    			this->blinkingBillboards[(int)lastMove.x][(int)lastMove.y][(int)lastMove.z][(int)lastMove.w]
+    			this->blinkingBillboards[lastMove.x][lastMove.y][lastMove.z][lastMove.w]
     					->setScale(0.1);
     		}
 
@@ -132,24 +132,24 @@ namespace orxonox
     			this->player_toggle_ = true;
     		}
 
-    		this->board[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = (mini4DgamePlayerColor::color) playerColor;
+    		this->board[move.x][move.y][move.z][move.w] = (mini4DgamePlayerColor::color) playerColor;
 
     		BlinkingBillboard* bb = new BlinkingBillboard(this->getContext());
 			bb->setFrequency(0.3);
 			bb->setAmplitude(0.1);
 
-			switch((int)move.w){
+			switch(move.w){
 			case 0:	bb->setMaterial("Numbers/One");
-					bb->setPosition(60*(int)move.x-95,60*(int)move.y-95,60*(int)move.z-95);
+					bb->setPosition(60.0f*move.x-95,60.0f*move.y-95,60.0f*move.z-95);
 					break;
 			case 1:	bb->setMaterial("Numbers/Two");
-					bb->setPosition(60*(int)move.x-85,60*(int)move.y-85,60*(int)move.z-95);
+					bb->setPosition(60.0f*move.x-85,60.0f*move.y-85,60.0f*move.z-95);
 					break;
 			case 2:	bb->setMaterial("Numbers/Three");
-					bb->setPosition(60*(int)move.x-85,60*(int)move.y-95,60*(int)move.z-85);
+					bb->setPosition(60.0f*move.x-85,60.0f*move.y-95,60.0f*move.z-85);
 					break;
 			case 3:	bb->setMaterial("Numbers/Four");
-					bb->setPosition(60*(int)move.x-85,60*(int)move.y-85,60*(int)move.z-85);
+					bb->setPosition(60.0f*move.x-85,60.0f*move.y-85,60.0f*move.z-85);
 					break;
 			}
 
@@ -164,7 +164,7 @@ namespace orxonox
 			}
 
 			this->attach(bb);
-			this->blinkingBillboards[(int)move.x][(int)move.y][(int)move.z][(int)move.w] = bb;
+			this->blinkingBillboards[move.x][move.y][move.z][move.w] = bb;
 
 
     		Mini4DgameWinner winner = this->getWinner();
@@ -175,9 +175,9 @@ namespace orxonox
     				BlinkingBillboard* redFlare = new BlinkingBillboard(this->getContext());
 					redFlare->setFrequency(0.5);
 					redFlare->setAmplitude(3);
-					redFlare->setPosition(60*(int)winner.winningRow[i]-90,
-									60*(int)winner.winningColumn[i]-90,
-									60*(int)winner.winningHeight[i]-90);
+					redFlare->setPosition(60.0f*(int)winner.winningRow[i]-90,
+									60.0f*(int)winner.winningColumn[i]-90,
+									60.0f*(int)winner.winningHeight[i]-90);
 					redFlare->setMaterial("Flares/lensflare");
 					redFlare->setColour(ColourValue(1,0,0));
 					this->attach(redFlare);

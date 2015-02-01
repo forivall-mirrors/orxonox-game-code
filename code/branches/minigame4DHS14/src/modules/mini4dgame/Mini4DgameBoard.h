@@ -42,6 +42,15 @@
 namespace orxonox
 {
 
+    struct Mini4DgamePosition
+    {
+        Mini4DgamePosition(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
+        int x;
+        int y;
+        int z;
+        int w;
+    };
+
 	struct Mini4DgameWinner
 	{
 		int winningRow[4];
@@ -66,9 +75,9 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            bool isValidMove(const Vector4 move);
+            bool isValidMove(const Mini4DgamePosition& move);
             void undoMove();
-            void makeMove(const Vector4 move);
+            void makeMove(const Mini4DgamePosition& move);
             Mini4DgameWinner getWinner();
 
             void changedGametype();
@@ -76,7 +85,7 @@ namespace orxonox
 
         private:
             //void registerVariables();
-            std::vector<Vector4> moves;
+            std::vector<Mini4DgamePosition> moves;
             bool player_toggle_;
             BlinkingBillboard* blinkingBillboards[4][4][4][4];
             int board[4][4][4][4]; //!< The logical board where the game takes place. board[row][column][height][number]

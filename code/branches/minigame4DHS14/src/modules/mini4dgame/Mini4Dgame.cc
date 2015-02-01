@@ -189,7 +189,7 @@ namespace orxonox
     //void Mini4Dgame::setStone(Vector4 move, const int playerColor, Mini4DgameBoard* board)
     void Mini4Dgame::setStone(int x,int y,int z,int w)//Vector4 move, const int playerColor)
     {
-    	Vector4 move = Vector4(x,y,z,w);
+        Mini4DgamePosition move = Mini4DgamePosition(x,y,z,w);
         ObjectList<Mini4DgameBoard>::iterator it = ObjectList<Mini4DgameBoard>::begin();
         it->makeMove(move);
     }
