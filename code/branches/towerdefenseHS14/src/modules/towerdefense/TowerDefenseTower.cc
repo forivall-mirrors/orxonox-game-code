@@ -70,8 +70,8 @@ namespace orxonox
        		float reloadwaittime = getReloadWaitTime();
        		this->setDamageMultiplier(5000);
 
-       		reloadrate = 0.5*reloadrate;
-       		reloadwaittime = 0.5*reloadwaittime;
+       		reloadrate = 0.5f*reloadrate;
+       		reloadwaittime = 0.5f*reloadwaittime;
        		setReloadRate(reloadrate);
        		setReloadWaitTime(reloadwaittime);
        		this->addTemplate("towerturret1");

@@ -30,7 +30,7 @@ namespace orxonox
 
     Vector3 TDCoordinate::get3dcoordinate()
     {
-    	int tileScale = 100;
+    	float tileScale = 100;
 
     	Vector3 *coord = new Vector3();
     	coord->x= (x-8) * tileScale;
