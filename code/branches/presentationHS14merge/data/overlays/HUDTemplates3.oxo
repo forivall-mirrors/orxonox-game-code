@@ -81,7 +81,7 @@
      name              = "EnemyHealthBar"
      background        = "Orxonox/HealthBarBackground"
      size              = "0.35, 0.0875"
-     position          = "1.0 , 0.1 "
+     position          = "1 ,0.1"
      pickpoint         = "1, 1"
      bartexture        = "healthbar_bar.png"
      textfont          = "VeraMono"
