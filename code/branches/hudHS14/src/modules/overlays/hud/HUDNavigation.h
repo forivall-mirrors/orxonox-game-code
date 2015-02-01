@@ -79,9 +79,9 @@ namespace orxonox
 
 
 
-            	Ogre::PanelOverlayElement* health_;
-            	Ogre::PanelOverlayElement* healthLevel_;
-            	Ogre::PanelOverlayElement* panel_;
+                Ogre::PanelOverlayElement* health_;
+                Ogre::PanelOverlayElement* healthLevel_;
+                Ogre::PanelOverlayElement* panel_;
                 Ogre::PanelOverlayElement* target_;
                 Ogre::TextAreaOverlayElement* text_;
                 bool outOfView_;
@@ -98,7 +98,7 @@ namespace orxonox
                             this->sizeChanged();
                         }
             inline float getHealthMarkerSize() const
-                        	{ return healthMarkerSize_; }
+                            { return healthMarkerSize_; }
 
             inline void setHealthLevelMarkerSize(float size)
                                     {
@@ -106,7 +106,7 @@ namespace orxonox
                                         this->sizeChanged();
                                     }
                         inline float getHealthLevelMarkerSize() const
-                                    	{ return healthLevelMarkerSize_; }
+                                        { return healthLevelMarkerSize_; }
 
             inline void setNavMarkerSize(float size)
             {

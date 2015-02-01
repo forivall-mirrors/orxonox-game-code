@@ -305,9 +305,9 @@ namespace orxonox
                     // Change material only if outOfView changed
                     if (!it->second.wasOutOfView_)
                     {
-                    	it->second.health_->hide();
-                    	it->second.healthLevel_->hide();
-                    	it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("arrows.png", it->first->getRadarObjectColour()));
+                        it->second.health_->hide();
+                        it->second.healthLevel_->hide();
+                        it->second.panel_->setMaterialName(TextureGenerator::getMaterialName("arrows.png", it->first->getRadarObjectColour()));
                         it->second.wasOutOfView_ = true;
                         it->second.target_->hide();
                     }
@@ -369,7 +369,7 @@ namespace orxonox
 
 
 
-                	//calculate the health of the actual selected radarViewable (relativHealthScale: while (0) is no health left, (1) is the initial health)
+                    //calculate the health of the actual selected radarViewable (relativHealthScale: while (0) is no health left, (1) is the initial health)
                     Pawn* pawnPtr = (Pawn*) (it->first->getWorldEntity());
                     float health = pawnPtr->getHealth();
                     float initHealth = pawnPtr->getMaxHealth();
@@ -383,19 +383,19 @@ namespace orxonox
                     int HealthLevel = 1;
 
                     if(initHealth < 200)
-                    	HealthLevel = 1;
+                        HealthLevel = 1;
                     if(200 <= initHealth && initHealth < 500)
-                    	HealthLevel = 2;
+                        HealthLevel = 2;
                     if(500 <= initHealth && initHealth < 1000)
-                    	HealthLevel = 3;
+                        HealthLevel = 3;
                     if(1000 <= initHealth && initHealth < 2500)
-                    	HealthLevel = 4;
+                        HealthLevel = 4;
                     if(2500 <= initHealth)
-                    	HealthLevel = 5;
+                        HealthLevel = 5;
 
 
 
-                	// Change material only if outOfView changed
+                    // Change material only if outOfView changed
                     if (it->second.wasOutOfView_)
                     {
                         //it->second.panel_->setMaterialName("Orxonox/NavTDC");
@@ -412,8 +412,8 @@ namespace orxonox
                         // because as soon as relative health drops below 10% (0.1) the descrete value is 0 but as long as the
                         // spaceship is still intact there should be at least one part of the bar left.
                         if(1<=discreteHealthScale){
-                        	it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
-                        	it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1f*discreteHealthScale, 0.75f*this->healthMarkerSize_ * this->getActualSize().y);
+                            it->second.health_->setTiling((float)discreteHealthScale , 1 ,0);
+                            it->second.health_->setDimensions(this->healthMarkerSize_ * this->getActualSize().x *0.1f*discreteHealthScale, 0.75f*this->healthMarkerSize_ * this->getActualSize().y);
                         }
 
 
@@ -509,9 +509,9 @@ namespace orxonox
             else // do not display on HUD
 
             {
-            	it->second.health_->hide();
+                it->second.health_->hide();
                 it->second.healthLevel_->hide();
-            	it->second.panel_->hide();
+                it->second.panel_->hide();
                 it->second.text_->hide();
                 it->second.target_->hide();
             }
@@ -534,10 +534,10 @@ namespace orxonox
 
         for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it != this->activeObjectList_.end(); ++it)
         {
-        	if (it->second.health_ != NULL)
-        	    it->second.health_->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
-        	if (it->second.healthLevel_ != NULL)
-        		it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * xScale, this->healthLevelMarkerSize_ * yScale);
+            if (it->second.health_ != NULL)
+                it->second.health_->setDimensions(this->healthMarkerSize_ * xScale, this->healthMarkerSize_ * yScale);
+            if (it->second.healthLevel_ != NULL)
+                it->second.healthLevel_->setDimensions(this->healthLevelMarkerSize_ * xScale, this->healthLevelMarkerSize_ * yScale);
             if (it->second.panel_ != NULL)
                 it->second.panel_->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
             if (it->second.text_ != NULL)
@@ -626,8 +626,8 @@ namespace orxonox
         if (this->activeObjectList_.find(viewable) != this->activeObjectList_.end())
         {
             // Detach overlays
-        	this->background_->removeChild(it->second.health_->getName());
-        	this->background_->removeChild(it->second.healthLevel_->getName());
+            this->background_->removeChild(it->second.health_->getName());
+            this->background_->removeChild(it->second.healthLevel_->getName());
             this->background_->removeChild(it->second.panel_->getName());
             this->background_->removeChild(it->second.target_->getName());
             this->background_->removeChild(it->second.text_->getName());
