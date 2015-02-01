@@ -35,7 +35,7 @@
      background        = "Orxonox/HealthBarBackground"
      size              = "0.35, 0.0875"
      position          = "0.0 , 0.9 "
-     pickpoint         = "0, 1"       
+     pickpoint         = "0, 1"
      bartexture        = "healthbar_bar.png"
      textfont          = "VeraMono"
      textusebarcolour  = true
