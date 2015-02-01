@@ -1,0 +1,19 @@
+SET_SOURCE_FILES(OVERLAYS_SRC_FILES
+  OverlayText.cc
+  FadeoutText.cc
+  GUIOverlay.cc
+)
+
+ADD_SUBDIRECTORY(debugging)
+ADD_SUBDIRECTORY(hud)
+ADD_SUBDIRECTORY(stats)
+
+ORXONOX_ADD_LIBRARY(overlays
+  MODULE
+  FIND_HEADER_FILES
+  PCH_FILE
+    OverlaysPrecompiledHeaders.h
+  LINK_LIBRARIES
+    orxonox
+  SOURCE_FILES ${OVERLAYS_SRC_FILES}
+)
