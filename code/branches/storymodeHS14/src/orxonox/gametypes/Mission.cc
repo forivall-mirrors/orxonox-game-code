@@ -27,6 +27,9 @@
  */
 
 #include "Mission.h"
+
+#include <boost/filesystem.hpp>
+
 #include "items/Engine.h"
 #include "controllers/ArtificialController.h"
 
@@ -107,8 +110,11 @@ namespace orxonox
         if (this->missionAccomplished_ && !this->gtinfo_->hasEnded())
         {
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
+
+            boost::filesystem::path filepath("campaign.txt");
             std::fstream myfile;
-            myfile.open("/home/maxima/maxima-extra-0/orxonox/storymodeHS14/campaign.txt");
+            myfile.open(filepath.string().c_str(), std::fstream::out);
+
             std::string line;
             std::string mission = this->getFilename();
             int k = 58 - mission.length();
@@ -125,11 +131,13 @@ namespace orxonox
                 {
                     if (line == mission + " 0" + helperstring)
                     {
-                        long pos = myfile.tellp();
+                        long pos = (long) myfile.tellp();
                         myfile.seekp(pos - 61);
                         myfile << mission + " 1" + helperstring;
                     }
                 }
+            } else {
+                orxout(internal_warning) << "failed to open campaign file" << endl;
             }
             myfile.flush();
             myfile.clear();
