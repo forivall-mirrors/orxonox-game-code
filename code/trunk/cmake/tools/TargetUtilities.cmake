@@ -95,7 +95,7 @@ MACRO(ORXONOX_ADD_EXECUTABLE _target_name)
     ELSE()
       SET(MSVC_PLATFORM "Win32")
     ENDIF()
-    IF(MSVC10)
+    IF(NOT (MSVC_VERSION LESS 1600)) #For all versions >= Visual Studio 2010
       CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/template.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}.vcxproj.user")
     ELSE()
       STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
