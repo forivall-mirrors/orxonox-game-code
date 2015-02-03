@@ -18,12 +18,11 @@ function P.onLoad()
     P.createFilterTab("Presentations", "presentation")
     P.createFilterTab("Tests", "test")
     P.createFilterTab("Show All", nil)
-   
 
     -- update description and screenshot boxes
     P.SingleplayerSelectionChanged()
 
-    --buttons are arranged in a 1x4 matrix
+    --buttons are arranged in a 2x3 matrix
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
             ["callback"]  = P.SingleplayerStartButton_clicked
@@ -38,7 +37,8 @@ function P.onLoad()
             ["button"] = winMgr:getWindow("orxonox/SingleplayerBackButton"),
             ["callback"]  = P.SingleplayerBackButton_clicked
     })
-    P:setButton(1, 4,{
+
+    P:setButton(2, 2,{
             ["button"] = winMgr:getWindow("orxonox/CampaignButton"),
             ["callback"] = P.CampaignButton_clicked
     })

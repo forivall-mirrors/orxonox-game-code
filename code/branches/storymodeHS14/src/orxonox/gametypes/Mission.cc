@@ -28,14 +28,11 @@
 
 #include "Mission.h"
 
-#include <boost/filesystem.hpp>
-
 #include "items/Engine.h"
 #include "controllers/ArtificialController.h"
 
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
-#include "core/config/ConfigValueIncludes.h"
 #include "infos/PlayerInfo.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"
@@ -81,27 +78,22 @@ namespace orxonox
 
     void Mission::start()
     {
-        std::fstream myfile;
-
         Gametype::start();
         this->setTeams();
-        //just for testing
-        //this->missionAccomplished_=true;
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
     }
 
     void Mission::end()
     {
-
         if (this->missionAccomplished_ && !this->gtinfo_->hasEnded())
         {
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
 
             LevelManager::getInstance().setLastFinishedCampaignMission(this->getFilename());
         }
-
         else if (!this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
+
         Gametype::end();
     }
 
@@ -121,7 +113,6 @@ namespace orxonox
         { //TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
             it->setMissionAccomplished(accomplished);
             it->end();
-
         }
     }
 
@@ -132,5 +123,4 @@ namespace orxonox
             it->setLives(amount);
         }
     }
-
 }
