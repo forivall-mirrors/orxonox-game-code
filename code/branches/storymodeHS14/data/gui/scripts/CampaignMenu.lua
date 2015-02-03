@@ -2,40 +2,80 @@
 
 local P = createMenuSheet("CampaignMenu")
 
-function P.onLoad()
-    
-    local MissionTwoButton = winMgr:getWindow("orxonox/MissionTwoButton")
-    if (P.CheckLevel("missionOne.oxw")) then
-    MissionTwoButton:setProperty("Disabled", "False")
-    end
-    
-    local MissionThreeButton = winMgr:getWindow("orxonox/MissionThreeButton")
-    if (P.CheckLevel("fightInOurBack.oxw")) then
-    MissionThreeButton:setProperty("Disabled", "False")
-    end
+function P:onShow()
+    P:updateButtons()
+end
 
-    local MissionFourButton = winMgr:getWindow("orxonox/MissionFourButton")
-    if (P.CheckLevel("pirateAttack.oxw")) then
-    MissionFourButton:setProperty("Disabled", "False")
-    end
-    
-    local Completed = winMgr:getWindow("orxonox/CampaignMenuCongratulation")
-    if (P.CheckLevel("iJohnVane_TriptoArea51.oxw")) then
-    Completed:setProperty("Visible","True")
+function P.updateButtons()
+    P.updateButton(0, winMgr:getWindow("orxonox/MissionOneButton"))
+    P.updateButton(1, winMgr:getWindow("orxonox/MissionTwoButton"))
+    P.updateButton(2, winMgr:getWindow("orxonox/MissionThreeButton"))
+    P.updateButton(3, winMgr:getWindow("orxonox/MissionFourButton"))
+
+    if (P.getIndexOfLastFinishedMission() == orxonox.LevelManager:getInstance():getNumberOfCampaignMissions() - 1) then
+        local label = winMgr:getWindow("orxonox/CampaignMenuCongratulation")
+        label:setProperty("Visible","True")
     end
 end
 
-function P.GenerateHelperString(number)
-    local string = ""
-    while number > 1 do
-        string = string.." "
-        number = number-1
+function P.updateButton(index, button)
+    if (P.shouldDisplayButton(index)) then
+        button:setProperty("Visible", "True")
+
+        if (P.shouldEnableButton(index)) then
+            button:setProperty("Disabled", "False")
+        end
     end
-    string = string.."."
-    return string
 end
 
-function P.FindLevel(filename)
+function P.shouldDisplayButton(index)
+    local size = orxonox.LevelManager:getInstance():getNumberOfCampaignMissions()
+    return index < size
+end
+
+function P.shouldEnableButton(index)
+    return index <= P.getIndexOfLastFinishedMission() + 1
+end
+
+function P.getIndexOfLastFinishedMission()
+    local lastMission = orxonox.LevelManager:getInstance():getLastFinishedCampaignMission()
+    if (lastMission and lastMission ~= "") then
+        local size = orxonox.LevelManager:getInstance():getNumberOfCampaignMissions()
+        local index = 0
+        while index < size do
+            local mission = orxonox.LevelManager:getInstance():getCampaignMission(index)
+            if (mission == lastMission) then 
+                return index
+            end
+            index = index + 1
+        end
+    end
+    return -1
+end
+
+function P.MissionOneButton_clicked(e)
+    P.loadLevel(P.FindLevel(0))
+end
+
+function P.MissionTwoButton_clicked(e)
+    P.loadLevel(P.FindLevel(1))
+end
+
+function P.MissionThreeButton_clicked(e)
+    P.loadLevel(P.FindLevel(2))
+end
+
+function P.MissionFourButton_clicked(e)
+    P.loadLevel(P.FindLevel(3))
+end
+
+function P.loadLevel(level)
+    orxonox.execute("startGame " .. level:getXMLFilename())
+    hideAllMenuSheets()
+end
+
+function P.FindLevel(index)
+    local filename = orxonox.LevelManager:getInstance():getCampaignMission(index)
     local level = nil
     local templevel = nil
     local size = orxonox.LevelManager:getInstance():getNumberOfLevels()
@@ -49,90 +89,9 @@ function P.FindLevel(filename)
     end
     return level
 end
-    
-function P.CheckLevel(filename)
-    local file = io.open("campaign.txt", "r+")
-    local index = 0
-    local returnvalue = false
-    local numberoflines = 58-string.len(filename)
-    local helpstringfalse = filename.." 0"..P.GenerateHelperString(numberoflines) 
-    local helpstringtrue = filename.." 1"..P.GenerateHelperString(numberoflines)
-    while index < 100 do
-        local line = file:read()
-        if(line == helpstringfalse) then
-            returnvalue = false 
-            break
-        end
-        if(line == helpstringtrue) then
-            returnvalue = true
-            break
-        end
-        index=index+1
-    end
-    io.close(file)
-    return returnvalue
-end
-
-function P.MissionOneButton_clicked(e)
-    local level = P.FindLevel("missionOne.oxw")
-        orxonox.execute("startGame " .. level:getXMLFilename())
-        hideAllMenuSheets()
-end
-
-function P.MissionTwoButton_clicked(e)
-    local level = P.FindLevel("fightInOurBack.oxw")
-    if (P.CheckLevel("missionOne.oxw")) then
-        orxonox.execute("startGame " .. level:getXMLFilename())
-        hideAllMenuSheets()
-    end
-end
-
-function P.MissionThreeButton_clicked(e)
-    local level = P.FindLevel("pirateAttack.oxw")
-    if (P.CheckLevel("fightInOurBack.oxw")) then
-        orxonox.execute("startGame " .. level:getXMLFilename())
-        hideAllMenuSheets()
-    else
-         hideMenuSheet(P.name)
-    end
-end
-
-function P.MissionFourButton_clicked(e)
-    local level = P.FindLevel("iJohnVane_TriptoArea51.oxw")
-    if (P.CheckLevel("pirateAttack.oxw")) then
-        orxonox.execute("startGame " .. level:getXMLFilename())
-        hideAllMenuSheets()
-    else
-         hideMenuSheet(P.name)
-    end
-end
-
-function P.CampaignMenuRefreshButton_clicked(e)
-    local MissionTwoButton = winMgr:getWindow("orxonox/MissionTwoButton")
-    if (P.CheckLevel("missionOne.oxw")) then
-    MissionTwoButton:setProperty("Disabled", "False")
-    end
-    
-    local MissionThreeButton = winMgr:getWindow("orxonox/MissionThreeButton")
-    if (P.CheckLevel("fightInOurBack.oxw")) then
-    MissionThreeButton:setProperty("Disabled", "False")
-    end
-
-    local MissionFourButton = winMgr:getWindow("orxonox/MissionFourButton")
-    if (P.CheckLevel("pirateAttack.oxw")) then
-    MissionFourButton:setProperty("Disabled", "False")
-    end
-    
-    local Completed = winMgr:getWindow("orxonox/CampaignMenuCongratulation")
-    if (P.CheckLevel("iJohnVane_TriptoArea51.oxw")) then
-    Completed:setProperty("Visible","True")
-    end
-end
 
 function P.CampaignMenuBackButton_clicked(e)
     hideMenuSheet(P.name)
 end
-
-
 
 return P

@@ -9,12 +9,14 @@
         <Property Name="BackgroundEnabled" Value="False" />
         <Window Type="MenuWidgets/Button" Name="orxonox/MissionOneButton" >
             <Property Name="Text" Value="Mission 1" />
+            <Property Name="Visible" Value="False"/>
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.2875,0},{0.6,0},{0.3375,0}}" />
             <Event Name="Clicked" Function="CampaignMenu.MissionOneButton_clicked"/>
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/MissionTwoButton" >
             <Property Name="Text" Value="Mission 2" />
+            <Property Name="Visible" Value="False"/>
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.3625,0},{0.6,0},{0.4125,0}}" />
             <Property Name="Disabled" Value="True" />
@@ -22,6 +24,7 @@
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/MissionThreeButton" >
             <Property Name="Text" Value="Mission 3" />
+            <Property Name="Visible" Value="False"/>
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.4375,0},{0.6,0},{0.4875,0}}" />
             <Property Name="Disabled" Value="True" />
@@ -29,6 +32,7 @@
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/MissionFourButton" >
             <Property Name="Text" Value="Mission 4" />
+            <Property Name="Visible" Value="False"/>
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5125,0},{0.6,0},{0.5625,0}}" />
             <Property Name="Disabled" Value="True" />
@@ -37,23 +41,17 @@
         <Window Type="MenuWidgets/Button" Name="orxonox/CampaignMenuBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.7,0},{0.8,0},{0.85,0},{0.85,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.8,0},{0.6,0},{0.85,0}}" />
             <Event Name="Clicked" Function="CampaignMenu.CampaignMenuBackButton_clicked"/> 
         </Window>
-        <Window Type="MenuWidgets/Button" Name="orxonox/CampaignMenuRefreshButton" >
-            <Property Name="Text" Value="Refresh" />
-            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.8,0},{0.3,0},{0.85,0}}" />
-            <Event Name="Clicked" Function="CampaignMenu.CampaignMenuRefreshButton_clicked"/> 
-        </Window>
-         <Window Type="MenuWidgets/StaticText" Name="orxonox/CampaignMenuCongratulation" >
+        <Window Type="MenuWidgets/StaticText" Name="orxonox/CampaignMenuCongratulation" >
             <Property Name="Text" Value="Campaign Completed!!!" />
-            <Property Name="Visible" Value="False"/>      
+            <Property Name="Visible" Value="False"/>
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="VertFormatting" Value="TopAligned" />
             <Property Name="UnifiedMaxSize" Value="{{2,1},{2,1}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.15,0},{0.6,0},{0.2,0}}" />
-		</Window>
+        </Window>
     </Window>
 </GUILayout>

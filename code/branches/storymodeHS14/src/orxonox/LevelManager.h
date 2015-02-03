@@ -90,6 +90,15 @@ namespace orxonox
             unsigned int getNumberOfLevels(void);
             LevelInfoItem* getAvailableLevelListItem(unsigned int index); //!< Get the LevelInfoItem at the given index in the list of available Levels.
 
+            void setLastFinishedCampaignMission(const std::string& lastFinishedCampaignMission);
+            inline const std::string& getLastFinishedCampaignMission() const
+                { return this->lastFinishedCampaignMission_; }
+
+            inline unsigned int getNumberOfCampaignMissions()
+                { return this->campaignMissions_.size(); }
+            inline const std::string& getCampaignMission(unsigned int index)
+                { return this->campaignMissions_[index]; }
+
             /**
             @brief Get the instance of the LevelManager.
             @return Returns the instance of the LevelManager.
@@ -115,6 +124,8 @@ namespace orxonox
 
             // config values
             std::string defaultLevelName_;
+            std::string lastFinishedCampaignMission_;
+            std::vector<std::string> campaignMissions_;
 
             static LevelManager* singletonPtr_s;
     }; // tolua_export

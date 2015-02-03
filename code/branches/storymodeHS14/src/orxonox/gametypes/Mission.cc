@@ -35,13 +35,11 @@
 
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
+#include "core/config/ConfigValueIncludes.h"
 #include "infos/PlayerInfo.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <ios>
+#include "LevelManager.h"
 
 namespace orxonox
 {
@@ -92,18 +90,6 @@ namespace orxonox
         this->gtinfo_->sendAnnounceMessage("Your mission has started!");
     }
 
-    std::string GenerateHelperString(int number)
-    {
-        std::string helperstring = "";
-        while (number > 1)
-        {
-            helperstring = helperstring + " ";
-            number = number - 1;
-        }
-        helperstring = helperstring + ".";
-        return helperstring;
-    }
-
     void Mission::end()
     {
 
@@ -111,37 +97,7 @@ namespace orxonox
         {
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
 
-            boost::filesystem::path filepath("campaign.txt");
-            std::fstream myfile;
-            myfile.open(filepath.string().c_str(), std::fstream::out);
-
-            std::string line;
-            std::string mission = this->getFilename();
-            int k = 58 - mission.length();
-            std::string helperstring = "";
-            if (myfile.is_open())
-            {
-                while (k > 1)
-                {
-                    helperstring = helperstring + " ";
-                    k = k - 1;
-                }
-                helperstring = helperstring + ".";
-                while (getline(myfile, line))
-                {
-                    if (line == mission + " 0" + helperstring)
-                    {
-                        long pos = (long) myfile.tellp();
-                        myfile.seekp(pos - 61);
-                        myfile << mission + " 1" + helperstring;
-                    }
-                }
-            } else {
-                orxout(internal_warning) << "failed to open campaign file" << endl;
-            }
-            myfile.flush();
-            myfile.clear();
-            myfile.close();
+            LevelManager::getInstance().setLastFinishedCampaignMission(this->getFilename());
         }
 
         else if (!this->gtinfo_->hasEnded())

@@ -88,6 +88,18 @@ namespace orxonox
     {
         SetConfigValue(defaultLevelName_, "missionOne.oxw")
             .description("Sets the pre selection of the level in the main menu.");
+        SetConfigValue(lastFinishedCampaignMission_,  "")
+            .description("The last finished mission of a campaign");
+        SetConfigValue(campaignMissions_,  std::vector<std::string>())
+            .description("The list of missions in the campaign");
+    }
+
+    /**
+     * @brief Stores the argument in the corresponding config value.
+     */
+    void LevelManager::setLastFinishedCampaignMission(const std::string& lastFinishedCampaignMission)
+    {
+        ModifyConfigValue(lastFinishedCampaignMission_, set, lastFinishedCampaignMission);
     }
 
     /**
