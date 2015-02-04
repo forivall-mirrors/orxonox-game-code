@@ -27,6 +27,7 @@
  */
 
 #include "Mission.h"
+
 #include "items/Engine.h"
 #include "controllers/ArtificialController.h"
 
@@ -35,7 +36,7 @@
 #include "infos/PlayerInfo.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"
-
+#include "LevelManager.h"
 
 namespace orxonox
 {
@@ -69,7 +70,7 @@ namespace orxonox
 
     void Mission::pawnKilled(Pawn* victim, Pawn* killer)
     {
-        if (victim && victim->getPlayer() && victim->getPlayer()->isHumanPlayer() )
+        if (victim && victim->getPlayer() && victim->getPlayer()->isHumanPlayer())
         {
             this->lives_--;
         }
@@ -86,37 +87,41 @@ namespace orxonox
     void Mission::end()
     {
         if (this->missionAccomplished_ && !this->gtinfo_->hasEnded())
+        {
             this->gtinfo_->sendAnnounceMessage("Mission accomplished!");
+
+            LevelManager::getInstance().setLastFinishedCampaignMission(this->getFilename());
+        }
         else if (!this->gtinfo_->hasEnded())
             this->gtinfo_->sendAnnounceMessage("Mission failed!");
+
         Gametype::end();
     }
 
     void Mission::setTeams()
-    {//Set pawn-colours
+    { //Set pawn-colours
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
         {
             Pawn* pawn = static_cast<Pawn*>(*it);
-            if(!pawn) continue;
-                this->setDefaultObjectColour(pawn);
+            if (!pawn)
+                continue;
+            this->setDefaultObjectColour(pawn);
         }
     }
     void Mission::endMission(bool accomplished)
     {
         for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
-        {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
+        { //TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would end ALL missions!
             it->setMissionAccomplished(accomplished);
             it->end();
         }
     }
-    
+
     void Mission::setLivesWrapper(unsigned int amount)
     {
         for (ObjectList<Mission>::iterator it = ObjectList<Mission>::begin(); it != ObjectList<Mission>::end(); ++it)
-        {//TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would affect ALL missions!
+        { //TODO: make sure that only the desired mission is ended !! This is a dirty HACK, that would affect ALL missions!
             it->setLives(amount);
         }
     }
-
-
 }
