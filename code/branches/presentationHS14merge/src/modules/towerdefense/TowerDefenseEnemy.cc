@@ -29,11 +29,12 @@ namespace orxonox
         this->setCollisionType(WorldEntity::Dynamic);
         //needed to keep track of the PlayerStats coded in TowerDefense.h
         this->td = orxonox_cast<TowerDefense*>(this->getGametype().get());
+        once_=false;
 
     }
     //add credit if enemy is destroyed
     TowerDefenseEnemy::~TowerDefenseEnemy(){
-        this->td->addCredit(1);
+        //this->td->addCredit(1);
     }
 
     void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
@@ -47,6 +48,25 @@ namespace orxonox
         SUPER(TowerDefenseEnemy, tick, dt);
     }
 
+    WeakPtr<TowerDefense> TowerDefenseEnemy::getGame()
+    {
+        if (game == NULL)
+        {
+            for (ObjectList<TowerDefense>::iterator it = ObjectList<TowerDefense>::begin(); it != ObjectList<TowerDefense>::end(); ++it)
+                game = *it;
+        }
+        return game;
+    }
+
+    void TowerDefenseEnemy::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
+    {
+        Pawn::damage(damage, healthdamage, shielddamage, originator);
+        if (getGame() && once_ == false && getHealth() <= 0)
+        {
+            getGame()->addCredit(1);
+            once_ = true;
+        }
+    }
 /*
     void TowerDefenseEnemy::popWaypoint()
     {

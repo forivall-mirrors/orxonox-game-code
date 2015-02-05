@@ -29,7 +29,7 @@
 /**
 @file
 @brief
-    Shared library macros, enums, constants and forward declarations for the pong module
+    Shared library macros, enums, constants and forward declarations for the mini4dgame module
 */
 
 #ifndef _Mini4DgamePrereqs_H__
@@ -71,4 +71,4 @@ namespace orxonox
     class Mini4DgameBoard;
 }
 
-#endif /* _PongPrereqs_H__ */
+#endif /* _Mini4DgamePrereqs_H__ */

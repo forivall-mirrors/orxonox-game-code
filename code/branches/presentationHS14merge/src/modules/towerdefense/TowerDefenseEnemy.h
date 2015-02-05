@@ -42,8 +42,12 @@ namespace orxonox
         void popWaypoint();
         TDCoordinate peekWaypoint();
 
+        virtual void damage(float damage, float healthdamage, float shielddamage, Pawn* originator);
+
 
     private:
+        WeakPtr<TowerDefense> getGame();
+        WeakPtr<TowerDefense> game;
         TowerDefense* td;
         bool once_;
         std::vector<TDCoordinate*> Waypointsvector_;
