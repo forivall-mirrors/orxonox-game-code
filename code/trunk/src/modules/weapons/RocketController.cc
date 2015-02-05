@@ -40,6 +40,8 @@
 
 namespace orxonox
 {
+    RegisterClass(RocketController);
+
     /**
     @brief
         Constructor.
@@ -96,7 +98,7 @@ namespace orxonox
 
         if (distance > 1000 && this->rocket_->getVelocity().squaredLength()<160000)
             this->rocket_->setAcceleration(this->rocket_->getOrientation()*Vector3(-20,-20,-20));
-        if (distance <1000) this->rocket_->setAcceleration(0,0,0);
+        if (distance < 1000) this->rocket_->setAcceleration(0,0,0);
 
         this->rocket_->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
         this->rocket_->rotatePitch(sgn(coord.y)*coord.y*coord.y);

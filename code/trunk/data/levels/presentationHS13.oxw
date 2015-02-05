@@ -130,7 +130,7 @@
             </execute>
 
 	    <undocking>
-		<EventListener event="undockMe" />
+			<EventListener event="undockMe" />
 	    </undocking>
 	
         </events>

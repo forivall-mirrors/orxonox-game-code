@@ -76,6 +76,11 @@ namespace orxonox
         private:
             struct ObjectInfo
             {
+
+
+
+                Ogre::PanelOverlayElement* health_;
+                Ogre::PanelOverlayElement* healthLevel_;
                 Ogre::PanelOverlayElement* panel_;
                 Ogre::PanelOverlayElement* target_;
                 Ogre::TextAreaOverlayElement* text_;
@@ -87,6 +92,22 @@ namespace orxonox
             bool showObject(RadarViewable* rv);
 
             // XMLPort accessors
+            inline void setHealthMarkerSize(float size)
+                        {
+                            this->healthMarkerSize_ = size;
+                            this->sizeChanged();
+                        }
+            inline float getHealthMarkerSize() const
+                            { return healthMarkerSize_; }
+
+            inline void setHealthLevelMarkerSize(float size)
+                                    {
+                                        this->healthLevelMarkerSize_ = size;
+                                        this->sizeChanged();
+                                    }
+                        inline float getHealthLevelMarkerSize() const
+                                        { return healthLevelMarkerSize_; }
+
             inline void setNavMarkerSize(float size)
             {
                 this->navMarkerSize_ = size;
@@ -99,6 +120,7 @@ namespace orxonox
                 this->aimMarkerSize_ = size;
                 this->sizeChanged();
             }
+
             inline float getAimMarkerSize() const
                 { return aimMarkerSize_; }
             inline void setDetectionLimit(float limit)
@@ -120,6 +142,8 @@ namespace orxonox
             std::map<RadarViewable*, ObjectInfo> activeObjectList_;
             std::list<std::pair<RadarViewable*, unsigned int> > sortedObjectList_;
 
+            float healthMarkerSize_;
+            float healthLevelMarkerSize_;
             float navMarkerSize_;
             float aimMarkerSize_;
             std::string fontName_;

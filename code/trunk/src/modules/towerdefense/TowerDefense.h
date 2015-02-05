@@ -36,11 +36,12 @@
 
 #ifndef _TowerDefense_H__
 #define _TowerDefense_H__
-
+#include "TDCoordinate.h"
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "gametypes/Deathmatch.h"
-
- #include "TowerDefensePlayerStats.h"
+#include "TowerDefenseEnemy.h"
+#include "util/Output.h"
+#include "core/object/WeakPtr.h"
 
 namespace orxonox
 {
@@ -50,11 +51,25 @@ namespace orxonox
         TowerDefense(Context* context);
         virtual ~TowerDefense();
 
+        std::vector<orxonox::WeakPtr<TowerDefenseEnemy> > TowerDefenseEnemyvector;
+        bool towermatrix[16][16];
+        void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr);
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
         virtual void tick(float dt);
         //virtual void playerEntered(PlayerInfo* player);
         //virtual bool playerLeft(PlayerInfo* player);
+        //Player Stats (set,get, reduce)
+        int getCredit(){ return this->credit_; }
+        int getLifes(){ return this->lifes_; }
+        int getWaveNumber(){ return this->waves_; }
+        void setCredit(int credit){ credit_ = credit; }
+        void setLifes(int lifes){ lifes_ = lifes; }
+        void setWaveNumber(int wavenumber){ waves_=wavenumber; }
+        void buyTower(int cost){ credit_ -= cost;}
+        void addCredit(int credit) { credit_+=credit; }
+        void nextwave(){ waves_++;}
+        int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);
@@ -68,8 +83,10 @@ namespace orxonox
         /* Adds a tower at x, y in the playfield */
         void addTower(int x, int y);
 
+        void upgradeTower(int x, int y);
         /* Part of a temporary hack to allow the player to add towers */
         ConsoleCommand* dedicatedAddTower_;
+        ConsoleCommand* dedicatedUpgradeTower_;
 
         //TODO: void spawnNewWave()
         //TODO: create a timer which regularly calls the spawnNewWave function  (time driven)
@@ -78,20 +95,19 @@ namespace orxonox
 
     private:
         TowerDefenseCenterpoint *center_;
+        float time;
+        float time2;
+        int credit_;
+        int waves_;
+        int lifes_;
 
         /* handles stats */
-        TowerDefensePlayerStats *stats_;
-        bool hasEnoughCreditForTower(TowerCost towerCost);
+        bool hasEnoughCreditForTower(int towerCost);
+        bool hasEnoughCreditForUpgrade();
 
-        bool towerExists(int x, int y);
 
-        typedef struct {
-            int x;
-            int y;
-        } Coordinate;
 
-        std::vector<Coordinate> addedTowersCoordinates_;
-        std::vector<Tower*> towers_;
+        std::vector<TowerTurret*> towers_;
     };
 }
 
