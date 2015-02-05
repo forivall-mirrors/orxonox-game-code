@@ -31,7 +31,6 @@
 #include "core/XMLPort.h"
 #include "util/Convert.h"
 
-
 namespace orxonox
 {
     RegisterClass(TowerDefenseHUDController);
@@ -39,6 +38,7 @@ namespace orxonox
     TowerDefenseHUDController::TowerDefenseHUDController(Context* context) : OverlayText(context)
     {
         RegisterObject(TowerDefenseHUDController);
+        this->td = 0;
     }
 
     TowerDefenseHUDController::~TowerDefenseHUDController()
@@ -49,22 +49,42 @@ namespace orxonox
     void TowerDefenseHUDController::tick(float dt)
     {
         SUPER(TowerDefenseHUDController, tick, dt);
+        const std::string& lifes = multi_cast<std::string>(this->td->getLifes());
+        const std::string& credits = multi_cast<std::string>(this->td->getCredit());
+        const std::string& wave = multi_cast<std::string>(this->td->getWaveNumber());
+
+        if(showlives == true)
+          this->setCaption(multi_cast<std::string>(lifes));
+        else if(showcredits == true)
+          this->setCaption(multi_cast<std::string>(credits));
+        else if(showwaves == true)
+          this->setCaption(multi_cast<std::string>(wave));
+
+
     }
 
     void TowerDefenseHUDController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(TowerDefenseHUDController, XMLPort, xmlelement, mode);
+
+        XMLPortParam(TowerDefenseHUDController, "showlives", setShowlives, getShowlives, xmlelement, mode);
+        XMLPortParam(TowerDefenseHUDController, "showcredits", setShowcredits, getShowcredits, xmlelement, mode);
+        XMLPortParam(TowerDefenseHUDController, "showwaves", setShowwaves, getShowwaves, xmlelement, mode);
+
     }
 
     void TowerDefenseHUDController::changedOwner()
-    {
-        SUPER(TowerDefenseHUDController, changedOwner);
-        /*
-        if (this->getOwner() != NULL && this->getOwner()->getGametype())
-            this->owner_ = orxonox_cast<Pong*>(this->getOwner()->getGametype().get());
-        else
-            this->owner_ = 0;
-        */
-    }
+        {
+            SUPER(TowerDefenseHUDController, changedOwner);
 
-}
+            if (this->getOwner() && this->getOwner()->getGametype())
+                    {
+                        this->td = orxonox_cast<TowerDefense*>(this->getOwner()->getGametype().get());
+                    }
+                    else
+                    {
+                        this->td = 0;
+                    }
+                }
+        }
+
