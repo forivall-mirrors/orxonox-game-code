@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabien Vultier
  *   Co-authors:
  *      ...
  *
@@ -48,6 +48,7 @@ namespace orxonox
             virtual void end();
             virtual void spawnPlayer(PlayerInfo* player);
             int getScore(PlayerInfo* player) const;
+            float getFuel() const;
             bool getDead(PlayerInfo* player) const;
             void setCenterpoint(JumpCenterpoint* center)
                 { center_ = center; }

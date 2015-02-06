@@ -52,7 +52,7 @@ namespace orxonox
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void setProperties(float newLeftBoundary, float newRightBoundary, float newLowerBoundary, float newUpperBoundary, float newHSpeed, float newVSpeed);
-            virtual void setFigure(WeakPtr<JumpFigure> bats); //!< Set the bats for the ball.
+            virtual void setFigure(WeakPtr<JumpFigure> bats);
             virtual void touchFigure();
 
             void setFieldDimension(float width, float height)
@@ -73,9 +73,9 @@ namespace orxonox
             bool attachedToFigure_;
 
         protected:
-            float fieldWidth_; //!< The width of the playing field.
-            float fieldHeight_; //!< The height of the playing field.
-            WeakPtr<JumpFigure> figure_; //!< An array with the two bats.
+            float fieldWidth_;
+            float fieldHeight_;
+            WeakPtr<JumpFigure> figure_;
             float height_;
             float width_;
             float leftBoundary_;

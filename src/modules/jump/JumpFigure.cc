@@ -69,10 +69,10 @@ namespace orxonox
         handAngle_ = 0.0;
         animateHands_ = false;
         turnUp_ = false;
-        rocketActive_ = false;
-        propellerActive_ = false;
-        bootsActive_ = false;
-        shieldActive_ = false;
+        rocketActive_ = NULL;
+        propellerActive_ = NULL;
+        bootsActive_ = NULL;
+        shieldActive_ = NULL;
         rocketSpeed_ = 0.0;
         propellerSpeed_ = 0.0;
         dead_ = false;
@@ -105,11 +105,11 @@ namespace orxonox
 
             // Move up/down
             Vector3 velocity = getVelocity();
-            if (rocketActive_ == true)
+            if (rocketActive_ != NULL)
             {
                 velocity.z = rocketSpeed_;
             }
-            else if (propellerActive_ == true)
+            else if (propellerActive_ != NULL)
             {
                 velocity.z = propellerSpeed_;
             }
@@ -206,9 +206,15 @@ namespace orxonox
         if (dead_ == false)
         {
             Vector3 velocity = getVelocity();
-            velocity.z = (bootsActive_ ? 1.2f*jumpSpeed_ : jumpSpeed_);
+            if (bootsActive_ == NULL)
+            {
+                velocity.z = 1.2f*jumpSpeed_;
+            }
+            else
+            {
+                velocity.z = jumpSpeed_;
+            }
             setVelocity(velocity);
-
             animateHands_ = true;
             handAngle_ = 0.0;
             turnUp_ = true;
@@ -227,7 +233,7 @@ namespace orxonox
 
     void JumpFigure::CollisionWithEnemy(JumpEnemy* enemy)
     {
-        if (rocketActive_ == false && propellerActive_ == false && shieldActive_ == false)
+        if (rocketActive_ == NULL && propellerActive_ == NULL && shieldActive_ == NULL)
         {
             dead_ = true;
         }
@@ -235,12 +241,12 @@ namespace orxonox
 
     bool JumpFigure::StartRocket(JumpRocket* rocket)
     {
-        if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+        if (rocketActive_ == NULL && propellerActive_ == NULL && bootsActive_ == NULL)
         {
             attach(rocket);
             rocket->setPosition(0.0, rocketPos_, 0.0);
             rocket->setVelocity(0.0, 0.0, 0.0);
-            rocketActive_ = true;
+            rocketActive_ = rocket;
 
             return true;
         }
@@ -254,17 +260,17 @@ namespace orxonox
         rocket->setVelocity(0.0, 0.0, 0.0);
         detach(rocket);
         rocket->destroy();
-        rocketActive_ = false;
+        rocketActive_ = NULL;
     }
 
     bool JumpFigure::StartPropeller(JumpPropeller* propeller)
     {
-        if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+        if (rocketActive_ == NULL && propellerActive_ == NULL && bootsActive_ == NULL)
         {
             attach(propeller);
             propeller->setPosition(0.0, 0.0, propellerPos_);
             propeller->setVelocity(0.0, 0.0, 0.0);
-            propellerActive_ = true;
+            propellerActive_ = propeller;
 
             return true;
         }
@@ -278,17 +284,17 @@ namespace orxonox
         propeller->setVelocity(0.0, 0.0, 0.0);
         detach(propeller);
         propeller->destroy();
-        propellerActive_ = false;
+        propellerActive_ = NULL;
     }
 
     bool JumpFigure::StartBoots(JumpBoots* boots)
     {
-        if (rocketActive_ == false && propellerActive_ == false && bootsActive_ == false)
+        if (rocketActive_ == NULL && propellerActive_ == NULL && bootsActive_ == NULL)
         {
             attach(boots);
             boots->setPosition(0.0, 0.0, bootsPos_);
             boots->setVelocity(0.0, 0.0, 0.0);
-            bootsActive_ = true;
+            bootsActive_ = boots;
 
             return true;
         }
@@ -302,7 +308,7 @@ namespace orxonox
         boots->setVelocity(0.0, 0.0, 0.0);
         detach(boots);
         boots->destroy();
-        bootsActive_ = false;
+        bootsActive_ = NULL;
     }
 
     bool JumpFigure::StartShield(JumpShield* shield)
@@ -312,7 +318,7 @@ namespace orxonox
             attach(shield);
             shield->setPosition(0.0, 0.0, propellerPos_);
             shield->setVelocity(0.0, 0.0, 0.0);
-            shieldActive_ = true;
+            shieldActive_ = shield;
 
             return true;
         }
@@ -326,7 +332,7 @@ namespace orxonox
         shield->setVelocity(0.0, 0.0, 0.0);
         detach(shield);
         shield->destroy();
-        shieldActive_ = false;
+        shieldActive_ = NULL;
     }
 
     void JumpFigure::InitializeAnimation(Context* context)
