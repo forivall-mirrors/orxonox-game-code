@@ -394,7 +394,7 @@ namespace orxonox
 
     JumpPlatformTimer* Jump::addPlatformTimer(float xPosition, float zPosition, float time, float variance)
     {
-        float additionalTime = (float)(rand()%100)/(100*variance) - variance/2;
+        float additionalTime = (float)(rand()%100)/100.0*variance - variance/2.0;
 
         JumpPlatformTimer* newPlatform = new JumpPlatformTimer(center_->getContext());
         newPlatform->setProperties(time + additionalTime);
