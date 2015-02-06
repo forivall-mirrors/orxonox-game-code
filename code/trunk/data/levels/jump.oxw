@@ -242,13 +242,15 @@
             <Model position="0,0,-1000" mesh="JumpPlatform05.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpPlatform06.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpProjectile.mesh" scale="1" />
-            <Model position="0,0,-1000" mesh="JumpFigure.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpEnemy1.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpEnemy2.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpEnemy3.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpEnemy4.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpSpring.mesh" scale="1" />
             <Model position="0,0,-1000" mesh="JumpRocket.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="JumpPropeller.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="JumpBoots.mesh" scale="1" />
+            <Model position="0,0,-1000" mesh="JumpShield.mesh" scale="1" />
           </attached>
         </JumpCenterpoint>
       </attached>

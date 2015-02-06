@@ -48,7 +48,8 @@ namespace orxonox
     {
         RegisterObject(JumpRocket);
 
-        fuel_ = 3.0;
+        initialFuel_ = 3.0;
+        fuel_ = initialFuel_;
         attachedToFigure_ = false;
 
         setPosition(Vector3(0,0,0));
@@ -97,5 +98,10 @@ namespace orxonox
         JumpItem::touchFigure();
 
         attachedToFigure_ = figure_->StartRocket(this);
+    }
+
+    float JumpRocket::getFuelState()
+    {
+        return fuel_/initialFuel_;
     }
 }

@@ -53,6 +53,12 @@ namespace orxonox
             const bool getShowScore() const
                 { return showScore_; }
 
+            void setShowFuel(const bool showFuel)
+                { showFuel_ = showFuel; }
+
+            const bool getShowFuel() const
+                { return showFuel_; }
+
             void setShowMessages(const bool showMessages)
                 { showMessages_ = showMessages; }
 
@@ -70,6 +76,7 @@ namespace orxonox
             WeakPtr<PlayerInfo> player_;
             WorldSound* scoreSound_;
             bool showScore_;
+            bool showFuel_;
             bool showMessages_;
             std::string gameOverText_;
     };
