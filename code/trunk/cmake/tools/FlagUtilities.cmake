@@ -22,7 +22,7 @@
  #  Description:
  #    Sets the compiler/linker flags. After the flags you can specify more args:
  #    Release, Debug, RelWithDebInfo, MinSizeRel, RelForDevs: Build configs
- #    ReleaseAll: Sets the flags of all three release builds
+ #    ReleaseAll: Sets the flags of all four release builds
  #    CACHE: Values are witten with SET_CACHE_ADVANCED
  #    FORCE: When writing to the cache, the values are set anyway
  #    Any variable names (like WIN32, MSVC, etc.): Condition (combined with AND)
@@ -89,7 +89,7 @@ MACRO(_INTERNAL_PARSE_FLAGS_ARGS _mode _keys _key_postfix _flags)
     IF(_arg MATCHES "${_key_regex}")
       LIST(APPEND _langs "${_arg}")
     ELSEIF(   _arg MATCHES "^(Debug|Release|MinSizeRel|RelWithDebInfo|RelForDevs)$"
-           OR _arg MATCHES "^(DEBUG|RELEASE|MINSIZEREL|RELWITHDEBINFO|RelForDevs)$")
+           OR _arg MATCHES "^(DEBUG|RELEASE|MINSIZEREL|RELWITHDEBINFO|RELFORDEVS)$")
       STRING(TOUPPER "${_arg}" _upper_arg)
       LIST(APPEND _build_types ${_upper_arg})
     ELSEIF(_arg STREQUAL "ReleaseAll")
