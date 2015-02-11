@@ -93,8 +93,8 @@ namespace orxonox // tolua_export
         const std::stringstream& getOutput() const { return output_; }
         void clearOutput() { output_.clear(); } // tolua_export
 
-        void setTraceMap(shared_ptr<std::vector<std::vector<std::pair<std::string, size_t>>>> map)
-            { map->push_back(std::vector<std::pair<std::string, size_t>>()); lineTrace_ = map; }
+        void setTraceMap(shared_ptr<std::vector<std::vector<std::pair<std::string, size_t> > > > map)
+            { map->push_back(std::vector<std::pair<std::string, size_t> >()); lineTrace_ = map; }
 
         void setIncludeParser(std::string (*function)(const std::string&)) { includeParseFunction_ = function; }
         lua_State* getInternalLuaState() { return luaState_; }
@@ -115,7 +115,7 @@ namespace orxonox // tolua_export
 
     private:
         shared_ptr<ResourceInfo> getFileInfo(const std::string& filename);
-        shared_ptr<std::vector<std::vector<std::pair<std::string, size_t>>>> lineTrace_;
+        shared_ptr<std::vector<std::vector<std::pair<std::string, size_t> > > > lineTrace_;
         
         std::stringstream output_;
         lua_State* luaState_;

@@ -159,7 +159,7 @@ namespace orxonox
 
         std::string xmlInput;
 
-        shared_ptr<std::vector<std::vector<std::pair<std::string, size_t>>>> lineTrace(new std::vector<std::vector<std::pair<std::string, size_t>>>());
+        shared_ptr<std::vector<std::vector<std::pair<std::string, size_t> > > > lineTrace(new std::vector<std::vector<std::pair<std::string, size_t> > >());
         lineTrace->reserve(1000); //arbitrary number
 
 
@@ -250,9 +250,9 @@ namespace orxonox
                     istr >> line;
                     if (line <= lineTrace->size())
                     {
-                        std::vector<std::pair<std::string, size_t>> linesources = lineTrace->at(line - 1);
+                        std::vector<std::pair<std::string, size_t> > linesources = lineTrace->at(line - 1);
                         orxout(user_error, context::loader) << "Line contains data from:" << endl;
-                        for (std::vector<std::pair<std::string, size_t>>::iterator it = linesources.begin(); it != linesources.end(); ++it)
+                        for (std::vector<std::pair<std::string, size_t> >::iterator it = linesources.begin(); it != linesources.end(); ++it)
                         {
                             orxout(user_error, context::loader) << it->first << " , Line " << it->second << endl;
                         }                        

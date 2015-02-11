@@ -244,7 +244,7 @@ namespace orxonox
             //Add first line, which always exists
             //Note: due to newlines etc., it's possible that one line consists of parts of
             //      multiple, different files
-            std::vector<std::vector<std::pair<std::string, size_t>>>::reverse_iterator it = lineTrace_->rbegin();
+            std::vector<std::vector<std::pair<std::string, size_t> > >::reverse_iterator it = lineTrace_->rbegin();
             std::pair<std::string, size_t> temppair = std::make_pair(filename, line);
             //Avoid duplicate entries. This could happen if there were lua blocks on the same line
             if (it->size() == 0 || std::find(it->begin(), it->end(), temppair) == it->end())
@@ -258,7 +258,7 @@ namespace orxonox
             for (size_t i = 1; i <= newlinecount; i++)
             {
                 //Add the new line to the trace map
-                lineTrace_->push_back(std::vector<std::pair<std::string, size_t>>());
+                lineTrace_->push_back(std::vector<std::pair<std::string, size_t> >());
                 //Add the source of the line at the end
                 lineTrace_->rbegin()->push_back(std::make_pair(filename, line + i));
             }
