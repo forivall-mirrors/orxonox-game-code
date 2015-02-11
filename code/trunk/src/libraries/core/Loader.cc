@@ -31,6 +31,8 @@
 #include <sstream>
 #include <tinyxml/ticpp.h>
 #include <boost/scoped_ptr.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "util/Output.h"
 #include "util/Exception.h"
@@ -156,10 +158,16 @@ namespace orxonox
         Loader::currentMask_s = file->getMask() * mask;
 
         std::string xmlInput;
+
+        shared_ptr<std::vector<std::vector<std::pair<std::string, size_t>>>> lineTrace(new std::vector<std::vector<std::pair<std::string, size_t>>>());
+        lineTrace->reserve(1000); //arbitrary number
+
+
         if (file->getLuaSupport() && !bRemoveLuaTags)
         {
             // Use the LuaState to replace the XML tags (calls our function)
             scoped_ptr<LuaState> luaState(new LuaState());
+            luaState->setTraceMap(lineTrace);
             luaState->setIncludeParser(&Loader::replaceLuaTags);
             luaState->includeFile(file->getFilename());
             xmlInput = luaState->getOutput().str();
@@ -230,7 +238,27 @@ namespace orxonox
             orxout(user_error, context::loader) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
             orxout(user_error, context::loader) << ex.what() << endl;
             orxout(user_error, context::loader) << "Loading aborted." << endl;
-            return false;
+            if (lineTrace->size() > 0)
+            {
+                //Extract the line number from the exception
+                std::string tempstring(ex.what());
+                std::string::size_type pos = tempstring.find("\nLine: ");
+                if (pos != std::string::npos)
+                {
+                    std::istringstream istr(tempstring.substr(pos + 7));
+                    size_t line;
+                    istr >> line;
+                    if (line <= lineTrace->size())
+                    {
+                        std::vector<std::pair<std::string, size_t>> linesources = lineTrace->at(line - 1);
+                        orxout(user_error, context::loader) << "Line contains data from:" << endl;
+                        for (std::vector<std::pair<std::string, size_t>>::iterator it = linesources.begin(); it != linesources.end(); ++it)
+                        {
+                            orxout(user_error, context::loader) << it->first << " , Line " << it->second << endl;
+                        }                        
+                    }
+                }
+            }
         }
         catch (Exception& ex)
         {
@@ -238,7 +266,6 @@ namespace orxonox
             orxout(user_error, context::loader) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
             orxout(user_error, context::loader) << ex.what() << endl;
             orxout(user_error, context::loader) << "Loading aborted." << endl;
-            return false;
         }
         catch (...)
         {
@@ -246,8 +273,18 @@ namespace orxonox
             orxout(user_error, context::loader) << "An error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
             orxout(user_error, context::loader) << Exception::handleMessage() << endl;
             orxout(user_error, context::loader) << "Loading aborted." << endl;
-            return false;
         }
+        //The Tardis' version of boost is too old...
+#if BOOST_VERSION >= 104600
+        boost::filesystem::path temppath = boost::filesystem::temp_directory_path() / "orxonoxml.xml";
+        //Need binary mode, because xmlInput already has \r\n for windows
+        boost::filesystem::ofstream outfile(temppath, std::ios_base::binary | std::ios_base::out);
+        outfile << xmlInput;
+        outfile.flush();
+        outfile.close();
+        orxout(user_error, context::loader) << "The complete xml file has been saved to " << temppath << endl;
+#endif
+        return false;
     }
 
     void Loader::unload(const XMLFile* file, const ClassTreeMask& mask)
@@ -298,26 +335,16 @@ namespace orxonox
         // erase all tags from the map that are between two quotes
         {
             std::map<size_t, bool>::iterator it = luaTags.begin();
-            std::map<size_t, bool>::iterator it2 = it;
-            bool bBetweenQuotes = false;
-            size_t pos = 0;
-            while ((pos = getNextQuote(text, pos)) != std::string::npos)
+            while(it != luaTags.end())
             {
-                while ((it != luaTags.end()) && (it->first < pos))
+                if (isBetweenQuotes(text, it->first))
                 {
-                    if (bBetweenQuotes)
-                    {
-                        it2++;
-                        if (it->second && !(it2->second) && it2->first < pos)
-                            it = ++it2;
-                        else
-                            luaTags.erase(it++);
-                    }
-                    else
-                        ++it;
+                    luaTags.erase(it++);
                 }
-                bBetweenQuotes = !bBetweenQuotes;
-                pos++;
+                else
+                {
+                    ++it;
+                }
             }
         }
 
@@ -336,7 +363,7 @@ namespace orxonox
             }
             if (!expectedValue)
             {
-                orxout(internal_error, context::loader) << "Error in level file" << endl;
+                orxout(internal_error, context::loader) << "Error parsing file: lua tags not matching" << endl;
                 // TODO: error handling
                 return false;
             }
@@ -424,7 +451,9 @@ namespace orxonox
                     {
                         equalSigns += '=';
                     }
-                    output << "print([" + equalSigns + '[' + temp + ']' + equalSigns +"])";
+                    //A newline directly after square brackets is ignored. To make sure that the string is printed
+                    //exactly as it is, including newlines at the beginning, insert a space after the brackets.
+                    output << "print([" + equalSigns + "[ " + temp + ']' + equalSigns +"])";
                     start = end + 5;
                 }
                 else
@@ -470,7 +499,12 @@ namespace orxonox
                 start = end + 5;
             }
             else
+            {
+                //Preserve the amount of lines, otherwise the linenumber from the xml parse error is useless
+                std::string tempstring = text.substr(start, end - start);
+                output << std::string(std::count(tempstring.begin(), tempstring.end(), '\n'), '\n');
                 start = end + 2;
+            }
 
             bLuaCode = !bLuaCode;
         }
