@@ -232,6 +232,38 @@ namespace orxonox
 
     void LuaState::luaPrint(const std::string& str)
     {
+        if (lineTrace_)
+        {
+            //Get lua debug info of second level in stack (level 1 is function print in LuaStateInit.lua)
+            lua_Debug ar;
+            lua_getstack(luaState_, 2, &ar);
+            lua_getinfo(luaState_, "nSl", &ar);
+            int line = ar.currentline;
+            std::string filename(ar.short_src);
+
+            //Add first line, which always exists
+            //Note: due to newlines etc., it's possible that one line consists of parts of
+            //      multiple, different files
+            std::vector<std::vector<std::pair<std::string, size_t>>>::reverse_iterator it = lineTrace_->rbegin();
+            std::pair<std::string, size_t> temppair = std::make_pair(filename, line);
+            //Avoid duplicate entries. This could happen if there were lua blocks on the same line
+            if (it->size() == 0 || std::find(it->begin(), it->end(), temppair) == it->end())
+            {
+                it->push_back(temppair);
+            }
+
+            //Add the rest of the lines, if there are any. Empty or not doesn't matter
+            size_t newlinecount = std::count(str.begin(), str.end(), '\n');
+            //i newlines -> i+1 lines, first line already added
+            for (size_t i = 1; i <= newlinecount; i++)
+            {
+                //Add the new line to the trace map
+                lineTrace_->push_back(std::vector<std::pair<std::string, size_t>>());
+                //Add the source of the line at the end
+                lineTrace_->rbegin()->push_back(std::make_pair(filename, line + i));
+            }
+        }
+
         output_ << str;
     }
 
