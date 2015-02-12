@@ -80,6 +80,8 @@ FUNCTION(GENERATE_SOURCE_GROUPS)
       GET_FILENAME_COMPONENT(_relative_path ${_relative_path} PATH)
       STRING(REPLACE "/" "\\\\" _group_path "${_relative_path}")
       SOURCE_GROUP("Source\\${_group_path}" FILES ${_file})
+    ELSEIF(_relative_path MATCHES ".*\\.rc") #Resource files
+      SOURCE_GROUP("Resource Files" FILES ${_file})
     ELSE()
       # File is being generated in the binary directory
       SOURCE_GROUP("Generated" FILES ${_file})

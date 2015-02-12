@@ -316,6 +316,15 @@ namespace orxonox
 
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(Ogre::MIP_UNLIMITED);
 
+        //Add program icon
+#if defined(ORXONOX_PLATFORM_WINDOWS) && defined(_MSC_VER)
+        HWND hwnd;
+        this->renderWindow_->getCustomAttribute("WINDOW", (void*)&hwnd);
+        LONG iconID = (LONG)LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(101));
+        SetClassLong(hwnd, GCL_HICON, iconID);
+#endif
+
+
         // add console commands
         ModifyConsoleCommand(__CC_printScreen_name).setFunction(&GraphicsManager::printScreen, this);
         ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).setFunction(&GraphicsManager::setScreenResolution, this);
