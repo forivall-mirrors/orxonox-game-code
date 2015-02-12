@@ -317,7 +317,7 @@ namespace orxonox
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(Ogre::MIP_UNLIMITED);
 
         //Add program icon
-#if defined(ORXONOX_PLATFORM_WINDOWS) && defined(_MSC_VER)
+#if defined(ORXONOX_PLATFORM_WINDOWS)
         HWND hwnd;
         this->renderWindow_->getCustomAttribute("WINDOW", (void*)&hwnd);
         LONG iconID = (LONG)LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(101));

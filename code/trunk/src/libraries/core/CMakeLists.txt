@@ -68,7 +68,7 @@ ADD_SUBDIRECTORY(input)
 ADD_SUBDIRECTORY(object)
 
 #Add the icon (for the renderwindow)
-IF(WIN32 AND MSVC)
+IF(WIN32)
   List(APPEND CORE_SRC_FILES ${CMAKE_SOURCE_DIR}/contrib/winresource.rc)
 ENDIF()
 
