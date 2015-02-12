@@ -286,7 +286,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Don't compile header files
   FOREACH(_file ${_${_target_name}_files})
-    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx|mm)$")
+    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx|mm|rc)$")
       SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
     ENDIF()
   ENDFOREACH(_file)

@@ -57,6 +57,10 @@ SET(ORXONOX_MAIN_FILES Orxonox.cc)
 # Add special source file for OS X
 IF(APPLE)
   LIST(APPEND ORXONOX_MAIN_FILES OrxonoxMac.mm)
+# Add the icon for win32 builds
+# TODO: does this work for mingw too?
+ELSEIF(WIN32 AND MSVC)
+  LIST(APPEND ORXONOX_MAIN_FILES ${CMAKE_SOURCE_DIR}/contrib/winresource.rc)
 ENDIF()
 
 ORXONOX_ADD_EXECUTABLE(orxonox-main

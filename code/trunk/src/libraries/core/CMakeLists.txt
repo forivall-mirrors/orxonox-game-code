@@ -67,6 +67,11 @@ ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(input)
 ADD_SUBDIRECTORY(object)
 
+#Add the icon (for the renderwindow)
+IF(WIN32 AND MSVC)
+  List(APPEND CORE_SRC_FILES ${CMAKE_SOURCE_DIR}/contrib/winresource.rc)
+ENDIF()
+
 ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
