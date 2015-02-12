@@ -103,7 +103,8 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
     # Set Compile flags for the other source files
     FOREACH(_file ${_source_files})
       GET_SOURCE_FILE_PROPERTY(_is_header ${_file} HEADER_FILE_ONLY)
-      IF(NOT _is_header)
+      # Don't use pch file for header-only files and *.rc files
+      IF((NOT _is_header) AND (NOT _file MATCHES "\\.rc$"))
         GET_SOURCE_FILE_PROPERTY(_old_flags ${_file} COMPILE_FLAGS)
         IF(NOT _old_flags)
           SET(_old_flags "")
@@ -112,7 +113,7 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
           COMPILE_FLAGS "${_old_flags} -I ${CMAKE_CURRENT_SOURCE_DIR} -include ${_pch_header_filename}"
           OBJECT_DEPENDS "${_pch_header_file}"
         )
-      ENDIF(NOT _is_header)
+      ENDIF()
     ENDFOREACH(_file)
 
   ENDIF()
