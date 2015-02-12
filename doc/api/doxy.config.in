@@ -38,7 +38,7 @@ PROJECT_NUMBER         = "@ORXONOX_VERSION@ Codename: @ORXONOX_VERSION_NAME@"
 # If a relative path is entered, it will be relative to the location
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = @DOXY_OUTPUT_DIR@
+OUTPUT_DIRECTORY       = "@DOXY_OUTPUT_DIR@"
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create
 # 4096 sub-directories (in 2 levels) under the output directory of each output
@@ -124,8 +124,8 @@ FULL_PATH_NAMES        = YES
 # If left blank the directory from which doxygen is run is used as the
 # path to strip.
 
-STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@/src \
-                         @CMAKE_BINARY_DIR@/src
+STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@/src" \
+                         "@CMAKE_BINARY_DIR@/src"
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of
 # the path mentioned in the documentation of a class, which tells
@@ -134,7 +134,7 @@ STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@/src \
 # definition is used. Otherwise one should specify the include paths that
 # are normally passed to the compiler using the -I flag.
 
-STRIP_FROM_INC_PATH    = @DOXYGEN_INCLUDE_DIRECTORIES@
+STRIP_FROM_INC_PATH    = "@DOXYGEN_INCLUDE_DIRECTORIES@"
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter
 # (but less readable) file names. This can be useful is your file systems
@@ -585,11 +585,11 @@ WARN_LOGFILE           = @DOXY_LOGFILE@
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @CMAKE_SOURCE_DIR@/src \
-                         @CMAKE_CURRENT_SOURCE_DIR@ \
-                         @CMAKE_BINARY_DIR@/src/OrxonoxConfig.h \
-                         @CMAKE_BINARY_DIR@/src/SpecialConfig.h \
-                         @INTERNAL_DOCFILE@
+INPUT                  = "@CMAKE_SOURCE_DIR@/src" \
+                         "@CMAKE_CURRENT_SOURCE_DIR@" \
+                         "@CMAKE_BINARY_DIR@/src/OrxonoxConfig.h" \
+                         "@CMAKE_BINARY_DIR@/src/SpecialConfig.h" \
+                         "@INTERNAL_DOCFILE@"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -623,11 +623,12 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                = @CMAKE_SOURCE_DIR@/src/external/bullet/ \
-                         @CMAKE_SOURCE_DIR@/src/external/cpptcl/ \
-                         @CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.h \
-                         @CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.cc \
-                         @CMAKE_SOURCE_DIR@/src/libraries/tools/bsp \
+EXCLUDE                = "@CMAKE_SOURCE_DIR@/src/external/bullet/" \
+                         "@CMAKE_SOURCE_DIR@/src/external/cpptcl/" \
+                         "@CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.h" \
+                         "@CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.cc" \
+                         "@CMAKE_SOURCE_DIR@/src/libraries/tools/bsp" \
+                         "@CMAKE_SOURCE_DIR@/src/external/enet/docs" \
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded
@@ -655,7 +656,7 @@ EXCLUDE_SYMBOLS        = orxonox::detail
 # directories that contain example code fragments that are included (see
 # the \include command).
 
-EXAMPLE_PATH           = @CMAKE_CURRENT_SOURCE_DIR@/examples/
+EXAMPLE_PATH           = "@CMAKE_CURRENT_SOURCE_DIR@/examples/"
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
@@ -679,7 +680,7 @@ EXAMPLE_RECURSIVE      = YES
 # directories that contain image that are included in the documentation (see
 # the \image command).
 
-IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@/images/
+IMAGE_PATH             = "@CMAKE_CURRENT_SOURCE_DIR@/images/"
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1367,7 +1368,7 @@ TAGFILES               =
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       = @DOXY_OUTPUT_DIR@/html/@PROJECT_NAME@.TAGFILE
+GENERATE_TAGFILE       = "@DOXY_OUTPUT_DIR@/html/@PROJECT_NAME@.TAGFILE"
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes
@@ -1525,13 +1526,13 @@ DOT_IMAGE_FORMAT       = png
 # The tag DOT_PATH can be used to specify the path where the dot tool can be
 # found. If left blank, it is assumed the dot tool can be found in the path.
 
-DOT_PATH               = @DOXYGEN_DOT_EXECUTABLE_PATH@
+DOT_PATH               = "@DOXYGEN_DOT_EXECUTABLE_PATH@"
 
 # The DOTFILE_DIRS tag can be used to specify one or more directories that
 # contain dot files that are included in the documentation (see the
 # \dotfile command).
 
-DOTFILE_DIRS           = @CMAKE_CURRENT_SOURCE_DIR@/dot
+DOTFILE_DIRS           = "@CMAKE_CURRENT_SOURCE_DIR@/dot"
 
 # The DOT_GRAPH_MAX_NODES tag can be used to set the maximum number of
 # nodes that will be shown in the graph. If the number of nodes in a graph
