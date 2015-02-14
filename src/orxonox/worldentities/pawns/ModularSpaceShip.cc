@@ -158,7 +158,7 @@ namespace orxonox
     */
     void ModularSpaceShip::damage(float damage, float healthdamage, float shielddamage, Pawn* originator, const btCollisionShape* cs)
     {
-        if (this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
+        if (cs != NULL && this->getPartOfEntity((StaticEntity*)(cs->getUserPointer())) != NULL)
             this->getPartOfEntity((StaticEntity*)(cs->getUserPointer()))->handleHit(damage, healthdamage, shielddamage, originator);
         else
             SpaceShip::damage(damage, healthdamage, shielddamage, originator, cs);
