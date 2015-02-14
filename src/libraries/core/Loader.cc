@@ -236,10 +236,10 @@ namespace orxonox
         {
             orxout(user_error, context::loader) << endl;
             orxout(user_error, context::loader) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
-            orxout(user_error, context::loader) << ex.what() << endl;
-            orxout(user_error, context::loader) << "Loading aborted." << endl;
+            OutputLevel ticpplevel = user_error;
             if (lineTrace->size() > 0)
             {
+                ticpplevel = internal_error;
                 //Extract the line number from the exception
                 std::string tempstring(ex.what());
                 std::string::size_type pos = tempstring.find("\nLine: ");
@@ -251,14 +251,18 @@ namespace orxonox
                     if (line <= lineTrace->size())
                     {
                         std::vector<std::pair<std::string, size_t> > linesources = lineTrace->at(line - 1);
-                        orxout(user_error, context::loader) << "Line contains data from:" << endl;
+                        std::ostringstream message;
+                        message << "Possible sources of error:" << endl;
                         for (std::vector<std::pair<std::string, size_t> >::iterator it = linesources.begin(); it != linesources.end(); ++it)
                         {
-                            orxout(user_error, context::loader) << it->first << " , Line " << it->second << endl;
-                        }                        
+                            message << it->first << ", Line " << it->second << endl;
+                        }
+                        orxout(user_error, context::loader) << message.str() << endl;
                     }
                 }
             }
+            orxout(ticpplevel, context::loader) << ex.what() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
         }
         catch (Exception& ex)
         {
@@ -282,7 +286,7 @@ namespace orxonox
         outfile << xmlInput;
         outfile.flush();
         outfile.close();
-        orxout(user_error, context::loader) << "The complete xml file has been saved to " << temppath << endl;
+        orxout(internal_error, context::loader) << "The complete xml file has been saved to " << temppath << endl;
 #endif
         return false;
     }
