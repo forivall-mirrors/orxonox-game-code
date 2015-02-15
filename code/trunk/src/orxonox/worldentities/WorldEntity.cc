@@ -220,6 +220,13 @@ namespace orxonox
 
         if(GameMode::isMaster())
         {
+            // physics is only enabled if the WorldEntity is active
+            if (this->isActive())
+                this->activatePhysics();
+            else
+                this->deactivatePhysics();
+
+            // iterate over all children and change their activity as well
             for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
             {
                 if(!this->isActive())
@@ -245,6 +252,7 @@ namespace orxonox
 
         if(GameMode::isMaster())
         {
+            // iterate over all children and change their visibility as well
             for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
             {
                 if(!this->isVisible())

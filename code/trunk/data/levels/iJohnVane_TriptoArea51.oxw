@@ -375,26 +375,25 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
    ?>
 
    <MovableEntity    
-      position = "<?lua print(math.random()* 600-300) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random() * 600-300) ?>"
+      position = "<?lua print(math.random()* 600-300) ?>,<?lua print(math.random() * 40000 + 97000) ?>,<?lua print(math.random() * 600-300) ?>"
       scale = "<?lua print(j * 40)?>"
       velocity = "<?lua print(x*20-10)?>, <?lua print(y*60-160)?>, <?lua print(z*20-10)?>"
       collisionType = dynamic
       collisiondamage = 0.05
       enablecollisiondamage = true 
-      active = true
+      active = false
    >                 
           <attached>           
-              <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
-                  <events>           
-                    <visibility>           
-                      <EventListener event="portal3" />           
-                    </visibility>           
-                  </events>
-              </Model>                          
+              <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
           </attached> 
          <collisionShapes>
              <SphereCollisionShape radius="<?lua print(j * 50) ?>" />
          </collisionShapes>   
+         <events>           
+           <activity>           
+             <EventListener event="portal3" />           
+           </activity>           
+         </events>
    </MovableEntity>
 
    <?lua
@@ -413,27 +412,25 @@ Your Mission is to fly straight through the wormhole." failmessage="" completeMe
       z = math.random()
    ?>
    <MovableEntity    
-      position = "<?lua print(math.random()* 240-120) ?>,<?lua print(math.random() * 40000 + 110000) ?>,<?lua print(math.random()* 240-120) ?>"
+      position = "<?lua print(math.random()* 240-120) ?>,<?lua print(math.random() * 40000 + 97000) ?>,<?lua print(math.random()* 240-120) ?>"
       scale = "10"
       velocity = "0, -160, 0"
       collisionType = dynamic
       collisiondamage = 0.05
       enablecollisiondamage = true 
-      active = true
-      visible = false
+      active = false
    >                     
           <attached>           
-              <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" >
-                  <events>           
-                    <visibility>           
-                      <EventListener event="portal3" />           
-                    </visibility>           
-                  </events>
-              </Model>                    
+              <Model mass="2000" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
           </attached> 
          <collisionShapes>
              <SphereCollisionShape radius="10" />
          </collisionShapes>   
+         <events>           
+           <activity>           
+             <EventListener event="portal3" />           
+           </activity>           
+         </events>
    </MovableEntity>
    <?lua
       end
