@@ -337,9 +337,10 @@ namespace orxonox
         }
 
         // erase all tags from the map that are between two quotes
+        // that means occurrences like "..<?lua.." and "..?>.." would be deleted
+        // however occurrences of lua tags within quotas are retained: ".. <?lua ... ?> .. "
         {
             std::map<size_t, bool>::iterator it = luaTags.begin();
-            std::map<size_t, bool>::iterator it2 = it;
             bool bBetweenQuotes = false;
             size_t pos = 0;
             while ((pos = getNextQuote(text, pos)) != std::string::npos)
@@ -348,9 +349,10 @@ namespace orxonox
                 {
                     if (bBetweenQuotes)
                     {
+                        std::map<size_t, bool>::iterator it2 = it;
                         it2++;
                         if (it->second && !(it2->second) && it2->first < pos)
-                            it = ++it2;
+                            std::advance(it, 2);
                         else
                             luaTags.erase(it++);
                     }
