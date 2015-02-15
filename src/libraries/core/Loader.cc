@@ -339,16 +339,26 @@ namespace orxonox
         // erase all tags from the map that are between two quotes
         {
             std::map<size_t, bool>::iterator it = luaTags.begin();
-            while(it != luaTags.end())
+            std::map<size_t, bool>::iterator it2 = it;
+            bool bBetweenQuotes = false;
+            size_t pos = 0;
+            while ((pos = getNextQuote(text, pos)) != std::string::npos)
             {
-                if (isBetweenQuotes(text, it->first))
+                while ((it != luaTags.end()) && (it->first < pos))
                 {
-                    luaTags.erase(it++);
+                    if (bBetweenQuotes)
+                    {
+                        it2++;
+                        if (it->second && !(it2->second) && it2->first < pos)
+                            it = ++it2;
+                        else
+                            luaTags.erase(it++);
+                    }
+                    else
+                        ++it;
                 }
-                else
-                {
-                    ++it;
-                }
+                bBetweenQuotes = !bBetweenQuotes;
+                pos++;
             }
         }
 
