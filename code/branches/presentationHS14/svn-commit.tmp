@@ -1,9 +1,0 @@
-
---This line, and those below, will be ignored--
-
-M    data/levels/DodgeRace.oxw
-A    data/levels/DodgeRaceold.oxw
-M    data/levels/templates/spaceshipInvader.oxt
-M    data/levels/templates/spaceshipDodgeRace.oxt
-A    data/levels/DodgeRacePlus.oxw
-D    data/levels/DodgeRace
