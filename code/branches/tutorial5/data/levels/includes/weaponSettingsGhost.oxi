@@ -1,0 +1,37 @@
+    <weaponslots>
+      <WeaponSlot position=" 1.3,4.66,-20" />
+      <WeaponSlot position="-1.3,4.66,-20" />
+      <WeaponSlot position="13.7,4.66,-20" />
+      <WeaponSlot position="-16.3,4.66,-20" />
+    </weaponslots>
+    <weaponsets>
+      <WeaponSet firemode=0 />
+      <WeaponSet firemode=1 />
+      <WeaponSet firemode=2 />
+      <WeaponSet firemode=2 />
+    </weaponsets>
+    <weapons>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+          <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
+          <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
+        </links>
+        <Weapon>
+          <HsW01 mode=0 munitionpershot=0 healthdamage=3.14159 delay=0 material="Flares/point_lensflare" />
+          <HsW01 mode=0 munitionpershot=0 healthdamage=3.14159 delay=0.125 material="Flares/point_lensflare" muzzleoffset=" 0.5,0.6,1.7" />
+          <LightningGun mode=1 muzzleoffset="0,0,0" damage=30 shielddamage=10 />
+        </Weapon>
+        <Weapon>
+          <HsW01 mode=0 munitionpershot=0 damage=3.14159 delay=0  material="Flares/point_lensflare" />
+          <HsW01 mode=0 munitionpershot=0 damage=3.14159 delay=0.125 material="Flares/point_lensflare" muzzleoffset="-0.5,0.6,1.7" />
+          <LightningGun mode=1 muzzleoffset="0,0,0" damage=30 shielddamage=10 />
+        </Weapon>
+        <Weapon>
+          <SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=50 />
+        </Weapon>
+        <Weapon>
+          <SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=50 delay=0.1 />
+        </Weapon>
+      </WeaponPack>
+    </weapons>
