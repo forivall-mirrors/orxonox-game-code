@@ -469,7 +469,10 @@ namespace orxonox
                     }
                     //A newline directly after square brackets is ignored. To make sure that the string is printed
                     //exactly as it is, including newlines at the beginning, insert a space after the brackets.
-                    output << "print([" + equalSigns + "[ " + temp + ']' + equalSigns +"])";
+                    bool needsExtraSpace = false;
+                    if (temp.size() > 0 && (temp[0] == '\n' || temp[0] == '\r')) // begins with \n or \r (a line break)
+                        needsExtraSpace = true;
+                    output << "print([" + equalSigns + (needsExtraSpace ? "[ " : "[") + temp + ']' + equalSigns +"])";
                     start = end + 5;
                 }
                 else
