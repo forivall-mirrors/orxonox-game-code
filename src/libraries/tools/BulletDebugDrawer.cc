@@ -11,6 +11,7 @@
 #include <OgreRoot.h>
 #include <OgreManualObject.h>
 #include <OgreSceneManager.h>
+#include <OgreTimer.h>
 
 #include "util/Output.h"
 #include "DebugDrawer.h"
