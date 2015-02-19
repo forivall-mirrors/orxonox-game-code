@@ -845,7 +845,7 @@ namespace orxonox
 #else
         this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
 #endif
-        this->rootWindow_->setSize(CEGUI::UVector2(CEGUI::UDim(1, newWidth), CEGUI::UDim(1, newHeight)));
+        this->rootWindow_->setSize(CEGUI::UVector2(CEGUI::UDim(1, (float)newWidth), CEGUI::UDim(1, (float)newHeight)));
     }
 
     /**

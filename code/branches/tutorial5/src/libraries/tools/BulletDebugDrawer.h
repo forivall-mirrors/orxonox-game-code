@@ -11,6 +11,7 @@
 #include "tools/ToolsPrereqs.h"
 
 #include <btBulletCollisionCommon.h>
+#include <OgreFrameListener.h>
 
 namespace orxonox
 {
