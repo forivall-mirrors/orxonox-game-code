@@ -40,6 +40,7 @@
 #include "tools/interfaces/Tickable.h"
 #include "infos/GametypeInfo.h"
 #include "tools/Timer.h"
+#include "gamestates/GSLevelMemento.h"
 
 namespace orxonox
 {
@@ -62,7 +63,7 @@ namespace orxonox
         int killed_;
     };
 
-    class _OrxonoxExport Gametype : public BaseObject, public Tickable
+    class _OrxonoxExport Gametype : public BaseObject, public Tickable, public GSLevelMemento
     {
         friend class PlayerInfo;
 
@@ -171,6 +172,9 @@ namespace orxonox
             virtual void spawnPlayersIfRequested();
             virtual void spawnDeadPlayersIfRequested();
 
+            virtual GSLevelMementoState* exportMementoState();
+            virtual void importMementoState(const std::vector<GSLevelMementoState*>& states);
+
             SmartPtr<GametypeInfo> gtinfo_;
 
             bool bAutoStart_;
@@ -199,6 +203,16 @@ namespace orxonox
             ConsoleCommand* dedicatedKillBots_;
             /* HACK HACK HACK */
             Timer showMenuTimer_;
+    };
+
+    /**
+        @brief Keeps position and orientation of the camera, as well as the name of current scene.
+    */
+    struct _OrxonoxExport GametypeMementoState : public GSLevelMementoState
+    {
+        Vector3 cameraPosition_;
+        Quaternion cameraOrientation_;
+        std::string sceneName_;
     };
 }
 

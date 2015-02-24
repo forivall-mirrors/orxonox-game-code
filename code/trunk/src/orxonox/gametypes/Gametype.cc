@@ -44,6 +44,7 @@
 #include "worldentities/pawns/Spectator.h"
 #include "worldentities/pawns/Pawn.h"
 #include "overlays/OverlayGroup.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -523,5 +524,69 @@ namespace orxonox
     void Gametype::showMenu()
     {
         GSLevel::startMainMenu();
+    }
+
+    GSLevelMementoState* Gametype::exportMementoState()
+    {
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if (it->first->isHumanPlayer() && it->first->getControllableEntity() && it->first->getControllableEntity()->getCamera())
+            {
+                Camera* camera = it->first->getControllableEntity()->getCamera();
+
+                GametypeMementoState* state = new GametypeMementoState();
+                state->cameraPosition_ = camera->getWorldPosition();
+                state->cameraOrientation_ = camera->getWorldOrientation();
+                state->sceneName_ = camera->getScene()->getName();
+                return state;
+            }
+        }
+
+        return NULL;
+    }
+
+    void Gametype::importMementoState(const std::vector<GSLevelMementoState*>& states)
+    {
+        // find correct memento state
+        GametypeMementoState* state = NULL;
+        for (size_t i = 0; i < states.size(); ++i)
+        {
+            state = dynamic_cast<GametypeMementoState*>(states[i]);
+            if (state)
+                break;
+        }
+
+        if (!state)
+            return;
+
+        // find correct scene
+        Scene* scene = NULL;
+        for (ObjectList<Scene>::iterator it = ObjectList<Scene>::begin(); it != ObjectList<Scene>::end(); ++it)
+        {
+            if (it->getName() == state->sceneName_)
+            {
+                scene = *it;
+                break;
+            }
+        }
+
+        if (!scene)
+        {
+            orxout(internal_warning) << "Could not find scene with name " << state->sceneName_ << endl;
+            return;
+        }
+
+        // find correct player and assign default entity with original position & orientation
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if (it->first->isHumanPlayer())
+            {
+                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(scene->getContext());
+                entity->setPosition(state->cameraPosition_);
+                entity->setOrientation(state->cameraOrientation_);
+                it->first->startControl(entity);
+                break;
+            }
+        }
     }
 }

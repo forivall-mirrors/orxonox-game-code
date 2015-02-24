@@ -28,6 +28,7 @@
  */
 
 #include "GSLevel.h"
+#include "GSLevelMemento.h"
 
 #include <OgreCompositorManager.h>
 
@@ -36,6 +37,7 @@
 #include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
 #include "core/Core.h"
+#include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
@@ -53,9 +55,11 @@ namespace orxonox
 
     static const std::string __CC_startMainMenu_name = "startMainMenu";
     static const std::string __CC_changeGame_name = "changeGame";
+    static const std::string __CC_reloadLevel_name = "reloadLevel";
 
     SetConsoleCommand(__CC_startMainMenu_name, &GSLevel::startMainMenu).deactivate();
     SetConsoleCommand(__CC_changeGame_name, &GSLevel::changeGame).defaultValues("").deactivate();
+    SetConsoleCommand(__CC_reloadLevel_name, &GSLevel::reloadLevel).deactivate();
 
     GSLevel::GSLevel(const GameStateInfo& info)
         : GameState(info)
@@ -107,7 +111,10 @@ namespace orxonox
         }
 
         if (GameMode::isStandalone())
+        {
             ModifyConsoleCommand(__CC_changeGame_name).activate();
+            ModifyConsoleCommand(__CC_reloadLevel_name).setObject(this).activate();
+        }
     }
 
     void GSLevel::deactivate()
@@ -139,7 +146,10 @@ namespace orxonox
         }
 
         if (GameMode::isStandalone())
+        {
             ModifyConsoleCommand(__CC_changeGame_name).deactivate();
+            ModifyConsoleCommand(__CC_reloadLevel_name).setObject(NULL).deactivate();
+        }
     }
 
     void GSLevel::update(const Clock& time)
@@ -186,6 +196,30 @@ namespace orxonox
             orxout(internal_info) << " Try harder!" << endl;
     }
 
+    void GSLevel::reloadLevel()
+    {
+        // export all states
+        std::vector<GSLevelMementoState*> states;
+        for (ObjectList<GSLevelMemento>::iterator it = ObjectList<GSLevelMemento>::begin(); it != ObjectList<GSLevelMemento>::end(); ++it)
+        {
+            GSLevelMementoState* state = it->exportMementoState();
+            if (state)
+                states.push_back(state);
+        }
+
+        // reload level (or better: reload the whole gamestate)
+        this->deactivate();
+        this->activate();
+
+        // import all states
+        for (ObjectList<GSLevelMemento>::iterator it = ObjectList<GSLevelMemento>::begin(); it != ObjectList<GSLevelMemento>::end(); ++it)
+            it->importMementoState(states);
+
+        // delete states
+        for (size_t i = 0; i < states.size(); ++i)
+            delete states[i];
+    }
+
     /**
     @brief
         Starts the MainMenu.
@@ -212,5 +246,16 @@ namespace orxonox
         Game::getInstance().popState();
         Game::getInstance().popState();
         Game::getInstance().requestStates("standalone, level");
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    RegisterAbstractClass(GSLevelMemento).inheritsFrom(Class(OrxonoxInterface));
+
+    GSLevelMemento::GSLevelMemento()
+    {
+        RegisterObject(GSLevelMemento);
     }
 }
