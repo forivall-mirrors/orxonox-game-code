@@ -50,6 +50,8 @@ namespace orxonox
         static void startMainMenu(void); //!< Starts the MainMenu
         static void changeGame(const std::string& level); //!< Terminates the current game and starts a new game.
 
+        void reloadLevel();
+
     protected:
         void loadLevel();
         void unloadLevel();

@@ -76,6 +76,8 @@ namespace orxonox
     class PlayerManager;
     class Radar;
     class Scene;
+    class GSLevelMemento;
+    struct GSLevelMementoState;
 
     // chat
     class ChatHistory;
