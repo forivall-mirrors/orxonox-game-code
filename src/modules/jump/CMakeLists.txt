@@ -28,6 +28,5 @@ ORXONOX_ADD_LIBRARY(jump
   LINK_LIBRARIES
     orxonox
     overlays
-    weapons
   SOURCE_FILES ${JUMP_SRC_FILES}
 )

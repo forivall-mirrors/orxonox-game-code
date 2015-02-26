@@ -41,7 +41,6 @@
 #include "core/XMLPort.h"
 #include "worldentities/pawns/SpaceShip.h"
 #include "graphics/Camera.h"
-#include "weapons/projectiles/Projectile.h"
 
 #include "DodgeRace.h" // Is necessary for getGame function
 //#include "DodgeRaceCenterPoint.h"
@@ -81,7 +80,6 @@ namespace orxonox
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             WeakPtr<DodgeRace> getGame();
             WeakPtr<DodgeRace> game;
-            WeakPtr<Projectile> lastShot;
             WeakPtr<WorldEntity> lastEntity;
             Camera* camera;
             float lastTimeFront, lastTimeLeft, lastTime;
