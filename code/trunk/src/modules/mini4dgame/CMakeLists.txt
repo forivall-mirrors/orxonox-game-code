@@ -9,6 +9,5 @@ ORXONOX_ADD_LIBRARY(mini4dgame
   FIND_HEADER_FILES
   LINK_LIBRARIES
     orxonox
-    overlays
   SOURCE_FILES ${Mini4Dgame_SRC_FILES}
 )

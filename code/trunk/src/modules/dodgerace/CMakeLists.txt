@@ -12,6 +12,5 @@ ORXONOX_ADD_LIBRARY(dodgerace
   LINK_LIBRARIES
     orxonox
     overlays
-    weapons
   SOURCE_FILES ${Dodgerace_SRC_FILES}
 )

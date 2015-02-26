@@ -25,7 +25,5 @@ ORXONOX_ADD_LIBRARY(questsystem
     QuestsystemPrecompiledHeaders.h
   LINK_LIBRARIES
     orxonox
-    notifications
-    objects
   SOURCE_FILES ${QUESTSYSTEM_SRC_FILES}
 )
