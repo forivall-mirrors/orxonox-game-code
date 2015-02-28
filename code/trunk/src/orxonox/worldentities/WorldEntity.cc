@@ -97,14 +97,16 @@ namespace orxonox
         this->collisionShape_->setWorldEntityOwner(this);
         this->collisionType_             = None;
         this->collisionTypeSynchronised_ = None;
-        this->mass_           = 1.0f;
-        this->childrenMass_   = 0;
+        this->mass_                 = 1.0f;
+        this->childrenMass_         = 0;
         // Using bullet default values
-        this->restitution_    = 0;
-        this->angularFactor_  = 1;
-        this->linearDamping_  = 0;
-        this->angularDamping_ = 0;
-        this->friction_       = 0.5;
+        this->restitution_          = 0;
+        this->angularFactor_        = 1;
+        this->linearDamping_        = 0;
+        this->angularDamping_       = 0;
+        this->friction_             = 0.5;
+        this->ccdMotionThreshold_   = 0.0;
+        this->ccdSweptSphereRadius_ = 0.0;
         this->bCollisionCallbackActive_ = false;
         this->bCollisionResponseActive_ = true;
 
@@ -197,6 +199,10 @@ namespace orxonox
         registerVariable(this->linearDamping_,  VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::linearDampingChanged));
         registerVariable(this->angularDamping_, VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::angularDampingChanged));
         registerVariable(this->friction_,       VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::frictionChanged));
+        registerVariable(this->ccdMotionThreshold_,
+                                                VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::ccdMotionThresholdChanged));
+        registerVariable(this->ccdSweptSphereRadius_,
+                                                VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::ccdSweptSphereRadiusChanged));
         registerVariable(this->bCollisionCallbackActive_,
                                                 VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::collisionCallbackActivityChanged));
         registerVariable(this->bCollisionResponseActive_,
@@ -1002,6 +1008,8 @@ HACK HACK HACK
             this->physicalBody_->setAngularFactor(this->angularFactor_);
             this->physicalBody_->setDamping(this->linearDamping_, this->angularDamping_);
             this->physicalBody_->setFriction(this->friction_);
+            this->physicalBody_->setCcdMotionThreshold(this->ccdMotionThreshold_);
+            this->physicalBody_->setCcdSweptSphereRadius(this->ccdSweptSphereRadius_);
         }
     }
 }
