@@ -81,7 +81,7 @@ namespace orxonox
     {
         if (!this->bDestroy_ && GameMode::isMaster())
         {
-            if (otherObject == this->getShooter()) // Prevents you from shooting yourself
+            if (otherObject == this->getShooter() || otherObject->isA(Class(BasicProjectile))) // Prevents you from shooting yourself or other projectiles
                 return false;
 
             this->bDestroy_ = true; // If something is hit, the object is destroyed and can't hit something else.
