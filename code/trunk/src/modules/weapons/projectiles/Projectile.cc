@@ -57,7 +57,7 @@ namespace orxonox
             this->setMass(1.0f);
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
-            this->setCollisionType(Kinematic);
+            this->setCollisionType(Dynamic);
 
             SphereCollisionShape* shape = new SphereCollisionShape(this->getContext());
             shape->setRadius(20.0f);
