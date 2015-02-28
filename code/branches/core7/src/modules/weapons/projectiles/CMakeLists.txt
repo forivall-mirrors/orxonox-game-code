@@ -1,0 +1,9 @@
+ADD_SOURCE_FILES(WEAPONS_SRC_FILES
+  BasicProjectile.cc
+  BillboardProjectile.cc
+  ParticleProjectile.cc
+  Projectile.cc
+  LightningGunProjectile.cc
+  Rocket.cc
+  SimpleRocket.cc
+)
