@@ -354,6 +354,36 @@ namespace orxonox
             inline float getFriction() const
                 { return this->friction_; }
 
+            /**
+             * Sets the motion threshold for continuous collision detection (CCD). This should be activated if an object moves further in one tick than its own
+             * size. This means that in one tick the object may be in front of a wall and in the next tick it will be behind the wall without ever triggering a
+             * collision. CCD ensures that collisions are still detected. By default it is deactivated (threshold = 0) which is fine for slow or static
+             * objects, but it should be set to a real value for fast moving objects (e.g. projectiles).
+             *
+             * A good value for the threshold is (diameter^2).
+             *
+             * @param ccdMotionThreshold CCD is enabled if the squared velocity of the object is > ccdMotionThreshold (default 0.0). 0.0 means deactivated.
+             */
+            inline void setCcdMotionThreshold(float ccdMotionThreshold)
+                { this->ccdMotionThreshold_ = ccdMotionThreshold; internalSetPhysicsProps(); }
+            //! Returns the currently used motion threshold for CCD (0 means CCD is deactivated).
+            inline float getCcdMotionThreshold() const
+                { return this->ccdMotionThreshold_; }
+
+            /**
+             * Sets the radius of the sphere which is used for continuous collision detection (CCD). The sphere should be embedded inside the objects collision
+             * shape, preferably smaller. @see setCcdMotionThreshold for more information about CCD.
+             *
+             * A good value for the radius is (diameter/5).
+             *
+             * @param ccdSweptSphereRadius The diameter of the sphere which is used for CCD (default 0.0).
+             */
+            inline void setCcdSweptSphereRadius(float ccdSweptSphereRadius)
+                { this->ccdSweptSphereRadius_ = ccdSweptSphereRadius; internalSetPhysicsProps(); }
+            //! Returns the currently used radius of the sphere for CCD.
+            inline float getCcdSweptSphereRadius() const
+                { return this->ccdSweptSphereRadius_; }
+
             void attachCollisionShape(CollisionShape* shape);
             void detachCollisionShape(CollisionShape* shape);
             CollisionShape* getAttachedCollisionShape(unsigned int index);
@@ -437,6 +467,12 @@ namespace orxonox
             //! Network callback workaround to call a function when the value changes.
             inline void frictionChanged()
                 { this->setFriction(this->friction_); }
+            //! Network callback workaround to call a function when the value changes.
+            inline void ccdMotionThresholdChanged()
+                { this->setCcdMotionThreshold(this->ccdMotionThreshold_); }
+            //! Network callback workaround to call a function when the value changes.
+            inline void ccdSweptSphereRadiusChanged()
+                { this->setCcdSweptSphereRadius(this->ccdSweptSphereRadius_); }
 
             CollisionType                collisionType_;                 //!< @see setCollisionType
             CollisionType                collisionTypeSynchronised_;     //!< Network synchronised variable for collisionType_
@@ -453,6 +489,8 @@ namespace orxonox
             btScalar                     angularDamping_;                //!< @see setAngularDamping
             btScalar                     friction_;                      //!< @see setFriction
             btScalar                     childrenMass_;                  //!< Sum of all the children's masses
+            btScalar                     ccdMotionThreshold_;            //!< @see setCcdMotionThreshold
+            btScalar                     ccdSweptSphereRadius_;          //!< @see setCcdSweptSphereRadius
             bool                         bCollisionCallbackActive_;      //!< @see enableCollisionCallback
             bool                         bCollisionResponseActive_;      //!< Tells whether the object should respond to collisions
     };
