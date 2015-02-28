@@ -135,8 +135,8 @@ ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
 ADD_LINKER_FLAGS("-DEBUG" Debug RelForDevs RelWithDebInfo CACHE)
 
 # Incremental linking speeds up development builds
-ADD_LINKER_FLAGS("-INCREMENTAL:YES" Debug   RelForDevs                CACHE)
-ADD_LINKER_FLAGS("-INCREMENTAL:NO"  Release RelWithDebInfo MinSizeRel CACHE)
+ADD_LINKER_FLAGS("-INCREMENTAL"    Debug   RelForDevs                CACHE)
+ADD_LINKER_FLAGS("-INCREMENTAL:NO" Release RelWithDebInfo MinSizeRel CACHE)
 
 # Eliminate unreferenced data
 ADD_LINKER_FLAGS("-OPT:REF" Release RelWithDebInfo MinSizeRel CACHE)
