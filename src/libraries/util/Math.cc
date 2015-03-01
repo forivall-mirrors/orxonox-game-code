@@ -350,18 +350,20 @@ namespace orxonox
     */
     orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float projectilespeed, const orxonox::Vector3& targetposition, const orxonox::Vector3& targetvelocity)
     {
-        float squaredProjectilespeed = projectilespeed * projectilespeed;
         orxonox::Vector3 distance = targetposition - myposition;
         float a = distance.squaredLength();
-        float b = 2 * (distance.x + distance.y + distance.z) * (targetvelocity.x + targetvelocity.y + targetvelocity.z);
-        float c = targetvelocity.squaredLength();
+        float b = 2 * (distance.x * targetvelocity.x + distance.y * targetvelocity.y + distance.z * targetvelocity.z);
+        float c = targetvelocity.squaredLength() - projectilespeed * projectilespeed;
 
-        float temp = 4*squaredProjectilespeed*c + a*a - 4*b*c;
-        if (temp < 0)
+        float discriminant = b*b - 4*a*c;
+        if (discriminant < 0)
             return orxonox::Vector3::ZERO;
 
-        temp = sqrt(temp);
-        float time = (temp + a) / (2 * (squaredProjectilespeed - b));
+        float temp = sqrt(discriminant);
+        float solution1 = (-b + temp) / (2 * a);
+        float solution2 = (-b - temp) / (2 * a);
+        float time = 1.0f / std::max(solution1, solution2);
+
         return (targetposition + targetvelocity * time);
     }
 
