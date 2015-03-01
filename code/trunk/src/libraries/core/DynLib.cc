@@ -55,6 +55,10 @@ namespace orxonox
     DynLib::DynLib( const std::string& name )
     {
         mName = name;
+#if defined(ORXONOX_PLATFORM_WINDOWS)
+        //altered search path doesn't work with paths with forward slashes
+        std::replace(mName.begin(), mName.end(), '/', '\\');
+#endif
         m_hInst = NULL;
     }
 
