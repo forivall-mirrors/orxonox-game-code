@@ -81,7 +81,7 @@ namespace orxonox
     {
         if (!this->bDestroy_ && GameMode::isMaster())
         {
-            if (otherObject == this->getShooter() || otherObject->isA(Class(BasicProjectile))) // Prevents you from shooting yourself or other projectiles
+            if (this->isObjectRelatedToShooter(otherObject) || otherObject->isA(Class(BasicProjectile))) // Prevents you from shooting yourself or other projectiles
                 return false;
 
             this->bDestroy_ = true; // If something is hit, the object is destroyed and can't hit something else.
@@ -140,6 +140,20 @@ namespace orxonox
         return false;
     }
 
+    /**
+     * Returns true if otherObject is equal to the shooter or if one of otherObject's parents is equal to the shooter or if one of the shooter's parent is equal to otherObject.
+     */
+    bool BasicProjectile::isObjectRelatedToShooter(WorldEntity* otherObject)
+    {
+        for (WorldEntity* shooter = this->getShooter(); shooter != NULL; shooter = shooter->getParent())
+            if (otherObject == shooter)
+                return true;
+        for (WorldEntity* object = otherObject; object != NULL; object = object->getParent())
+            if (otherObject == this->getShooter())
+                return true;
+
+        return false;
+    }
 
     /**
     @brief
