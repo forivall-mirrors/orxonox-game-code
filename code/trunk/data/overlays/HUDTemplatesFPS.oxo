@@ -45,7 +45,7 @@
      name          = "Navigation"
      correctaspect = true
      font          = "Monofur"
-     textsize      = 0.05
+     textsize      = 0.02
      navMarkerSize = 0.03
      aimMarkerSize = 0.04
     />

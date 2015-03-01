@@ -60,7 +60,7 @@
    name          = "Navigation"
    correctAspect = true
    font          = "Monofur"
-   textSize      = 0.05
+   textSize      = 0.02
    navMarkerSize = 0.03
    aimMarkerSize = 0.02
   />

@@ -134,7 +134,7 @@ namespace orxonox
         for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it != this->activeObjectList_.end(); ++it)
         {
             if (it->second.text_ != NULL)
-            it->second.text_->setFontName(this->fontName_);
+                it->second.text_->setFontName(this->fontName_);
         }
     }
 
@@ -154,7 +154,7 @@ namespace orxonox
         for (std::map<RadarViewable*, ObjectInfo>::iterator it = this->activeObjectList_.begin(); it!=this->activeObjectList_.end(); ++it)
         {
             if (it->second.text_)
-            it->second.text_->setCharHeight(size);
+                it->second.text_->setCharHeight(size);
         }
     }
 
@@ -540,7 +540,7 @@ namespace orxonox
             if (it->second.panel_ != NULL)
                 it->second.panel_->setDimensions(this->navMarkerSize_ * xScale, this->navMarkerSize_ * yScale);
             if (it->second.text_ != NULL)
-                it->second.text_->setCharHeight(it->second.text_->getCharHeight() * yScale);
+                it->second.text_->setCharHeight(this->textSize_ * yScale);
             if (it->second.target_ != NULL)
                 it->second.target_->setDimensions(this->aimMarkerSize_ * xScale, this->aimMarkerSize_ * yScale);
         }
@@ -596,7 +596,7 @@ namespace orxonox
         Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>( Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
         text->setFontName(this->fontName_);
-        text->setCharHeight(text->getCharHeight() * yScale);
+        text->setCharHeight(this->textSize_ * yScale);
         text->setColour(object->getRadarObjectColour());
 
         health->hide();
