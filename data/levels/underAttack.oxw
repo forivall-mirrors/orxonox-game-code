@@ -11,6 +11,7 @@
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
+  include("templates/standardTurret.oxt")
   include("templates/lodInformation.oxt")
 ?>
 
@@ -58,6 +59,7 @@
       maxhealth         = 10000000
       initialhealth     = 10000
       radarname         = "Transporter"
+      team              = 1
     >
 
       <attached>
@@ -146,6 +148,81 @@
           elements=15
           trailmaterial="Trail/backlighttrail"
           material="Examples/Flare" />
+        <Turret position="170,47,35" pitch="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="170,-47,35" pitch="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="167,0,90" pitch="180" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="140,85,-15" pitch="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="70,85,-15" pitch="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="105,75,-3" pitch="180" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="25,75,-15" yaw="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="140,-85,-15" pitch="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="70,-85,-15" pitch="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="105,-75,-3" pitch="180" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="25,-75,-15" yaw="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="203,-35,-15" yaw="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="203,35,-15" yaw="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="-55,42,-15" yaw="90" pitch="73" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="-55,-42,-15" yaw="90" pitch="-73" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
       </attached>
       <collisionShapes>
         <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
