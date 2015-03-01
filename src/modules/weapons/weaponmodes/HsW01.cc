@@ -64,7 +64,7 @@ namespace orxonox
         this->sound_ = "sounds/Weapon_HsW01.ogg";
 
 
-        this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&HsW01::shot, this)));
+        this->delayTimer_.setTimer(this->delay_, false, createExecutor(createFunctor(&HsW01::shot, this)));
         this->delayTimer_.stopTimer();
 
         this->setDefaultSound(this->sound_);

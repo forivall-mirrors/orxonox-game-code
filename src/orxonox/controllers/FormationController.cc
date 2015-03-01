@@ -677,7 +677,7 @@ namespace orxonox
            {
                (*it)->state_=FREE;
                (*it)->forceFreedom();
-               (*it)->target_=originator;
+               (*it)->setTarget(originator);
            }
            i++;
            if (i>=slaves_.size()/2) break; //half the formation should attack.
@@ -934,8 +934,7 @@ namespace orxonox
                 if (!this->target_ || it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) * (1.5f + acos((this->getControllableEntity()->getOrientation() * WorldEntity::FRONT).dotProduct(distanceNew) / speed / distanceNew.length()) / math::twoPi)
                         < this->targetPosition_.squaredDistance(this->getControllableEntity()->getPosition()) * (1.5f + acos((this->getControllableEntity()->getOrientation() * WorldEntity::FRONT).dotProduct(distanceCurrent) / speed / distanceCurrent.length()) / math::twoPi) + rnd(-250, 250))
                 {
-                    this->target_ = (*it);
-                    this->targetPosition_ = it->getPosition();
+                    this->setTarget(*it);
                 }
             }
         }
