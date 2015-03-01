@@ -122,6 +122,8 @@ namespace orxonox
             void destroyCheck(void);
 
         private:
+            bool isObjectRelatedToShooter(WorldEntity* otherObject);
+
             WeakPtr<Pawn> shooter_; //!< The entity that fired the projectile.
 
             float damage_; //!< The amount of normal damage. Normal damage can be (partially) absorbed by shields.
