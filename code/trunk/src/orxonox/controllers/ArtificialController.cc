@@ -91,7 +91,7 @@ namespace orxonox
         if (!this->target_ || !this->getControllableEntity())
             return;
 
-        static const float hardcoded_projectile_speed = 1250;
+        static const float hardcoded_projectile_speed = 2500;
 
         this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getWorldPosition(), hardcoded_projectile_speed, this->target_->getWorldPosition(), this->target_->getVelocity());
         this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
