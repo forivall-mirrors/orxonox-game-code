@@ -359,10 +359,8 @@ namespace orxonox
         if (discriminant < 0)
             return orxonox::Vector3::ZERO;
 
-        float temp = sqrt(discriminant);
-        float solution1 = (-b + temp) / (2 * a);
-        float solution2 = (-b - temp) / (2 * a);
-        float time = 1.0f / std::max(solution1, solution2);
+        float solution = (-b + sqrt(discriminant)) / (2 * a);
+        float time = 1.0f / solution;
 
         return (targetposition + targetvelocity * time);
     }

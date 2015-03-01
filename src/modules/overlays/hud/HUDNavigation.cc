@@ -486,9 +486,9 @@ namespace orxonox
                     else // object is selected and moves
                     {
                         // get the aim position
-                        Vector3* targetPos = this->toAimPosition(it->first);
+                        const Vector3& targetPos = this->toAimPosition(it->first);
                         // Transform to screen coordinates
-                        Vector3 screenPos = camTransform * (*targetPos);
+                        Vector3 screenPos = camTransform * targetPos;
                         // Check if the target marker is in view too
                         if(screenPos.z > 1 || screenPos.x < -1.0 || screenPos.x > 1.0
                                 || screenPos.y < -1.0 || screenPos.y > 1.0)
@@ -501,7 +501,6 @@ namespace orxonox
                             it->second.target_->setTop((-screenPos.y + 1.0f - it->second.target_->getHeight()) * 0.5f);
                             it->second.target_->show();
                         }
-                        delete targetPos;
                     }
 
                 }
@@ -678,18 +677,13 @@ namespace orxonox
         }
     }
 
-    Vector3* HUDNavigation::toAimPosition(RadarViewable* target) const
+    Vector3 HUDNavigation::toAimPosition(RadarViewable* target) const
     {
         Vector3 wePosition = HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition();
         Vector3 targetPosition = target->getRVWorldPosition();
         Vector3 targetSpeed = target->getRVVelocity();
-        Vector3 relativePosition = targetPosition - wePosition; //Vector from attacker to target
 
-        float p_half = relativePosition.dotProduct(targetSpeed)/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_);
-        float time1 = -p_half + sqrt(p_half * p_half - relativePosition.squaredLength()/(targetSpeed.squaredLength() - this->currentMunitionSpeed_ * this->currentMunitionSpeed_));
-
-        Vector3* result = new Vector3(targetPosition + targetSpeed * time1);
-        return result;
+        return getPredictedPosition(wePosition, this->currentMunitionSpeed_, targetPosition, targetSpeed);
     }
 
     void HUDNavigation::selectClosestTarget()
