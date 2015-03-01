@@ -85,7 +85,7 @@ namespace orxonox
         this->setHealthLevelMarkerSize(0.06f);
 
         this->setDetectionLimit(10000.0f);
-        this->currentMunitionSpeed_ = 2500.0f;
+        this->currentMunitionSpeed_ = 750.0f;
 
         this->closestTarget_ = true;
         this->nextTarget_ = false;
