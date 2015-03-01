@@ -137,7 +137,7 @@ namespace orxonox
             float getArrowSizeX(int dist) const;
             float getArrowSizeY(int dist) const;
 
-            Vector3* toAimPosition(RadarViewable* target) const;
+            Vector3 toAimPosition(RadarViewable* target) const;
 
             std::map<RadarViewable*, ObjectInfo> activeObjectList_;
             std::list<std::pair<RadarViewable*, unsigned int> > sortedObjectList_;
