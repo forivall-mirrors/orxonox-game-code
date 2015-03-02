@@ -153,7 +153,8 @@ namespace orxonox
         {
             if( GameMode::isMaster() )
             {
-                this->getController()->destroy();
+                if (this->getController())
+                    this->getController()->destroy();
             }
         }
     }
