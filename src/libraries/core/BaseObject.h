@@ -137,8 +137,8 @@ namespace orxonox
             inline const std::set<Template*>& getTemplates() const
                 { return this->templates_; }
 
-            virtual inline void setNamespace(Namespace* ns) { this->namespace_ = ns; }
-            inline Namespace* getNamespace() const { return this->namespace_; }
+            inline void setNamespace(const SmartPtr<Namespace>& ns) { this->namespace_ = ns; }
+            inline const SmartPtr<Namespace>& getNamespace() const { return this->namespace_; }
 
             inline void setCreator(BaseObject* creator) { this->creator_ = creator; }
             inline BaseObject* getCreator() const { return this->creator_; }
@@ -221,7 +221,7 @@ namespace orxonox
             Element*               lastLoadedXMLElement_;      //!< Non 0 if the TinyXML attributes have already been copied to our own lowercase map
             std::map<std::string, std::string> xmlAttributes_; //!< Lowercase XML attributes
             std::string            loaderIndentation_;         //!< Indentation of the debug output in the Loader
-            Namespace*             namespace_;
+            SmartPtr<Namespace>    namespace_;
             BaseObject*            creator_;
             SmartPtr<Scene>        scene_;
             uint32_t               sceneID_;

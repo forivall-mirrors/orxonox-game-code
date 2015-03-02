@@ -45,6 +45,8 @@ namespace orxonox
       operator_("or")
     {
         RegisterObject(Namespace);
+
+        this->setNamespace(SmartPtr<Namespace>(this, false));
     }
 
     Namespace::~Namespace()
