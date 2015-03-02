@@ -189,11 +189,10 @@ namespace orxonox
                 orxout(internal_info) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << "), references: " << it->getReferenceCount() << endl;
             }
         }
-        orxout(internal_info) << i << " objects remaining.";
         if (i == 0)
-            orxout(internal_info) << " Well done!" << endl;
+            orxout(internal_info) << i << " objects remaining. Well done!" << endl;
         else
-            orxout(internal_info) << " Try harder!" << endl;
+            orxout(internal_warning) << i << " objects remaining. Try harder!" << endl;
     }
 
     void GSLevel::reloadLevel()
