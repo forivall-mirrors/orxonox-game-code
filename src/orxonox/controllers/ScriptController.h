@@ -44,7 +44,10 @@ namespace orxonox  // tolua_export
         /** Instruction for this event */
         std::string fctName;
 
+        /** Final position we want to be at **/
         Vector3 v1;
+
+        /** Where we are looking **/
         Vector3 v2;
 
         /** Time span of the event */
