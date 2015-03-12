@@ -1,0 +1,254 @@
+<!---->
+
+<LevelInfo
+ name = "Under Attack"
+ description = "Fight the transporter."
+ tags = "gametype"
+ screenshot = "underattack.png"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/standardTurret.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ gametype = "UnderAttack"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+  <WorldAmbientSound source="Jupiter.ogg" looping="true" playOnLoad="true" />
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skyBoxBasic"
+  >
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <?lua for i = 1, 30, 1 do ?>
+      <MovableEntity
+          position="<?lua print(math.random() * 10000 - 5000) ?>, <?lua print(math.random() * 10000 - 5000) ?>, <?lua print(math.random() * 10000 - 5000) ?>"
+          velocity="<?lua print(math.random() * 500 - 250) ?>, <?lua print(math.random() * 500 - 250) ?>, <?lua print(math.random() * 500 - 250) ?>"
+      >
+        <attached>
+          <Model
+              <?lua x = math.random() * 150 + 30 ?>
+              scale="<?lua print(x) ?>"
+              mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh"
+              position="0,0,0"
+          />
+        </attached>
+          <collisionShapes>
+            <SphereCollisionShape radius="<?lua print(x) ?>" position="0,0,0" />
+          </collisionShapes>
+      </MovableEntity>
+    <?lua end ?>
+
+    <Destroyer
+      position          = "100,150,0"
+      collisionType     = dynamic
+      mass              = 100000
+      velocity          = "-35,0,0"
+      angularDamping    = 0.9999999
+      health            = 10000
+      maxhealth         = 10000000
+      initialhealth     = 10000
+      radarname         = "Transporter"
+      team              = 1
+    >
+
+      <attached>
+        <SpaceBoundaries position="1,2,3" maxDistance="1600" warnDistance="300" showDistance="300" reactionMode="1" healthDecrease="5.0" />
+        <TeamSpawnPoint team=1 position="200,0,20" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="50,0,100" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="-200,0,-60" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="100,0,-50" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <TeamSpawnPoint team=1 position="400,0,20" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
+        <?lua for i = 1, 100, 1 do ?>
+          <TeamSpawnPoint
+            team=0
+            position="<?lua print((math.random() * 450 + 450) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>,<?lua print((math.random() * 450 + 450) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>,<?lua print((math.random() * 450 + 450) * (math.floor(math.random() + 0.5) * 2 - 1)) ?>"
+            lookat="0,0,0"
+            spawnclass=SpaceShip
+            pawndesign=spaceshipassff
+          />
+
+          <!--more spawnpoints for team1-->
+          <!--
+          <TeamSpawnPoint
+            team=1 position="<?lua print((math.random() * 500 + 500)) ?>,<?lua print((math.random() * 500 + 500) ) ?>,<?lua print((math.random() * 500 + 500)) ?>"
+            lookat="0,0,0"
+            spawnclass=SpaceShip
+            pawndesign=spaceshipassff
+          />-->
+        <?lua end ?>
+
+        <Model mesh="Carrier.mesh" scale="5" />
+        <Backlight
+          mainstate=activity
+          active=false
+          scale=0.4
+          name=bltest
+          position=" 7.6, 0, 6"
+          colour="0.2, 0.65, 1.0, 1.0"
+          width=15
+          length=1500
+          lifetime=2
+          elements=50
+          trailmaterial="Trail/backlighttrail"
+          turnontime=1
+          turnofftime=1
+          material="Flares/ThrusterFlare1"
+        />
+        <?lua for i=0,8,1 do ?>
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?> ,15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?>,-15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+        <?lua end ?>
+
+        <Backlight
+          scale=1
+          position=" 169, 75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare"
+        />
+        <Backlight
+          scale=1
+          position=" 169, -75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare" />
+        <Turret position="170,47,35" pitch="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="170,-47,35" pitch="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="167,0,90" pitch="180" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="140,85,-15" pitch="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="70,85,-15" pitch="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="105,75,-3" pitch="180" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="25,75,-15" yaw="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="140,-85,-15" pitch="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="70,-85,-15" pitch="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="105,-75,-3" pitch="180" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="25,-75,-15" yaw="90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="203,-35,-15" yaw="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="203,35,-15" yaw="-90" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="-55,42,-15" yaw="90" pitch="73" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+        <Turret position="-55,-42,-15" yaw="90" pitch="-73" scale="0.5">
+          <templates>
+            <Template link=standardturret />
+          </templates>
+        </Turret>
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </Destroyer>
+
+    <GlobalShader compositor="Bloom" visible=false>
+      <events>
+        <visibility>
+          <DistanceTrigger position="0,0,0" distance=30 target="Spectator" switch=true />
+        </visibility>
+      </events>
+    </GlobalShader>
+
+    <Model position="0,0,0" scale=8 mesh="ast1.mesh" />
+    <StaticEntity position="0,0,0" collisionType=static>
+      <collisionShapes>
+        <SphereCollisionShape radius="20" />
+      </collisionShapes>
+    </StaticEntity>
+    
+  </Scene>
+</Level>

@@ -1,0 +1,10 @@
+TODO LIST FOR IRK
+=================
+
+* Implement DCC.
+* Implement object based command structure.
+* Implement event bindings modelled after the Tk Text widget.
+* Improve flow control.
+* Implement the last remaining RFC1439 protocol elements.
+* Implement proxy IRK commands for CTCP TCL safe interpreters.
+* Implement /mode commands.
