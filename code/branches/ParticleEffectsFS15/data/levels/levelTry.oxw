@@ -1,0 +1,178 @@
+<!-- First levelFile of mkronig and samuezu. It was copied from dockingToASpaceStation.oxw and modified a little bit -->
+<LevelInfo
+ name = "levelTry"
+ description = "Docking into a spacestation."
+ tags = "showcase"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/bigship.oxt")
+  include("templates/spaceshipTurret.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
+  include("templates/FPS.oxt")
+?>
+
+<Level
+  gametype = Deathmatch
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
+  <Scene
+    ambientlight = "0.5, 0.5, 0.5"
+    skybox       = "Orxonox/Starbox"
+    negativeWorldRange = "-100000, -100000, -100000"
+    positiveWorldRange = " 100000,  100000,  100000"
+    gravity      = "0,0,0"
+    hasPhysics   = true
+  >
+
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0,1.0,1.0,0.5" specular="1.0, 0.9, 0.9, 1.0"/>
+    <SpawnPoint team=0 position="3200,0,0" lookat="2800,0,0" spawnclass=SpaceShip pawndesign=spaceshipescort />
+
+    <!--
+    <StaticEntity position  = "2800,0,0" mass=10000 collisionType=static >
+      <attached>
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" />
+        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" />
+        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
+        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 />
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 />
+        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
+      </collisionShapes>
+    </StaticEntity>
+    -->
+
+
+    <Billboard position="2500,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=10 />
+    <DistanceTrigger position="2500,0,0" distance="200" target="Pawn"
+      beaconMode="exclude" targetname="bcnDestroyer" name="takeControl"
+    />
+
+    <StaticEntity position  = "2000,500,2000" mass=10000 collisionType=static >
+      <attached>
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=10 />
+      </attached>
+    </StaticEntity>
+
+    <StaticEntity position  = "-1000,3000,-1000" mass=10000 collisionType=static >
+      <attached>
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=80 />
+      </attached>
+    </StaticEntity>
+
+
+
+
+<!-- ControllerDirector waits for the event takeControl to attach a new Controller -->
+    <ControllerDirector position="0,0,0">
+        <events>
+            <takeControl>
+                <EventListener event="takeControl" />
+            </takeControl>
+        </events>
+    </ControllerDirector>
+
+<!-- FPS Player as destination of the dock -->
+<FpsPlayer template = "fps" radarname = "First Person Player" position = "0,-19900,0" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+      </attached>
+</FpsPlayer>
+
+
+<!-- Cube as test SpaceStation
+
+The station can either be hidden outside of the skybox, within the hull of the space station if it is big enough or within a planet.
+Complex spacestations can be placed very far away from the spaceship so it is rendered at low resolution while the player uses the space ship.
+
+-->
+  <StaticEntity position="0,-20000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="80,80,5" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="400,400,25" />
+      </collisionShapes>
+  </StaticEntity>
+
+<!-- Homogenous gravitationfield to simulate local gravity (activating the normal gravity will affect the spaceship terribly) -->
+<ForceField position="0,-20000,0" mode="homogen" diameter="2000" forcedirection = "0,-500,0" />
+
+
+<!-- Some more stuff -->
+
+    <!-- triple large belt around the planet  -->
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+    ?>
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
+    ?>
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(15000, 0, 0, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
+    ?>
+
+    <Planet
+      position="15000,0,-1000"
+      scale="5000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="10000000"
+      pitch="0"
+      mesh="planets/ganymede.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="1,0,0"
+      rotationrate="1.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="5000,0,0" mode="sphere" diameter="10000" velocity="-50" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="5000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
+  </Scene>
+
+</Level>
+
