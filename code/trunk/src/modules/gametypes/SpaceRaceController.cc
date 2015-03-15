@@ -337,9 +337,10 @@ namespace orxonox
 
     SpaceRaceController::~SpaceRaceController()
     {
-        for (int i =-1; i>virtualCheckPointIndex; i--)
+        if (this->isInitialized())
         {
-            delete findCheckpoint(i);
+            for (int i =-1; i>virtualCheckPointIndex; i--)
+                delete findCheckpoint(i);
         }
     }
 
