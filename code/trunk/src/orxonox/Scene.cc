@@ -204,8 +204,11 @@ namespace orxonox
             this->physicalWorld_   = new btDiscreteDynamicsWorld(this->dispatcher_, this->broadphase_, this->solver_, this->collisionConfig_);
             this->physicalWorld_->setGravity(multi_cast<btVector3>(this->gravity_));
 
-            this->debugDrawer_ = new BulletDebugDrawer(this->sceneManager_);
-            this->physicalWorld_->setDebugDrawer(this->debugDrawer_);
+            if (GameMode::showsGraphics() && this->sceneManager_)
+            {
+                this->debugDrawer_ = new BulletDebugDrawer(this->sceneManager_);
+                this->physicalWorld_->setDebugDrawer(this->debugDrawer_);
+            }
 
             // also set the collision callback variable.
             // Note: This is a global variable which we assign a static function.
