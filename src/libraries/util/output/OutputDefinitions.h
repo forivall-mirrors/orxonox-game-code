@@ -48,10 +48,10 @@
 */
 #ifndef DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
     #define REGISTER_OUTPUT_CONTEXT(name) \
-        const OutputContextContainer& name() { static OutputContextContainer context = registerContext(#name); return context; }
+        inline const OutputContextContainer& name() { static OutputContextContainer context = registerContext(#name); return context; }
 #else
     #define REGISTER_OUTPUT_CONTEXT(name) \
-        const OutputContextContainer& name() { return registerContext(#name); }
+        inline const OutputContextContainer& name() { return registerContext(#name); }
 #endif
 
 /**
@@ -66,10 +66,10 @@
 */
 #ifndef DISABLE_OUTPUT_CONTEXT_STATIC_CACHE
     #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
-        const OutputContextContainer& subname() { static const OutputContextContainer context = registerContext(#name, #subname); return context; }
+        inline const OutputContextContainer& subname() { static const OutputContextContainer context = registerContext(#name, #subname); return context; }
 #else
     #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
-        const OutputContextContainer& subname() { return registerContext(#name, #subname); }
+        inline const OutputContextContainer& subname() { return registerContext(#name, #subname); }
 #endif
 
 // tolua_begin
