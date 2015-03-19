@@ -1,0 +1,62 @@
+<Template name=towerdefensetower>
+  <TowerDefenseTower
+
+
+   	explosionchunks        = 6
+	reloadrate=10 
+	reloadwaittime=5 
+	collisionType="none" 
+	pitch="0" 
+	yaw="0" 
+	roll="0" 
+	maxPitch=90 
+	maxYaw=90 
+	maxAttackRadius=1000 
+	minAttackRadius=30
+   	team = 1
+
+
+  >
+  
+     <controller>
+     <TurretController/>
+  </controller>
+  
+  
+  <attached>
+	
+    <Model position="0,0,0" scale=45 mesh="Tower.mesh" />
+    <Turret
+    
+    explosionchunks        = 6
+	reloadrate=10 
+	reloadwaittime=5 
+	collisionType="none" 
+	maxPitch=90 
+	maxYaw=90 
+	maxAttackRadius=1000 
+	minAttackRadius=30
+   	team = 1
+    >
+    
+         <controller>
+     		<TurretController/>
+  		</controller>
+  		
+  		
+  	</Turret>
+  </attached>
+    
+
+
+
+    <!--collisionShapes>
+
+    </collisionShapes-->
+
+
+    <?lua
+      include("../includes/weaponSettingsTurret.oxi")
+    ?>
+  </TowerDefenseTower>
+</Template>

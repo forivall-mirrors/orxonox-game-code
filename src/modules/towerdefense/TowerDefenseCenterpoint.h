@@ -78,24 +78,12 @@ namespace orxonox
             unsigned int getTileScale(void) const
                 { return this->tileScale_; }
 
-            /**
-            @brief Set the template for the towers.
-            @param template The template name to be applied to each tower.
-            */
-            void setTowerTemplate(const std::string& templateName)
-                { this->towerTemplate_ = templateName; }
-
-            const std::string& getTowerTemplate(void) const
-                { return this->towerTemplate_; }
-
         private:
             void checkGametype();
 
             unsigned int width_;
             unsigned int height_;
             unsigned int tileScale_;
-
-            std::string towerTemplate_;
     };
 }
 

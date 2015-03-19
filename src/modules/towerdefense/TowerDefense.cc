@@ -153,7 +153,7 @@ namespace orxonox
 
         //set initial credits, lifes and WaveNumber
         this->setCredit(1000);
-        this->setLifes(50);
+        this->setLifes(25);
         this->setWaveNumber(0);
         time=0.0;
 
@@ -277,7 +277,6 @@ namespace orxonox
 
         //Creates tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
-        towernew->addTemplate("towerturret");
         towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
         towernew->setGame(this);
     }

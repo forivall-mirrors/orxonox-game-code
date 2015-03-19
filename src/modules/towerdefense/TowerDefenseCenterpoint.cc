@@ -52,7 +52,6 @@ namespace orxonox
 
         this->width_ = 15;
         this->height_ = 15;
-        this->towerTemplate_ = "";
 
         //this->setCollisionType(Static);
 
@@ -71,7 +70,6 @@ namespace orxonox
         XMLPortParam(TowerDefenseCenterpoint, "width", setWidth, getWidth, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "height", setHeight, getHeight, xmlelement, mode);
         XMLPortParam(TowerDefenseCenterpoint, "tileScale", setTileScale, getTileScale, xmlelement, mode);
-        XMLPortParam(TowerDefenseCenterpoint, "towerTemplate", setTowerTemplate, getTowerTemplate, xmlelement, mode);
 
         //TODO: add XMLPortObject(TowerDefenseCenterpoint, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
         // This was copied and shightly modified from WaypointController.cc ; there are no getters and setters and no membervariable yet
