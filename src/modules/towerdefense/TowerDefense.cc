@@ -76,7 +76,6 @@
 #include "TowerDefenseTower.h"
 #include "TowerDefenseCenterpoint.h"
 //#include "TDCoordinate.h"
-#include "TowerTurret.h"
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
@@ -140,6 +139,7 @@ namespace orxonox
             }
         }
 
+        //the path of the spacehips has to be blocked, so that no towers can be build there
         for (int k=0; k<3; k++)
             towermatrix[1][k]=true;
         for (int l=1; l<11; l++)
@@ -152,18 +152,17 @@ namespace orxonox
             towermatrix[13][o]=true;
 
         //set initial credits, lifes and WaveNumber
-        this->setCredit(200);
+        this->setCredit(1000);
         this->setLifes(50);
         this->setWaveNumber(0);
         time=0.0;
 
         //adds initial towers
+        /*
         for (int i=0; i <7; i++){
             addTower(i+3,4);
-        }/*
-        for (int j=0; j < 7; j++){
-            addTower(9,j+5);
-        }*/
+        }
+        */
     }
 
     // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
