@@ -1,0 +1,9 @@
+ADD_SOURCE_FILES(WEAPONS_SRC_FILES
+  EnergyDrink.cc
+  FusionFire.cc
+  LaserFire.cc
+  HsW01.cc
+  LightningGun.cc
+  RocketFire.cc
+  SimpleRocketFire.cc
+)
