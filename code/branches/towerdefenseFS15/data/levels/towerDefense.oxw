@@ -19,7 +19,7 @@
 <?lua
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
-  include("templates/tower.oxt")
+  include("templates/towerdefensetower.oxt")
   include("templates/enemytowerdefense.oxt")
   include("templates/standardTurret.oxt")
 ?>
@@ -41,19 +41,6 @@
     </attached>
   </Pawn>
 </Template>
-
-
-<!-- Template for a tower   EDIT: new towertemplate is included with "templates/tower" -->
-<!--Template name=towertemplate>
-  <Tower>
-    <attached>
-      <Model position="0,0,0" scale=0.25 mesh="Tower_ME.mesh" />
-    </attached>
-  </Tower>
-</Template-->
-
-
-
 
 
 <Level gametype = "TowerDefense">
@@ -113,7 +100,6 @@
     width=16
     height=16
     tileScale=100
-    towerTemplate=tower
     position="0,0,0"
     direction="0,0,0"
     collisionType=dynamic

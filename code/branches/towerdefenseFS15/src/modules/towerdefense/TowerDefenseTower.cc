@@ -25,9 +25,9 @@ namespace orxonox
     {
         RegisterObject(TowerDefenseTower);
         game_ =NULL;
-        this->setCollisionType(WorldEntity::Dynamic);
+        this->setCollisionType(WorldEntity::None);
         upgrade = 0;
-
+        this->addTemplate("towerdefensetower");
 
 
 
@@ -69,7 +69,7 @@ namespace orxonox
             reloadwaittime = 0.5f*reloadwaittime;
             setReloadRate(reloadrate);
             setReloadWaitTime(reloadwaittime);
-            this->addTemplate("towerturret1");
+            //this->addTemplate("towerturret1");
         }
         else
         {
