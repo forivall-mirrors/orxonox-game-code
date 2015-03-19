@@ -21,12 +21,15 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    TowerDefenseTower::TowerDefenseTower(Context* context) : Pawn(context)
+    TowerDefenseTower::TowerDefenseTower(Context* context) : Turret(context)
     {
         RegisterObject(TowerDefenseTower);
-
+        game_ =NULL;
         this->setCollisionType(WorldEntity::Dynamic);
         upgrade = 0;
+
+
+
 
         //this->removeAllEngines();
 

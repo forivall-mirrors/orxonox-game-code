@@ -19,11 +19,12 @@ See TowerDefenseTowerDefenseReadme.txt for Information.
 
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "worldentities/pawns/SpaceShip.h"
+#include "objects/Turret.h"
 
 
 namespace orxonox
 {
-    class _TowerDefenseExport TowerDefenseTower : public Pawn
+    class _TowerDefenseExport TowerDefenseTower : public Turret
     {
     public:
         TowerDefenseTower(Context* context);
