@@ -10,6 +10,7 @@
       <WeaponSet firemode=3 />
     </weaponsets>
     <weapons>
+	 
       <WeaponPack>
         <links>
           <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
@@ -42,12 +43,15 @@
           <RocketFire mode=3 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
         </Weapon>
       </WeaponPack>
-      <WeaponPack>
-        <links>
-          <DefaultWeaponmodeLink firemode=1 weaponmode=0 />
+     <WeaponPack>
+            <links>
+          <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+          <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
+          <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
+          <DefaultWeaponmodeLink firemode=3 weaponmode=3 />
         </links>
-        <!--Weapon>
-          <EnergyDrink mode=0 munitionpershot=0 delay=0  material="Flares/point_lensflare"muzzleoffset="2,-0.2,-1" />
-        </Weapon-->
+        <Weapon>
+          <!EnergyDrink mode=3 munitionpershot=0 delay=0  material="Flares/point_lensflare"muzzleoffset="2,-0.2,-1" /-->
+        </Weapon>
       </WeaponPack>
     </weapons>
