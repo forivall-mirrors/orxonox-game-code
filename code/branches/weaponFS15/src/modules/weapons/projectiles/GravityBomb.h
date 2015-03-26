@@ -43,22 +43,36 @@
 
 #include "graphics/ParticleSpawner.h"
 #include "interfaces/RadarViewable.h"
-
+#include "objects/ForceField.h"
 #include "BasicProjectile.h"
+#include "worldentities/MovableEntity.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
 
 	class ConeCollisionShape;
 
-	class _WeaponsExport GravityBomb : public BasicProjectile , public RadarViewable, public MovableEntity
+	class _WeaponsExport GravityBomb : public BasicProjectile , public MovableEntity, public RadarViewable
 	{
 		public:
 			GravityBomb(Context* context);
+			virtual ~GravityBomb();
+			virtual void tick(float dt);
+
+			virtual bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
 
 		private:
-		float lifetime_;
+		static const float FUEL_START;
+		static const float FORCE_SPHERE_START_RADIUS;
+		static const float FORCE_SPHERE_START_STRENGTH;
 
-	}
+		float fuel_;
+		float lifetime_;
+		float forceSphereRadius_;
+		float forceStrength_;
+
+
+	};
 }
 #endif /* GravityBOMB_H_ */
