@@ -37,10 +37,12 @@ namespace orxonox
         */
 
         // Overriding these to stop TowerDefenseTowers from spasing out
+        /*
         void setOrientation(const Quaternion& orientation);
         virtual void rotateYaw(const Vector2& value);
         virtual void rotatePitch(const Vector2& value);
         virtual void rotateRoll(const Vector2& value);
+        */
         virtual bool upgradeTower();
 
 

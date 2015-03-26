@@ -19,14 +19,13 @@
   >
   
      <controller>
-     <TurretController/>
+     <TurretController team = 1/>
   </controller>
   
   
   <attached>
 	
-    <Model position="0,0,0" scale=45 mesh="Tower.mesh" />
-    <Turret
+    <!--Turret
     
     explosionchunks        = 6
 	reloadrate=10 
@@ -44,7 +43,7 @@
   		</controller>
   		
   		
-  	</Turret>
+  	</Turret-->
   </attached>
     
 

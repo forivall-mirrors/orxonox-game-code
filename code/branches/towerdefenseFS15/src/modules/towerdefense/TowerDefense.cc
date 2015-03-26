@@ -153,7 +153,7 @@ namespace orxonox
 
         //set initial credits, lifes and WaveNumber
         this->setCredit(1000);
-        this->setLifes(25);
+        this->setLifes(100);
         this->setWaveNumber(0);
         time=0.0;
 
@@ -193,6 +193,7 @@ namespace orxonox
             break;
         }
 
+        en1->setTeam(2);
         en1->getController();
         en1->setPosition(path.at(0)->get3dcoordinate());
         TowerDefenseEnemyvector.push_back(en1);
@@ -275,10 +276,19 @@ namespace orxonox
         this->buyTower(towerCost);
         towermatrix [x][y]=true;
 
+        //Create Model
+        Model* newtowermodel = new Model(this->center_->getContext());
+        newtowermodel->setMeshSource("Tower.mesh");
+        newtowermodel->setScale(45);
+        newtowermodel->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 50);
+
+
+
         //Creates tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
-        towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
+        towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 275);
         towernew->setGame(this);
+        towernew->setTeam(1);
     }
 
     bool TowerDefense::hasEnoughCreditForTower(int towerCost)
