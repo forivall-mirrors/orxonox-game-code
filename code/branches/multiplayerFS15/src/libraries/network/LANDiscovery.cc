@@ -123,5 +123,16 @@ namespace orxonox
       return this->servers_[index].getServerIP();
   }
 
+  std::string LANDiscovery::getServerListItemRTT(unsigned int index)
+  {
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else{
+      uint32_t serverrtt = this->servers_[index].getServerRTT();
+      return Ogre::StringConverter::toString(serverrtt);
+    }
+
+  }
+
 
 } // namespace orxonox
