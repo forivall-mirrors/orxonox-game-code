@@ -82,6 +82,7 @@ namespace orxonox
     class Projectile;
     class Rocket;
     class SimpleRocket;
+    class GravityBomb;
 
     // weaponmodes
     class EnergyDrink;
