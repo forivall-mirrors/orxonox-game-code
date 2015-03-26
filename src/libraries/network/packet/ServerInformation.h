@@ -44,14 +44,14 @@ namespace orxonox
         ServerInformation();
         ServerInformation(ENetEvent* event);
         ~ServerInformation();
-        
+
         void          send( ENetPeer* peer );
         std::string   getServerIP() { return this->serverIP_; }
         std::string   getServerName() { return this->serverName_; }
         void          setServerName(std::string name) { this->serverName_ = name; }
         void          setServerIP( std::string IP ) { this->serverIP_ = IP; }
         uint32_t      getServerRTT() { return this->serverRTT_; }
-        
+
       private:
         std::string   serverName_;
         std::string   serverIP_;

@@ -38,12 +38,12 @@ namespace orxonox
 {
   namespace packet
   {
-    
+
     ServerInformation::ServerInformation()
     {
-      
+
     }
-    
+
     ServerInformation::ServerInformation(ENetEvent* event)
     {
       char serverIP[64];
@@ -68,7 +68,7 @@ namespace orxonox
 
     ServerInformation::~ServerInformation()
     {
-      
+
     }
 
     void ServerInformation::send(ENetPeer* peer)
@@ -80,10 +80,10 @@ namespace orxonox
       saveAndIncrease(this->serverName_, temp2);
       ENetPacket* packet = enet_packet_create( temp, size, 0 );
       enet_peer_send(peer, 0, packet);
-      
+
       delete[] temp;
     }
-  
+
   } // namespace packet
 
   std::ostream& operator<<(std::ostream& out, const ENetAddress& address)
@@ -94,4 +94,3 @@ namespace orxonox
       return out;
   }
 } // namespace orxonox
-

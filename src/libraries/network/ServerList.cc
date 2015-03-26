@@ -29,7 +29,7 @@
 #include "ServerList.h"
 
 namespace orxonox
-{ 
+{
   ServerList::ServerList()
   { /* create a new list */ }
 
@@ -38,26 +38,26 @@ namespace orxonox
     serverlist.clear();
   }
 
-  int 
+  int
   ServerList::addServer( packet::ServerInformation toadd,
     ENetPeer *peer )
-  { 
+  {
     ServerListElem toAdd;
     toAdd.ServerInfo = toadd;
     toAdd.peer = peer;
 
-    this->serverlist.push_back( toAdd ); 
+    this->serverlist.push_back( toAdd );
     return 0;
   }
 
-  bool 
+  bool
   ServerList::delServerByName( std::string name )
-  { 
+  {
     /* get an iterator */
     std::list<ServerListElem>::iterator i;
 
     /* loop through list elements */
-    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+    for( i = serverlist.begin(); i != serverlist.end(); ++i )
       if( (*i).ServerInfo.getServerName() == name )
       { /* found this name, remove and quit */
         this->serverlist.erase( i );
@@ -67,12 +67,12 @@ namespace orxonox
   }
 
   bool ServerList::delServerByAddress( std::string address )
-  { 
+  {
     /* get an iterator */
     std::list<ServerListElem>::iterator i;
 
     /* loop through list elements */
-    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+    for( i = serverlist.begin(); i != serverlist.end(); ++i )
       if( (*i).ServerInfo.getServerIP() == address )
       { /* found this name, remove and quit */
         this->serverlist.erase( i );
@@ -89,7 +89,7 @@ namespace orxonox
     std::list<ServerListElem>::iterator i;
 
     /* loop through list elements */
-    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+    for( i = serverlist.begin(); i != serverlist.end(); ++i )
       if( (*i).ServerInfo.getServerIP() == address )
       { /* found the target, return it */
         ServerListSearchResult res = { (*i), true };
@@ -109,9 +109,9 @@ namespace orxonox
 
     /* iterate, return when name found */
     /* loop through list elements */
-    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+    for( i = serverlist.begin(); i != serverlist.end(); ++i )
       if( (*i).ServerInfo.getServerName() == name )
-      { 
+      {
         ServerListSearchResult res = { (*i), true };
         return res;
       }
@@ -123,25 +123,25 @@ namespace orxonox
 
   /* SORTING */
   /* sort by name */
-  bool sub_compare_names( ServerListElem no1, 
+  bool sub_compare_names( ServerListElem no1,
     ServerListElem no2 )
   { return no1.ServerInfo.getServerName() > no2.ServerInfo.getServerName(); }
 
   void ServerList::sortByName()
-  { 
-    this->serverlist.sort( sub_compare_names ); 
+  {
+    this->serverlist.sort( sub_compare_names );
   }
-  
+
   /* sort by ping */
-  bool sub_compare_pings( ServerListElem no1, 
+  bool sub_compare_pings( ServerListElem no1,
     ServerListElem no2 )
-  { 
-    return no1.ServerInfo.getServerName() > no2.ServerInfo.getServerName();
+  {
+    return no1.ServerInfo.getServerRTT() > no2.ServerInfo.getServerRTT();
   }
 
   void ServerList::sortByPing()
   {
-    this->serverlist.sort( sub_compare_pings ); 
+    this->serverlist.sort( sub_compare_pings );
   }
 
 }
