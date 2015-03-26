@@ -955,6 +955,8 @@ namespace orxonox
 
     bool FormationController::sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype)
     {
+
+
         if (entity1 == entity2)
             return true;
 

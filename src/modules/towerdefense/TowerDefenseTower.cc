@@ -40,6 +40,7 @@ namespace orxonox
         */
     }
 
+    /*
     void TowerDefenseTower::setOrientation(const Quaternion& orientation)
     {
     }
@@ -55,6 +56,7 @@ namespace orxonox
     void TowerDefenseTower::rotateRoll(const Vector2& value)
     {
     }
+    */
 
     bool TowerDefenseTower::upgradeTower()
     {
