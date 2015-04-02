@@ -159,14 +159,16 @@ namespace orxonox
             void setMode(const std::string& mode); //!< Set the mode of the ForceField.
             const std::string& getMode(void); //!< Get the mode of the ForceField.
 
+            static const std::string modeTube_s;
+			static const std::string modeSphere_s;
+			static const std::string modeInvertedSphere_s;
+			static const std::string modeNewtonianGravity_s;
+
+			static const std::string modeHomogen_s;
+
         private:
             //! Strings to represent the modes.
-            static const std::string modeTube_s;
-            static const std::string modeSphere_s;
-            static const std::string modeInvertedSphere_s;
-            static const std::string modeNewtonianGravity_s;
 
-            static const std::string modeHomogen_s;
 
             float velocity_; //!< The velocity of the ForceField.
             float radius_; //!< The radius of the ForceField.

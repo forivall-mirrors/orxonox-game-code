@@ -47,11 +47,12 @@
 #include "BasicProjectile.h"
 #include "worldentities/MovableEntity.h"
 #include "core/CoreIncludes.h"
+#include "objects/collisionshapes/SphereCollisionShape.h"
+#include "../../../orxonox/worldentities/WorldEntity.h"
+#include "GravityBombField.h"
 
 namespace orxonox
 {
-
-	class ConeCollisionShape;
 
 	class _WeaponsExport GravityBomb : public BasicProjectile , public MovableEntity, public RadarViewable
 	{
@@ -61,17 +62,13 @@ namespace orxonox
 			virtual void tick(float dt);
 
 			virtual bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
+			void detonate();
 
 		private:
-		static const float FUEL_START;
-		static const float FORCE_SPHERE_START_RADIUS;
-		static const float FORCE_SPHERE_START_STRENGTH;
+		static const float INITIAL_VELOCITY;
+		static const float SLOW_DOWN_RATIO;
 
-		float fuel_;
-		float lifetime_;
-		float forceSphereRadius_;
-		float forceStrength_;
-
+		float velocityAtLastTick_; //Used to check wether the Object is already accelarating in the oposite direction to detect the time to detonate it.
 
 	};
 }
