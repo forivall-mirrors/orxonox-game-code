@@ -7,4 +7,5 @@ ADD_SOURCE_FILES(WEAPONS_SRC_FILES
   Rocket.cc
   SimpleRocket.cc
   GravityBomb.cc
+  GravityBombField.cc
 )
