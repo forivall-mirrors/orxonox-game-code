@@ -22,29 +22,6 @@
      <TurretController team = 1/>
   </controller>
   
-  
-  <attached>
-	
-    <!--Turret
-    
-    explosionchunks        = 6
-	reloadrate=10 
-	reloadwaittime=5 
-	collisionType="none" 
-	maxPitch=90 
-	maxYaw=90 
-	maxAttackRadius=1000 
-	minAttackRadius=30
-   	team = 1
-    >
-    
-         <controller>
-     		<TurretController/>
-  		</controller>
-  		
-  		
-  	</Turret-->
-  </attached>
     
 
 

@@ -65,8 +65,8 @@ namespace orxonox
             upgrade++;
             float reloadrate = getReloadRate();
             float reloadwaittime = getReloadWaitTime();
-            this->setDamageMultiplier(5000);
-
+            this->setDamageMultiplier((upgrade+1)*2);
+            this->setRotationThrust(2*this->getRotationThrust());
             reloadrate = 0.5f*reloadrate;
             reloadwaittime = 0.5f*reloadwaittime;
             setReloadRate(reloadrate);

@@ -222,6 +222,7 @@ namespace orxonox
         XMLPortParam(Turret, "minAttackRadius", setMinAttackRadius, getMinAttackRadius, xmlelement, mode);
         XMLPortParam(Turret, "maxYaw", setMaxYaw, getMaxYaw, xmlelement, mode);
         XMLPortParam(Turret, "maxPitch", setMaxPitch, getMaxPitch, xmlelement, mode);
+        XMLPortParam(Turret, "rotationThrust", setRotationThrust, getRotationThrust, xmlelement, mode);
     }
 
     /**
