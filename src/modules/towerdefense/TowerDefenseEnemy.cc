@@ -34,7 +34,11 @@ namespace orxonox
     }
     //add credit if enemy is destroyed
     TowerDefenseEnemy::~TowerDefenseEnemy(){
-        //this->td->addCredit(1);
+
+    	if (this->isInitialized())
+    	{
+    		getGame()->addCredit(1);
+    	}
     }
 
     void TowerDefenseEnemy::addWaypoint(TDCoordinate* coord)
@@ -63,10 +67,14 @@ namespace orxonox
         Pawn::damage(damage, healthdamage, shielddamage, originator);
         if (getGame() && once_ == false && getHealth() <= 0)
         {
+        	orxout() << "damagefunctionIF" << endl;
             getGame()->addCredit(1);
             once_ = true;
         }
+        orxout() << "damagefunction" << endl;
+
     }
+
 /*
     void TowerDefenseEnemy::popWaypoint()
     {

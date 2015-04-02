@@ -101,6 +101,8 @@ namespace orxonox
             }
         }*/
 
+
+
         this->setHUDTemplate("TowerDefenseHUD");
 
         //this->stats_ = new TowerDefensePlayerStats();
@@ -135,21 +137,25 @@ namespace orxonox
 // Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
         for (int i=0; i < 16 ; i++){
             for (int j = 0; j< 16 ; j++){
-                towermatrix[i][j] = false;
+                towerModelMatrix[i][j] = NULL;
+                towerTurretMatrix[i][j] = NULL;
             }
         }
 
+        Model* dummyModel = new Model(this->center_->getContext());
+
         //the path of the spacehips has to be blocked, so that no towers can be build there
         for (int k=0; k<3; k++)
-            towermatrix[1][k]=true;
+            towerModelMatrix[1][k]=dummyModel;
         for (int l=1; l<11; l++)
-            towermatrix[l][3]=true;
+        	towerModelMatrix[l][3]=dummyModel;
         for (int m=3; m<12; m++)
-            towermatrix[10][m]=true;
+        	towerModelMatrix[10][m]=dummyModel;
         for (int n=10; n<14; n++)
-            towermatrix[n][11]=true;
+        	towerModelMatrix[n][11]=dummyModel;
         for (int o=13; o<16; o++)
-            towermatrix[13][o]=true;
+        	towerModelMatrix[13][o]=dummyModel;
+
 
         //set initial credits, lifes and WaveNumber
         this->setCredit(1000);
@@ -157,12 +163,12 @@ namespace orxonox
         this->setWaveNumber(0);
         time=0.0;
 
-        //adds initial towers
         /*
+        //adds initial towers
         for (int i=0; i <7; i++){
             addTower(i+3,4);
         }
-        */
+		*/
     }
 
     // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
@@ -215,7 +221,7 @@ namespace orxonox
 
     //not working yet
     void TowerDefense::upgradeTower(int x,int y)
-    {/*
+    {
         const int upgradeCost = 20;
 
         if (!this->hasEnoughCreditForTower(upgradeCost))
@@ -224,7 +230,10 @@ namespace orxonox
             return;
         }
 
-        if (towermatrix [x][y] == NULL)
+
+        Model* dummyModel2 = new Model(this->center_->getContext());
+
+        if (towerModelMatrix [x][y] == NULL || (towerModelMatrix [x][y])->getMeshSource() == dummyModel2->getMeshSource())
         {
             orxout() << "no tower on this position" << endl;
             return;
@@ -232,8 +241,9 @@ namespace orxonox
 
         else
         {
-            (towermatrix [x][y])->upgradeTower();
-        }*/
+            (towerTurretMatrix [x][y])->upgradeTower();
+            this->buyTower(upgradeCost);
+        }
     }
 
     /*adds Tower at Position (x,y) and reduces credit and adds the point to the towermatrix. template ("towerturret")
@@ -250,7 +260,7 @@ namespace orxonox
             return;
         }
 
-        if (towermatrix [x][y]==true)
+        if (towerModelMatrix [x][y]!=NULL)
         {
             orxout() << "not possible to put tower here!!" << endl;
             return;
@@ -272,9 +282,7 @@ namespace orxonox
 
         orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
 
-       //Reduce credit
-        this->buyTower(towerCost);
-        towermatrix [x][y]=true;
+
 
         //Create Model
         Model* newtowermodel = new Model(this->center_->getContext());
@@ -289,6 +297,11 @@ namespace orxonox
         towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 275);
         towernew->setGame(this);
         towernew->setTeam(1);
+
+        //Reduce credit
+         this->buyTower(towerCost);
+         towerModelMatrix [x][y]= newtowermodel;
+         towerTurretMatrix [x][y]= towernew;
     }
 
     bool TowerDefense::hasEnoughCreditForTower(int towerCost)
@@ -324,7 +337,7 @@ namespace orxonox
         {
             if(TowerDefenseEnemyvector.at(i) != NULL && TowerDefenseEnemyvector.at(i)->isAlive())
             {
-                //destroys enemys at the end of teh path and reduces the life by 1. no credits gifted
+                //destroys enemys at the end of the path and reduces the life by 1. no credits gifted
 
                 Vector3 ship = TowerDefenseEnemyvector.at(i)->getRVWorldPosition();
                 float distance = ship.distance(*endpoint);

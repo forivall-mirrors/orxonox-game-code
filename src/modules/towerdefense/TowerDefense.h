@@ -52,7 +52,8 @@ namespace orxonox
         virtual ~TowerDefense();
 
         std::vector<orxonox::WeakPtr<TowerDefenseEnemy> > TowerDefenseEnemyvector;
-        bool towermatrix[16][16];
+        Model* towerModelMatrix[16][16];
+        TowerDefenseTower* towerTurretMatrix[16][16];
         void addTowerDefenseEnemy(std::vector<TDCoordinate*> path, int templatenr);
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
