@@ -51,7 +51,7 @@
 #include "FunctionCallManager.h"
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
-#include "core/config/CommandLineParser.h"
+#include "core/commandline/CommandLineParser.h"
 
 namespace orxonox
 {
