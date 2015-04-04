@@ -76,6 +76,7 @@
 #include "command/TclThreadManager.h"
 #include "input/InputManager.h"
 #include "object/ObjectList.h"
+#include "module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -137,6 +138,8 @@ namespace orxonox
                 orxout(user_error) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << endl;
             }
         }
+
+        ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLineParser::parse(cmdLine);

@@ -168,6 +168,7 @@ namespace orxonox
     class LuaState;
     class MemoryArchive;
     class MemoryArchiveFactory;
+    class ModuleInstance;
     class Namespace;
     class NamespaceNode;
     template <class T>
@@ -186,6 +187,7 @@ namespace orxonox
     class SettingsConfigFile;
     template <class T>
     class SmartPtr;
+    class StaticallyInitializedInstance;
     template <class T>
     class SubclassIdentifier;
     class Template;
