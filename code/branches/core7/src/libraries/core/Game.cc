@@ -45,7 +45,7 @@
 #include "util/SubString.h"
 #include "Core.h"
 #include "CoreIncludes.h"
-#include "config/CommandLineParser.h"
+#include "commandline/CommandLineParser.h"
 #include "config/ConfigValueIncludes.h"
 #include "GameMode.h"
 #include "GameState.h"
