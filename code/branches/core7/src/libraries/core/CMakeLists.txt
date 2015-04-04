@@ -65,6 +65,7 @@ ADD_SUBDIRECTORY(class)
 ADD_SUBDIRECTORY(command)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(input)
+ADD_SUBDIRECTORY(module)
 ADD_SUBDIRECTORY(object)
 
 #Add the icon (for the renderwindow)
