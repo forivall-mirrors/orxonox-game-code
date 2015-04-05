@@ -59,7 +59,7 @@
 #include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
-#include "commandline/CommandLineParser.h"
+#include "commandline/CommandLineIncludes.h"
 #include "config/ConfigFileManager.h"
 #include "config/ConfigValueIncludes.h"
 #include "CoreIncludes.h"
@@ -139,6 +139,7 @@ namespace orxonox
             }
         }
 
+        // TODO: initialize CommandLineParser here
         ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)

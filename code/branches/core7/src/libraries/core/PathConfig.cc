@@ -52,7 +52,7 @@
 #include "SpecialConfig.h"
 #include "util/Output.h"
 #include "util/Exception.h"
-#include "commandline/CommandLineParser.h"
+#include "commandline/CommandLineIncludes.h"
 
 // Differentiate Boost Filesystem v2 and v3
 #if (BOOST_FILESYSTEM_VERSION < 3)
