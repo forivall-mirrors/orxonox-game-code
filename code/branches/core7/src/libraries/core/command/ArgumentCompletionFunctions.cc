@@ -97,7 +97,7 @@ namespace orxonox
                 std::string fragmentLC = getLowercase(fragment);
 
                 // get all the groups that are visible (except the shortcut group "")
-                const std::map<std::string, std::map<std::string, ConsoleCommand*> >& commands = ConsoleCommand::getCommands();
+                const std::map<std::string, std::map<std::string, ConsoleCommand*> >& commands = ConsoleCommandManager::getCommands();
                 for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
                     if (groupIsVisible(it_group->second, bOnlyShowHidden) && it_group->first != "" && (fragmentLC == "" || getLowercase(it_group->first).find(fragmentLC) == 0))
                         groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
@@ -136,13 +136,13 @@ namespace orxonox
                 std::string groupLC = getLowercase(group);
 
                 // find the iterator of the given group
-                std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommands().begin();
-                for ( ; it_group != ConsoleCommand::getCommands().end(); ++it_group)
+                std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommands().begin();
+                for ( ; it_group != ConsoleCommandManager::getCommands().end(); ++it_group)
                     if (getLowercase(it_group->first) == groupLC)
                         break;
 
                 // add all commands in the group to the list
-                if (it_group != ConsoleCommand::getCommands().end())
+                if (it_group != ConsoleCommandManager::getCommands().end())
                 {
                     for (std::map<std::string, ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
                         if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden)
@@ -205,19 +205,19 @@ namespace orxonox
             if (tokens.size() == 0)
                 return detail::_groupsandcommands(fragment, true);
 
-            if (ConsoleCommand::getCommandLC(getLowercase(tokens[0])))
+            if (ConsoleCommandManager::getCommandLC(getLowercase(tokens[0])))
                 return ARGUMENT_COMPLETION_FUNCTION_CALL(command)(fragment);
 
             if (tokens.size() == 1)
             {
-                std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommands().find(tokens[0]);
-                if (it_group != ConsoleCommand::getCommands().end())
+                std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommands().find(tokens[0]);
+                if (it_group != ConsoleCommandManager::getCommands().end())
                     return detail::_subcommands(fragment, tokens[0], true);
                 else
                     return detail::_groupsandcommands(fragment, true);
             }
 
-            if (ConsoleCommand::getCommandLC(getLowercase(tokens[0]), getLowercase(tokens[1])))
+            if (ConsoleCommandManager::getCommandLC(getLowercase(tokens[0]), getLowercase(tokens[1])))
                 return ARGUMENT_COMPLETION_FUNCTION_CALL(command)(fragment);
 
             return ArgumentCompletionList();

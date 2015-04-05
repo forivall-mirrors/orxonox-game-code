@@ -225,6 +225,7 @@
 #include "util/VA_NARGS.h"
 #include "ArgumentCompletionFunctions.h"
 #include "Executor.h"
+#include "ConsoleCommandManager.h"
 
 
 /**
@@ -654,33 +655,6 @@ namespace orxonox
             LanguageEntryLabel description_;                                ///< The description of the command
             LanguageEntryLabel descriptionReturnvalue_;                     ///< A description of the return-value
             LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];    ///< A description for each argument
-
-        public:
-            /// Returns the map with all groups and commands.
-            static inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommands()
-                { return ConsoleCommand::getCommandMap(); }
-            /// Returns the map with all groups and commands in lowercase.
-            static inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandsLC()
-                { return ConsoleCommand::getCommandMapLC(); }
-
-            /// Returns a command (shortcut) with given name. @param name The name of the command shortcut @param bPrintError If true, an error is printed if the command doesn't exist
-            static inline ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
-                { return ConsoleCommand::getCommand("", name, bPrintError); }
-            /// Returns a command (shortcut) with given name in lowercase. @param name The lowercase name of the command shortcut @param bPrintError If true, an error is printed if the command doesn't exist
-            static inline ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
-                { return ConsoleCommand::getCommandLC("", name, bPrintError); }
-
-            static ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
-            static ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
-
-            static void destroyAll();
-
-        private:
-            static std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandMap();
-            static std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandMapLC();
-
-            static void registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command);
-            static void unregisterCommand(ConsoleCommand* command);
     };
 
     /**
@@ -710,7 +684,7 @@ namespace orxonox
         check internally if the command exists.
     */
     inline ConsoleCommand::ConsoleCommandManipulator ModifyConsoleCommand(const std::string& name)
-        { return ConsoleCommand::getCommand(name, true); }
+        { return ConsoleCommandManager::getCommand(name, true); }
     /**
         @brief Returns a manipulator for a command with the given group and name.
 
@@ -719,7 +693,7 @@ namespace orxonox
         check internally if the command exists.
     */
     inline ConsoleCommand::ConsoleCommandManipulator ModifyConsoleCommand(const std::string& group, const std::string& name)
-        { return ConsoleCommand::getCommand(group, name, true); }
+        { return ConsoleCommandManager::getCommand(group, name, true); }
 }
 
 #endif /* _ConsoleCommand_H__ */

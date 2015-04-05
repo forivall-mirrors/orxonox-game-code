@@ -34,7 +34,6 @@
 #include "ConsoleCommand.h"
 
 #include "util/Convert.h"
-#include "util/StringUtils.h"
 #include "core/Language.h"
 #include "core/GameMode.h"
 #include "core/input/KeyBinder.h"
@@ -67,7 +66,7 @@ namespace orxonox
         if (bInitialized)
             this->executor_ = executor;
 
-        ConsoleCommand::registerCommand(group, name, this);
+        ConsoleCommandManager::registerCommand(group, name, this);
     }
 
     /**
@@ -75,7 +74,7 @@ namespace orxonox
     */
     ConsoleCommand::~ConsoleCommand()
     {
-        ConsoleCommand::unregisterCommand(this);
+        ConsoleCommandManager::unregisterCommand(this);
     }
 
     /**
@@ -83,7 +82,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addShortcut()
     {
-        ConsoleCommand::registerCommand("", this->baseName_, this);
+        ConsoleCommandManager::registerCommand("", this->baseName_, this);
         return *this;
     }
 
@@ -92,7 +91,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addShortcut(const std::string&  name)
     {
-        ConsoleCommand::registerCommand("", name, this);
+        ConsoleCommandManager::registerCommand("", name, this);
         return *this;
     }
 
@@ -101,7 +100,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addGroup(const std::string& group)
     {
-        ConsoleCommand::registerCommand(group, this->baseName_, this);
+        ConsoleCommandManager::registerCommand(group, this->baseName_, this);
         return *this;
     }
 
@@ -110,7 +109,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addGroup(const std::string& group, const std::string&  name)
     {
-        ConsoleCommand::registerCommand(group, name, this);
+        ConsoleCommandManager::registerCommand(group, name, this);
         return *this;
     }
 
@@ -585,168 +584,5 @@ namespace orxonox
 
         this->keybindMode(mode);
         return *this;
-    }
-
-    /**
-        @brief Returns the command with given group an name.
-        @param group The group of the requested command
-        @param name The group of the requested command
-        @param bPrintError If true, an error is printed if the command doesn't exist
-    */
-    /* static */ ConsoleCommand* ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
-    {
-        // find the group
-        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandMap().find(group);
-        if (it_group != ConsoleCommand::getCommandMap().end())
-        {
-            // find the name
-            std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.find(name);
-            if (it_name != it_group->second.end())
-            {
-                // return the pointer
-                return it_name->second;
-            }
-        }
-        if (bPrintError)
-        {
-            if (group == "")
-                orxout(internal_error, context::commands) << "Couldn't find console command with shortcut \"" << name << "\"" << endl;
-            else
-                orxout(internal_error, context::commands) << "Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << endl;
-        }
-        return 0;
-    }
-
-    /**
-        @brief Returns the command with given group an name in lowercase.
-        @param group The group of the requested command in lowercase
-        @param name The group of the requested command in lowercase
-        @param bPrintError If true, an error is printed if the command doesn't exist
-    */
-    /* static */ ConsoleCommand* ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
-    {
-        std::string groupLC = getLowercase(group);
-        std::string nameLC = getLowercase(name);
-
-        // find the group
-        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandMapLC().find(groupLC);
-        if (it_group != ConsoleCommand::getCommandMapLC().end())
-        {
-            // find the name
-            std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.find(nameLC);
-            if (it_name != it_group->second.end())
-            {
-                // return the pointer
-                return it_name->second;
-            }
-        }
-        if (bPrintError)
-        {
-            if (group == "")
-                orxout(internal_error, context::commands) << "Couldn't find console command with shortcut \"" << name << "\"" << endl;
-            else
-                orxout(internal_error, context::commands) << "Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << endl;
-        }
-        return 0;
-    }
-
-    /**
-        @brief Returns the static map that stores all console commands.
-    */
-    /* static */ std::map<std::string, std::map<std::string, ConsoleCommand*> >& ConsoleCommand::getCommandMap()
-    {
-        static std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMap;
-        return commandMap;
-    }
-
-    /**
-        @brief Returns the static map that stores all console commands in lowercase.
-    */
-    /* static */ std::map<std::string, std::map<std::string, ConsoleCommand*> >& ConsoleCommand::getCommandMapLC()
-    {
-        static std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMapLC;
-        return commandMapLC;
-    }
-
-    /**
-        @brief Registers a new command with given group an name by adding it to the command map.
-    */
-    /* static */ void ConsoleCommand::registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command)
-    {
-        if (name == "")
-            return;
-
-        // check if a command with this name already exists
-        if (ConsoleCommand::getCommand(group, name) != 0)
-        {
-            if (group == "")
-                orxout(internal_warning, context::commands) << "A console command with shortcut \"" << name << "\" already exists." << endl;
-            else
-                orxout(internal_warning, context::commands) << "A console command with name \"" << name << "\" already exists in group \"" << group << "\"." << endl;
-        }
-        else
-        {
-            // add the command to the map
-            ConsoleCommand::getCommandMap()[group][name] = command;
-            ConsoleCommand::getCommandMapLC()[getLowercase(group)][getLowercase(name)] = command;
-        }
-    }
-
-    /**
-        @brief Removes the command from the command map.
-    */
-    /* static */ void ConsoleCommand::unregisterCommand(ConsoleCommand* command)
-    {
-        // iterate through all groups
-        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = ConsoleCommand::getCommandMap().begin(); it_group != ConsoleCommand::getCommandMap().end(); )
-        {
-            // iterate through all commands of each group
-            for (std::map<std::string, ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
-            {
-                // erase the command
-                if (it_name->second == command)
-                    it_group->second.erase(it_name++);
-                else
-                    ++it_name;
-            }
-
-            // erase the group if it is empty now
-            if (it_group->second.empty())
-                ConsoleCommand::getCommandMap().erase(it_group++);
-            else
-                ++it_group;
-        }
-
-        // now the same for the lowercase-map:
-
-        // iterate through all groups
-        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = ConsoleCommand::getCommandMapLC().begin(); it_group != ConsoleCommand::getCommandMapLC().end(); )
-        {
-            // iterate through all commands of each group
-            for (std::map<std::string, ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
-            {
-                // erase the command
-                if (it_name->second == command)
-                    it_group->second.erase(it_name++);
-                else
-                    ++it_name;
-            }
-
-            // erase the group if it is empty now
-            if (it_group->second.empty())
-                ConsoleCommand::getCommandMapLC().erase(it_group++);
-            else
-                ++it_group;
-        }
-    }
-
-    /**
-        @brief Deletes all commands
-    */
-    /* static */ void ConsoleCommand::destroyAll()
-    {
-        // delete entries until the map is empty
-        while (!ConsoleCommand::getCommandMap().empty() && !ConsoleCommand::getCommandMap().begin()->second.empty())
-            delete ConsoleCommand::getCommandMap().begin()->second.begin()->second;
     }
 }
