@@ -3,6 +3,7 @@ ADD_SOURCE_FILES(CORE_SRC_FILES
   CommandExecutor.cc
   ConsoleCommand.cc
   ConsoleCommandCompilation.cc
+  ConsoleCommandManager.cc
   Executor.cc
   IOConsole.cc
   IRC.cc
