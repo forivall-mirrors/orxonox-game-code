@@ -337,4 +337,20 @@ namespace orxonox
             return it->second;
         }
     }
+
+    /**
+    @brief
+        Adds a new CommandLineArgument to the internal map.
+        Note that only such arguments are actually valid.
+    */
+    void CommandLineParser::addArgument(CommandLineArgument* argument)
+    {
+        OrxAssert(!_getInstance().existsArgument(argument->getName()),
+            "Cannot add a command line argument with name '" + argument->getName() + "' twice.");
+        OrxAssert(!argument->getDefaultValue().isType<bool>() || argument->getDefaultValue().get<bool>() != true,
+               "Boolean command line arguments with positive default values are not supported." << endl
+            << "Please use SetCommandLineSwitch and adjust your argument: " << argument->getName());
+
+        _getInstance().cmdLineArgs_[argument->getName()] = argument;
+    }
 }

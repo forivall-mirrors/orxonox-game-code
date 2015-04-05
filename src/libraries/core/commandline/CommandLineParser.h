@@ -48,13 +48,6 @@
 #include "util/OrxAssert.h"
 #include "util/MultiType.h"
 
-#define SetCommandLineArgument(name, defaultValue) \
-    orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLineParser::addArgument(#name, defaultValue)
-#define SetCommandLineSwitch(name) \
-    orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLineParser::addArgument(#name, false)
-
 namespace orxonox
 {
     /**
@@ -79,6 +72,15 @@ namespace orxonox
         friend class CommandLineParser;
 
     public:
+        //! Constructor initialises both value_ and defaultValue_ with defaultValue.
+        CommandLineArgument(const std::string& name, const MultiType& defaultValue)
+            : bHasDefaultValue_(true)
+            , name_(name)
+            , value_(defaultValue)
+            , defaultValue_(defaultValue)
+        { }
+        ~CommandLineArgument() { }
+
         //! Tells whether the value has been changed by the command line.
         bool hasDefaultValue() const { return bHasDefaultValue_; }
         //! Returns the name of the argument.
@@ -103,17 +105,8 @@ namespace orxonox
         const MultiType& getDefaultValue() const { return defaultValue_; }
 
     private:
-        //! Constructor initialises both value_ and defaultValue_ with defaultValue.
-        CommandLineArgument(const std::string& name, const MultiType& defaultValue)
-            : bHasDefaultValue_(true)
-            , name_(name)
-            , value_(defaultValue)
-            , defaultValue_(defaultValue)
-        { }
-
         //! Undefined copy constructor
         CommandLineArgument(const CommandLineArgument& instance);
-        ~CommandLineArgument() { }
 
         //! Parses the value string of a command line argument.
         void parse(const std::string& value);
@@ -157,8 +150,7 @@ namespace orxonox
         { *value = (T)(getArgument(name)->getValue()); }
         static const MultiType& getValue(const std::string& name)
         { return getArgument(name)->getValue(); }
-        template <class T>
-        static CommandLineArgument& addArgument(const std::string& name, T defaultValue);
+        static void addArgument(CommandLineArgument* argument);
 
         static bool existsArgument(const std::string& name)
         {
@@ -200,27 +192,6 @@ namespace orxonox
     inline void CommandLineParser::getValue<std::string>(const std::string& name, std::string* value)
     {
         *value = getArgument(name)->getValue().get<std::string>();
-    }
-
-    /**
-    @brief
-        Adds a new CommandLineArgument to the internal map.
-        Note that only such arguments are actually valid.
-    @param name
-        Name of the argument. Shortcut can be added later.
-    @param defaultValue
-        Default value that is used when argument was not given.
-    */
-    template <class T>
-    CommandLineArgument& CommandLineParser::addArgument(const std::string& name, T defaultValue)
-    {
-        OrxAssert(!_getInstance().existsArgument(name),
-            "Cannot add a command line argument with name '" + name + "' twice.");
-        OrxAssert(!MultiType(defaultValue).isType<bool>() || MultiType(defaultValue).get<bool>() != true,
-               "Boolean command line arguments with positive default values are not supported." << endl
-            << "Please use SetCommandLineSwitch and adjust your argument: " << name);
-
-        return *(_getInstance().cmdLineArgs_[name] = new CommandLineArgument(name, defaultValue));
     }
 }
 

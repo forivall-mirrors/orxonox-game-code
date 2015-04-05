@@ -35,7 +35,7 @@
 
 #include "Main.h"
 
-#include "core/commandline/CommandLineParser.h"
+#include "core/commandline/CommandLineIncludes.h"
 #include "core/Game.h"
 #include "core/LuaState.h"
 
