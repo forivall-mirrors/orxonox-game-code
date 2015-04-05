@@ -37,7 +37,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedInstance();
-            virtual ~StaticallyInitializedInstance() {}
+            virtual ~StaticallyInitializedInstance();
 
             virtual void load() = 0;
     };

@@ -34,6 +34,13 @@ namespace orxonox
 {
     ModuleInstance* ModuleInstance::currentModuleInstance_s = NULL;
 
+    ModuleInstance::~ModuleInstance()
+    {
+        std::list<StaticallyInitializedInstance*> copy(this->staticallyInitializedInstances_);
+        for (std::list<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+            delete (*it);
+    }
+
     void ModuleInstance::addStaticallyInitializedInstance(StaticallyInitializedInstance* instance)
     {
         this->staticallyInitializedInstances_.push_back(instance);
@@ -41,8 +48,13 @@ namespace orxonox
 
     void ModuleInstance::loadAllStaticallyInitializedInstances()
     {
-        for (size_t i = 0; i < this->staticallyInitializedInstances_.size(); ++i)
-            this->staticallyInitializedInstances_[i]->load();
+        for (std::list<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+            (*it)->load();
+    }
+
+    void ModuleInstance::removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance)
+    {
+        this->staticallyInitializedInstances_.remove(instance);
     }
 
     /*static*/ void ModuleInstance::setCurrentModuleInstance(ModuleInstance* instance)
