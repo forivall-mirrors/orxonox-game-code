@@ -31,21 +31,24 @@
 
 #include "core/CorePrereqs.h"
 
-#include <vector>
+#include <list>
 
 namespace orxonox
 {
     class _CoreExport ModuleInstance
     {
         public:
+            ~ModuleInstance();
+
             void addStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
             void loadAllStaticallyInitializedInstances();
+            void removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
 
             static void setCurrentModuleInstance(ModuleInstance* instance);
             static ModuleInstance* getCurrentModuleInstance();
 
         private:
-            std::vector<StaticallyInitializedInstance*> staticallyInitializedInstances_;
+            std::list<StaticallyInitializedInstance*> staticallyInitializedInstances_;
 
             static ModuleInstance* currentModuleInstance_s;
     };

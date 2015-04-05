@@ -36,4 +36,9 @@ namespace orxonox
     {
         ModuleInstance::getCurrentModuleInstance()->addStaticallyInitializedInstance(this);
     }
+
+    StaticallyInitializedInstance::~StaticallyInitializedInstance()
+    {
+        ModuleInstance::getCurrentModuleInstance()->removeStaticallyInitializedInstance(this);
+    }
 }
