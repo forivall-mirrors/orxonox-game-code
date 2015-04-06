@@ -263,7 +263,7 @@
 
 /// Internal macro
 #define SetConsoleCommandGeneric(group, name, functor) \
-    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*orxonox::createConsoleCommand(group, name, orxonox::createExecutor(functor)))
+    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*new orxonox::ConsoleCommand(group, name, orxonox::createExecutor(functor)))
 
 
 /**
@@ -298,30 +298,11 @@
 
 /// Internal macro
 #define DeclareConsoleCommandGeneric(group, name, functor) \
-    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*orxonox::createConsoleCommand(group, name, orxonox::createExecutor(functor), false))
+    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*new orxonox::ConsoleCommand(group, name, orxonox::createExecutor(functor), false))
 
 
 namespace orxonox
 {
-    /**
-        @brief Creates a new ConsoleCommand.
-        @param name The name of the command
-        @param executor The executor of the command
-        @param bInitialized If true, the command is ready to be executed, otherwise it has to be activated first.
-    */
-    inline ConsoleCommand* createConsoleCommand(const std::string& name, const ExecutorPtr& executor, bool bInitialized = true)
-        { return new ConsoleCommand("", name, executor, bInitialized); }
-    /**
-        @brief Creates a new ConsoleCommand.
-        @param group The group of the command
-        @param name The name of the command
-        @param executor The executor of the command
-        @param bInitialized If true, the command is ready to be executed, otherwise it has to be activated first.
-    */
-    inline ConsoleCommand* createConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized = true)
-        { return new ConsoleCommand(group, name, executor, bInitialized); }
-
-
     /**
         @brief Returns a manipulator for a command with the given name.
 

@@ -295,9 +295,9 @@ namespace orxonox
 
             // create a new console command with the given alias as its name
             if (tokens.size() == 1)
-                createConsoleCommand(tokens[0], executor);
+                new ConsoleCommand(tokens[0], executor);
             else if (tokens.size() == 2)
-                createConsoleCommand(tokens[0], tokens[1], executor);
+                new ConsoleCommand(tokens[0], tokens[1], executor);
             else
                 orxout(user_error) << "\"" << alias << "\" is not a valid alias name (must have one or two words)." << endl;
         }

@@ -84,8 +84,8 @@ namespace orxonox
             this->scoreboard_ = 0;
 
         /* HACK HACK HACK */
-        this->dedicatedAddBots_ = createConsoleCommand( "dedicatedAddBots", createExecutor( createFunctor(&Gametype::addBots, this) ) );
-        this->dedicatedKillBots_ = createConsoleCommand( "dedicatedKillBots", createExecutor( createFunctor(&Gametype::killBots, this) ) );
+        this->dedicatedAddBots_ = new ConsoleCommand( "dedicatedAddBots", createExecutor( createFunctor(&Gametype::addBots, this) ) );
+        this->dedicatedKillBots_ = new ConsoleCommand( "dedicatedKillBots", createExecutor( createFunctor(&Gametype::killBots, this) ) );
         /* HACK HACK HACK */
     }
 

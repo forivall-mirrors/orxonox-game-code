@@ -260,6 +260,7 @@ namespace orxonox
             };
 
         public:
+            ConsoleCommand(const std::string& name, const ExecutorPtr& executor, bool bInitialized = true);
             ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized = true);
             ~ConsoleCommand();
 
@@ -359,6 +360,8 @@ namespace orxonox
                 { return this; }
 
         private:
+            void init(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized);
+
             bool headersMatch(const FunctorPtr& functor);
             bool headersMatch(const ExecutorPtr& executor);
 
