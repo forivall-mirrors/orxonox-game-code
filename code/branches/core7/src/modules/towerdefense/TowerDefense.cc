@@ -107,8 +107,8 @@ namespace orxonox
         //this->stats_ = new TowerDefensePlayerStats();
 
         /* Temporary hack to allow the player to add towers and upgrade them */
-        this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
-        this->dedicatedUpgradeTower_ = createConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
+        this->dedicatedAddTower_ = new ConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
+        this->dedicatedUpgradeTower_ = new ConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
     }
 
     TowerDefense::~TowerDefense()

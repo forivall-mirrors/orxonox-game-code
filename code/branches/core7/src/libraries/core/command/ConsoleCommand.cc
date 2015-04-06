@@ -43,13 +43,29 @@
 namespace orxonox
 {
     /**
-        @brief Constructor: Initializes all values and registers the command.
+        @brief Constructor: Initializes all values and registers the command (without a group).
+        @param name The name of the command
+        @param executor The executor of the command
+        @param bInitialized If true, the executor is used for both, the definition of the function-header AND to executute the command. If false, the command is inactive and needs to be assigned a function before it can be used.
+    */
+    ConsoleCommand::ConsoleCommand(const std::string& name, const ExecutorPtr& executor, bool bInitialized)
+    {
+        this->init("", name, executor, bInitialized);
+    }
+
+    /**
+        @brief Constructor: Initializes all values and registers the command (with a group).
         @param group The group of the command
         @param name The name of the command
         @param executor The executor of the command
         @param bInitialized If true, the executor is used for both, the definition of the function-header AND to executute the command. If false, the command is inactive and needs to be assigned a function before it can be used.
     */
     ConsoleCommand::ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
+    {
+        this->init(group, name, executor, bInitialized);
+    }
+
+    void ConsoleCommand::init(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
     {
         this->bActive_ = true;
         this->bHidden_ = false;
