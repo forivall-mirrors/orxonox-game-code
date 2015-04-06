@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
 #include "core/object/Destroyable.h"
 

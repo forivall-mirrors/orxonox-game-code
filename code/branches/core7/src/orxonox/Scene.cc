@@ -43,7 +43,7 @@
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
 #include "core/XMLPort.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "tools/BulletConversions.h"
 #include "tools/BulletDebugDrawer.h"
 #include "tools/DebugDrawer.h"

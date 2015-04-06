@@ -70,7 +70,7 @@
 #include "class/Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
-#include "command/ConsoleCommand.h"
+#include "command/ConsoleCommandManager.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
 #include "command/TclThreadManager.h"

@@ -33,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "gamestates/GSLevel.h"
 
 #include "infos/PlayerInfo.h"

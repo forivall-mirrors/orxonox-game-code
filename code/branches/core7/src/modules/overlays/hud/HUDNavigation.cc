@@ -40,7 +40,7 @@
 
 #include "util/Math.h"
 #include "util/Convert.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "CameraManager.h"

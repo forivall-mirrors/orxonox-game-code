@@ -43,7 +43,7 @@
 #include "core/GUIManager.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 
 #include "LevelManager.h"
 #include "PlayerManager.h"

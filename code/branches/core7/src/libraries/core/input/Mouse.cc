@@ -30,7 +30,7 @@
 
 #include <ois/OISMouse.h>
 #include "core/CoreIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "InputState.h"
 
 #ifdef ORXONOX_PLATFORM_LINUX

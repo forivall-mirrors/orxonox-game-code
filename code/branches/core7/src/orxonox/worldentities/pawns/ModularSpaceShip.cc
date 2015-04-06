@@ -36,7 +36,7 @@
 #include "core/XMLPort.h"
 #include "util/Math.h"
 #include "gametypes/Gametype.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 
 #include "items/ShipPart.h"
 #include "items/Engine.h"

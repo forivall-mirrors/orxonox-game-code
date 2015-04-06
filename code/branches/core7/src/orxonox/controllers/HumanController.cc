@@ -29,7 +29,7 @@
 #include "HumanController.h"
 
 #include "core/CoreIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "gametypes/Gametype.h"

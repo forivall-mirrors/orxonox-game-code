@@ -38,6 +38,7 @@
 #include "core/GameMode.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/KeyBinderManager.h"
+#include "ConsoleCommandManager.h"
 
 namespace orxonox
 {

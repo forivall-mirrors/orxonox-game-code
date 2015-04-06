@@ -36,6 +36,7 @@
 #include "util/StringUtils.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
+#include "ConsoleCommandManager.h"
 
 namespace orxonox
 {

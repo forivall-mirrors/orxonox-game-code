@@ -32,7 +32,7 @@
 #include "controllers/ArtificialController.h"
 
 #include "core/CoreIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "infos/PlayerInfo.h"
 #include "network/Host.h"
 #include "worldentities/pawns/Pawn.h"

@@ -43,7 +43,7 @@
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
 #include "core/Resource.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
 
 #include "controllers/HumanController.h"

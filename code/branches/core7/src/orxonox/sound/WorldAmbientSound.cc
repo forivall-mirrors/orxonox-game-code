@@ -32,7 +32,7 @@
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
 #include "AmbientSound.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include <exception>
 
 

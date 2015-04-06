@@ -62,7 +62,7 @@
 #include "ViewportEventListener.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
-#include "command/ConsoleCommand.h"
+#include "command/ConsoleCommandIncludes.h"
 #include "input/InputManager.h"
 
 namespace orxonox

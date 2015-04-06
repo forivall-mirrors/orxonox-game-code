@@ -43,6 +43,7 @@
 #include "core/config/ConfigValueContainer.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
+#include "ConsoleCommandManager.h"
 #include "TclThreadManager.h"
 
 // Differentiate Boost Filesystem v2 and v3
