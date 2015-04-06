@@ -107,7 +107,7 @@ extern "C" {
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
-#include "command/ConsoleCommand.h"
+#include "command/ConsoleCommandIncludes.h"
 #include "input/InputManager.h"
 #include "input/InputState.h"
 #include "input/KeyBinderManager.h"

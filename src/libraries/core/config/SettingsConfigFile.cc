@@ -34,7 +34,7 @@
 #include "SettingsConfigFile.h"
 
 #include "util/StringUtils.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueContainer.h"
 

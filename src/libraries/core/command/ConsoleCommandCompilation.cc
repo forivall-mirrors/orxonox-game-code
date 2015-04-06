@@ -40,7 +40,7 @@
 #include "util/Output.h"
 #include "util/ExprParser.h"
 #include "util/StringUtils.h"
-#include "ConsoleCommand.h"
+#include "ConsoleCommandIncludes.h"
 #include "CommandExecutor.h"
 
 namespace orxonox

@@ -30,7 +30,7 @@
 
 #include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "Button.h"
 #include "InputManager.h"
 #include "InputState.h"

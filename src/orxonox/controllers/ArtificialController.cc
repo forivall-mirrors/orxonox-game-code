@@ -29,7 +29,7 @@
 #include "ArtificialController.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
 

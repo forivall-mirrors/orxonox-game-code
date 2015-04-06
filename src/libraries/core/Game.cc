@@ -51,7 +51,7 @@
 #include "GameState.h"
 #include "GraphicsManager.h"
 #include "GUIManager.h"
-#include "command/ConsoleCommand.h"
+#include "command/ConsoleCommandIncludes.h"
 
 namespace orxonox
 {

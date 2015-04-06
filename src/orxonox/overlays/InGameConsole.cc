@@ -49,7 +49,7 @@
 #include "util/output/OutputManager.h"
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"

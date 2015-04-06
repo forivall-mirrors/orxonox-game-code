@@ -33,7 +33,7 @@
 
 #include "CommandExecutor.h"
 
-#include "ConsoleCommand.h"
+#include "ConsoleCommandIncludes.h"
 #include "TclBind.h"
 #include "Shell.h"
 

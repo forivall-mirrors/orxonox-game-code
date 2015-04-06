@@ -33,7 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/object/ObjectList.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "NetworkChatListener.h"
 
 namespace orxonox {

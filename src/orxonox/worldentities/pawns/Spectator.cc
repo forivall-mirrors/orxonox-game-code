@@ -33,7 +33,7 @@
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/CommandExecutor.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 
 #include "tools/BillboardSet.h"
 #include "Scene.h"

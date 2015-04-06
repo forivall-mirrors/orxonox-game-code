@@ -48,7 +48,7 @@
 #include "core/GraphicsManager.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/commandline/CommandLineIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/Functor.h"
 
 #include "InputBuffer.h"

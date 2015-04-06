@@ -36,7 +36,7 @@
 #include <bullet/BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
 
 #include "core/CoreIncludes.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/KeyBinderManager.h"
 #include "worldentities/ControllableEntity.h"

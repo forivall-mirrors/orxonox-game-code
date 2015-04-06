@@ -35,7 +35,7 @@
 #include "core/Game.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 #include "core/input/KeyBinderManager.h"
 #include "network/Client.h"
 #include "util/StringUtils.h"

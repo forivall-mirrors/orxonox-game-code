@@ -44,7 +44,7 @@
 #include "core/command/Executor.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "infos/PlayerInfo.h"
-#include "core/command/ConsoleCommand.h"
+#include "core/command/ConsoleCommandIncludes.h"
 
 #include "gamestates/GSLevel.h"
 #include "chat/ChatManager.h"

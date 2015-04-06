@@ -38,7 +38,7 @@
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
-#include "ConsoleCommand.h"
+#include "ConsoleCommandIncludes.h"
 #include "TclThreadManager.h"
 
 namespace orxonox
