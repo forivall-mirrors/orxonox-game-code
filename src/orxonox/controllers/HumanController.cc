@@ -58,8 +58,6 @@ namespace orxonox
     SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
     SetConsoleCommand("HumanController", __CC_suicide_name,        &HumanController::suicide       ).addShortcut();
     SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
-    SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
-    SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);
     SetConsoleCommand("HumanController", "cycleNavigationFocus",   &HumanController::cycleNavigationFocus).addShortcut();
     SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
     SetConsoleCommand("HumanController", "myposition",             &HumanController::myposition    ).addShortcut();
@@ -315,18 +313,6 @@ namespace orxonox
                     break;
             }
         }
-    }
-
-    void HumanController::addBots(unsigned int amount)
-    {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
-            HumanController::localController_s->controllableEntity_->getGametype()->addBots(amount);
-    }
-
-    void HumanController::killBots(unsigned int amount)
-    {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
-            HumanController::localController_s->controllableEntity_->getGametype()->killBots(amount);
     }
 
     Pawn* HumanController::getLocalControllerEntityAsPawn()

@@ -82,9 +82,6 @@ namespace orxonox
             static void toggleFormationFlight();
             static void FFChangeMode();
 
-            static void addBots(unsigned int amount);
-            static void killBots(unsigned int amount = 0);
-
             static void pauseControl(); // tolua_export
             static void resumeControl(); // tolua_export
             virtual void doPauseControl() {};
