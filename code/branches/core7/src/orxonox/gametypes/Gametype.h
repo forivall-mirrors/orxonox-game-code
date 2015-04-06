@@ -198,10 +198,6 @@ namespace orxonox
             // Config Values
             std::string scoreboardTemplate_;
 
-            /* HACK HACK HACK */
-            ConsoleCommand* dedicatedAddBots_;
-            ConsoleCommand* dedicatedKillBots_;
-            /* HACK HACK HACK */
             Timer showMenuTimer_;
     };
 
