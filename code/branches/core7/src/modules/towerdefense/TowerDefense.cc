@@ -90,6 +90,12 @@
 
 namespace orxonox
 {
+    static const std::string __CC_addTower_name  = "addTower";
+    static const std::string __CC_upgradeTower_name = "upgradeTower";
+
+    SetConsoleCommand("TowerDefense", __CC_addTower_name,  &TowerDefense::addTower ).addShortcut().defaultValues(1);
+    SetConsoleCommand("TowerDefense", __CC_upgradeTower_name, &TowerDefense::upgradeTower).addShortcut().defaultValues(0);
+
     RegisterUnloadableClass(TowerDefense);
 
     TowerDefense::TowerDefense(Context* context) : Deathmatch(context)
@@ -106,9 +112,8 @@ namespace orxonox
 
         //this->stats_ = new TowerDefensePlayerStats();
 
-        /* Temporary hack to allow the player to add towers and upgrade them */
-        this->dedicatedAddTower_ = new ConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
-        this->dedicatedUpgradeTower_ = new ConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
+        ModifyConsoleCommand(__CC_addTower_name).setObject(this);
+        ModifyConsoleCommand(__CC_upgradeTower_name).setObject(this);
     }
 
     TowerDefense::~TowerDefense()
@@ -116,8 +121,8 @@ namespace orxonox
         /* Part of a temporary hack to allow the player to add towers */
         if (this->isInitialized())
         {
-            if( this->dedicatedAddTower_ )
-                delete this->dedicatedAddTower_;
+            ModifyConsoleCommand(__CC_addTower_name).setObject(NULL);
+            ModifyConsoleCommand(__CC_upgradeTower_name).setObject(NULL);
         }
     }
 
