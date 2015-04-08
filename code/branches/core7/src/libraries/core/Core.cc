@@ -140,6 +140,7 @@ namespace orxonox
         }
 
         // TODO: initialize CommandLineParser here
+        // TODO: initialize ConsoleCommandManager here
         ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
