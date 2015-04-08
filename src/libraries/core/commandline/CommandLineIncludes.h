@@ -48,7 +48,7 @@
 
 #define SetCommandLineArgument(name, defaultValue) \
     orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = (new orxonox::StaticallyInitializedCommandLineArgument(new orxonox::CommandLineArgument(#name, defaultValue)))->getArgument()
+        = (new orxonox::SI_CLA(new orxonox::CommandLineArgument(#name, defaultValue)))->getArgument()
 #define SetCommandLineSwitch(name) \
     SetCommandLineArgument(name, false)
 
@@ -68,6 +68,8 @@ namespace orxonox
         private:
             CommandLineArgument* argument_;
     };
+
+    typedef StaticallyInitializedCommandLineArgument SI_CLA;
 }
 
 #endif /* _CommandLineIncludes_H__ */
