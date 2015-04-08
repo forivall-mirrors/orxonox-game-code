@@ -104,6 +104,16 @@ namespace orxonox
 
         public:
             /**
+             * @brief Defines the name of a command, consisting of an optional group ("" means no group) and the name itself.
+             */
+            struct CommandName
+            {
+                CommandName(const std::string& group, const std::string& name) : group_(group), name_(name) {}
+                std::string group_;
+                std::string name_;
+            };
+
+            /**
                 @brief Helper class that is used to manipulate console commands.
 
                 An instance of this class is returned if you call the ModifyConsoleCommand macro.
@@ -359,6 +369,9 @@ namespace orxonox
             inline ConsoleCommandManipulator getManipulator()
                 { return this; }
 
+            inline const std::vector<CommandName>& getNames()
+                { return this->names_; }
+
         private:
             void init(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized);
 
@@ -382,6 +395,7 @@ namespace orxonox
             bool bHidden_;                                                  ///< True if the command is hidden (it is still executable, but not visible in the list of available commands)
             AccessLevel::Enum accessLevel_;                                 ///< The access level (the state of the game in which you can access the command)
             std::string baseName_;                                          ///< The name that was first assigned to the command
+            std::vector<CommandName> names_;                                ///< All names and aliases of this command
             FunctorPtr baseFunctor_;                                        ///< The functor that defines the header of the command-function
 
             ExecutorPtr executor_;                                          ///< The Executor that is used to execute the command

@@ -222,6 +222,7 @@
 #include "ConsoleCommand.h"
 #include "ConsoleCommandManager.h"
 #include "util/VA_NARGS.h"
+#include "core/module/StaticallyInitializedInstance.h"
 
 
 /**
@@ -263,7 +264,8 @@
 
 /// Internal macro
 #define SetConsoleCommandGeneric(group, name, functor) \
-    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*new orxonox::ConsoleCommand(group, name, orxonox::createExecutor(functor)))
+    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) \
+        = (new orxonox::SI_CC(new orxonox::ConsoleCommand(group, name, orxonox::createExecutor(functor))))->getCommand()
 
 
 /**
@@ -298,11 +300,28 @@
 
 /// Internal macro
 #define DeclareConsoleCommandGeneric(group, name, functor) \
-    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*new orxonox::ConsoleCommand(group, name, orxonox::createExecutor(functor), false))
+    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) \
+        = (new orxonox::SI_CC(new orxonox::ConsoleCommand(group, name, orxonox::createExecutor(functor), false)))->getCommand()
 
 
 namespace orxonox
 {
+    class _CoreExport StaticallyInitializedConsoleCommand : public StaticallyInitializedInstance
+    {
+        public:
+            StaticallyInitializedConsoleCommand(ConsoleCommand* command) : command_(command) {}
+
+            virtual void load();
+
+            inline ConsoleCommand& getCommand()
+                { return *this->command_; }
+
+        private:
+            ConsoleCommand* command_;
+    };
+
+    typedef StaticallyInitializedConsoleCommand SI_CC;
+
     /**
         @brief Returns a manipulator for a command with the given name.
 

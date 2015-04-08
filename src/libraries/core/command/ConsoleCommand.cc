@@ -83,7 +83,7 @@ namespace orxonox
         if (bInitialized)
             this->executor_ = executor;
 
-        ConsoleCommandManager::registerCommand(group, name, this);
+        this->names_.push_back(CommandName(group, name));
     }
 
     /**
@@ -99,7 +99,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addShortcut()
     {
-        ConsoleCommandManager::registerCommand("", this->baseName_, this);
+        this->names_.push_back(CommandName("", this->baseName_));
         return *this;
     }
 
@@ -108,7 +108,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addShortcut(const std::string&  name)
     {
-        ConsoleCommandManager::registerCommand("", name, this);
+        this->names_.push_back(CommandName("", name));
         return *this;
     }
 
@@ -117,7 +117,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addGroup(const std::string& group)
     {
-        ConsoleCommandManager::registerCommand(group, this->baseName_, this);
+        this->names_.push_back(CommandName(group, this->baseName_));
         return *this;
     }
 
@@ -126,7 +126,7 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::addGroup(const std::string& group, const std::string&  name)
     {
-        ConsoleCommandManager::registerCommand(group, name, this);
+        this->names_.push_back(CommandName(group, name));
         return *this;
     }
 
