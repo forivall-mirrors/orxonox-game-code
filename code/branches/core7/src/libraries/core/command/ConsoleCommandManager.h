@@ -44,6 +44,7 @@ namespace orxonox
     class _CoreExport ConsoleCommandManager
     {
         public:
+            static void registerCommand(ConsoleCommand* command);
             static void registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command);
             static void unregisterCommand(ConsoleCommand* command);
 
