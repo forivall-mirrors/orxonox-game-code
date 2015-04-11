@@ -34,10 +34,6 @@ namespace orxonox
 {
     void StaticallyInitializedConsoleCommand::load()
     {
-        for (size_t i = 0; i < this->command_->getNames().size(); ++i)
-        {
-            const ConsoleCommand::CommandName& name = this->command_->getNames()[i];
-            ConsoleCommandManager::registerCommand(name.group_, name.name_, this->command_);
-        }
+        ConsoleCommandManager::registerCommand(this->command_);
     }
 }

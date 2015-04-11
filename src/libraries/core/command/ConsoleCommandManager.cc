@@ -120,6 +120,18 @@ namespace orxonox
     }
 
     /**
+        @brief Registers a new command with the groups and names that are defined by ConsoleCommand::getNames().
+    */
+    /* static */ void ConsoleCommandManager::registerCommand(ConsoleCommand* command)
+    {
+        for (size_t i = 0; i < command->getNames().size(); ++i)
+        {
+            const ConsoleCommand::CommandName& name = command->getNames()[i];
+            ConsoleCommandManager::registerCommand(name.group_, name.name_, command);
+        }
+    }
+
+    /**
         @brief Registers a new command with given group an name by adding it to the command map.
     */
     /* static */ void ConsoleCommandManager::registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command)
