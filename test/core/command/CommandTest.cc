@@ -2,6 +2,7 @@
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
 #include "core/object/Destroyable.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -140,6 +141,8 @@ namespace orxonox
 
     TEST(CommandTest, ModuleTest)
     {
+        ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+
         test(0, 0, 0);
         CommandExecutor::execute("test 0", false);
         test(1, 0, 0);
