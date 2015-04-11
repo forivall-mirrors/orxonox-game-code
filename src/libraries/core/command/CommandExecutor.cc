@@ -295,9 +295,9 @@ namespace orxonox
 
             // create a new console command with the given alias as its name
             if (tokens.size() == 1)
-                new ConsoleCommand(tokens[0], executor);
+                ConsoleCommandManager::registerCommand(new ConsoleCommand(tokens[0], executor));
             else if (tokens.size() == 2)
-                new ConsoleCommand(tokens[0], tokens[1], executor);
+                ConsoleCommandManager::registerCommand(new ConsoleCommand(tokens[0], tokens[1], executor));
             else
                 orxout(user_error) << "\"" << alias << "\" is not a valid alias name (must have one or two words)." << endl;
         }
