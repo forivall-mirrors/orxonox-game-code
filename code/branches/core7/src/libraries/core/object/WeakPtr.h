@@ -103,11 +103,6 @@ namespace orxonox
             {
             }
 
-            /// Constructor: Used to explicitly initialize the weak pointer with a null pointer
-            inline WeakPtr(int) : pointer_(0), base_(0), callback_(0)
-            {
-            }
-
             /// Constructor: Initializes the weak pointer with a pointer to an object.
             inline WeakPtr(T* pointer) : pointer_(pointer), base_(pointer), callback_(0)
             {
@@ -131,13 +126,6 @@ namespace orxonox
             inline virtual ~WeakPtr()
             {
                 this->unregisterAsDestructionListener(this->base_);
-            }
-
-            /// Used to assign a null pointer.
-            inline WeakPtr& operator=(int)
-            {
-                WeakPtr(0).swap(*this);
-                return *this;
             }
 
             /// Assigns a new pointer.

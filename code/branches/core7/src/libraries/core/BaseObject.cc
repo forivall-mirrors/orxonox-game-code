@@ -85,11 +85,7 @@ namespace orxonox
         else
         {
             this->file_ = 0;
-            this->namespace_ = 0;
-            this->scene_ = 0;
             this->sceneID_ = OBJECTID_UNKNOWN;
-            this->gametype_ = 0;
-            this->level_ = 0;
         }
     }
 
