@@ -222,6 +222,7 @@ namespace orxonox
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
+            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) = 0;
 
         protected:
             virtual void createSuperFunctionCaller() const = 0;
@@ -287,6 +288,9 @@ namespace orxonox
 
             virtual const std::string& getTypeidName()
                 { return this->typeidName_; }
+
+            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object)
+                { return dynamic_cast<T*>(object) != 0; }
 
         private:
             static void initializeIdentifier();
