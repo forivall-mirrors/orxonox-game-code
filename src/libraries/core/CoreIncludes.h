@@ -83,6 +83,7 @@
 #include "class/IdentifierManager.h"
 #include "object/ClassFactory.h"
 #include "object/ObjectList.h"
+#include "module/StaticallyInitializedInstance.h"
 
 // resolve macro conflict on windows
 #if defined(ORXONOX_PLATFORM_WINDOWS)
@@ -125,7 +126,7 @@
     @param ClassName The name of the class
 */
 #define RegisterClassWithFactory(ClassName, FactoryInstance, bLoadable) \
-    Identifier& _##ClassName##Identifier = orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)
+    Identifier& _##ClassName##Identifier = (new orxonox::SI_I(orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)))->getIdentifier()
 
 /**
     @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
@@ -151,7 +152,7 @@ namespace orxonox
      * @brief Overload of registerClass() which determines T implicitly by the template argument of the ClassFactory.
      */
     template <class T>
-    inline Identifier& registerClass(const std::string& name, ClassFactory<T>* factory, bool bLoadable = true)
+    inline Identifier* registerClass(const std::string& name, ClassFactory<T>* factory, bool bLoadable = true)
     {
         return registerClass<T>(name, static_cast<Factory*>(factory), bLoadable);
     }
@@ -163,13 +164,13 @@ namespace orxonox
      * @param bLoadable Whether the class is allowed to be loaded through XML
      */
     template <class T>
-    inline Identifier& registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
+    inline Identifier* registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
     {
         orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
         Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
         identifier->setFactory(factory);
         identifier->setLoadable(bLoadable);
-        return *identifier;
+        return identifier;
     }
 
     /**
@@ -210,6 +211,22 @@ namespace orxonox
     {
         return ClassIdentifier<T>::getIdentifier();
     }
+
+    class _CoreExport StaticallyInitializedIdentifier : public StaticallyInitializedInstance
+    {
+        public:
+            StaticallyInitializedIdentifier(Identifier* identifier) : identifier_(identifier) {}
+
+            virtual void load() {}
+
+            inline Identifier& getIdentifier()
+                { return *this->identifier_; }
+
+        private:
+            Identifier* identifier_;
+    };
+
+    typedef StaticallyInitializedIdentifier SI_I;
 }
 
 #endif /* _CoreIncludes_H__ */

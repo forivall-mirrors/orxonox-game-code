@@ -50,7 +50,7 @@ namespace orxonox
                     registerClass("Configurable", new ClassFactoryNoArgs<Configurable>());
                     registerClass("OrxonoxInterface", new ClassFactoryNoArgs<OrxonoxInterface>());
                     registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("Interface", static_cast<ClassFactory<Interface>*>(NULL), false).inheritsFrom(Class(OrxonoxInterface));
+                    registerClass("Interface", static_cast<ClassFactory<Interface>*>(NULL), false)->inheritsFrom(Class(OrxonoxInterface));
                     registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
                     registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());
 
