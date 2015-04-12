@@ -32,6 +32,7 @@
 */
 
 #include "DodgeRaceShip.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

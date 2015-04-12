@@ -34,6 +34,7 @@
 #include "DodgeRace.h"
 #include "DodgeRaceShip.h" // Necessary for getPlayer function. Do NOT include this in Header!
 #include "DodgeRaceCube.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
