@@ -12,9 +12,9 @@ namespace orxonox
     //                 +---------------------+-+- Class2b
     //                 +-+-+-- Class3        | |
     //                   | |                 | |
-    // BaseInterface1 <--+---- Interface1 <--´ |
+    // BaseInterface1 <--+---- Interface1 <--Â´ |
     //                     |                   |
-    // BaseInterface2 <----+-- Interface2 <----´
+    // BaseInterface2 <----+-- Interface2 <----Â´
 
     namespace
     {
@@ -134,10 +134,10 @@ namespace orxonox
                     registerClass("Configurable", new ClassFactoryNoArgs<Configurable>());
                     registerClass("OrxonoxInterface", new ClassFactoryNoArgs<OrxonoxInterface>());
                     registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("BaseInterface1", static_cast<ClassFactory<BaseInterface1>*>(NULL), false).inheritsFrom(Class(OrxonoxInterface));
-                    registerClass("BaseInterface2", static_cast<ClassFactory<BaseInterface2>*>(NULL), false).inheritsFrom(Class(OrxonoxInterface));
-                    registerClass("Interface1", static_cast<ClassFactory<Interface1>*>(NULL), false).inheritsFrom(Class(BaseInterface1));
-                    registerClass("Interface2", static_cast<ClassFactory<Interface2>*>(NULL), false).inheritsFrom(Class(BaseInterface2));
+                    registerClass("BaseInterface1", static_cast<ClassFactory<BaseInterface1>*>(NULL), false)->inheritsFrom(Class(OrxonoxInterface));
+                    registerClass("BaseInterface2", static_cast<ClassFactory<BaseInterface2>*>(NULL), false)->inheritsFrom(Class(OrxonoxInterface));
+                    registerClass("Interface1", static_cast<ClassFactory<Interface1>*>(NULL), false)->inheritsFrom(Class(BaseInterface1));
+                    registerClass("Interface2", static_cast<ClassFactory<Interface2>*>(NULL), false)->inheritsFrom(Class(BaseInterface2));
                     registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
                     registerClass("Class0", new ClassFactoryNoArgs<Class0>());
                     registerClass("Class1", new ClassFactoryNoArgs<Class1>());
