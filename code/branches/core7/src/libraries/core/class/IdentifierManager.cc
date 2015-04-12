@@ -145,8 +145,43 @@ namespace orxonox
                 orxout(internal_error) << "Identifier was registered late and is not initialized: " << it->second->getName() << " / " << it->second->getTypeidName() << endl;
         }
 
+        this->verifyClassHierarchy();
+
         this->stopCreatingHierarchy();
         orxout(internal_status) << "Finished class-hierarchy creation" << endl;
+    }
+
+    /**
+     * Verifies if the class hierarchy is consistent with the RTTI.
+     */
+    void IdentifierManager::verifyClassHierarchy()
+    {
+        Context temporaryContext(NULL);
+        for (std::map<std::string, Identifier*>::const_iterator it1 = this->identifierByTypeidName_.begin(); it1 != this->identifierByTypeidName_.end(); ++it1)
+        {
+            if (!it1->second->hasFactory())
+                continue;
+
+            Identifiable* temp = it1->second->fabricate(&temporaryContext);
+
+            for (std::map<std::string, Identifier*>::const_iterator it2 = this->identifierByTypeidName_.begin(); it2 != this->identifierByTypeidName_.end(); ++it2)
+            {
+                bool isA_AccordingToRtti = it2->second->canDynamicCastObjectToIdentifierClass(temp);
+                bool isA_AccordingToClassHierarchy = temp->isA(it2->second);
+
+                if (isA_AccordingToRtti != isA_AccordingToClassHierarchy)
+                {
+                    orxout(internal_error) << "Class hierarchy does not match RTTI: Class hierarchy claims that " << it1->second->getName() <<
+                        (isA_AccordingToClassHierarchy ? " is a " : " is not a ") << it2->second->getName() << " but RTTI says the opposite." << endl;
+                }
+            }
+
+            delete temp;
+        }
+
+        size_t numberOfObjects = temporaryContext.getObjectList<Listable>()->size();
+        if (numberOfObjects > 0)
+            orxout(internal_warning) << "There are still " << numberOfObjects << " listables left after creating the class hierarchy" << endl;
     }
 
     /**

@@ -58,6 +58,7 @@ namespace orxonox
             ////// Class Hierarchy //////
             /////////////////////////////
             void createClassHierarchy();
+            void verifyClassHierarchy();
             void destroyAllIdentifiers();
 
             void createdObject(Identifiable* identifiable);
