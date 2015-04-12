@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(ChangeQuestStatus).inheritsFrom(Class(QuestEffect));
+    RegisterAbstractClass(ChangeQuestStatus).inheritsFrom<QuestEffect>();
 
     /**
     @brief

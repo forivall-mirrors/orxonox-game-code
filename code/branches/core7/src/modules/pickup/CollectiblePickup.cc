@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(CollectiblePickup).inheritsFrom(Class(Pickupable));
+    RegisterAbstractClass(CollectiblePickup).inheritsFrom<Pickupable>();
 
     /**
     @brief

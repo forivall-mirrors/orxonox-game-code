@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(RadarViewable).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(RadarViewable).inheritsFrom<OrxonoxInterface>();
 
     /**
         @brief Constructor.

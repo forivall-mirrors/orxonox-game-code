@@ -31,7 +31,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(ViewportEventListener).inheritsFrom(Class(Listable));
+    RegisterAbstractClass(ViewportEventListener).inheritsFrom<Listable>();
 
     ViewportEventListener::ViewportEventListener()
     {

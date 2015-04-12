@@ -126,7 +126,7 @@
     @param ClassName The name of the class
 */
 #define RegisterClassWithFactory(ClassName, FactoryInstance, bLoadable) \
-    Identifier& _##ClassName##Identifier = (new orxonox::SI_I(orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)))->getIdentifier()
+    orxonox::SI_I& _##ClassName##Identifier = (*new orxonox::SI_I(orxonox::registerClass<ClassName>(#ClassName, FactoryInstance, bLoadable)))
 
 /**
     @brief Registers a newly created object in the framework. Has to be called at the beginning of the constructor of @a ClassName.
@@ -212,18 +212,51 @@ namespace orxonox
         return ClassIdentifier<T>::getIdentifier();
     }
 
+
+
+
+    /**
+     * The static initializer stores the parent classes of this identifier. The corresponding identifiers are later loaded. This prevents identifiers from
+     * being used before they are completely initialized.
+     */
     class _CoreExport StaticallyInitializedIdentifier : public StaticallyInitializedInstance
     {
+        struct InheritsFrom
+        {
+            virtual ~InheritsFrom() {}
+            virtual Identifier* getParent() = 0;
+        };
+
+        template <class T>
+        struct InheritsFromClass : public InheritsFrom
+        {
+            virtual Identifier* getParent() { return Class(T); }
+        };
+
         public:
             StaticallyInitializedIdentifier(Identifier* identifier) : identifier_(identifier) {}
+            ~StaticallyInitializedIdentifier()
+            {
+                for (size_t i = 0; i < this->parents_.size(); ++i)
+                    delete parents_[i];
+            }
 
-            virtual void load() {}
+            virtual void load()
+            {
+                for (size_t i = 0; i < this->parents_.size(); ++i)
+                    this->identifier_->inheritsFrom(this->parents_[i]->getParent());
+            }
 
             inline Identifier& getIdentifier()
                 { return *this->identifier_; }
 
+            template <class T>
+            inline StaticallyInitializedIdentifier& inheritsFrom()
+                { this->parents_.push_back(new InheritsFromClass<T>()); return *this; }
+
         private:
             Identifier* identifier_;
+            std::vector<InheritsFrom*> parents_;
     };
 
     typedef StaticallyInitializedIdentifier SI_I;

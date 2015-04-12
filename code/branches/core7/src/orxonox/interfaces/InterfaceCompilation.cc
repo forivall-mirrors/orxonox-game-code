@@ -49,7 +49,7 @@ namespace orxonox
     //----------------------------
     // GametypeMessageListener
     //----------------------------
-    RegisterAbstractClass(GametypeMessageListener).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(GametypeMessageListener).inheritsFrom<OrxonoxInterface>();
 
     GametypeMessageListener::GametypeMessageListener()
     {
@@ -59,7 +59,7 @@ namespace orxonox
     //----------------------------
     // PlayerTrigger
     //----------------------------
-    RegisterAbstractClass(PlayerTrigger).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(PlayerTrigger).inheritsFrom<OrxonoxInterface>();
 
     PlayerTrigger::PlayerTrigger()
     {
@@ -79,7 +79,7 @@ namespace orxonox
     //----------------------------
     // RadarListener
     //----------------------------
-    RegisterAbstractClass(RadarListener).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(RadarListener).inheritsFrom<OrxonoxInterface>();
 
     RadarListener::RadarListener()
     {
@@ -89,7 +89,7 @@ namespace orxonox
     //----------------------------
     // TeamColourable
     //----------------------------
-    RegisterAbstractClass(TeamColourable).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(TeamColourable).inheritsFrom<OrxonoxInterface>();
 
     TeamColourable::TeamColourable()
     {
@@ -99,7 +99,7 @@ namespace orxonox
     //----------------------------
     // Rewardable
     //----------------------------
-    RegisterAbstractClass(Rewardable).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(Rewardable).inheritsFrom<OrxonoxInterface>();
 
     Rewardable::Rewardable()
     {

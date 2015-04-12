@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(ClientConnectionListener).inheritsFrom(Class(Listable));
+    RegisterAbstractClass(ClientConnectionListener).inheritsFrom<Listable>();
 
     ClientConnectionListener::ClientConnectionListener()
     {

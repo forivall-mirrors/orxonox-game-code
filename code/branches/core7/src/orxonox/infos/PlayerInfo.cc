@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(PlayerInfo).inheritsFrom(Class(Info));
+    RegisterAbstractClass(PlayerInfo).inheritsFrom<Info>();
 
     PlayerInfo::PlayerInfo(Context* context) : Info(context)
     {
