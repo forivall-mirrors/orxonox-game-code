@@ -44,4 +44,53 @@ namespace orxonox
         EXPECT_CALL(callback, callback());
         test->destroy();
     }
+
+    void isNull(const WeakPtr<DestroyableTest> weakPtr)
+    {
+        EXPECT_TRUE(weakPtr == NULL);
+        EXPECT_TRUE(weakPtr == 0);
+        EXPECT_TRUE(!weakPtr);
+        EXPECT_FALSE(weakPtr != NULL);
+        EXPECT_FALSE(weakPtr != 0);
+        EXPECT_FALSE(weakPtr);
+    }
+
+    TEST(WeakPtrTest, IsNull)
+    {
+        {
+            WeakPtr<DestroyableTest> weakPtr;
+            isNull(weakPtr);
+        }
+        {
+            WeakPtr<DestroyableTest> weakPtr = NULL;
+            isNull(weakPtr);
+        }
+        {
+            WeakPtr<DestroyableTest> weakPtr;
+            weakPtr = NULL;
+            isNull(weakPtr);
+        }
+        {
+            WeakPtr<DestroyableTest> weakPtr = 0;
+            isNull(weakPtr);
+        }
+        {
+            WeakPtr<DestroyableTest> weakPtr;
+            weakPtr = 0;
+            isNull(weakPtr);
+        }
+    }
+
+    TEST(WeakPtrTest, IsNotNull)
+    {
+        DestroyableTest* test = new DestroyableTest();
+        WeakPtr<DestroyableTest> weakPtr = test;
+        EXPECT_FALSE(weakPtr == NULL);
+        EXPECT_FALSE(weakPtr == 0);
+        EXPECT_FALSE(!weakPtr);
+        EXPECT_TRUE(weakPtr != NULL);
+        EXPECT_TRUE(weakPtr != 0);
+        EXPECT_TRUE(weakPtr);
+        test->destroy();
+    }
 }

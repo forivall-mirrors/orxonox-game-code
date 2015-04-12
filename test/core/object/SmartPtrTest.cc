@@ -90,4 +90,54 @@ namespace orxonox
         }
         EXPECT_TRUE(destroyed);
     }
+
+    void isNull(const SmartPtr<DestroyableTest> smartPtr)
+    {
+        EXPECT_TRUE(smartPtr == NULL);
+        EXPECT_TRUE(smartPtr == 0);
+        EXPECT_TRUE(!smartPtr);
+        EXPECT_FALSE(smartPtr != NULL);
+        EXPECT_FALSE(smartPtr != 0);
+        EXPECT_FALSE(smartPtr);
+    }
+
+    TEST(SmartPtrTest, IsNull)
+    {
+        {
+            SmartPtr<DestroyableTest> smartPtr;
+            isNull(smartPtr);
+        }
+        {
+            SmartPtr<DestroyableTest> smartPtr = NULL;
+            isNull(smartPtr);
+        }
+        {
+            SmartPtr<DestroyableTest> smartPtr;
+            smartPtr = NULL;
+            isNull(smartPtr);
+        }
+        {
+            SmartPtr<DestroyableTest> smartPtr = 0;
+            isNull(smartPtr);
+        }
+        {
+            SmartPtr<DestroyableTest> smartPtr;
+            smartPtr = 0;
+            isNull(smartPtr);
+        }
+    }
+
+    TEST(SmartPtrTest, IsNotNull)
+    {
+        bool destroyed = false;
+        DestroyableTest* test = new DestroyableTest(destroyed);
+        SmartPtr<DestroyableTest> smartPtr = test;
+        EXPECT_FALSE(smartPtr == NULL);
+        EXPECT_FALSE(smartPtr == 0);
+        EXPECT_FALSE(!smartPtr);
+        EXPECT_TRUE(smartPtr != NULL);
+        EXPECT_TRUE(smartPtr != 0);
+        EXPECT_TRUE(smartPtr);
+        test->destroy();
+    }
 }
