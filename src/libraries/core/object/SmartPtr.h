@@ -141,11 +141,6 @@ namespace orxonox
             {
             }
 
-            /// Constructor: Used to explicitly initialize the smart pointer with a null pointer
-            inline SmartPtr(int) : pointer_(0), base_(0)
-            {
-            }
-
             /// Constructor: Initializes the smart pointer with a pointer to an object. @param pointer The pointer @param bAddRef If true, the reference counter is increased. Don't set this to false unless you know exactly what you're doing! (for example to avoid circular references if the @c this pointer of the possessing object is stored)
             inline SmartPtr(T* pointer, bool bAddRef = true) : pointer_(pointer), base_(pointer)
             {
@@ -181,13 +176,6 @@ namespace orxonox
             {
                 if (this->base_)
                     this->base_->decrementReferenceCount();
-            }
-
-            /// Used to assign a null pointer.
-            inline SmartPtr& operator=(int)
-            {
-                SmartPtr(0).swap(*this);
-                return *this;
             }
 
             /// Assigns a new pointer.
