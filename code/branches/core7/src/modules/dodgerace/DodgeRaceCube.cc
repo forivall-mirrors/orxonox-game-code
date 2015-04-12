@@ -32,6 +32,7 @@
 
 #include "DodgeRaceCube.h"
 #include "DodgeRace.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

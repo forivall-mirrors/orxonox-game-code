@@ -37,7 +37,6 @@
 
 #include "dodgerace/DodgeRacePrereqs.h"
 
-#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "worldentities/pawns/SpaceShip.h"
 #include "graphics/Camera.h"

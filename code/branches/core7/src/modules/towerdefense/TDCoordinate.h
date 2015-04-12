@@ -1,7 +1,6 @@
 #ifndef _TDCoordinate_H__
 #define _TDCoordinate_H__
 
-#include "core/CoreIncludes.h"
 #include "TDCoordinate.h"
 //#include "towerdefense/TowerDefense.h"
 #include "gametypes/Deathmatch.h"
