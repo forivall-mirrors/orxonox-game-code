@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(AbstractRadiusHeightCollisionShape).inheritsFrom(Class(CollisionShape));
+    RegisterAbstractClass(AbstractRadiusHeightCollisionShape).inheritsFrom<CollisionShape>();
 
     /**
     @brief

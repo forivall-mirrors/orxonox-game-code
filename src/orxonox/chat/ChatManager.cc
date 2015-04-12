@@ -112,7 +112,7 @@ namespace orxonox
     //////////////////////////////////////////////////////////////////////////
     // ChatListener                                                         //
     //////////////////////////////////////////////////////////////////////////
-    RegisterAbstractClass(ChatListener).inheritsFrom(Class(Listable));
+    RegisterAbstractClass(ChatListener).inheritsFrom<Listable>();
 
     ChatListener::ChatListener()
     {

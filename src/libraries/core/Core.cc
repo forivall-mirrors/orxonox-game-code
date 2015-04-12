@@ -93,7 +93,7 @@ namespace orxonox
 #endif
 
     // register Core as an abstract class to avoid problems if the class hierarchy is created within Core-constructor
-    RegisterAbstractClass(Core).inheritsFrom(Class(Configurable));
+    RegisterAbstractClass(Core).inheritsFrom<Configurable>();
 
     Core::Core(const std::string& cmdLine)
         : pathConfig_(NULL)
@@ -516,7 +516,7 @@ namespace orxonox
     }
 
 
-    RegisterAbstractClass(DevModeListener).inheritsFrom(Class(Listable));
+    RegisterAbstractClass(DevModeListener).inheritsFrom<Listable>();
 
     DevModeListener::DevModeListener()
     {

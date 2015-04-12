@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(QuestEffect).inheritsFrom(Class(BaseObject));
+    RegisterAbstractClass(QuestEffect).inheritsFrom<BaseObject>();
 
     /**
     @brief

@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(WeaponMode).inheritsFrom(Class(BaseObject));
+    RegisterAbstractClass(WeaponMode).inheritsFrom<BaseObject>();
 
     WeaponMode::WeaponMode(Context* context) : BaseObject(context)
     {

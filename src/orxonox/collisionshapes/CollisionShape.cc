@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(CollisionShape).inheritsFrom(Class(BaseObject)).inheritsFrom(Class(Synchronisable));
+    RegisterAbstractClass(CollisionShape).inheritsFrom<BaseObject>().inheritsFrom<Synchronisable>();
 
     /**
     @brief

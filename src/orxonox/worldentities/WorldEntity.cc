@@ -60,7 +60,7 @@ namespace orxonox
     BOOST_STATIC_ASSERT((int)Ogre::Node::TS_PARENT == (int)WorldEntity::Parent);
     BOOST_STATIC_ASSERT((int)Ogre::Node::TS_WORLD  == (int)WorldEntity::World);
 
-    RegisterAbstractClass(WorldEntity).inheritsFrom(Class(BaseObject)).inheritsFrom(Class(Synchronisable));
+    RegisterAbstractClass(WorldEntity).inheritsFrom<BaseObject>().inheritsFrom<Synchronisable>();
 
     /**
     @brief

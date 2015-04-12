@@ -45,7 +45,7 @@ namespace orxonox
     //----------------------------
     float TimeFactorListener::timefactor_s = 1.0f;
 
-    RegisterAbstractClass(TimeFactorListener).inheritsFrom(Class(Listable));
+    RegisterAbstractClass(TimeFactorListener).inheritsFrom<Listable>();
 
     TimeFactorListener::TimeFactorListener()
     {
@@ -66,7 +66,7 @@ namespace orxonox
     //----------------------------
     // Tickable
     //----------------------------
-    RegisterAbstractClass(Tickable).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(Tickable).inheritsFrom<OrxonoxInterface>();
 
     /**
         @brief Constructor: Registers the object in the Tickable-list

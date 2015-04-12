@@ -251,7 +251,7 @@ namespace orxonox
 
     ///////////////////////////////////////////////////////////////////////////
 
-    RegisterAbstractClass(GSLevelMemento).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(GSLevelMemento).inheritsFrom<OrxonoxInterface>();
 
     GSLevelMemento::GSLevelMemento()
     {

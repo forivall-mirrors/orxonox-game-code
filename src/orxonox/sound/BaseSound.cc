@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(BaseSound).inheritsFrom(Class(Listable));
+    RegisterAbstractClass(BaseSound).inheritsFrom<Listable>();
 
     BaseSound::BaseSound()
         : bPooling_(false)

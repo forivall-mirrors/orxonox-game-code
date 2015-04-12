@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(PickupCarrier).inheritsFrom(Class(OrxonoxInterface));
+    RegisterAbstractClass(PickupCarrier).inheritsFrom<OrxonoxInterface>();
 
     /**
     @brief

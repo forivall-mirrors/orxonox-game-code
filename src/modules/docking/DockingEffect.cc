@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(DockingEffect).inheritsFrom(Class(BaseObject));
+    RegisterAbstractClass(DockingEffect).inheritsFrom<BaseObject>();
 
     DockingEffect::DockingEffect(Context* context) : BaseObject(context)
     {

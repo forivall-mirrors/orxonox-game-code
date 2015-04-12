@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    RegisterAbstractClass(Quest).inheritsFrom(Class(QuestItem));
+    RegisterAbstractClass(Quest).inheritsFrom<QuestItem>();
 
     /**
     @brief
