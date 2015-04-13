@@ -147,7 +147,7 @@ namespace orxonox
             /////////////////////////////
             Identifier& inheritsFrom(Identifier* directParent);
 
-            void initializeParents(const std::set<const Identifier*>& identifiers);
+            void initializeParents(Identifiable* instance, const std::set<const Identifier*>& identifiers);
             void initializeDirectParentsOfAbstractClass();
             void finishInitialization();
 
@@ -222,7 +222,7 @@ namespace orxonox
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
-            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) = 0;
+            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const = 0;
 
         protected:
             virtual void createSuperFunctionCaller() const = 0;
@@ -289,7 +289,7 @@ namespace orxonox
             virtual const std::string& getTypeidName()
                 { return this->typeidName_; }
 
-            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object)
+            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const
                 { return dynamic_cast<T*>(object) != 0; }
 
         private:

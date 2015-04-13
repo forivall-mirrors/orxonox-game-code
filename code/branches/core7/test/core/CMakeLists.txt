@@ -11,6 +11,7 @@ ORXONOX_ADD_EXECUTABLE(
     class/IdentifierTest.cc
     class/IdentifierClassHierarchyTest.cc
     class/IdentifierSimpleClassHierarchyTest.cc
+    class/IdentifierNestedClassHierarchyTest.cc
     class/IdentifierExternalClassHierarchyTest.cc
     class/OrxonoxClassTest.cc
     class/OrxonoxInterfaceTest.cc
