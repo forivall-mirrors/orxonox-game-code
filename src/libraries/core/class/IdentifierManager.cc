@@ -36,7 +36,7 @@
 #include <ostream>
 
 #include "util/StringUtils.h"
-#include "core/CoreIncludes.h"
+#include "core/Core.h"
 #include "core/config/ConfigValueContainer.h"
 #include "core/XMLPort.h"
 #include "core/object/ClassFactory.h"
@@ -146,7 +146,9 @@ namespace orxonox
                 orxout(internal_error) << "Identifier was registered late and is not initialized: " << it->second->getName() << " / " << it->second->getTypeidName() << endl;
         }
 
-        this->verifyClassHierarchy();
+        // only check class hierarchy in dev mode because it's an expensive operation and it requires a developer to fix detected problems anyway.
+        if (Core::getInstance().inDevMode())
+            this->verifyClassHierarchy();
 
         this->stopCreatingHierarchy();
         orxout(internal_status) << "Finished class-hierarchy creation" << endl;
