@@ -147,7 +147,7 @@ namespace orxonox
         }
 
         // only check class hierarchy in dev mode because it's an expensive operation and it requires a developer to fix detected problems anyway.
-        if (Core::getInstance().inDevMode())
+        if (!Core::exists() || Core::getInstance().inDevMode())
             this->verifyClassHierarchy();
 
         this->stopCreatingHierarchy();
@@ -181,6 +181,7 @@ namespace orxonox
 
             delete temp;
         }
+        orxout(internal_info) << "Class hierarchy matches RTTI" << endl;
 
         size_t numberOfObjects = temporaryContext.getObjectList<Listable>()->size();
         if (numberOfObjects > 0)
