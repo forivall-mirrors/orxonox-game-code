@@ -143,10 +143,9 @@ namespace orxonox
 
     /**
      * @brief Initializes the parents of this Identifier while creating the class hierarchy.
-     * @param instance The instance that was used to determine the class hierarchy of this identifier.
-     * @param identifiers All identifiers that were used to create the instance of this class (including this identifier itself)
+     * @param initializationTrace All identifiers that were recorded while creating an instance of this class (including nested classes and this identifier itself)
      */
-    void Identifier::initializeParents(Identifiable* instance, const std::set<const Identifier*>& identifiers)
+    void Identifier::initializeParents(const std::set<const Identifier*>& initializationTrace)
     {
         if (!IdentifierManager::getInstance().isCreatingHierarchy())
         {
@@ -154,11 +153,8 @@ namespace orxonox
             return;
         }
 
-        // Add all identifiers which are real parents (dynamic_cast is possible) and that are not equal to THIS identifier.
-        // Checking for dynamic_cast is necessary because some classes may have other classes as nested members. This means that the Identifiers of the nested
-        // classes are also added to the set of potential parents. The only way to distinguish them is to use RTTI (i.e. dynamic_cast).
-        for (std::set<const Identifier*>::const_iterator it = identifiers.begin(); it != identifiers.end(); ++it)
-            if (*it != this && (*it)->canDynamicCastObjectToIdentifierClass(instance))
+        for (std::set<const Identifier*>::const_iterator it = initializationTrace.begin(); it != initializationTrace.end(); ++it)
+            if (*it != this)
                 this->parents_.insert(*it);
     }
 

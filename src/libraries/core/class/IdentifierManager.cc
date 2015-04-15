@@ -117,12 +117,12 @@ namespace orxonox
                 // To initialize the identifier, we create a new object and delete it afterwards.
                 if (it->second->hasFactory())
                 {
-                    this->identifiersOfNewObject_.clear();
+                    this->identifierTraceOfNewObject_.clear();
                     Identifiable* temp = it->second->fabricate(&temporaryContext);
                     if (temp->getIdentifier() != it->second)
                         orxout(internal_error) << "Newly created object of type " << it->second->getName() << " has unexpected identifier. Did you forget to use RegisterObject(classname)?" << endl;
 
-                    it->second->initializeParents(temp, this->identifiersOfNewObject_);
+                    it->second->initializeParents(this->identifierTraceOfNewObject_[temp]);
 
                     delete temp;
                 }
@@ -208,7 +208,7 @@ namespace orxonox
     void IdentifierManager::createdObject(Identifiable* identifiable)
     {
         if (this->isCreatingHierarchy())
-            this->identifiersOfNewObject_.insert(identifiable->getIdentifier());
+            this->identifierTraceOfNewObject_[identifiable].insert(identifiable->getIdentifier());
         else
             orxout(internal_warning) << "createdObject() called outside of class hierarchy creation" << endl;
     }
