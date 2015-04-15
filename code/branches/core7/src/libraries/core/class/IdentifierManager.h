@@ -106,8 +106,11 @@ namespace orxonox
             std::map<uint32_t, Identifier*> identifierByNetworkId_;          //!< Returns the map that stores all Identifiers with their network IDs.
 
             int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            std::set<const Identifier*> identifiersOfNewObject_;    //!< Used while creating the object hierarchy to keep track of the identifiers of a newly created object
             unsigned int classIDCounter_s;                          //!< counter for the unique classIDs
+
+            /// Used while creating the object hierarchy to keep track of the identifiers of a newly created object (and all other objects that get created as
+            /// a consequence of this, e.g. nested member objects).
+            std::map<Identifiable*, std::set<const Identifier*> > identifierTraceOfNewObject_;
     };
 }
 

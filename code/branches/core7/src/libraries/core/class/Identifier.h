@@ -147,7 +147,7 @@ namespace orxonox
             /////////////////////////////
             Identifier& inheritsFrom(Identifier* directParent);
 
-            void initializeParents(Identifiable* instance, const std::set<const Identifier*>& identifiers);
+            void initializeParents(const std::set<const Identifier*>& initializationTrace);
             void initializeDirectParentsOfAbstractClass();
             void finishInitialization();
 
