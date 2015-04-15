@@ -292,7 +292,7 @@ namespace orxonox
         else
         {
             // No it's not: Search for classes inheriting from the given class and add the rules for them
-            for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+            for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildren().begin(); it != subclass->getDirectChildren().end(); ++it)
                 if ((*it)->isA(this->root_->getClass()))
                     if (overwrite || (!this->nodeExists(*it))) // If we don't want to overwrite, only add nodes that don't already exist
                         this->add(this->root_, *it, bInclude, overwrite);
@@ -391,7 +391,7 @@ namespace orxonox
     {
         if (!subclass)
             return;
-        for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+        for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildren().begin(); it != subclass->getDirectChildren().end(); ++it)
             this->add(*it, this->isIncluded(*it), false, false);
 
         this->add(subclass, bInclude, false, clean);
@@ -942,7 +942,7 @@ namespace orxonox
                                 this->subclasses_.insert(this->subclasses_.end(), std::pair<const Identifier*, bool>(*it2, true));
 
                                 // Insert all directChildren of the directChild
-                                directChildren.insert((*it2)->getDirectChildrenBegin(), (*it2)->getDirectChildrenEnd());
+                                directChildren.insert((*it2)->getDirectChildren().begin(), (*it2)->getDirectChildren().end());
 
                                 // Restart the scan with the expanded set of directChildren
                                 goto scanChildren;
