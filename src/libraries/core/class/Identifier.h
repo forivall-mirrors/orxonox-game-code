@@ -160,31 +160,12 @@ namespace orxonox
 
             /// Returns the parents of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
-            /// Returns the begin-iterator of the parents-list.
-            inline std::set<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
-            /// Returns the end-iterator of the parents-list.
-            inline std::set<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
-
             /// Returns the children of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getChildren() const { return this->children_; }
-            /// Returns the begin-iterator of the children-list.
-            inline std::set<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_.begin(); }
-            /// Returns the end-iterator of the children-list.
-            inline std::set<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_.end(); }
-
             /// Returns the direct parents of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
-            /// Returns the begin-iterator of the direct-parents-list.
-            inline std::set<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
-            /// Returns the end-iterator of the direct-parents-list.
-            inline std::set<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
-
             /// Returns the direct children the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getDirectChildren() const { return this->directChildren_; }
-            /// Returns the begin-iterator of the direct-children-list.
-            inline std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_.begin(); }
-            /// Returns the end-iterator of the direct-children-list.
-            inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_.end(); }
 
 
             /////////////////////////
@@ -441,7 +422,7 @@ namespace orxonox
             this->setConfigValues(*it, *it);
 
         if (updateChildren)
-            for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
+            for (std::set<const Identifier*>::const_iterator it = this->getChildren().begin(); it != this->getChildren().end(); ++it)
                 (*it)->updateConfigValues(false);
     }
 
