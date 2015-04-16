@@ -5,13 +5,11 @@
  *      Author: meggiman
  */
 #include "GravityBomb.h"
+#include "graphics/Model.h"
 
 
 namespace orxonox{
 	RegisterClass(GravityBomb);
-
-	const float GravityBomb::INITIAL_VELOCITY = 20;
-	const float GravityBomb::SLOW_DOWN_RATIO = 2;
 
 	GravityBomb::GravityBomb(Context* context):
 				BasicProjectile(),
@@ -23,20 +21,22 @@ namespace orxonox{
 			this->setMass(15.0);
 			if (GameMode::isMaster())
 			{
-				//Define movement of the bomb
-				this->setVelocity(this->getOrientation()*WorldEntity::FRONT*INITIAL_VELOCITY);
-				this->velocityAtLastTick_=INITIAL_VELOCITY;
-				this->setAcceleration(this->getOrientation()*WorldEntity::BACK*SLOW_DOWN_RATIO);
-				this->setCollisionType(WorldEntity::Dynamic);
+				//Define CollisionType of the bomb
+				this->velocityAtLastTick_= 1000;
+				this->setCollisionResponse(false);
+				this->setCollisionType(WorldEntity::Kinematic);
 				this->enableCollisionCallback();
 
 				//Add Collision Shape
 				SphereCollisionShape* collisionShape = new SphereCollisionShape(context);
-				collisionShape->setRadius(5.0);
+				collisionShape->setRadius(1.0);
 				this->attachCollisionShape(collisionShape);
 
 				//Create Bomb Model
-
+	            Model* model = new Model(this->getContext());
+	            model->setMeshSource("rocket.mesh"); //Demo Model from SimpleRocket
+	            model->scale(0.7f);
+	            this->attach(model);
 
 			}
 		}
@@ -45,26 +45,39 @@ namespace orxonox{
 
 	void GravityBomb::tick(float dt)
 	{
+			velocityAtLastTick_=getVelocity().length();
+			SUPER(GravityBomb,tick,dt);
 			if(velocityAtLastTick_ < this->getVelocity().length())
 			{
+				orxout(debug_output) << "bomb has stoped moving" <<endl;
 				setVelocity(Vector3::ZERO);
 				setAcceleration(Vector3::ZERO);
 				velocityAtLastTick_=0;
 				detonate();
+				orxout(debug_output) << "denoting" <<endl;
 			}
-			velocityAtLastTick_=getVelocity().length();
+			else
+			{
+				velocityAtLastTick_=getVelocity().length();
+				orxout(debug_output)<< velocityAtLastTick_ <<endl;
+				orxout(debug_output) << "acceleration" << getAcceleration().length() <<endl;
+				destroyCheck();
+			}
 	}
 
 	bool GravityBomb::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
 	{
-		detonate();
+		orxout(debug_output) << "collides" << endl;
 		processCollision(otherObject, contactPoint,cs);
+		//detonate();
 		return true;
 	}
 
 	void GravityBomb::detonate()
 	{
 		GravityBombField* field = new GravityBombField(this->getContext());
+		orxout(debug_output) << "denoting" <<endl;
+		this->destroy();
 	}
 }
 

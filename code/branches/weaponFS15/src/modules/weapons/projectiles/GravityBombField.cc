@@ -10,12 +10,13 @@
 namespace orxonox{
 	RegisterClass(GravityBombField);
 
-	const float GravityBombField::FORCE_FIELD_LIFETIME = 10;
-	const float GravityBombField::FORCE_SPHERE_START_RADIUS = 50;
-	const float GravityBombField::FORCE_SPHERE_START_STRENGTH = -300;
+	const float GravityBombField::FORCE_FIELD_LIFETIME = 5;
+	const float GravityBombField::FORCE_SPHERE_START_RADIUS = 100;
+	const float GravityBombField::FORCE_SPHERE_START_STRENGTH = -1000;
 
 	GravityBombField::GravityBombField(Context* context) : ForceField(context)
 	{
+		RegisterObject(GravityBombField);
 		lifetime_=FORCE_FIELD_LIFETIME;
 		setVelocity(FORCE_SPHERE_START_STRENGTH);
 		setDiameter(FORCE_SPHERE_START_RADIUS);
@@ -26,6 +27,7 @@ namespace orxonox{
 
 	void GravityBombField::tick(float dt)
 	{
+		SUPER(GravityBombField,tick,dt);
 		lifetime_-=dt;
 		if(lifetime_ < 0)
 		{
@@ -36,7 +38,7 @@ namespace orxonox{
 	void GravityBombField::destroy()
 	{
 		//Animation
-		//SUPER(GravityBombField,destroy);
+		ForceField::destroy();
 	}
 
 }

@@ -65,8 +65,6 @@ namespace orxonox
 			void detonate();
 
 		private:
-		static const float INITIAL_VELOCITY;
-		static const float SLOW_DOWN_RATIO;
 
 		float velocityAtLastTick_; //Used to check wether the Object is already accelarating in the oposite direction to detect the time to detonate it.
 
