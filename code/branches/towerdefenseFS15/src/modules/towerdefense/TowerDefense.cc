@@ -97,7 +97,7 @@ namespace orxonox
 
     RegisterUnloadableClass(TowerDefense);
 
-    TowerDefense::TowerDefense(Context* context) : Deathmatch(context)
+    TowerDefense::TowerDefense(Context* context) : TeamDeathmatch(context)
     {
         RegisterObject(TowerDefense);
 /*
@@ -107,9 +107,17 @@ namespace orxonox
             }
         }*/
 
+        selectedPos = new TDCoordinate(0,0);
+//        TowerDefenseSelecter Selecter = new TowerDefenseSelecter();
 
 
         this->setHUDTemplate("TowerDefenseHUD");
+        this->nextwaveTimer_.setTimer(10, false, createExecutor(createFunctor(&TowerDefense::nextwave, this)));
+        this->nextwaveTimer_.stopTimer();
+        this->waves_ = 0;
+        this->time = 0;
+        this->credit_ = 0;
+        this->lifes_ = 0;
 
         //this->stats_ = new TowerDefensePlayerStats();
 
@@ -137,7 +145,7 @@ namespace orxonox
     void TowerDefense::start()
     {
 
-        Deathmatch::start();
+        TeamDeathmatch::start();
 
 // Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
         for (int i=0; i < 16 ; i++){
@@ -219,7 +227,7 @@ namespace orxonox
     void TowerDefense::end()
     {
 
-        Deathmatch::end();
+        TeamDeathmatch::end();
         ChatManager::message("Match is over! Gameover!");
 
     }
@@ -329,11 +337,10 @@ namespace orxonox
         TDCoordinate* coord1 = new TDCoordinate(1,1);
         std::vector<TDCoordinate*> path;
         path.push_back(coord1);
-        if(time>1 && TowerDefenseEnemyvector.size() < 30)
+        if(time>=TowerDefenseEnemyvector.size() && TowerDefenseEnemyvector.size() < 30)
         {
             //adds different types of enemys depending on the WaveNumber
             addTowerDefenseEnemy(path, this->getWaveNumber() % 3 +1 );
-            time = time-1;
         }
 
         Vector3* endpoint = new Vector3(500, 700, 150);
@@ -358,6 +365,7 @@ namespace orxonox
                 }
             }
         }
+
         //goes thorugh vector to see if an enemy is still alive. if not next wave is launched
         int count= 0;
         for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
@@ -368,9 +376,12 @@ namespace orxonox
             }
         }
 
+        if (count == 0 && !this->nextwaveTimer_.isActive())
+            this->nextwaveTimer_.startTimer();
+
+/*            time2 +=dt;
         if(count== 0)
         {
-            time2 +=dt;
             if(time2 > 10)
             {
                 TowerDefenseEnemyvector.clear();
@@ -379,7 +390,7 @@ namespace orxonox
                 time2=0;
             }
         }
-
+*/
 
     }
 
@@ -424,7 +435,7 @@ namespace orxonox
     /*
     void TowerDefense::playerEntered(PlayerInfo* player)
     {
-        Deathmatch::playerEntered(player);
+        TeamDeathmatch::playerEntered(player);
 
         const std::string& message = player->getName() + " entered the game";
         ChatManager::message(message);
@@ -432,7 +443,7 @@ namespace orxonox
 
     bool TowerDefense::playerLeft(PlayerInfo* player)
     {
-        bool valid_player = Deathmatch::playerLeft(player);
+        bool valid_player = TeamDeathmatch::playerLeft(player);
 
         if (valid_player)
         {
@@ -462,7 +473,7 @@ namespace orxonox
             ChatManager::message(message);
         }
 
-        Deathmatch::pawnKilled(victim, killer);
+        TeamDeathmatch::pawnKilled(victim, killer);
     }
 
     void TowerDefense::playerScored(PlayerInfo* player, int score)

@@ -28,7 +28,7 @@
 <Template name=centerpointmarkcamera defaults=0>
   <Pawn team=1>
     <camerapositions>
-      <CameraPosition position="-2000,0,1500"/>
+      <CameraPosition position="0,0,1500"/>
     </camerapositions>
   </Pawn>
 </Template>
@@ -58,7 +58,7 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
     <!-- Spawns the camera, attached to a crate -->
-    <SpawnPoint team=1 position="2000,0,0" pawndesign=centerpointmark />
+    <SpawnPoint team=1 position="0,0,0" pawndesign=centerpointmark />
     <!--TeamSpawnPoint team=1 position="-7,7,4" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
 
     <!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->

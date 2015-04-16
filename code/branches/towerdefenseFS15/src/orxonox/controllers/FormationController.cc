@@ -986,7 +986,7 @@ namespace orxonox
                 team2 = ac->getTeam();
         }
 
-        TeamDeathmatch* tdm = orxonox_cast<TeamDeathmatch*>(gametype);
+        TeamGametype* tdm = orxonox_cast<TeamGametype*>(gametype);
         if (tdm)
         {
             if (entity1->getPlayer())
@@ -994,16 +994,6 @@ namespace orxonox
 
             if (entity2->getPlayer())
                 team2 = tdm->getTeam(entity2->getPlayer());
-        }
-
-        Mission* miss = orxonox_cast<Mission*>(gametype);
-        if (miss)
-        {
-            if (entity1->getPlayer())
-                team1 = miss->getTeam(entity1->getPlayer());
-
-            if (entity2->getPlayer())
-                team2 = miss->getTeam(entity2->getPlayer());
         }
 
         TeamBaseMatchBase* base = 0;
