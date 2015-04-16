@@ -53,6 +53,7 @@ namespace orxonox
     {
         this->hierarchyCreatingCounter_s = 0;
         this->classIDCounter_s = 0;
+        this->recordTraceForIdentifier_ = NULL;
     }
 
     /**
@@ -118,7 +119,12 @@ namespace orxonox
                 if (it->second->hasFactory())
                 {
                     this->identifierTraceOfNewObject_.clear();
+                    this->recordTraceForIdentifier_ = it->second;
+
                     Identifiable* temp = it->second->fabricate(&temporaryContext);
+
+                    this->recordTraceForIdentifier_ = NULL;
+
                     if (temp->getIdentifier() != it->second)
                         orxout(internal_error) << "Newly created object of type " << it->second->getName() << " has unexpected identifier. Did you forget to use RegisterObject(classname)?" << endl;
 
@@ -208,7 +214,16 @@ namespace orxonox
     void IdentifierManager::createdObject(Identifiable* identifiable)
     {
         if (this->isCreatingHierarchy())
-            this->identifierTraceOfNewObject_[identifiable].insert(identifiable->getIdentifier());
+        {
+            if (this->recordTraceForIdentifier_)
+            {
+                if (this->identifierTraceOfNewObject_[identifiable].insert(identifiable->getIdentifier()).second == false)
+                {
+                    orxout(internal_warning) << this->recordTraceForIdentifier_->getName() << " inherits two times from " <<
+                        identifiable->getIdentifier()->getName() << ". Did you forget to use virtual inheritance?" << endl;
+                }
+            }
+        }
         else
             orxout(internal_warning) << "createdObject() called outside of class hierarchy creation" << endl;
     }
