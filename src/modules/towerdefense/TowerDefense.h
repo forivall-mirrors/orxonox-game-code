@@ -38,14 +38,14 @@
 #define _TowerDefense_H__
 #include "TDCoordinate.h"
 #include "towerdefense/TowerDefensePrereqs.h"
-#include "gametypes/Deathmatch.h"
+#include "gametypes/TeamDeathmatch.h"
 #include "TowerDefenseEnemy.h"
 #include "util/Output.h"
 #include "core/object/WeakPtr.h"
 
 namespace orxonox
 {
-    class _TowerDefenseExport TowerDefense : public Deathmatch
+    class _TowerDefenseExport TowerDefense : public TeamDeathmatch
     {
     public:
         TowerDefense(Context* context);
@@ -69,8 +69,9 @@ namespace orxonox
         void setWaveNumber(int wavenumber){ waves_=wavenumber; }
         void buyTower(int cost){ credit_ -= cost;}
         void addCredit(int credit) { credit_+=credit; }
-        void nextwave(){ waves_++;}
+        void nextwave(){ TowerDefenseEnemyvector.clear(); waves_++; time=0;}
         int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
+        TDCoordinate* selectedPos;
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);
@@ -94,10 +95,11 @@ namespace orxonox
     private:
         TowerDefenseCenterpoint *center_;
         float time;
-        float time2;
+//        float time2;
         int credit_;
         int waves_;
         int lifes_;
+        Timer nextwaveTimer_;
 
         /* handles stats */
         bool hasEnoughCreditForTower(int towerCost);
