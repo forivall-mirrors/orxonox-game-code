@@ -147,7 +147,7 @@ namespace orxonox
             /////////////////////////////
             Identifier& inheritsFrom(Identifier* directParent);
 
-            void initializeParents(const std::set<const Identifier*>& initializationTrace);
+            void initializeParents(const std::list<const Identifier*>& initializationTrace);
             void finishInitialization();
 
             bool isA(const Identifier* identifier) const;
@@ -158,11 +158,11 @@ namespace orxonox
             bool isDirectParentOf(const Identifier* identifier) const;
 
             /// Returns the parents of the class the Identifier belongs to.
-            inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
+            inline const std::list<const Identifier*>& getParents() const { return this->parents_; }
             /// Returns the children of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getChildren() const { return this->children_; }
             /// Returns the direct parents of the class the Identifier belongs to.
-            inline const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
+            inline const std::list<const Identifier*>& getDirectParents() const { return this->directParents_; }
             /// Returns the direct children the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getDirectChildren() const { return this->directChildren_; }
 
@@ -208,10 +208,10 @@ namespace orxonox
             virtual void createSuperFunctionCaller() const = 0;
 
         private:
-            std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
+            std::list<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to (sorted by their order of initialization)
             std::set<const Identifier*> children_;                         //!< The children of the class the Identifier belongs to
 
-            std::set<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to
+            std::list<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to (sorted by their order of initialization)
             std::set<const Identifier*> directChildren_;                   //!< The direct children of the class the Identifier belongs to
 
             bool bInitialized_;                                            //!< Is true if the Identifier was completely initialized

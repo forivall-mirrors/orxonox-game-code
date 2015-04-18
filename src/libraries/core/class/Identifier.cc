@@ -134,7 +134,7 @@ namespace orxonox
     Identifier& Identifier::inheritsFrom(Identifier* directParent)
     {
         if (this->parents_.empty())
-            this->directParents_.insert(directParent);
+            this->directParents_.push_back(directParent);
         else
             orxout(internal_error) << "Trying to add " << directParent->getName() << " as a direct parent of " << this->getName() << " after the latter was already initialized" << endl;
 
@@ -145,7 +145,7 @@ namespace orxonox
      * @brief Initializes the parents of this Identifier while creating the class hierarchy.
      * @param initializationTrace All identifiers that were recorded while creating an instance of this class (including nested classes and this identifier itself)
      */
-    void Identifier::initializeParents(const std::set<const Identifier*>& initializationTrace)
+    void Identifier::initializeParents(const std::list<const Identifier*>& initializationTrace)
     {
         if (!IdentifierManager::getInstance().isCreatingHierarchy())
         {
@@ -155,9 +155,9 @@ namespace orxonox
 
         if (this->directParents_.empty())
         {
-            for (std::set<const Identifier*>::const_iterator it = initializationTrace.begin(); it != initializationTrace.end(); ++it)
+            for (std::list<const Identifier*>::const_iterator it = initializationTrace.begin(); it != initializationTrace.end(); ++it)
                 if (*it != this)
-                    this->parents_.insert(*it);
+                    this->parents_.push_back(*it);
         }
         else
             orxout(internal_error) << "Trying to add parents to " << this->getName() << " after it was already initialized with manual calls to inheritsFrom<Class>()." << endl;
@@ -182,29 +182,29 @@ namespace orxonox
             // parents defined -> this class was initialized by creating a sample instance and recording the trace of identifiers
 
             // initialize all parents
-            for (std::set<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
+            for (std::list<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
                 const_cast<Identifier*>(*it)->finishInitialization(); // initialize parent
 
             // parents of parents are no direct parents of this identifier
             this->directParents_ = this->parents_;
-            for (std::set<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
-                for (std::set<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
-                    this->directParents_.erase(*it_parent_parent);
+            for (std::list<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
+                for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+                    this->directParents_.remove(*it_parent_parent);
         }
         else if (!this->directParents_.empty())
         {
             // no parents defined -> this class was manually initialized by calling inheritsFrom<Class>()
 
             // initialize all direct parents
-            for (std::set<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+            for (std::list<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
                 const_cast<Identifier*>(*it)->finishInitialization(); // initialize parent
 
             // direct parents and their parents are also parents of this identifier (but only add them once)
             this->parents_ = this->directParents_;
-            for (std::set<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
-                for (std::set<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+            for (std::list<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
+                for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
                     if (std::find(this->parents_.begin(), this->parents_.end(), *it_parent_parent) == this->parents_.end())
-                        this->parents_.insert(*it_parent_parent);
+                        this->parents_.push_back(*it_parent_parent);
         }
         else if (!this->isExactlyA(Class(Identifiable)))
         {
@@ -215,11 +215,11 @@ namespace orxonox
         }
 
         // tell all parents that this identifier is a child
-        for (std::set<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
+        for (std::list<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
             const_cast<Identifier*>(*it)->children_.insert(this);
 
         // tell all direct parents that this identifier is a direct child
-        for (std::set<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+        for (std::list<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
         {
             const_cast<Identifier*>(*it)->directChildren_.insert(this);
 
@@ -254,7 +254,7 @@ namespace orxonox
     */
     bool Identifier::isChildOf(const Identifier* identifier) const
     {
-        return (this->parents_.find(identifier) != this->parents_.end());
+        return (std::find(this->parents_.begin(), this->parents_.end(),  identifier) != this->parents_.end());
     }
 
     /**
@@ -263,7 +263,7 @@ namespace orxonox
     */
     bool Identifier::isDirectChildOf(const Identifier* identifier) const
     {
-        return (this->directParents_.find(identifier) != this->directParents_.end());
+        return (std::find(this->directParents_.begin(), this->directParents_.end(), identifier) != this->directParents_.end());
     }
 
     /**

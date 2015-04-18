@@ -18,7 +18,7 @@ namespace orxonox
 
     namespace
     {
-        class BaseInterface1 : public OrxonoxInterface
+        class BaseInterface1 : virtual public OrxonoxInterface
         {
             public:
                 BaseInterface1()
@@ -29,7 +29,7 @@ namespace orxonox
                 virtual void test1() = 0;
         };
 
-        class BaseInterface2 : public OrxonoxInterface
+        class BaseInterface2 : virtual public OrxonoxInterface
         {
             public:
                 BaseInterface2()
@@ -153,6 +153,11 @@ namespace orxonox
                     IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
+
+        bool contains(const std::list<const Identifier*> identifiers, Identifier* identifier)
+        {
+            return std::find(identifiers.begin(), identifiers.end(), identifier) != identifiers.end();
+        }
 
         bool contains(const std::set<const Identifier*> identifiers, Identifier* identifier)
         {

@@ -215,11 +215,13 @@ namespace orxonox
         {
             if (this->recordTraceForIdentifier_)
             {
-                if (this->identifierTraceOfNewObject_[identifiable].insert(identifiable->getIdentifier()).second == false)
+                std::list<const Identifier*>& traceForObject = this->identifierTraceOfNewObject_[identifiable];
+                if (std::find(traceForObject.begin(), traceForObject.end(), identifiable->getIdentifier()) != traceForObject.end())
                 {
                     orxout(internal_warning) << this->recordTraceForIdentifier_->getName() << " inherits two times from " <<
                         identifiable->getIdentifier()->getName() << ". Did you forget to use virtual inheritance?" << endl;
                 }
+                traceForObject.push_back(identifiable->getIdentifier());
             }
         }
         else
