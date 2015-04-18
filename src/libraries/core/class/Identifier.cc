@@ -153,29 +153,14 @@ namespace orxonox
             return;
         }
 
-        for (std::set<const Identifier*>::const_iterator it = initializationTrace.begin(); it != initializationTrace.end(); ++it)
-            if (*it != this)
-                this->parents_.insert(*it);
-    }
-
-    /**
-     * @brief Initializes the direct parents of this Identifier while creating the class hierarchy. This is only intended for abstract classes.
-     */
-    void Identifier::initializeDirectParentsOfAbstractClass()
-    {
-        if (!IdentifierManager::getInstance().isCreatingHierarchy())
+        if (this->directParents_.empty())
         {
-            orxout(internal_warning) << "Identifier::initializeDirectParentsOfAbstractClass() created outside of class hierarchy creation" << endl;
-            return;
+            for (std::set<const Identifier*>::const_iterator it = initializationTrace.begin(); it != initializationTrace.end(); ++it)
+                if (*it != this)
+                    this->parents_.insert(*it);
         }
-
-        // only Identifiable is allowed to have no parents (even tough it's currently not abstract)
-        if (this->directParents_.empty() && !this->isExactlyA(Class(Identifiable)))
-        {
-            orxout(internal_error) << "Identifier " << this->getName() << " / " << this->getTypeidName() << " is marked as abstract but has no direct parents defined" << endl;
-            orxout(internal_error) << "  If this class is not abstract, use RegisterClass(ThisClass);" << endl;
-            orxout(internal_error) << "  If this class is abstract, use RegisterAbstractClass(ThisClass).inheritsFrom(Class(BaseClass));" << endl;
-        }
+        else
+            orxout(internal_error) << "Trying to add parents to " << this->getName() << " after it was already initialized with manual calls to inheritsFrom<Class>()." << endl;
     }
 
     /**
@@ -192,23 +177,42 @@ namespace orxonox
         if (this->isInitialized())
             return;
 
-        // if no direct parents were defined, initialize them with the set of all parents
-        if (this->directParents_.empty())
-            this->directParents_ = this->parents_;
-
-        // initialize all parents before continuing to initialize this identifier
-        for (std::set<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+        if (!this->parents_.empty())
         {
-            Identifier* directParent = const_cast<Identifier*>(*it);
-            directParent->finishInitialization(); // initialize parent
-            this->parents_.insert(directParent);  // direct parent is also a parent
-            this->parents_.insert(directParent->parents_.begin(), directParent->parents_.end()); // parents of direct parent are also parents
-        }
+            // parents defined -> this class was initialized by creating a sample instance and recording the trace of identifiers
 
-        // parents of parents are no direct parents of this identifier
-        for (std::set<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
-            for (std::set<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
-                this->directParents_.erase(*it_parent_parent);
+            // initialize all parents
+            for (std::set<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
+                const_cast<Identifier*>(*it)->finishInitialization(); // initialize parent
+
+            // parents of parents are no direct parents of this identifier
+            this->directParents_ = this->parents_;
+            for (std::set<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
+                for (std::set<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+                    this->directParents_.erase(*it_parent_parent);
+        }
+        else if (!this->directParents_.empty())
+        {
+            // no parents defined -> this class was manually initialized by calling inheritsFrom<Class>()
+
+            // initialize all direct parents
+            for (std::set<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+                const_cast<Identifier*>(*it)->finishInitialization(); // initialize parent
+
+            // direct parents and their parents are also parents of this identifier (but only add them once)
+            this->parents_ = this->directParents_;
+            for (std::set<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
+                for (std::set<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+                    if (std::find(this->parents_.begin(), this->parents_.end(), *it_parent_parent) == this->parents_.end())
+                        this->parents_.insert(*it_parent_parent);
+        }
+        else if (!this->isExactlyA(Class(Identifiable)))
+        {
+            // only Identifiable is allowed to have no parents (even tough it's currently not abstract)
+            orxout(internal_error) << "Identifier " << this->getName() << " / " << this->getTypeidName() << " is marked as abstract but has no direct parents defined" << endl;
+            orxout(internal_error) << "  If this class is not abstract, use RegisterClass(ThisClass);" << endl;
+            orxout(internal_error) << "  If this class is abstract, use RegisterAbstractClass(ThisClass).inheritsFrom(Class(BaseClass));" << endl;
+        }
 
         // tell all parents that this identifier is a child
         for (std::set<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
@@ -232,7 +236,7 @@ namespace orxonox
     */
     bool Identifier::isA(const Identifier* identifier) const
     {
-        return (identifier == this || (this->parents_.find(identifier) != this->parents_.end()));
+        return (identifier == this || (this->isChildOf(identifier)));
     }
 
     /**

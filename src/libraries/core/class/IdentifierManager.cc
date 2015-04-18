@@ -132,8 +132,6 @@ namespace orxonox
 
                     delete temp;
                 }
-                else
-                    it->second->initializeDirectParentsOfAbstractClass();
 
                 initializedIdentifiers.insert(it->second);
             }
