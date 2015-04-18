@@ -37,7 +37,7 @@
 #include "core/CorePrereqs.h"
 
 #include <map>
-#include <set>
+#include <list>
 #include <string>
 
 namespace orxonox
@@ -110,7 +110,7 @@ namespace orxonox
 
             /// Used while creating the object hierarchy to keep track of the identifiers of a newly created object (and all other objects that get created as
             /// a consequence of this, e.g. nested member objects).
-            std::map<Identifiable*, std::set<const Identifier*> > identifierTraceOfNewObject_;
+            std::map<Identifiable*, std::list<const Identifier*> > identifierTraceOfNewObject_;
             Identifier* recordTraceForIdentifier_; //!< The identifier for which we want to record the trace of identifiers during object creation. If null, no trace is recorded.
     };
 }

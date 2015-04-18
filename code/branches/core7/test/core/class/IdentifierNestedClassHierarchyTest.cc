@@ -120,6 +120,11 @@ namespace orxonox
                 }
         };
 
+        bool contains(const std::list<const Identifier*> identifiers, Identifier* identifier)
+        {
+            return std::find(identifiers.begin(), identifiers.end(), identifier) != identifiers.end();
+        }
+
         bool contains(const std::set<const Identifier*> identifiers, Identifier* identifier)
         {
             return identifiers.find(identifier) != identifiers.end();

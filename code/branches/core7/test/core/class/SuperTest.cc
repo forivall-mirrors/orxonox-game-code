@@ -96,7 +96,7 @@ namespace orxonox
             EXPECT_EQ(0u, identifier->getDirectChildren().size());
 
             EXPECT_EQ(1u, identifier->getDirectParents().size());
-            EXPECT_TRUE(identifier->getDirectParents().find(Class(TestClass)) != identifier->getDirectParents().end());
+            EXPECT_TRUE(std::find(identifier->getDirectParents().begin(), identifier->getDirectParents().end(), Class(TestClass)) != identifier->getDirectParents().end());
         }
         {
             Identifier* identifier = Class(TestClass);
@@ -105,7 +105,7 @@ namespace orxonox
             EXPECT_TRUE(identifier->getDirectChildren().find(Class(TestSubclass)) != identifier->getDirectChildren().end());
 
             EXPECT_EQ(1u, identifier->getDirectParents().size());
-            EXPECT_TRUE(identifier->getDirectParents().find(Class(BaseObject)) != identifier->getDirectParents().end());
+            EXPECT_TRUE(std::find(identifier->getDirectParents().begin(), identifier->getDirectParents().end(), Class(BaseObject)) != identifier->getDirectParents().end());
         }
     }
 
