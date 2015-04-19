@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    RegisterClassNoArgs(Identifiable);
+    RegisterClassNoArgs(Identifiable).virtualBase();
 
     /**
         @brief Constructor: Sets the default values.

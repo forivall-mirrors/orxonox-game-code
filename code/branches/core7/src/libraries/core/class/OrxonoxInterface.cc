@@ -31,7 +31,7 @@
 
 namespace orxonox
 {
-    RegisterClassNoArgs(OrxonoxInterface);
+    RegisterClassNoArgs(OrxonoxInterface).virtualBase();
 
     OrxonoxInterface::OrxonoxInterface()
     {
