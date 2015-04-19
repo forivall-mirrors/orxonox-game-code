@@ -214,6 +214,8 @@ namespace orxonox
             virtual void createSuperFunctionCaller() const = 0;
 
         private:
+            void addIfNotExists(std::list<const Identifier*>& list, const Identifier* identifierToAdd) const;
+
             std::list<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to (sorted by their order of initialization)
             std::list<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to (sorted by their order of initialization)
 
