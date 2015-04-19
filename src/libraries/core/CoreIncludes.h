@@ -254,6 +254,9 @@ namespace orxonox
             inline StaticallyInitializedIdentifier& inheritsFrom()
                 { this->parents_.push_back(new InheritsFromClass<T>()); return *this; }
 
+            inline StaticallyInitializedIdentifier& virtualBase()
+                { this->identifier_->setVirtualBase(true); return *this; }
+
         private:
             Identifier* identifier_;
             std::vector<InheritsFrom*> parents_;

@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    RegisterClass(Listable);
+    RegisterClass(Listable).virtualBase();
 
     /**
         @brief Constructor: Allocates space in the element list.

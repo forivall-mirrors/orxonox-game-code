@@ -138,6 +138,11 @@ namespace orxonox
             /// Set the class to be loadable through XML or not.
             inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
+            /// Returns true if child classes should inherit virtually from this class.
+            inline bool isVirtualBase() const { return this->bIsVirtualBase_; }
+            /// Defines if child classes should inherit virtually from this class.
+            inline void setVirtualBase(bool bIsVirtualBase) { this->bIsVirtualBase_ = bIsVirtualBase; }
+
             /// Returns true if the Identifier was completely initialized.
             inline bool isInitialized() const { return this->bInitialized_; }
 
@@ -217,6 +222,7 @@ namespace orxonox
 
             bool bInitialized_;                                            //!< Is true if the Identifier was completely initialized
             bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
+            bool bIsVirtualBase_;                                          //!< If true, it is recommended to inherit virtually from this class. This changes the order of initialization of child classes, thus this information is necessary to check the class hierarchy.
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             Factory* factory_;                                             //!< The Factory, able to create new objects of the given class (if available)
             uint32_t networkID_;                                           //!< The network ID to identify a class through the network

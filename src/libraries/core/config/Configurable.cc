@@ -31,7 +31,7 @@
 
 namespace orxonox
 {
-    RegisterClassNoArgs(Configurable);
+    RegisterClassNoArgs(Configurable).virtualBase();
 
     Configurable::Configurable()
     {

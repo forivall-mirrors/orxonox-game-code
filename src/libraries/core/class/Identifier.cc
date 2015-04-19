@@ -55,6 +55,7 @@ namespace orxonox
         this->factory_ = 0;
         this->bInitialized_ = false;
         this->bLoadable_ = false;
+        this->bIsVirtualBase_ = false;
 
         this->bHasConfigValues_ = false;
 
