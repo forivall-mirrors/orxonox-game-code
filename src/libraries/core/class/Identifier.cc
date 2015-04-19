@@ -191,6 +191,8 @@ namespace orxonox
             for (std::list<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
                 for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
                     this->directParents_.remove(*it_parent_parent);
+
+            this->verifyIdentifierTrace();
         }
         else if (!this->directParents_.empty())
         {
@@ -230,6 +232,56 @@ namespace orxonox
         }
 
         this->bInitialized_ = true;
+    }
+
+    /**
+     * Verifies if the recorded trace of parent identifiers matches the expected trace according to the class hierarchy. If it doesn't match, the class
+     * hierarchy is likely wrong, e.g. due to wrong inheritsFrom<>() definitions in abstract classes.
+     */
+    void Identifier::verifyIdentifierTrace() const
+    {
+
+        std::list<const Identifier*> expectedIdentifierTrace;
+
+        // if any parent class is virtual, it will be instantiated first, so we need to add them first.
+        for (std::list<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
+        {
+            if ((*it_parent)->isVirtualBase())
+            {
+                for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+                    this->addIfNotExists(expectedIdentifierTrace, *it_parent_parent);
+                this->addIfNotExists(expectedIdentifierTrace, *it_parent);
+            }
+        }
+
+        // now all direct parents get created recursively. already added identifiers (e.g. virtual base classes) are not added again.
+        for (std::list<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
+        {
+            for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
+                this->addIfNotExists(expectedIdentifierTrace, *it_parent_parent);
+            this->addIfNotExists(expectedIdentifierTrace, *it_parent);
+        }
+
+        // check if the expected trace matches the actual trace (which was defined by creating a sample instance)
+        if (expectedIdentifierTrace != this->parents_)
+        {
+            orxout(internal_warning) << this->getName() << " has an unexpected initialization trace:" << endl;
+
+            orxout(internal_warning) << "  Actual trace (after creating a sample instance):" << endl << "    ";
+            for (std::list<const Identifier*>::const_iterator it_parent = this->parents_.begin(); it_parent != this->parents_.end(); ++it_parent)
+                orxout(internal_warning) << " " << (*it_parent)->getName();
+            orxout(internal_warning) << endl;
+
+            orxout(internal_warning) << "  Expected trace (according to class hierarchy definitions):" << endl << "    ";
+            for (std::list<const Identifier*>::const_iterator it_parent = expectedIdentifierTrace.begin(); it_parent != expectedIdentifierTrace.end(); ++it_parent)
+                orxout(internal_warning) << " " << (*it_parent)->getName();
+            orxout(internal_warning) << endl;
+
+            orxout(internal_warning) << "  Direct parents (according to class hierarchy definitions):" << endl << "    ";
+            for (std::list<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
+                orxout(internal_warning) << " " << (*it_parent)->getName();
+            orxout(internal_warning) << endl;
+        }
     }
 
     /**
