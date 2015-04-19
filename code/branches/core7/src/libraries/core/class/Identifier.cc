@@ -201,11 +201,14 @@ namespace orxonox
                 const_cast<Identifier*>(*it)->finishInitialization(); // initialize parent
 
             // direct parents and their parents are also parents of this identifier (but only add them once)
-            this->parents_ = this->directParents_;
             for (std::list<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
+            {
                 for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
                     if (std::find(this->parents_.begin(), this->parents_.end(), *it_parent_parent) == this->parents_.end())
                         this->parents_.push_back(*it_parent_parent);
+                if (std::find(this->parents_.begin(), this->parents_.end(), *it_parent) == this->parents_.end())
+                    this->parents_.push_back(*it_parent);
+            }
         }
         else if (!this->isExactlyA(Class(Identifiable)))
         {
