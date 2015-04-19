@@ -204,10 +204,8 @@ namespace orxonox
             for (std::list<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)
             {
                 for (std::list<const Identifier*>::const_iterator it_parent_parent = const_cast<Identifier*>(*it_parent)->parents_.begin(); it_parent_parent != const_cast<Identifier*>(*it_parent)->parents_.end(); ++it_parent_parent)
-                    if (std::find(this->parents_.begin(), this->parents_.end(), *it_parent_parent) == this->parents_.end())
-                        this->parents_.push_back(*it_parent_parent);
-                if (std::find(this->parents_.begin(), this->parents_.end(), *it_parent) == this->parents_.end())
-                    this->parents_.push_back(*it_parent);
+                    this->addIfNotExists(this->parents_, *it_parent_parent);
+                this->addIfNotExists(this->parents_, *it_parent);
             }
         }
         else if (!this->isExactlyA(Class(Identifiable)))
@@ -232,6 +230,15 @@ namespace orxonox
         }
 
         this->bInitialized_ = true;
+    }
+
+    /**
+     * Adds @param identifierToAdd to @param list if this identifier is not already contained in the list.
+     */
+    void Identifier::addIfNotExists(std::list<const Identifier*>& list, const Identifier* identifierToAdd) const
+    {
+        if (std::find(list.begin(), list.end(), identifierToAdd) == list.end())
+            list.push_back(identifierToAdd);
     }
 
     /**
