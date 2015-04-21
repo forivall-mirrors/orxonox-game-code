@@ -26,7 +26,7 @@
 
 <!-- Specify the position of the camera -->
 <Template name=centerpointmarkcamera defaults=0>
-  <Pawn team=1>
+  <Pawn team=0>
     <camerapositions>
       <CameraPosition position="0,0,1500"/>
     </camerapositions>
@@ -35,7 +35,7 @@
 
 <!-- Loads a mesh to mark the center-->
 <Template name=centerpointmark>
-  <Pawn team=1 camerapositiontemplate=centerpointmarkcamera>
+  <Pawn team=0 camerapositiontemplate=centerpointmarkcamera>
     <attached>
       <Model position="0,0,0" mesh="cylinder.mesh" scale3D="1,1,1" /> <!-- the camera is attached to this -->
     </attached>
@@ -58,10 +58,10 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
     <!-- Spawns the camera, attached to a crate -->
-    <SpawnPoint team=1 position="0,0,0" pawndesign=centerpointmark />
-    <!--TeamSpawnPoint team=1 position="-7,7,4" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+    <SpawnPoint team=0 position="0,0,0" pawndesign=centerpointmark />
+    <!--TeamSpawnPoint team=0 position="-7,7,4" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
 
-    <!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
+    <!--SpawnPoint team=0 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
     <!--SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
 
 
