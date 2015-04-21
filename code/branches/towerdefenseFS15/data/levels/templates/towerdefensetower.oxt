@@ -13,13 +13,13 @@
 	maxYaw=90 
 	maxAttackRadius=1000 
 	minAttackRadius=30
-   	team = 1
+   	team = 0
 
 
   >
   
      <controller>
-     <TurretController team = 1/>
+     <TurretController team = 0/>
   </controller>
   
     
