@@ -62,6 +62,8 @@ namespace orxonox
     
     ManageScopedSingleton(ScreenshotManager, ScopeID::Graphics, false);
 
+    RegisterAbstractClass(ScreenshotManager).inheritsFrom<Configurable>();
+
     /**
     @brief
         Constructor. 

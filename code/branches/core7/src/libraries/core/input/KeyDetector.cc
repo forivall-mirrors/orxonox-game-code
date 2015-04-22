@@ -42,6 +42,8 @@ namespace orxonox
     static const std::string __CC_KeyDetector_callback_name = "KeyDetectorKeyPressed";
     DeclareConsoleCommand(__CC_KeyDetector_callback_name, &prototype::void__string).hide();
 
+    RegisterAbstractClass(KeyDetector).inheritsFrom<KeyBinder>();
+
     KeyDetector::KeyDetector()
         : KeyBinder("")
     {

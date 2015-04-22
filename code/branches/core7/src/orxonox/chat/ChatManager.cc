@@ -43,6 +43,8 @@ namespace orxonox
 
     SetConsoleCommand("chat", &ChatManager::chat).defaultValue(1, NETWORK_PEER_ID_BROADCAST);
 
+    RegisterAbstractClass(ChatManager).inheritsFrom<NetworkChatListener>();
+
     ChatManager::ChatManager()
     {
         RegisterObject(ChatManager);

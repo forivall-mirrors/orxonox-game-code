@@ -254,6 +254,8 @@ namespace orxonox
     SetConsoleCommand("hideGUI", &GUIManager::hideGUI);
     SetConsoleCommand("toggleGUI", &GUIManager::toggleGUI).defaultValue(1, false).defaultValue(2, false);
 
+    RegisterAbstractClass(GUIManager).inheritsFrom<WindowEventListener>();
+
     /**
     @brief
         Constructs the GUIManager by starting up CEGUI

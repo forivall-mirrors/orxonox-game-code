@@ -40,6 +40,9 @@ namespace orxonox
     // Note: I'm (Kevin Young) not entirely sure whether that's good code style:
     const std::string MoodManager::defaultMood_ = "default";
 
+    RegisterAbstractClass(MoodListener).inheritsFrom<OrxonoxInterface>();
+    RegisterAbstractClass(MoodManager).inheritsFrom<Configurable>();
+
     MoodManager::MoodManager()
     {
         RegisterObject(MoodManager);

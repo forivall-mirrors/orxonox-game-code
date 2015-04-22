@@ -62,6 +62,8 @@ namespace orxonox
     SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).defaultValues("").deactivate();
     SetConsoleCommand(__CC_setMainMenuSoundPath_name, &GSMainMenu::setMainMenuSoundPath).hide();
 
+    RegisterAbstractClass(GSMainMenu).inheritsFrom<Configurable>();
+
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
         : GameState(info)
     {

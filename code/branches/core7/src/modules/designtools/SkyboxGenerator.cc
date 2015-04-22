@@ -61,6 +61,8 @@ namespace orxonox
 
     ManageScopedSingleton(SkyboxGenerator, ScopeID::Graphics, false);
 
+    RegisterAbstractClass(SkyboxGenerator).inheritsFrom<Configurable>().inheritsFrom<Tickable>();
+
     /**
     @brief
         Constructor. Registers and initializes the singleton.

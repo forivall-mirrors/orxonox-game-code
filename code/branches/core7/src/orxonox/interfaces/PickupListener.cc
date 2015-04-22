@@ -39,6 +39,7 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(PickupListener).inheritsFrom<OrxonoxInterface>();
 
     /**
     @brief

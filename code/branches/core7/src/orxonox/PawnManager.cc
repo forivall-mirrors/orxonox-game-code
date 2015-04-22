@@ -36,6 +36,8 @@ namespace orxonox
 {
     ManageScopedSingleton(PawnManager, ScopeID::Root, false);
 
+    RegisterAbstractClass(PawnManager).inheritsFrom<Tickable>();
+
     PawnManager::PawnManager()
     {
         RegisterObject(PawnManager);

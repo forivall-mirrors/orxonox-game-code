@@ -61,6 +61,8 @@ namespace orxonox
     registerStaticNetworkFunction(PickupManager::dropPickupNetworked);
     registerStaticNetworkFunction(PickupManager::usePickupNetworked);
 
+    RegisterAbstractClass(PickupManager).inheritsFrom<PickupListener>();
+
     /**
     @brief
         Constructor. Registers the PickupManager and creates the default PickupRepresentation.

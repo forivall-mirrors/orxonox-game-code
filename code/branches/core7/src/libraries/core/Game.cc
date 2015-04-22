@@ -76,6 +76,8 @@ namespace orxonox
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
+    RegisterAbstractClass(Game).inheritsFrom<Configurable>();
+
     Game::Game(const std::string& cmdLine)
         : gameClock_(NULL)
         , core_(NULL)

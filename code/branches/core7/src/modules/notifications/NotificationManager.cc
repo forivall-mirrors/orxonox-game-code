@@ -48,6 +48,8 @@ namespace orxonox
 
     ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
+    RegisterAbstractClass(NotificationManager).inheritsFrom<NotificationListener>();
+
     /**
     @brief
         Constructor. Registers the Object.
