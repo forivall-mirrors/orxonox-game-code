@@ -79,6 +79,7 @@
 
 #include "CorePrereqs.h"
 
+#include "util/OrxAssert.h"
 #include "util/Output.h"
 #include "class/IdentifierManager.h"
 #include "object/ClassFactory.h"
@@ -136,6 +137,7 @@
     if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this)) \
         return; \
     else \
+        OrxVerify(ClassIdentifier<ClassName>::getIdentifier()->isRegistered(), "Assertion failed in ClassIdentifier of type " << typeid(ClassName).name()); \
         ((void)0)
 
 /**
@@ -170,6 +172,7 @@ namespace orxonox
         Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
         identifier->setFactory(factory);
         identifier->setLoadable(bLoadable);
+        identifier->setRegistered(true);
         return identifier;
     }
 
