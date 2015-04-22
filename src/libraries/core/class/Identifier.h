@@ -133,9 +133,6 @@ namespace orxonox
 
             Identifiable* fabricate(Context* context);
 
-            inline bool isRegistered() const { return this->bRegistered_; }
-            inline void setRegistered(bool bRegistered) { this->bRegistered_ = bRegistered; }
-
             /// Returns true if the class can be loaded through XML.
             inline bool isLoadable() const { return this->bLoadable_; }
             /// Set the class to be loadable through XML or not.
@@ -227,7 +224,6 @@ namespace orxonox
             std::set<const Identifier*> children_;                         //!< The children of the class the Identifier belongs to
 
             bool bInitialized_;                                            //!< Is true if the Identifier was completely initialized
-            bool bRegistered_;
             bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             bool bIsVirtualBase_;                                          //!< If true, it is recommended to inherit virtually from this class. This changes the order of initialization of child classes, thus this information is necessary to check the class hierarchy.
             std::string name_;                                             //!< The name of the class the Identifier belongs to
