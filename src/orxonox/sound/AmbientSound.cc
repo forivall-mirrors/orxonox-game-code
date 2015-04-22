@@ -35,6 +35,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(AmbientSound).inheritsFrom<BaseSound>().inheritsFrom<MoodListener>();
+
     AmbientSound::AmbientSound()
         : bPlayOnLoad_(false)
     {

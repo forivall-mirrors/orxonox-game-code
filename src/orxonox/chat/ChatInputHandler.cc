@@ -67,6 +67,8 @@ namespace orxonox
   SetConsoleCommand( "startchat", &ChatInputHandler::activate_static );
   SetConsoleCommand( "startchat_small", &ChatInputHandler::activate_small_static );
 
+  RegisterAbstractClass(ChatInputHandler).inheritsFrom<ChatListener>();
+
   /* constructor */
   ChatInputHandler::ChatInputHandler()
   {

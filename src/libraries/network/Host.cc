@@ -142,6 +142,8 @@ namespace orxonox {
   // NetworkChatListener                                                  //
   //////////////////////////////////////////////////////////////////////////
 
+  RegisterAbstractClass(NetworkChatListener).inheritsFrom<Listable>();
+
   NetworkChatListener::NetworkChatListener()
   {
       RegisterObject(NetworkChatListener);

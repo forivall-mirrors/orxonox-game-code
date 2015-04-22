@@ -93,6 +93,8 @@ namespace orxonox
 
     GraphicsManager* GraphicsManager::singletonPtr_s = 0;
 
+    RegisterAbstractClass(GraphicsManager).inheritsFrom<Configurable>();
+
     GraphicsManager::GraphicsManager(bool bLoadRenderer)
         : ogreWindowEventListener_(new OgreWindowEventListener())
         , renderWindow_(0)

@@ -52,6 +52,8 @@ namespace orxonox
     SetConsoleCommand(__CC_unbind_name,   &KeyBinderManager::unbind).defaultValues("");
     SetConsoleCommand(__CC_tunbind_name,  &KeyBinderManager::tunbind).defaultValues("");
 
+    RegisterAbstractClass(KeyBinderManager).inheritsFrom<Configurable>();
+
     KeyBinderManager::KeyBinderManager()
         : currentBinder_(NULL)
         , bDefaultFileLoaded_(true)

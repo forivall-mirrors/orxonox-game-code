@@ -35,6 +35,8 @@ namespace orxonox
 {
     std::vector<JoyStick*> JoyStickQuantityListener::joyStickList_s;
 
+    RegisterAbstractClass(JoyStickQuantityListener).inheritsFrom<Listable>();
+
     JoyStickQuantityListener::JoyStickQuantityListener()
     {
         RegisterObject(JoyStickQuantityListener);

@@ -36,6 +36,8 @@ namespace orxonox
 {
     ManageScopedSingleton(ShipPartManager, ScopeID::Root, false);
 
+    RegisterAbstractClass(ShipPartManager).inheritsFrom<Tickable>();
+
     ShipPartManager::ShipPartManager()
     {
         RegisterObject(ShipPartManager);

@@ -42,6 +42,8 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(KeyBinder).inheritsFrom<JoyStickQuantityListener>();
+
     /**
     @brief
         Constructor that does as little as necessary.

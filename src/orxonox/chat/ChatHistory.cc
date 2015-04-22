@@ -34,6 +34,9 @@ namespace orxonox
 {
   /* singleton */
   ManageScopedSingleton( ChatHistory, ScopeID::Root, false );
+
+  RegisterAbstractClass(ChatHistory).inheritsFrom<ChatListener>();
+
 #endif
 
   /* constructor */

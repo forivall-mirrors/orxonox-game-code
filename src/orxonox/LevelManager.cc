@@ -52,6 +52,8 @@ namespace orxonox
 
     ManageScopedSingleton(LevelManager, ScopeID::Root, false);
 
+    RegisterAbstractClass(LevelManager).inheritsFrom<Configurable>();
+
     /**
     @brief
         Constructor. Registers the object, sets config values and initializes variables.

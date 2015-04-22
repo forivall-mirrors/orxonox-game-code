@@ -50,6 +50,8 @@ namespace orxonox
     
     registerStaticNetworkFunction(NotificationListener::sendHelper);
     
+    RegisterAbstractClass(NotificationListener).inheritsFrom<OrxonoxInterface>();
+
     NotificationListener::NotificationListener()
     {
         RegisterObject(NotificationListener);

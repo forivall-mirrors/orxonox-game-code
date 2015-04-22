@@ -85,6 +85,8 @@ namespace orxonox
         return (lval = (InputManager::State)(lval & rval));
     }
 
+    RegisterAbstractClass(InputManager).inheritsFrom<WindowEventListener>();
+
     // ############################################################
     // #####                  Initialisation                  #####
     // ##########                                        ##########

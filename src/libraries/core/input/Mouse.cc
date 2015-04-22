@@ -50,6 +50,8 @@ namespace orxonox
     SetConsoleCommand(__CC_Mouse_name, __CC_ungrab_name, &Mouse::ungrab);
 #endif
 
+    RegisterAbstractClass(Mouse).inheritsFrom<WindowEventListener>();
+
     Mouse::Mouse(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
     {
