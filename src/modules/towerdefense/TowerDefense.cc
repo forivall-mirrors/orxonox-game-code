@@ -87,6 +87,7 @@
 /* Part of a temporary hack to allow the player to add towers */
 #include "core/command/ConsoleCommand.h"
 
+
 namespace orxonox
 {
     static const std::string __CC_addTower_name  = "addTower";
@@ -107,8 +108,7 @@ namespace orxonox
             }
         }*/
 
-        selectedPos = new TDCoordinate(0,0);
-//        TowerDefenseSelecter Selecter = new TowerDefenseSelecter();
+        this->Selecter = new TowerDefenseSelecter(context);
 
 
         this->setHUDTemplate("TowerDefenseHUD");
