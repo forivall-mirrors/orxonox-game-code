@@ -1,0 +1,7 @@
+Many changes have been applied, mostly cutting out unneeded parts of the source.
+There is one actual code change in ScopeGuard.h (see file).
+
+Moreover the files in this folder only represent a small portion of the Loki library.
+
+VERSION:
+The files are based on revision 1069 of the official Loki Subversion repository.

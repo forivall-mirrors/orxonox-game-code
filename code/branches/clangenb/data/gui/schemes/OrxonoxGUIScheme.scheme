@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="OrxonoxGUI">
+    <Imageset Name="MainMenuBackground" Filename="MainMenuBackground.imageset"/>
+    <Imageset Name="PickupInventory" Filename="PickupInventory.imageset"/>
+    <Font Name="BlueHighway-12" Filename="bluehighway-12.font" />
+    <Font Name="BlueHighway-10" Filename="bluehighway-10.font" />
+    <Font Name="BlueHighway-8"  Filename="bluehighway-8.font"  />
+    <Font Name="Monofur-10"     Filename="Monofur-10.font" />
+</GUIScheme>

@@ -1,0 +1,348 @@
+<!--FPS mode level
+	autor: Florian Süess-->
+<LevelInfo
+ name = "FPS Level HS14"
+ description = "Entering a Space Station & finde a way through it."
+ tags = "test"
+ screenshot = "emptylevel.png"
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
+?>
+
+<?lua
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipEscort.oxt")
+  include("templates/bigship.oxt")
+  include("templates/spaceshipTurret.oxt")
+  include("templates/spaceshipCollateralDamage.oxt")
+  include("templates/FPS_HS14.oxt")
+  include("templates/HeavyCruiser.oxt")
+  include("templates/spacestation_elements.oxt")
+?>
+
+<Level
+  gametype = Deathmatch
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
+  <Scene
+    ambientlight = "0.5, 0.5, 0.5"
+    skybox       = "Orxonox/skyBoxMoreNebula"
+    negativeWorldRange = "-100000, -100000, -100000"
+    positiveWorldRange = " 100000,  100000,  100000"
+    gravity      = "0,0,0"
+    hasPhysics   = true
+  >
+
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
+	
+	<!-- my ships -->
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0,1.0,1.0,0.5" specular="1.0, 0.9, 0.9, 1.0"/>
+    
+    <SpawnPoint team=1 position="6000,2000,500" lookat="4000,-1000,-1000" spawnclass=SpaceShip pawndesign=spaceshipescort />
+	<!--Position normal Level: "6000,2000,500"; postion for work at the spacesation: "3000,0,0 "-->
+	
+	<!--1,200,0-->
+	<SpaceShip			
+        template            = "spaceshipassff"
+        team                = "1"
+        position            = "3337,-19,-320"
+        orientation         = "5800,-200,-1200,0"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
+        shieldabsorption    = "0.8"
+        reloadrate          = "100"
+        reloadwaittime      = "0.1"
+        name                = "Tanis1"
+        radarname           = "Light Destroyer" >
+		<attached>
+        	<DockingTarget name="spaceShip" />
+        	<DistanceTriggerBeacon name="bcnSpaceShip" />
+		</attached>
+    </SpaceShip>
+	
+	
+        
+    <StaticEntity position  = "2800,0,0" mass=10000 collisionType=static >
+      <attached>
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
+        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections -->
+        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
+        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower -->
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one-->
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs -->
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs -->
+        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
+      </collisionShapes>
+    </StaticEntity>
+
+
+	<!-- Docking I -->
+	    <Dock position="2830,20,50" roll=0 yaw=0 >
+	        <animations>
+	            <MoveToDockingTarget target="fistperson" />
+	        </animations>
+	        <effects>
+	            <DockToShip target="fistperson" />
+	        </effects>
+	        <events>
+	            <execute>
+	                <EventListener event="dockMe" />
+	            </execute>
+
+		    <undocking>
+			<EventListener event="undockMe" />
+		    </undocking>
+		
+	        </events>
+	        <attached>
+		<!-- Trigger for docking with billboard -->
+	            <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+	            <DistanceTrigger position="0,0,0" distance="200" target="Pawn"
+	                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+	            />
+		<!-- Trigger for undocking with billboard -2800,-20055,-700-->
+		    <Billboard position="-1500,-20021,-50" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+		    <DistanceTrigger position="-1500,-20021,-50" distance="150" target="Pawn"
+	                beaconMode="identify" targetname="bcnDestroyer" name="undockMe"
+	            />
+	        </attached>
+
+	    </Dock>
+	    
+	<!-- FPS Player as destination of the dock -->
+	<!-- My position after docking -->
+	    <FpsPlayer template = "fps_HS14" radarname = "First Person Player" position = "1330,-20016,0" >
+	      <attached>
+	        <DistanceTriggerBeacon name="bcnDestroyer" />
+	        <DockingTarget name="fistperson" />
+	      </attached>
+	    </FpsPlayer>
+
+
+
+
+	<!-- Docking  II -->
+	    <Dock position="86,-20005,-700" roll=0 yaw=0 >
+	        <animations>
+	            <MoveToDockingTarget target="spaceShip" />
+	        </animations>
+	        <effects>
+	            <DockToShip target="spaceShip" />
+	        </effects>
+	        <events>
+	            <execute>
+	                <EventListener event="dockMe" />
+	            </execute>
+
+		    <undocking>
+				<EventListener event="undockMe" />
+		    </undocking>
+		
+	        </events>
+	        <attached>
+		<!-- Trigger for docking with billboard -->
+	            <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.3,0.4,0.5" scale=1 />
+	            <DistanceTrigger position="0,0,0" distance="100" target="Pawn"
+	                beaconMode="exclude" targetname="bcnSpaceShip" name="dockMe"
+	            />
+		<!-- Trigger for undocking with billboard -->
+		    <Billboard position="3251,20006,380" material="Flares/ringflare2" colour="0.3,0.4,0.5" scale=1 />
+		    <DistanceTrigger position="3251,20006,380" distance="100" target="Pawn"
+	                beaconMode="identify" targetname="bcnSpaceShip" name="undockMe"
+	            />
+	        </attached>	
+	 </Dock>
+	
+
+
+ <!-- Enemy ships -->
+ 
+ 	<SpaceShip			
+        template            = "HeavyCruiser"
+        team                = "0"
+        position            = "5800,-200,-1200"
+        orientation         = "1,200,0,0"
+        health              = "2000"
+        initialhealth       = "2000"
+        maxhealth           = "2000"
+        shieldhealth        = "200"
+        initialshieldhealth = "200"
+        maxshieldhealth     = "200"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "Tanis0"
+        radarname           = "Tanis big ship" >
+   </SpaceShip>
+		-->
+    
+	<SpaceShip			
+        template            = "spaceshippirate"
+        team                = "0"
+        position            = "11000,0,-2500"
+        orientation         = "1,200,0,0"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "Tanis0"
+        radarname           = "Pirate1" >
+        
+        <controller>
+            <AIController team=0/>           
+        </controller>
+        
+   </SpaceShip>
+   
+   <SpaceShip			
+        template            = "spaceshippirate"
+        team                = "0"
+        position            = "11000,0,-2500"
+        orientation         = "1,200,0,0"
+        health              = "200"
+        initialhealth       = "200"
+        maxhealth           = "200"
+        shieldhealth        = "50"
+        initialshieldhealth = "50"
+        maxshieldhealth     = "50"
+        shieldabsorption    = "0.8"
+        reloadrate          = "1"
+        reloadwaittime      = "1"
+        name                = "Tanis0"
+        radarname           = "Pirate2" >
+        
+        <controller>
+            <AIController team=0/>           
+        </controller>
+        
+   </SpaceShip>
+	
+
+<!-- SpaceStation
+
+The station can either be hidden outside of the skybox, within the hull of the space station if it is big enough or within a planet.
+Complex spacestations can be placed very far away from the spaceship so it is rendered at low resolution while the player uses the space ship.
+
+-->
+
+<!-- Hilfsobjekte fuer Koordinatensystem -->
+
+<!-- The axis from the coordinatesystem are "red,green,yellow" and the orange boxe shows the negative direction.
+	 But atention, each element is different! A few of them are already rotatet with yaw, roll and pitch:
+	 -> "pitch" is a rotation around "red" in the "yellow, green" plain.
+	 -> "yaw" is a rotation around "green" in the "red, yellow" plain.
+	 -> "roll" is a rotation around "yellow" in the "green,red" plain.
+	 this chanches their negativ/positiv direction of the axis.
+	 -->
+			
+
+<!--<Model position="0,0,0" mesh="cube_red.mesh" scale3D="10000,10,10" />
+<Model position="0,0,0" mesh="cube_green.mesh" scale3D="10,10000,10" />
+<Model position="0,0,0" mesh="cube.mesh" scale3D="10,10,10000" />
+
+<Model position="0,-100,0" mesh="cube_orange.mesh" scale3D="15,15,15" />
+<Model position="-100,0,0" mesh="cube_orange.mesh" scale3D="15,15,15" />
+<Model position="0,0,-100" mesh="cube_orange.mesh" scale3D="15,15,15" />
+
+<Model position="0,-20000,0" mesh="cube_red.mesh" scale3D="100,10,10" />
+<Model position="0,-20000,0" mesh="cube_green.mesh" scale3D="10,100,10" />
+<Model position="0,-20000,0" mesh="cube.mesh" scale3D="10,10,100" />
+
+<Model position="0,-20100,0" mesh="cube_orange.mesh" scale3D="15,15,15" />
+<Model position="-100,-20000,0" mesh="cube_orange.mesh" scale3D="15,15,15" />
+<Model position="0,-20000,-100" mesh="cube_orange.mesh" scale3D="15,15,15" /> -->
+
+
+<!-- Spacestation elements merged -->
+<StaticEntity position="0,-20000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 pitch=-90> 
+     
+ <attached>
+
+	<Model template	= "ss_flag_room" position="750,-16,0"	yaw=180 />
+	
+	<Model template	= "ss_machine"	 position="1545,190,370"	yaw=32 	pitch=180 />
+	<Model template	= "ss_flag_aean" position="1330,16,0"		pitch=180 />
+	<Model template	= "ss_chair" 	 position="1700,145,0" />
+	
+	<Model template	= "ss_tube"	 	 position="500,0,0" />
+	<Model template	= "ss_table" 	 position="650,100,0" />
+	<Model template	= "ss_cylinder"	 position="0,75,0" />
+	
+	<Model template	= "ss_curve" 	 position="-200,0,0" 	yaw=180 />
+	<Model template	= "ss_tube_x" 	 position="-10,0,700" />
+	 
+	<Model template	= "ss_curve" 	 position="-905,0,700" 	yaw=180 />
+	<Model template	= "ss_curve" 	 position="-810,0,1500" yaw=270/>
+	<Model template	= "ss_curve" 	 position="-10,0,1405" 	yaw=0 />
+	 
+	<Model template	= "ss_wall"  		  	yaw=0	position="250,20,700" />
+	<Model template	= "ss_table_cracked" 	yaw=0	position="-110,100,700" />
+
+		
+ </attached>
+  </StaticEntity>
+	
+   
+<!-- Homogenous gravitationfield to simulate local gravity (activating the normal gravity will affect the spaceship terribly) -->
+<ForceField position="0,-20200,0" mode="homogen" diameter="5000" forcedirection = "0,-500,0" />
+
+
+
+
+
+<!-- Some more stuff -->
+
+    <!-- triple large belt around the planet  -->
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(0, -19900, 0, 30, 0, 30, 30, 50, 7190, 7800, 250, 1)
+    ?>
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(0, -19900, 0, 30, 0, 30, 30, 50, 10000, 11000, 300, 1)
+    ?>
+    <?lua
+        dofile("includes/asteroidField.lua")
+        asteroidBelt(0, -19900, 0, 30, 0, 30, 30, 50, 14000, 15000, 350, 1)
+    ?>
+
+    <Model position="0,-19900,0" mesh="planets/ganymede.mesh" scale="5000" />
+    
+    
+
+  </Scene>
+
+</Level>
+
