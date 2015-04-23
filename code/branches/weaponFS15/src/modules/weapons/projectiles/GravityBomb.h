@@ -63,10 +63,9 @@ namespace orxonox
 
 			virtual bool collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint);
 			void detonate();
-
 		private:
-
-		float velocityAtLastTick_; //Used to check wether the Object is already accelarating in the oposite direction to detect the time to detonate it.
+		bool isDetonated_; //Used to check whether the Bomb has to be destroyed during next tick.
+		float timeToLife_; //Time the bomb flies before it explodes.
 
 	};
 }
