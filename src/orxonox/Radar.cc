@@ -36,6 +36,7 @@
 #include <cassert>
 
 //#include "util/Math.h"
+#include "core/CoreIncludes.h"
 #include "core/object/ObjectList.h"
 #include "core/command/ConsoleCommand.h"
 #include "interfaces/RadarListener.h"
@@ -44,6 +45,7 @@
 
 namespace orxonox
 {
+    RegisterAbstractClass(Radar).inheritsFrom<Tickable>();
 
     Radar::Radar()
         : itFocus_(0)
