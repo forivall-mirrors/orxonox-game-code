@@ -18,13 +18,14 @@ namespace orxonox{
 		{
 			RegisterObject(GravityBomb);
 
-			this->setMass(15.0);
+			this->setMass(10.0);
+			this->isDetonated_ = false;
 			if (GameMode::isMaster())
 			{
 				//Define CollisionType of the bomb
-				this->velocityAtLastTick_= 1000;
+				this->timeToLife_= 5;
 				this->setCollisionResponse(false);
-				this->setCollisionType(WorldEntity::Kinematic);
+				this->setCollisionType(WorldEntity::Dynamic);
 				this->enableCollisionCallback();
 
 				//Add Collision Shape
@@ -45,38 +46,44 @@ namespace orxonox{
 
 	void GravityBomb::tick(float dt)
 	{
-			velocityAtLastTick_=getVelocity().length();
 			SUPER(GravityBomb,tick,dt);
-			if(velocityAtLastTick_ < this->getVelocity().length())
+			timeToLife_ -= dt;
+			if(timeToLife_ < 0)
 			{
 				orxout(debug_output) << "bomb has stoped moving" <<endl;
 				setVelocity(Vector3::ZERO);
 				setAcceleration(Vector3::ZERO);
-				velocityAtLastTick_=0;
 				detonate();
-				orxout(debug_output) << "denoting" <<endl;
 			}
 			else
 			{
-				velocityAtLastTick_=getVelocity().length();
-				orxout(debug_output)<< velocityAtLastTick_ <<endl;
-				orxout(debug_output) << "acceleration" << getAcceleration().length() <<endl;
+				orxout(debug_output)<< "Time to live:" << timeToLife_ <<endl;
 				destroyCheck();
 			}
+			if(isDetonated_) detonate();
 	}
 
 	bool GravityBomb::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
 	{
-		orxout(debug_output) << "collides" << endl;
-		processCollision(otherObject, contactPoint,cs);
-		//detonate();
-		return true;
+		if(otherObject != getShooter())
+		{
+			orxout(debug_output) << "collides" << endl;
+			processCollision(otherObject, contactPoint,cs);
+			isDetonated_ = true;
+			return true;
+		}
+		else{
+			orxout(debug_output) << "collided with shooter. Has no effect..." << endl;
+			return false;
+		}
 	}
 
 	void GravityBomb::detonate()
 	{
 		GravityBombField* field = new GravityBombField(this->getContext());
-		orxout(debug_output) << "denoting" <<endl;
+		field->setPosition(getPosition());
+		orxout(debug_output) << "detonating. Creating GravityBombField." <<endl;
+		orxout(debug_output) << "Field is at Position: " << getPosition() << endl;
 		this->destroy();
 	}
 }

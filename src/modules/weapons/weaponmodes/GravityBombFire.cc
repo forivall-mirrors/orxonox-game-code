@@ -25,8 +25,7 @@ namespace orxonox
 		this->reloadTime_ = 0.50f;
 		this->bParallelReload_ = false;
 		this->damage_ = 0.0f;
-		this->speed_ = 200.0f;
-		this->slowDownRate_ = -10.0f;
+		this->speed_ = 100.0f;
 
 		this->setMunitionName("GravityBombMunition");
 		// The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
@@ -40,8 +39,7 @@ namespace orxonox
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         bomb->setOrientation(this->getMuzzleOrientation());
         bomb->setPosition(this->getMuzzlePosition());
-        bomb->setVelocity(this->getMuzzleDirection() * this->speed_);
-        bomb->setAcceleration(this->getMuzzleDirection()* this->slowDownRate_);
+        bomb->setVelocity(this->getMuzzleDirection() * (this->speed_+this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity().length()));
 
         bomb->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
 		bomb->setDamage(this->getDamage());

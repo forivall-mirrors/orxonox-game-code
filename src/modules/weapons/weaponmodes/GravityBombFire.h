@@ -57,7 +57,6 @@ namespace orxonox
 
         private:
             float speed_; //!< The initial speed of the bomb when it is launched.
-            float slowDownRate_;
     };
 }
 
