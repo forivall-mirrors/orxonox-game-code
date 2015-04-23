@@ -69,6 +69,7 @@
 #include "GUIManager.h"
 #include "class/Identifier.h"
 #include "Language.h"
+#include "Loader.h"
 #include "LuaState.h"
 #include "command/ConsoleCommandManager.h"
 #include "command/IOConsole.h"
@@ -101,6 +102,7 @@ namespace orxonox
         , signalHandler_(NULL)
         , configFileManager_(NULL)
         , languageInstance_(NULL)
+        , loaderInstance_(NULL)
         , ioConsole_(NULL)
         , tclBind_(NULL)
         , tclThreadManager_(NULL)
@@ -207,6 +209,9 @@ namespace orxonox
         orxout(internal_info) << "creating class hierarchy" << endl;
         IdentifierManager::getInstance().createClassHierarchy();
 
+        // Loader
+        this->loaderInstance_ = new Loader();
+
         // Load OGRE excluding the renderer and the render window
         orxout(internal_info) << "creating GraphicsManager:" << endl;
         this->graphicsManager_ = new GraphicsManager(false);
@@ -252,6 +257,7 @@ namespace orxonox
         safeObjectDelete(&tclThreadManager_);
         safeObjectDelete(&tclBind_);
         safeObjectDelete(&ioConsole_);
+        safeObjectDelete(&loaderInstance_);
         safeObjectDelete(&languageInstance_);
         safeObjectDelete(&configFileManager_);
         ConsoleCommandManager::destroyAll();

@@ -62,7 +62,7 @@ namespace orxonox
                 LevelManager::getInstance().releaseActivity(this);
 
             if (this->xmlfile_)
-                Loader::unload(this->xmlfile_);
+                Loader::getInstance().unload(this->xmlfile_);
         }
     }
 
@@ -94,7 +94,7 @@ namespace orxonox
 
         this->xmlfile_ = new XMLFile(mask, this->xmlfilename_);
 
-        Loader::open(this->xmlfile_);
+        Loader::getInstance().open(this->xmlfile_);
     }
 
     void Level::networkCallbackTemplatesChanged()

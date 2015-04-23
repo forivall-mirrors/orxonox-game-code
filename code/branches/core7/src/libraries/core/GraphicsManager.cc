@@ -116,7 +116,7 @@ namespace orxonox
         // Load resources
         resources_.reset(new XMLFile("DefaultResources.oxr"));
         resources_->setLuaSupport(false);
-        Loader::open(resources_.get(), ClassTreeMask(), false);
+        Loader::getInstance().open(resources_.get(), ClassTreeMask(), false);
 
         // Only for runs in the build directory (not installed)
         if (PathConfig::buildDirectoryRun())
@@ -124,7 +124,7 @@ namespace orxonox
 
         extResources_.reset(new XMLFile("resources.oxr"));
         extResources_->setLuaSupport(false);
-        Loader::open(extResources_.get(), ClassTreeMask(), false);
+        Loader::getInstance().open(extResources_.get(), ClassTreeMask(), false);
 
         if (bLoadRenderer)
         {
@@ -139,7 +139,7 @@ namespace orxonox
     {
         orxout(internal_status) << "destroying GraphicsManager..." << endl;
 
-        Loader::unload(debugOverlay_.get());
+        Loader::getInstance().unload(debugOverlay_.get());
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_);
         ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
@@ -148,8 +148,8 @@ namespace orxonox
         ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name).resetFunction();
 
         // Undeclare the resources
-        Loader::unload(resources_.get());
-        Loader::unload(extResources_.get());
+        Loader::getInstance().unload(resources_.get());
+        Loader::getInstance().unload(extResources_.get());
 
         safeObjectDelete(&ogreRoot_);
         safeObjectDelete(&ogreLogger_);
@@ -329,7 +329,7 @@ namespace orxonox
         // Load debug overlay to show info about fps and tick time
         orxout(internal_info) << "Loading Debug Overlay..." << endl;
         debugOverlay_.reset(new XMLFile("debug.oxo"));
-        Loader::open(debugOverlay_.get(), ClassTreeMask(), false);
+        Loader::getInstance().open(debugOverlay_.get(), ClassTreeMask(), false);
     }
 
     /**

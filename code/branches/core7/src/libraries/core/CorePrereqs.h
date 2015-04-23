@@ -164,6 +164,7 @@ namespace orxonox
     class Iterator;
     class Language;
     class Listable;
+    class Loader;
     class LuaFunctor;
     class LuaState;
     class MemoryArchive;

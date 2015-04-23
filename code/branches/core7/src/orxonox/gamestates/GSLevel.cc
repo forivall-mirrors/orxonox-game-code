@@ -167,7 +167,7 @@ namespace orxonox
 
         // call the loader
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
-        bool loaded = Loader::open(startFile_);
+        bool loaded = Loader::getInstance().open(startFile_);
 
         Core::getInstance().updateLastLevelTimestamp();
         if(!loaded)
@@ -176,7 +176,7 @@ namespace orxonox
 
     void GSLevel::unloadLevel()
     {
-        Loader::unload(startFile_);
+        Loader::getInstance().unload(startFile_);
         delete startFile_;
 
         orxout(internal_info) << "Remaining objects:" << endl;

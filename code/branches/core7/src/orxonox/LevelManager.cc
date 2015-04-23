@@ -275,7 +275,7 @@ namespace orxonox
 
                 // Load the LevelInfo object from the level file.
                 XMLFile file = XMLFile(*it);
-                Loader::load(&file, mask, false, true);
+                Loader::getInstance().load(&file, mask, false, true);
 
                 // Find the LevelInfo object we've just loaded (if there was one)
                 for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
@@ -283,7 +283,7 @@ namespace orxonox
                         info = item->copy();
 
                 // We don't need the loaded stuff anymore
-                Loader::unload(&file);
+                Loader::getInstance().unload(&file);
 
                 if(info == NULL)
                 {
