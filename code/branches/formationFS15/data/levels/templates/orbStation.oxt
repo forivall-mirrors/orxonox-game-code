@@ -1,0 +1,21 @@
+<Template name=orbStation>
+	<MovableEntity>
+
+	<attached>
+		<Model position=“0,0,0“ mesh="OrbStation_Ring_1.mesh" scale="20" angularVelocity="50,0,0"/>
+		<Model position=“0,0,0“ mesh="OrbStation_Ring_2.mesh" scale="20" velocity="40,0,0"/>
+		<Model position=“0,0,0“ mesh="OrbStation_Ring_3.mesh" scale="20" velocity="40,0,0"/>
+		<Model position=“0,0,0“ mesh="OrbStation_Ring_4.mesh" scale="20" />
+		<Model position=“0,0,0“ mesh="OrbStation_Ring_5.mesh" scale="20"/>
+		<Model position=“0,0,0“ mesh="OrbStation_Sphere.mesh" scale="20"/>
+		<Model position=“10,0,0“ mesh="OrbStation_Platform.mesh" scale="20"/>
+
+
+      		<Backlight position="0,0,0" scale=1 colour="0.2, 0.4, 0.8" width=7 length=500 lifetime=0.3 elements=20 trailmaterial="Trail/backlighttrail" material="Examples/Flare" loop=1 />
+	</attached>
+
+
+	</MovableEntity>
+</Template>
+	
+
