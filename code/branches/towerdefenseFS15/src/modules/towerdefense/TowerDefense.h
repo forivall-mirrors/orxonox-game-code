@@ -42,6 +42,8 @@
 #include "TowerDefenseEnemy.h"
 #include "util/Output.h"
 #include "core/object/WeakPtr.h"
+#include "TowerDefenseSelecter.h"
+
 
 namespace orxonox
 {
@@ -72,6 +74,7 @@ namespace orxonox
         void nextwave(){ TowerDefenseEnemyvector.clear(); waves_++; time=0;}
         int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
         TDCoordinate* selectedPos;
+        TowerDefenseSelecter* Selecter;
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);
