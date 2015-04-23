@@ -124,6 +124,7 @@ namespace orxonox
             SignalHandler*            signalHandler_;
             ConfigFileManager*        configFileManager_;
             Language*                 languageInstance_;
+            Loader*                   loaderInstance_;
             IOConsole*                ioConsole_;
             TclBind*                  tclBind_;
             TclThreadManager*         tclThreadManager_;

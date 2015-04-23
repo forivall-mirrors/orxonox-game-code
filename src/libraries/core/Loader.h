@@ -43,38 +43,44 @@
 
 #include <map>
 #include <vector>
+
+#include "util/Singleton.h"
 #include "ClassTreeMask.h"
 
 namespace orxonox
 {
-    class _CoreExport Loader
+    class _CoreExport Loader : public Singleton<Loader>
     {
+        friend class Singleton<Loader>;
+
         public:
-            static bool open(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
-            static void close();
-            static void close(const XMLFile* file);
+            bool open(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
+            void close();
+            void close(const XMLFile* file);
 
-            static void add(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
-            static void remove(const XMLFile* file);
+            void add(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            void remove(const XMLFile* file);
 
-            static bool load(const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
-            static void unload(const ClassTreeMask& mask = ClassTreeMask());
-            static bool reload(const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
+            bool load(const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
+            void unload(const ClassTreeMask& mask = ClassTreeMask());
+            bool reload(const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
 
-            static bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(),
-                             bool bVerbose = true, bool bRemoveLuaTags = false);
-            static void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
-            static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
+            bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(),
+                      bool bVerbose = true, bool bRemoveLuaTags = false);
+            void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
 
             static std::string replaceLuaTags(const std::string& text);
             static std::string removeLuaTags(const std::string& text);
 
-            static ClassTreeMask currentMask_s;
+            ClassTreeMask currentMask_;
 
         private:
             static bool getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags);
 
-            static std::vector<std::pair<const XMLFile*, ClassTreeMask> > files_s;
+            std::vector<std::pair<const XMLFile*, ClassTreeMask> > files_;
+
+            static Loader* singletonPtr_s;
     };
 }
 

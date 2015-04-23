@@ -47,43 +47,42 @@
 
 namespace orxonox
 {
-    std::vector<std::pair<const XMLFile*, ClassTreeMask> > Loader::files_s;
-    ClassTreeMask Loader::currentMask_s;
+    Loader* Loader::singletonPtr_s = 0;
 
     bool Loader::open(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
     {
-        Loader::add(file, mask);
-        return Loader::load(file, mask, bVerbose);
+        this->add(file, mask);
+        return this->load(file, mask, bVerbose);
     }
 
     void Loader::close()
     {
-        Loader::unload();
-        Loader::files_s.clear();
+        this->unload();
+        this->files_.clear();
     }
 
     void Loader::close(const XMLFile* file)
     {
-        Loader::unload(file);
-        Loader::remove(file);
+        this->unload(file);
+        this->remove(file);
     }
 
     void Loader::add(const XMLFile* file, const ClassTreeMask& mask)
     {
         if (!file)
             return;
-        Loader::files_s.insert(Loader::files_s.end(), std::pair<const XMLFile*, ClassTreeMask>(file, mask));
+        this->files_.insert(this->files_.end(), std::pair<const XMLFile*, ClassTreeMask>(file, mask));
     }
 
     void Loader::remove(const XMLFile* file)
     {
         if (!file)
             return;
-        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
+        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = this->files_.begin(); it != this->files_.end(); ++it)
         {
             if (it->first == file)
             {
-                Loader::files_s.erase(it);
+                this->files_.erase(it);
                 break;
             }
         }
@@ -102,8 +101,8 @@ namespace orxonox
     bool Loader::load(const ClassTreeMask& mask, bool bVerbose)
     {
         bool success = true;
-        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
-            if (!Loader::load(it->first, it->second * mask, bVerbose))
+        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = this->files_.begin(); it != this->files_.end(); ++it)
+            if (!this->load(it->first, it->second * mask, bVerbose))
                 success = false;
 
         return success;
@@ -132,8 +131,8 @@ namespace orxonox
     */
     bool Loader::reload(const ClassTreeMask& mask, bool bVerbose)
     {
-        Loader::unload(mask);
-        return Loader::load(mask, bVerbose);
+        this->unload(mask);
+        return this->load(mask, bVerbose);
     }
 
     /**
@@ -155,7 +154,7 @@ namespace orxonox
         if (!file)
             return false;
 
-        Loader::currentMask_s = file->getMask() * mask;
+        this->currentMask_ = file->getMask() * mask;
 
         std::string xmlInput;
 
@@ -188,7 +187,7 @@ namespace orxonox
                 // Note: we only need this to speed up parsing of level files at the
                 // start of the program.
                 // Assumption: the LevelInfo tag does not use Lua scripting
-                xmlInput = removeLuaTags(xmlInput);
+                xmlInput = Loader::removeLuaTags(xmlInput);
             }
         }
 
@@ -197,12 +196,12 @@ namespace orxonox
             if(bVerbose)
             {
                 orxout(user_info) << "Start loading " << file->getFilename() << "..." << endl;
-                orxout(internal_info, context::loader) << "Mask: " << Loader::currentMask_s << endl;
+                orxout(internal_info, context::loader) << "Mask: " << this->currentMask_ << endl;
             }
             else
             {
                 orxout(verbose, context::loader) << "Start loading " << file->getFilename() << "..." << endl;
-                orxout(verbose_more, context::loader) << "Mask: " << Loader::currentMask_s << endl;
+                orxout(verbose_more, context::loader) << "Mask: " << this->currentMask_ << endl;
             }
 
             ticpp::Document xmlfile(file->getFilename());
@@ -318,8 +317,8 @@ namespace orxonox
     */
     bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
     {
-        Loader::unload(file, mask);
-        return Loader::load(file, mask, bVerbose);
+        this->unload(file, mask);
+        return this->load(file, mask, bVerbose);
     }
 
     bool Loader::getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags)

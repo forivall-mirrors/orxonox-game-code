@@ -39,7 +39,7 @@ namespace orxonox
     // ################################
     bool XMLPortObjectContainer::identifierIsIncludedInLoaderMask(const Identifier* identifier)
     {
-        return ((!this->bApplyLoaderMask_) || identifier->isA(ClassIdentifier<Namespace>::getIdentifier()) || Loader::currentMask_s.isIncluded(identifier));
+        return ((!this->bApplyLoaderMask_) || identifier->isA(ClassIdentifier<Namespace>::getIdentifier()) || Loader::getInstance().currentMask_.isIncluded(identifier));
     }
 
     XMLPortObjectContainer& XMLPortObjectContainer::port(BaseObject* object, Element& xmlelement, XMLPort::Mode mode)
