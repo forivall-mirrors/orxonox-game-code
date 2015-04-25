@@ -47,8 +47,7 @@ namespace orxonox
         public:
             static IdentifierManager& getInstance();
 
-            Identifier* getGloballyUniqueIdentifier(Identifier* proposal);
-            void addIdentifierToLookupMaps(Identifier* identifier);
+            void addIdentifier(Identifier* identifier);
 
             unsigned int getUniqueClassId()
                 { return this->classIDCounter_s++; }
@@ -74,6 +73,7 @@ namespace orxonox
             Identifier* getIdentifierByString(const std::string& name);
             Identifier* getIdentifierByLowercaseString(const std::string& name);
             Identifier* getIdentifierByID(uint32_t id);
+            Identifier* getIdentifierByTypeidName(const std::string& typeidName);
 
             void clearNetworkIDs();
 

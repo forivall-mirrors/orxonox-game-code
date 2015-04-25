@@ -49,12 +49,13 @@ namespace orxonox
     /**
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
     */
-    Identifier::Identifier()
+    Identifier::Identifier(const std::string& name, Factory* factory, bool bLoadable)
         : classID_(IdentifierManager::getInstance().getUniqueClassId())
     {
-        this->factory_ = 0;
+        this->name_ = name;
+        this->factory_ = factory;
+        this->bLoadable_ = bLoadable;
         this->bInitialized_ = false;
-        this->bLoadable_ = false;
         this->bIsVirtualBase_ = false;
 
         this->bHasConfigValues_ = false;
@@ -77,26 +78,6 @@ namespace orxonox
             delete (it->second);
         for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
             delete (it->second);
-    }
-
-    /**
-        @brief Sets the name of the class.
-    */
-    void Identifier::setName(const std::string& name)
-    {
-        if (name != this->name_)
-        {
-            this->name_ = name;
-            IdentifierManager::getInstance().addIdentifierToLookupMaps(this);
-        }
-    }
-
-    void Identifier::setFactory(Factory* factory)
-    {
-        if (this->factory_)
-            delete this->factory_;
-
-        this->factory_ = factory;
     }
 
 
@@ -126,7 +107,7 @@ namespace orxonox
     void Identifier::setNetworkID(uint32_t id)
     {
         this->networkID_ = id;
-        IdentifierManager::getInstance().addIdentifierToLookupMaps(this);
+        IdentifierManager::getInstance().addIdentifier(this);
     }
 
     /**

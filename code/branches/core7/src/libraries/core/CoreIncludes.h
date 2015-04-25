@@ -133,7 +133,7 @@
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeObject(this)) \
+    if (ClassIdentifier<ClassName>::getIdentifier()->initializeObject(this)) \
         return; \
     else \
         ((void)0)
@@ -167,9 +167,8 @@ namespace orxonox
     inline Identifier* registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
     {
         orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
-        Identifier* identifier = ClassIdentifier<T>::getIdentifier(name);
-        identifier->setFactory(factory);
-        identifier->setLoadable(bLoadable);
+        Identifier* identifier = new ClassIdentifier<T>(name, factory, bLoadable);
+        IdentifierManager::getInstance().addIdentifier(identifier);
         return identifier;
     }
 

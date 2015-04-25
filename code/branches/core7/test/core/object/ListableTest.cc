@@ -18,6 +18,9 @@ namespace orxonox
                 ListableSubclassTest() { RegisterObject(ListableSubclassTest); }
         };
 
+        RegisterClassNoArgs(ListableClassTest);
+        RegisterClassNoArgs(ListableSubclassTest);
+
         template <class T>
         bool objectListContains(T* element, Context* context = Context::getRootContext())
         {

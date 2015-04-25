@@ -81,6 +81,7 @@
 #include <loki/TypeTraits.h>
 
 #include "util/Output.h"
+#include "util/OrxAssert.h"
 #include "core/object/ObjectList.h"
 #include "core/object/Listable.h"
 #include "core/object/Context.h"
@@ -108,13 +109,12 @@ namespace orxonox
     class _CoreExport Identifier : public Destroyable
     {
         public:
-            Identifier();
+            Identifier(const std::string& name, Factory* factory, bool bLoadable);
             Identifier(const Identifier& identifier); // don't copy
             virtual ~Identifier();
 
             /// Returns the name of the class the Identifier belongs to.
             inline const std::string& getName() const { return this->name_; }
-            void setName(const std::string& name);
 
             /// Returns the name of the class as it is returned by typeid(T).name()
             virtual const std::string& getTypeidName() = 0;
@@ -126,8 +126,6 @@ namespace orxonox
             /// Returns the unique ID of the class.
             ORX_FORCEINLINE unsigned int getClassID() const { return this->classID_; }
 
-            /// Sets the Factory.
-            void setFactory(Factory* factory);
             /// Returns true if the Identifier has a Factory.
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
@@ -135,8 +133,6 @@ namespace orxonox
 
             /// Returns true if the class can be loaded through XML.
             inline bool isLoadable() const { return this->bLoadable_; }
-            /// Set the class to be loadable through XML or not.
-            inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
             /// Returns true if child classes should inherit virtually from this class.
             inline bool isVirtualBase() const { return this->bIsVirtualBase_; }
@@ -263,8 +259,18 @@ namespace orxonox
         #endif
 
         public:
-            static ClassIdentifier<T>* getIdentifier();
-            static ClassIdentifier<T>* getIdentifier(const std::string& name);
+            ClassIdentifier(const std::string& name, Factory* factory, bool bLoadable) : Identifier(name, factory, bLoadable)
+            {
+                OrxVerify(ClassIdentifier<T>::classIdentifier_s == NULL, "Assertion failed in ClassIdentifier of type " << typeid(T).name());
+                ClassIdentifier<T>::classIdentifier_s = this;
+
+                this->typeidName_ = typeid(T).name();
+                SuperFunctionInitialization<0, T>::initialize(this);
+            }
+            ~ClassIdentifier()
+            {
+                SuperFunctionDestruction<0, T>::destroy(this);
+            }
 
             bool initializeObject(T* object);
 
@@ -282,19 +288,10 @@ namespace orxonox
             virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const
                 { return dynamic_cast<T*>(object) != 0; }
 
-        private:
-            static void initializeIdentifier();
+            static ClassIdentifier<T>* getIdentifier();
 
+        private:
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
-            ClassIdentifier()
-            {
-                this->typeidName_ = typeid(T).name();
-                SuperFunctionInitialization<0, T>::initialize(this);
-            }
-            ~ClassIdentifier()
-            {
-                SuperFunctionDestruction<0, T>::destroy(this);
-            }
 
             void updateConfigValues(bool updateChildren, Listable*) const;
             void updateConfigValues(bool updateChildren, Identifiable*) const;
@@ -311,47 +308,13 @@ namespace orxonox
         @return The unique Identifier
     */
     template <class T>
-    inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
+    /*static*/ inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
-        // check if the Identifier already exists
-        if (!ClassIdentifier<T>::classIdentifier_s)
-            ClassIdentifier<T>::initializeIdentifier();
+        if (ClassIdentifier<T>::classIdentifier_s == NULL)
+            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*) IdentifierManager::getInstance().getIdentifierByTypeidName(typeid(T).name());
 
+        OrxVerify(ClassIdentifier<T>::classIdentifier_s != NULL, "Assertion failed in ClassIdentifier of type " << typeid(T).name());
         return ClassIdentifier<T>::classIdentifier_s;
-    }
-
-    /**
-        @brief Does the same as getIdentifier() but sets the name if this wasn't done yet.
-        @param name The name of this Identifier
-        @return The Identifier
-    */
-    template <class T>
-    inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
-    {
-        ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
-        identifier->setName(name);
-        return identifier;
-    }
-
-    /**
-        @brief Assigns the static field for the identifier singleton.
-    */
-    template <class T>
-    /*static */ void ClassIdentifier<T>::initializeIdentifier()
-    {
-        // create a new identifier anyway. Will be deleted if not used.
-        ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
-
-        // Get the entry from the map
-        ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)IdentifierManager::getInstance().getGloballyUniqueIdentifier(proposal);
-
-        if (ClassIdentifier<T>::classIdentifier_s == proposal)
-            orxout(verbose, context::identifier) << "Requested Identifier for " << proposal->getTypeidName() << " was not yet existing and got created." << endl;
-        else
-        {
-            orxout(verbose, context::identifier) << "Requested Identifier for " << proposal->getTypeidName() << " was already existing and got assigned." << endl;
-            delete proposal; // delete proposal (it is not used anymore)
-        }
     }
 
     /**

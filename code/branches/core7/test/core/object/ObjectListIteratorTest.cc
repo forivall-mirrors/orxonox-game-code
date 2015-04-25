@@ -16,6 +16,8 @@ namespace orxonox
                 MOCK_METHOD0(test, void());
         };
 
+        RegisterClassNoArgs(ListableTest);
+
         // Fixture
         class ObjectListIteratorTest : public ::testing::Test
         {

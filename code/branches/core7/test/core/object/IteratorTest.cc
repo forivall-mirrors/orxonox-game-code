@@ -23,6 +23,9 @@ namespace orxonox
                 MOCK_METHOD0(test, void());
         };
 
+        RegisterClassNoArgs(TestInterface);
+        RegisterClassNoArgs(TestClass);
+
         // Fixture
         class IteratorTest : public ::testing::Test
         {
