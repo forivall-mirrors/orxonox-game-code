@@ -13,6 +13,8 @@ namespace orxonox
                 SubclassContext() : Context(NULL) { RegisterObject(SubclassContext); }
         };
 
+        RegisterClassNoArgs(SubclassContext);
+
         // Fixture
         class ContextTest : public ::testing::Test
         {

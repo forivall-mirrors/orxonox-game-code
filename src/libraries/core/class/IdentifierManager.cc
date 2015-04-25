@@ -57,42 +57,16 @@ namespace orxonox
     }
 
     /**
-        @brief Returns an identifier by name and adds it if not available
-        @param proposal A pointer to a newly created identifier for the case of non existence in the map
-        @return The identifier (unique instance)
-    */
-    Identifier* IdentifierManager::getGloballyUniqueIdentifier(Identifier* proposal)
-    {
-        const std::string& typeidName = proposal->getTypeidName();
-        std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.find(typeidName);
-
-        if (it != this->identifierByTypeidName_.end())
-        {
-            // There is already an entry: return it
-            return it->second;
-        }
-        else
-        {
-            // There is no entry: put the proposal into the map and return it
-            this->identifierByTypeidName_[typeidName] = proposal;
-            return proposal;
-        }
-    }
-
-    /**
      * Registers the identifier in all maps of the IdentifierManager.
      */
-    void IdentifierManager::addIdentifierToLookupMaps(Identifier* identifier)
+    void IdentifierManager::addIdentifier(Identifier* identifier)
     {
-        const std::string& typeidName = identifier->getTypeidName();
-        if (this->identifierByTypeidName_.find(typeidName) != this->identifierByTypeidName_.end())
-        {
-            this->identifierByString_[identifier->getName()] = identifier;
-            this->identifierByLowercaseString_[getLowercase(identifier->getName())] = identifier;
-            this->identifierByNetworkId_[identifier->getNetworkID()] = identifier;
-        }
-        else
-            orxout(internal_warning) << "Trying to add an identifier to lookup maps which is not known to IdentifierManager" << endl;
+        orxout(verbose, context::identifier) << "Adding identifier for " << identifier->getName() << " / " << identifier->getTypeidName() << endl;
+
+        this->identifierByTypeidName_[identifier->getTypeidName()] = identifier;
+        this->identifierByString_[identifier->getName()] = identifier;
+        this->identifierByLowercaseString_[getLowercase(identifier->getName())] = identifier;
+        this->identifierByNetworkId_[identifier->getNetworkID()] = identifier;
     }
 
     /**
@@ -265,6 +239,20 @@ namespace orxonox
     {
         std::map<uint32_t, Identifier*>::const_iterator it = this->identifierByNetworkId_.find(id);
         if (it != this->identifierByNetworkId_.end())
+            return it->second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Returns the Identifier with a given typeid-name.
+        @param name The typeid-name of the wanted Identifier
+        @return The Identifier
+    */
+    Identifier* IdentifierManager::getIdentifierByTypeidName(const std::string& typeidName)
+    {
+        std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.find(typeidName);
+        if (it != this->identifierByTypeidName_.end())
             return it->second;
         else
             return 0;
