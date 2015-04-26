@@ -37,6 +37,7 @@
 #ifndef _TowerDefense_H__
 #define _TowerDefense_H__
 #include "TDCoordinate.h"
+#include "TowerDefenseSelecter.h"
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "TowerDefenseEnemy.h"
@@ -74,7 +75,7 @@ namespace orxonox
         void nextwave(){ TowerDefenseEnemyvector.clear(); waves_++; time=0;}
         int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
         TDCoordinate* selectedPos;
-        TowerDefenseSelecter* Selecter;
+        TowerDefenseSelecter* selecter;
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);

@@ -108,7 +108,7 @@ namespace orxonox
             }
         }*/
 
-        this->Selecter = new TowerDefenseSelecter(context);
+        selecter = NULL;
 
 
         this->setHUDTemplate("TowerDefenseHUD");
@@ -148,12 +148,16 @@ namespace orxonox
         TeamDeathmatch::start();
 
 // Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
-        for (int i=0; i < 16 ; i++){
-            for (int j = 0; j< 16 ; j++){
+        for (int i=0; i < 16 ; i++)
+        {
+            for (int j = 0; j< 16 ; j++)
+            {
                 towerModelMatrix[i][j] = NULL;
                 towerTurretMatrix[i][j] = NULL;
             }
         }
+
+        selecter = new TowerDefenseSelecter(this->center_->getContext());
 
         Model* dummyModel = new Model(this->center_->getContext());
 
