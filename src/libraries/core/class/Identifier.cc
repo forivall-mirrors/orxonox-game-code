@@ -52,6 +52,8 @@ namespace orxonox
     Identifier::Identifier(const std::string& name, Factory* factory, bool bLoadable)
         : classID_(IdentifierManager::getInstance().getUniqueClassId())
     {
+        orxout(verbose, context::identifier) << "Create identifier for " << name << endl;
+
         this->name_ = name;
         this->factory_ = factory;
         this->bLoadable_ = bLoadable;
