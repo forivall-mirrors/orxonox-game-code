@@ -72,7 +72,6 @@ namespace orxonox
                 virtual void SetUp()
                 {
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
-                    ModuleInstance::setCurrentModuleInstance(new ModuleInstance()); // overwrite ModuleInstance because the old one is now loaded and shouln't be used anymore. TODO: better solution?
                     Identifier::initConfigValues_s = false; // TODO: hack!
                     IdentifierManager::getInstance().createClassHierarchy();
 
@@ -84,6 +83,7 @@ namespace orxonox
                     Context::setRootContext(NULL);
 
                     IdentifierManager::getInstance().destroyClassHierarchy();
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
                 }
         };
     }

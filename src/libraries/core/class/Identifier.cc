@@ -224,8 +224,7 @@ namespace orxonox
      */
     void Identifier::reset()
     {
-        if (this->factory_ != NULL) // TODO: should reset ALL identifiers, but currently the calls to inheritsFrom<>() are not reproducible
-            this->directParents_.clear();
+        this->directParents_.clear();
         this->parents_.clear();
         this->directChildren_.clear();
         this->children_.clear();
