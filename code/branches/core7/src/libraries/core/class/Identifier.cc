@@ -196,7 +196,7 @@ namespace orxonox
         else if (!this->isExactlyA(Class(Identifiable)))
         {
             // only Identifiable is allowed to have no parents (even tough it's currently not abstract)
-            orxout(internal_error) << "Identifier " << this->getName() << " / " << this->getTypeidName() << " is marked as abstract but has no direct parents defined" << endl;
+            orxout(internal_error) << "Identifier " << this->getName() << " / " << this->getTypeInfo().name() << " is marked as abstract but has no direct parents defined" << endl;
             orxout(internal_error) << "  If this class is not abstract, use RegisterClass(ThisClass);" << endl;
             orxout(internal_error) << "  If this class is abstract, use RegisterAbstractClass(ThisClass).inheritsFrom(Class(BaseClass));" << endl;
         }

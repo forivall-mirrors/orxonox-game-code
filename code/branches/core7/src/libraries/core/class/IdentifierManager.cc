@@ -61,9 +61,9 @@ namespace orxonox
      */
     void IdentifierManager::addIdentifier(Identifier* identifier)
     {
-        orxout(verbose, context::identifier) << "Adding identifier for " << identifier->getName() << " / " << identifier->getTypeidName() << endl;
+        orxout(verbose, context::identifier) << "Adding identifier for " << identifier->getName() << " / " << identifier->getTypeInfo().name() << endl;
 
-        this->identifierByTypeidName_[identifier->getTypeidName()] = identifier;
+        this->identifiers_.insert(identifier);
         this->identifierByString_[identifier->getName()] = identifier;
         this->identifierByLowercaseString_[getLowercase(identifier->getName())] = identifier;
         this->identifierByNetworkId_[identifier->getNetworkID()] = identifier;
@@ -86,28 +86,30 @@ namespace orxonox
         // iterate over all identifiers, create one instance of each class and initialize the identifiers
         {
             Context temporaryContext(NULL);
-            for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
+            for (std::set<Identifier*>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
             {
-                orxout(verbose, context::identifier) << "Initialize ClassIdentifier<" << it->second->getName() << ">-Singleton." << endl;
+                Identifier* identifier = (*it);
+
+                orxout(verbose, context::identifier) << "Initialize ClassIdentifier<" << identifier->getName() << ">-Singleton." << endl;
                 // To initialize the identifier, we create a new object and delete it afterwards.
-                if (it->second->hasFactory())
+                if (identifier->hasFactory())
                 {
                     this->identifierTraceOfNewObject_.clear();
-                    this->recordTraceForIdentifier_ = it->second;
+                    this->recordTraceForIdentifier_ = identifier;
 
-                    Identifiable* temp = it->second->fabricate(&temporaryContext);
+                    Identifiable* temp = identifier->fabricate(&temporaryContext);
 
                     this->recordTraceForIdentifier_ = NULL;
 
-                    if (temp->getIdentifier() != it->second)
-                        orxout(internal_error) << "Newly created object of type " << it->second->getName() << " has unexpected identifier. Did you forget to use RegisterObject(classname)?" << endl;
+                    if (temp->getIdentifier() != identifier)
+                        orxout(internal_error) << "Newly created object of type " << identifier->getName() << " has unexpected identifier. Did you forget to use RegisterObject(classname)?" << endl;
 
-                    it->second->initializeParents(this->identifierTraceOfNewObject_[temp]);
+                    identifier->initializeParents(this->identifierTraceOfNewObject_[temp]);
 
                     delete temp;
                 }
 
-                initializedIdentifiers.insert(it->second);
+                initializedIdentifiers.insert(identifier);
             }
 
             size_t numberOfObjects = temporaryContext.getObjectList<Listable>()->size();
@@ -116,12 +118,14 @@ namespace orxonox
         }
 
         // finish the initialization of all identifiers
-        for (std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
+        for (std::set<Identifier*>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
         {
-            if (initializedIdentifiers.find(it->second) != initializedIdentifiers.end())
-                it->second->finishInitialization();
+            Identifier* identifier = (*it);
+
+            if (initializedIdentifiers.find(identifier) != initializedIdentifiers.end())
+                identifier->finishInitialization();
             else
-                orxout(internal_error) << "Identifier was registered late and is not initialized: " << it->second->getName() << " / " << it->second->getTypeidName() << endl;
+                orxout(internal_error) << "Identifier was registered late and is not initialized: " << identifier->getName() << " / " << identifier->getTypeInfo().name() << endl;
         }
 
         // only check class hierarchy in dev mode because it's an expensive operation and it requires a developer to fix detected problems anyway.
@@ -138,22 +142,22 @@ namespace orxonox
     void IdentifierManager::verifyClassHierarchy()
     {
         Context temporaryContext(NULL);
-        for (std::map<std::string, Identifier*>::const_iterator it1 = this->identifierByTypeidName_.begin(); it1 != this->identifierByTypeidName_.end(); ++it1)
+        for (std::set<Identifier*>::const_iterator it1 = this->identifiers_.begin(); it1 != this->identifiers_.end(); ++it1)
         {
-            if (!it1->second->hasFactory())
+            if (!(*it1)->hasFactory())
                 continue;
 
-            Identifiable* temp = it1->second->fabricate(&temporaryContext);
+            Identifiable* temp = (*it1)->fabricate(&temporaryContext);
 
-            for (std::map<std::string, Identifier*>::const_iterator it2 = this->identifierByTypeidName_.begin(); it2 != this->identifierByTypeidName_.end(); ++it2)
+            for (std::set<Identifier*>::const_iterator it2 = this->identifiers_.begin(); it2 != this->identifiers_.end(); ++it2)
             {
-                bool isA_AccordingToRtti = it2->second->canDynamicCastObjectToIdentifierClass(temp);
-                bool isA_AccordingToClassHierarchy = temp->isA(it2->second);
+                bool isA_AccordingToRtti = (*it2)->canDynamicCastObjectToIdentifierClass(temp);
+                bool isA_AccordingToClassHierarchy = temp->isA((*it2));
 
                 if (isA_AccordingToRtti != isA_AccordingToClassHierarchy)
                 {
-                    orxout(internal_error) << "Class hierarchy does not match RTTI: Class hierarchy claims that " << it1->second->getName() <<
-                        (isA_AccordingToClassHierarchy ? " is a " : " is not a ") << it2->second->getName() << " but RTTI says the opposite." << endl;
+                    orxout(internal_error) << "Class hierarchy does not match RTTI: Class hierarchy claims that " << (*it1)->getName() <<
+                        (isA_AccordingToClassHierarchy ? " is a " : " is not a ") << (*it2)->getName() << " but RTTI says the opposite." << endl;
                 }
             }
 
@@ -171,10 +175,10 @@ namespace orxonox
     */
     void IdentifierManager::destroyAllIdentifiers()
     {
-        for (std::map<std::string, Identifier*>::iterator it = this->identifierByTypeidName_.begin(); it != this->identifierByTypeidName_.end(); ++it)
-            delete (it->second);
+        for (std::set<Identifier*>::iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
+            delete (*it);
 
-        this->identifierByTypeidName_.clear();
+        this->identifiers_.clear();
         this->identifierByString_.clear();
         this->identifierByLowercaseString_.clear();
         this->identifierByNetworkId_.clear();
@@ -249,13 +253,13 @@ namespace orxonox
         @param name The typeid-name of the wanted Identifier
         @return The Identifier
     */
-    Identifier* IdentifierManager::getIdentifierByTypeidName(const std::string& typeidName)
+    Identifier* IdentifierManager::getIdentifierByTypeInfo(const std::type_info& typeInfo)
     {
-        std::map<std::string, Identifier*>::const_iterator it = this->identifierByTypeidName_.find(typeidName);
-        if (it != this->identifierByTypeidName_.end())
-            return it->second;
-        else
-            return 0;
+        // TODO: use std::type_index and a map to find identifiers by type_info (only with c++11)
+        for (std::set<Identifier*>::iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
+            if ((*it)->getTypeInfo() == typeInfo)
+                return (*it);
+        return 0;
     }
 
     /**

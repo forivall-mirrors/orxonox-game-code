@@ -37,6 +37,7 @@
 #include "core/CorePrereqs.h"
 
 #include <map>
+#include <set>
 #include <list>
 #include <string>
 
@@ -73,7 +74,7 @@ namespace orxonox
             Identifier* getIdentifierByString(const std::string& name);
             Identifier* getIdentifierByLowercaseString(const std::string& name);
             Identifier* getIdentifierByID(uint32_t id);
-            Identifier* getIdentifierByTypeidName(const std::string& typeidName);
+            Identifier* getIdentifierByTypeInfo(const std::type_info& typeInfo);
 
             void clearNetworkIDs();
 
@@ -99,8 +100,7 @@ namespace orxonox
             inline void stopCreatingHierarchy()
                 { hierarchyCreatingCounter_s--; }
 
-            std::map<std::string, Identifier*> identifierByTypeidName_;      //!< Map with the names as received by typeid(). This is only used internally.
-
+            std::set<Identifier*> identifiers_;                              //!< All identifiers. This is only used internally.
             std::map<std::string, Identifier*> identifierByString_;          //!< Map that stores all Identifiers with their names.
             std::map<std::string, Identifier*> identifierByLowercaseString_; //!< Map that stores all Identifiers with their names in lowercase.
             std::map<uint32_t, Identifier*> identifierByNetworkId_;          //!< Returns the map that stores all Identifiers with their network IDs.
