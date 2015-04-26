@@ -220,6 +220,19 @@ namespace orxonox
     }
 
     /**
+     * Resets all information about the class hierarchy. The identifier is considered uninitialized afterwards.
+     */
+    void Identifier::reset()
+    {
+        if (this->factory_ != NULL) // TODO: should reset ALL identifiers, but currently the calls to inheritsFrom<>() are not reproducible
+            this->directParents_.clear();
+        this->parents_.clear();
+        this->directChildren_.clear();
+        this->children_.clear();
+        this->bInitialized_ = false;
+    }
+
+    /**
      * Verifies if the recorded trace of parent identifiers matches the expected trace according to the class hierarchy. If it doesn't match, the class
      * hierarchy is likely wrong, e.g. due to wrong inheritsFrom<>() definitions in abstract classes.
      */

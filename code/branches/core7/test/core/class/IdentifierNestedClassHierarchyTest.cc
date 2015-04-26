@@ -3,6 +3,7 @@
 #include "core/class/Identifiable.h"
 #include "core/class/OrxonoxClass.h"
 #include "core/class/OrxonoxInterface.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -107,10 +108,15 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                    ModuleInstance::setCurrentModuleInstance(new ModuleInstance()); // overwrite ModuleInstance because the old one is now loaded and shouln't be used anymore. TODO: better solution?
+                    Identifier::initConfigValues_s = false; // TODO: hack!
+                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
+                    IdentifierManager::getInstance().destroyClassHierarchy();
                 }
         };
 

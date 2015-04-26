@@ -4,6 +4,7 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "core/class/Super.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -64,18 +65,25 @@ namespace orxonox
         RegisterClass(TestClass);
         RegisterClass(TestSubclass);
 
-       // Fixture
+        // Fixture
         class SuperTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                    ModuleInstance::setCurrentModuleInstance(new ModuleInstance()); // overwrite ModuleInstance because the old one is now loaded and shouln't be used anymore. TODO: better solution?
+                    Identifier::initConfigValues_s = false; // TODO: hack!
+                    IdentifierManager::getInstance().createClassHierarchy();
+
                     Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
                     Context::setRootContext(NULL);
+
+                    IdentifierManager::getInstance().destroyClassHierarchy();
                 }
         };
     }
