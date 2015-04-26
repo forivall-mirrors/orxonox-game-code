@@ -245,6 +245,10 @@ namespace orxonox
                     this->identifier_->inheritsFrom(this->parents_[i]->getParent());
             }
 
+            virtual void unload()
+            {
+            }
+
             inline Identifier& getIdentifier()
                 { return *this->identifier_; }
 

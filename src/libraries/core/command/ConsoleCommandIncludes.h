@@ -312,6 +312,7 @@ namespace orxonox
             StaticallyInitializedConsoleCommand(ConsoleCommand* command) : command_(command) {}
 
             virtual void load();
+            virtual void unload();
 
             inline ConsoleCommand& getCommand()
                 { return *this->command_; }

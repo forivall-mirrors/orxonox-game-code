@@ -150,7 +150,9 @@ namespace orxonox
         { *value = (T)(getArgument(name)->getValue()); }
         static const MultiType& getValue(const std::string& name)
         { return getArgument(name)->getValue(); }
+
         static void addArgument(CommandLineArgument* argument);
+        static void removeArgument(CommandLineArgument* argument);
 
         static bool existsArgument(const std::string& name)
         {

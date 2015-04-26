@@ -42,6 +42,7 @@ namespace orxonox
 
             void addStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
             void loadAllStaticallyInitializedInstances();
+            void unloadAllStaticallyInitializedInstances();
             void removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
 
             static void setCurrentModuleInstance(ModuleInstance* instance);

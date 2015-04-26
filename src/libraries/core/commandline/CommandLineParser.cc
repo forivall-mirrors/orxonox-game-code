@@ -353,4 +353,12 @@ namespace orxonox
 
         _getInstance().cmdLineArgs_[argument->getName()] = argument;
     }
+
+    /**
+     * @brief Removes a CommandLineArgument from the internal map.
+     */
+    void CommandLineParser::removeArgument(CommandLineArgument* argument)
+    {
+        _getInstance().cmdLineArgs_.erase(argument->getName());
+    }
 }
