@@ -89,7 +89,6 @@ namespace orxonox
             void findFullRows(void);
             void clearRow(unsigned int row);
 
-
             PlayerInfo* player_;
 
             WeakPtr<TetrisCenterpoint> center_; //!< The playing field.

@@ -50,12 +50,7 @@ namespace orxonox
         moveDownPressed_ = false;
         moveLeftPressed_ = false;
         moveRightPressed_ = false;
-        selectedPos_ = new TDCoordinate(0,0);
-
-        Model* selecterModel = new Model(context);
-        selecterModel->setMeshSource("cube.mesh");
-        selecterModel->setScale(45);
-
+        setSelectedPosition(0,0);     
     }
 
     TowerDefenseSelecter::~TowerDefenseSelecter()
@@ -66,8 +61,6 @@ namespace orxonox
     void TowerDefenseSelecter::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(TowerDefenseSelecter, XMLPort, xmlelement, mode);
-        // Beispielport // XMLPortParam(TowerDefenseSelecter, "mouseFactor", setMouseFactor, getMouseFactor, xmlelement, mode);
-
     }
 
     void TowerDefenseSelecter::tick(float dt)
@@ -76,67 +69,40 @@ namespace orxonox
 
         if (hasLocalController())
         {
+            int selecterPosX = selectedPos_->GetX();
+            int selecterPosY = selectedPos_->GetY();
 
             if (moveUpPressed_ == true)
             {
-                if(this->selectedPos_->y >= 15)
-                {
-                }
-                else
-                {
-                	this->selectedPos_->y +=1;
-                	this->setPosition(selectedPos_->get3dcoordinate());
-                }
-
+                selectedPos_->Set(selecterPosX, selecterPosY + 1);
+                updatePosition();
+                orxout() << "up" << endl;
             }
             if (moveDownPressed_ == true)
             {
-            	if(this->selectedPos_->y <= 0)
-            	{
-				}
-				else
-				{
-					this->selectedPos_->y -= 1;
-					this->setPosition(selectedPos_->get3dcoordinate());
-				}
-
-            	moveDownPressed_ = false;
+            	selectedPos_->Set(selecterPosX, selecterPosY - 1);
+                updatePosition();
+                orxout() << "Down" << endl;
             }
 
             if (moveLeftPressed_ == true)
             {
-                if(this->selectedPos_->x <= 0)
-                {
-                }
-                else
-                {
-                	this->selectedPos_->x -=1;
-                	this->setPosition(selectedPos_->get3dcoordinate());
-                }
-
+                selectedPos_->Set(selecterPosX - 1, selecterPosY);
+                updatePosition();
+                orxout() << "Left" << endl;
             }
             if (moveRightPressed_ == true)
             {
-            	if(this->selectedPos_->x >= 15)
-            	{
-				}
-				else
-				{
-					this->selectedPos_->x += 1;
-					this->setPosition(selectedPos_->get3dcoordinate());
-				}
-
-            	moveDownPressed_ = false;
+            	selectedPos_->Set(selecterPosX + 1, selecterPosY);
+                updatePosition();
+                orxout() << "Right" << endl;
             }
-
-
 
             /*
             if (firePressed_ && timeSinceLastFire_ >= maxFireRate_)
             {
                 firePressed_ = false;
                 timeSinceLastFire_ = 0.0;
-                fireSignal_ = true;
             }
             */
         }
@@ -145,7 +111,7 @@ namespace orxonox
         moveUpPressed_ = false;
         moveDownPressed_ = false;
         moveLeftPressed_ = false;
-        moveDownPressed_ = false;
+        moveRightPressed_ = false;
         //firePressed_ = false;
     }
 
@@ -198,4 +164,22 @@ namespace orxonox
     {
         //firePressed_ = true;
     }
+
+    void TowerDefenseSelecter::updatePosition()
+    {
+        setPosition(selectedPos_->get3dcoordinate());
+    }
+
+    void TowerDefenseSelecter::setSelectedPosition(TDCoordinate* newPos)
+    {
+        selectedPos_ = newPos;
+        updatePosition();
+    }
+
+    void TowerDefenseSelecter::setSelectedPosition(int x,  int y)
+    {
+        setSelectedPosition(new TDCoordinate(x,y));
+    }
+
+
 }

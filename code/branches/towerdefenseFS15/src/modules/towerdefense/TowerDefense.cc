@@ -36,7 +36,6 @@
  * playerScored() // kann man aufrufen um dem Spieler Punkte zu vergeben.
  *
  *
- *
  *TIPP: Eclipse hilft euch schnell auf bereits vorhanden Funktionen zuzugreifen:
  * einfach "this->" eingeben und kurz warten. Dann tauch eine Liste mit Vorschlägen auf. Wenn ihr jetzt weiter
  * tippt, werden die Vorschläge entsprechend gefiltert.
@@ -109,8 +108,7 @@ namespace orxonox
         }*/
 
         selecter = NULL;
-
-
+        this->player_ = NULL;        
         this->setHUDTemplate("TowerDefenseHUD");
         this->nextwaveTimer_.setTimer(10, false, createExecutor(createFunctor(&TowerDefense::nextwave, this)));
         this->nextwaveTimer_.stopTimer();
@@ -144,10 +142,24 @@ namespace orxonox
 
     void TowerDefense::start()
     {
+        if (center_ != NULL) // There needs to be a TowerDefenseCenterpoint, i.e. the area the game takes place.
+        {
+            if (selecter == NULL)
+            {
+                selecter = new TowerDefenseSelecter(this->center_->getContext());                
+            }
+            selecter->addTemplate(center_->getSelecterTemplate());
+            center_->attach(selecter);
+        }
+        else // If no centerpoint was specified, an error is thrown and the level is exited.
+        {
+            orxout(internal_error) << "Jump: No Centerpoint specified." << endl;
+            return;
+        }
 
         TeamDeathmatch::start();
 
-// Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
+        // Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
         for (int i=0; i < 16 ; i++)
         {
             for (int j = 0; j< 16 ; j++)
@@ -157,7 +169,17 @@ namespace orxonox
             }
         }
 
-        selecter = new TowerDefenseSelecter(this->center_->getContext());
+        
+
+        if (player_ != NULL)
+        {
+            //this->player_->startControl(selecter);
+        }
+        else
+        {
+            orxout() << "player=NULL" << endl;
+        }
+
 
         Model* dummyModel = new Model(this->center_->getContext());
 
@@ -218,7 +240,7 @@ namespace orxonox
 
         en1->setTeam(2);
         en1->getController();
-        en1->setPosition(path.at(0)->get3dcoordinate());
+        en1->setPosition(path.at(0)->get3dcoordinate());        
         TowerDefenseEnemyvector.push_back(en1);
 
         for(unsigned int i = 0; i < path.size(); ++i)
@@ -236,9 +258,37 @@ namespace orxonox
 
     }
 
+    void TowerDefense::spawnPlayer(PlayerInfo* player)
+    {
+        assert(player);
+        this->player_ = player;
+
+        if (selecter->getPlayer() == NULL)
+        {
+            this->player_ = player;
+            player->startControl(selecter);
+            players_[player].state_ = PlayerState::Alive;
+        } 
+    }
+
+    /**
+    @brief
+        Get the player.
+    @return
+        Returns a pointer to the player. If there is no player, NULL is returned.
+    */
+    PlayerInfo* TowerDefense::getPlayer(void) const
+    {
+        return this->player_;
+    }
+
     //not working yet
     void TowerDefense::upgradeTower(int x,int y)
     {
+        TDCoordinate* coord = new TDCoordinate(x,y);
+        x = coord->GetX();
+        y = coord->GetY();
+        
         const int upgradeCost = 20;
 
         if (!this->hasEnoughCreditForTower(upgradeCost))
@@ -265,10 +315,14 @@ namespace orxonox
 
     /*adds Tower at Position (x,y) and reduces credit and adds the point to the towermatrix. template ("towerturret")
     so towers have ability if the turrets
-
     */
+
     void TowerDefense::addTower(int x, int y)
-    {
+    {        
+        TDCoordinate* coord = new TDCoordinate(x,y);
+        x = coord->GetX();
+        y = coord->GetY();
+
         const int towerCost = 20;
 
         if (!this->hasEnoughCreditForTower(towerCost))
@@ -290,24 +344,22 @@ namespace orxonox
 
         int tileScale = (int) this->center_->getTileScale();
 
-        if (x > 15 || y > 15 || x < 0 || y < 0)
+        /*if (x > 15 || y > 15 || x < 0 || y < 0)
         {
             //Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
             orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
             return;
-        }
+        }*/
 
-        orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
-
+        //orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
+        orxout() << "Will add tower at (" << x << "," << y << ")" << endl;
 
 
         //Create Model
-        Model* newtowermodel = new Model(this->center_->getContext());
-        newtowermodel->setMeshSource("Tower.mesh");
-        newtowermodel->setScale(45);
-        newtowermodel->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 50);
-
-
+        Model* newTowerModel = new Model(this->center_->getContext());
+        newTowerModel->setMeshSource("Tower.mesh");
+        newTowerModel->setScale(45);
+        newTowerModel->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 50);
 
         //Creates tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
@@ -317,9 +369,9 @@ namespace orxonox
 
         //Reduce credit
          this->buyTower(towerCost);
-         towerModelMatrix [x][y]= newtowermodel;
+         towerModelMatrix [x][y]= newTowerModel;
          towerTurretMatrix [x][y]= towernew;
-    }
+    }    
 
     bool TowerDefense::hasEnoughCreditForTower(int towerCost)
     {
