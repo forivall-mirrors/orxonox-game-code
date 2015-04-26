@@ -111,8 +111,10 @@
 
 #include "UtilPrereqs.h"
 
-#include <cassert>
 #include <cstring>
+#include <typeinfo>
+
+#include "OrxAssert.h"
 
 namespace orxonox
 {
@@ -133,7 +135,7 @@ namespace orxonox
         //! Returns a reference to the singleton instance
         static T& getInstance()
         {
-            assert(T::singletonPtr_s != NULL);
+            OrxVerify(T::singletonPtr_s != NULL, "T=" << typeid(T).name());
             return *T::singletonPtr_s;
         }
 
@@ -156,14 +158,14 @@ namespace orxonox
         //! Constructor sets the singleton instance pointer
         Singleton()
         {
-            assert(T::singletonPtr_s == NULL);
+            OrxVerify(T::singletonPtr_s == NULL, "T=" << typeid(T).name());
             T::singletonPtr_s = static_cast<T*>(this);
         }
 
         //! Destructor resets the singleton instance pointer
         virtual ~Singleton()
         {
-            assert(T::singletonPtr_s != NULL);
+            OrxVerify(T::singletonPtr_s != NULL, "T=" << typeid(T).name());
             T::singletonPtr_s = NULL;
         }
 
