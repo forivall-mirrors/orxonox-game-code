@@ -31,6 +31,7 @@
 
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "worldentities/ControllableEntity.h"
+#include "TDCoordinate.h"
 
 namespace orxonox
 {
@@ -38,7 +39,7 @@ class _TowerDefenseExport TowerDefenseSelecter : public ControllableEntity
     {
         public:
             TowerDefenseSelecter(Context* context); //!< Constructor. Registers and initializes the object.
-            virtual ~TowerDefenseSelecter() {}
+            virtual ~TowerDefenseSelecter();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
             virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.

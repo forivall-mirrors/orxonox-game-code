@@ -53,7 +53,7 @@ namespace orxonox
         selectedPos_ = new TDCoordinate(0,0);
 
         Model* selecterModel = new Model(context);
-        selecterModel->setMeshSource("Cube.mesh");
+        selecterModel->setMeshSource("cube.mesh");
         selecterModel->setScale(45);
 
     }
