@@ -206,6 +206,8 @@ namespace orxonox
 
             virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const = 0;
 
+            static bool initConfigValues_s; // TODO: this is a hack - remove it as soon as possible
+
         protected:
             virtual void createSuperFunctionCaller() const = 0;
 
@@ -329,7 +331,9 @@ namespace orxonox
         {
             IdentifierManager::getInstance().createdObject(object);
 
-            this->setConfigValues(object, object);
+            if (Identifier::initConfigValues_s)
+                this->setConfigValues(object, object);
+
             return true;
         }
         else

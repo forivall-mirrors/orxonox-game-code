@@ -123,34 +123,27 @@ namespace orxonox
                 virtual void test2() {}
         };
 
+        RegisterAbstractClass(BaseInterface1).inheritsFrom<OrxonoxInterface>();
+        RegisterAbstractClass(BaseInterface2).inheritsFrom<OrxonoxInterface>();
+        RegisterAbstractClass(Interface1).inheritsFrom<BaseInterface1>();
+        RegisterAbstractClass(Interface2).inheritsFrom<BaseInterface2>();
+        RegisterClassNoArgs(BaseClass);
+        RegisterClassNoArgs(Class0);
+        RegisterClassNoArgs(Class1);
+        RegisterClassNoArgs(Class2a);
+        RegisterClassNoArgs(Class2b);
+        RegisterClassNoArgs(Class3);
+
         // Fixture
         class IdentifierClassHierarchyTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
-                    registerClass("Context", new ClassFactoryWithContext<Context>());
-                    registerClass("Listable", new ClassFactoryWithContext<Listable>());
-                    registerClass("Configurable", new ClassFactoryNoArgs<Configurable>());
-                    registerClass("OrxonoxInterface", new ClassFactoryNoArgs<OrxonoxInterface>());
-                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("BaseInterface1", static_cast<ClassFactory<BaseInterface1>*>(NULL), false)->inheritsFrom(Class(OrxonoxInterface));
-                    registerClass("BaseInterface2", static_cast<ClassFactory<BaseInterface2>*>(NULL), false)->inheritsFrom(Class(OrxonoxInterface));
-                    registerClass("Interface1", static_cast<ClassFactory<Interface1>*>(NULL), false)->inheritsFrom(Class(BaseInterface1));
-                    registerClass("Interface2", static_cast<ClassFactory<Interface2>*>(NULL), false)->inheritsFrom(Class(BaseInterface2));
-                    registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
-                    registerClass("Class0", new ClassFactoryNoArgs<Class0>());
-                    registerClass("Class1", new ClassFactoryNoArgs<Class1>());
-                    registerClass("Class2a", new ClassFactoryNoArgs<Class2a>());
-                    registerClass("Class2b", new ClassFactoryNoArgs<Class2b>());
-                    registerClass("Class3", new ClassFactoryNoArgs<Class3>());
-
-                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
 
@@ -165,59 +158,59 @@ namespace orxonox
         }
     }
 
-    TEST(IdentifierClassHierarchyTest_NoFixture, NoInitialization)
-    {
-        {
-            Identifier* identifier = Class(BaseInterface1);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseInterface2);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Interface1);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Interface2);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class0);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class1);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class2a);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class2b);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class3);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-    }
+//    TEST(IdentifierClassHierarchyTest_NoFixture, NoInitialization)
+//    {
+//        {
+//            Identifier* identifier = Class(BaseInterface1);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(BaseInterface2);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Interface1);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Interface2);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(BaseClass);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Class0);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Class1);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Class2a);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Class2b);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(Class3);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//    }
 
     TEST_F(IdentifierClassHierarchyTest, TestBaseInterface1)
     {

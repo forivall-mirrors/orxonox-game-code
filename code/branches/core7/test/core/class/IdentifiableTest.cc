@@ -11,6 +11,8 @@ namespace orxonox
             public:
                 IdentifiableTest() { RegisterObject(IdentifiableTest); }
         };
+
+        RegisterClassNoArgs(IdentifiableTest);
     }
 
     TEST(IdentifiableTest, CanCreate)

@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include "core/class/Identifier.h"
+#include "core/class/IdentifierManager.h"
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
 #include "core/object/Destroyable.h"
@@ -142,6 +144,8 @@ namespace orxonox
     TEST(CommandTest, ModuleTest)
     {
         ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+        Identifier::initConfigValues_s = false; // TODO: hack!
+        IdentifierManager::getInstance().createClassHierarchy();
 
         test(0, 0, 0);
         CommandExecutor::execute("test 0", false);

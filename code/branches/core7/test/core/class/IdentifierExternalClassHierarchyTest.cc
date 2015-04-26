@@ -37,24 +37,20 @@ namespace orxonox
                 virtual void test() {}
         };
 
+        RegisterAbstractClass(Interface).inheritsFrom<Identifiable>();
+        RegisterClassNoArgs(BaseClass);
+        RegisterClassNoArgs(RealClass);
+
         // Fixture
         class IdentifierExternalClassHierarchyTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
-                    registerClass("Context", new ClassFactoryWithContext<Context>());
-                    registerClass("Listable", new ClassFactoryWithContext<Listable>());
-                    registerClass("Interface", static_cast<ClassFactory<Interface>*>(NULL), false)->inheritsFrom(Class(Identifiable));
-                    registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
-                    registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());
-
-                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
 
@@ -69,24 +65,24 @@ namespace orxonox
         }
     }
 
-    TEST(IdentifierExternalClassHierarchyTest_NoFixture, NoInitialization)
-    {
-        {
-            Identifier* identifier = Class(Interface);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(RealClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-    }
+//    TEST(IdentifierExternalClassHierarchyTest_NoFixture, NoInitialization)
+//    {
+//        {
+//            Identifier* identifier = Class(Interface);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(BaseClass);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(RealClass);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//    }
 
     TEST_F(IdentifierExternalClassHierarchyTest, TestInterface)
     {

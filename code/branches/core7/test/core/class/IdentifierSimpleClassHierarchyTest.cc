@@ -8,7 +8,7 @@ namespace orxonox
 {
     namespace
     {
-        class Interface : public OrxonoxInterface
+        class Interface : virtual public OrxonoxInterface
         {
             public:
                 Interface()
@@ -39,27 +39,20 @@ namespace orxonox
                 virtual void test() {}
         };
 
+        RegisterAbstractClass(Interface).inheritsFrom<OrxonoxInterface>();
+        RegisterClassNoArgs(BaseClass);
+        RegisterClassNoArgs(RealClass);
+
         // Fixture
         class IdentifierSimpleClassHierarchyTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
-                    registerClass("Context", new ClassFactoryWithContext<Context>());
-                    registerClass("Listable", new ClassFactoryWithContext<Listable>());
-                    registerClass("Configurable", new ClassFactoryNoArgs<Configurable>());
-                    registerClass("OrxonoxInterface", new ClassFactoryNoArgs<OrxonoxInterface>());
-                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("Interface", static_cast<ClassFactory<Interface>*>(NULL), false)->inheritsFrom(Class(OrxonoxInterface));
-                    registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
-                    registerClass("RealClass", new ClassFactoryNoArgs<RealClass>());
-
-                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
 
@@ -74,24 +67,24 @@ namespace orxonox
         }
     }
 
-    TEST(IdentifierSimpleClassHierarchyTest_NoFixture, NoInitialization)
-    {
-        {
-            Identifier* identifier = Class(Interface);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(RealClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-    }
+//    TEST(IdentifierSimpleClassHierarchyTest_NoFixture, NoInitialization)
+//    {
+//        {
+//            Identifier* identifier = Class(Interface);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(BaseClass);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//        {
+//            Identifier* identifier = Class(RealClass);
+//            EXPECT_EQ(0u, identifier->getChildren().size());
+//            EXPECT_EQ(0u, identifier->getParents().size());
+//        }
+//    }
 
     TEST_F(IdentifierSimpleClassHierarchyTest, TestInterface)
     {

@@ -43,6 +43,8 @@
 
 namespace orxonox
 {
+    bool Identifier::initConfigValues_s = true;
+
     // ###############################
     // ###       Identifier        ###
     // ###############################
