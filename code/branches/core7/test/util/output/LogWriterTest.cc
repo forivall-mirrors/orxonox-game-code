@@ -2,6 +2,8 @@
 #include "util/Output.h"
 #include "util/output/LogWriter.h"
 #include "util/Convert.h"
+#include "util/output/OutputManager.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {
@@ -13,10 +15,25 @@ namespace orxonox
                 virtual void printLine(const std::string& line, OutputLevel level)
                     { this->LogWriter::printLine(line, level); }
         };
+
+        // Fixture
+        class LogWriterTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    // reset output manager
+                    OutputManager::Testing::getInstancePointer() = new OutputManager();
+                }
+
+                virtual void TearDown()
+                {
+                }
+        };
     }
 
     // test constructor opens file
-    TEST(LogWriterTest, ConstructorOpensFile)
+    TEST_F(LogWriterTest, ConstructorOpensFile)
     {
         LogWriter logWriter;
         EXPECT_TRUE(logWriter.getFile().is_open());
@@ -63,7 +80,7 @@ namespace orxonox
         return result;
     }
 
-    TEST(LogWriterTest, SetLogDirectoryOpensNewFile)
+    TEST_F(LogWriterTest, SetLogDirectoryOpensNewFile)
     {
         std::string path = "./orxonox.log";
 
@@ -82,7 +99,7 @@ namespace orxonox
     }
 
     // prints output to logfile
-    TEST(LogWriterTest, PrintsOutputToLogfile)
+    TEST_F(LogWriterTest, PrintsOutputToLogfile)
     {
         std::string path;
 
@@ -102,7 +119,7 @@ namespace orxonox
     }
 
     // prints time to logfile
-    TEST(LogWriterTest, PrintsTimestampToLogfile)
+    TEST_F(LogWriterTest, PrintsTimestampToLogfile)
     {
         std::string path;
 
@@ -151,7 +168,7 @@ namespace orxonox
         deleteFile(path + ".9");
     }
 
-    TEST(LogWriterTest, ArchivesOldLogFile)
+    TEST_F(LogWriterTest, ArchivesOldLogFile)
     {
         deleteAllLogFiles();
 
@@ -195,7 +212,7 @@ namespace orxonox
         EXPECT_FALSE(fileExists(path + ".3"));
     }
 
-    TEST(LogWriterTest, ArchivesNineLogFiles)
+    TEST_F(LogWriterTest, ArchivesNineLogFiles)
     {
         deleteAllLogFiles();
 

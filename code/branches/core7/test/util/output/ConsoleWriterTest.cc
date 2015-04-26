@@ -6,11 +6,26 @@
 
 namespace orxonox
 {
-    TEST(ConsoleWriterTest, Disable)
+    namespace
     {
-        // reset output manager
-        OutputManager::Testing::getInstancePointer() = new OutputManager();
+        // Fixture
+        class ConsoleWriterTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    // reset output manager
+                    OutputManager::Testing::getInstancePointer() = new OutputManager();
+                }
 
+                virtual void TearDown()
+                {
+                }
+        };
+    }
+
+    TEST_F(ConsoleWriterTest, Disable)
+    {
         std::ostream stream(NULL);
         EXPECT_EQ(0U, OutputManager::getInstance().getListeners().size());
         ConsoleWriter writer(stream);
@@ -19,11 +34,8 @@ namespace orxonox
         EXPECT_EQ(0U, OutputManager::getInstance().getListeners().size());
     }
 
-    TEST(ConsoleWriterTest, Enable)
+    TEST_F(ConsoleWriterTest, Enable)
     {
-        // reset output manager
-        OutputManager::Testing::getInstancePointer() = new OutputManager();
-
         std::ostream stream(NULL);
         ConsoleWriter writer(stream);
         writer.disable();
@@ -32,7 +44,7 @@ namespace orxonox
         EXPECT_EQ(1U, OutputManager::getInstance().getListeners().size());
     }
 
-    TEST(ConsoleWriterTest, WritesNoOutputToOutputStream)
+    TEST_F(ConsoleWriterTest, WritesNoOutputToOutputStream)
     {
         std::stringbuf buffer;
         std::ostream stream(&buffer);
@@ -43,7 +55,7 @@ namespace orxonox
         EXPECT_EQ("", buffer.str());
     }
 
-    TEST(ConsoleWriterTest, WritesOutputToOutputStream)
+    TEST_F(ConsoleWriterTest, WritesOutputToOutputStream)
     {
         std::stringbuf buffer;
         std::ostream stream(&buffer);
@@ -62,7 +74,7 @@ namespace orxonox
         EXPECT_NE(std::string::npos, buffer.str().find("test"));
     }
 
-    TEST(ConsoleWriterTest, DefaultConsoleWriterUsesCout)
+    TEST_F(ConsoleWriterTest, DefaultConsoleWriterUsesCout)
     {
         OutputManager::getInstanceAndCreateListeners();
         EXPECT_EQ(std::cout, OutputManager::getInstance().getConsoleWriter()->getOutputStream());

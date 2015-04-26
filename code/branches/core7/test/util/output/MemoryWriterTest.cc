@@ -3,6 +3,7 @@
 #include "util/Output.h"
 #include "util/output/MemoryWriter.h"
 #include "util/output/OutputManager.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {
@@ -13,9 +14,24 @@ namespace orxonox
             public:
                 MOCK_METHOD3(output, void(OutputLevel, const OutputContextContainer&, const std::vector<std::string>&));
         };
+
+        // Fixture
+        class MemoryWriterTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    // reset output manager
+                    OutputManager::Testing::getInstancePointer() = new OutputManager();
+                }
+
+                virtual void TearDown()
+                {
+                }
+        };
     }
 
-    TEST(MemoryWriterTest, Disable)
+    TEST_F(MemoryWriterTest, Disable)
     {
         EXPECT_EQ(0U, OutputManager::getInstance().getListeners().size());
         MemoryWriter writer;
@@ -24,7 +40,7 @@ namespace orxonox
         EXPECT_EQ(0U, OutputManager::getInstance().getListeners().size());
     }
 
-    TEST(MemoryWriterTest, ResendOutput)
+    TEST_F(MemoryWriterTest, ResendOutput)
     {
         MemoryWriter writer;
 
