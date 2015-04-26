@@ -89,34 +89,28 @@ namespace orxonox
                 Class6_Child() { RegisterObject(Class6_Child); }
         };
 
+        RegisterClassNoArgs(Nested1);
+        RegisterClassNoArgs(Nested2);
+        RegisterClassNoArgs(BaseClass);
+        RegisterClassNoArgs(Class1_notNested);
+        RegisterClassNoArgs(Class2_oneNested);
+        RegisterClassNoArgs(Class3_twoNested);
+        RegisterClassNoArgs(Class4_class1Nested);
+        RegisterClassNoArgs(Class5_class2Nested);
+        RegisterClassNoArgs(Class6_class3Nested);
+        RegisterClassNoArgs(Class3_Child);
+        RegisterClassNoArgs(Class6_Child);
+
         // Fixture
         class IdentifierNestedClassHierarchyTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
-                    registerClass("Context", new ClassFactoryWithContext<Context>());
-                    registerClass("Listable", new ClassFactoryWithContext<Listable>());
-                    registerClass("Configurable", new ClassFactoryNoArgs<Configurable>());
-                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("Nested1", new ClassFactoryNoArgs<Nested1>());
-                    registerClass("Nested2", new ClassFactoryNoArgs<Nested2>());
-                    registerClass("BaseClass", new ClassFactoryNoArgs<BaseClass>());
-                    registerClass("Class1_notNested", new ClassFactoryNoArgs<Class1_notNested>());
-                    registerClass("Class2_oneNested", new ClassFactoryNoArgs<Class2_oneNested>());
-                    registerClass("Class3_twoNested", new ClassFactoryNoArgs<Class3_twoNested>());
-                    registerClass("Class4_class1Nested", new ClassFactoryNoArgs<Class4_class1Nested>());
-                    registerClass("Class5_class2Nested", new ClassFactoryNoArgs<Class5_class2Nested>());
-                    registerClass("Class6_class3Nested", new ClassFactoryNoArgs<Class6_class3Nested>());
-                    registerClass("Class3_Child", new ClassFactoryNoArgs<Class3_Child>());
-                    registerClass("Class6_Child", new ClassFactoryNoArgs<Class6_Child>());
-
-                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
 

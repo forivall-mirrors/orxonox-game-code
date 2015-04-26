@@ -20,26 +20,21 @@ namespace orxonox
                 TestSubclass(Context* context = NULL) { RegisterObject(TestSubclass); }
         };
 
+        RegisterClass(TestClass);
+        RegisterClass(TestSubclass);
+
         // Fixture
         class SubclassIdentifierTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
-                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("TestClass", new ClassFactoryWithContext<TestClass>());
-                    registerClass("TestSubclass", new ClassFactoryWithContext<TestSubclass>());
-
-                    IdentifierManager::getInstance().createClassHierarchy();
-
                     Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
                     Context::setRootContext(NULL);
-
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
     }

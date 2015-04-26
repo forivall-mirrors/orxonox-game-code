@@ -61,29 +61,21 @@ namespace orxonox
                 XMLPort::Mode modeSubclass_;
         };
 
+        RegisterClass(TestClass);
+        RegisterClass(TestSubclass);
+
        // Fixture
         class SuperTest : public ::testing::Test
         {
             public:
                 virtual void SetUp()
                 {
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
-
-                    registerClass("OrxonoxClass", new ClassFactoryNoArgs<OrxonoxClass>());
-                    registerClass("BaseObject", new ClassFactoryWithContext<BaseObject>());
-                    registerClass("TestClass", new ClassFactoryWithContext<TestClass>());
-                    registerClass("TestSubclass", new ClassFactoryWithContext<TestSubclass>());
-
-                    IdentifierManager::getInstance().createClassHierarchy();
-
                     Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
                     Context::setRootContext(NULL);
-
-                    IdentifierManager::getInstance().destroyAllIdentifiers();
                 }
         };
     }

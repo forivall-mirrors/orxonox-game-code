@@ -17,6 +17,9 @@ namespace orxonox
             public:
                 TestSubclass() { RegisterObject(TestSubclass); }
         };
+
+        RegisterClassNoArgs(TestClass);
+        RegisterClassNoArgs(TestSubclass);
     }
 
     TEST(IdentifierTest, IdentifierExistsOfClass)
