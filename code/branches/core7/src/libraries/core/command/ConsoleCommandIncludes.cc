@@ -36,4 +36,9 @@ namespace orxonox
     {
         ConsoleCommandManager::registerCommand(this->command_);
     }
+
+    void StaticallyInitializedConsoleCommand::unload()
+    {
+        ConsoleCommandManager::unregisterCommand(this->command_);
+    }
 }

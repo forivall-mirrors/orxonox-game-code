@@ -40,6 +40,7 @@ namespace orxonox
             virtual ~StaticallyInitializedInstance();
 
             virtual void load() = 0;
+            virtual void unload() = 0;
     };
 }
 

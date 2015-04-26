@@ -52,6 +52,12 @@ namespace orxonox
             (*it)->load();
     }
 
+    void ModuleInstance::unloadAllStaticallyInitializedInstances()
+    {
+        for (std::list<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+            (*it)->unload();
+    }
+
     void ModuleInstance::removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance)
     {
         this->staticallyInitializedInstances_.remove(instance);

@@ -62,6 +62,9 @@ namespace orxonox
             virtual void load()
                 { CommandLineParser::addArgument(this->argument_); }
 
+            virtual void unload()
+                { CommandLineParser::removeArgument(this->argument_); }
+
             inline CommandLineArgument& getArgument()
                 { return *this->argument_; }
 
