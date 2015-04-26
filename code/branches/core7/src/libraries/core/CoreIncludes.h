@@ -166,7 +166,6 @@ namespace orxonox
     template <class T>
     inline Identifier* registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
     {
-        orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
         Identifier* identifier = new ClassIdentifier<T>(name, factory, bLoadable);
         IdentifierManager::getInstance().addIdentifier(identifier);
         return identifier;

@@ -169,7 +169,6 @@ namespace orxonox
             namespace misc
             {
                 REGISTER_OUTPUT_SUBCONTEXT(misc, executor);
-                REGISTER_OUTPUT_SUBCONTEXT(misc, factory);
                 REGISTER_OUTPUT_SUBCONTEXT(misc, gui);
                 REGISTER_OUTPUT_SUBCONTEXT(misc, overlays);
                 REGISTER_OUTPUT_SUBCONTEXT(misc, script);
