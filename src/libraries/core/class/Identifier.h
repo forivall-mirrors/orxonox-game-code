@@ -116,8 +116,8 @@ namespace orxonox
             /// Returns the name of the class the Identifier belongs to.
             inline const std::string& getName() const { return this->name_; }
 
-            /// Returns the name of the class as it is returned by typeid(T).name()
-            virtual const std::string& getTypeidName() = 0;
+            /// Returns the type_info of the class as it is returned by typeid(T)
+            virtual const std::type_info& getTypeInfo() = 0;
 
             /// Returns the network ID to identify a class through the network.
             inline uint32_t getNetworkID() const { return this->networkID_; }
@@ -264,7 +264,6 @@ namespace orxonox
                 OrxVerify(ClassIdentifier<T>::classIdentifier_s == NULL, "Assertion failed in ClassIdentifier of type " << typeid(T).name());
                 ClassIdentifier<T>::classIdentifier_s = this;
 
-                this->typeidName_ = typeid(T).name();
                 SuperFunctionInitialization<0, T>::initialize(this);
             }
             ~ClassIdentifier()
@@ -282,8 +281,8 @@ namespace orxonox
 
             virtual void updateConfigValues(bool updateChildren = true) const;
 
-            virtual const std::string& getTypeidName()
-                { return this->typeidName_; }
+            virtual const std::type_info& getTypeInfo()
+                { return typeid(T); }
 
             virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const
                 { return dynamic_cast<T*>(object) != 0; }
@@ -296,7 +295,6 @@ namespace orxonox
             void updateConfigValues(bool updateChildren, Listable*) const;
             void updateConfigValues(bool updateChildren, Identifiable*) const;
 
-            std::string typeidName_;
             static WeakPtr<ClassIdentifier<T> > classIdentifier_s;
     };
 
@@ -311,7 +309,7 @@ namespace orxonox
     /*static*/ inline ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         if (ClassIdentifier<T>::classIdentifier_s == NULL)
-            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*) IdentifierManager::getInstance().getIdentifierByTypeidName(typeid(T).name());
+            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*) IdentifierManager::getInstance().getIdentifierByTypeInfo(typeid(T));
 
         OrxVerify(ClassIdentifier<T>::classIdentifier_s != NULL, "Assertion failed in ClassIdentifier of type " << typeid(T).name());
         return ClassIdentifier<T>::classIdentifier_s;
