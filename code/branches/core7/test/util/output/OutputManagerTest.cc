@@ -97,6 +97,8 @@ namespace orxonox
         manager.registerListener(&listener);
 
         EXPECT_FALSE(manager.getListeners().empty());
+
+        manager.unregisterListener(&listener);
     }
 
     // test unregisterListener removes listener from list
@@ -122,6 +124,8 @@ namespace orxonox
         manager.registerListener(&listener);
 
         EXPECT_FALSE(listener.getListeners().empty());
+
+        manager.unregisterListener(&listener);
     }
 
     // test unregisterListener unregisters manager from listener
@@ -155,6 +159,8 @@ namespace orxonox
         EXPECT_EQ(level::internal_warning, manager.getCombinedLevelMask());
         EXPECT_EQ(level::verbose_more, manager.getCombinedAdditionalContextsLevelMask());
         EXPECT_EQ(context::unittest2().mask, manager.getCombinedAdditionalContextsMask());
+
+        manager.unregisterListener(&listener);
     }
 
     // test unregisterListener adjusts masks
@@ -192,6 +198,8 @@ namespace orxonox
         listener.setLevelMask(level::internal_warning);
 
         EXPECT_EQ(level::internal_warning, manager.getCombinedLevelMask());
+
+        manager.unregisterListener(&listener);
     }
 
     // test updatedAdditionalContextsLevelMask updates mask
@@ -207,6 +215,8 @@ namespace orxonox
         listener.setAdditionalContextsLevelMask(level::internal_warning);
 
         EXPECT_EQ(level::internal_warning, manager.getCombinedAdditionalContextsLevelMask());
+
+        manager.unregisterListener(&listener);
     }
 
     // test updatedAdditionalContextsMask updates mask
@@ -222,6 +232,8 @@ namespace orxonox
         listener.setAdditionalContextsMask(context::unittest2().mask);
 
         EXPECT_EQ(context::unittest2().mask, manager.getCombinedAdditionalContextsMask());
+
+        manager.unregisterListener(&listener);
     }
 
     // test combines masks of all listeners
@@ -253,6 +265,10 @@ namespace orxonox
         EXPECT_EQ(level::user_error | level::user_warning | level::internal_warning, manager.getCombinedLevelMask());
         EXPECT_EQ(level::verbose | level::verbose_more | level::verbose_ultra, manager.getCombinedAdditionalContextsLevelMask());
         EXPECT_EQ(context::unittest1().mask | context::unittest2().mask | context::unittest3().mask, manager.getCombinedAdditionalContextsMask());
+
+        manager.unregisterListener(&listener1);
+        manager.unregisterListener(&listener2);
+        manager.unregisterListener(&listener3);
     }
 
     // test acceptsOutput
@@ -286,6 +302,8 @@ namespace orxonox
         EXPECT_FALSE(manager.acceptsOutput(level::internal_status, context::unittest2()));
         EXPECT_TRUE(manager.acceptsOutput(level::verbose_more, context::unittest2()));
         EXPECT_FALSE(manager.acceptsOutput(level::verbose_ultra, context::unittest2()));
+
+        manager.unregisterListener(&listener);
     }
 
     // test pushMessage sends lines to listeners
@@ -301,6 +319,8 @@ namespace orxonox
         EXPECT_CALL(listener, unfilteredOutput(level::user_status, context::unittest1(), lines));
 
         manager.pushMessage(level::user_status, context::unittest1(), "some output");
+
+        manager.unregisterListener(&listener);
     }
 
     // test pushMessage splits lines by \n
@@ -318,6 +338,8 @@ namespace orxonox
         EXPECT_CALL(listener, unfilteredOutput(level::user_status, context::unittest1(), lines));
 
         manager.pushMessage(level::user_status, context::unittest1(), "some output\nand some more output\n!!!");
+
+        manager.unregisterListener(&listener);
     }
 
     // test registerContext for new context
