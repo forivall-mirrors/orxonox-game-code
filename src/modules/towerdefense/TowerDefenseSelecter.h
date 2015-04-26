@@ -40,8 +40,8 @@ class _TowerDefenseExport TowerDefenseSelecter : public ControllableEntity
         public:
             TowerDefenseSelecter(Context* context); //!< Constructor. Registers and initializes the object.
             virtual ~TowerDefenseSelecter();
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);         
+            virtual void tick(float dt);            
             virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
             virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
             virtual void rotateYaw(const Vector2& value);
@@ -49,16 +49,17 @@ class _TowerDefenseExport TowerDefenseSelecter : public ControllableEntity
             virtual void rotateRoll(const Vector2& value);
             void fire(unsigned int firemode);
             virtual void fired(unsigned int firemode);
+            virtual void setSelectedPosition(TDCoordinate* newPos);
+            virtual void setSelectedPosition(int x, int y);
+
+        private:            
+            virtual void updatePosition();
+            
             TDCoordinate* selectedPos_;
-
-
-
-        private:
-
             bool moveUpPressed_;
             bool moveDownPressed_;
             bool moveLeftPressed_;
-            bool moveRightPressed_;
+            bool moveRightPressed_;            
     };
 }
 

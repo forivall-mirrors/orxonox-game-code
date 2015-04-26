@@ -44,6 +44,7 @@
 #include "util/Output.h"
 #include "core/object/WeakPtr.h"
 #include "TowerDefenseSelecter.h"
+#include "graphics/Camera.h"    
 
 
 namespace orxonox
@@ -61,9 +62,8 @@ namespace orxonox
         virtual void start(); //<! The function is called when the gametype starts
         virtual void end();
         virtual void tick(float dt);
-        //virtual void playerEntered(PlayerInfo* player);
-        //virtual bool playerLeft(PlayerInfo* player);
-        //Player Stats (set,get, reduce)
+        virtual void spawnPlayer(PlayerInfo* player);
+        PlayerInfo* getPlayer(void) const;
         int getCredit(){ return this->credit_; }
         int getLifes(){ return this->lifes_; }
         int getWaveNumber(){ return this->waves_; }
@@ -74,7 +74,6 @@ namespace orxonox
         void addCredit(int credit) { credit_+=credit; }
         void nextwave(){ TowerDefenseEnemyvector.clear(); waves_++; time=0;}
         int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
-        TDCoordinate* selectedPos;
         TowerDefenseSelecter* selecter;
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
@@ -88,7 +87,6 @@ namespace orxonox
 
         /* Adds a tower at x, y in the playfield */
         void addTower(int x, int y);
-
         void upgradeTower(int x, int y);
 
         //TODO: void spawnNewWave()
@@ -98,6 +96,7 @@ namespace orxonox
 
     private:
         TowerDefenseCenterpoint *center_;
+        PlayerInfo* player_;
         float time;
 //        float time2;
         int credit_;
@@ -108,10 +107,6 @@ namespace orxonox
         /* handles stats */
         bool hasEnoughCreditForTower(int towerCost);
         bool hasEnoughCreditForUpgrade();
-
-
-
-        std::vector<TowerTurret*> towers_;
     };
 }
 

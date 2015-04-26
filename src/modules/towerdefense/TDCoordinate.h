@@ -15,16 +15,17 @@ namespace orxonox
     class _TowerDefenseExport TDCoordinate : public OrxonoxClass
     {
         public:
-            int x;
-            int y;
-
             TDCoordinate();
-
-            Vector3 get3dcoordinate();
-
-            virtual ~TDCoordinate() {};
-
             TDCoordinate(int x, int y);
+            virtual ~TDCoordinate() {};
+            virtual void Set(int x, int y);
+            virtual int GetX();
+            virtual int GetY();
+            virtual Vector3 get3dcoordinate(); 
+
+        private:
+            int _x;
+            int _y;
     };
 
 }

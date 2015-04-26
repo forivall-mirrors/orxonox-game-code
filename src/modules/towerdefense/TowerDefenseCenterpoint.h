@@ -59,16 +59,16 @@ namespace orxonox
             */
             void setWidth(unsigned int width)
                 { this->width_ = width; }
-
             unsigned int getWidth(void) const
                 { return this->width_; }
-
             void setHeight(unsigned int height)
                 { this->height_ = height; }
-
             unsigned int getHeight(void) const
                 { return this->height_; }
-
+            void setSelecterTemplate(const std::string& newTemplate)
+                { this->selecterTemplate_ = newTemplate; }
+            const std::string& getSelecterTemplate() const
+                { return this->selecterTemplate_; }   
             /**
                 @brief How to convert to world coordinates, e.g. that 0,15 is not at -8,-8 but at -80,-80 (if scale would be 10)
             */
@@ -81,6 +81,7 @@ namespace orxonox
         private:
             void checkGametype();
 
+            std::string selecterTemplate_;
             unsigned int width_;
             unsigned int height_;
             unsigned int tileScale_;
