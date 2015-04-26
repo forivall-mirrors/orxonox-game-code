@@ -132,6 +132,24 @@ namespace orxonox
             else if (a == -1)
                 ModifyConsoleCommand("test").popFunction();
         }
+
+        // Fixture
+        class CommandTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                    ModuleInstance::setCurrentModuleInstance(new ModuleInstance()); // overwrite ModuleInstance because the old one is now loaded and shouln't be used anymore. TODO: better solution?
+                    Identifier::initConfigValues_s = false; // TODO: hack!
+                    IdentifierManager::getInstance().createClassHierarchy();
+                }
+
+                virtual void TearDown()
+                {
+                    IdentifierManager::getInstance().destroyClassHierarchy();
+                }
+        };
     }
 
     void test(int function, int b, int c)
@@ -141,12 +159,8 @@ namespace orxonox
         EXPECT_EQ(c, valueC);
     }
 
-    TEST(CommandTest, ModuleTest)
+    TEST_F(CommandTest, ModuleTest)
     {
-        ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
-        Identifier::initConfigValues_s = false; // TODO: hack!
-        IdentifierManager::getInstance().createClassHierarchy();
-
         test(0, 0, 0);
         CommandExecutor::execute("test 0", false);
         test(1, 0, 0);

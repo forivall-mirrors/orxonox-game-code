@@ -171,17 +171,13 @@ namespace orxonox
     }
 
     /**
-        @brief Destroys all Identifiers. Called when exiting the program.
-    */
-    void IdentifierManager::destroyAllIdentifiers()
+     * @brief Resets all Identifiers.
+     */
+    void IdentifierManager::destroyClassHierarchy()
     {
-        for (std::set<Identifier*>::iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
-            delete (*it);
-
-        this->identifiers_.clear();
-        this->identifierByString_.clear();
-        this->identifierByLowercaseString_.clear();
-        this->identifierByNetworkId_.clear();
+        orxout(internal_status) << "Destroy class-hierarchy" << endl;
+        for (std::set<Identifier*>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
+            (*it)->reset();
     }
 
     /**
@@ -267,6 +263,20 @@ namespace orxonox
     */
     void IdentifierManager::clearNetworkIDs()
     {
+        this->identifierByNetworkId_.clear();
+    }
+
+    /**
+        @brief Destroys all Identifiers. Called when exiting the program.
+    */
+    void IdentifierManager::destroyAllIdentifiers()
+    {
+        for (std::set<Identifier*>::iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
+            delete (*it);
+
+        this->identifiers_.clear();
+        this->identifierByString_.clear();
+        this->identifierByLowercaseString_.clear();
         this->identifierByNetworkId_.clear();
     }
 }

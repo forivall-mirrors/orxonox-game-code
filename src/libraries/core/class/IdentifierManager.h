@@ -59,7 +59,7 @@ namespace orxonox
             /////////////////////////////
             void createClassHierarchy();
             void verifyClassHierarchy();
-            void destroyAllIdentifiers();
+            void destroyClassHierarchy();
 
             void createdObject(Identifiable* identifiable);
 
@@ -87,6 +87,8 @@ namespace orxonox
             /// Returns the map that stores all Identifiers with their IDs.
             inline const std::map<uint32_t, Identifier*>& getIdentifierByNetworkIdMap()
                 { return this->identifierByNetworkId_; }
+
+            void destroyAllIdentifiers();
 
         private:
             IdentifierManager();

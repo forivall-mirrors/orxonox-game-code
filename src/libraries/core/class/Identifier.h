@@ -150,6 +150,7 @@ namespace orxonox
 
             void initializeParents(const std::list<const Identifier*>& initializationTrace);
             void finishInitialization();
+            void reset();
 
             bool isA(const Identifier* identifier) const;
             bool isExactlyA(const Identifier* identifier) const;

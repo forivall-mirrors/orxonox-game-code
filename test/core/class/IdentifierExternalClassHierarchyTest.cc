@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "core/CoreIncludes.h"
 #include "core/class/Identifiable.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -47,10 +48,15 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                    ModuleInstance::setCurrentModuleInstance(new ModuleInstance()); // overwrite ModuleInstance because the old one is now loaded and shouln't be used anymore. TODO: better solution?
+                    Identifier::initConfigValues_s = false; // TODO: hack!
+                    IdentifierManager::getInstance().createClassHierarchy();
                 }
 
                 virtual void TearDown()
                 {
+                    IdentifierManager::getInstance().destroyClassHierarchy();
                 }
         };
 
@@ -65,24 +71,24 @@ namespace orxonox
         }
     }
 
-//    TEST(IdentifierExternalClassHierarchyTest_NoFixture, NoInitialization)
-//    {
-//        {
-//            Identifier* identifier = Class(Interface);
-//            EXPECT_EQ(0u, identifier->getChildren().size());
-//            EXPECT_EQ(0u, identifier->getParents().size());
-//        }
-//        {
-//            Identifier* identifier = Class(BaseClass);
-//            EXPECT_EQ(0u, identifier->getChildren().size());
-//            EXPECT_EQ(0u, identifier->getParents().size());
-//        }
-//        {
-//            Identifier* identifier = Class(RealClass);
-//            EXPECT_EQ(0u, identifier->getChildren().size());
-//            EXPECT_EQ(0u, identifier->getParents().size());
-//        }
-//    }
+    TEST(IdentifierExternalClassHierarchyTest_NoFixture, NoInitialization)
+    {
+        {
+            Identifier* identifier = Class(Interface);
+            EXPECT_EQ(0u, identifier->getChildren().size());
+            EXPECT_EQ(0u, identifier->getParents().size());
+        }
+        {
+            Identifier* identifier = Class(BaseClass);
+            EXPECT_EQ(0u, identifier->getChildren().size());
+            EXPECT_EQ(0u, identifier->getParents().size());
+        }
+        {
+            Identifier* identifier = Class(RealClass);
+            EXPECT_EQ(0u, identifier->getChildren().size());
+            EXPECT_EQ(0u, identifier->getParents().size());
+        }
+    }
 
     TEST_F(IdentifierExternalClassHierarchyTest, TestInterface)
     {
