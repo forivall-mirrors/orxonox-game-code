@@ -36,7 +36,7 @@
 #include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
-#include "util/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonManager.h"
 
 #include "interfaces/NotificationListener.h"
 

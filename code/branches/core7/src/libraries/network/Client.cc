@@ -44,7 +44,6 @@
 
 #include "util/Clock.h"
 #include "util/Output.h"
-#include "util/ScopedSingletonManager.h"
 #include "synchronisable/Synchronisable.h"
 #include "packet/Chat.h"
 #include "packet/Gamestate.h"
@@ -52,6 +51,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/commandline/CommandLineParser.h"
+#include "core/singleton/ScopedSingletonManager.h"
 
 namespace orxonox
 {

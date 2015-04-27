@@ -31,8 +31,8 @@
 #include <enet/enet.h>
 #include <cstring>
 
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
+#include "core/singleton/ScopedSingletonManager.h"
 
 
 namespace orxonox

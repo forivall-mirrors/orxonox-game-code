@@ -30,7 +30,7 @@
 
 #include "util/Output.h"
 #include "util/Exception.h"
-#include "util/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonManager.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"

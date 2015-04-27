@@ -44,13 +44,13 @@
 #ifndef __ScopedSingletonManager_H__
 #define __ScopedSingletonManager_H__
 
-#include "UtilPrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <map>
 #include "util/Exception.h"
-#include "util/Scope.h"
 #include "util/Singleton.h"
+#include "Scope.h"
 
 /**
     @brief Registers an orxonox::Singleton with orxonox::ScopedSingletonManager.
@@ -75,7 +75,7 @@ namespace orxonox
         It also keeps track of all existing ScopedSingletonManagers and stores them in a
         map, sorted by the scope they belong to.
     */
-    class _UtilExport ScopedSingletonManager
+    class _CoreExport ScopedSingletonManager
     {
         public:
             /// Constructor: Initializes all the values

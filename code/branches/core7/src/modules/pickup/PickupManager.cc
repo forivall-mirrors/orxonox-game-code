@@ -37,9 +37,9 @@
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
 #include "core/class/Identifier.h"
+#include "core/singleton/ScopedSingletonManager.h"
 #include "network/Host.h"
 #include "network/NetworkFunction.h"
-#include "util/ScopedSingletonManager.h"
 
 #include "infos/PlayerInfo.h"
 #include "interfaces/PickupCarrier.h"

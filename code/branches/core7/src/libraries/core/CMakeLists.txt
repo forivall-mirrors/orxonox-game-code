@@ -68,6 +68,7 @@ ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(input)
 ADD_SUBDIRECTORY(module)
 ADD_SUBDIRECTORY(object)
+ADD_SUBDIRECTORY(singleton)
 
 #Add the icon (for the renderwindow)
 IF(WIN32)
