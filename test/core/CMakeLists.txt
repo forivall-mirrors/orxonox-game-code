@@ -27,6 +27,7 @@ ORXONOX_ADD_EXECUTABLE(
     object/ObjectListIteratorTest.cc
     object/SmartPtrTest.cc
     object/WeakPtrTest.cc
+    singleton/ScopeTest.cc
 )
 ADD_DEPENDENCIES(all_tests core_test)
 

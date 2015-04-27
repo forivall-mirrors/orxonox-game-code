@@ -76,6 +76,16 @@ namespace orxonox
 
 namespace orxonox
 {
+    namespace ScopeID
+    {
+        //!A list of available scopes for the Scope template.
+        enum Value
+        {
+            Root,
+            Graphics
+        };
+    }
+
     namespace XMLPort
     {
         enum Mode
@@ -185,6 +195,10 @@ namespace orxonox
     class OrxonoxInterface;
     class PathConfig;
     struct ResourceInfo;
+    template <ScopeID::Value>
+    class Scope;
+    template <class, ScopeID::Value>
+    class ScopedSingleton;
     class SettingsConfigFile;
     template <class T>
     class SmartPtr;

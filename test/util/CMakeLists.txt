@@ -12,7 +12,6 @@ ORXONOX_ADD_EXECUTABLE(
     mboolTest.cc
     MultiTypeTest.cc
     OutputTest.cc
-    ScopeTest.cc
     SharedPtrTest.cc
     SingletonTest.cc
     SmallObjectAllocatorTest.cc

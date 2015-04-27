@@ -46,7 +46,7 @@
 #   include <elements/CEGUIListboxTextItem.h>
 #endif
 
-#include "util/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/command/ConsoleCommandIncludes.h"

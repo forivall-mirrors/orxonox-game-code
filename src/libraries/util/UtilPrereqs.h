@@ -61,23 +61,6 @@
 #endif
 
 //-----------------------------------------------------------------------
-// Enums
-//-----------------------------------------------------------------------
-
-namespace orxonox
-{
-    namespace ScopeID
-    {
-        //!A list of available scopes for the Scope template.
-        enum Value
-        {
-            Root,
-            Graphics
-        };
-    }
-}
-
-//-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
 
@@ -95,10 +78,6 @@ namespace orxonox
     class OutputListener;
     class OutputManager;
     class OutputStream;
-    template <ScopeID::Value>
-    class Scope;
-    template <class, ScopeID::Value>
-    class ScopedSingleton;
     class ScopeListener;
     template <class T>
     class SharedPtr;

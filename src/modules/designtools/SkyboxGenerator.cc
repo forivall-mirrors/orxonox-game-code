@@ -37,7 +37,6 @@
 #include <OgreRenderWindow.h>
 #include <OgreCamera.h>
 
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
@@ -45,6 +44,7 @@
 #include "core/Resource.h"
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
+#include "core/singleton/ScopedSingletonManager.h"
 
 #include "controllers/HumanController.h"
 #include "graphics/Camera.h"

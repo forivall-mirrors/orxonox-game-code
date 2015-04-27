@@ -28,8 +28,8 @@
 
 #include "PawnManager.h"
 
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
+#include "core/singleton/ScopedSingletonManager.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox

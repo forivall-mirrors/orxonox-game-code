@@ -41,7 +41,7 @@ Instances of orxonox::ScopeListener can register for a given @a scope and will g
 corresponding orxonox::Scope object changes its state.
 
 To avoid multiple instances of orxonox::Scope<@a scope> in different libraries, each instance of orxonox::Scope
-registers in orxonox::ScopeManager, where they are linked statically in the util library.
+registers in orxonox::ScopeManager, where they are linked statically in the core library.
 
 Scopes are usually used to control the creation and destruction of Singletons.
 
@@ -49,30 +49,30 @@ Scopes are usually used to control the creation and destruction of Singletons.
 @see orxonox::Singleton
 */
 
-#ifndef __Util_Scope_H__
-#define __Util_Scope_H__
+#ifndef __Core_Scope_H__
+#define __Core_Scope_H__
 
-#include "UtilPrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <map>
 #include <set>
 #include <loki/ScopeGuard.h>
 
-#include "Output.h"
+#include "util/Output.h"
 
 namespace orxonox
 {
     /**
         @brief The ScopeManager stores the variables of the Scope templates in a statically linked context.
 
-        If all Scope objects are managed by this class, they are statically linked in the util library.
+        If all Scope objects are managed by this class, they are statically linked in the core library.
         Without this, a new instance of Scope<T> for each T would be created in every library of Orxonox,
         which is of course not the desired behavior.
 
         @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
     */
-    class _UtilExport ScopeManager
+    class _CoreExport ScopeManager
     {
         template <ScopeID::Value scope>
         friend class Scope;
@@ -89,7 +89,7 @@ namespace orxonox
 
         @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
     */
-    class _UtilExport ScopeListener
+    class _CoreExport ScopeListener
     {
         template <ScopeID::Value scope>
         friend class Scope;
@@ -197,4 +197,4 @@ namespace orxonox
     };
 }
 
-#endif /* __Util_Scope_H__ */
+#endif /* __Core_Scope_H__ */
