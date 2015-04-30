@@ -47,15 +47,16 @@ class _TowerDefenseExport TowerDefenseSelecter : public ControllableEntity
             virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
-            void fire(unsigned int firemode);
-            virtual void fired(unsigned int firemode);
+            virtual void boost(bool bBoost);
             virtual void setSelectedPosition(TDCoordinate* newPos);
             virtual void setSelectedPosition(int x, int y);
+            bool firePressed_;
+            TDCoordinate* selectedPos_;
+
 
         private:            
             virtual void updatePosition();
-            
-            TDCoordinate* selectedPos_;
+            float timerSetFire_;
             bool moveUpPressed_;
             bool moveDownPressed_;
             bool moveLeftPressed_;

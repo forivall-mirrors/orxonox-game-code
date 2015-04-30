@@ -107,6 +107,7 @@ namespace orxonox
             }
         }*/
 
+        //Timer for the waves (10 seconds between the waves)
         selecter = NULL;
         this->player_ = NULL;        
         this->setHUDTemplate("TowerDefenseHUD");
@@ -116,8 +117,8 @@ namespace orxonox
         this->time = 0;
         this->credit_ = 0;
         this->lifes_ = 0;
+        this->timeSetTower_ = 0;
 
-        //this->stats_ = new TowerDefensePlayerStats();
 
         ModifyConsoleCommand(__CC_addTower_name).setObject(this);
         ModifyConsoleCommand(__CC_upgradeTower_name).setObject(this);
@@ -221,20 +222,20 @@ namespace orxonox
         case 1 :
             en1->addTemplate("enemytowerdefense1");
             en1->setScale(3);
-            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            en1->setHealth(en1->getHealth() +50 + this->getWaveNumber()*4);
             break;
 
         case 2 :
             en1->addTemplate("enemytowerdefense2");
             en1->setScale(2);
-            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            en1->setHealth(en1->getHealth() -30 + this->getWaveNumber()*4);
             //  en1->setShieldHealth(en1->getShield() = this->getWaveNumber()*2))
             break;
 
         case 3 :
             en1->addTemplate("enemytowerdefense3");
             en1->setScale(1);
-            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            en1->setHealth(en1->getHealth() -10 + this->getWaveNumber()*4);
             break;
         }
 
@@ -389,15 +390,60 @@ namespace orxonox
     {
         SUPER(TowerDefense, tick, dt);
         time +=dt;
+        timeSetTower_ +=dt;
+        orxout() << dt << "time" << endl;
+
+        //Check if tower has to be set (because TowerDefenseSelecter asks for it)
+        if(timeSetTower_ >= 0.25)
+        {
+        	timeSetTower_ =0;
+			if(selecter != NULL && selecter->firePressed_)
+			{
+
+				int xcoord = selecter->selectedPos_->GetX();
+				int ycoord = selecter->selectedPos_->GetY();
+				Model* dummyModel2 = new Model(this->center_->getContext());
+
+
+
+				if(towerModelMatrix[xcoord][ycoord] == NULL)
+				{
+					addTower(xcoord,ycoord);
+				}
+				else
+				{
+					if(!((towerModelMatrix [xcoord][ycoord])->getMeshSource() == dummyModel2->getMeshSource()))
+					{
+						towerTurretMatrix[xcoord][ycoord]->upgradeTower();
+					}
+				}
+				selecter->firePressed_ = false;
+			}
+        }
 
         TDCoordinate* coord1 = new TDCoordinate(1,1);
         std::vector<TDCoordinate*> path;
         path.push_back(coord1);
-        if(time>=TowerDefenseEnemyvector.size() && TowerDefenseEnemyvector.size() < 30)
-        {
-            //adds different types of enemys depending on the WaveNumber
-            addTowerDefenseEnemy(path, this->getWaveNumber() % 3 +1 );
-        }
+
+
+        int enemytype = this->getWaveNumber() % 3 +1;
+
+        float randomnumber1 = rand()*100*5;
+        float randomnumber2 = rand()*100*1;
+        float randomnumber3 = rand()*100*1.5;
+
+        float totalnumber = randomnumber1 + randomnumber2 + randomnumber3;
+        int maxspaceships = 30;
+        int spaceships = (int)(maxspaceships* randomnumber1 / totalnumber);
+        int eggs = (int)(maxspaceships*randomnumber2 / totalnumber);
+        int ufos = (int)(maxspaceships*randomnumber3 / totalnumber);
+
+        if(time>=TowerDefenseEnemyvector.size() && TowerDefenseEnemyvector.size() < maxspaceships)
+		{
+			//adds different types of enemys depending on the WaveNumber
+			addTowerDefenseEnemy(path, enemytype);
+		}
+
 
         Vector3* endpoint = new Vector3(500, 700, 150);
         //if ships are at the end they get destroyed

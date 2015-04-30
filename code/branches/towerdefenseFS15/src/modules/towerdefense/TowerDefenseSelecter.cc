@@ -50,7 +50,9 @@ namespace orxonox
         moveDownPressed_ = false;
         moveLeftPressed_ = false;
         moveRightPressed_ = false;
-        setSelectedPosition(0,0);     
+        firePressed_ = false;
+        setSelectedPosition(0,0);
+        timerSetFire_=0;
     }
 
     TowerDefenseSelecter::~TowerDefenseSelecter()
@@ -67,53 +69,51 @@ namespace orxonox
     {
         SUPER(TowerDefenseSelecter, tick, dt);
 
+
         if (hasLocalController())
         {
-            int selecterPosX = selectedPos_->GetX();
-            int selecterPosY = selectedPos_->GetY();
+        	timerSetFire_ +=dt;
 
-            if (moveUpPressed_ == true)
-            {
-                selectedPos_->Set(selecterPosX, selecterPosY + 1);
-                updatePosition();
-                orxout() << "up" << endl;
-            }
-            if (moveDownPressed_ == true)
-            {
-            	selectedPos_->Set(selecterPosX, selecterPosY - 1);
-                updatePosition();
-                orxout() << "Down" << endl;
-            }
+        	if(timerSetFire_ >= 0.25)
+        	{
+        		timerSetFire_ = 0;
 
-            if (moveLeftPressed_ == true)
-            {
-                selectedPos_->Set(selecterPosX - 1, selecterPosY);
-                updatePosition();
-                orxout() << "Left" << endl;
-            }
-            if (moveRightPressed_ == true)
-            {
-            	selectedPos_->Set(selecterPosX + 1, selecterPosY);
-                updatePosition();
-                orxout() << "Right" << endl;
-            }
+        		int selecterPosX = selectedPos_->GetX();
+				int selecterPosY = selectedPos_->GetY();
 
-            /*
-            if (firePressed_ && timeSinceLastFire_ >= maxFireRate_)
-            {
-                firePressed_ = false;
-                timeSinceLastFire_ = 0.0;
-            }
-            */
+				if (moveUpPressed_ == true)
+				{
+					moveUpPressed_ = false;
+					selectedPos_->Set(selecterPosX, selecterPosY + 1);
+					updatePosition();
+				}
+				if (moveDownPressed_ == true)
+				{
+					moveDownPressed_ = false;
+					selectedPos_->Set(selecterPosX, selecterPosY - 1);
+					updatePosition();
+				}
+
+				if (moveLeftPressed_ == true)
+				{
+					moveLeftPressed_ = false;
+					selectedPos_->Set(selecterPosX - 1, selecterPosY);
+					updatePosition();
+				}
+				if (moveRightPressed_ == true)
+				{
+					moveRightPressed_ = false;
+					selectedPos_->Set(selecterPosX + 1, selecterPosY);
+					updatePosition();
+				}
+
+
+			}
+
+
+
         }
-
-        // Reset key variables
-        moveUpPressed_ = false;
-        moveDownPressed_ = false;
-        moveLeftPressed_ = false;
-        moveRightPressed_ = false;
-        //firePressed_ = false;
-    }
+     }
 
 
     void TowerDefenseSelecter::moveFrontBack(const Vector2& value)
@@ -156,14 +156,13 @@ namespace orxonox
     {
     }
 
-    void TowerDefenseSelecter::fire(unsigned int firemode)
+
+    void TowerDefenseSelecter::boost(bool bBoost)
     {
+        firePressed_ = true;
+        orxout() << "boost" << endl;
     }
 
-    void TowerDefenseSelecter::fired(unsigned int firemode)
-    {
-        //firePressed_ = true;
-    }
 
     void TowerDefenseSelecter::updatePosition()
     {
