@@ -15,9 +15,11 @@
 #include "worldentities/MovableEntity.h"
 #include "core/CoreIncludes.h"
 #include "GravityBomb.h"
+#include "graphics/ParticleSpawner.h"
+
 
 namespace orxonox {
-class GravityBombField: public ForceField {
+class GravityBombField: public ForceField, public RadarViewable {
 public:
 	GravityBombField(Context* context);
 	virtual ~GravityBombField();
@@ -31,6 +33,8 @@ private:
 	float forceSphereRadius_;
 	float forceStrength_;
 	float lifetime_;
+	bool fieldExploded_;
+	ParticleEmitter * particleSphere_;
 
 };
 
