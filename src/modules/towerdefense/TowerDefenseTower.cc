@@ -65,10 +65,10 @@ namespace orxonox
             upgrade++;
             float reloadrate = getReloadRate();
             float reloadwaittime = getReloadWaitTime();
-            this->setDamageMultiplier((upgrade+1)*2);
+            this->setDamageMultiplier((upgrade+1)*1.5);
             this->setRotationThrust(2*this->getRotationThrust());
-            reloadrate = 0.5f*reloadrate;
-            reloadwaittime = 0.5f*reloadwaittime;
+            reloadrate = 0.7f*reloadrate;
+            reloadwaittime = 0.7f*reloadwaittime;
             setReloadRate(reloadrate);
             setReloadWaitTime(reloadwaittime);
             //this->addTemplate("towerturret1");

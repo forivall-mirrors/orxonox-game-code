@@ -98,6 +98,7 @@ namespace orxonox
         TowerDefenseCenterpoint *center_;
         PlayerInfo* player_;
         float time;
+        float timeSetTower_;
 //        float time2;
         int credit_;
         int waves_;
