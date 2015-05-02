@@ -65,7 +65,7 @@ namespace orxonox
         }
     }
 
-    RegisterAbstractClass(SoundManager).inheritsFrom<Configurable>();
+    RegisterAbstractClass(SoundManager).inheritsFrom<Configurable>().inheritsFrom<UpdateListener>();
 
     SoundManager::SoundManager()
         : effectsPoolSize_(0)

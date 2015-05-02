@@ -32,11 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/Singleton.h"
-#include "tools/interfaces/Tickable.h"
+#include "core/UpdateListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ShipPartManager : public Singleton<ShipPartManager>, public Tickable
+    class _OrxonoxExport ShipPartManager : public Singleton<ShipPartManager>, public UpdateListener
     {
             friend class Singleton<ShipPartManager>;
         public:
@@ -44,6 +44,7 @@ namespace orxonox
             virtual ~ShipPartManager();
 
             virtual void preUpdate(const Clock& time);
+            virtual void postUpdate(const Clock& time) { /*no action*/ }
 
         private:
 

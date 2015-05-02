@@ -38,10 +38,11 @@
 #include "util/Singleton.h"
 #include "core/WindowEventListener.h"
 #include "core/command/Shell.h"
+#include "core/UpdateListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public Singleton<InGameConsole>, public ShellListener, public WindowEventListener
+    class _OrxonoxExport InGameConsole : public Singleton<InGameConsole>, public ShellListener, public WindowEventListener, public UpdateListener
     {
         friend class Singleton<InGameConsole>;
     public: // functions
@@ -52,6 +53,7 @@ namespace orxonox
         void setConfigValues();
 
         void preUpdate(const Clock& time);
+        void postUpdate(const Clock& time) { /*no action*/ }
 
         static void openConsole();
         static void closeConsole();

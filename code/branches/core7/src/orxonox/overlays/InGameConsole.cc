@@ -66,7 +66,7 @@ namespace orxonox
 
     ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 
-    RegisterAbstractClass(InGameConsole).inheritsFrom<WindowEventListener>();
+    RegisterAbstractClass(InGameConsole).inheritsFrom<WindowEventListener>().inheritsFrom<UpdateListener>();
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.

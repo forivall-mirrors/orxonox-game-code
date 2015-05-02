@@ -208,6 +208,7 @@ namespace orxonox
     class Template;
     class Thread;
     class ThreadPool;
+    class UpdateListener;
     class ViewportEventListener;
     template <class T>
     class WeakPtr;

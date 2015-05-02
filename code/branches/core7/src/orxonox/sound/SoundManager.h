@@ -40,6 +40,7 @@
 #include "util/Singleton.h"
 #include "core/config/Configurable.h"
 #include "core/object/SmartPtr.h"
+#include "core/UpdateListener.h"
 
 // tolua_begin
 namespace orxonox
@@ -58,7 +59,7 @@ namespace orxonox
     //! The SoundManager class manages the OpenAL device, context and listener position.
     class _OrxonoxExport SoundManager
     // tolua_end
-        : public Singleton<SoundManager>, public Configurable
+        : public Singleton<SoundManager>, public Configurable, public UpdateListener
     { // tolua_export
         friend class Singleton<SoundManager>;
 
@@ -67,6 +68,7 @@ namespace orxonox
         ~SoundManager();
 
         void preUpdate(const Clock& time);
+        void postUpdate(const Clock& time) { /*no action*/ }
         void setConfigValues();
 
         // tolua_begin
