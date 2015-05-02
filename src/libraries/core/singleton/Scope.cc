@@ -35,6 +35,14 @@
 
 namespace orxonox
 {
-    std::map<ScopeID::Value, int> ScopeManager::instanceCounts_s;
-    std::map<ScopeID::Value, std::set<ScopeListener*> > ScopeManager::listeners_s;
+    /*static*/ std::map<ScopeID::Value, int>& ScopeManager::getInstanceCounts()
+    {
+        static std::map<ScopeID::Value, int> instanceCounts;
+        return instanceCounts;
+    }
+    /*static*/ std::map<ScopeID::Value, std::set<ScopeListener*> >& ScopeManager::getListeners()
+    {
+        static std::map<ScopeID::Value, std::set<ScopeListener*> > listeners;
+        return listeners;
+    }
 }
