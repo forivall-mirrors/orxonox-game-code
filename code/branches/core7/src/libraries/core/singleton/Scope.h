@@ -79,8 +79,8 @@ namespace orxonox
         friend class ScopeListener;
 
         private:
-            static std::map<ScopeID::Value, int> instanceCounts_s;                  //!< Counts the number of active instances (>0 means active) for a scope
-            static std::map<ScopeID::Value, std::set<ScopeListener*> > listeners_s; //!< Stores all listeners for a scope
+            static std::map<ScopeID::Value, int>& getInstanceCounts();                  //!< Counts the number of active instances (>0 means active) for a scope
+            static std::map<ScopeID::Value, std::set<ScopeListener*> >& getListeners(); //!< Stores all listeners for a scope
     };
 
     /**
@@ -97,10 +97,10 @@ namespace orxonox
         protected:
             //! Constructor: Registers the instance.
             ScopeListener(ScopeID::Value scope) : scope_(scope), bActivated_(false)
-                { ScopeManager::listeners_s[this->scope_].insert(this); }
+                { ScopeManager::getListeners()[this->scope_].insert(this); }
             //! Destructor: Unregisters the instance.
             virtual ~ScopeListener()
-                { ScopeManager::listeners_s[this->scope_].erase(this); }
+                { ScopeManager::getListeners()[this->scope_].erase(this); }
 
             //! Gets called if the scope is activated
             virtual void activated() = 0;
@@ -131,12 +131,12 @@ namespace orxonox
 
                 try
                 {
-                    ScopeManager::instanceCounts_s[scope]++;
-                    assert(ScopeManager::instanceCounts_s[scope] > 0);
-                    if (ScopeManager::instanceCounts_s[scope] == 1)
+                    ScopeManager::getInstanceCounts()[scope]++;
+                    assert(ScopeManager::getInstanceCounts()[scope] > 0);
+                    if (ScopeManager::getInstanceCounts()[scope] == 1)
                     {
                         Loki::ScopeGuard deactivator = Loki::MakeObjGuard(*this, &Scope::deactivateListeners);
-                        for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
+                        for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getListeners()[scope].begin(); it != ScopeManager::getListeners()[scope].end(); )
                         {
                             (*it)->activated();
                             (*(it++))->bActivated_ = true;
@@ -146,7 +146,7 @@ namespace orxonox
                 }
                 catch (...)
                 {
-                    ScopeManager::instanceCounts_s[scope]--;
+                    ScopeManager::getInstanceCounts()[scope]--;
                     throw;
                 }
 
@@ -158,14 +158,14 @@ namespace orxonox
             {
                 orxout(internal_status) << "destroying scope... (" << scope << ")" << endl;
 
-                ScopeManager::instanceCounts_s[scope]--;
+                ScopeManager::getInstanceCounts()[scope]--;
 
                 // This shouldn't happen but just to be sure: check if the count is positive
-                assert(ScopeManager::instanceCounts_s[scope] >= 0);
-                if (ScopeManager::instanceCounts_s[scope] < 0)
-                    ScopeManager::instanceCounts_s[scope] = 0;
+                assert(ScopeManager::getInstanceCounts()[scope] >= 0);
+                if (ScopeManager::getInstanceCounts()[scope] < 0)
+                    ScopeManager::getInstanceCounts()[scope] = 0;
 
-                if (ScopeManager::instanceCounts_s[scope] == 0)
+                if (ScopeManager::getInstanceCounts()[scope] == 0)
                     this->deactivateListeners();
 
                 orxout(internal_status) << "destroyed scope (" << scope << ")" << endl;
@@ -174,7 +174,7 @@ namespace orxonox
             //! Deactivates the listeners of this scope in case the scope is destroyed or the construction fails.
             void deactivateListeners()
             {
-                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )
+                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getListeners()[scope].begin(); it != ScopeManager::getListeners()[scope].end(); )
                 {
                     if ((*it)->bActivated_)
                     {
@@ -192,7 +192,7 @@ namespace orxonox
             //! Returns true if the scope is active.
             static bool isActive()
             {
-                return (ScopeManager::instanceCounts_s[scope] > 0);
+                return (ScopeManager::getInstanceCounts()[scope] > 0);
             }
     };
 }
