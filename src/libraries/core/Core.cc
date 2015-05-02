@@ -78,6 +78,7 @@
 #include "input/InputManager.h"
 #include "object/ObjectList.h"
 #include "module/ModuleInstance.h"
+#include "UpdateListener.h"
 
 namespace orxonox
 {
@@ -480,16 +481,15 @@ namespace orxonox
 
     void Core::preUpdate(const Clock& time)
     {
-        // Update singletons before general ticking
-        ScopedSingletonManager::preUpdate<ScopeID::Root>(time);
+        // Update UpdateListeners before general ticking
+        for (ObjectList<UpdateListener>::iterator it = ObjectList<UpdateListener>::begin(); it != ObjectList<UpdateListener>::end(); ++it)
+            it->preUpdate(time);
         if (this->bGraphicsLoaded_)
         {
             // Process input events
             this->inputManager_->preUpdate(time);
             // Update GUI
             this->guiManager_->preUpdate(time);
-            // Update singletons before general ticking
-            ScopedSingletonManager::preUpdate<ScopeID::Graphics>(time);
         }
         // Process console events and status line
         if (this->ioConsole_ != NULL)
@@ -500,12 +500,11 @@ namespace orxonox
 
     void Core::postUpdate(const Clock& time)
     {
-        // Update singletons just before rendering
-        ScopedSingletonManager::postUpdate<ScopeID::Root>(time);
+        // Update UpdateListeners just before rendering
+        for (ObjectList<UpdateListener>::iterator it = ObjectList<UpdateListener>::begin(); it != ObjectList<UpdateListener>::end(); ++it)
+            it->postUpdate(time);
         if (this->bGraphicsLoaded_)
         {
-            // Update singletons just before rendering
-            ScopedSingletonManager::postUpdate<ScopeID::Graphics>(time);
             // Render (doesn't throw)
             this->graphicsManager_->postUpdate(time);
         }

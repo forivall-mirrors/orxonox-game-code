@@ -40,15 +40,9 @@ namespace orxonox
         static std::map<std::string, ScopedSingletonManager*> managers;
         return managers;
     }
-    /*static*/ ScopedSingletonManager::ManagerMultiMap& ScopedSingletonManager::getManagersByScope()
-    {
-        static ManagerMultiMap managers;
-        return managers;
-    }
 
     /*static*/ void ScopedSingletonManager::addManager(ScopedSingletonManager* manager)
     {
         getManagers()[manager->className_] = manager;
-        getManagersByScope().insert(std::make_pair(manager->scope_, manager));
     }
 }

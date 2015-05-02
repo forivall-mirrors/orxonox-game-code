@@ -26,30 +26,25 @@
  *
  */
 
-#ifndef _PawnManager_H__
-#define _PawnManager_H__
+#ifndef _UpdateListener_H__
+#define _UpdateListener_H__
 
-#include "OrxonoxPrereqs.h"
+#include "core/CorePrereqs.h"
 
-#include "util/Singleton.h"
-#include "core/UpdateListener.h"
+#include "core/object/Listable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PawnManager : public Singleton<PawnManager>, public UpdateListener
+    class _CoreExport UpdateListener : virtual public Listable
     {
-            friend class Singleton<PawnManager>;
         public:
-            PawnManager();
-            virtual ~PawnManager();
+            UpdateListener();
 
-            virtual void preUpdate(const Clock& time);
-            virtual void postUpdate(const Clock& time) { /*no action*/ }
-
-        private:
-
-            static PawnManager* singletonPtr_s;
+            /// Gets called by Core before the framework is ticked.
+            virtual void preUpdate(const Clock& time) = 0;
+            /// Gets called by Core after the framework was ticked (but before graphics are drawn).
+            virtual void postUpdate(const Clock& time) = 0;
     };
 }
 
-#endif /* _PawnManager_H__ */
+#endif /* _UpdateListener_H__ */

@@ -26,30 +26,15 @@
  *
  */
 
-#ifndef _PawnManager_H__
-#define _PawnManager_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include "util/Singleton.h"
-#include "core/UpdateListener.h"
+#include "UpdateListener.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PawnManager : public Singleton<PawnManager>, public UpdateListener
+    RegisterAbstractClass(UpdateListener).inheritsFrom<Listable>();
+
+    UpdateListener::UpdateListener()
     {
-            friend class Singleton<PawnManager>;
-        public:
-            PawnManager();
-            virtual ~PawnManager();
-
-            virtual void preUpdate(const Clock& time);
-            virtual void postUpdate(const Clock& time) { /*no action*/ }
-
-        private:
-
-            static PawnManager* singletonPtr_s;
-    };
+        RegisterObject(UpdateListener);
+    }
 }
-
-#endif /* _PawnManager_H__ */

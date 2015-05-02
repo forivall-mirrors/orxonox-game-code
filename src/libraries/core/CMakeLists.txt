@@ -33,6 +33,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Namespace.cc
   NamespaceNode.cc
   Template.cc
+  UpdateListener.cc
   ViewportEventListener.cc
   WindowEventListener.cc
   XMLNameListener.cc

@@ -67,13 +67,9 @@
 
 namespace orxonox
 {
-    class Destroyable;
-
     /**
-        @brief Base class of ClassScopedSingletonManager, implements some static functions
-        used to dispatch calls to preUpdate and postUpdate to all instances of this class.
-        It also keeps track of all existing ScopedSingletonManagers and stores them in a
-        map, sorted by the scope they belong to.
+        @brief Base class of ClassScopedSingletonManager. Keeps track of all existing ScopedSingletonManagers
+        and stores them in a map, sorted by the scope they belong to.
     */
     class _CoreExport ScopedSingletonManager
     {
@@ -88,29 +84,8 @@ namespace orxonox
             /// Adds a new instance of ScopedSingletonManager to the map.
             static void addManager(ScopedSingletonManager* manager);
 
-            /// Calls preUpdate in all instances of ScopedSingletonManager that are registered in the map.
-            template<ScopeID::Value scope>
-            static void preUpdate(const Clock& time)
-            {
-                assert(Scope<scope>::isActive());
-                for (ManagerMultiMap::iterator it = getManagersByScope().lower_bound(scope); it != getManagersByScope().upper_bound(scope); ++it)
-                    it->second->preUpdate(time);
-            }
-            virtual void preUpdate(const Clock& time) = 0;
-
-            /// Calls postUpdate in all instances of ScopedSingletonManager that are registered in the map.
-            template<ScopeID::Value scope>
-            static void postUpdate(const Clock& time)
-            {
-                assert(Scope<scope>::isActive());
-                for (ManagerMultiMap::iterator it = getManagersByScope().lower_bound(scope); it != getManagersByScope().upper_bound(scope); ++it)
-                    it->second->postUpdate(time);
-            }
-            virtual void postUpdate(const Clock& time) = 0;
-
             static std::map<std::string, ScopedSingletonManager*>& getManagers();
             typedef std::multimap<ScopeID::Value, ScopedSingletonManager*> ManagerMultiMap;
-            static ManagerMultiMap& getManagersByScope();
 
         protected:
             const std::string className_;   ///< The name of the scoped singleton class that is managed by this object
@@ -176,22 +151,6 @@ namespace orxonox
             delete singletonPtr_;
         }
 
-        //! Called every frame by the ScopedSingletonManager
-        void preUpdate(const Clock& time)
-        {
-            assert(Scope<scope>::isActive());
-            // assuming T inherits Singleton<T>
-            singletonPtr_->preUpdateSingleton(time);
-        }
-
-        //! Called every frame by the ScopedSingletonManager
-        void postUpdate(const Clock& time)
-        {
-            assert(Scope<scope>::isActive());
-            // assuming T inherits Singleton<T>
-            singletonPtr_->postUpdateSingleton(time);
-        }
-
     private:
         T* singletonPtr_;   ///< Unique instance of the singleton class @a T
     };
@@ -254,24 +213,6 @@ namespace orxonox
         void destroy(void*)
         {
             delete singletonPtr_;
-        }
-
-        //! Called every frame by the ScopedSingletonManager
-        void preUpdate(const Clock& time)
-        {
-            assert(Scope<scope>::isActive());
-            // assuming T inherits Singleton<T>
-            if (singletonPtr_ != NULL)
-                singletonPtr_->preUpdateSingleton(time);
-        }
-
-        //! Called every frame by the ScopedSingletonManager
-        void postUpdate(const Clock& time)
-        {
-            assert(Scope<scope>::isActive());
-            // assuming T inherits Singleton<T>
-            if (singletonPtr_ != NULL)
-                singletonPtr_->postUpdateSingleton(time);
         }
 
     private:
