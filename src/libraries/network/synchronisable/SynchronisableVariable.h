@@ -64,8 +64,6 @@ namespace orxonox{
       virtual void* getReference()=0;
       virtual uint8_t getMode()=0;
       virtual ~SynchronisableVariableBase() {}
-    protected:
-      static uint8_t state_;
   };
 
   template <class T>
@@ -107,10 +105,6 @@ namespace orxonox{
   template <class T> SynchronisableVariable<T>::SynchronisableVariable(T& variable, uint8_t syncDirection, NetworkCallbackBase *cb):
       variable_( variable ), mode_( syncDirection ), callback_( cb )
   {
-    if ( state_ == 0x0 )
-    {
-      state_ = GameMode::isMaster() ? 0x1 : 0x2;  // set the appropriate mode here
-    }
   }
 
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()
