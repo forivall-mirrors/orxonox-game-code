@@ -34,11 +34,6 @@
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/TimeFactorListener.h"
 
-#define getAllEmitters() \
-  storeThisAsCurrentParticleInterface(); \
-  for (unsigned int i = 0; i < ParticleInterface::getCurrentParticleInterface()->getNumEmitters(); ++i) \
-    ParticleInterface::getCurrentParticleInterface()->getEmitter(i)
-
 namespace orxonox
 {
     class _ToolsExport ParticleInterface : public TimeFactorListener
@@ -79,11 +74,6 @@ namespace orxonox
 
             void setDetailLevel(unsigned int level);
 
-            inline void storeThisAsCurrentParticleInterface()
-                { ParticleInterface::currentParticleInterface_s = this; }
-            inline static ParticleInterface* getCurrentParticleInterface()
-                { return ParticleInterface::currentParticleInterface_s; }
-
         protected:
             virtual void changedTimeFactor(float factor_new, float factor_old);
 
@@ -102,7 +92,6 @@ namespace orxonox
             // config values
             unsigned int              globalDetailLevel_; //!< Global maximum detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
 
-            static ParticleInterface* currentParticleInterface_s;
             static unsigned int       counter_s;
     };
 }

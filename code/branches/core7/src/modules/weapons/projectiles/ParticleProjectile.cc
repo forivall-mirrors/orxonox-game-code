@@ -53,7 +53,8 @@ namespace orxonox
             this->attachOgreObject(this->particles_->getParticleSystem());
             this->particles_->setKeepParticlesInLocalSpace(0);
 
-            this->particles_->getAllEmitters()->setDirection(-WorldEntity::FRONT);
+            for (unsigned int i = 0; i < this->particles_->getNumEmitters(); ++i)
+                this->particles_->getEmitter(i)->setDirection(-WorldEntity::FRONT);
         }
         else
             this->particles_ = 0;
