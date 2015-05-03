@@ -314,7 +314,7 @@ namespace orxonox
         if (ClassIdentifier<T>::classIdentifier_s == NULL)
             ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*) IdentifierManager::getInstance().getIdentifierByTypeInfo(typeid(T));
 
-        OrxVerify(ClassIdentifier<T>::classIdentifier_s != NULL, "Assertion failed in ClassIdentifier of type " << typeid(T).name());
+        OrxVerify(ClassIdentifier<T>::classIdentifier_s != NULL, "Did you forget to register the class of type " << typeid(T).name() << "?");
         return ClassIdentifier<T>::classIdentifier_s;
     }
 
