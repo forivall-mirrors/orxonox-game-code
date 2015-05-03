@@ -52,7 +52,6 @@ namespace orxonox
         : Item(context), parent_(NULL)
     {
         RegisterObject(ShipPart);
-        this->alive_ = true;
         this->eventExecution_ = true;
         this->healthMem_ = 100;
     }
@@ -89,11 +88,7 @@ namespace orxonox
     */
     void ShipPart::death()
     {
-        //if (!(this->isAlive()))
-            //return;
-
         this->explode();
-        this->setAlive(false);
 
         if(eventExecution_)
         {
@@ -103,6 +98,8 @@ namespace orxonox
                 this->getDestructionEvent(i)->execute();
             }
         }
+
+        this->destroyLater();
     }
 
     void ShipPart::explode()
@@ -202,12 +199,6 @@ namespace orxonox
     void ShipPart::setHealth(float health)
     {
         this->health_ = health;
-    }
-
-    void ShipPart::setAlive(bool var)
-    {
-        this->alive_ = var;
-        orxout() << "ShipPart " << this->getName() << " alive_: " << this->alive_ << endl;
     }
 
     /**

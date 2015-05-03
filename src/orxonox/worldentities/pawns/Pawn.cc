@@ -325,8 +325,9 @@ namespace orxonox
         this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
-            // Set bAlive_ to false and wait for PawnManager to do the destruction
+            // Set bAlive_ to false and wait for destroyLater() to do the destruction
             this->bAlive_ = false;
+            this->destroyLater();
 
             this->setDestroyWhenPlayerLeft(false);
 

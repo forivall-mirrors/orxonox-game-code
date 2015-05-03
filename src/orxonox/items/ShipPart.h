@@ -71,10 +71,6 @@ namespace orxonox // tolua_export
             inline ModularSpaceShip* getParent()
                 { return this->parent_; }
 
-            void setAlive(bool var);
-            inline bool isAlive()
-                { return this->alive_; }
-
             inline void setEventExecution(bool var)
                 { this->eventExecution_ = var; }
             inline bool isEventExecution()
@@ -120,7 +116,6 @@ namespace orxonox // tolua_export
             std::vector<StaticEntity*> entityList_;         // List of all entities which belong to this part
             std::vector<PartDestructionEvent*> eventList_;  // The list of all PartDestructionEvent assigned to this ShipPart.
 
-            bool alive_;
             bool eventExecution_;
 
             float healthMem_;
