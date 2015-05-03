@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-  ManageScopedSingleton(LANDiscovery, ScopeID::Graphics, true);
+  ManageScopedSingleton(LANDiscovery, ScopeID::Graphics, false);
 
   LANDiscovery::LANDiscovery()
   {
