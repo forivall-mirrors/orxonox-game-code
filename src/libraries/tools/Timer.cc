@@ -246,6 +246,9 @@ namespace orxonox
     ///////////////
     // RealTimer //
     ///////////////
+
+    RegisterClassNoArgs(RealTimer);
+
     /// @copydoc Timer::Timer
     RealTimer::RealTimer()
     {
