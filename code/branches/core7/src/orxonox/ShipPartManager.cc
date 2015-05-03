@@ -50,7 +50,7 @@ namespace orxonox
             (it++)->destroy();
     }
 
-    void ShipPartManager::preUpdate(const Clock& time)
+    void ShipPartManager::postUpdate(const Clock& time)
     {
         for (ObjectList<ShipPart>::iterator it = ObjectList<ShipPart>::begin(); it != ObjectList<ShipPart>::end(); )
         {
