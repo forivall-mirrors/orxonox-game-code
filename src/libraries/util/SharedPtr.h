@@ -137,7 +137,7 @@
         OtherClass* other2 = new OtherClass(object);        // "
         OtherClass* other3 = new OtherClass(object);        // "
 
-    }                                                       // The SmartPtr "object" is destroyed at the end of the scope,
+    }                                                       // The SharedPtr "object" is destroyed at the end of the scope,
                                                             // but the three instances of OtherClass keep the object alive
                                                             // until they are all destroyed.
     @endcode
