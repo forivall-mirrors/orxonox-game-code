@@ -77,7 +77,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             if (this->getScene() && this->getScene()->isUpdatingPhysics())
-                orxout(internal_error) << "Don't destroy collision shapes while the physics is updated! This will lead to crashes" << endl;
+                orxout(internal_error) << "Don't destroy collision shapes while the physics is updated! This will lead to crashes. Try to use destroyLater() instead" << endl;
 
             if (this->parent_)
                 this->parent_->detach(this);

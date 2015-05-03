@@ -72,7 +72,6 @@ namespace orxonox
     class LevelInfo;
     class LevelInfoItem;
     class LevelManager;
-    class PawnManager;
     class PlayerManager;
     class Radar;
     class Scene;

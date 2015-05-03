@@ -28,9 +28,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   LevelManager.cc
   Main.cc
   MoodManager.cc
-  PawnManager.cc
   PlayerManager.cc
-  ShipPartManager.cc
   Radar.cc
 #  Test.cc
 
