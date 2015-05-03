@@ -32,6 +32,7 @@
 */
 
 #include "Destroyable.h"
+#include "DestroyLaterManager.h"
 
 #include <cassert>
 
@@ -72,5 +73,17 @@ namespace orxonox
             if (this->referenceCount_ == 0)
                 delete this;
         }
+    }
+
+    /**
+     * Works like @ref destroy() but doesn't destroy the object until the current tick has ended.
+     */
+    void Destroyable::destroyLater()
+    {
+        // register in DestroyLaterManager - this ensures that a smartPtr points to this object and keeps it alive for a while
+        DestroyLaterManager::getInstance().retain(this);
+
+        // request destruction -> object will be deleted after all smartPtrs (including the one in DestroyLaterManager) were destroyed.
+        this->destroy();
     }
 }
