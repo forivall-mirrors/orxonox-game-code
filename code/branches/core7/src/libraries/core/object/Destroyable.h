@@ -56,6 +56,7 @@ namespace orxonox
             virtual ~Destroyable();
 
             void destroy();
+            void destroyLater();
 
             /// Returns the number of @ref orxonox::SmartPtr "smart pointers" that point to this object.
             inline unsigned int getReferenceCount() const

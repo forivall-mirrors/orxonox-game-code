@@ -156,6 +156,7 @@ namespace orxonox
     class Context;
     class Core;
     class Destroyable;
+    class DestroyLaterManager;
     class DestructionListener;
     class DynLib;
     class DynLibManager;
