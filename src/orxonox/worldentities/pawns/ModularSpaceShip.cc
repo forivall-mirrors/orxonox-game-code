@@ -68,7 +68,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-
+            while (!this->partList_.empty())
+                this->partList_[0]->destroy();
         }
     }
 
@@ -176,7 +177,7 @@ namespace orxonox
         {
             if (it->second->getName() == name)
             {
-                it->second->setAlive(false);
+                it->second->death();
                 return;
             }
         }
@@ -195,7 +196,7 @@ namespace orxonox
         {
             if (it->second->getName() == name)
             {
-                it->second->setAlive(false);
+                it->second->death();
                 return;
             }
         }
