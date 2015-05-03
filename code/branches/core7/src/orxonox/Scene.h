@@ -109,7 +109,7 @@ namespace orxonox
         /////////////
 
         public:
-            inline bool hasPhysics()
+            inline bool hasPhysics() const
                 { return this->physicalWorld_ != 0; }
             void setPhysicalWorld(bool wantsPhysics);
 
@@ -127,6 +127,9 @@ namespace orxonox
 
             void addPhysicalObject(WorldEntity* object);
             void removePhysicalObject(WorldEntity* object);
+
+            inline bool isUpdatingPhysics() const
+                { return this->bIsUpdatingPhysics_; }
 
             void setDebugDrawPhysics(bool bDraw, bool bFill, float fillAlpha);
 
@@ -162,6 +165,7 @@ namespace orxonox
 
             BulletDebugDrawer*                   debugDrawer_;
             bool                                 bDebugDrawPhysics_;
+            bool                                 bIsUpdatingPhysics_;
     };
 }
 
