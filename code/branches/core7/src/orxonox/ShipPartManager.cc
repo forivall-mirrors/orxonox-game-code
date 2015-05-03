@@ -45,9 +45,9 @@ namespace orxonox
 
     ShipPartManager::~ShipPartManager()
     {
-        // Be sure to delete all the pawns
+        // Be sure to delete all the ship parts
         for (ObjectList<ShipPart>::iterator it = ObjectList<ShipPart>::begin(); it != ObjectList<ShipPart>::end(); )
-            (it++)->death();
+            (it++)->destroy();
     }
 
     void ShipPartManager::preUpdate(const Clock& time)
@@ -55,7 +55,7 @@ namespace orxonox
         for (ObjectList<ShipPart>::iterator it = ObjectList<ShipPart>::begin(); it != ObjectList<ShipPart>::end(); )
         {
             if (!it->isAlive())
-                (it++)->death();
+                (it++)->destroy();
             else
                 ++it;
         }

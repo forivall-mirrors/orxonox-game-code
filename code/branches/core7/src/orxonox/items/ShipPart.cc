@@ -49,17 +49,21 @@ namespace orxonox
     RegisterClass(ShipPart);
 
     ShipPart::ShipPart(Context* context)
-        : Item(context)
+        : Item(context), parent_(NULL)
     {
         RegisterObject(ShipPart);
-        this->setAlive(true);
-        this->setEventExecution(true);
+        this->alive_ = true;
+        this->eventExecution_ = true;
         this->healthMem_ = 100;
     }
 
     ShipPart::~ShipPart()
     {
-
+        if (this->parent_)
+        {
+            // Remove this ShipPart from the parent.
+            this->parent_->removeShipPart(this);
+        }
     }
 
     void ShipPart::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -99,10 +103,6 @@ namespace orxonox
                 this->getDestructionEvent(i)->execute();
             }
         }
-
-        // Remove this ShipPart from the parent.
-        this->parent_->removeShipPart(this);
-        delete this;
     }
 
     void ShipPart::explode()
@@ -239,8 +239,7 @@ namespace orxonox
             }
         }
         if (this->health_ < 0)
-            this->alive_ = false;
-            //this->death();
+            this->death();
 
         // (Ugly) Chatoutput of health, until a GUI for modularspaceships-shipparts is implemented.
         if ((this->health_ < 0.2 * this->maxHealth_) && (this->healthMem_ == 40))
