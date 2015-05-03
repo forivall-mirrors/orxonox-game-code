@@ -55,7 +55,6 @@ namespace orxonox
     {
         public:
             SphereCollisionShape(Context* context);
-            virtual ~SphereCollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 

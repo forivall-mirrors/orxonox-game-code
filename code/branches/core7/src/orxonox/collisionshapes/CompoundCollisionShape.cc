@@ -70,9 +70,13 @@ namespace orxonox
                 // make sure that the child doesn't want to detach itself --> speedup because of the missing update
                 it->first->notifyDetached();
                 it->first->destroy();
+                if (this->collisionShape_ == it->second)
+                    this->collisionShape_ = NULL; // don't destroy it twice
             }
 
             delete this->compoundShape_;
+            if (this->collisionShape_ == this->compoundShape_)
+                this->collisionShape_ = NULL; // don't destroy it twice
         }
     }
 

@@ -53,12 +53,6 @@ namespace orxonox
         updateShape();
     }
 
-    ConeCollisionShape::~ConeCollisionShape()
-    {
-        if (this->isInitialized())
-            delete this->collisionShape_;
-    }
-
     /**
     @brief
         Creates a new internal collision shape for the ConeCollisionShape.

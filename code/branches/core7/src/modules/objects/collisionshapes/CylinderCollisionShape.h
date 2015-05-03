@@ -52,7 +52,6 @@ namespace orxonox
     {
         public:
             CylinderCollisionShape(Context* context);
-            virtual ~CylinderCollisionShape();
 
         private:
             btCollisionShape* createNewShape() const; // Creates a new internal collision shape for the CylinderCollisionShape.

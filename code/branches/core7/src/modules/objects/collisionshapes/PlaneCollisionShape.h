@@ -57,7 +57,6 @@ namespace orxonox
     {
         public:
             PlaneCollisionShape(Context* context);
-            virtual ~PlaneCollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 

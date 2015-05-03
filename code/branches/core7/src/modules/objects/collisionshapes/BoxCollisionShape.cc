@@ -57,13 +57,6 @@ namespace orxonox
         this->registerVariables();
     }
 
-    BoxCollisionShape::~BoxCollisionShape()
-    {
-        // TODO: Move to CollisionShape?
-        if (this->isInitialized())
-            delete this->collisionShape_;
-    }
-
     void BoxCollisionShape::registerVariables()
     {
         registerVariable(this->halfExtents_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));
