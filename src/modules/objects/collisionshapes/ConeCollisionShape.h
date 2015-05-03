@@ -55,7 +55,6 @@ namespace orxonox
     {
         public:
             ConeCollisionShape(Context* context);
-            virtual ~ConeCollisionShape();
 
         private:
             btCollisionShape* createNewShape() const; // Creates a new internal collision shape for the ConeCollisionShape.

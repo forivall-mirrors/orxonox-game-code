@@ -58,12 +58,6 @@ namespace orxonox
         this->registerVariables();
     }
 
-    PlaneCollisionShape::~PlaneCollisionShape()
-    {
-        if (this->isInitialized())
-            delete this->collisionShape_;
-    }
-
     void PlaneCollisionShape::registerVariables()
     {
         registerVariable(this->normal_, VariableDirection::ToClient, new NetworkCallback<CollisionShape>(this, &CollisionShape::updateShape));

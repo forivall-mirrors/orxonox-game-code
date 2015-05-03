@@ -47,11 +47,6 @@ namespace orxonox
         this->setSyncMode(ObjectDirection::None);
     }
 
-    WorldEntityCollisionShape::~WorldEntityCollisionShape()
-    {
-        // Called always by WE destructor
-    }
-
     void WorldEntityCollisionShape::updateParent()
     {
         // Note: This shape may also be attached to a CompoundCollisionShape because it's hosting

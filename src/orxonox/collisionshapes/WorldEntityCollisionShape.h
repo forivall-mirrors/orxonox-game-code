@@ -38,7 +38,6 @@ namespace orxonox
     {
         public:
             WorldEntityCollisionShape(Context* context);
-            virtual ~WorldEntityCollisionShape();
 
             inline void setWorldEntityOwner(WorldEntity* worldEntityOwner)
                 { this->worldEntityOwner_ = worldEntityOwner; }

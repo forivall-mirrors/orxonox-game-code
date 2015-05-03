@@ -81,6 +81,9 @@ namespace orxonox
 
             if (this->parent_)
                 this->parent_->detach(this);
+
+            if (this->collisionShape_)
+                delete this->collisionShape_;
         }
     }
 
