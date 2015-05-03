@@ -50,7 +50,7 @@ namespace orxonox
             (it++)->destroy();
     }
 
-    void PawnManager::preUpdate(const Clock& time)
+    void PawnManager::postUpdate(const Clock& time)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); )
         {

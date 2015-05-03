@@ -43,8 +43,8 @@ namespace orxonox
             ShipPartManager();
             virtual ~ShipPartManager();
 
-            virtual void preUpdate(const Clock& time);
-            virtual void postUpdate(const Clock& time) { /*no action*/ }
+            virtual void preUpdate(const Clock& time) { /*no action*/ }
+            virtual void postUpdate(const Clock& time);
 
         private:
 
