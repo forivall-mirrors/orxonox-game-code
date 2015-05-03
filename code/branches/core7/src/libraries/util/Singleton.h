@@ -68,24 +68,6 @@
     TestSingleton* TestSingleton::singletonPtr_s = NULL;
     @endcode
 
-    Usually a singleton gets created automatically when it is first used, but it will never
-    be destroyed (unless the singleton explicitly deletes itself). To allow controlled
-    construction and destruction, the singleton can be put within a virtual scope. This is
-    done by registering the singleton class with orxonox::ScopedSingletonManager. To
-    do so, the ManageScopedSingleton() macro has to be called:
-
-    @code
-    ManageScopedSingleton(TestSingleton, ScopeID::Graphics, false); // muste be called in a source (*.cc) file
-    @endcode
-
-    @b Important: If you call ManageScopedSingleton(), you don't have to initialize singletonPtr_s anymore,
-    because that's already done by the macro.
-
-    Now the singleton TestSingleton gets automatically created if the scope Graphics becomes
-    active and also gets destroyed if the scope is deactivated.
-
-    Note that not all singletons must register with a scope, but it's recommended.
-
     If a class inherits from orxonox::Singleton, it also inherits its functions. The most important
     function is orxonox::Singleton::getInstance() which returns a reference to the only instance
     of the singleton.
