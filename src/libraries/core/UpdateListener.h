@@ -35,6 +35,20 @@
 
 namespace orxonox
 {
+    /**
+     * Inherit from UpdateListener if you need to receive calls before or after the game is ticked. All classes inheriting from UpdateListener
+     * need to be strictly independent of each other and may not rely on a specific order in which all UpdateListeners are called.
+     *
+     * If you do have such a dependency between two UpdateListeners, e.g. A::preUpdate() always needs to be called before B::preUpdate(), then
+     * you need to create a third class C (which inherits from UpdateListener) with the following implementation:
+     * void C::preUpdate()
+     * {
+     *     A::preUpdate();
+     *     B::preUpdate();
+     * }
+     * This is the only way to ensure that A gets called before B. In this example, only C inherits from UpdateListener, while A and B do not.
+     * Instead they receive the update from C.
+     */
     class _CoreExport UpdateListener : virtual public Listable
     {
         public:
