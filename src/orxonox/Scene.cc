@@ -66,6 +66,7 @@ namespace orxonox
         this->bDebugDrawPhysics_ = false;
         this->debugDrawer_ = NULL;
         this->soundReferenceDistance_ = 20.0;
+        this->bIsUpdatingPhysics_ = false;
 
         if (GameMode::showsGraphics())
         {
@@ -265,10 +266,12 @@ namespace orxonox
 
             // Note: 60 means that Bullet will do physics correctly down to 1 frames per seconds.
             //       Under that mark, the simulation will "loose time" and get unusable.
-            physicalWorld_->stepSimulation(dt, 60);
+            this->bIsUpdatingPhysics_ = true;
+            this->physicalWorld_->stepSimulation(dt, 60);
+            this->bIsUpdatingPhysics_ = false;
 
             if (this->bDebugDrawPhysics_)
-                physicalWorld_->debugDrawWorld();
+                this->physicalWorld_->debugDrawWorld();
         }
     }
 

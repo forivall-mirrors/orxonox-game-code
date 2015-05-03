@@ -40,6 +40,7 @@
 #include "worldentities/WorldEntity.h"
 #include "CompoundCollisionShape.h"
 #include "WorldEntityCollisionShape.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -73,8 +74,14 @@ namespace orxonox
     CollisionShape::~CollisionShape()
     {
         // Detach from parent CompoundCollisionShape.
-        if (this->isInitialized() && this->parent_)
-            this->parent_->detach(this);
+        if (this->isInitialized())
+        {
+            if (this->getScene() && this->getScene()->isUpdatingPhysics())
+                orxout(internal_error) << "Don't destroy collision shapes while the physics is updated! This will lead to crashes" << endl;
+
+            if (this->parent_)
+                this->parent_->detach(this);
+        }
     }
 
     void CollisionShape::XMLPort(Element& xmlelement, XMLPort::Mode mode)
