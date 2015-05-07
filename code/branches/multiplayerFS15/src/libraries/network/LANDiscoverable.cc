@@ -34,6 +34,9 @@
 
 #include "util/Output.h"
 #include "packet/ServerInformation.h"
+#include "core/config/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
+
 
 namespace orxonox
 {
@@ -42,9 +45,21 @@ namespace orxonox
 
   LANDiscoverable::LANDiscoverable()
   {
+    /* register object in orxonox */
+    RegisterObject(LANDiscoverable);
+
+    this->setConfigValues();
+    //     this->setActivity(true);
     this->host_ = 0;
     this->bActive_ = false;
-//     this->setActivity(true);
+  }
+
+  void LANDiscoverable::setConfigValues()
+  {
+    /* update msaddress string from orxonox.ini config file, if it
+     * has changed.
+     */
+    SetConfigValueExternal(ownName, "WANDiscovery", "ownName", "tme213");
   }
 
   LANDiscoverable::~LANDiscoverable()
@@ -60,7 +75,7 @@ namespace orxonox
   {
     if( bActive == this->bActive_ )        // no change
       return;
-    
+
     if( bActive )
     {
       ENetAddress bindAddress;
@@ -83,11 +98,11 @@ namespace orxonox
   void LANDiscoverable::update()
   {
     ENetEvent event;
-    
+
     if( this->bActive_==false )
       return;
     assert(this->host_);
-    
+
     while( enet_host_service( this->host_, &event, 0 ) > 0 )
     {
       switch(event.type)
@@ -103,7 +118,7 @@ namespace orxonox
           {
             orxout(internal_info, context::network) << "Received LAN discovery message from client " << event.peer->host->receivedAddress << endl;
             packet::ServerInformation info;
-            info.setServerName("Orxonox Server");
+            info.setServerName(this->ownName);
             info.send(event.peer);
 //             ENetPacket* packet = enet_packet_create( LAN_DISCOVERY_ACK, strlen(LAN_DISCOVERY_ACK)+1, ENET_PACKET_FLAG_RELIABLE );
 //             enet_peer_send(event.peer, 0, packet );

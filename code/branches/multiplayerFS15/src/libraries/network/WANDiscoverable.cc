@@ -43,35 +43,36 @@ namespace orxonox
   {
     /* debugging output */
     orxout(verbose, context::master_server) << "Creating WANDiscoverable." << endl;
-  
+
     /* register object in orxonox */
     RegisterObject(WANDiscoverable);
 
     /* check for the masterserver address option in orxonox.ini */
     this->setConfigValues();
-    
+
   }
 
   void WANDiscoverable::setConfigValues()
   {
-    /* update msaddress string from orxonox.ini config file, if it 
-     * has changed. 
+    /* update msaddress string from orxonox.ini config file, if it
+     * has changed.
      */
     SetConfigValueExternal(msaddress, "WANDiscovery", "msaddress", "orxonox.net");
+    SetConfigValueExternal(ownName, "WANDiscovery", "ownName", "tme213");
 //     SetConfigValue( msaddress, "orxonox.net");
-  } 
+  }
 
   WANDiscoverable::~WANDiscoverable()
   {
     if( this->bActive_ )
       this->disconnect();
   }
-  
+
   void WANDiscoverable::setActivity(bool bActive)
   {
     if( bActive==this->bActive_ )
       return;
-    
+
     if( bActive )
     {
       if( this->connect() )
@@ -83,7 +84,7 @@ namespace orxonox
       this->bActive_ = false;
     }
   }
-  
+
   bool WANDiscoverable::connect()
   {
     /* initialize it and see if it worked */
@@ -92,22 +93,26 @@ namespace orxonox
       orxout(internal_error, context::master_server) << "Could not initialize master server communications!" << endl;
       return false;
     }
-    
+
     /* connect and see if it worked */
     if( msc.connect( this->msaddress.c_str(), ORX_MSERVER_PORT ) )
     {
-      orxout(internal_error, context::master_server) << "Could not connect to master server at " 
+      orxout(internal_error, context::master_server) << "Could not connect to master server at "
                  << this->msaddress << endl;
       return false;
     }
-                 
+
     /* debugging output */
     orxout(verbose, context::master_server) << "Initialization of WANDiscoverable complete." << endl;
-    
-    
+
+    std::string request = MSPROTO_GAME_SERVER " " MSPROTO_SET_NAME " ";
+    request += this->ownName;
+
     // Now register the server at the master server
     this->msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
-    
+    this->msc.sendRequest( request );
+
+
     return true;
   }
 
@@ -119,5 +124,5 @@ namespace orxonox
 
 
 
-  
+
 } // namespace orxonox

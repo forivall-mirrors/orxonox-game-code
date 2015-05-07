@@ -45,30 +45,31 @@ namespace orxonox
       ~WANDiscoverable();
 
       /** \return Address of the master server
-       * 
-       * Get the master server address 
+       *
+       * Get the master server address
        */
       std::string getMSAddress()
       { return this->msaddress; }
 
       /** Function used for the configuration file parameter update */
       void setConfigValues();
-      
+
       /** Function used to set the activity/discoverability */
       void setActivity( bool bActive );
 
       /** Master server communications object */
       MasterServerComm msc;
-      
+
     private:
       /** Function used to connect to the master server */
       bool connect();
-      
+
       /** Function used to disconnect from the master server */
       void disconnect();
-      
+
       /** master server address */
       std::string msaddress;
+      std::string ownName;
       bool        bActive_;
 
   };

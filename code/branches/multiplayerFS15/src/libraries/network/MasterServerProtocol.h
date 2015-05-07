@@ -36,7 +36,7 @@
 /*** CLIENT COMMUNICATIONS ***/
 /* Client token (shows that the party sending data is a client */
 #define MSPROTO_CLIENT "CL"
-#define MSPROTO_CLIENT_LEN 2 
+#define MSPROTO_CLIENT_LEN 2
 
 /* Request: Serverlist (requiest made from client to master server */
 #define MSPROTO_REQ_LIST "REQ:LIST"
@@ -66,7 +66,7 @@
 
 /* ping request from server */
 #define MSPROTO_PING_GAMESERVER "PING"
-#define MSPROTO_PING_GAMESERVER_LEN 4 
+#define MSPROTO_PING_GAMESERVER_LEN 4
 
 /* server disconnect */
 #define MSPROTO_SERVERDC "DC"
@@ -74,9 +74,15 @@
 
 /* ping reply */
 #define MSPROTO_ACK "ACK"
-#define MSPROTO_ACK_LEN 3 
+#define MSPROTO_ACK_LEN 3
 
+#define MSPROTO_SET_NAME "NAM"
+#define MSPROTO_SET_NAME_LEN 3
 
+#define MSPROTO_SET_CLIENTS "CLI"
+#define MSPROTO_SET_CLIENTS_LEN 3
+
+#define SERVER_NAME_MAXLEN 7
 
 /* default master server port */
 #define ORX_MSERVER_PORT 55557

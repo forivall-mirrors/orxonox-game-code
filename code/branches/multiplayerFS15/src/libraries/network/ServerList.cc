@@ -144,4 +144,18 @@ namespace orxonox
     this->serverlist.sort( sub_compare_pings );
   }
 
+  bool ServerList::setNameByAddress( std::string address, std::string name  ){
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
+
+    /* loop through list elements */
+    for( i = serverlist.begin(); i != serverlist.end(); ++i )
+      if( (*i).ServerInfo.getServerIP() == address )
+      { /* found this adress, rename and quit */
+        (*i).ServerInfo.setServerName( name );
+        return true;
+      }
+    return false;
+  };
+
 }
