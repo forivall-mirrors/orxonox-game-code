@@ -195,9 +195,7 @@
             turret->aimAtPosition(target_->getWorldPosition());
             if(this->isLookingAtTargetNew(Degree(5).valueRadians()))
             {
-            	orxout() << target_->getIdentifier()->getName() << " / " << target_->getWorldPosition() << " / " << target_->getHealth() << " / " << target_->getTeam() << " / " << this->getTeam() << " / " << turret->getTeam() << endl;
-            	if (target_->getController())
-            		orxout() << target_->getController()->getIdentifier()->getName() << " / " << target_->getController()->getTeam() << endl;
+
                 this->getControllableEntity()->fire(0);
             }
         }

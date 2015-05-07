@@ -36,7 +36,7 @@
 <Template name=selectertemplate>
   <TowerDefenseSelecter team=0 camerapositiontemplate=selectercameras>
     <attached>
-      <Model position="0,0,0" mesh="cube.mesh" scale=45 />
+      <Model pitch=90 position="0,0,-30" mesh="TD_Selection.mesh" scale=30 />
     </attached>
   </TowerDefenseSelecter>
 </Template>
