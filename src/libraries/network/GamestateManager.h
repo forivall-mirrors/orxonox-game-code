@@ -1,4 +1,4 @@
-/*
+  /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
  *
@@ -77,9 +77,9 @@ namespace orxonox
       bool      isSynched;
       std::map< uint32_t, packet::Gamestate* > gamestates;
     };
-    
+
   public:
-    
+
     GamestateManager();
     ~GamestateManager();
 
@@ -87,7 +87,7 @@ namespace orxonox
     virtual bool      ackGamestate(unsigned int gamestateID, unsigned int peerID);
     virtual uint32_t  getLastReceivedGamestateID( unsigned int peerID );
     virtual uint32_t  getCurrentGamestateID(){ if( currentGamestate_) return currentGamestate_->getID(); else return GAMESTATEID_INITIAL; }
-    
+
     bool processGamestates();
     bool sendAck(unsigned int gamestateID, uint32_t peerID);
     bool update();

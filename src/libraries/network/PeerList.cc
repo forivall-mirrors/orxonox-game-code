@@ -37,10 +37,10 @@ namespace orxonox
   PeerList::PeerList() { }
   PeerList::~PeerList() { }
 
-  int 
+  int
   PeerList::addPeer( ENetPeer *toadd )
   { /* error correction */
-    if( toadd == NULL ) 
+    if( toadd == NULL )
     { orxout(internal_error, context::master_server) << "PeerList::addPeer: empty peer given." << endl;
       return -1;
     }
@@ -51,7 +51,7 @@ namespace orxonox
   }
 
   bool sub_compAddr( ENetAddress addr1, ENetAddress addr2 )
-  { 
+  {
     for( int i = 0; i < 16; ++i )
       if( addr1.host.addr[i] < addr2.host.addr[i] )
         return -i;
@@ -60,7 +60,7 @@ namespace orxonox
 
     return 0;
   }
-    
+
 
   bool
   PeerList::remPeerByAddr( ENetAddress addr )
@@ -68,7 +68,7 @@ namespace orxonox
     std::list<ENetPeer *>::iterator i;
 
     /* loop through list elements */
-    for( i = peerlist.begin(); i != peerlist.end(); ++i ) 
+    for( i = peerlist.begin(); i != peerlist.end(); ++i )
       if( !sub_compAddr((*i)->address, addr ) )
       { /* found this name, remove and quit */
         this->peerlist.remove( *i );
@@ -85,7 +85,7 @@ namespace orxonox
     std::list<ENetPeer *>::iterator i;
 
     /* loop through list elements */
-    for( i = peerlist.begin(); i != peerlist.end(); ++i ) 
+    for( i = peerlist.begin(); i != peerlist.end(); ++i )
       if( !sub_compAddr((*i)->address, addr ) )
         /* found this name, remove and quit */
         return *i;
@@ -94,5 +94,9 @@ namespace orxonox
     return NULL;
   }
 
-}
+  int
+  PeerList::count(){
+    return this->peerlist.size();
+  }
 
+}

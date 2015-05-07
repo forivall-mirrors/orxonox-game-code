@@ -30,21 +30,25 @@
 #define _LANDISCOVERABLE_H__
 
 #include "NetworkPrereqs.h"
+#include "core/config/Configurable.h"
 
 namespace orxonox
 {
 
-  class LANDiscoverable
+  class LANDiscoverable: public Configurable
   {
     public:
       LANDiscoverable();
       virtual ~LANDiscoverable();
       void setActivity( bool bActive );
       void update();
+      /** Function used for the configuration file parameter update */
+      void setConfigValues();
 
     private:
       bool            bActive_;
       ENetHost*       host_;
+      std::string     ownName;
   };
 
 }

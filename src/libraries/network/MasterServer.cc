@@ -33,7 +33,7 @@
 #include "core/CorePrereqs.h"
 #include "util/Output.h"
 
-namespace orxonox 
+namespace orxonox
 {
   /*** MACROS ***/
   /* commands for the terminal interface */
@@ -48,7 +48,7 @@ namespace orxonox
 
 
   /* command: list servers */
-  void 
+  void
   MasterServer::listServers( void )
   {
     /* get an iterator */
@@ -58,8 +58,8 @@ namespace orxonox
     orxout(user_info) << "List of connected servers" << std::endl;
 
     /* loop through list elements */
-    for( i = MasterServer::getInstance()->mainlist.serverlist.begin(); 
-      i != MasterServer::getInstance()->mainlist.serverlist.end(); ++i ) 
+    for( i = MasterServer::getInstance()->mainlist.serverlist.begin();
+      i != MasterServer::getInstance()->mainlist.serverlist.end(); ++i )
     {
       orxout(user_info) << "  " << (*i).ServerInfo.getServerIP() << std::endl;
     }
@@ -69,15 +69,15 @@ namespace orxonox
       " servers connected." << std::endl;
   }
 
-  void 
+  void
   MasterServer::delServer( std::string todeladdr )
   {
     /* tell the user we're now removing the entry from the server list */
-    orxout(user_info) << "MS: Deleting server \"" << todeladdr << "\"..." 
+    orxout(user_info) << "MS: Deleting server \"" << todeladdr << "\"..."
       << std::endl;
 
     /* see if we actually have that server on our list */
-    ServerListSearchResult shandle = 
+    ServerListSearchResult shandle =
       MasterServer::getInstance()->mainlist.findServerByAddress(todeladdr);
 
     if( !shandle.success )
@@ -85,7 +85,7 @@ namespace orxonox
       return;
     }
 
-    /* force-disconnect the server */  
+    /* force-disconnect the server */
     enet_peer_disconnect( shandle.result.peer, 0 );
 
     /* actually remove the entry from the server list by address */
@@ -97,16 +97,16 @@ namespace orxonox
 
 
   /* helpers */
-  static void 
+  static void
   helper_output_debug( ENetEvent *event, char *addrconv )
   {
     orxout(verbose, context::master_server)
-      << "A packet of length" 
+      << "A packet of length"
       << event->packet->dataLength
       << " containing "
       << (const char*)event->packet->data
       << " was received from "
-      << addrconv 
+      << addrconv
       << " on channel "
       << event->channelID << endl;
   }
@@ -121,23 +121,23 @@ namespace orxonox
     ENetPacket *reply;
 
     /* loop through list elements */
-    for( i = mainlist.serverlist.begin(); i 
-        != mainlist.serverlist.end(); ++i ) 
+    for( i = mainlist.serverlist.begin(); i
+        != mainlist.serverlist.end(); ++i )
     {
       /* send this particular server */
       /* build reply string */
-      char *tosend = (char *)calloc( (*i).ServerInfo.getServerIP().length() 
-          + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
-      if( !tosend ) 
+      int packetlen = MSPROTO_SERVERLIST_ITEM_LEN + 1 + (*i).ServerInfo.getServerIP().length() + 1 + (*i).ServerInfo.getServerName().length() + 1;
+      char *tosend = (char *)calloc(packetlen ,1 );
+      if( !tosend )
       { orxout(internal_warning, context::master_server) << "Masterserver.cc: Memory allocation failed." << endl;
         continue;
-      } 
-      sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, 
-          (*i).ServerInfo.getServerIP().c_str() );
+      }
+      sprintf( tosend, "%s %s %s", MSPROTO_SERVERLIST_ITEM,
+          (*i).ServerInfo.getServerIP().c_str(), (*i).ServerInfo.getServerName().c_str());
 
       /* create packet from it */
       reply = enet_packet_create( tosend,
-          strlen( tosend ) + 1, 
+          strlen( tosend ) + 1,
           ENET_PACKET_FLAG_RELIABLE);
 
       /* Send the reply to the peer over channel id 0. */
@@ -148,7 +148,7 @@ namespace orxonox
 
       /* free the tosend buffer */
       free( tosend );
-    } 
+    }
 
     /* create end-of-list packet */
     reply = enet_packet_create( MSPROTO_SERVERLIST_END,
@@ -162,40 +162,40 @@ namespace orxonox
     enet_host_flush( this->server );
   }
 
-  /* maybe the two methods below can be merged into one and 
-   * made to use ENet's RTT functionality to check for disconnected 
+  /* maybe the two methods below can be merged into one and
+   * made to use ENet's RTT functionality to check for disconnected
    * servers.
    */
-  void 
+  void
   MasterServer::helper_cleanupServers( void )
   {
     /* get an iterator */
     std::list<ServerListElem>::iterator i;
-     
+
     if( mainlist.serverlist.size() == 0 )
       return;
 
     /* loop through list elements */
-    for( i = mainlist.serverlist.begin(); i 
-        != mainlist.serverlist.end(); ++i ) 
+    for( i = mainlist.serverlist.begin(); i
+        != mainlist.serverlist.end(); ++i )
     { /* see if we have a disconnected peer */
-      if( (*i).peer && 
+      if( (*i).peer &&
          ((*i).peer->state == ENET_PEER_STATE_DISCONNECTED ||
           (*i).peer->state == ENET_PEER_STATE_ZOMBIE ))
-      { 
+      {
         /* Remove it from the list */
         orxout(internal_warning) << (char*)(*i).peer->data << " timed out.\n";
         mainlist.delServerByName( (*i).ServerInfo.getServerName() );
 
         /* stop iterating, we manipulated the list */
         /* TODO note: this only removes one dead server per loop
-         * iteration. not beautiful, but one iteration is ~100ms, 
+         * iteration. not beautiful, but one iteration is ~100ms,
          * so not really relevant for the moment.
          */
         break;
       }
     }
- 
+
   }
 
 
@@ -203,7 +203,7 @@ namespace orxonox
 
   /***** EVENTS *****/
   /* connect event */
-  int 
+  int
   MasterServer::eventConnect( ENetEvent *event )
   { /* check for bad parameters */
     if( !event )
@@ -216,20 +216,20 @@ namespace orxonox
     enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
 
     /* output debug info */
-    orxout(verbose, context::master_server) << "A new client connected from " 
-      << addrconv 
-      << " on port " 
+    orxout(verbose, context::master_server) << "A new client connected from "
+      << addrconv
+      << " on port "
       << event->peer->address.port << endl;
 
     /* store string form of address here */
-    event->peer->data = addrconv; 
+    event->peer->data = addrconv;
 
     /* all fine. */
     return 0;
   }
 
   /* disconnect event */
-  int 
+  int
   MasterServer::eventDisconnect( ENetEvent *event )
   { /* check for bad parameters */
     if( !event )
@@ -254,14 +254,14 @@ namespace orxonox
   }
 
   /* data event */
-  int 
+  int
   MasterServer::eventData( ENetEvent *event )
   { /* validate packet */
     if( !event || !(event->packet) || !(event->peer) )
     { orxout(internal_warning, context::master_server) << "No complete event given." << endl;
       return -1;
     }
-     
+
     /* generate address in readable form */
     char *addrconv = (char *) calloc( 50, 1 );
     enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
@@ -270,19 +270,19 @@ namespace orxonox
     helper_output_debug( event, addrconv );
 
     /* GAME SERVER OR CLIENT CONNECTION? */
-    if( !strncmp( (char *)event->packet->data, MSPROTO_GAME_SERVER, 
+    if( !strncmp( (char *)event->packet->data, MSPROTO_GAME_SERVER,
       MSPROTO_GAME_SERVER_LEN ) )
     { /* Game server */
 
-      if( !strncmp( (char *)event->packet->data 
-        + MSPROTO_GAME_SERVER_LEN+1, 
+      if( !strncmp( (char *)event->packet->data
+        + MSPROTO_GAME_SERVER_LEN+1,
         MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
       { /* register new server */
         mainlist.addServer( packet::ServerInformation( event ),
           event->peer );
-        
+
         /* tell people we did so */
-        orxout(internal_info, context::master_server) << "Added new server to list: " << 
+        orxout(internal_info, context::master_server) << "Added new server to list: " <<
           packet::ServerInformation( event ).getServerIP() << endl;
       }
 
@@ -291,18 +291,34 @@ namespace orxonox
         MSPROTO_SERVERDC, MSPROTO_SERVERDC_LEN ) )
       {
         /* create string from peer data */
-        std::string name = std::string( addrconv );
+        std::string ip = std::string( addrconv );
 
         /* remove the server from the list it belongs to */
-        this->mainlist.delServerByAddress( name );
+        this->mainlist.delServerByAddress( ip );
 
         /* tell the user */
-        orxout(internal_info, context::master_server) << "Removed server " << name << " from list." << endl;
+        orxout(internal_info, context::master_server) << "Removed server " << ip << " from list." << endl;
+      }
+
+      else if( !strncmp( (char *)event->packet->data
+        + MSPROTO_GAME_SERVER_LEN+1,
+        MSPROTO_SET_NAME, MSPROTO_SET_NAME_LEN ) )
+      {
+        /* create string from peer data */
+        std::string ip = std::string( addrconv );
+        std::string data (event->packet->data,event->packet->data + event->packet->dataLength );
+        std::string name = data.substr(MSPROTO_GAME_SERVER_LEN+1 + MSPROTO_SET_NAME_LEN + 1);
+
+        /* remove the server from the list it belongs to */
+        this->mainlist.setNameByAddress( ip, name );
+
+        /* tell the user */
+        orxout(internal_info, context::master_server) << "Updated server " << ip << " with new name " << name << endl;
       }
 
       /* TODO add hook for disconnect here */
     }
-    else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
+    else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT,
       MSPROTO_CLIENT_LEN) )
     { /* client */
       if( !strncmp( (char *)event->packet->data + MSPROTO_CLIENT_LEN+1,
@@ -311,7 +327,7 @@ namespace orxonox
         helper_sendlist( event );
     }
     else
-    { /* bad message, don't do anything. */ } 
+    { /* bad message, don't do anything. */ }
 
     /* delete addrconv */
     if( addrconv ) free( addrconv );
@@ -323,13 +339,13 @@ namespace orxonox
 
 
   /**** MAIN ROUTINE *****/
-  int 
+  int
   MasterServer::run()
   {
     /***** ENTER MAIN LOOP *****/
     ENetEvent *event = (ENetEvent *)calloc(sizeof(ENetEvent), sizeof(char));
     if( event == NULL )
-    { 
+    {
       orxout(user_error, context::master_server) << "Could not create ENetEvent structure, exiting." << endl;
       exit( EXIT_FAILURE );
     }
@@ -344,11 +360,11 @@ namespace orxonox
     /* check what type of event it is and react accordingly */
     switch (event->type)
     { /* new connection */
-      case ENET_EVENT_TYPE_CONNECT: 
+      case ENET_EVENT_TYPE_CONNECT:
         eventConnect( event ); break;
 
         /* disconnect */
-      case ENET_EVENT_TYPE_DISCONNECT: 
+      case ENET_EVENT_TYPE_DISCONNECT:
         eventDisconnect( event ); break;
 
         /* incoming data */
@@ -357,8 +373,9 @@ namespace orxonox
     }
 
     /* done */
+    free(event);
     return 0;
-  } 
+  }
 
   /* constructor */
   MasterServer::MasterServer()
@@ -379,15 +396,15 @@ namespace orxonox
     this->address.host = ENET_HOST_ANY;
     this->address.port = ORX_MSERVER_PORT;
 
-    /* create a host with the above settings (the last two 0 mean: accept 
+    /* create a host with the above settings (the last two 0 mean: accept
      * any input/output bandwidth */
-    this->server = enet_host_create( &this->address, ORX_MSERVER_MAXCONNS, 
+    this->server = enet_host_create( &this->address, ORX_MSERVER_MAXCONNS,
         ORX_MSERVER_MAXCHANS, 0, 0 );
     assert(this->server);
 
     /* see if creation worked */
     if( !this->server )
-    { orxout(user_error, context::master_server) << 
+    { orxout(user_error, context::master_server) <<
         "An error occurred while trying to create an ENet server host." << endl;
       exit( EXIT_FAILURE );
     }

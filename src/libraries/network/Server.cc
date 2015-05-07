@@ -76,7 +76,13 @@ namespace orxonox
     this->setPort( port );
     this->timeSinceLastUpdate_=0;
   }
-
+/*
+  Server::Server(int port, const std::string name)
+  {
+    this->setPort( port );
+    this->timeSinceLastUpdate_=0;
+    this->serverName_=name;
+  }*/
   /**
   * Constructor
   * @param port Port to listen on
