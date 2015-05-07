@@ -53,14 +53,13 @@ namespace orxonox{
 
 	void GravityBomb::tick(float dt)
 	{
-			SUPER(GravityBomb,tick,dt);
 			timeToLife_ -= dt;
 			if(timeToLife_ < 0)
 			{
 				orxout(debug_output) << "bomb has stoped moving" <<endl;
 				setVelocity(Vector3::ZERO);
 				setAcceleration(Vector3::ZERO);
-				detonate();
+				isDetonated_ = true;
 			}
 			else
 			{
@@ -68,6 +67,7 @@ namespace orxonox{
 				destroyCheck();
 			}
 			if(isDetonated_) detonate();
+			else SUPER(GravityBomb, tick, dt);
 	}
 
 	bool GravityBomb::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
