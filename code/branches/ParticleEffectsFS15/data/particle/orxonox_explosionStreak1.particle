@@ -1,0 +1,42 @@
+
+particle_system orxonox/explosion_streak1
+{
+	quota	4000
+	material	orxonox/explosion_streak1
+	particle_width	12.15
+	particle_height	82.13
+	cull_each	false
+	renderer	billboard
+	billboard_type	oriented_self
+
+	emitter Point
+	{
+		angle	180
+		colour	0.191667 0.191667 0.191667 1
+		colour_range_start	0.191667 0.191667 0.191667 1
+		colour_range_end	0.191667 0.191667 0.191667 1
+		direction	0 1 0
+		emission_rate	400
+		position	0 0 0
+		velocity	30
+		velocity_min	30
+		velocity_max	100
+		time_to_live	1
+		time_to_live_min	1
+		time_to_live_max	2
+		duration	0.1
+		duration_min	0.1
+		duration_max	0.1
+		repeat_delay	20
+		repeat_delay_min	20
+		repeat_delay_max	20
+	}
+
+	affector ColourFader
+	{
+		red	-0.2
+		green	-0.2
+		blue	-0.2
+		alpha	0
+	}
+}

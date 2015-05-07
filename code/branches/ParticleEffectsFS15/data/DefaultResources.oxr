@@ -9,4 +9,5 @@
     <ResourceLocation path = "gui/layouts" />
     <ResourceLocation path = "gui/schemes" />
     <ResourceLocation path = "gui/scripts" />
+    
 </ResourceCollection>
