@@ -37,6 +37,17 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        The MobileEntity is a derived class from @ref orxonox::WorldEntity and @ref orxonox::Tickable. It is supposed to be the base class of 
+        @ref orxonox::MovableEntity and @ref orxonox::ControllableEntity. You will never need to instanciate a MobileEntity directly.
+        Use only its derivatives.
+        In addition to the functionalities of the @ref orxonox::WorldEntity this class has a linear and angular velocity and a linear and angular acceleration.
+        Every time the @see tick function is called the linear acceleration is multiplied by the time since the last call of tick and then added to the
+        linear velocity. Then the linear velocity is multiplied by the time since the last call of tick and then added to the position. The same happens with
+        the angular acceleration and velocity. With this procedure MobileEntities can change their position and orientation with time.
+    */
+
     class _OrxonoxExport MobileEntity : public WorldEntity, public Tickable
     {
         public:
