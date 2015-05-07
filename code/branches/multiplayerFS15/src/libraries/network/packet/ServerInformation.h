@@ -50,12 +50,15 @@ namespace orxonox
         std::string   getServerName() { return this->serverName_; }
         void          setServerIP( std::string IP ) { this->serverIP_ = IP; }
         std::string   getServerIP() { return this->serverIP_; }
+        void          setClientNumber( int clientNumber ) { this->clientNumber_ = clientNumber; }
+        int           getClientNumber() { return this->clientNumber_; }
         uint32_t      getServerRTT() { return this->serverRTT_; }
 
       private:
         std::string   serverName_;
         std::string   serverIP_;
         uint32_t      serverRTT_;
+        int           clientNumber_;
     };
 
   }

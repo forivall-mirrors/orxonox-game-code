@@ -126,14 +126,14 @@ namespace orxonox
     {
       /* send this particular server */
       /* build reply string */
-      int packetlen = MSPROTO_SERVERLIST_ITEM_LEN + 1 + (*i).ServerInfo.getServerIP().length() + 1 + (*i).ServerInfo.getServerName().length() + 1;
+      int packetlen = MSPROTO_SERVERLIST_ITEM_LEN + 1 + (*i).ServerInfo.getServerIP().length() + 1 + (*i).ServerInfo.getServerName().length() + 1 + sizeof((*i).ServerInfo.getClientNumber()) + 1;
       char *tosend = (char *)calloc(packetlen ,1 );
       if( !tosend )
       { orxout(internal_warning, context::master_server) << "Masterserver.cc: Memory allocation failed." << endl;
         continue;
       }
-      sprintf( tosend, "%s %s %s", MSPROTO_SERVERLIST_ITEM,
-          (*i).ServerInfo.getServerIP().c_str(), (*i).ServerInfo.getServerName().c_str());
+      sprintf( tosend, "%s %s %s %u", MSPROTO_SERVERLIST_ITEM,
+          (*i).ServerInfo.getServerIP().c_str(), (*i).ServerInfo.getServerName().c_str(), (*i).ServerInfo.getClientNumber());
 
       /* create packet from it */
       reply = enet_packet_create( tosend,
@@ -299,6 +299,7 @@ namespace orxonox
         /* tell the user */
         orxout(internal_info, context::master_server) << "Removed server " << ip << " from list." << endl;
       }
+      /* TODO add hook for disconnect here */
 
       else if( !strncmp( (char *)event->packet->data
         + MSPROTO_GAME_SERVER_LEN+1,
@@ -316,7 +317,21 @@ namespace orxonox
         orxout(internal_info, context::master_server) << "Updated server " << ip << " with new name " << name << endl;
       }
 
-      /* TODO add hook for disconnect here */
+      else if( !strncmp( (char *)event->packet->data
+        + MSPROTO_GAME_SERVER_LEN+1,
+        MSPROTO_SET_CLIENTS, MSPROTO_SET_CLIENTS_LEN ) )
+      {
+        /* create string from peer data */
+        std::string ip = std::string( addrconv );
+        std::string data (event->packet->data,event->packet->data + event->packet->dataLength );
+        std::string textform= data.substr(MSPROTO_GAME_SERVER_LEN + 1 + MSPROTO_SET_CLIENTS_LEN + 1);
+        int clientNumber = Ogre::StringConverter::parseInt(textform);
+
+        this->mainlist.setClientsByAddress( ip, clientNumber);
+
+        /* tell the user */
+        orxout(internal_info, context::master_server) << "Updated server " << ip << " with new client number " << clientNumber << endl;
+      }
     }
     else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT,
       MSPROTO_CLIENT_LEN) )

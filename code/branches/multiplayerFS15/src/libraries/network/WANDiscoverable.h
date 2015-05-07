@@ -57,6 +57,8 @@ namespace orxonox
       /** Function used to set the activity/discoverability */
       void setActivity( bool bActive );
 
+      void updateClientNumber(int clientNumber);
+
       /** Master server communications object */
       MasterServerComm msc;
 

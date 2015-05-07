@@ -86,6 +86,13 @@ namespace orxonox
        */
       std::string getServerListItemRTT( unsigned int index ); // tolua_export
 
+      /** \param index Index to get the RTT of
+       * \return The number of players on the server
+       *
+       * Get the number of players on the server
+       */
+      std::string getServerListItemPlayerNumber( unsigned int index ); // tolua_export
+
       /* todo: might make this private and use getter/setter methods
        * at some later time.
        */
