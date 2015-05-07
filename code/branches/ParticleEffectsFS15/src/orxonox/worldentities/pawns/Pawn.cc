@@ -366,7 +366,7 @@ namespace orxonox
             }
             if (GameMode::isMaster())
             {
-//                this->deathEffect();
+                this->deatheffect();
                 this->goWithStyle();
             }
         }
@@ -386,7 +386,7 @@ namespace orxonox
     void Pawn::deatheffect()
     {
         // play death effect
-        {
+        /*{
             ParticleSpawner* effect = new ParticleSpawner(this->getContext());
             effect->setPosition(this->getPosition());
             effect->setOrientation(this->getOrientation());
@@ -409,7 +409,60 @@ namespace orxonox
             effect->setDestroyAfterLife(true);
             effect->setSource("Orxonox/sparks");
             effect->setLifetime(4.0f);
+        }*/
+        
+        
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("orxonox/explosion_flash2");
+            effect->setLifetime(5.0f);
         }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("orxonox/explosion_flame2");
+            effect->setLifetime(5.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("orxonox/explosion_shockwave2");
+            effect->scale(20);
+            effect->setLifetime(5.0f);
+        }{
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("orxonox/explosion_sparks2");
+            effect->setLifetime(5.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("orxonox/explosion_streak2");
+            effect->setLifetime(5.0f);
+        }
+        {
+            ParticleSpawner* effect = new ParticleSpawner(this->getContext());
+            effect->setPosition(this->getPosition());
+            effect->setOrientation(this->getOrientation());
+            effect->setDestroyAfterLife(true);
+            effect->setSource("orxonox/explosion_afterglow");
+            effect->scale(20);
+            effect->setLifetime(5.0f);
+        }
+        
+        
         for (unsigned int i = 0; i < this->numexplosionchunks_; ++i)
         {
             ExplosionChunk* chunk = new ExplosionChunk(this->getContext());
