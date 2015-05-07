@@ -72,9 +72,15 @@ namespace orxonox
         void setWaveNumber(int wavenumber){ waves_=wavenumber; }
         void buyTower(int cost){ credit_ -= cost;}
         void addCredit(int credit) { credit_+=credit; }
-        void nextwave(){ TowerDefenseEnemyvector.clear(); waves_++; time=0;}
+        void nextwave();
         int reduceLifes(int NumberofLifes){ return lifes_-=NumberofLifes; }
         TowerDefenseSelecter* selecter;
+        int spaceships;
+        int eggs;
+        int ufos;
+        int randomships;
+        int maxspaceships = 30;
+
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
         //virtual void playerScored(PlayerInfo* player, int score);

@@ -29,6 +29,7 @@ namespace orxonox
         upgrade = 0;
         this->addTemplate("towerdefensetower");
 
+        upgradeMax = 5;
 
 
         //this->removeAllEngines();
@@ -60,7 +61,7 @@ namespace orxonox
 
     bool TowerDefenseTower::upgradeTower()
     {
-        if(upgrade < 3)
+        if(upgrade < upgradeMax)
         {
             upgrade++;
             float reloadrate = getReloadRate();

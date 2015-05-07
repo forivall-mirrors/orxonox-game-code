@@ -48,9 +48,11 @@ namespace orxonox
 
         void setGame(TowerDefense* Towerdefense)
         { assert(Towerdefense); game_ = Towerdefense; }
+        int upgrade;
+        int upgradeMax;
     private:
         TowerDefense* game_;
-        int upgrade;
+
     };
 }
 

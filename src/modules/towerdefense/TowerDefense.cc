@@ -85,12 +85,16 @@
 #include "core/CoreIncludes.h"
 /* Part of a temporary hack to allow the player to add towers */
 #include "core/command/ConsoleCommand.h"
+#include <cmath>
 
 
 namespace orxonox
 {
     static const std::string __CC_addTower_name  = "addTower";
     static const std::string __CC_upgradeTower_name = "upgradeTower";
+    static const int upgradeCost = 20;
+    static const int towerCost = 20;
+
 
     SetConsoleCommand("TowerDefense", __CC_addTower_name,  &TowerDefense::addTower ).addShortcut().defaultValues(1);
     SetConsoleCommand("TowerDefense", __CC_upgradeTower_name, &TowerDefense::upgradeTower).addShortcut().defaultValues(0);
@@ -118,6 +122,10 @@ namespace orxonox
         this->credit_ = 0;
         this->lifes_ = 0;
         this->timeSetTower_ = 0;
+        spaceships =15;
+        eggs=3;
+        ufos=7;
+        randomships=5;
 
 
         ModifyConsoleCommand(__CC_addTower_name).setObject(this);
@@ -198,7 +206,7 @@ namespace orxonox
 
 
         //set initial credits, lifes and WaveNumber
-        this->setCredit(1000);
+        this->setCredit(100);
         this->setLifes(100);
         this->setWaveNumber(0);
         time=0.0;
@@ -222,12 +230,15 @@ namespace orxonox
         case 1 :
             en1->addTemplate("enemytowerdefense1");
             en1->setScale(3);
+            en1->lookAt(Vector3(0,0,100000));
             en1->setHealth(en1->getHealth() +50 + this->getWaveNumber()*4);
             break;
 
         case 2 :
             en1->addTemplate("enemytowerdefense2");
             en1->setScale(2);
+            en1->lookAt(Vector3(0,0,100000));
+            en1->roll(Degree(120));
             en1->setHealth(en1->getHealth() -30 + this->getWaveNumber()*4);
             //  en1->setShieldHealth(en1->getShield() = this->getWaveNumber()*2))
             break;
@@ -235,6 +246,8 @@ namespace orxonox
         case 3 :
             en1->addTemplate("enemytowerdefense3");
             en1->setScale(1);
+            en1->lookAt(Vector3(0,0,100000));
+            en1->roll(Degree(120));
             en1->setHealth(en1->getHealth() -10 + this->getWaveNumber()*4);
             break;
         }
@@ -290,7 +303,6 @@ namespace orxonox
         x = coord->GetX();
         y = coord->GetY();
         
-        const int upgradeCost = 20;
 
         if (!this->hasEnoughCreditForTower(upgradeCost))
         {
@@ -310,6 +322,24 @@ namespace orxonox
         else
         {
             (towerTurretMatrix [x][y])->upgradeTower();
+            switch(towerTurretMatrix[x][y]->upgrade)
+                   {
+                   case 1 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T2.mesh");
+                	   break;
+
+                   case 2 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T3.mesh");
+                	   break;
+                   case 3 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T4.mesh");
+                	   break;
+                   case 4 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T5.mesh");
+                	   break;
+
+                   }
+
             this->buyTower(upgradeCost);
         }
     }
@@ -324,7 +354,6 @@ namespace orxonox
         x = coord->GetX();
         y = coord->GetY();
 
-        const int towerCost = 20;
 
         if (!this->hasEnoughCreditForTower(towerCost))
         {
@@ -358,9 +387,10 @@ namespace orxonox
 
         //Create Model
         Model* newTowerModel = new Model(this->center_->getContext());
-        newTowerModel->setMeshSource("Tower.mesh");
-        newTowerModel->setScale(45);
-        newTowerModel->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 50);
+        newTowerModel->setMeshSource("TD_T1.mesh");
+        newTowerModel->setScale(30);
+        newTowerModel->pitch(Degree(90));
+        newTowerModel->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 80);
 
         //Creates tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
@@ -386,12 +416,33 @@ namespace orxonox
     }
 
  
+    void TowerDefense::nextwave()
+    {
+    	TowerDefenseEnemyvector.clear();
+    	waves_++;
+    	time=0;
+        float randomnumber1 = rand()*100*5;
+        float randomnumber2 = rand()*100*1;
+        float randomnumber3 = rand()*100*1.5;
+
+        float totalnumber = (randomnumber1 + randomnumber2 + randomnumber3)*1.3;
+
+        int newspaceships = (int)(maxspaceships* randomnumber1 / totalnumber);
+        int neweggs = (int)(maxspaceships*randomnumber2 / totalnumber);
+        int newufos = (int)(maxspaceships*randomnumber3 / totalnumber);
+        int newrandomships = maxspaceships -spaceships - eggs - ufos;
+        int spaceships =newspaceships;
+        int eggs=neweggs;
+        int ufos=newufos;
+        int randomships=newrandomships;
+
+    }
+
     void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
         time +=dt;
         timeSetTower_ +=dt;
-        orxout() << dt << "time" << endl;
 
         //Check if tower has to be set (because TowerDefenseSelecter asks for it)
         if(timeSetTower_ >= 0.25)
@@ -400,21 +451,44 @@ namespace orxonox
 			if(selecter != NULL && selecter->firePressed_)
 			{
 
-				int xcoord = selecter->selectedPos_->GetX();
-				int ycoord = selecter->selectedPos_->GetY();
+				int x = selecter->selectedPos_->GetX();
+				int y = selecter->selectedPos_->GetY();
 				Model* dummyModel2 = new Model(this->center_->getContext());
 
 
 
-				if(towerModelMatrix[xcoord][ycoord] == NULL)
+				if(towerModelMatrix[x][y] == NULL)
 				{
-					addTower(xcoord,ycoord);
+					addTower(x,y);
 				}
 				else
 				{
-					if(!((towerModelMatrix [xcoord][ycoord])->getMeshSource() == dummyModel2->getMeshSource()))
+					if(!((towerModelMatrix [x][y])->getMeshSource() == dummyModel2->getMeshSource()))
 					{
-						towerTurretMatrix[xcoord][ycoord]->upgradeTower();
+						towerTurretMatrix[x][y]->upgradeTower();
+				        if(towerTurretMatrix[x][y]->upgrade < towerTurretMatrix[x][y]->upgradeMax)
+				        {
+				        	this->buyTower((int)(upgradeCost*(std::pow(1.5,towerTurretMatrix[x][y]->upgrade))));
+							switch(towerTurretMatrix[x][y]->upgrade)
+						   {
+							   case 1 :
+								   towerModelMatrix[x][y]->setMeshSource("TD_T2.mesh");
+								   break;
+
+							   case 2 :
+								   towerModelMatrix[x][y]->setMeshSource("TD_T3.mesh");
+								   break;
+			                   case 3 :
+			                	   towerModelMatrix[x][y]->setMeshSource("TD_T4.mesh");
+			                	   break;
+			                   case 4 :
+			                	   towerModelMatrix[x][y]->setMeshSource("TD_T5.mesh");
+			                	   break;
+
+						   }
+
+
+				        }
 					}
 				}
 				selecter->firePressed_ = false;
@@ -428,20 +502,31 @@ namespace orxonox
 
         int enemytype = this->getWaveNumber() % 3 +1;
 
-        float randomnumber1 = rand()*100*5;
-        float randomnumber2 = rand()*100*1;
-        float randomnumber3 = rand()*100*1.5;
-
-        float totalnumber = randomnumber1 + randomnumber2 + randomnumber3;
-        int maxspaceships = 30;
-        int spaceships = (int)(maxspaceships* randomnumber1 / totalnumber);
-        int eggs = (int)(maxspaceships*randomnumber2 / totalnumber);
-        int ufos = (int)(maxspaceships*randomnumber3 / totalnumber);
 
         if(time>=TowerDefenseEnemyvector.size() && TowerDefenseEnemyvector.size() < maxspaceships)
 		{
-			//adds different types of enemys depending on the WaveNumber
-			addTowerDefenseEnemy(path, enemytype);
+			orxout() << "enemyerstellen" << endl;
+        	//adds different types of enemys depending on the WaveNumber progressively making the combination of enemys more difficult
+        	if(spaceships>0)
+        	{
+    			addTowerDefenseEnemy(path, 1);
+    			spaceships--;
+
+        	}else if(ufos>0)
+        	{
+    			addTowerDefenseEnemy(path, 3);
+    			ufos--;
+        	}else if(eggs>0)
+        	{
+    			addTowerDefenseEnemy(path, 2);
+    			eggs--;
+        	}else if(randomships>0)
+        	{
+    			addTowerDefenseEnemy(path, rand() % 3 +1);
+    			randomships--;
+
+        	}
+
 		}
 
 
@@ -495,6 +580,7 @@ namespace orxonox
 */
 
     }
+
 
     // Function to test if we can add waypoints using code only. Doesn't work yet
 
