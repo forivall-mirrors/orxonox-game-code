@@ -38,7 +38,19 @@
 
 
 namespace orxonox // tolua_export
-{ // tolua_export
+{
+    /**
+    @brief
+        Everything in Orxonoy that has a health attribute is a Pawn. After a Pawn is spawned its health is set to
+        its initial health. In every call of the Pawns tick function the game checks whether the pawns health is at
+        or below zero. If it is, the pawn gets killed.
+
+        Pawns can carry pickups and fire weapons. The can also have shields.
+
+        Notice that every Pawn is a ControllableEntity.
+    */
+
+    // tolua_export
     class _OrxonoxExport Pawn // tolua_export
         : public ControllableEntity, public RadarViewable, public PickupCarrier
     { // tolua_export

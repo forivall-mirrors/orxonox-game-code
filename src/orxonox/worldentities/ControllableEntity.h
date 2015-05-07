@@ -38,6 +38,13 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        The ControllableEntity is derived from the @ref orxonox::MobileEntity. ControllableEntities can be controlled by @ref orxonox::Controller Controllers.
+        A Controller will call (based on user input, AI decision, ...) for example the function @see moveFrontBack or the function @see rotateYaw to
+        move the ControllableEntity through space. A Controller could also call the @see boost function to tell the ControllableEntity that he wants it to boost.
+    */
+
     class _OrxonoxExport ControllableEntity : public MobileEntity
     {
         friend class PlayerInfo; // PlayerInfo uses setPlayer and removePlayer

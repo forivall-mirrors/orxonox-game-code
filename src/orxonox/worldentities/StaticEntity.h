@@ -35,6 +35,16 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        The StaticEntity is the simplest derivative of the @ref orxonox::WorldEntity class. This means all StaticEntity instances also have
+        a position in space, a mass, a scale, a frication, ... because every StaticEntity is a WorldEntity. You can attach StaticEntities to eachother ike @ref orxonox::WorldEntity WorldEntities.
+
+        In contrast to the MobileEntity the StaticEntity cannot move with respect to the parent to which it is attached. That's why
+        it is called StaticEntity. It will keep the same position (always with respect to its parent) forever unless you call the
+        function @see setPosition to changee it.
+    */
+
     class _OrxonoxExport StaticEntity : public WorldEntity
     {
         public:

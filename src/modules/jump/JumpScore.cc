@@ -90,7 +90,6 @@ namespace orxonox
                     else if (showFuel_ == true)
                     {
                         float fuel = owner_->getFuel();
-                        orxout() <<  fuel << endl;
                         std::string str;
 
                         if (fuel <= 0.0)

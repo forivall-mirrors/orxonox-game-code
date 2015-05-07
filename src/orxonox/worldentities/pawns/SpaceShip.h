@@ -46,6 +46,7 @@ namespace orxonox
     /**
     @brief
         The SpaceShip is the principal entity through which the player interacts with the game. Its main function is to fly, however many things, such as @ref orxonox::Engine Engines or @ref orxonox::Weapon Weapons, can be attached to it.
+        The feature that you can add @ref orxonox::Engine Engines is new in this class. However adding @ref orxonox::Weapon Weapons is possible because every Spaceship is a Pawn (due to inheritance) and every Pawn can carry @ref orxonox::Weapon Weapons.
 
         There are several parameters that define the behavior of the SpaceShip>
         - The <b>rotationThrust</b>, specifies the force with which the SpaceShip rotates.
