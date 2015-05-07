@@ -52,6 +52,7 @@ namespace orxonox
       std::string getServerListItemName( unsigned int index ); // tolua_export
       std::string getServerListItemIP( unsigned int index ); // tolua_export
       std::string getServerListItemRTT( unsigned int index ); // tolua_export
+      std::string getServerListItemPlayerNumber( unsigned int index ); // tolua_export
       static LANDiscovery& getInstance(){ return Singleton<LANDiscovery>::getInstance(); } // tolua_export
 
     private:

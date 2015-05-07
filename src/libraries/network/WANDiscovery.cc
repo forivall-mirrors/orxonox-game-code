@@ -95,7 +95,11 @@ namespace orxonox
       std::string datastr = std::string((char*)ev->packet->data + MSPROTO_SERVERLIST_ITEM_LEN+1);
       int separator = datastr.find(" ");
       toadd.setServerIP(datastr.substr(0,separator));
-      toadd.setServerName(datastr.substr(separator+1));
+      int secondsep = datastr.find(" ", separator + 1);
+      toadd.setServerName(datastr.substr(separator + 1, secondsep - separator - 1));
+      toadd.setClientNumber(Ogre::StringConverter::parseInt(datastr.substr(secondsep+1)));
+
+      orxout(internal_info, context::network) << "Received WAN discovery server information; Name: " << toadd.getServerName() << ", Address: " << toadd.getServerIP() << ", Players: " << toadd.getClientNumber() << ", RTT: " << toadd.getServerRTT() << endl;
 
       /* add to list */
       this->servers_.push_back( toadd );
@@ -167,6 +171,15 @@ namespace orxonox
       return Ogre::StringConverter::toString(serverrtt);
     }
 
+  }
+  std::string WANDiscovery::getServerListItemPlayerNumber(unsigned int index)
+  {
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else{
+      int playerNumber = this->servers_[index].getClientNumber();
+      return Ogre::StringConverter::toString(playerNumber);
+    }
   }
 
 } // namespace orxonox

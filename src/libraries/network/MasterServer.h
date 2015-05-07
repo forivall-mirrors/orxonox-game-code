@@ -48,7 +48,10 @@
 /* c compatibility */
 #include <cstdio>
 
-namespace orxonox 
+#include <OgreStringConverter.h>
+
+
+namespace orxonox
 {
   /* singleton */
   class _NetworkExport MasterServer
@@ -62,11 +65,11 @@ namespace orxonox
 
       /* static pointer for commands */
       static MasterServer *instance;
-      static MasterServer *getInstance() 
+      static MasterServer *getInstance()
         { return instance; }
-      static void setInstance( MasterServer *setto ) 
+      static void setInstance( MasterServer *setto )
         { instance = setto;  }
-      
+
       /* functions for commands */
       static void listServers( void );
       static void delServer( std::string todeladdr );

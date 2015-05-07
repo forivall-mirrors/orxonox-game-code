@@ -57,8 +57,8 @@ namespace orxonox
     /* update msaddress string from orxonox.ini config file, if it
      * has changed.
      */
-    SetConfigValueExternal(msaddress, "WANDiscovery", "msaddress", "orxonox.net");
-    SetConfigValueExternal(ownName, "WANDiscovery", "ownName", "tme213");
+    SetConfigValueExternal(msaddress, "Discovery", "msaddress", "orxonox.net");
+    SetConfigValueExternal(ownName, "Discovery", "ownName", "tme213");
 //     SetConfigValue( msaddress, "orxonox.net");
   }
 
@@ -105,13 +105,12 @@ namespace orxonox
     /* debugging output */
     orxout(verbose, context::master_server) << "Initialization of WANDiscoverable complete." << endl;
 
-    std::string request = MSPROTO_GAME_SERVER " " MSPROTO_SET_NAME " ";
-    request += this->ownName;
-
     // Now register the server at the master server
     this->msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
-    this->msc.sendRequest( request );
 
+    std::string request = MSPROTO_GAME_SERVER " " MSPROTO_SET_NAME " ";
+    request += this->ownName;
+    this->msc.sendRequest( request );
 
     return true;
   }
@@ -120,6 +119,17 @@ namespace orxonox
   {
     this->msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_SERVERDC );
     msc.disconnect();
+  }
+
+  void WANDiscoverable::updateClientNumber(int clientNumber)
+  {
+    orxout(verbose, context::master_server) << "Sending new number of clients: " << clientNumber << endl;
+    std::string request = MSPROTO_GAME_SERVER " " MSPROTO_SET_CLIENTS " ";
+    std::stringstream ss;
+    ss << clientNumber;
+    request +=  ss.str();
+
+    this->msc.sendRequest( request );
   }
 
 

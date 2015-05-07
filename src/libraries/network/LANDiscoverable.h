@@ -42,6 +42,8 @@ namespace orxonox
       virtual ~LANDiscoverable();
       void setActivity( bool bActive );
       void update();
+      void updateClientNumber(int clientNumber) {this->clientNumber = clientNumber;}
+;
       /** Function used for the configuration file parameter update */
       void setConfigValues();
 
@@ -49,6 +51,7 @@ namespace orxonox
       bool            bActive_;
       ENetHost*       host_;
       std::string     ownName;
+      int clientNumber;
   };
 
 }

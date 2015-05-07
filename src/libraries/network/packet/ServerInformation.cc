@@ -41,7 +41,6 @@ namespace orxonox
 
     ServerInformation::ServerInformation()
     {
-
     }
 
     ServerInformation::ServerInformation(ENetEvent* event)

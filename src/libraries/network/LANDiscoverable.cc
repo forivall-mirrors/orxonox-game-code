@@ -56,10 +56,10 @@ namespace orxonox
 
   void LANDiscoverable::setConfigValues()
   {
-    /* update msaddress string from orxonox.ini config file, if it
+    /* update ownName string from orxonox.ini config file, if it
      * has changed.
      */
-    SetConfigValueExternal(ownName, "WANDiscovery", "ownName", "tme213");
+    SetConfigValueExternal(ownName, "Discovery", "ownName", "tme213");
   }
 
   LANDiscoverable::~LANDiscoverable()
@@ -119,6 +119,7 @@ namespace orxonox
             orxout(internal_info, context::network) << "Received LAN discovery message from client " << event.peer->host->receivedAddress << endl;
             packet::ServerInformation info;
             info.setServerName(this->ownName);
+            info.setClientNumber(this->clientNumber);
             info.send(event.peer);
 //             ENetPacket* packet = enet_packet_create( LAN_DISCOVERY_ACK, strlen(LAN_DISCOVERY_ACK)+1, ENET_PACKET_FLAG_RELIABLE );
 //             enet_peer_send(event.peer, 0, packet );

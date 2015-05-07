@@ -158,4 +158,18 @@ namespace orxonox
     return false;
   };
 
+  bool ServerList::setClientsByAddress( std::string address, int clientNumber ){
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
+
+    /* loop through list elements */
+    for( i = serverlist.begin(); i != serverlist.end(); ++i )
+      if( (*i).ServerInfo.getServerIP() == address )
+      { /* found this adress, rename and quit */
+        (*i).ServerInfo.setClientNumber( clientNumber );
+        return true;
+      }
+    return false;
+  };
+
 }

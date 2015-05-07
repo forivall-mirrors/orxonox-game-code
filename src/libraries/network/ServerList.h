@@ -93,6 +93,8 @@ namespace orxonox
 
       bool setNameByAddress( std::string address, std::string name  );
 
+      bool setClientsByAddress( std::string address, int clientNumber );
+
       /* SEARCHING */
       /* \param address The address of the server that is to be
        *  found
