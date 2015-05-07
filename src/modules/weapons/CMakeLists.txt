@@ -18,3 +18,7 @@ ORXONOX_ADD_LIBRARY(weapons
     objects
   SOURCE_FILES ${WEAPONS_SRC_FILES}
 )
+
+#TARGET_LINK_LIBRARIES(weapons
+#    particleuniverse_orxonox
+#)

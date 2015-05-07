@@ -37,3 +37,8 @@ ORXONOX_ADD_LIBRARY(ogreceguirenderer_orxonox
   SOURCE_FILES
     ${OCR_FILES}
 )
+
+TARGET_LINK_LIBRARIES(ogreceguirenderer_orxonox
+    pthread
+    boost_system    
+)

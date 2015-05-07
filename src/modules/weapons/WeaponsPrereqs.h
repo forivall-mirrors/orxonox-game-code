@@ -81,6 +81,7 @@ namespace orxonox
     class ParticleProjectile;
     class Projectile;
     class Rocket;
+    class RocketOld;
     class SimpleRocket;
 
     // weaponmodes
@@ -90,6 +91,7 @@ namespace orxonox
     class LaserFire;
     class LightningGun;
     class RocketFire;
+    class RocketFireOld;
     class SimpleRocketFire;
 }
 
