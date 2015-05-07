@@ -11,6 +11,8 @@
 namespace orxonox{
 	RegisterClass(GravityBomb);
 
+	const float GravityBomb::LIFETIME = 5;
+
 	GravityBomb::GravityBomb(Context* context):
 				BasicProjectile(),
 				MovableEntity(context),
@@ -23,7 +25,7 @@ namespace orxonox{
 			if (GameMode::isMaster())
 			{
 				//Define CollisionType of the bomb
-				this->timeToLife_= 5;
+				this->timeToLife_= LIFETIME;
 				this->setCollisionResponse(false);
 				this->setCollisionType(WorldEntity::Dynamic);
 				this->enableCollisionCallback();
@@ -34,10 +36,15 @@ namespace orxonox{
 				this->attachCollisionShape(collisionShape);
 
 				//Create Bomb Model
-	            Model* model = new Model(this->getContext());
-	            model->setMeshSource("rocket.mesh"); //Demo Model from SimpleRocket
-	            model->scale(0.7f);
-	            this->attach(model);
+	            Model* rocketModel = new Model(this->getContext());
+	            rocketModel->setMeshSource("GravityBombRocket.mesh"); //Demo Model from SimpleRocket
+	            rocketModel->scale(3.0f);
+	            this->attach(rocketModel);
+
+	            Model* bombModel =  new Model(this->getContext());
+	            bombModel->setMeshSource("GravityBomb.mesh"); //Demo Model from SimpleRocket
+				bombModel->scale(3.0f);
+				this->attach(bombModel);
 
 			}
 		}
@@ -81,6 +88,7 @@ namespace orxonox{
 	void GravityBomb::detonate()
 	{
 		GravityBombField* field = new GravityBombField(this->getContext());
+		field->setShooter(this->getShooter());
 		field->setPosition(getPosition());
 		orxout(debug_output) << "detonating. Creating GravityBombField." <<endl;
 		orxout(debug_output) << "Field is at Position: " << getPosition() << endl;
