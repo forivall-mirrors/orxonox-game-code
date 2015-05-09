@@ -30,7 +30,7 @@ namespace orxonox
 		this->speed_ = BOMB_VELOCITY;
 
 		this->setMunitionName("GravityBombMunition");
-		// The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
+		this->setDefaultSoundWithVolume("sounds/Rocket_launch.ogg",0.8);
 	}
 
 	GravityBombFire::~GravityBombFire(){};
