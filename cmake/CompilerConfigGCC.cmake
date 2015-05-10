@@ -63,6 +63,10 @@ ADD_COMPILER_FLAGS("-O3 -g -ggdb"          RelWithDebInfo CACHE)
 ADD_COMPILER_FLAGS("-O3"                   Release        CACHE)
 ADD_COMPILER_FLAGS("-Os"                   MinSizeRel     CACHE)
 
+# Introducing c++11
+# Note: there is also 'std=gnu++11', but that might not be portable to windows
+ADD_COMPILER_FLAGS("-std=c++0x" CACHE)
+
 # CMake doesn't seem to set the PIC flags right on certain 64 bit systems
 IF(NOT MINGW AND ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)

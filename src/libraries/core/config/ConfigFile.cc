@@ -35,6 +35,9 @@
 
 #include <boost/filesystem.hpp>
 
+#include <iterator>
+#include <algorithm>
+
 #include "util/Convert.h"
 #include "util/StringUtils.h"
 #include "core/PathConfig.h"
@@ -92,7 +95,9 @@ namespace orxonox
                         // Try to copy default file from the data folder
                         try
                         {
-                            boost::filesystem::copy_file(defaultFilepath, filepath);
+                            std::ifstream input(defaultFilepath.string().c_str(), std::ifstream::in | std::ifstream::binary);
+                            std::ofstream output(filepath.string().c_str(), std::ofstream::out | std::ofstream::binary);
+                            copy(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>(), std::ostream_iterator<char>(output));
                             orxout(internal_info, context::config) << "Copied " << this->filename_ << " from the default config folder." << endl;
                         }
                         catch (const boost::filesystem::filesystem_error& ex)
