@@ -12,6 +12,8 @@
 
 #include <btBulletCollisionCommon.h>
 #include <OgreFrameListener.h>
+#include <OgreVector3.h>
+#include <OgreColourValue.h>
 
 namespace orxonox
 {

@@ -35,13 +35,8 @@
 #ifndef _JumpPlatformTimer_H__
 #define _JumpPlatformTimer_H__
 
-#include "jump/JumpPrereqs.h"
-
-#include "util/Math.h"
-
-#include "worldentities/MovableEntity.h"
-#include "graphics/ParticleSpawner.h"
-
+#include "JumpPrereqs.h"
+#include "JumpPlatform.h"
 
 namespace orxonox
 {

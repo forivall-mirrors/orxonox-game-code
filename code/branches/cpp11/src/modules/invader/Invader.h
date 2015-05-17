@@ -38,9 +38,6 @@
 #include "invader/InvaderPrereqs.h"
 
 #include "gametypes/Deathmatch.h"
-
-#include "InvaderCenterPoint.h"
-
 #include "tools/Timer.h"
 
 namespace orxonox
@@ -57,8 +54,7 @@ namespace orxonox
 
             void spawnEnemy();
 
-            void setCenterpoint(InvaderCenterPoint* center)
-            { this->center_ = center; }
+            void setCenterpoint(InvaderCenterPoint* center);
 
             int getLives(){return this->lives;}
             int getLevel(){return this->level;}

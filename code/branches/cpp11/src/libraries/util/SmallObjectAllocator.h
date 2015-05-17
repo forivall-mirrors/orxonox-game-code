@@ -76,6 +76,7 @@
 
 #include "UtilPrereqs.h"
 #include <vector>
+#include <cstdio>
 
 namespace orxonox
 {

@@ -30,11 +30,6 @@
 #define _JumpCenterpoint_H__
 
 #include "jump/JumpPrereqs.h"
-
-#include <string>
-
-#include <util/Math.h>
-
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox

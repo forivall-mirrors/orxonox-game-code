@@ -30,11 +30,7 @@
 #define _Jump_H__
 
 #include "jump/JumpPrereqs.h"
-#include "tools/Timer.h"
-#include "graphics/Camera.h"
 #include "gametypes/Deathmatch.h"
-#include "JumpCenterpoint.h"
-#include <list>
 
 namespace orxonox
 {
@@ -50,8 +46,7 @@ namespace orxonox
             int getScore(PlayerInfo* player) const;
             float getFuel() const;
             bool getDead(PlayerInfo* player) const;
-            void setCenterpoint(JumpCenterpoint* center)
-                { center_ = center; }
+            void setCenterpoint(JumpCenterpoint* center);
             PlayerInfo* getPlayer() const;
 
         protected:

@@ -35,13 +35,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "graphics/Model.h"
-#include "gametypes/Gametype.h"
-
-#include "JumpFigure.h"
-
-#include "sound/WorldSound.h"
 #include "core/XMLPort.h"
+#include "sound/WorldSound.h"
+#include "JumpFigure.h"
 
 namespace orxonox
 {

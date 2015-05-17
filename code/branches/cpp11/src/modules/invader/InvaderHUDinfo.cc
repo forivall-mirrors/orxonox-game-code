@@ -29,7 +29,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"
-// #include "Invader.h"
+#include "Invader.h"
 
 namespace orxonox
 {

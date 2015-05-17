@@ -32,11 +32,8 @@
 */
 
 #include "JumpPlatformFake.h"
+
 #include "core/CoreIncludes.h"
-#include "core/GameMode.h"
-#include "gametypes/Gametype.h"
-#include "JumpFigure.h"
-#include "sound/WorldSound.h"
 #include "core/XMLPort.h"
 
 namespace orxonox

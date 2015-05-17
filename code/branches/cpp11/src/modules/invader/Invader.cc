@@ -133,6 +133,11 @@ namespace orxonox
         }
     }
 
+    void Invader::setCenterpoint(InvaderCenterPoint* center)
+    {
+        this->center_ = center;
+    }
+
     void Invader::costLife()
     {
         lives--;

@@ -35,12 +35,8 @@
 #ifndef _JumpPlatformFake_H__
 #define _JumpPlatformFake_H__
 
-#include "jump/JumpPrereqs.h"
-
-#include "util/Math.h"
-
-#include "worldentities/MovableEntity.h"
-
+#include "JumpPrereqs.h"
+#include "JumpPlatform.h"
 
 namespace orxonox
 {

@@ -9,6 +9,11 @@
 #define _OgreBulletUtils_H__
 
 #include "tools/ToolsPrereqs.h"
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
+#include <OgreColourValue.h>
+#include <OgreMatrix3.h>
+#include <OgreMatrix4.h>
 
 namespace orxonox
 {
@@ -41,7 +46,7 @@ namespace orxonox
 
     inline Ogre::Matrix3 matrix3(const btMatrix3x3& matrix)
     {
-        return Matrix3(
+        return Ogre::Matrix3(
                 matrix[0][0], matrix[0][1], matrix[0][2],
                 matrix[1][0], matrix[1][1], matrix[1][2],
                 matrix[2][0], matrix[2][1], matrix[2][2]

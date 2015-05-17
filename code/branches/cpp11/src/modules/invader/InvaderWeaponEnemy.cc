@@ -33,6 +33,9 @@
 
 #include "InvaderWeaponEnemy.h"
 
+#include "core/CoreIncludes.h"
+#include "weapons/projectiles/Projectile.h"
+
 namespace orxonox
 {
     RegisterClass(InvaderWeaponEnemy);
