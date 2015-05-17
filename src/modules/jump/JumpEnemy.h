@@ -36,11 +36,7 @@
 #define _JumpEnemy_H__
 
 #include "jump/JumpPrereqs.h"
-
-#include "util/Math.h"
-
 #include "worldentities/MovableEntity.h"
-
 
 namespace orxonox
 {

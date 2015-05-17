@@ -31,9 +31,12 @@
     @brief Declaration of the InvaderEnemyShooter class.
 */
 
-#include "invader/InvaderPrereqs.h"
 #include "InvaderEnemyShooter.h"
-// #include "worldentities/pawns/SpaceShip.h"
+
+#include "core/CoreIncludes.h"
+#include "core/command/Executor.h"
+#include "Invader.h"
+#include "InvaderShip.h"
 
 namespace orxonox
 {

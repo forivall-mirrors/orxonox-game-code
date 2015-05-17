@@ -29,9 +29,8 @@
 #ifndef _JumpPlatformVMove_H__
 #define _JumpPlatformVMove_H__
 
-#include "jump/JumpPrereqs.h"
-#include "util/Math.h"
-#include "worldentities/MovableEntity.h"
+#include "JumpPrereqs.h"
+#include "JumpPlatform.h"
 
 namespace orxonox
 {

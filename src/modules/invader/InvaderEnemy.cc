@@ -31,8 +31,10 @@
     @brief Declaration of the InvaderEnemy class.
 */
 
-#include "invader/InvaderPrereqs.h"
 #include "InvaderEnemy.h"
+
+#include "core/CoreIncludes.h"
+#include "Invader.h"
 #include "InvaderShip.h"
 
 namespace orxonox

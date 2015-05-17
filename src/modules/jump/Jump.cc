@@ -33,11 +33,7 @@
 
 #include "Jump.h"
 #include "core/CoreIncludes.h"
-#include "core/EventIncludes.h"
-#include "core/command/Executor.h"
-#include "core/config/ConfigValueIncludes.h"
-#include "gamestates/GSLevel.h"
-#include "chat/ChatManager.h"
+
 #include "JumpCenterpoint.h"
 #include "JumpPlatform.h"
 #include "JumpPlatformStatic.h"
@@ -55,7 +51,10 @@
 #include "JumpPropeller.h"
 #include "JumpBoots.h"
 #include "JumpShield.h"
+
+#include "gamestates/GSLevel.h"
 #include "infos/PlayerInfo.h"
+#include "graphics/Camera.h"
 
 namespace orxonox
 {
@@ -69,8 +68,6 @@ namespace orxonox
         figure_ = 0;
         camera = 0;
         setHUDTemplate("JumpHUD");
-
-        setConfigValues();
     }
 
     Jump::~Jump()
@@ -1299,4 +1296,10 @@ namespace orxonox
     {
         return figure_->dead_;
     }
+
+    void Jump::setCenterpoint(JumpCenterpoint* center)
+    {
+        center_ = center;
+    }
+
 }

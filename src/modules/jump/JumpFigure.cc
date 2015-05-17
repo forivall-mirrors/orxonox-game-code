@@ -35,6 +35,11 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "graphics/Model.h"
+#include "JumpRocket.h"
+#include "JumpPropeller.h"
+#include "JumpBoots.h"
+#include "JumpShield.h"
 
 namespace orxonox
 {

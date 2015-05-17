@@ -36,6 +36,9 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "Invader.h"
+#include "InvaderEnemy.h"
+#include "graphics/Camera.h"
+#include "weapons/projectiles/Projectile.h"
 
 namespace orxonox
 {
@@ -137,6 +140,12 @@ namespace orxonox
     void InvaderShip::boost(bool bBoost)
     {
         isFireing = bBoost;
+    }
+    void InvaderShip::rotateRoll(const Vector2& value)
+    {
+        if (getGame())
+            if (getGame()->bEndGame)
+                getGame()->end();
     }
     inline bool InvaderShip::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {

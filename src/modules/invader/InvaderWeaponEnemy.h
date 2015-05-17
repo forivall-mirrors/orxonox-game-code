@@ -34,9 +34,9 @@
 #ifndef _InvaderWeaponEnemy_H__
 #define _InvaderWeaponEnemy_H__
 
-// #include "weapons/weaponmodes/HsW01.h"
-// #include "weapons/WeaponsPrereqs.h"
-#include "invader/InvaderWeapon.h"
+#include "invader/InvaderPrereqs.h"
+
+#include "InvaderWeapon.h"
 #include "tools/Timer.h"
 
 namespace orxonox

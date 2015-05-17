@@ -36,9 +36,6 @@
 #define _JumpItem_H__
 
 #include "jump/JumpPrereqs.h"
-
-#include "util/Math.h"
-
 #include "worldentities/MovableEntity.h"
 
 

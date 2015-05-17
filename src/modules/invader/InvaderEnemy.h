@@ -36,7 +36,7 @@
 
 #include "invader/InvaderPrereqs.h"
 
-#include "worldentities/pawns/SpaceShip.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

@@ -29,10 +29,8 @@
 #ifndef _JumpBoots_H__
 #define _JumpBoots_H__
 
-#include "jump/JumpPrereqs.h"
-#include "util/Math.h"
-#include "worldentities/MovableEntity.h"
-
+#include "JumpPrereqs.h"
+#include "JumpItem.h"
 
 namespace orxonox
 {

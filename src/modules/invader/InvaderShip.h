@@ -36,9 +36,8 @@
 
 #include "invader/InvaderPrereqs.h"
 
+#include "weapons/WeaponsPrereqs.h"
 #include "worldentities/pawns/SpaceShip.h"
-#include "graphics/Camera.h"
-#include "weapons/projectiles/Projectile.h"
 
 namespace orxonox
 {
@@ -60,7 +59,7 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value){}; 
             virtual void rotatePitch(const Vector2& value){};
             //return to main menu if game has ended.
-            virtual void rotateRoll(const Vector2& value){if (getGame()) if (getGame()->bEndGame) getGame()->end();};
+            virtual void rotateRoll(const Vector2& value);
 
             virtual void updateLevel();
 

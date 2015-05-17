@@ -32,12 +32,12 @@
 */
 
 #include "JumpScore.h"
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Convert.h"
 #include "infos/PlayerInfo.h"
 #include "Jump.h"
-#include "sound/WorldSound.h"
 
 namespace orxonox
 {
