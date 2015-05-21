@@ -101,6 +101,12 @@ namespace orxonox
             inline float getMaxYaw() const
                 { return this->maxYaw_; }
 
+            inline void setRotationThrust(float rotationthrust)
+            	{ this->rotationThrust_ = rotationthrust; }
+
+            inline float getRotationThrust()
+            	{ return this->rotationThrust_; }
+
         protected:
             Vector3 startDir_; //!< The initial facing direction, in local coordinates.
             Vector3 localZ_; //!< The local z-axis, includes for the parent's rotation and rotations done in xml.

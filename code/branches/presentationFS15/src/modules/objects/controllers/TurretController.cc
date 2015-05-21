@@ -103,7 +103,7 @@
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
         {
             Pawn* entity = orxonox_cast<Pawn*>(*it);
-            if (!entity || FormationController::sameTeam(this->getControllableEntity(), entity, this->getGametype()))
+            if (!entity || FormationController::sameTeam(turret, entity, this->getGametype()))
                 continue;
             tempScore = turret->isInRange(entity);
             if(tempScore != -1.f)
@@ -195,6 +195,7 @@
             turret->aimAtPosition(target_->getWorldPosition());
             if(this->isLookingAtTargetNew(Degree(5).valueRadians()))
             {
+
                 this->getControllableEntity()->fire(0);
             }
         }

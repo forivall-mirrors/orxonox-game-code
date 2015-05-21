@@ -19,11 +19,12 @@ See TowerDefenseTowerDefenseReadme.txt for Information.
 
 #include "towerdefense/TowerDefensePrereqs.h"
 #include "worldentities/pawns/SpaceShip.h"
+#include "objects/Turret.h"
 
 
 namespace orxonox
 {
-    class _TowerDefenseExport TowerDefenseTower : public Pawn
+    class _TowerDefenseExport TowerDefenseTower : public Turret
     {
     public:
         TowerDefenseTower(Context* context);
@@ -36,18 +37,22 @@ namespace orxonox
         */
 
         // Overriding these to stop TowerDefenseTowers from spasing out
+        /*
         void setOrientation(const Quaternion& orientation);
         virtual void rotateYaw(const Vector2& value);
         virtual void rotatePitch(const Vector2& value);
         virtual void rotateRoll(const Vector2& value);
+        */
         virtual bool upgradeTower();
 
 
         void setGame(TowerDefense* Towerdefense)
         { assert(Towerdefense); game_ = Towerdefense; }
+        int upgrade;
+        int upgradeMax;
     private:
         TowerDefense* game_;
-        int upgrade;
+
     };
 }
 

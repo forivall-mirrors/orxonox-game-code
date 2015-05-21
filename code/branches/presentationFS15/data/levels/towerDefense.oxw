@@ -19,39 +19,27 @@
 <?lua
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
-  include("templates/tower.oxt")
+  include("templates/towerdefensetower.oxt")
   include("templates/enemytowerdefense.oxt")
   include("templates/standardTurret.oxt")
 ?>
 
-<!-- Specify the position of the camera -->
-<Template name=centerpointmarkcamera defaults=0>
-  <Pawn team=1>
+
+<Template name=selectercameras defaults=0>
+  <TowerDefenseSelecter>
     <camerapositions>
-      <CameraPosition position="0,0,1500"/>
+      <CameraPosition position="0,0,1400" lookat="0,0,0" absolute=true />
     </camerapositions>
-  </Pawn>
+  </TowerDefenseSelecter>
 </Template>
 
-<!-- Loads a mesh to mark the center-->
-<Template name=centerpointmark>
-  <Pawn team=1 camerapositiontemplate=centerpointmarkcamera>
+<Template name=selectertemplate>
+  <TowerDefenseSelecter team=0 camerapositiontemplate=selectercameras>
     <attached>
-      <Model position="0,0,0" mesh="cylinder.mesh" scale3D="1,1,1" /> <!-- the camera is attached to this -->
+      <Model pitch=90 position="0,0,-30" mesh="TD_Selection.mesh" scale=30 />
     </attached>
-  </Pawn>
+  </TowerDefenseSelecter>
 </Template>
-
-
-<!-- Template for a tower   EDIT: new towertemplate is included with "templates/tower" -->
-<!--Template name=towertemplate>
-  <Tower>
-    <attached>
-      <Model position="0,0,0" scale=0.25 mesh="Tower_ME.mesh" />
-    </attached>
-  </Tower>
-</Template-->
-
 
 
 
@@ -71,55 +59,30 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
     <!-- Spawns the camera, attached to a crate -->
-    <SpawnPoint team=1 position="0,0,0" spawnclass=Pawn pawndesign=centerpointmark />
-    <!--TeamSpawnPoint team=1 position="-7,7,4" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
-
-    <!--SpawnPoint team=1 position="0,0,10" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff  /-->
-    <!--SpawnPoint team=0 position="0,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
-
-
-
-
-    <!--invisible entity to attach towers to, since playfield is static and towers are dynamic-->
-    <StaticEntity team =1 position=0,0,0>
-
-        <attached>
-            <Model position="-50,-50,0" mesh="Playfield_ME.mesh" scale=80 />
-            <!-- Base -->
-            <Model position="500,700,100" mesh="sphere.mesh" scale=80 />
-            <!--Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" /--> <!-- Only temporary needed to help align the collisionshape -->
-            <!-- This was used to mark the playfield, let's let it be here for now -->
-            <!--Model position="-8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
-            <!--Model position="-8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
-            <!--Model position="8,-8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
-            <!--Model position="8,8,0" mesh="crate.mesh" scale3D="0.3,0.3,0.3" /-->
-        </attached>
-        <collisionShapes> <!-- The collisionshape forbids other worldentities that have a collisionShape to fly through it.
-
-                               TODO: Find correct size for the collisionshape; since a collisionShape is invisible
-                               I added the crate wich currently has the same dimensions as the collisionshape.
-                               You have to adjust the crate's scale3D as well as the collisionshape's halfExtens to
-                               find the proper shape. -->
-           <BoxCollisionShape position="0,0,0" halfExtents="400,400,100" />
-        </collisionShapes>
-    </StaticEntity>
-
-
-
+    <SpawnPoint team=0 position="0,0,0"/> 
 
     <!-- PlayField -->
     <TowerDefenseCenterpoint
     name=towerdefensecenter
+
+    selecterTemplate=selectertemplate
+
     width=16
     height=16
     tileScale=100
-    towerTemplate=tower
     position="0,0,0"
     direction="0,0,0"
     collisionType=dynamic
     mass=100000
-    team=1
-    />
+    >
+        <attached>
+            <Model position="-50,-50,0" mesh="Playfield_ME.mesh" scale=80 />
+            <Model position="500,700,100" mesh="sphere.mesh" scale=80 />
+        </attached>
+        <camerapositions>
+      <CameraPosition position="0,0,1500" lookat="0,0,0" absolute=true/>
+    </camerapositions>
+    </TowerDefenseCenterpoint>
 
   </Scene>
 </Level>

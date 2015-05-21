@@ -21,12 +21,16 @@ namespace orxonox
     @brief
         Constructor. Registers and initializes the object.
     */
-    TowerDefenseTower::TowerDefenseTower(Context* context) : Pawn(context)
+    TowerDefenseTower::TowerDefenseTower(Context* context) : Turret(context)
     {
         RegisterObject(TowerDefenseTower);
-
-        this->setCollisionType(WorldEntity::Dynamic);
+        game_ =NULL;
+        this->setCollisionType(WorldEntity::None);
         upgrade = 0;
+        this->addTemplate("towerdefensetower");
+
+        upgradeMax = 5;
+
 
         //this->removeAllEngines();
 
@@ -37,6 +41,7 @@ namespace orxonox
         */
     }
 
+    /*
     void TowerDefenseTower::setOrientation(const Quaternion& orientation)
     {
     }
@@ -52,21 +57,22 @@ namespace orxonox
     void TowerDefenseTower::rotateRoll(const Vector2& value)
     {
     }
+    */
 
     bool TowerDefenseTower::upgradeTower()
     {
-        if(upgrade < 3)
+        if(upgrade < upgradeMax)
         {
             upgrade++;
             float reloadrate = getReloadRate();
             float reloadwaittime = getReloadWaitTime();
-            this->setDamageMultiplier(5000);
-
-            reloadrate = 0.5f*reloadrate;
-            reloadwaittime = 0.5f*reloadwaittime;
+            this->setDamageMultiplier((upgrade+1)*1.5);
+            this->setRotationThrust(2*this->getRotationThrust());
+            reloadrate = 0.7f*reloadrate;
+            reloadwaittime = 0.7f*reloadwaittime;
             setReloadRate(reloadrate);
             setReloadWaitTime(reloadwaittime);
-            this->addTemplate("towerturret1");
+            //this->addTemplate("towerturret1");
         }
         else
         {
