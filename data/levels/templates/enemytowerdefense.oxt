@@ -166,7 +166,7 @@
    health            = 100
    maxhealth         = 200
    initialhealth     = 100
-
+   
    shieldhealth        = 30
    initialshieldhealth = 30
    maxshieldhealth     = 50

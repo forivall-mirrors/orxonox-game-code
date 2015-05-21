@@ -36,7 +36,6 @@
  * playerScored() // kann man aufrufen um dem Spieler Punkte zu vergeben.
  *
  *
- *
  *TIPP: Eclipse hilft euch schnell auf bereits vorhanden Funktionen zuzugreifen:
  * einfach "this->" eingeben und kurz warten. Dann tauch eine Liste mit Vorschlägen auf. Wenn ihr jetzt weiter
  * tippt, werden die Vorschläge entsprechend gefiltert.
@@ -76,7 +75,6 @@
 #include "TowerDefenseTower.h"
 #include "TowerDefenseCenterpoint.h"
 //#include "TDCoordinate.h"
-#include "TowerTurret.h"
 #include "worldentities/SpawnPoint.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
@@ -87,12 +85,26 @@
 #include "core/CoreIncludes.h"
 /* Part of a temporary hack to allow the player to add towers */
 #include "core/command/ConsoleCommand.h"
+#include <cmath>
+
 
 namespace orxonox
 {
+    static const std::string __CC_addTower_name  = "addTower";
+    static const std::string __CC_upgradeTower_name = "upgradeTower";
+    static const int upgradeCost = 20;
+    static const int towerCost = 20;
+    unsigned int maxspaceships = 30;
+    int maxspaceshipsstandard = 30;
+
+
+
+    SetConsoleCommand("TowerDefense", __CC_addTower_name,  &TowerDefense::addTower ).addShortcut().defaultValues(1);
+    SetConsoleCommand("TowerDefense", __CC_upgradeTower_name, &TowerDefense::upgradeTower).addShortcut().defaultValues(0);
+
     RegisterUnloadableClass(TowerDefense);
 
-    TowerDefense::TowerDefense(Context* context) : Deathmatch(context)
+    TowerDefense::TowerDefense(Context* context) : TeamDeathmatch(context)
     {
         RegisterObject(TowerDefense);
 /*
@@ -102,13 +114,25 @@ namespace orxonox
             }
         }*/
 
+        //Timer for the waves (10 seconds between the waves)
+        selecter = NULL;
+        this->player_ = NULL;        
         this->setHUDTemplate("TowerDefenseHUD");
+        this->nextwaveTimer_.setTimer(10, false, createExecutor(createFunctor(&TowerDefense::nextwave, this)));
+        this->nextwaveTimer_.stopTimer();
+        this->waves_ = 0;
+        this->time = 0;
+        this->credit_ = 0;
+        this->lifes_ = 0;
+        this->timeSetTower_ = 0;
+        spaceships =15;
+        eggs=3;
+        ufos=7;
+        randomships=5;
 
-        //this->stats_ = new TowerDefensePlayerStats();
 
-        /* Temporary hack to allow the player to add towers and upgrade them */
-        this->dedicatedAddTower_ = createConsoleCommand( "addTower", createExecutor( createFunctor(&TowerDefense::addTower, this) ) );
-        this->dedicatedUpgradeTower_ = createConsoleCommand( "upgradeTower", createExecutor( createFunctor(&TowerDefense::upgradeTower, this) ) );
+        ModifyConsoleCommand(__CC_addTower_name).setObject(this);
+        ModifyConsoleCommand(__CC_upgradeTower_name).setObject(this);
     }
 
     TowerDefense::~TowerDefense()
@@ -116,8 +140,8 @@ namespace orxonox
         /* Part of a temporary hack to allow the player to add towers */
         if (this->isInitialized())
         {
-            if( this->dedicatedAddTower_ )
-                delete this->dedicatedAddTower_;
+            ModifyConsoleCommand(__CC_addTower_name).setObject(NULL);
+            ModifyConsoleCommand(__CC_upgradeTower_name).setObject(NULL);
         }
     }
 
@@ -130,40 +154,72 @@ namespace orxonox
 
     void TowerDefense::start()
     {
+        if (center_ != NULL) // There needs to be a TowerDefenseCenterpoint, i.e. the area the game takes place.
+        {
+            if (selecter == NULL)
+            {
+                selecter = new TowerDefenseSelecter(this->center_->getContext());                
+            }
+            selecter->addTemplate(center_->getSelecterTemplate());
+            center_->attach(selecter);
+        }
+        else // If no centerpoint was specified, an error is thrown and the level is exited.
+        {
+            orxout(internal_error) << "Jump: No Centerpoint specified." << endl;
+            return;
+        }
 
-        Deathmatch::start();
+        TeamDeathmatch::start();
 
-// Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
-        for (int i=0; i < 16 ; i++){
-            for (int j = 0; j< 16 ; j++){
-                towermatrix[i][j] = false;
+        // Waypoints: [1,3] [10,3] [10,11] [13,11] -> add the points to a matrix so the player cant place towers on the path
+        for (int i=0; i < 16 ; i++)
+        {
+            for (int j = 0; j< 16 ; j++)
+            {
+                towerModelMatrix[i][j] = NULL;
+                towerTurretMatrix[i][j] = NULL;
             }
         }
 
+        
+
+        if (player_ != NULL)
+        {
+            //this->player_->startControl(selecter);
+        }
+        else
+        {
+            orxout() << "player=NULL" << endl;
+        }
+
+
+        Model* dummyModel = new Model(this->center_->getContext());
+
+        //the path of the spacehips has to be blocked, so that no towers can be build there
         for (int k=0; k<3; k++)
-            towermatrix[1][k]=true;
+            towerModelMatrix[1][k]=dummyModel;
         for (int l=1; l<11; l++)
-            towermatrix[l][3]=true;
+        	towerModelMatrix[l][3]=dummyModel;
         for (int m=3; m<12; m++)
-            towermatrix[10][m]=true;
+        	towerModelMatrix[10][m]=dummyModel;
         for (int n=10; n<14; n++)
-            towermatrix[n][11]=true;
+        	towerModelMatrix[n][11]=dummyModel;
         for (int o=13; o<16; o++)
-            towermatrix[13][o]=true;
+        	towerModelMatrix[13][o]=dummyModel;
+
 
         //set initial credits, lifes and WaveNumber
-        this->setCredit(200);
-        this->setLifes(50);
+        this->setCredit(100);
+        this->setLifes(100);
         this->setWaveNumber(0);
         time=0.0;
 
+        /*
         //adds initial towers
         for (int i=0; i <7; i++){
             addTower(i+3,4);
-        }/*
-        for (int j=0; j < 7; j++){
-            addTower(9,j+5);
-        }*/
+        }
+		*/
     }
 
     // Generates a TowerDefenseEnemy. Uses Template "enemytowerdefense". Sets position at first waypoint of path.
@@ -177,25 +233,31 @@ namespace orxonox
         case 1 :
             en1->addTemplate("enemytowerdefense1");
             en1->setScale(3);
-            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            en1->lookAt(Vector3(0,0,100000));
+            en1->setHealth(en1->getHealth() +50 + this->getWaveNumber()*4);
             break;
 
         case 2 :
             en1->addTemplate("enemytowerdefense2");
             en1->setScale(2);
-            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            en1->lookAt(Vector3(0,0,100000));
+            en1->roll(Degree(120));
+            en1->setHealth(en1->getHealth() -30 + this->getWaveNumber()*4);
             //  en1->setShieldHealth(en1->getShield() = this->getWaveNumber()*2))
             break;
 
         case 3 :
             en1->addTemplate("enemytowerdefense3");
             en1->setScale(1);
-            en1->setHealth(en1->getHealth() + this->getWaveNumber()*4);
+            en1->lookAt(Vector3(0,0,100000));
+            en1->roll(Degree(120));
+            en1->setHealth(en1->getHealth() -10 + this->getWaveNumber()*4);
             break;
         }
 
+        en1->setTeam(2);
         en1->getController();
-        en1->setPosition(path.at(0)->get3dcoordinate());
+        en1->setPosition(path.at(0)->get3dcoordinate());        
         TowerDefenseEnemyvector.push_back(en1);
 
         for(unsigned int i = 0; i < path.size(); ++i)
@@ -208,15 +270,42 @@ namespace orxonox
     void TowerDefense::end()
     {
 
-        Deathmatch::end();
+        TeamDeathmatch::end();
         ChatManager::message("Match is over! Gameover!");
 
     }
 
+    void TowerDefense::spawnPlayer(PlayerInfo* player)
+    {
+        assert(player);
+        this->player_ = player;
+
+        if (selecter->getPlayer() == NULL)
+        {
+            this->player_ = player;
+            player->startControl(selecter);
+            players_[player].state_ = PlayerState::Alive;
+        } 
+    }
+
+    /**
+    @brief
+        Get the player.
+    @return
+        Returns a pointer to the player. If there is no player, NULL is returned.
+    */
+    PlayerInfo* TowerDefense::getPlayer(void) const
+    {
+        return this->player_;
+    }
+
     //not working yet
     void TowerDefense::upgradeTower(int x,int y)
-    {/*
-        const int upgradeCost = 20;
+    {
+        TDCoordinate* coord = new TDCoordinate(x,y);
+        x = coord->GetX();
+        y = coord->GetY();
+        
 
         if (!this->hasEnoughCreditForTower(upgradeCost))
         {
@@ -224,7 +313,10 @@ namespace orxonox
             return;
         }
 
-        if (towermatrix [x][y] == NULL)
+
+        Model* dummyModel2 = new Model(this->center_->getContext());
+
+        if (towerModelMatrix [x][y] == NULL || (towerModelMatrix [x][y])->getMeshSource() == dummyModel2->getMeshSource())
         {
             orxout() << "no tower on this position" << endl;
             return;
@@ -232,17 +324,39 @@ namespace orxonox
 
         else
         {
-            (towermatrix [x][y])->upgradeTower();
-        }*/
+            (towerTurretMatrix [x][y])->upgradeTower();
+            switch(towerTurretMatrix[x][y]->upgrade)
+                   {
+                   case 1 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T2.mesh");
+                	   break;
+
+                   case 2 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T3.mesh");
+                	   break;
+                   case 3 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T4.mesh");
+                	   break;
+                   case 4 :
+                	   towerModelMatrix[x][y]->setMeshSource("TD_T5.mesh");
+                	   break;
+
+                   }
+
+            this->buyTower(upgradeCost);
+        }
     }
 
     /*adds Tower at Position (x,y) and reduces credit and adds the point to the towermatrix. template ("towerturret")
     so towers have ability if the turrets
-
     */
+
     void TowerDefense::addTower(int x, int y)
-    {
-        const int towerCost = 20;
+    {        
+        TDCoordinate* coord = new TDCoordinate(x,y);
+        x = coord->GetX();
+        y = coord->GetY();
+
 
         if (!this->hasEnoughCreditForTower(towerCost))
         {
@@ -250,7 +364,7 @@ namespace orxonox
             return;
         }
 
-        if (towermatrix [x][y]==true)
+        if (towerModelMatrix [x][y]!=NULL)
         {
             orxout() << "not possible to put tower here!!" << endl;
             return;
@@ -263,25 +377,35 @@ namespace orxonox
 
         int tileScale = (int) this->center_->getTileScale();
 
-        if (x > 15 || y > 15 || x < 0 || y < 0)
+        /*if (x > 15 || y > 15 || x < 0 || y < 0)
         {
             //Hard coded: TODO: let this depend on the centerpoint's height, width and fieldsize (fieldsize doesn't exist yet)
             orxout() << "Can not add Tower: x and y should be between 0 and 15" << endl;
             return;
-        }
+        }*/
 
-        orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
+        //orxout() << "Will add tower at (" << (x-8) * tileScale << "," << (y-8) * tileScale << ")" << endl;
+        orxout() << "Will add tower at (" << x << "," << y << ")" << endl;
 
-       //Reduce credit
-        this->buyTower(towerCost);
-        towermatrix [x][y]=true;
+
+        //Create Model
+        Model* newTowerModel = new Model(this->center_->getContext());
+        newTowerModel->setMeshSource("TD_T1.mesh");
+        newTowerModel->setScale(30);
+        newTowerModel->pitch(Degree(90));
+        newTowerModel->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 80);
 
         //Creates tower
         TowerDefenseTower* towernew = new TowerDefenseTower(this->center_->getContext());
-        towernew->addTemplate("towerturret");
-        towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 75);
+        towernew->setPosition(static_cast<float>((x-8) * tileScale), static_cast<float>((y-8) * tileScale), 275);
         towernew->setGame(this);
-    }
+        towernew->setTeam(1);
+
+        //Reduce credit
+         this->buyTower(towerCost);
+         towerModelMatrix [x][y]= newTowerModel;
+         towerTurretMatrix [x][y]= towernew;
+    }    
 
     bool TowerDefense::hasEnoughCreditForTower(int towerCost)
     {
@@ -295,20 +419,138 @@ namespace orxonox
     }
 
  
+    void TowerDefense::nextwave()
+    {
+
+    	orxout() << "newwave" << endl;
+    	TowerDefenseEnemyvector.clear();
+    	waves_++;
+        //maxspaceships = round(maxspaceshipsstandard + 0.25*(waves_));
+    	time=0;
+
+    	int helpnumber = 40 -(waves_);
+    	if(helpnumber <= 0) {helpnumber =1;}
+        float numSpaceships = std::abs((rand() % 100)*5*(helpnumber));
+        float numEggs = std::abs((rand() % 100)*1*(waves_));
+        float numUfos = std::abs((rand() % 100)*1.5*(0.5*(waves_))) ;
+
+        float totalnumber = (numSpaceships + numEggs + numUfos)*1.3;
+
+        int newspaceships = (int)(maxspaceships* numSpaceships / totalnumber);
+        int neweggs = (int)(maxspaceships*numEggs / totalnumber);
+        int newufos = (int)(maxspaceships*numUfos / totalnumber);
+        int newrandomships = maxspaceships -newspaceships - neweggs - newufos;
+        spaceships =newspaceships;
+        eggs=neweggs;
+        ufos=newufos;
+        randomships=newrandomships;
+
+        orxout() << spaceships << endl;
+        orxout() << eggs << endl;
+        orxout() << ufos << endl;
+        orxout() << randomships << endl;
+
+
+
+
+
+    }
+
     void TowerDefense::tick(float dt)
     {
         SUPER(TowerDefense, tick, dt);
         time +=dt;
+        timeSetTower_ +=dt;
+
+        //Check if tower has to be set (because TowerDefenseSelecter asks for it)
+        if(timeSetTower_ >= 0.25)
+        {
+        	timeSetTower_ =0;
+			if(selecter != NULL && selecter->firePressed_)
+			{
+
+				int x = selecter->selectedPos_->GetX();
+				int y = selecter->selectedPos_->GetY();
+				Model* dummyModel2 = new Model(this->center_->getContext());
+
+
+
+				if(towerModelMatrix[x][y] == NULL)
+				{
+					addTower(x,y);
+				}
+				else
+				{
+					if(!((towerModelMatrix [x][y])->getMeshSource() == dummyModel2->getMeshSource()))
+					{
+						towerTurretMatrix[x][y]->upgradeTower();
+				        if(towerTurretMatrix[x][y]->upgrade < towerTurretMatrix[x][y]->upgradeMax)
+				        {
+				        	int specificupgradecost = (int)(upgradeCost*(std::pow(1.5,towerTurretMatrix[x][y]->upgrade)));
+				        	if(this->credit_ >= specificupgradecost)
+				        	{
+					        	this->buyTower(specificupgradecost);
+								switch(towerTurretMatrix[x][y]->upgrade)
+							   {
+								   case 1 :
+									   towerModelMatrix[x][y]->setMeshSource("TD_T2.mesh");
+									   break;
+
+								   case 2 :
+									   towerModelMatrix[x][y]->setMeshSource("TD_T3.mesh");
+									   break;
+				                   case 3 :
+				                	   towerModelMatrix[x][y]->setMeshSource("TD_T4.mesh");
+				                	   break;
+				                   case 4 :
+				                	   towerModelMatrix[x][y]->setMeshSource("TD_T5.mesh");
+				                	   break;
+
+							   }
+				        	}
+
+
+				        }
+					}
+				}
+				selecter->firePressed_ = false;
+			}
+        }
 
         TDCoordinate* coord1 = new TDCoordinate(1,1);
         std::vector<TDCoordinate*> path;
         path.push_back(coord1);
-        if(time>1 && TowerDefenseEnemyvector.size() < 30)
-        {
-            //adds different types of enemys depending on the WaveNumber
-            addTowerDefenseEnemy(path, this->getWaveNumber() % 3 +1 );
-            time = time-1;
-        }
+
+
+
+
+
+        if(time>=TowerDefenseEnemyvector.size() && TowerDefenseEnemyvector.size() < maxspaceships)
+		{
+
+        	//adds different types of enemys depending on the WaveNumber progressively making the combination of enemys more difficult
+        	if(spaceships>0)
+        	{
+    			addTowerDefenseEnemy(path, 1);
+    			spaceships--;
+
+        	}else if(ufos>0)
+        	{
+    			addTowerDefenseEnemy(path, 3);
+    			ufos--;
+        	}else if(eggs>0)
+        	{
+    			addTowerDefenseEnemy(path, 2);
+    			eggs--;
+        	}else if(randomships>0)
+        	{
+    			addTowerDefenseEnemy(path, rand() % 3 +1);
+    			randomships--;
+
+        	}
+
+		}
+
 
         Vector3* endpoint = new Vector3(500, 700, 150);
         //if ships are at the end they get destroyed
@@ -316,7 +558,7 @@ namespace orxonox
         {
             if(TowerDefenseEnemyvector.at(i) != NULL && TowerDefenseEnemyvector.at(i)->isAlive())
             {
-                //destroys enemys at the end of teh path and reduces the life by 1. no credits gifted
+                //destroys enemys at the end of the path and reduces the life by 1. no credits gifted
 
                 Vector3 ship = TowerDefenseEnemyvector.at(i)->getRVWorldPosition();
                 float distance = ship.distance(*endpoint);
@@ -332,6 +574,7 @@ namespace orxonox
                 }
             }
         }
+
         //goes thorugh vector to see if an enemy is still alive. if not next wave is launched
         int count= 0;
         for(unsigned int i =0; i < TowerDefenseEnemyvector.size(); ++i)
@@ -342,9 +585,12 @@ namespace orxonox
             }
         }
 
+        if (count == 0 && !this->nextwaveTimer_.isActive())
+            this->nextwaveTimer_.startTimer();
+
+/*            time2 +=dt;
         if(count== 0)
         {
-            time2 +=dt;
             if(time2 > 10)
             {
                 TowerDefenseEnemyvector.clear();
@@ -353,9 +599,10 @@ namespace orxonox
                 time2=0;
             }
         }
-
+*/
 
     }
+
 
     // Function to test if we can add waypoints using code only. Doesn't work yet
 
@@ -398,7 +645,7 @@ namespace orxonox
     /*
     void TowerDefense::playerEntered(PlayerInfo* player)
     {
-        Deathmatch::playerEntered(player);
+        TeamDeathmatch::playerEntered(player);
 
         const std::string& message = player->getName() + " entered the game";
         ChatManager::message(message);
@@ -406,7 +653,7 @@ namespace orxonox
 
     bool TowerDefense::playerLeft(PlayerInfo* player)
     {
-        bool valid_player = Deathmatch::playerLeft(player);
+        bool valid_player = TeamDeathmatch::playerLeft(player);
 
         if (valid_player)
         {
@@ -436,7 +683,7 @@ namespace orxonox
             ChatManager::message(message);
         }
 
-        Deathmatch::pawnKilled(victim, killer);
+        TeamDeathmatch::pawnKilled(victim, killer);
     }
 
     void TowerDefense::playerScored(PlayerInfo* player, int score)
