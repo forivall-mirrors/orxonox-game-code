@@ -94,6 +94,9 @@ namespace orxonox
     static const std::string __CC_upgradeTower_name = "upgradeTower";
     static const int upgradeCost = 20;
     static const int towerCost = 20;
+    unsigned int maxspaceships = 30;
+    int maxspaceshipsstandard = 30;
+
 
 
     SetConsoleCommand("TowerDefense", __CC_addTower_name,  &TowerDefense::addTower ).addShortcut().defaultValues(1);
@@ -418,23 +421,38 @@ namespace orxonox
  
     void TowerDefense::nextwave()
     {
+
+    	orxout() << "newwave" << endl;
     	TowerDefenseEnemyvector.clear();
     	waves_++;
+        //maxspaceships = round(maxspaceshipsstandard + 0.25*(waves_));
     	time=0;
-        float randomnumber1 = rand()*100*5;
-        float randomnumber2 = rand()*100*1;
-        float randomnumber3 = rand()*100*1.5;
 
-        float totalnumber = (randomnumber1 + randomnumber2 + randomnumber3)*1.3;
+    	int helpnumber = 40 -(waves_);
+    	if(helpnumber <= 0) {helpnumber =1;}
+        float numSpaceships = std::abs((rand() % 100)*5*(helpnumber));
+        float numEggs = std::abs((rand() % 100)*1*(waves_));
+        float numUfos = std::abs((rand() % 100)*1.5*(0.5*(waves_))) ;
 
-        int newspaceships = (int)(maxspaceships* randomnumber1 / totalnumber);
-        int neweggs = (int)(maxspaceships*randomnumber2 / totalnumber);
-        int newufos = (int)(maxspaceships*randomnumber3 / totalnumber);
-        int newrandomships = maxspaceships -spaceships - eggs - ufos;
-        int spaceships =newspaceships;
-        int eggs=neweggs;
-        int ufos=newufos;
-        int randomships=newrandomships;
+        float totalnumber = (numSpaceships + numEggs + numUfos)*1.3;
+
+        int newspaceships = (int)(maxspaceships* numSpaceships / totalnumber);
+        int neweggs = (int)(maxspaceships*numEggs / totalnumber);
+        int newufos = (int)(maxspaceships*numUfos / totalnumber);
+        int newrandomships = maxspaceships -newspaceships - neweggs - newufos;
+        spaceships =newspaceships;
+        eggs=neweggs;
+        ufos=newufos;
+        randomships=newrandomships;
+
+        orxout() << spaceships << endl;
+        orxout() << eggs << endl;
+        orxout() << ufos << endl;
+        orxout() << randomships << endl;
+
+
+
+
 
     }
 
@@ -468,24 +486,28 @@ namespace orxonox
 						towerTurretMatrix[x][y]->upgradeTower();
 				        if(towerTurretMatrix[x][y]->upgrade < towerTurretMatrix[x][y]->upgradeMax)
 				        {
-				        	this->buyTower((int)(upgradeCost*(std::pow(1.5,towerTurretMatrix[x][y]->upgrade))));
-							switch(towerTurretMatrix[x][y]->upgrade)
-						   {
-							   case 1 :
-								   towerModelMatrix[x][y]->setMeshSource("TD_T2.mesh");
-								   break;
+				        	int specificupgradecost = (int)(upgradeCost*(std::pow(1.5,towerTurretMatrix[x][y]->upgrade)));
+				        	if(this->credit_ >= specificupgradecost)
+				        	{
+					        	this->buyTower(specificupgradecost);
+								switch(towerTurretMatrix[x][y]->upgrade)
+							   {
+								   case 1 :
+									   towerModelMatrix[x][y]->setMeshSource("TD_T2.mesh");
+									   break;
 
-							   case 2 :
-								   towerModelMatrix[x][y]->setMeshSource("TD_T3.mesh");
-								   break;
-			                   case 3 :
-			                	   towerModelMatrix[x][y]->setMeshSource("TD_T4.mesh");
-			                	   break;
-			                   case 4 :
-			                	   towerModelMatrix[x][y]->setMeshSource("TD_T5.mesh");
-			                	   break;
+								   case 2 :
+									   towerModelMatrix[x][y]->setMeshSource("TD_T3.mesh");
+									   break;
+				                   case 3 :
+				                	   towerModelMatrix[x][y]->setMeshSource("TD_T4.mesh");
+				                	   break;
+				                   case 4 :
+				                	   towerModelMatrix[x][y]->setMeshSource("TD_T5.mesh");
+				                	   break;
 
-						   }
+							   }
+				        	}
 
 
 				        }
@@ -500,12 +522,12 @@ namespace orxonox
         path.push_back(coord1);
 
 
-        int enemytype = this->getWaveNumber() % 3 +1;
+
 
 
         if(time>=TowerDefenseEnemyvector.size() && TowerDefenseEnemyvector.size() < maxspaceships)
 		{
-			orxout() << "enemyerstellen" << endl;
+
         	//adds different types of enemys depending on the WaveNumber progressively making the combination of enemys more difficult
         	if(spaceships>0)
         	{

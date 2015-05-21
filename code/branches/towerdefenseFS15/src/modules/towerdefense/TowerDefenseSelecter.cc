@@ -51,7 +51,7 @@ namespace orxonox
         moveLeftPressed_ = false;
         moveRightPressed_ = false;
         firePressed_ = false;
-        setSelectedPosition(0,0);
+        setSelectedPosition(6,6);
         timerSetFire_=0;
     }
 
