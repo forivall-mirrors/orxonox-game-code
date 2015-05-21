@@ -50,6 +50,9 @@ namespace orxonox  // tolua_export
         /** Where we are looking **/
         Vector3 v2;
 
+        /** The parameters are additionally stored as a set of 6 numerical values **/
+        float a, b, c, d, e, f;
+
         /** Time span of the event */
         float duration;
 
@@ -71,10 +74,10 @@ namespace orxonox  // tolua_export
 
             // LUA interface
             // tolua_begin 
-            void eventScheduler(std::string instruction, 
-              float x1, float y1, float z1, 
-              float x2, float y2, float z2, 
-              float duration, float executionTime);
+            void eventScheduler(std::string instruction = "", 
+              float x1 = 0, float y1 = 0, float z1 = 0, 
+              float x2 = 0, float y2 = 0, float z2 = 0, 
+              float duration = 0, float executionTime = 0);
 
             static ScriptController* getScriptController();
 
@@ -117,6 +120,12 @@ namespace orxonox  // tolua_export
             /* - Time this event has been going on for */
             float eventTime;
             Vector3 startpos;
+
+            /* Time of the previously scheduled event */
+            float prevEventTime;
+
+            /* Hack: Gain access to delta t */
+            float deltat;
 
             /* - Position to look at during that transition */
             //Vector3 lookAtPosition;
