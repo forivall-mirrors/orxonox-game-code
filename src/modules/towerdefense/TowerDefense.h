@@ -79,7 +79,6 @@ namespace orxonox
         int eggs;
         int ufos;
         int randomships;
-        int maxspaceships = 30;
 
 
         //virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
