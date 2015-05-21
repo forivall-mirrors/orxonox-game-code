@@ -31,6 +31,7 @@
 #include "NetworkPrereqs.h"
 #include "core/config/Configurable.h"
 #include "MasterServerComm.h"
+#include <OgreStringConverter.h>
 
 namespace orxonox
 {

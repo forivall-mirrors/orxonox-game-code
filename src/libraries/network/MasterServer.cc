@@ -44,9 +44,6 @@ namespace orxonox
   /* forward declaration so the linker doesn't complain */
   MasterServer *MasterServer::instance = NULL;
 
-
-
-
   /* command: list servers */
   void
   MasterServer::listServers( void )
@@ -265,33 +262,32 @@ namespace orxonox
     /* generate address in readable form */
     char *addrconv = (char *) calloc( 50, 1 );
     enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
+    /* convert to string */
+    std::string ip = std::string( addrconv );
+    /* delete addrconv */
+    if( addrconv ) free( addrconv );
+
+    /* pointer to full packet data */
+    char * packetdata = (char *)event->packet->data;
 
     /* output debug info about the data that has come */
     helper_output_debug( event, addrconv );
 
     /* GAME SERVER OR CLIENT CONNECTION? */
-    if( !strncmp( (char *)event->packet->data, MSPROTO_GAME_SERVER,
-      MSPROTO_GAME_SERVER_LEN ) )
+    if( !strncmp(packetdata, MSPROTO_GAME_SERVER, MSPROTO_GAME_SERVER_LEN ) )
     { /* Game server */
 
-      if( !strncmp( (char *)event->packet->data
-        + MSPROTO_GAME_SERVER_LEN+1,
-        MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
+      if( !strncmp( packetdata + MSPROTO_GAME_SERVER_LEN+1, MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
       { /* register new server */
-        mainlist.addServer( packet::ServerInformation( event ),
-          event->peer );
+        mainlist.addServer( packet::ServerInformation( event ), event->peer );
 
         /* tell people we did so */
         orxout(internal_info, context::master_server) << "Added new server to list: " <<
           packet::ServerInformation( event ).getServerIP() << endl;
       }
 
-      else if( !strncmp( (char *)event->packet->data
-        + MSPROTO_GAME_SERVER_LEN+1,
-        MSPROTO_SERVERDC, MSPROTO_SERVERDC_LEN ) )
-      {
-        /* create string from peer data */
-        std::string ip = std::string( addrconv );
+      else if( !strncmp( packetdata + MSPROTO_GAME_SERVER_LEN+1, MSPROTO_SERVERDC, MSPROTO_SERVERDC_LEN ) )
+      { /* disconnect server */
 
         /* remove the server from the list it belongs to */
         this->mainlist.delServerByAddress( ip );
@@ -301,12 +297,9 @@ namespace orxonox
       }
       /* TODO add hook for disconnect here */
 
-      else if( !strncmp( (char *)event->packet->data
-        + MSPROTO_GAME_SERVER_LEN+1,
-        MSPROTO_SET_NAME, MSPROTO_SET_NAME_LEN ) )
-      {
+      else if( !strncmp( packetdata + MSPROTO_GAME_SERVER_LEN+1, MSPROTO_SET_NAME, MSPROTO_SET_NAME_LEN ) )
+      { /* save server name */
         /* create string from peer data */
-        std::string ip = std::string( addrconv );
         std::string data (event->packet->data,event->packet->data + event->packet->dataLength );
         std::string name = data.substr(MSPROTO_GAME_SERVER_LEN+1 + MSPROTO_SET_NAME_LEN + 1);
 
@@ -317,12 +310,9 @@ namespace orxonox
         orxout(internal_info, context::master_server) << "Updated server " << ip << " with new name " << name << endl;
       }
 
-      else if( !strncmp( (char *)event->packet->data
-        + MSPROTO_GAME_SERVER_LEN+1,
-        MSPROTO_SET_CLIENTS, MSPROTO_SET_CLIENTS_LEN ) )
-      {
+      else if( !strncmp( packetdata + MSPROTO_GAME_SERVER_LEN+1, MSPROTO_SET_CLIENTS, MSPROTO_SET_CLIENTS_LEN ) )
+      { /* save client count from server */
         /* create string from peer data */
-        std::string ip = std::string( addrconv );
         std::string data (event->packet->data,event->packet->data + event->packet->dataLength );
         std::string textform= data.substr(MSPROTO_GAME_SERVER_LEN + 1 + MSPROTO_SET_CLIENTS_LEN + 1);
         int clientNumber = Ogre::StringConverter::parseInt(textform);
@@ -333,19 +323,14 @@ namespace orxonox
         orxout(internal_info, context::master_server) << "Updated server " << ip << " with new client number " << clientNumber << endl;
       }
     }
-    else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT,
-      MSPROTO_CLIENT_LEN) )
+    else if( !strncmp( packetdata, MSPROTO_CLIENT, MSPROTO_CLIENT_LEN) )
     { /* client */
-      if( !strncmp( (char *)event->packet->data + MSPROTO_CLIENT_LEN+1,
-        MSPROTO_REQ_LIST, MSPROTO_REQ_LIST_LEN ) )
+      if( !strncmp( packetdata + MSPROTO_CLIENT_LEN+1, MSPROTO_REQ_LIST, MSPROTO_REQ_LIST_LEN ) )
         /* send server list */
         helper_sendlist( event );
     }
     else
     { /* bad message, don't do anything. */ }
-
-    /* delete addrconv */
-    if( addrconv ) free( addrconv );
 
     /* Clean up the packet now that we're done using it. */
     enet_packet_destroy( event->packet );

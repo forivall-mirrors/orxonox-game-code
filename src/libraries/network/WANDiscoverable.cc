@@ -58,8 +58,7 @@ namespace orxonox
      * has changed.
      */
     SetConfigValueExternal(msaddress, "Discovery", "msaddress", "orxonox.net");
-    SetConfigValueExternal(ownName, "Discovery", "ownName", "tme213");
-//     SetConfigValue( msaddress, "orxonox.net");
+    SetConfigValueExternal(ownName, "Discovery", "ownName", "OrxServer");
   }
 
   WANDiscoverable::~WANDiscoverable()
@@ -125,9 +124,7 @@ namespace orxonox
   {
     orxout(verbose, context::master_server) << "Sending new number of clients: " << clientNumber << endl;
     std::string request = MSPROTO_GAME_SERVER " " MSPROTO_SET_CLIENTS " ";
-    std::stringstream ss;
-    ss << clientNumber;
-    request +=  ss.str();
+    request += Ogre::StringConverter::toString(clientNumber);
 
     this->msc.sendRequest( request );
   }

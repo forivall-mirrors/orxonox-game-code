@@ -59,7 +59,7 @@ namespace orxonox
     /* update ownName string from orxonox.ini config file, if it
      * has changed.
      */
-    SetConfigValueExternal(ownName, "Discovery", "ownName", "tme213");
+    SetConfigValueExternal(ownName, "Discovery", "ownName", "OrxServer");
   }
 
   LANDiscoverable::~LANDiscoverable()

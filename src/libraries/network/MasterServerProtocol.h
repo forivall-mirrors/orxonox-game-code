@@ -43,8 +43,6 @@
 #define MSPROTO_REQ_LIST_LEN 8
 
 
-
-
 /*** GAME SERVER COMMUNICATIONS ***/
 /* Game server token (shows that the party sending data is a game server) */
 #define MSPROTO_GAME_SERVER "GS"
@@ -76,9 +74,11 @@
 #define MSPROTO_ACK "ACK"
 #define MSPROTO_ACK_LEN 3
 
+/* server name */
 #define MSPROTO_SET_NAME "NAM"
 #define MSPROTO_SET_NAME_LEN 3
 
+/* server number of clients */
 #define MSPROTO_SET_CLIENTS "CLI"
 #define MSPROTO_SET_CLIENTS_LEN 3
 
