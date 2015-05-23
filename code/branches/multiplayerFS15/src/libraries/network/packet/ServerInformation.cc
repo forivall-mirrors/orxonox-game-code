@@ -72,11 +72,12 @@ namespace orxonox
 
     void ServerInformation::send(ENetPeer* peer)
     {
-      uint32_t size = returnSize((char*&)LAN_DISCOVERY_ACK) + returnSize(this->serverName_);
+      std::string payload = this->serverName_ + Ogre::StringConverter::toString(this->clientNumber_);
+      uint32_t size = returnSize((char*&)LAN_DISCOVERY_ACK) + returnSize(payload);
       uint8_t* temp = new uint8_t[size];
       uint8_t* temp2 = temp;
       saveAndIncrease((char*&)LAN_DISCOVERY_ACK, temp2);
-      saveAndIncrease(this->serverName_, temp2);
+      saveAndIncrease(payload, temp2);
       ENetPacket* packet = enet_packet_create( temp, size, 0 );
       enet_peer_send(peer, 0, packet);
 

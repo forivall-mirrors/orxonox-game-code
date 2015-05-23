@@ -119,7 +119,7 @@ namespace orxonox
             orxout(internal_info, context::network) << "Received LAN discovery message from client " << event.peer->host->receivedAddress << endl;
             packet::ServerInformation info;
             info.setServerName(this->ownName);
-            info.setClientNumber(this->clientNumber);
+            info.setClientNumber(5);
             info.send(event.peer);
 //             ENetPacket* packet = enet_packet_create( LAN_DISCOVERY_ACK, strlen(LAN_DISCOVERY_ACK)+1, ENET_PACKET_FLAG_RELIABLE );
 //             enet_peer_send(event.peer, 0, packet );

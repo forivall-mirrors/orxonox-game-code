@@ -88,6 +88,9 @@ namespace orxonox
         case ENET_EVENT_TYPE_RECEIVE:
           {
             packet::ServerInformation info(&event);
+            std::string payload = info.getServerName();
+            info.setServerName(payload.substr(0,payload.length()-2));
+            info.setClientNumber( Ogre::StringConverter::parseInt(payload.substr(payload.length()-1)));
             orxout(internal_info, context::network) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", Players: " << info.getClientNumber() << ", RTT: " << info.getServerRTT() << endl;
             std::vector<packet::ServerInformation>::iterator it;
             for( it=this->servers_.begin(); it!=this->servers_.end(); ++it )
