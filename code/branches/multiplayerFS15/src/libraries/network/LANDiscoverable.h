@@ -51,7 +51,7 @@ namespace orxonox
       bool            bActive_;
       ENetHost*       host_;
       std::string     ownName;
-      int clientNumber;
+      int             clientNumber;
   };
 
 }
