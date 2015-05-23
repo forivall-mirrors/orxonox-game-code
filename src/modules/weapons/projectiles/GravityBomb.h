@@ -1,33 +1,4 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Gabriel Nadler
- *   Co-authors:
- *      simonmie
- *
- */
-
-
-/*
  * GravityBomb.h
  *
  *  Created on: Mar 19, 2015
@@ -50,10 +21,20 @@
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "../../../orxonox/worldentities/WorldEntity.h"
 #include "GravityBombField.h"
+#include "sound\WorldSound.h"
 
 namespace orxonox
 {
-
+	/**
+	 * @class	GravityBomb
+	 *
+	 * @brief	This class implements how long the bomb flies before it places the GravityField at it's last possition.
+	 * 			The field will be created either because the timelimit of the bomb expired or it hit something. After creation of the field,
+	 * 			the projectile (this object) is destroyed.
+	 *
+	 * @author	Manuel Eggimann
+	 * @date	23.05.2015
+	 */
 	class _WeaponsExport GravityBomb : public BasicProjectile , public MovableEntity, public RadarViewable
 	{
 		public:
@@ -68,7 +49,7 @@ namespace orxonox
 
 		bool isDetonated_; //Used to check whether the Bomb has to be destroyed during next tick.
 		float timeToLife_; //Time the bomb flies before it explodes.
-
+		WorldSound* bombSound_;
 	};
 }
 #endif /* GravityBOMB_H_ */

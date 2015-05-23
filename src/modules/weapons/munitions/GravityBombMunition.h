@@ -13,7 +13,15 @@
 
 namespace orxonox
 {
-
+	/**
+	 * @class	GravityBombMunition
+	 *
+	 * @brief	This class is used to set the behaviour of various 
+	 * 			munition specific attributes of the GravityBomb like max count of munition per magazine.
+	 *
+	 * @author	Manuel
+	 * @date	23.05.2015
+	 */
 	class _WeaponsExport GravityBombMunition : public Munition
     {
         public:
