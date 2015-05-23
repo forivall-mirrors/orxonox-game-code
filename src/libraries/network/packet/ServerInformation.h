@@ -29,6 +29,8 @@
 #include "../NetworkPrereqs.h"
 
 #include <string>
+#include <OgreStringConverter.h>
+
 
 #ifndef SERVERINFORMATION_H
 #define SERVERINFORMATION_H
@@ -56,9 +58,9 @@ namespace orxonox
 
       private:
         std::string   serverName_;
+        int           clientNumber_;
         std::string   serverIP_;
         uint32_t      serverRTT_;
-        int           clientNumber_;
     };
 
   }
