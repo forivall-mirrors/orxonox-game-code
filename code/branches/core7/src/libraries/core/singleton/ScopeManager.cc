@@ -43,6 +43,21 @@ namespace orxonox
         return instance;
     }
 
+    void ScopeManager::addScope(ScopeID::Value scope)
+    {
+        this->activeScopes_.insert(scope);
+    }
+
+    void ScopeManager::removeScope(ScopeID::Value scope)
+    {
+        this->activeScopes_.erase(scope);
+    }
+
+    bool ScopeManager::isActive(ScopeID::Value scope)
+    {
+        return this->activeScopes_.find(scope) != this->activeScopes_.end();
+    }
+
     void ScopeManager::addListener(ScopeListener* listener)
     {
         this->listeners_[listener->getScope()].insert(listener);

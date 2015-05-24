@@ -39,9 +39,6 @@ available values for @a scope. The orxonox::Scope object for a given @a scope ca
 Instances of orxonox::ScopeListener can register in orxonox::ScopeMAnager for a given @a scope and will get a
 notification if the corresponding orxonox::Scope object changes its state.
 
-To avoid multiple instances of orxonox::Scope<@a scope> in different libraries, each instance of orxonox::Scope
-registers in orxonox::ScopeManager, where they are linked statically in the core library.
-
 Scopes are usually used to control the creation and destruction of Singletons.
 
 @see orxonox::Singleton
@@ -103,56 +100,37 @@ namespace orxonox
     class Scope
     {
         public:
-            //! Constructor: Increases the instance counter and activates the scope if the count went from 0 to 1. Counts >1 don't change anything.
+            //! Constructor: activate the listeners.
             Scope()
             {
                 orxout(internal_status) << "creating scope... (" << scope << ")" << endl;
 
-                try
+                Loki::ScopeGuard deactivator = Loki::MakeObjGuard(*this, &Scope::deactivateScope);
+                ScopeManager::getInstance().addScope(scope);
+                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
                 {
-                    ScopeManager::getInstance().getInstanceCount(scope)++;
-                    assert(ScopeManager::getInstance().getInstanceCount(scope) > 0);
-                    if (ScopeManager::getInstance().getInstanceCount(scope) == 1)
-                    {
-                        Loki::ScopeGuard deactivator = Loki::MakeObjGuard(*this, &Scope::deactivateListeners);
-                        for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
-                        {
-                            (*it)->activated();
-                            (*(it++))->bActivated_ = true;
-                        }
-                        deactivator.Dismiss();
-                    }
+                    (*it)->activated();
+                    (*(it++))->bActivated_ = true;
                 }
-                catch (...)
-                {
-                    ScopeManager::getInstance().getInstanceCount(scope)--;
-                    throw;
-                }
+                deactivator.Dismiss();
 
                 orxout(internal_status) << "created scope (" << scope << ")" << endl;
             }
 
-            //! Destructor: Decreases the instance counter and deactivates the scope if the count went from 1 to 0. Counts >0 don't change anything.
+            //! Destructor: deactivate the listeners.
             ~Scope()
             {
                 orxout(internal_status) << "destroying scope... (" << scope << ")" << endl;
 
-                ScopeManager::getInstance().getInstanceCount(scope)--;
-
-                // This shouldn't happen but just to be sure: check if the count is positive
-                assert(ScopeManager::getInstance().getInstanceCount(scope) >= 0);
-                if (ScopeManager::getInstance().getInstanceCount(scope) < 0)
-                    ScopeManager::getInstance().getInstanceCount(scope) = 0;
-
-                if (ScopeManager::getInstance().getInstanceCount(scope) == 0)
-                    this->deactivateListeners();
+                this->deactivateScope();
 
                 orxout(internal_status) << "destroyed scope (" << scope << ")" << endl;
             }
 
             //! Deactivates the listeners of this scope in case the scope is destroyed or the construction fails.
-            void deactivateListeners()
+            void deactivateScope()
             {
+                ScopeManager::getInstance().removeScope(scope);
                 for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
                 {
                     if ((*it)->bActivated_)
@@ -171,7 +149,7 @@ namespace orxonox
             //! Returns true if the scope is active.
             static bool isActive()
             {
-                return (ScopeManager::getInstance().getInstanceCount(scope) > 0);
+                return ScopeManager::getInstance().isActive(scope);
             }
     };
 }
