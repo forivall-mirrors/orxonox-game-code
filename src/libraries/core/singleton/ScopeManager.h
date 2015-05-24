@@ -56,16 +56,18 @@ namespace orxonox
         public:
             static ScopeManager& getInstance();
 
+            void addScope(ScopeID::Value scope);
+            void removeScope(ScopeID::Value scope);
+            bool isActive(ScopeID::Value scope);
+
             void addListener(ScopeListener* listener);
             void removeListener(ScopeListener* listener);
 
-            inline int& getInstanceCount(ScopeID::Value scope)
-                { return this->instanceCounts_[scope]; }
             inline std::set<ScopeListener*>& getListeners(ScopeID::Value scope)
                 { return this->listeners_[scope]; }
 
         private:
-            std::map<ScopeID::Value, int> instanceCounts_;                  //!< Counts the number of active instances (>0 means active) for a scope
+            std::set<ScopeID::Value> activeScopes_;
             std::map<ScopeID::Value, std::set<ScopeListener*> > listeners_; //!< Stores all listeners for a scope
     };
 }
