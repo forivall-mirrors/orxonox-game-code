@@ -53,13 +53,20 @@ namespace orxonox
     */
     class _CoreExport ScopeManager
     {
-        template <ScopeID::Value scope>
-        friend class Scope;
-        friend class StaticallyInitializedScopedSingletonWrapper;
+        public:
+            static ScopeManager& getInstance();
+
+            void addListener(ScopeListener* listener);
+            void removeListener(ScopeListener* listener);
+
+            inline int& getInstanceCount(ScopeID::Value scope)
+                { return this->instanceCounts_[scope]; }
+            inline std::set<ScopeListener*>& getListeners(ScopeID::Value scope)
+                { return this->listeners_[scope]; }
 
         private:
-            static std::map<ScopeID::Value, int>& getInstanceCounts();                  //!< Counts the number of active instances (>0 means active) for a scope
-            static std::map<ScopeID::Value, std::set<ScopeListener*> >& getListeners(); //!< Stores all listeners for a scope
+            std::map<ScopeID::Value, int> instanceCounts_;                  //!< Counts the number of active instances (>0 means active) for a scope
+            std::map<ScopeID::Value, std::set<ScopeListener*> > listeners_; //!< Stores all listeners for a scope
     };
 }
 

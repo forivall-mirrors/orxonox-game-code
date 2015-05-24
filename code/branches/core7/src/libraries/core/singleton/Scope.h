@@ -110,12 +110,12 @@ namespace orxonox
 
                 try
                 {
-                    ScopeManager::getInstanceCounts()[scope]++;
-                    assert(ScopeManager::getInstanceCounts()[scope] > 0);
-                    if (ScopeManager::getInstanceCounts()[scope] == 1)
+                    ScopeManager::getInstance().getInstanceCount(scope)++;
+                    assert(ScopeManager::getInstance().getInstanceCount(scope) > 0);
+                    if (ScopeManager::getInstance().getInstanceCount(scope) == 1)
                     {
                         Loki::ScopeGuard deactivator = Loki::MakeObjGuard(*this, &Scope::deactivateListeners);
-                        for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getListeners()[scope].begin(); it != ScopeManager::getListeners()[scope].end(); )
+                        for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
                         {
                             (*it)->activated();
                             (*(it++))->bActivated_ = true;
@@ -125,7 +125,7 @@ namespace orxonox
                 }
                 catch (...)
                 {
-                    ScopeManager::getInstanceCounts()[scope]--;
+                    ScopeManager::getInstance().getInstanceCount(scope)--;
                     throw;
                 }
 
@@ -137,14 +137,14 @@ namespace orxonox
             {
                 orxout(internal_status) << "destroying scope... (" << scope << ")" << endl;
 
-                ScopeManager::getInstanceCounts()[scope]--;
+                ScopeManager::getInstance().getInstanceCount(scope)--;
 
                 // This shouldn't happen but just to be sure: check if the count is positive
-                assert(ScopeManager::getInstanceCounts()[scope] >= 0);
-                if (ScopeManager::getInstanceCounts()[scope] < 0)
-                    ScopeManager::getInstanceCounts()[scope] = 0;
+                assert(ScopeManager::getInstance().getInstanceCount(scope) >= 0);
+                if (ScopeManager::getInstance().getInstanceCount(scope) < 0)
+                    ScopeManager::getInstance().getInstanceCount(scope) = 0;
 
-                if (ScopeManager::getInstanceCounts()[scope] == 0)
+                if (ScopeManager::getInstance().getInstanceCount(scope) == 0)
                     this->deactivateListeners();
 
                 orxout(internal_status) << "destroyed scope (" << scope << ")" << endl;
@@ -153,7 +153,7 @@ namespace orxonox
             //! Deactivates the listeners of this scope in case the scope is destroyed or the construction fails.
             void deactivateListeners()
             {
-                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getListeners()[scope].begin(); it != ScopeManager::getListeners()[scope].end(); )
+                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
                 {
                     if ((*it)->bActivated_)
                     {
@@ -171,7 +171,7 @@ namespace orxonox
             //! Returns true if the scope is active.
             static bool isActive()
             {
-                return (ScopeManager::getInstanceCounts()[scope] > 0);
+                return (ScopeManager::getInstance().getInstanceCount(scope) > 0);
             }
     };
 }

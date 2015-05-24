@@ -32,11 +32,11 @@ namespace orxonox
 {
     void StaticallyInitializedScopedSingletonWrapper::load()
     {
-        ScopeManager::getListeners()[this->wrapper_->getScope()].insert(this->wrapper_);
+        ScopeManager::getInstance().addListener(this->wrapper_);
     }
 
     void StaticallyInitializedScopedSingletonWrapper::unload()
     {
-        ScopeManager::getListeners()[this->wrapper_->getScope()].erase(this->wrapper_);
+        ScopeManager::getInstance().removeListener(this->wrapper_);
     }
 }

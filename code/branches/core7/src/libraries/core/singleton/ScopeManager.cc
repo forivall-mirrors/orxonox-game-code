@@ -31,18 +31,25 @@
     @brief Static linkage of the two maps in orxonox::ScopeManager.
 */
 
+#include "ScopeManager.h"
+
 #include "Scope.h"
 
 namespace orxonox
 {
-    /*static*/ std::map<ScopeID::Value, int>& ScopeManager::getInstanceCounts()
+    /* static */ ScopeManager& ScopeManager::getInstance()
     {
-        static std::map<ScopeID::Value, int> instanceCounts;
-        return instanceCounts;
+        static ScopeManager instance;
+        return instance;
     }
-    /*static*/ std::map<ScopeID::Value, std::set<ScopeListener*> >& ScopeManager::getListeners()
+
+    void ScopeManager::addListener(ScopeListener* listener)
     {
-        static std::map<ScopeID::Value, std::set<ScopeListener*> > listeners;
-        return listeners;
+        this->listeners_[listener->getScope()].insert(listener);
+    }
+
+    void ScopeManager::removeListener(ScopeListener* listener)
+    {
+        this->listeners_[listener->getScope()].erase(listener);
     }
 }
