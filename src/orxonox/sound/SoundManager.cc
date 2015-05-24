@@ -37,7 +37,7 @@
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/Clock.h"
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"

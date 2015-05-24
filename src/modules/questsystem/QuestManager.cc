@@ -35,7 +35,7 @@
 
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"

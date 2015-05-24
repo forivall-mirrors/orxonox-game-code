@@ -47,7 +47,7 @@
 #include "core/PathConfig.h"
 #include "core/Resource.h"
 #include "core/command/ConsoleCommandIncludes.h"
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 #include "util/StringUtils.h"
 
 #include "CameraManager.h"

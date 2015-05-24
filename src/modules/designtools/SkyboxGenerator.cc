@@ -44,7 +44,7 @@
 #include "core/Resource.h"
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 
 #include "controllers/HumanController.h"
 #include "graphics/Camera.h"

@@ -51,7 +51,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Game.h"
 #include "core/commandline/CommandLineParser.h"
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 
 namespace orxonox
 {
