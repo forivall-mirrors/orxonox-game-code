@@ -51,7 +51,7 @@
 
         public:
             TestSingleton();                                // public constructor because we may want to manage this singleton
-                                                            //     with an orxonox::ScopedSingletonManager (see below)
+                                                            //     with an orxonox::ScopedSingletonWrapper
             virtual ~TestSingleton();                       // public destructor
 
             void testFunction();                            // put your functions here

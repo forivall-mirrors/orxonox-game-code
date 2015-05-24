@@ -198,8 +198,8 @@ namespace orxonox
     struct ResourceInfo;
     template <ScopeID::Value>
     class Scope;
-    template <class, ScopeID::Value>
-    class ScopedSingleton;
+    class ScopeManager;
+    class ScopedSingletonWrapper;
     class SettingsConfigFile;
     template <class T>
     class SmartPtr;

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 
 namespace orxonox
 {

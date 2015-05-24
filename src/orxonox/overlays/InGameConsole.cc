@@ -49,7 +49,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommandIncludes.h"
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 #include "core/GUIManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"

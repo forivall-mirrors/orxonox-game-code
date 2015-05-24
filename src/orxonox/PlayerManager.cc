@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 
 #include "Level.h"
 #include "LevelManager.h"

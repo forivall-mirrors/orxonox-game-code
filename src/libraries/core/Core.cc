@@ -56,7 +56,7 @@
 #include "util/output/LogWriter.h"
 #include "util/output/OutputManager.h"
 #include "core/singleton/Scope.h"
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
 #include "commandline/CommandLineIncludes.h"

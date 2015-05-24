@@ -37,7 +37,7 @@
 #include "core/GameMode.h"
 #include "core/GraphicsManager.h"
 #include "core/object/ObjectList.h"
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 #include "tools/Shader.h"
 #include "graphics/Camera.h"
 
