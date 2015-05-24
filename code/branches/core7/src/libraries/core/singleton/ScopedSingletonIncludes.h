@@ -82,8 +82,8 @@ namespace orxonox
         public:
             StaticallyInitializedScopedSingletonWrapper(ScopedSingletonWrapper* wrapper) : wrapper_(wrapper) {}
 
-            virtual void load() {}
-            virtual void unload() {}
+            virtual void load();
+            virtual void unload();
 
             inline ScopedSingletonWrapper& getWrapper()
                 { return *this->wrapper_; }

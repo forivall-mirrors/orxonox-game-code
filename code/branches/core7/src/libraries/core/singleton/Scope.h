@@ -75,7 +75,7 @@ namespace orxonox
     {
         template <ScopeID::Value scope>
         friend class Scope;
-        friend class ScopeListener;
+        friend class StaticallyInitializedScopedSingletonWrapper;
 
         private:
             static std::map<ScopeID::Value, int>& getInstanceCounts();                  //!< Counts the number of active instances (>0 means active) for a scope
@@ -94,17 +94,17 @@ namespace orxonox
         friend class Scope;
 
         protected:
-            //! Constructor: Registers the instance.
-            ScopeListener(ScopeID::Value scope) : scope_(scope), bActivated_(false)
-                { ScopeManager::getListeners()[this->scope_].insert(this); }
-            //! Destructor: Unregisters the instance.
-            virtual ~ScopeListener()
-                { ScopeManager::getListeners()[this->scope_].erase(this); }
+            ScopeListener(ScopeID::Value scope) : scope_(scope), bActivated_(false) { }
+            virtual ~ScopeListener() { }
 
             //! Gets called if the scope is activated
             virtual void activated() = 0;
             //! Gets called if the scope is deactivated
             virtual void deactivated() = 0;
+
+        public:
+            inline ScopeID::Value getScope() const
+                { return this->scope_; }
 
         private:
             ScopeID::Value scope_; //!< Store the scope to unregister on destruction
