@@ -59,7 +59,7 @@ namespace orxonox
 
     SetConsoleCommand("SkyboxGenerator", "createSkybox", &SkyboxGenerator::createSkybox).addShortcut();
 
-    ManageScopedSingleton(SkyboxGenerator, ScopeID::Graphics, false);
+    ManageScopedSingleton(SkyboxGenerator, ScopeID::GRAPHICS, false);
 
     RegisterAbstractClass(SkyboxGenerator).inheritsFrom<Configurable>().inheritsFrom<Tickable>();
 

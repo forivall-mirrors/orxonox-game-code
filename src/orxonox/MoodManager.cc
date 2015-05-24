@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(MoodManager, ScopeID::Root, false);
+    ManageScopedSingleton(MoodManager, ScopeID::ROOT, false);
 
     // Note: I'm (Kevin Young) not entirely sure whether that's good code style:
     const std::string MoodManager::defaultMood_ = "default";

@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(KeyBinderManager, ScopeID::Graphics, false);
+    ManageScopedSingleton(KeyBinderManager, ScopeID::GRAPHICS, false);
 
     static const std::string __CC_keybind_name = "keybind";
     static const std::string __CC_tkeybind_name = "tkeybind";

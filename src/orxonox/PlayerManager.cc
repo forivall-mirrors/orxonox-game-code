@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(PlayerManager, ScopeID::Root, false);
+    ManageScopedSingleton(PlayerManager, ScopeID::ROOT, false);
 
     RegisterAbstractClass(PlayerManager).inheritsFrom<ClientConnectionListener>();
 

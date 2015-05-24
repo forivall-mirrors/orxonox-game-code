@@ -56,7 +56,7 @@
 namespace orxonox
 {
 
-  ManageScopedSingleton( Client, ScopeID::Root, false );
+  ManageScopedSingleton( Client, ScopeID::ROOT, false );
 
   /**
   * Constructor for the Client class

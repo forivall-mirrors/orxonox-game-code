@@ -60,7 +60,7 @@ namespace orxonox
 
     SetConsoleCommand("printScreenHD", &ScreenshotManager::makeScreenshot_s);
     
-    ManageScopedSingleton(ScreenshotManager, ScopeID::Graphics, false);
+    ManageScopedSingleton(ScreenshotManager, ScopeID::GRAPHICS, false);
 
     RegisterAbstractClass(ScreenshotManager).inheritsFrom<Configurable>();
 

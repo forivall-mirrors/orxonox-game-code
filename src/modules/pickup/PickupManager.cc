@@ -50,7 +50,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(PickupManager, ScopeID::Root, false);
+    ManageScopedSingleton(PickupManager, ScopeID::ROOT, false);
 
     // Initialization of the name of the PickupInventory GUI.
     /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";

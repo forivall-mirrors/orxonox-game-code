@@ -48,7 +48,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(QuestManager, ScopeID::Root, false);
+    ManageScopedSingleton(QuestManager, ScopeID::ROOT, false);
 
     /**
     @brief

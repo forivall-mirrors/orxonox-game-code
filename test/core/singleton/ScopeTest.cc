@@ -17,8 +17,8 @@ namespace orxonox
             static TestSingletonGraphics* singletonPtr_s;
         };
 
-        ManageScopedSingleton(TestSingletonRoot, ScopeID::Root, false);
-        ManageScopedSingleton(TestSingletonGraphics, ScopeID::Graphics, false);
+        ManageScopedSingleton(TestSingletonRoot, ScopeID::ROOT, false);
+        ManageScopedSingleton(TestSingletonGraphics, ScopeID::GRAPHICS, false);
 
         // Fixture
         class ScopeTest : public ::testing::Test
@@ -38,8 +38,8 @@ namespace orxonox
 
     TEST_F(ScopeTest, ScopesDoNotExist)
     {
-        EXPECT_FALSE(Scope<ScopeID::Root>::isActive());
-        EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
+        EXPECT_FALSE(Scope<ScopeID::ROOT>::isActive());
+        EXPECT_FALSE(Scope<ScopeID::GRAPHICS>::isActive());
     }
 
     TEST_F(ScopeTest, SingletonsDoNotExist)
@@ -50,34 +50,34 @@ namespace orxonox
 
     TEST_F(ScopeTest, RootScope)
     {
-        EXPECT_FALSE(Scope<ScopeID::Root>::isActive());
+        EXPECT_FALSE(Scope<ScopeID::ROOT>::isActive());
         {   // create root scope
-            Scope<ScopeID::Root> scope;
-            EXPECT_TRUE(Scope<ScopeID::Root>::isActive());
+            Scope<ScopeID::ROOT> scope;
+            EXPECT_TRUE(Scope<ScopeID::ROOT>::isActive());
         }   // destroy root scope
-        EXPECT_FALSE(Scope<ScopeID::Root>::isActive());
+        EXPECT_FALSE(Scope<ScopeID::ROOT>::isActive());
     }
 
     TEST_F(ScopeTest, DISABLED_RootAndGraphicsScope)
     {
-        EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
+        EXPECT_FALSE(Scope<ScopeID::GRAPHICS>::isActive());
         {   // create root scope
-            Scope<ScopeID::Root> scope;
-            EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
+            Scope<ScopeID::ROOT> scope;
+            EXPECT_FALSE(Scope<ScopeID::GRAPHICS>::isActive());
             {   // create graphics scope
-                Scope<ScopeID::Graphics> scope;
-                EXPECT_TRUE(Scope<ScopeID::Graphics>::isActive());
+                Scope<ScopeID::GRAPHICS> scope;
+                EXPECT_TRUE(Scope<ScopeID::GRAPHICS>::isActive());
             }   // destroy graphics scope
-            EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
+            EXPECT_FALSE(Scope<ScopeID::GRAPHICS>::isActive());
         }   // destroy root scope
-        EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
+        EXPECT_FALSE(Scope<ScopeID::GRAPHICS>::isActive());
     }
 
     TEST_F(ScopeTest, RootSingleton)
     {
         EXPECT_FALSE(TestSingletonRoot::exists());
         {   // create root scope
-            Scope<ScopeID::Root> scope;
+            Scope<ScopeID::ROOT> scope;
             EXPECT_TRUE(TestSingletonRoot::exists());
         }   // destroy root scope
         EXPECT_FALSE(TestSingletonRoot::exists());
@@ -87,10 +87,10 @@ namespace orxonox
     {
         EXPECT_FALSE(TestSingletonGraphics::exists());
         {   // create root scope
-            Scope<ScopeID::Root> scope;
+            Scope<ScopeID::ROOT> scope;
             EXPECT_FALSE(TestSingletonGraphics::exists());
             {   // create graphics scope
-                Scope<ScopeID::Graphics> scope;
+                Scope<ScopeID::GRAPHICS> scope;
                 EXPECT_TRUE(TestSingletonGraphics::exists());
             }   // destroy graphics scope
             EXPECT_FALSE(TestSingletonGraphics::exists());
