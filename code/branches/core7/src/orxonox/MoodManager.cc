@@ -28,7 +28,7 @@
 
 #include "MoodManager.h"
 
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Resource.h"

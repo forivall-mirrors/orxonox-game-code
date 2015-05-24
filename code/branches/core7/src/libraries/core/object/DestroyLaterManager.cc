@@ -29,7 +29,7 @@
 #include "DestroyLaterManager.h"
 
 #include "core/CoreIncludes.h"
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 
 namespace orxonox
 {

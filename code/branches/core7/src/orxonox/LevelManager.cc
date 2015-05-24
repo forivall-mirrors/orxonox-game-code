@@ -35,7 +35,7 @@
 
 #include <map>
 
-#include "core/singleton/ScopedSingletonWrapper.h"
+#include "core/singleton/ScopedSingletonIncludes.h"
 #include "core/commandline/CommandLineIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
