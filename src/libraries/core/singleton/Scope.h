@@ -29,16 +29,15 @@
 /**
 @file
 @ingroup SingletonScope
-@brief Declaration of the classes that are needed to use Scopes:
-orxonox::Scope, orxonox::ScopeListener, and orxonox::ScopeManager.
+@brief Declaration of the classes that are needed to use Scopes: orxonox::Scope and orxonox::ScopeListener.
 
 @anchor Scope
 
 A virtual scope can be represented by an instance of class orxonox::Scope. orxonox::Scope<@a scope> is a template
 an its template argument defines the name of the virtual scope. See orxonox::ScopeID for an enumeration of the
 available values for @a scope. The orxonox::Scope object for a given @a scope can be activated or deactivated.
-Instances of orxonox::ScopeListener can register for a given @a scope and will get a notification if the
-corresponding orxonox::Scope object changes its state.
+Instances of orxonox::ScopeListener can register in orxonox::ScopeMAnager for a given @a scope and will get a
+notification if the corresponding orxonox::Scope object changes its state.
 
 To avoid multiple instances of orxonox::Scope<@a scope> in different libraries, each instance of orxonox::Scope
 registers in orxonox::ScopeManager, where they are linked statically in the core library.
@@ -59,29 +58,10 @@ Scopes are usually used to control the creation and destruction of Singletons.
 #include <loki/ScopeGuard.h>
 
 #include "util/Output.h"
+#include "ScopeManager.h"
 
 namespace orxonox
 {
-    /**
-        @brief The ScopeManager stores the variables of the Scope templates in a statically linked context.
-
-        If all Scope objects are managed by this class, they are statically linked in the core library.
-        Without this, a new instance of Scope<T> for each T would be created in every library of Orxonox,
-        which is of course not the desired behavior.
-
-        @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
-    */
-    class _CoreExport ScopeManager
-    {
-        template <ScopeID::Value scope>
-        friend class Scope;
-        friend class StaticallyInitializedScopedSingletonWrapper;
-
-        private:
-            static std::map<ScopeID::Value, int>& getInstanceCounts();                  //!< Counts the number of active instances (>0 means active) for a scope
-            static std::map<ScopeID::Value, std::set<ScopeListener*> >& getListeners(); //!< Stores all listeners for a scope
-    };
-
     /**
         @brief ScopeListeners register themselves in the corresponding Scope and wait for notifications.
         Notifications are sent if a Scope is activated or deactivated.
