@@ -142,6 +142,7 @@ namespace orxonox
             }
         }
 
+        // TODO: initialize ScopeManager here
         // TODO: initialize CommandLineParser here
         // TODO: initialize ConsoleCommandManager here
         ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
