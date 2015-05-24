@@ -78,12 +78,11 @@ namespace orxonox
 {
     namespace ScopeID
     {
+        typedef int Value;
+
         //!A list of available scopes for the Scope template.
-        enum Value
-        {
-            Root,
-            Graphics
-        };
+        static const Value ROOT = 1;
+        static const Value GRAPHICS = 2;
     }
 
     namespace XMLPort

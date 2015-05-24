@@ -64,7 +64,7 @@ namespace orxonox
     SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole);
     SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole);
 
-    ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
+    ManageScopedSingleton(InGameConsole, ScopeID::GRAPHICS, false);
 
     RegisterAbstractClass(InGameConsole).inheritsFrom<WindowEventListener>().inheritsFrom<UpdateListener>();
 

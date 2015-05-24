@@ -46,7 +46,7 @@
 namespace orxonox
 {
 
-    ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
+    ManageScopedSingleton(NotificationManager, ScopeID::ROOT, false);
 
     RegisterAbstractClass(NotificationManager).inheritsFrom<NotificationListener>();
 

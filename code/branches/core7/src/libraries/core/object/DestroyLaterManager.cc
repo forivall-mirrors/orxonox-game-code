@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(DestroyLaterManager, ScopeID::Root, false);
+    ManageScopedSingleton(DestroyLaterManager, ScopeID::ROOT, false);
 
     RegisterAbstractClass(DestroyLaterManager).inheritsFrom<UpdateListener>();
 

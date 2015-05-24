@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(KeyDetector, ScopeID::Graphics, false);
+    ManageScopedSingleton(KeyDetector, ScopeID::GRAPHICS, false);
 
     static const std::string __CC_KeyDetector_callback_name = "KeyDetectorKeyPressed";
     DeclareConsoleCommand(__CC_KeyDetector_callback_name, &prototype::void__string).hide();

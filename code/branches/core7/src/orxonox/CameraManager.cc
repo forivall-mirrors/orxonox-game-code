@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(CameraManager, ScopeID::Graphics, false);
+    ManageScopedSingleton(CameraManager, ScopeID::GRAPHICS, false);
 
     CameraManager::CameraManager()
     {

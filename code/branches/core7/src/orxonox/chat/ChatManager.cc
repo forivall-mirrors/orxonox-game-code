@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(ChatManager, ScopeID::Root, false);
+    ManageScopedSingleton(ChatManager, ScopeID::ROOT, false);
 
     SetConsoleCommand("chat", &ChatManager::chat).defaultValue(1, NETWORK_PEER_ID_BROADCAST);
 

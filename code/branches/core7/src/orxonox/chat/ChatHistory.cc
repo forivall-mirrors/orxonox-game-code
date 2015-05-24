@@ -33,7 +33,7 @@
 namespace orxonox
 {
   /* singleton */
-  ManageScopedSingleton( ChatHistory, ScopeID::Root, false );
+  ManageScopedSingleton( ChatHistory, ScopeID::ROOT, false );
 
   RegisterAbstractClass(ChatHistory).inheritsFrom<ChatListener>();
 

@@ -224,7 +224,7 @@ namespace orxonox
 
         // Create singletons that always exist (in other libraries)
         orxout(internal_info) << "creating root scope:" << endl;
-        this->rootScope_ = new Scope<ScopeID::Root>();
+        this->rootScope_ = new Scope<ScopeID::ROOT>();
 
         // Generate documentation instead of normal run?
         std::string docFilename;
@@ -397,7 +397,7 @@ namespace orxonox
 
         // Create singletons associated with graphics (in other libraries)
         orxout(internal_info) << "creating graphics scope:" << endl;
-        graphicsScope_ = new Scope<ScopeID::Graphics>();
+        graphicsScope_ = new Scope<ScopeID::GRAPHICS>();
 
         unloader.Dismiss();
 

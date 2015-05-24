@@ -128,12 +128,12 @@ namespace orxonox
             IOConsole*                ioConsole_;
             TclBind*                  tclBind_;
             TclThreadManager*         tclThreadManager_;
-            Scope<ScopeID::Root>*     rootScope_;
+            Scope<ScopeID::ROOT>*     rootScope_;
             // graphical
             GraphicsManager*          graphicsManager_;            //!< Interface to OGRE
             InputManager*             inputManager_;               //!< Interface to OIS
             GUIManager*               guiManager_;                 //!< Interface to GUI
-            Scope<ScopeID::Graphics>* graphicsScope_;
+            Scope<ScopeID::GRAPHICS>* graphicsScope_;
 
             bool                      bGraphicsLoaded_;
             std::string               language_;                   //!< The language

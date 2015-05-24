@@ -49,7 +49,7 @@
 
 namespace orxonox
 {
-    ManageScopedSingleton(SoundManager, ScopeID::Graphics, true);
+    ManageScopedSingleton(SoundManager, ScopeID::GRAPHICS, true);
 
     std::string SoundManager::getALErrorString(ALenum code)
     {
