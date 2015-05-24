@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "core/singleton/ScopedSingletonIncludes.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -18,21 +19,36 @@ namespace orxonox
 
         ManageScopedSingleton(TestSingletonRoot, ScopeID::Root, false);
         ManageScopedSingleton(TestSingletonGraphics, ScopeID::Graphics, false);
+
+        // Fixture
+        class ScopeTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                }
+
+                virtual void TearDown()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
+                }
+        };
     }
 
-    TEST(Scope, ScopesDoNotExist)
+    TEST_F(ScopeTest, ScopesDoNotExist)
     {
         EXPECT_FALSE(Scope<ScopeID::Root>::isActive());
         EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
     }
 
-    TEST(Scope, SingletonsDoNotExist)
+    TEST_F(ScopeTest, SingletonsDoNotExist)
     {
         EXPECT_FALSE(TestSingletonRoot::exists());
         EXPECT_FALSE(TestSingletonGraphics::exists());
     }
 
-    TEST(Scope, RootScope)
+    TEST_F(ScopeTest, RootScope)
     {
         EXPECT_FALSE(Scope<ScopeID::Root>::isActive());
         {   // create root scope
@@ -42,7 +58,7 @@ namespace orxonox
         EXPECT_FALSE(Scope<ScopeID::Root>::isActive());
     }
 
-    TEST(DISABLED_Scope, RootAndGraphicsScope)
+    TEST_F(ScopeTest, DISABLED_RootAndGraphicsScope)
     {
         EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
         {   // create root scope
@@ -57,7 +73,7 @@ namespace orxonox
         EXPECT_FALSE(Scope<ScopeID::Graphics>::isActive());
     }
 
-    TEST(Scope, RootSingleton)
+    TEST_F(ScopeTest, RootSingleton)
     {
         EXPECT_FALSE(TestSingletonRoot::exists());
         {   // create root scope
@@ -67,7 +83,7 @@ namespace orxonox
         EXPECT_FALSE(TestSingletonRoot::exists());
     }
 
-    TEST(DISABLED_Scope, RootAndGraphicsSingleton)
+    TEST_F(ScopeTest, DISABLED_RootAndGraphicsSingleton)
     {
         EXPECT_FALSE(TestSingletonGraphics::exists());
         {   // create root scope

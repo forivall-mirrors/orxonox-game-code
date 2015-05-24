@@ -56,19 +56,18 @@ namespace orxonox
     /**
         @brief Base class of ClassScopedSingletonWrapper.
     */
-    class _CoreExport ScopedSingletonWrapper
+    class _CoreExport ScopedSingletonWrapper : public ScopeListener
     {
         public:
             /// Constructor: Initializes all the values
             ScopedSingletonWrapper(const std::string& className, ScopeID::Value scope)
-                : className_(className)
-                , scope_(scope)
+                : ScopeListener(scope)
+                , className_(className)
             { }
             virtual ~ScopedSingletonWrapper() { }
 
         protected:
             const std::string className_;   ///< The name of the scoped singleton class that is managed by this object
-            const ScopeID::Value scope_;    ///< The scope of the singleton that is managed by this object
     };
 
     /**
@@ -88,13 +87,12 @@ namespace orxonox
         @see Singleton
     */
     template <class T, ScopeID::Value scope, bool allowedToFail>
-    class ClassScopedSingletonWrapper : public ScopedSingletonWrapper, public ScopeListener
+    class ClassScopedSingletonWrapper : public ScopedSingletonWrapper
     {
     public:
         //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonWrapper and ScopeListener
         ClassScopedSingletonWrapper(const std::string& className)
             : ScopedSingletonWrapper(className, scope)
-            , ScopeListener(scope)
             , singletonPtr_(NULL)
         {
         }
@@ -144,13 +142,12 @@ namespace orxonox
         See @ref ClassScopedSingletonWrapper for a full documentation of the basis template.
     */
     template <class T, ScopeID::Value scope>
-    class ClassScopedSingletonWrapper<T, scope, true> : public ScopedSingletonWrapper, public ScopeListener
+    class ClassScopedSingletonWrapper<T, scope, true> : public ScopedSingletonWrapper
     {
     public:
         //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonWrapper and ScopeListener
         ClassScopedSingletonWrapper(const std::string& className)
             : ScopedSingletonWrapper(className, scope)
-            , ScopeListener(scope)
             , singletonPtr_(NULL)
         {
         }
