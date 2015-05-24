@@ -29,11 +29,11 @@
 /**
     @file
     @ingroup SingletonScope
-    @brief Definition of orxonox::ScopedSingletonManager, orxonox::ClassScopedSingletonManager, and the ManageScopedSingleton macro.
+    @brief Definition of orxonox::ScopedSingletonWrapper, orxonox::ClassScopedSingletonWrapper, and the ManageScopedSingleton macro.
 
-    ScopedSingletonManager is used to create and destroy Singletons that belong to
+    ScopedSingletonWrapper is used to create and destroy Singletons that belong to
     a given Scope. For each one of these singletons, the macro ManageScopedSingleton()
-    has to be called to register the singleton with orxonox::ScopedSingletonManager.
+    has to be called to register the wrapper with orxonox::ScopeManager.
 
     See @ref SingletonExample "this code" for an example.
 
@@ -41,31 +41,30 @@
     @see orxonox::Scope
 */
 
-#ifndef __ScopedSingletonManager_H__
-#define __ScopedSingletonManager_H__
+#ifndef __ScopedSingletonWrapper_H__
+#define __ScopedSingletonWrapper_H__
 
 #include "core/CorePrereqs.h"
 
 #include <cassert>
-#include <map>
 #include "util/Exception.h"
 #include "util/Singleton.h"
 #include "Scope.h"
 
 /**
-    @brief Registers an orxonox::Singleton with orxonox::ScopedSingletonManager.
+    @brief Creates an orxonox::ScopedSingletonWrapper for an orxonox::Singleton and registers it with orxonox::ScopeManager.
     @param className The name of the singleton class
     @param scope The scope in which the singleton should exist
     @param allowedToFail If true, the singleton is allowed to fail and thus a try-catch block is used when creating the singleton.
 
-    If this macro is called for a singleton, it is registered with ScopedSingletonManager
+    If this macro is called for a singleton, it is wrapped in a ScopedSingletonWrapper and registered with ScopeManager
     and will thus be created if its scope becomes active and destroyed if is deactivated.
 
 
     Usually a singleton gets created automatically when it is first used, but it will never
     be destroyed (unless the singleton explicitly deletes itself). To allow controlled
     construction and destruction, the singleton can be put within a virtual scope. This is
-    done by registering the singleton class with orxonox::ScopedSingletonManager. To
+    done by registering the singleton class with orxonox::ScopeManager. To
     do so, the ManageScopedSingleton() macro has to be called:
 
     @code
@@ -83,29 +82,22 @@
 */
 #define ManageScopedSingleton(className, scope, allowedToFail) \
     className* className::singletonPtr_s = NULL; \
-    static ClassScopedSingletonManager<className, scope, allowedToFail> className##ScopedSingletonManager(#className)
+    static ClassScopedSingletonWrapper<className, scope, allowedToFail> className##ScopedSingletonWrapper(#className)
 
 namespace orxonox
 {
     /**
-        @brief Base class of ClassScopedSingletonManager. Keeps track of all existing ScopedSingletonManagers
-        and stores them in a map, sorted by the scope they belong to.
+        @brief Base class of ClassScopedSingletonWrapper.
     */
-    class _CoreExport ScopedSingletonManager
+    class _CoreExport ScopedSingletonWrapper
     {
         public:
             /// Constructor: Initializes all the values
-            ScopedSingletonManager(const std::string& className, ScopeID::Value scope)
+            ScopedSingletonWrapper(const std::string& className, ScopeID::Value scope)
                 : className_(className)
                 , scope_(scope)
             { }
-            virtual ~ScopedSingletonManager() { }
-
-            /// Adds a new instance of ScopedSingletonManager to the map.
-            static void addManager(ScopedSingletonManager* manager);
-
-            static std::map<std::string, ScopedSingletonManager*>& getManagers();
-            typedef std::multimap<ScopeID::Value, ScopedSingletonManager*> ManagerMultiMap;
+            virtual ~ScopedSingletonWrapper() { }
 
         protected:
             const std::string className_;   ///< The name of the scoped singleton class that is managed by this object
@@ -113,7 +105,7 @@ namespace orxonox
     };
 
     /**
-        @anchor ClassScopedSingletonManager
+        @anchor ClassScopedSingletonWrapper
 
         @brief Manages a scoped singleton for a given scope.
         @param T The managed singleton class
@@ -129,19 +121,18 @@ namespace orxonox
         @see Singleton
     */
     template <class T, ScopeID::Value scope, bool allowedToFail>
-    class ClassScopedSingletonManager : public ScopedSingletonManager, public ScopeListener
+    class ClassScopedSingletonWrapper : public ScopedSingletonWrapper, public ScopeListener
     {
     public:
-        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonManager and ScopeListener
-        ClassScopedSingletonManager(const std::string& className)
-            : ScopedSingletonManager(className, scope)
+        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonWrapper and ScopeListener
+        ClassScopedSingletonWrapper(const std::string& className)
+            : ScopedSingletonWrapper(className, scope)
             , ScopeListener(scope)
             , singletonPtr_(NULL)
         {
-            ScopedSingletonManager::addManager(this);
         }
 
-        ~ClassScopedSingletonManager()
+        ~ClassScopedSingletonWrapper()
         {
         }
 
@@ -176,29 +167,28 @@ namespace orxonox
     };
 
     /**
-        @brief This class partially spezializes ClassScopedSingletonManager for classes @a T that are allowed to fail.
+        @brief This class partially spezializes ClassScopedSingletonWrapper for classes @a T that are allowed to fail.
         @param T The managed singleton class
         @param scope The scope in which the singleton @a T should be active
 
-        Because @a T could fail when being created, this partial spezialization of ClassScopedSingletonManager
+        Because @a T could fail when being created, this partial spezialization of ClassScopedSingletonWrapper
         uses a try-catch block to handle exceptions.
 
-        See @ref ClassScopedSingletonManager for a full documentation of the basis template.
+        See @ref ClassScopedSingletonWrapper for a full documentation of the basis template.
     */
     template <class T, ScopeID::Value scope>
-    class ClassScopedSingletonManager<T, scope, true> : public ScopedSingletonManager, public ScopeListener
+    class ClassScopedSingletonWrapper<T, scope, true> : public ScopedSingletonWrapper, public ScopeListener
     {
     public:
-        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonManager and ScopeListener
-        ClassScopedSingletonManager(const std::string& className)
-            : ScopedSingletonManager(className, scope)
+        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonWrapper and ScopeListener
+        ClassScopedSingletonWrapper(const std::string& className)
+            : ScopedSingletonWrapper(className, scope)
             , ScopeListener(scope)
             , singletonPtr_(NULL)
         {
-            ScopedSingletonManager::addManager(this);
         }
 
-        ~ClassScopedSingletonManager()
+        ~ClassScopedSingletonWrapper()
         {
         }
 
@@ -240,4 +230,4 @@ namespace orxonox
     };
 }
 
-#endif /* __ScopedSingletonManager_H__ */
+#endif /* __ScopedSingletonWrapper_H__ */

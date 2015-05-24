@@ -37,7 +37,7 @@
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
 #include "core/class/Identifier.h"
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 #include "network/Host.h"
 #include "network/NetworkFunction.h"
 

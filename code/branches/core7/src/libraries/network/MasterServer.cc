@@ -30,7 +30,7 @@
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/CorePrereqs.h"
-#include "core/singleton/ScopedSingletonManager.h"
+#include "core/singleton/ScopedSingletonWrapper.h"
 #include "util/Output.h"
 
 namespace orxonox 

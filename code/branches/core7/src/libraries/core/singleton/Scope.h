@@ -45,7 +45,6 @@ registers in orxonox::ScopeManager, where they are linked statically in the core
 
 Scopes are usually used to control the creation and destruction of Singletons.
 
-@see orxonox::ScopedSingletonManager
 @see orxonox::Singleton
 */
 
