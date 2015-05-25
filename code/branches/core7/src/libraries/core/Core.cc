@@ -134,6 +134,8 @@ namespace orxonox
             }
         }
 
+        // TODO: initialize Root-Context
+        // TODO: initialize IdentifierManager here
         // TODO: initialize ScopeManager here
         // TODO: initialize CommandLineParser here
         // TODO: initialize ConsoleCommandManager here
