@@ -181,7 +181,6 @@ namespace orxonox
         // possibility to configure everything below here
         orxout(internal_info) << "configuring Core" << endl;
         this->config_ = new CoreConfig();
-        this->config_->setConfigValues(); // TODO: move this into CoreConfig constructor (but resolve dependency to Language)
 
         // Set the correct log path and rewrite the log file with the correct log levels
         OutputManager::getInstance().getLogWriter()->setLogDirectory(PathConfig::getLogPathString());

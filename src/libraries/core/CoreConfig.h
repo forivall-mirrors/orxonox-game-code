@@ -46,11 +46,6 @@ namespace orxonox
             inline bool inDevMode(void) const
                 { return this->bDevMode_; }
 
-            //! Returns the configured language.
-            const std::string& getLanguage()
-                { return this->language_; }
-            void resetLanguage();
-
             inline bool getStartIOConsole() const
                 { return this->bStartIOConsole_; }
 
