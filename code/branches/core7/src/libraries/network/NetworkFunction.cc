@@ -28,22 +28,14 @@
 
 #include "NetworkFunction.h"
 #include "NetworkFunctionManager.h"
-#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
   std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
   std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
 
-  // no suitable factory for NetworkFunctionBase (and children), so we declare it abstract
-  RegisterAbstractClass(NetworkFunctionBase).inheritsFrom<Listable>();
-  RegisterAbstractClass(NetworkFunctionStatic).inheritsFrom<NetworkFunctionBase>();
-  RegisterAbstractClass(NetworkMemberFunctionBase).inheritsFrom<NetworkFunctionBase>();
-
   NetworkFunctionBase::NetworkFunctionBase(const std::string& name)
   {
-      RegisterObject(NetworkFunctionBase);
-
     static uint32_t networkID = 0;
     this->networkID_ = networkID++;
 
@@ -58,8 +50,6 @@ namespace orxonox
   NetworkFunctionStatic::NetworkFunctionStatic(const FunctorStaticPtr& functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
-    RegisterObject(NetworkFunctionStatic);
-
     this->functor_ = functor;
     NetworkFunctionStatic::getFunctorMap()[p] = this;
     NetworkFunctionStatic::getIdMap()[ this->getNetworkID() ] = this;
@@ -81,8 +71,6 @@ namespace orxonox
   NetworkMemberFunctionBase::NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
-    RegisterObject(NetworkMemberFunctionBase);
-
     this->functorMap_[p] = this;
     this->idMap_[ this->getNetworkID() ] = this;
   }
