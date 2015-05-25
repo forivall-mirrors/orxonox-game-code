@@ -110,8 +110,9 @@ namespace orxonox
     */
     void Identifier::setNetworkID(uint32_t id)
     {
+        IdentifierManager::getInstance().removeIdentifier(this); // remove with old id
         this->networkID_ = id;
-        IdentifierManager::getInstance().addIdentifier(this);
+        IdentifierManager::getInstance().addIdentifier(this);    // add with new id
     }
 
     /**
