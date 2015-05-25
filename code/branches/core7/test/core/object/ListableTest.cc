@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "core/object/Listable.h"
 #include "core/CoreIncludes.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -38,10 +39,12 @@ namespace orxonox
                 virtual void SetUp()
                 {
                     Context::setRootContext(new Context(NULL));
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
                 }
 
                 virtual void TearDown()
                 {
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
                     Context::setRootContext(NULL);
                 }
         };

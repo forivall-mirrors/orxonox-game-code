@@ -2,6 +2,7 @@
 #include "core/object/ClassFactory.h"
 #include "core/BaseObject.h"
 #include "core/object/Context.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -14,10 +15,12 @@ namespace orxonox
                 virtual void SetUp()
                 {
                     Context::setRootContext(new Context(NULL));
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
                 }
 
                 virtual void TearDown()
                 {
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
                     Context::setRootContext(NULL);
                 }
         };

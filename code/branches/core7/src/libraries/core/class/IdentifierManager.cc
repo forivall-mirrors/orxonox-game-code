@@ -70,6 +70,17 @@ namespace orxonox
     }
 
     /**
+     * Unregisters the identifier from all maps of the IdentifierManager.
+     */
+    void IdentifierManager::removeIdentifier(Identifier* identifier)
+    {
+        this->identifiers_.erase(identifier);
+        this->identifierByString_.erase(identifier->getName());
+        this->identifierByLowercaseString_.erase(getLowercase(identifier->getName()));
+        this->identifierByNetworkId_.erase(identifier->getNetworkID());
+    }
+
+    /**
         @brief Creates the class-hierarchy by creating and destroying one object of each type.
     */
     void IdentifierManager::createClassHierarchy()
