@@ -46,6 +46,9 @@
 
 #include "core/CorePrereqs.h"
 
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_base_of.hpp>
+
 #include "ObjectListBase.h"
 #include "ObjectListIterator.h"
 #include "Context.h"
@@ -65,6 +68,8 @@ namespace orxonox
     template <class T>
     class ObjectList
     {
+        BOOST_STATIC_ASSERT(boost::is_base_of<Listable, T>::value);
+
         public:
             typedef ObjectListIterator<T> iterator;
 
