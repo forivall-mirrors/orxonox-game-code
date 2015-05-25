@@ -97,8 +97,6 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
 
     virtual void setNetworkID( uint32_t id )
         { NetworkFunctionBase::setNetworkID( id ); NetworkFunctionStatic::getIdMap()[id] = this; }
-    static inline NetworkFunctionStatic* getNetworkFunction( uint32_t id)
-        { assert( NetworkFunctionStatic::getIdMap().find(id)!=NetworkFunctionStatic::getIdMap().end() ); return NetworkFunctionStatic::getIdMap()[id]; }
     static NetworkFunctionStatic* getFunction( uint32_t id )
         { assert( NetworkFunctionStatic::getIdMap().find(id) != NetworkFunctionStatic::getIdMap().end() ); return NetworkFunctionStatic::getIdMap()[id]; }
     static NetworkFunctionStatic* getFunction( const NetworkFunctionPointer& p )
@@ -118,7 +116,6 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
     ~NetworkMemberFunctionBase();
 
     virtual void setNetworkID( uint32_t id ){ NetworkFunctionBase::setNetworkID( id ); idMap_[id] = this; }
-    static inline NetworkMemberFunctionBase* getNetworkFunction( uint32_t id){ assert( idMap_.find(id)!=idMap_.end() ); return idMap_[id]; }
     static NetworkMemberFunctionBase* getFunction( uint32_t id ){ assert( idMap_.find(id) != idMap_.end() ); return idMap_[id]; }
     static NetworkMemberFunctionBase* getFunction( const NetworkFunctionPointer& p ){ assert( functorMap_.find(p) != functorMap_.end() ); return functorMap_[p]; }
 
