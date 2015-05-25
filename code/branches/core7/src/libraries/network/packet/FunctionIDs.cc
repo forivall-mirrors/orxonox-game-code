@@ -36,6 +36,7 @@
 #include "util/Output.h"
 #include "core/object/ObjectList.h"
 #include "network/NetworkFunction.h"
+#include "network/NetworkFunctionManager.h"
 
 namespace orxonox {
 namespace packet {
@@ -137,7 +138,7 @@ bool FunctionIDs::process(orxonox::Host* host)
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     functionname = temp+2*sizeof(uint32_t);
     orxout(internal_info, context::packets) << "processing functionid: " << networkID << " name: " << functionname << endl;
-    NetworkFunctionBase::setNetworkID((const char*)functionname, networkID);
+    NetworkFunctionManager::setNetworkID((const char*)functionname, networkID);
     temp += 2*sizeof(uint32_t) + stringsize;
   }
   delete this;

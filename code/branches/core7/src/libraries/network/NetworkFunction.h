@@ -76,22 +76,8 @@ class _NetworkExport NetworkFunctionBase: virtual public Listable {
     virtual void        setNetworkID(uint32_t id)       { this->networkID_ = id; }
     inline uint32_t     getNetworkID() const            { return this->networkID_; }
     inline const std::string& getName() const           { return name_; }
-    static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
-
-    static inline void setNetworkID(const std::string& name, uint32_t id)
-    {
-        std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
-        assert( map.find(name)!=map.end() );
-        map[name]->setNetworkID(id);
-    }
-
-    static void destroyAllNetworkFunctions();
-
-  protected:
-    static std::map<uint32_t, bool> isStaticMap_;
 
   private:
-    static std::map<std::string, NetworkFunctionBase*>& getNameMap();
     uint32_t networkID_;
     std::string name_;
 

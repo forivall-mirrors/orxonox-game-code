@@ -34,6 +34,7 @@
 #include "core/GameMode.h"
 #include "core/command/ConsoleCommandIncludes.h"
 #include "network/NetworkFunctionIncludes.h"
+#include "network/NetworkFunctionManager.h"
 #include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
 
@@ -67,7 +68,7 @@ namespace orxonox
 
     GSRoot::~GSRoot()
     {
-        NetworkFunctionBase::destroyAllNetworkFunctions();
+        NetworkFunctionManager::destroyAllNetworkFunctions();
     }
 
     void GSRoot::printObjects()
