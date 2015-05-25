@@ -68,12 +68,13 @@ struct _NetworkExport NetworkFunctionPointer {
 
 class _NetworkExport NetworkFunctionBase {
   public:
-    NetworkFunctionBase(const std::string& name, const NetworkFunctionPointer& p);
+    NetworkFunctionBase(const std::string& name, const NetworkFunctionPointer& pointer);
     virtual ~NetworkFunctionBase() {}
 
     void setNetworkID(uint32_t id);
-    inline uint32_t     getNetworkID() const            { return this->networkID_; }
-    inline const std::string& getName() const           { return name_; }
+    inline uint32_t     getNetworkID() const                { return this->networkID_; }
+    inline const std::string& getName() const               { return this->name_; }
+    inline const NetworkFunctionPointer& getPointer() const { return this->pointer_; }
 
     virtual bool call(uint32_t objectID)=0;
     virtual bool call(uint32_t objectID, const MultiType& mt1)=0;
@@ -85,6 +86,7 @@ class _NetworkExport NetworkFunctionBase {
   private:
     uint32_t networkID_;
     std::string name_;
+    NetworkFunctionPointer pointer_;
 
 };
 

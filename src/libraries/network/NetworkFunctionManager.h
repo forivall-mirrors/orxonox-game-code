@@ -33,6 +33,7 @@
 
 #include <cassert>
 #include <map>
+#include <set>
 
 namespace orxonox
 {
@@ -41,20 +42,20 @@ namespace orxonox
         public:
             static NetworkFunctionManager& getInstance();
 
-            void setNetworkID(const std::string& name, uint32_t id);
+            void registerFunction(NetworkFunctionBase* function);
+            void unregisterFunction(NetworkFunctionBase* function);
+
             void destroyAllNetworkFunctions();
 
-            inline std::map<std::string, NetworkFunctionBase*>& getNameMap()
-                { return nameMap_; }
-            inline std::map<NetworkFunctionPointer, NetworkFunctionBase*>& getFunctorMap()
-                { return functorMap_; }
-            inline std::map<uint32_t, NetworkFunctionBase*>& getIdMap()
-                { return idMap_; }
+            inline const std::set<NetworkFunctionBase*>& getAllFunctions()
+                { return functions_; }
 
-            NetworkFunctionBase* getFunction(const NetworkFunctionPointer& p);
-            NetworkFunctionBase* getFunction(uint32_t id);
+            NetworkFunctionBase* getFunctionByName(const std::string& name);
+            NetworkFunctionBase* getFunctionByFunctionPointer(const NetworkFunctionPointer& p);
+            NetworkFunctionBase* getFunctionByNetworkId(uint32_t id);
 
         private:
+            std::set<NetworkFunctionBase*> functions_;
             std::map<std::string, NetworkFunctionBase*> nameMap_;
             std::map<NetworkFunctionPointer, NetworkFunctionBase*> functorMap_;
             std::map<uint32_t, NetworkFunctionBase*> idMap_;

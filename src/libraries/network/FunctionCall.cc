@@ -46,7 +46,7 @@ FunctionCall::~FunctionCall()
 
 
 bool FunctionCall::execute(){
-  NetworkFunctionBase* fct = static_cast<NetworkFunctionStatic*>(NetworkFunctionManager::getInstance().getFunction( this->functionID_ ));
+  NetworkFunctionBase* fct = static_cast<NetworkFunctionStatic*>(NetworkFunctionManager::getInstance().getFunctionByNetworkId( this->functionID_ ));
   assert( this->nrOfArguments_==this->arguments_.size() );
   switch(this->nrOfArguments_)
   {
