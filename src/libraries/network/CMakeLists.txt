@@ -33,6 +33,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   WANDiscovery.cc
   MasterServerComm.cc
   NetworkFunction.cc
+  NetworkFunctionManager.cc
   Host.cc
   Server.cc
   MasterServer.cc
@@ -60,6 +61,7 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   MasterServerComm.h
   NetworkChatListener.h
   NetworkFunction.h
+  NetworkFunctionManager.h
   NetworkPrecompiledHeaders.h
   NetworkPrereqs.h
   Server.h

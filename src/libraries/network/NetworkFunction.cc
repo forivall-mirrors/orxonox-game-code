@@ -27,12 +27,11 @@
  */
 
 #include "NetworkFunction.h"
+#include "NetworkFunctionManager.h"
 #include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-  std::map<uint32_t, bool> NetworkFunctionBase::isStaticMap_;
-
   std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
   std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
 
@@ -49,26 +48,10 @@ namespace orxonox
     this->networkID_ = networkID++;
 
     this->name_ = name;
-    NetworkFunctionBase::getNameMap()[name] = this;
+    NetworkFunctionManager::getNameMap()[name] = this;
   }
   NetworkFunctionBase::~NetworkFunctionBase()
   {
-  }
-
-
-  void NetworkFunctionBase::destroyAllNetworkFunctions()
-  {
-    std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
-    std::map<std::string, NetworkFunctionBase*>::iterator it;
-    for( it=map.begin(); it!=map.end(); ++it )
-      delete it->second;
-  }
-
-
-  /*static*/ std::map<std::string, NetworkFunctionBase*>& NetworkFunctionBase::getNameMap()
-  {
-    static std::map<std::string, NetworkFunctionBase*> nameMap_;
-    return nameMap_;
   }
 
 
