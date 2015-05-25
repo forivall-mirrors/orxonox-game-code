@@ -68,7 +68,7 @@ namespace orxonox
 
     GSRoot::~GSRoot()
     {
-        NetworkFunctionManager::destroyAllNetworkFunctions();
+        NetworkFunctionManager::getInstance().destroyAllNetworkFunctions();
     }
 
     void GSRoot::printObjects()
