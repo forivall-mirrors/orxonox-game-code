@@ -249,9 +249,9 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        orxout(internal_info, context::language) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << endl;
+        orxout(internal_info, context::language) << "Read translated language file (" << Core::getInstance().getConfig()->getLanguage() << ")." << endl;
 
-        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getLanguage());
+        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getConfig()->getLanguage());
 
         // Open the file
         std::ifstream file;
@@ -260,8 +260,8 @@ namespace orxonox
         if (!file.is_open())
         {
             orxout(internal_error, context::language) << "An error occurred in Language.cc:" << endl;
-            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(Core::getInstance().getLanguage()) << " to read the translated language entries!" << endl;
-            Core::getInstance().resetLanguage();
+            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(Core::getInstance().getConfig()->getLanguage()) << " to read the translated language entries!" << endl;
+            Core::getInstance().getConfig()->resetLanguage();
             orxout(internal_info, context::language) << "Reset language to " << this->defaultLanguage_ << '.' << endl;
             return;
         }
@@ -290,7 +290,7 @@ namespace orxonox
                 }
                 else
                 {
-                    orxout(internal_warning, context::language) << "Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getLanguage()) << endl;
+                    orxout(internal_warning, context::language) << "Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getConfig()->getLanguage()) << endl;
                 }
             }
         }

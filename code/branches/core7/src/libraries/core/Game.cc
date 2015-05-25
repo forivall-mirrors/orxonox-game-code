@@ -44,9 +44,8 @@
 #include "util/Sleep.h"
 #include "util/SubString.h"
 #include "Core.h"
-#include "CoreIncludes.h"
 #include "commandline/CommandLineParser.h"
-#include "config/ConfigValueIncludes.h"
+#include "GameConfig.h"
 #include "GameMode.h"
 #include "GameState.h"
 #include "GraphicsManager.h"
@@ -76,13 +75,12 @@ namespace orxonox
         std::vector<shared_ptr<GameStateTreeNode> > children_;
     };
 
-    RegisterAbstractClass(Game).inheritsFrom<Configurable>();
-
     Game::Game(const std::string& cmdLine)
         : gameClock_(NULL)
         , core_(NULL)
         , bChangingState_(false)
         , bAbort_(false)
+        , config_(NULL)
         , destructionHelper_(this)
     {
         orxout(internal_status) << "initializing Game object..." << endl;
@@ -113,8 +111,7 @@ namespace orxonox
         this->core_ = new Core(cmdLine);
 
         // Do this after the Core creation!
-        RegisterObject(Game);
-        this->setConfigValues();
+        this->config_ = new GameConfig();
 
         // After the core has been created, we can safely instantiate the GameStates that don't require graphics
         for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
@@ -137,29 +134,16 @@ namespace orxonox
     {
         orxout(internal_status) << "destroying Game object..." << endl;
 
-        // Remove us from the object lists again to avoid problems when destroying them
-        this->unregisterObject();
-
         assert(loadedStates_.size() <= 1); // Just empty root GameState
         // Destroy all GameStates (shared_ptrs take care of actual destruction)
         constructedStates_.clear();
 
         GameStateFactory::getFactories().clear();
+        safeObjectDelete(&config_);
         safeObjectDelete(&core_);
         safeObjectDelete(&gameClock_);
 
         orxout(internal_status) << "finished destroying Game object..." << endl;
-    }
-
-    void Game::setConfigValues()
-    {
-        SetConfigValue(statisticsRefreshCycle_, 250000)
-            .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
-        SetConfigValue(statisticsAvgLength_, 1000000)
-            .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
-
-        SetConfigValueExternal(fpsLimit_, "GraphicsSettings", "fpsLimit", 50)
-            .description("Sets the desired frame rate (0 for no limit).");
     }
 
     /**
@@ -230,7 +214,7 @@ namespace orxonox
 
             // Limit frame rate
             static bool hasVSync = GameMode::showsGraphics() && GraphicsManager::getInstance().hasVSyncEnabled(); // can be static since changes of VSync currently require a restart
-            if (this->fpsLimit_ > 0 && !hasVSync)
+            if (this->config_->getFpsLimit() > 0 && !hasVSync)
                 this->updateFPSLimiter();
         }
 
@@ -312,11 +296,11 @@ namespace orxonox
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
         this->statisticsTickTimes_.back().tickLength += (uint32_t)(currentRealTime - currentTime);
         this->periodTickTime_ += (uint32_t)(currentRealTime - currentTime);
-        if (this->periodTime_ > this->statisticsRefreshCycle_)
+        if (this->periodTime_ > this->config_->getStatisticsRefreshCycle())
         {
             std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
             assert(it != this->statisticsTickTimes_.end());
-            int64_t lastTime = currentTime - this->statisticsAvgLength_;
+            int64_t lastTime = currentTime - this->config_->getStatisticsAvgLength();
             if (static_cast<int64_t>(it->tickTime) < lastTime)
             {
                 do
@@ -334,13 +318,13 @@ namespace orxonox
             this->avgFPS_ = -1 + static_cast<float>(framesPerPeriod) / (currentTime - this->statisticsTickTimes_.front().tickTime) * 1000000.0f;
             this->avgTickTime_ = static_cast<float>(this->periodTickTime_) / framesPerPeriod / 1000.0f;
 
-            this->periodTime_ -= this->statisticsRefreshCycle_;
+            this->periodTime_ -= this->config_->getStatisticsRefreshCycle();
         }
     }
 
     void Game::updateFPSLimiter()
     {
-        uint64_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / fpsLimit_);
+        uint64_t nextTime = gameClock_->getMicroseconds() - excessSleepTime_ + static_cast<uint32_t>(1000000.0f / this->config_->getFpsLimit());
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
         while (currentRealTime < nextTime - minimumSleepTime_)
         {

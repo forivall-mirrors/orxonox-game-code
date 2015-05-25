@@ -408,7 +408,7 @@ namespace orxonox
                     if (allplayersready && hashumanplayers)
                     {
                         // If in developer's mode, there is no start countdown.
-                        if(Core::getInstance().inDevMode())
+                        if(Core::getInstance().getConfig()->inDevMode())
                             this->start();
                         else
                         {

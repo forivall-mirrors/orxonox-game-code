@@ -48,7 +48,7 @@
 #include <vector>
 
 #include "util/output/BaseWriter.h"
-#include "core/Core.h"
+#include "core/CoreConfig.h"
 
 namespace orxonox
 {

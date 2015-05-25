@@ -160,7 +160,7 @@ namespace orxonox
     class _CoreExport Language : public Singleton<Language>
     {
         friend class Singleton<Language>;
-        friend class Core;
+        friend class CoreConfig;
 
         public:
             Language();

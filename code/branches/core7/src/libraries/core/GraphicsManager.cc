@@ -280,7 +280,7 @@ namespace orxonox
     {
         orxout(internal_info) << "GraphicsManager: Configuring Renderer" << endl;
 
-        bool updatedConfig = Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp();
+        bool updatedConfig = Core::getInstance().getConfig()->getOgreConfigTimestamp() > Core::getInstance().getConfig()->getLastLevelTimestamp();
         if (updatedConfig)
             orxout(user_info)<< "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << endl;
 
@@ -289,7 +289,7 @@ namespace orxonox
             if (!ogreRoot_->showConfigDialog())
                 ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue canceled.");
             else
-                Core::getInstance().updateOgreConfigTimestamp();
+                Core::getInstance().getConfig()->updateOgreConfigTimestamp();
         }
 
         orxout(internal_info) << "Creating render window" << endl;
@@ -515,7 +515,7 @@ namespace orxonox
         {
             GraphicsManager::getInstance().getRenderWindow()->setFullscreen(fullscreen, width, height);
             this->ogreRoot_->saveConfig();
-            Core::getInstance().updateOgreConfigTimestamp();
+            Core::getInstance().getConfig()->updateOgreConfigTimestamp();
             // Also reload the input devices
             InputManager::getInstance().reload();
         }
@@ -533,7 +533,7 @@ namespace orxonox
         {
             //this->ogreRoot_->getRenderSystem()->reinitialise(); // can't use this that easily, because it recreates the render window, invalidating renderWindow_
             this->ogreRoot_->saveConfig();
-            Core::getInstance().updateOgreConfigTimestamp();
+            Core::getInstance().getConfig()->updateOgreConfigTimestamp();
         }
 
         return validate;
@@ -549,7 +549,7 @@ namespace orxonox
         {
             //this->ogreRoot_->getRenderSystem()->reinitialise(); // can't use this that easily, because it recreates the render window, invalidating renderWindow_
             this->ogreRoot_->saveConfig();
-            Core::getInstance().updateOgreConfigTimestamp();
+            Core::getInstance().getConfig()->updateOgreConfigTimestamp();
         }
 
         return validate;

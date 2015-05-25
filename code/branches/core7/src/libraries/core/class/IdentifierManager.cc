@@ -129,7 +129,7 @@ namespace orxonox
         }
 
         // only check class hierarchy in dev mode because it's an expensive operation and it requires a developer to fix detected problems anyway.
-        if (!Core::exists() || Core::getInstance().inDevMode())
+        if (!Core::exists() || Core::getInstance().getConfig()->inDevMode())
             this->verifyClassHierarchy();
 
         this->stopCreatingHierarchy();
