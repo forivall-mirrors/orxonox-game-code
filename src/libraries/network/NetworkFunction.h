@@ -36,8 +36,6 @@
 #include <map>
 #include <string>
 
-#include "core/object/Listable.h"
-#include "core/class/Identifier.h"
 #include "core/command/Functor.h"
 #include "FunctionCallManager.h"
 #include "synchronisable/Synchronisable.h"
@@ -68,10 +66,10 @@ struct _NetworkExport NetworkFunctionPointer {
 
 
 
-class _NetworkExport NetworkFunctionBase: virtual public Listable {
+class _NetworkExport NetworkFunctionBase {
   public:
     NetworkFunctionBase(const std::string& name);
-    ~NetworkFunctionBase();
+    virtual ~NetworkFunctionBase();
 
     virtual void        setNetworkID(uint32_t id)       { this->networkID_ = id; }
     inline uint32_t     getNetworkID() const            { return this->networkID_; }

@@ -55,11 +55,12 @@ FunctionIDs::FunctionIDs( ) : Packet()
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
 
   //calculate total needed size (for all strings and integers)
-  ObjectList<NetworkFunctionBase>::iterator it;
-  for(it = ObjectList<NetworkFunctionBase>::begin(); it; ++it)
+  std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionManager::getNameMap();
+  std::map<std::string, NetworkFunctionBase*>::iterator it;
+  for (it = map.begin(); it != map.end(); ++it)
   {
-    const std::string& functionname = it->getName();
-    networkID = it->getNetworkID();
+    const std::string& functionname = it->second->getName();
+    networkID = it->second->getNetworkID();
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(networkID, functionname) );
     ++nrOfFunctions;
