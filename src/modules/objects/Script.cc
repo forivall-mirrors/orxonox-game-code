@@ -36,7 +36,7 @@
 #include "core/LuaState.h"
 #include "core/XMLPort.h"
 #include "network/Host.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 
 #include "PlayerManager.h"
 #include "infos/PlayerInfo.h"

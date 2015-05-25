@@ -39,7 +39,7 @@
 #include "core/class/Identifier.h"
 #include "core/singleton/ScopedSingletonIncludes.h"
 #include "network/Host.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 
 #include "infos/PlayerInfo.h"
 #include "interfaces/PickupCarrier.h"

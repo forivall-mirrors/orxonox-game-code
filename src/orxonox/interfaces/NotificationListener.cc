@@ -33,7 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 #include "util/SubString.h"
 
 #include "interfaces/NotificationListener.h"

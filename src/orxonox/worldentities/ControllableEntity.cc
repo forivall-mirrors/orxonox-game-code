@@ -35,7 +35,7 @@
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 
 #include "Scene.h"
 #include "infos/PlayerInfo.h"

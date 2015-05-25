@@ -36,7 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "network/Host.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 #include "util/Convert.h"
 
 #include "controllers/HumanController.h"
