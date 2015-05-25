@@ -51,67 +51,27 @@ bool FunctionCall::execute(){
   switch(this->nrOfArguments_)
   {
     case 0:
-      return !fct->call(this->objectID_);
+      return fct->call(this->objectID_);
     case 1:
-      return !fct->call(this->objectID_, this->arguments_[0]);
+      return fct->call(this->objectID_, this->arguments_[0]);
     case 2:
-      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1]);
+      return fct->call(this->objectID_, this->arguments_[0], this->arguments_[1]);
     case 3:
-      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2]);
+      return fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2]);
     case 4:
-      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]);
+      return fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]);
     case 5:
-      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]);
+      return fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]);
     default:
       assert(0);
       return true; // return true to avoid that this functions gets called over and over again
   }
 }
 
-void FunctionCall::setCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
+void FunctionCall::setCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
 
   // first determine the size that has to be reserved for this call
-  uint32_t callsize = 2*sizeof(uint32_t)+sizeof(uint8_t); //size for network-function-id and nrOfArguments and for bool isStatic
-  uint32_t nrOfArguments = 0;
-  if(mt1)
-  {
-    nrOfArguments++;
-    callsize += mt1->getNetworkSize();
-    this->arguments_.push_back(*mt1);
-    if(mt2)
-    {
-      nrOfArguments++;
-      callsize += mt2->getNetworkSize();
-      this->arguments_.push_back(*mt2);
-      if(mt3)
-      {
-        nrOfArguments++;
-        callsize += mt3->getNetworkSize();
-        this->arguments_.push_back(*mt3);
-        if(mt4)
-        {
-          nrOfArguments++;
-          callsize += mt4->getNetworkSize();
-          this->arguments_.push_back(*mt4);
-          if(mt5)
-          {
-            nrOfArguments++;
-            callsize += mt5->getNetworkSize();
-            this->arguments_.push_back(*mt5);
-          }
-        }
-      }
-    }
-  }
-  this->nrOfArguments_ = nrOfArguments;
-  this->size_ = callsize;
-  this->functionID_ = networkID;
-}
-
-void FunctionCall::setCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
-
-  // first determine the size that has to be reserved for this call
-  uint32_t callsize = 3*sizeof(uint32_t)+sizeof(uint8_t); //size for network-function-id and nrOfArguments and the objectID and bIsStatic
+  uint32_t callsize = 3*sizeof(uint32_t); //size for network-function-id and nrOfArguments and the objectID
   uint32_t nrOfArguments = 0;
   if(mt1)
   {
@@ -145,8 +105,8 @@ void FunctionCall::setCallMember( uint32_t networkID, uint32_t objectID, const M
   }
   this->nrOfArguments_ = nrOfArguments;
   this->functionID_ = networkID;
-  this->size_ = callsize;
   this->objectID_ = objectID;
+  this->size_ = callsize;
 }
 
 void FunctionCall::loadData(uint8_t*& mem)

@@ -38,119 +38,60 @@ namespace orxonox {
 std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::sPeerMap_;
 std::vector<std::pair<FunctionCall, std::pair<uint32_t, uint32_t> > > FunctionCallManager::sIncomingFunctionCallBuffer_;
 
-// Static calls
 
-void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t peerID)
+void FunctionCallManager::addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID)
 {
   if(sPeerMap_.find(peerID)==sPeerMap_.end())
   {
     FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
     FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
   }
-  FunctionCallManager::sPeerMap_[peerID]->addCallStatic(functionID);
+  FunctionCallManager::sPeerMap_[peerID]->addCall(functionID, objectID);
 }
-void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1)
+void FunctionCallManager::addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1)
 {
   if(sPeerMap_.find(peerID)==sPeerMap_.end())
   {
     FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
     FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
   }
-  FunctionCallManager:: sPeerMap_[peerID]->addCallStatic(functionID, &mt1);
+  FunctionCallManager::sPeerMap_[peerID]->addCall(functionID, objectID, &mt1);
 }
-void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2)
+void FunctionCallManager::addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2)
 {
   if(sPeerMap_.find(peerID)==sPeerMap_.end())
   {
     FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
     FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
   }
-  FunctionCallManager:: sPeerMap_[peerID]->addCallStatic(functionID, &mt1, &mt2);
+  FunctionCallManager::sPeerMap_[peerID]->addCall(functionID, objectID, &mt1, &mt2);
 }
-void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
+void FunctionCallManager::addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
 {
   if(sPeerMap_.find(peerID)==sPeerMap_.end())
   {
     FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
     FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
   }
-  FunctionCallManager:: sPeerMap_[peerID]->addCallStatic(functionID, &mt1, &mt2, &mt3);
+  FunctionCallManager::sPeerMap_[peerID]->addCall(functionID, objectID, &mt1, &mt2, &mt3);
 }
-void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
+void FunctionCallManager::addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
 {
   if(sPeerMap_.find(peerID)==sPeerMap_.end())
   {
     FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
     FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
   }
-  FunctionCallManager:: sPeerMap_[peerID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4);
+  FunctionCallManager::sPeerMap_[peerID]->addCall(functionID, objectID, &mt1, &mt2, &mt3, &mt4);
 }
-void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
+void FunctionCallManager::addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
 {
   if(sPeerMap_.find(peerID)==sPeerMap_.end())
   {
     FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
     FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
   }
-  FunctionCallManager:: sPeerMap_[peerID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4, &mt5);
-}
-
-
-// MemberCalls
-
-void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID)
-{
-  if(sPeerMap_.find(peerID)==sPeerMap_.end())
-  {
-    FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
-    FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
-  }
-  FunctionCallManager::sPeerMap_[peerID]->addCallMember(functionID, objectID);
-}
-void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1)
-{
-  if(sPeerMap_.find(peerID)==sPeerMap_.end())
-  {
-    FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
-    FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
-  }
-  FunctionCallManager::sPeerMap_[peerID]->addCallMember(functionID, objectID, &mt1);
-}
-void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2)
-{
-  if(sPeerMap_.find(peerID)==sPeerMap_.end())
-  {
-    FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
-    FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
-  }
-  FunctionCallManager::sPeerMap_[peerID]->addCallMember(functionID, objectID, &mt1, &mt2);
-}
-void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
-{
-  if(sPeerMap_.find(peerID)==sPeerMap_.end())
-  {
-    FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
-    FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
-  }
-  FunctionCallManager::sPeerMap_[peerID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3);
-}
-void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
-{
-  if(sPeerMap_.find(peerID)==sPeerMap_.end())
-  {
-    FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
-    FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
-  }
-  FunctionCallManager::sPeerMap_[peerID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4);
-}
-void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
-{
-  if(sPeerMap_.find(peerID)==sPeerMap_.end())
-  {
-    FunctionCallManager::sPeerMap_[peerID] = new packet::FunctionCalls;
-    FunctionCallManager::sPeerMap_[peerID]->setPeerID(peerID);
-  }
-  FunctionCallManager::sPeerMap_[peerID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4, &mt5);
+  FunctionCallManager::sPeerMap_[peerID]->addCall(functionID, objectID, &mt1, &mt2, &mt3, &mt4, &mt5);
 }
 
 // Send calls
