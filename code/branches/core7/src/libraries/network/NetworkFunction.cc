@@ -31,21 +31,19 @@
 
 namespace orxonox
 {
-    NetworkFunctionBase::NetworkFunctionBase(const std::string& name, const NetworkFunctionPointer& p)
+    NetworkFunctionBase::NetworkFunctionBase(const std::string& name, const NetworkFunctionPointer& pointer)
     {
         static uint32_t networkID = 0;
         this->networkID_ = networkID++;
-
         this->name_ = name;
-        NetworkFunctionManager::getInstance().getNameMap()[name] = this;
-        NetworkFunctionManager::getInstance().getFunctorMap()[p] = this;
-        NetworkFunctionManager::getInstance().getIdMap()[this->getNetworkID()] = this;
+        this->pointer_ = pointer;
+        NetworkFunctionManager::getInstance().registerFunction(this);
     }
 
     void NetworkFunctionBase::setNetworkID(uint32_t id)
     {
-        NetworkFunctionManager::getInstance().getIdMap().erase(this->networkID_);  // remove old id
+        NetworkFunctionManager::getInstance().unregisterFunction(this); // unregister with old id
         this->networkID_ = id;
-        NetworkFunctionManager::getInstance().getIdMap()[this->networkID_] = this; // add new id
+        NetworkFunctionManager::getInstance().registerFunction(this);   // register with new id
     }
 }

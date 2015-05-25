@@ -55,12 +55,12 @@ FunctionIDs::FunctionIDs( ) : Packet()
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
 
   //calculate total needed size (for all strings and integers)
-  std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionManager::getInstance().getNameMap();
-  std::map<std::string, NetworkFunctionBase*>::iterator it;
-  for (it = map.begin(); it != map.end(); ++it)
+  const std::set<NetworkFunctionBase*>& set = NetworkFunctionManager::getInstance().getAllFunctions();
+  std::set<NetworkFunctionBase*>::const_iterator it;
+  for (it = set.begin(); it != set.end(); ++it)
   {
-    const std::string& functionname = it->second->getName();
-    networkID = it->second->getNetworkID();
+    const std::string& functionname = (*it)->getName();
+    networkID = (*it)->getNetworkID();
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(networkID, functionname) );
     ++nrOfFunctions;
@@ -139,7 +139,7 @@ bool FunctionIDs::process(orxonox::Host* host)
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     functionname = temp+2*sizeof(uint32_t);
     orxout(internal_info, context::packets) << "processing functionid: " << networkID << " name: " << functionname << endl;
-    NetworkFunctionManager::getInstance().setNetworkID((const char*)functionname, networkID);
+    NetworkFunctionManager::getInstance().getFunctionByName((const char*)functionname)->setNetworkID(networkID);
     temp += 2*sizeof(uint32_t) + stringsize;
   }
   delete this;

@@ -37,29 +37,44 @@ namespace orxonox
         return instance;
     }
 
-    void NetworkFunctionManager::setNetworkID(const std::string& name, uint32_t id)
+    void NetworkFunctionManager::registerFunction(NetworkFunctionBase* function)
     {
-        std::map<std::string, NetworkFunctionBase*>& map = this->nameMap_;
-        assert( map.find(name)!=map.end() );
-        map[name]->setNetworkID(id);
+        this->functions_.insert(function);
+        this->nameMap_[function->getName()] = function;
+        this->idMap_[function->getNetworkID()] = function;
+        this->functorMap_[function->getPointer()] = function;
+    }
+
+    void NetworkFunctionManager::unregisterFunction(NetworkFunctionBase* function)
+    {
+        this->functions_.erase(function);
+        this->nameMap_.erase(function->getName());
+        this->idMap_.erase(function->getNetworkID());
+        this->functorMap_.erase(function->getPointer());
     }
 
     void NetworkFunctionManager::destroyAllNetworkFunctions()
     {
-        std::map<std::string, NetworkFunctionBase*>& map = this->nameMap_;
-        std::map<std::string, NetworkFunctionBase*>::iterator it;
-        for (it = map.begin(); it != map.end(); ++it)
-            delete it->second;
+        std::set<NetworkFunctionBase*>::iterator it;
+        for (it = this->functions_.begin(); it != this->functions_.end(); ++it)
+            delete (*it);
     }
 
-    NetworkFunctionBase* NetworkFunctionManager::getFunction(const NetworkFunctionPointer& p)
+    NetworkFunctionBase* NetworkFunctionManager::getFunctionByName(const std::string& name)
+    {
+        std::map<std::string, NetworkFunctionBase*>::iterator it = nameMap_.find(name);
+        assert(it != nameMap_.end());
+        return it->second;
+    }
+
+    NetworkFunctionBase* NetworkFunctionManager::getFunctionByFunctionPointer(const NetworkFunctionPointer& p)
     {
         std::map<NetworkFunctionPointer, NetworkFunctionBase*>::iterator it = functorMap_.find(p);
         assert(it != functorMap_.end());
         return it->second;
     }
 
-    NetworkFunctionBase* NetworkFunctionManager::getFunction(uint32_t id)
+    NetworkFunctionBase* NetworkFunctionManager::getFunctionByNetworkId(uint32_t id)
     {
         std::map<uint32_t, NetworkFunctionBase*>::iterator it = idMap_.find(id);
         assert(it != idMap_.end());
