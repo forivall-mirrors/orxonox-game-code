@@ -51,7 +51,7 @@ public:
   inline unsigned int getSize() const { return this->size_; }
   bool execute();
 
-  void setCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
+  void setCall( uint32_t networkID, uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5);
   
   void saveData( uint8_t*& mem );
   void loadData( uint8_t*& mem );

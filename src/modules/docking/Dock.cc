@@ -183,7 +183,7 @@ namespace orxonox
                     GUIManager::showGUI("UndockingDialog");
             }
             else
-                callStaticNetworkFunction(Dock::showDockingDialog, player->getClientID());
+                callStaticNetworkFunction(&Dock::showDockingDialog, player->getClientID());
 
         }
 
@@ -200,7 +200,7 @@ namespace orxonox
                 GUIManager::showGUI("DockingDialog");
         }
         else
-            callStaticNetworkFunction(Dock::showDockingDialog, player->getClientID());
+            callStaticNetworkFunction(&Dock::showDockingDialog, player->getClientID());
 
     }
 

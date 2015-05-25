@@ -192,16 +192,6 @@ template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase
     FunctorMemberPtr<T> functor_;
 };
 
-template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
-{
-  if( sizeof(NetworkFunctionPointer)-sizeof(T) > 0)
-    memset((uint8_t*)&destptr + sizeof(T), 0, sizeof(NetworkFunctionPointer)-sizeof(T));
-  T p2 = ptr;
-  memcpy( &destptr, &p2, sizeof(T) );
-//   for(unsigned int i=0; i<(sizeof(T)-1/4)+1; i++)
-//     *((uint32_t*)destptr+i) = p2>>32*i;
-}
-
 }
 
 #endif /* _NetworkFunction_H__ */

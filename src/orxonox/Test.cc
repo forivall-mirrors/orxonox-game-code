@@ -104,13 +104,13 @@ namespace orxonox
 
   void Test::call(unsigned int clientID)
     {
-        callStaticNetworkFunction( &Test::printV1, clientID );
-        callStaticNetworkFunction( &Test::printV1, clientID );
+        callStaticNetworkFunction(&Test::printV1, clientID );
+        callStaticNetworkFunction(&Test::printV1, clientID );
     }
 
     void Test::call2(unsigned int clientID, std::string s1, std::string s2, std::string s3, std::string s4)
     {
-        callMemberNetworkFunction( Test, printBlaBla, this->getObjectID(), clientID, s1, s2, s3, s4, s4 );
+        callMemberNetworkFunction( &Test::printBlaBla, this->getObjectID(), clientID, s1, s2, s3, s4, s4 );
     }
 
     void Test::tick(float dt)
@@ -129,7 +129,7 @@ namespace orxonox
     //     orxout() << mt2 << endl;
     //     if(!Core::isMaster())
     //       call2(0, "bal", "a", "n", "ce");
-    //       callMemberNetworkFunction( Test, checkU1, this->getObjectID(), 0 );
+    //       callMemberNetworkFunction( &Test::checkU1, this->getObjectID(), 0 );
     }
 
     void Test::printBlaBla(std::string s1, std::string s2, std::string s3, std::string s4, std::string s5)
