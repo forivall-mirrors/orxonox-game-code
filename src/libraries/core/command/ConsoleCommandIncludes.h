@@ -331,7 +331,7 @@ namespace orxonox
         check internally if the command exists.
     */
     inline ConsoleCommand::ConsoleCommandManipulator ModifyConsoleCommand(const std::string& name)
-        { return ConsoleCommandManager::getCommand(name, true); }
+        { return ConsoleCommandManager::getInstance().getCommand(name, true); }
     /**
         @brief Returns a manipulator for a command with the given group and name.
 
@@ -340,7 +340,7 @@ namespace orxonox
         check internally if the command exists.
     */
     inline ConsoleCommand::ConsoleCommandManipulator ModifyConsoleCommand(const std::string& group, const std::string& name)
-        { return ConsoleCommandManager::getCommand(group, name, true); }
+        { return ConsoleCommandManager::getInstance().getCommand(group, name, true); }
 }
 
 #endif /* _ConsoleCommandIncludes_H__ */

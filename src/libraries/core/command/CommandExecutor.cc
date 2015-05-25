@@ -154,19 +154,19 @@ namespace orxonox
         evaluation.initialize(command);
 
         // assign the fallback-command to get hints about the possible commands and groups
-        evaluation.hintCommand_ = ConsoleCommandManager::getCommand(__CC_CommandExecutor_name, __CC_autocomplete_name);
+        evaluation.hintCommand_ = ConsoleCommandManager::getInstance().getCommand(__CC_CommandExecutor_name, __CC_autocomplete_name);
 
         // check if there's at least one argument
         if (evaluation.getNumberOfArguments() >= 1)
         {
             // try to get a command from the first token
-            evaluation.execCommand_ = ConsoleCommandManager::getCommandLC(evaluation.getToken(0));
+            evaluation.execCommand_ = ConsoleCommandManager::getInstance().getCommandLC(evaluation.getToken(0));
             if (evaluation.execCommand_)
                 evaluation.execArgumentsOffset_ = 1;
             else if (evaluation.getNumberOfArguments() >= 2)
             {
                 // try to get a command from the first two tokens
-                evaluation.execCommand_ = ConsoleCommandManager::getCommandLC(evaluation.getToken(0), evaluation.getToken(1));
+                evaluation.execCommand_ = ConsoleCommandManager::getInstance().getCommandLC(evaluation.getToken(0), evaluation.getToken(1));
                 if (evaluation.execCommand_)
                     evaluation.execArgumentsOffset_ = 2;
             }
@@ -287,7 +287,7 @@ namespace orxonox
             SubString tokens(alias, " ");
 
             // check if the alias already exists - print an error and return if it does
-            if ((tokens.size() == 1 && ConsoleCommandManager::getCommand(tokens[0])) || (tokens.size() == 2 && ConsoleCommandManager::getCommand(tokens[0], tokens[1])))
+            if ((tokens.size() == 1 && ConsoleCommandManager::getInstance().getCommand(tokens[0])) || (tokens.size() == 2 && ConsoleCommandManager::getInstance().getCommand(tokens[0], tokens[1])))
             {
                 orxout(user_error) << "A command with name \"" << alias << "\" already exists." << endl;
                 return;
@@ -295,9 +295,9 @@ namespace orxonox
 
             // create a new console command with the given alias as its name
             if (tokens.size() == 1)
-                ConsoleCommandManager::registerCommand(new ConsoleCommand(tokens[0], executor));
+                ConsoleCommandManager::getInstance().registerCommand(new ConsoleCommand(tokens[0], executor));
             else if (tokens.size() == 2)
-                ConsoleCommandManager::registerCommand(new ConsoleCommand(tokens[0], tokens[1], executor));
+                ConsoleCommandManager::getInstance().registerCommand(new ConsoleCommand(tokens[0], tokens[1], executor));
             else
                 orxout(user_error) << "\"" << alias << "\" is not a valid alias name (must have one or two words)." << endl;
         }

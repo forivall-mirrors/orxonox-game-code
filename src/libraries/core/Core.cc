@@ -249,7 +249,7 @@ namespace orxonox
         safeObjectDelete(&config_);
         safeObjectDelete(&languageInstance_);
         safeObjectDelete(&configFileManager_);
-        ConsoleCommandManager::destroyAll();
+        ConsoleCommandManager::getInstance().destroyAll();
         Context::setRootContext(NULL);
         IdentifierManager::getInstance().destroyAllIdentifiers();
         safeObjectDelete(&signalHandler_);
