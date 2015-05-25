@@ -68,7 +68,7 @@ namespace orxonox
     template <class T>
     class ObjectList
     {
-        BOOST_STATIC_ASSERT(boost::is_base_of<Listable, T>::value);
+        BOOST_STATIC_ASSERT((boost::is_base_of<Listable, T>::value));
 
         public:
             typedef ObjectListIterator<T> iterator;

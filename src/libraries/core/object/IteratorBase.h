@@ -51,7 +51,7 @@ namespace orxonox
     template <class T, class I>
     class IteratorBase : public ObjectListElementRemovalListener
     {
-        BOOST_STATIC_ASSERT(boost::is_base_of<Listable, T>::value);
+        BOOST_STATIC_ASSERT((boost::is_base_of<Listable, T>::value));
 
         public:
             /**
