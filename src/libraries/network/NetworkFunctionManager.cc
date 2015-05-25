@@ -31,8 +31,6 @@
 
 namespace orxonox
 {
-    std::map<uint32_t, bool> NetworkFunctionManager::isStaticMap_;
-
     /* static */NetworkFunctionManager& NetworkFunctionManager::getInstance()
     {
         static NetworkFunctionManager instance;

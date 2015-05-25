@@ -41,13 +41,9 @@ namespace orxonox
         public:
             static NetworkFunctionManager& getInstance();
 
-            static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
             static void setNetworkID(const std::string& name, uint32_t id);
             static void destroyAllNetworkFunctions();
             static std::map<std::string, NetworkFunctionBase*>& getNameMap();
-
-          private:
-            static std::map<uint32_t, bool> isStaticMap_;
     };
 }
 
