@@ -43,39 +43,11 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   TrafficControl.cc
 )
 
-SET_SOURCE_FILES(NETWORK_HDR_FILES
-  Client.h
-  ClientConnection.h
-  ClientConnectionListener.h
-  Connection.h
-  FunctionCall.h
-  FunctionCallManager.h
-  #GamestateClient.h
-  GamestateHandler.h
-  GamestateManager.h
-  Host.h
-  LANDiscoverable.h
-  LANDiscovery.h
-  WANDiscoverable.h
-  WANDiscovery.h
-  MasterServerComm.h
-  NetworkChatListener.h
-  NetworkFunction.h
-  NetworkFunctionManager.h
-  NetworkPrecompiledHeaders.h
-  NetworkPrereqs.h
-  Server.h
-  MasterServer.h
-  PeerList.h
-  ServerList.h
-  ServerConnection.h
-  TrafficControl.h
-)
-
 ADD_SUBDIRECTORY(packet)
 ADD_SUBDIRECTORY(synchronisable)
 
 ORXONOX_ADD_LIBRARY(network
+  FIND_HEADER_FILES
   TOLUA_FILES
     Client.h
     LANDiscovery.h
@@ -91,5 +63,5 @@ ORXONOX_ADD_LIBRARY(network
     util
     core
   SOURCE_FILES
-    ${NETWORK_SRC_FILES} ${NETWORK_HDR_FILES}
+    ${NETWORK_SRC_FILES}
 )
