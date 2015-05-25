@@ -52,7 +52,6 @@ namespace orxonox
     IdentifierManager::IdentifierManager()
     {
         this->hierarchyCreatingCounter_s = 0;
-        this->classIDCounter_s = 0;
         this->recordTraceForIdentifier_ = NULL;
     }
 

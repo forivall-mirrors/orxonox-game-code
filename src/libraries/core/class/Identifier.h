@@ -230,7 +230,7 @@ namespace orxonox
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             Factory* factory_;                                             //!< The Factory, able to create new objects of the given class (if available)
             uint32_t networkID_;                                           //!< The network ID to identify a class through the network
-            const unsigned int classID_;                                   //!< Uniquely identifies a class (might not be the same as the networkID_)
+            unsigned int classID_;                                         //!< Uniquely identifies a class (might not be the same as the networkID_)
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
