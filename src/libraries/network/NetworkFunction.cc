@@ -31,53 +31,21 @@
 
 namespace orxonox
 {
-  std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
-  std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
+    NetworkFunctionBase::NetworkFunctionBase(const std::string& name, const NetworkFunctionPointer& p)
+    {
+        static uint32_t networkID = 0;
+        this->networkID_ = networkID++;
 
-  NetworkFunctionBase::NetworkFunctionBase(const std::string& name)
-  {
-    static uint32_t networkID = 0;
-    this->networkID_ = networkID++;
+        this->name_ = name;
+        NetworkFunctionManager::getNameMap()[name] = this;
+        NetworkFunctionManager::getFunctorMap()[p] = this;
+        NetworkFunctionManager::getIdMap()[this->getNetworkID()] = this;
+    }
 
-    this->name_ = name;
-    NetworkFunctionManager::getNameMap()[name] = this;
-  }
-  NetworkFunctionBase::~NetworkFunctionBase()
-  {
-  }
-
-
-  NetworkFunctionStatic::NetworkFunctionStatic(const FunctorStaticPtr& functor, const std::string& name, const NetworkFunctionPointer& p):
-    NetworkFunctionBase(name)
-  {
-    this->functor_ = functor;
-    NetworkFunctionStatic::getFunctorMap()[p] = this;
-    NetworkFunctionStatic::getIdMap()[ this->getNetworkID() ] = this;
-  }
-
-  /*static*/ std::map<NetworkFunctionPointer, NetworkFunctionStatic*>& NetworkFunctionStatic::getFunctorMap()
-  {
-    static std::map<NetworkFunctionPointer, NetworkFunctionStatic*> functorMap_;
-    return functorMap_;
-  }
-
-  /*static*/ std::map<uint32_t, NetworkFunctionStatic*>& NetworkFunctionStatic::getIdMap()
-  {
-    static std::map<uint32_t, NetworkFunctionStatic*> idMap_;
-    return idMap_;
-  }
-
-
-  NetworkMemberFunctionBase::NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p):
-    NetworkFunctionBase(name)
-  {
-    this->functorMap_[p] = this;
-    this->idMap_[ this->getNetworkID() ] = this;
-  }
-
-  NetworkMemberFunctionBase::~NetworkMemberFunctionBase()
-  {
-  }
-
-
+    void NetworkFunctionBase::setNetworkID(uint32_t id)
+    {
+        NetworkFunctionManager::getIdMap().erase(this->networkID_);  // remove old id
+        this->networkID_ = id;
+        NetworkFunctionManager::getIdMap()[this->networkID_] = this; // add new id
+    }
 }

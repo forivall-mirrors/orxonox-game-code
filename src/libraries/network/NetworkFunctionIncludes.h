@@ -35,6 +35,7 @@
 #include <boost/static_assert.hpp>
 
 #include "NetworkFunction.h"
+#include "NetworkFunctionManager.h"
 
 namespace orxonox
 {
@@ -49,7 +50,7 @@ namespace orxonox
         { \
             NetworkFunctionPointer p1; \
             copyPtr( functionPointer, p1 ); \
-            FunctionCallManager::addCallStatic(NetworkFunctionStatic::getFunction(p1)->getNetworkID(), __VA_ARGS__); \
+            FunctionCallManager::addCallStatic(NetworkFunctionManager::getFunction(p1)->getNetworkID(), __VA_ARGS__); \
         }
 
     // call it with class, function, objectID, clientID, args
@@ -57,7 +58,7 @@ namespace orxonox
         { \
             NetworkFunctionPointer p1; \
             copyPtr( &class::function, p1 ); \
-            FunctionCallManager::addCallMember(NetworkMemberFunctionBase::getFunction(p1)->getNetworkID(), objectID, __VA_ARGS__); \
+            FunctionCallManager::addCallMember(NetworkFunctionManager::getFunction(p1)->getNetworkID(), objectID, __VA_ARGS__); \
         }
 
     template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, const std::string& name )

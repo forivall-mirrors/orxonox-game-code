@@ -31,6 +31,9 @@
 
 namespace orxonox
 {
+    std::map<NetworkFunctionPointer, NetworkFunctionBase*> NetworkFunctionManager::functorMap_;
+    std::map<uint32_t, NetworkFunctionBase*> NetworkFunctionManager::idMap_;
+
     /* static */NetworkFunctionManager& NetworkFunctionManager::getInstance()
     {
         static NetworkFunctionManager instance;
@@ -56,5 +59,19 @@ namespace orxonox
     {
         static std::map<std::string, NetworkFunctionBase*> nameMap_;
         return nameMap_;
+    }
+
+    /*static*/NetworkFunctionBase* NetworkFunctionManager::getFunction(const NetworkFunctionPointer& p)
+    {
+        std::map<NetworkFunctionPointer, NetworkFunctionBase*>::iterator it = functorMap_.find(p);
+        assert(it != functorMap_.end());
+        return it->second;
+    }
+
+    /*static*/NetworkFunctionBase* NetworkFunctionManager::getFunction(uint32_t id)
+    {
+        std::map<uint32_t, NetworkFunctionBase*>::iterator it = idMap_.find(id);
+        assert(it != idMap_.end());
+        return it->second;
     }
 }

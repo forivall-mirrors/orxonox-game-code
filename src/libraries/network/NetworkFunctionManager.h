@@ -44,6 +44,18 @@ namespace orxonox
             static void setNetworkID(const std::string& name, uint32_t id);
             static void destroyAllNetworkFunctions();
             static std::map<std::string, NetworkFunctionBase*>& getNameMap();
+
+            static inline std::map<NetworkFunctionPointer, NetworkFunctionBase*>& getFunctorMap()
+                { return functorMap_; }
+            static inline std::map<uint32_t, NetworkFunctionBase*>& getIdMap()
+                { return idMap_; }
+
+            static NetworkFunctionBase* getFunction(const NetworkFunctionPointer& p);
+            static NetworkFunctionBase* getFunction(uint32_t id);
+
+        private:
+            static std::map<NetworkFunctionPointer, NetworkFunctionBase*> functorMap_;
+            static std::map<uint32_t, NetworkFunctionBase*> idMap_;
     };
 }
 
