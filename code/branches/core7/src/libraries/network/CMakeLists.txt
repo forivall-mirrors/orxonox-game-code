@@ -33,6 +33,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   WANDiscovery.cc
   MasterServerComm.cc
   NetworkFunction.cc
+  NetworkFunctionIncludes.cc
   NetworkFunctionManager.cc
   Host.cc
   Server.cc

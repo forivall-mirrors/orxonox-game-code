@@ -35,7 +35,6 @@
 #include <boost/static_assert.hpp>
 
 #include "NetworkFunction.h"
-#include "NetworkFunctionManager.h"
 #include "core/module/StaticallyInitializedInstance.h"
 
 #define registerStaticNetworkFunction( functionPointer ) \
@@ -46,33 +45,15 @@
     static orxonox::NetworkFunctionBase& BOOST_PP_CAT( NETWORK_FUNCTION_##class, __UNIQUE_NUMBER__ ) \
         = (new orxonox::SI_NF(orxonox::registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function)))->getFunction()
 
-// call it with functionPointer, clientID, args
-#define callStaticNetworkFunction( functionPointer, ...) \
-    { \
-        NetworkFunctionPointer p1; \
-        copyPtr( functionPointer, p1 ); \
-        FunctionCallManager::addCall(NetworkFunctionManager::getInstance().getFunctionByFunctionPointer(p1)->getNetworkID(), OBJECTID_UNKNOWN, __VA_ARGS__); \
-    }
-
-// call it with class, function, objectID, clientID, args
-#define callMemberNetworkFunction( class, function, objectID, ...) \
-    { \
-        NetworkFunctionPointer p1; \
-        copyPtr( &class::function, p1 ); \
-        FunctionCallManager::addCall(NetworkFunctionManager::getInstance().getFunctionByFunctionPointer(p1)->getNetworkID(), objectID, __VA_ARGS__); \
-    }
-
 namespace orxonox
 {
-    class _CoreExport StaticallyInitializedNetworkFunction : public StaticallyInitializedInstance
+    class _NetworkExport StaticallyInitializedNetworkFunction : public StaticallyInitializedInstance
     {
         public:
             StaticallyInitializedNetworkFunction(NetworkFunctionBase* function) : function_(function) {}
 
-            virtual void load()
-                { NetworkFunctionManager::getInstance().registerFunction(this->function_); }
-            virtual void unload()
-                { NetworkFunctionManager::getInstance().unregisterFunction(this->function_); }
+            virtual void load();
+            virtual void unload();
 
             inline NetworkFunctionBase& getFunction()
                 { return *this->function_; }
@@ -83,20 +64,51 @@ namespace orxonox
 
     typedef StaticallyInitializedNetworkFunction SI_NF;
 
-    template<class T> inline NetworkFunctionBase* registerStaticNetworkFunctionFct( T ptr, const std::string& name )
+    template<class PT>
+    inline NetworkFunctionBase* registerStaticNetworkFunctionFct(PT ptr, const std::string& name)
     {
-        BOOST_STATIC_ASSERT( sizeof(T)<=sizeof(NetworkFunctionPointer) ); // if this fails your compiler uses bigger pointers for static functions than defined above
+        BOOST_STATIC_ASSERT(sizeof(PT) <= sizeof(NetworkFunctionPointer)); // if this fails your compiler uses bigger pointers for static functions than defined above
         NetworkFunctionPointer destptr;
-        copyPtr( ptr, destptr );
-        return new NetworkFunctionStatic( createFunctor(ptr), name, destptr );
+        copyPtr(ptr, destptr);
+        return new NetworkFunctionStatic(createFunctor(ptr), name, destptr);
     }
 
-    template<class T, class PT> inline NetworkFunctionBase* registerMemberNetworkFunctionFct( PT ptr, const std::string& name )
+    template<class T, class PT>
+    inline NetworkFunctionBase* registerMemberNetworkFunctionFct(PT ptr, const std::string& name)
     {
-        BOOST_STATIC_ASSERT( sizeof(PT)<=sizeof(NetworkFunctionPointer) ); // if this fails your compiler uses bigger pointers for a specific kind of member functions than defined above
+        BOOST_STATIC_ASSERT(sizeof(PT) <= sizeof(NetworkFunctionPointer)); // if this fails your compiler uses bigger pointers for a specific kind of member functions than defined above
         NetworkFunctionPointer destptr;
-        copyPtr( ptr, destptr );
-        return new NetworkMemberFunction<T>( createFunctor(ptr), name, destptr );
+        copyPtr(ptr, destptr);
+        return new NetworkMemberFunction<T>(createFunctor(ptr), name, destptr);
+    }
+
+    _NetworkExport uint32_t getNetworkIdForPointer(const NetworkFunctionPointer& pointer);
+
+    // call it with functionPointer, clientID, args
+    template<class PT>
+    void callStaticNetworkFunction(PT ptr, uint32_t clientID, const MultiType& mt1 = MultiType::Null, const MultiType& mt2 = MultiType::Null, const MultiType& mt3 = MultiType::Null, const MultiType& mt4 = MultiType::Null, const MultiType& mt5 = MultiType::Null)
+    {
+        NetworkFunctionPointer destptr;
+        copyPtr(ptr, destptr);
+        FunctionCallManager::addCall(getNetworkIdForPointer(destptr), OBJECTID_UNKNOWN, clientID, mt1, mt2, mt3, mt4, mt5);
+    }
+
+    // call it with class::function, objectID, clientID, args
+    template<class PT>
+    void callMemberNetworkFunction(PT ptr, uint32_t objectID, uint32_t clientID, const MultiType& mt1 = MultiType::Null, const MultiType& mt2 = MultiType::Null, const MultiType& mt3 = MultiType::Null, const MultiType& mt4 = MultiType::Null, const MultiType& mt5 = MultiType::Null)
+    {
+        NetworkFunctionPointer destptr;
+        copyPtr(ptr, destptr);
+        FunctionCallManager::addCall(getNetworkIdForPointer(destptr), objectID, clientID, mt1, mt2, mt3, mt4, mt5);
+    }
+
+    template<class PT>
+    inline void copyPtr(PT ptr, NetworkFunctionPointer& destptr)
+    {
+        if (sizeof(NetworkFunctionPointer) - sizeof(PT) > 0)
+            memset((uint8_t*)&destptr + sizeof(PT), 0, sizeof(NetworkFunctionPointer) - sizeof(PT));
+        PT p2 = ptr;
+        memcpy(&destptr, &p2, sizeof(PT));
     }
 }
 

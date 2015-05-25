@@ -117,7 +117,7 @@ namespace orxonox
         // Broadcast
         if(!GameMode::isStandalone())
         {
-            callMemberNetworkFunction(NotificationDispatcher, broadcastHelper, this->getObjectID(), NETWORK_PEER_ID_BROADCAST);
+            callMemberNetworkFunction(&NotificationDispatcher::broadcastHelper, this->getObjectID(), NETWORK_PEER_ID_BROADCAST);
         }
     }
 
@@ -147,7 +147,7 @@ namespace orxonox
         }
         else if(GameMode::isServer())
         {
-            callMemberNetworkFunction(NotificationDispatcher, dispatch, this->getObjectID(), clientId, clientId);
+            callMemberNetworkFunction(&NotificationDispatcher::dispatch, this->getObjectID(), clientId, clientId);
         }
     }
 

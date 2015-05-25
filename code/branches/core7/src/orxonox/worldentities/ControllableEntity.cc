@@ -306,7 +306,7 @@ namespace orxonox
         }
         else
         {
-            callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 0, firemode);
+            callMemberNetworkFunction(&ControllableEntity::fire, this->getObjectID(), 0, firemode);
         }
     }
 
@@ -322,11 +322,11 @@ namespace orxonox
         {
             if ( target != 0 )
             {
-                callMemberNetworkFunction(ControllableEntity, setTargetInternal, this->getObjectID(), 0, target->getObjectID() );
+                callMemberNetworkFunction(&ControllableEntity::setTargetInternal, this->getObjectID(), 0, target->getObjectID() );
             }
            else
            {
-                callMemberNetworkFunction(ControllableEntity, setTargetInternal, this->getObjectID(), 0, OBJECTID_UNKNOWN );
+                callMemberNetworkFunction(&ControllableEntity::setTargetInternal, this->getObjectID(), 0, OBJECTID_UNKNOWN );
            }
         }
     }

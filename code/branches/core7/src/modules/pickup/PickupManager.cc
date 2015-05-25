@@ -213,7 +213,7 @@ namespace orxonox
         // If the concerned host is somewhere in the network, we call pickupChangedUsedNetwork() on its PickupManager.
         else
         {
-            callStaticNetworkFunction(PickupManager::pickupChangedUsedNetwork, clientId, index, used, pickup->isUsable(), pickup->isUnusable());
+            callStaticNetworkFunction(&PickupManager::pickupChangedUsedNetwork, clientId, index, used, pickup->isUsable(), pickup->isUnusable());
         }
     }
 
@@ -317,11 +317,11 @@ namespace orxonox
             // If there is no PickupRepresentation registered the default representation is used.
             if(this->representations_.find(pickup->getRepresentationName()) == this->representations_.end())
             {
-                callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickedUp);
+                callStaticNetworkFunction(&PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickedUp);
             }
             else
             {
-                callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getRepresentationName()]->getObjectID(), pickedUp);
+                callStaticNetworkFunction(&PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getRepresentationName()]->getObjectID(), pickedUp);
             }
         }
 
@@ -408,7 +408,7 @@ namespace orxonox
         // If we're neither server nor standalone we drop the pickup by calling dropPickupNetworked() of the PickupManager on the server.
         else
         {
-            callStaticNetworkFunction(PickupManager::dropPickupNetworked, 0, pickup);
+            callStaticNetworkFunction(&PickupManager::dropPickupNetworked, 0, pickup);
         }
     }
 
@@ -451,7 +451,7 @@ namespace orxonox
         // If we're neither server nor standalone we change the used status of the pickup by calling usePickupNetworked() of the PickupManager on the server.
         else
         {
-            callStaticNetworkFunction(PickupManager::usePickupNetworked, 0, pickup, use);
+            callStaticNetworkFunction(&PickupManager::usePickupNetworked, 0, pickup, use);
         }
     }
 

@@ -81,7 +81,7 @@ bool FunctionCalls::process(orxonox::Host* host)
   return true;
 }
 
-void FunctionCalls::addCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5)
+void FunctionCalls::addCall( uint32_t networkID, uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
 {
   assert(!isDataENetAllocated());
   

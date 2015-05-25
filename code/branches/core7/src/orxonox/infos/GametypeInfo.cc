@@ -368,7 +368,7 @@ namespace orxonox
             if(player->getClientID() == CLIENTID_SERVER)
                 this->changedReadyToSpawn(ready);
             else
-                callMemberNetworkFunction(GametypeInfo, changedReadyToSpawn, this->getObjectID(), player->getClientID(), ready);
+                callMemberNetworkFunction(&GametypeInfo::changedReadyToSpawn, this->getObjectID(), player->getClientID(), ready);
         }
     }
 
@@ -387,7 +387,7 @@ namespace orxonox
             if(player->getClientID() == CLIENTID_SERVER)
                     this->changedSpawned(spawned);
             else
-                callMemberNetworkFunction(GametypeInfo, changedSpawned, this->getObjectID(), player->getClientID(), spawned);
+                callMemberNetworkFunction(&GametypeInfo::changedSpawned, this->getObjectID(), player->getClientID(), spawned);
         }
     }
 
@@ -398,7 +398,7 @@ namespace orxonox
     {
         if (GameMode::isMaster())
         {
-            callMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage, this->getObjectID(), NETWORK_PEER_ID_BROADCAST, message);
+            callMemberNetworkFunction(&GametypeInfo::dispatchAnnounceMessage, this->getObjectID(), NETWORK_PEER_ID_BROADCAST, message);
             this->dispatchAnnounceMessage(message);
         }
     }
@@ -410,7 +410,7 @@ namespace orxonox
             if (clientID == CLIENTID_SERVER)
                 this->dispatchAnnounceMessage(message);
             else
-                callMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage, this->getObjectID(), clientID, message);
+                callMemberNetworkFunction(&GametypeInfo::dispatchAnnounceMessage, this->getObjectID(), clientID, message);
         }
     }
 
@@ -421,7 +421,7 @@ namespace orxonox
             if (clientID == CLIENTID_SERVER)
                 this->dispatchKillMessage(message);
             else
-                callMemberNetworkFunction(GametypeInfo, dispatchKillMessage, this->getObjectID(), clientID, message);
+                callMemberNetworkFunction(&GametypeInfo::dispatchKillMessage, this->getObjectID(), clientID, message);
         }
     }
 
@@ -432,7 +432,7 @@ namespace orxonox
             if (clientID == CLIENTID_SERVER)
                 this->dispatchDeathMessage(message);
             else
-                callMemberNetworkFunction(GametypeInfo, dispatchDeathMessage, this->getObjectID(), clientID, message);
+                callMemberNetworkFunction(&GametypeInfo::dispatchDeathMessage, this->getObjectID(), clientID, message);
         }
     }
 
@@ -443,7 +443,7 @@ namespace orxonox
             if (clientID == CLIENTID_SERVER)
                 this->dispatchStaticMessage(message, colour);
             else
-                callMemberNetworkFunction(GametypeInfo, dispatchStaticMessage, this->getObjectID(), clientID, message, colour);
+                callMemberNetworkFunction(&GametypeInfo::dispatchStaticMessage, this->getObjectID(), clientID, message, colour);
         }
     }
 
@@ -454,7 +454,7 @@ namespace orxonox
             if (clientID == CLIENTID_SERVER)
                 this->dispatchFadingMessage(message);
             else
-                callMemberNetworkFunction(GametypeInfo, dispatchFadingMessage, this->getObjectID(), clientID, message);
+                callMemberNetworkFunction(&GametypeInfo::dispatchFadingMessage, this->getObjectID(), clientID, message);
         }
     }
 

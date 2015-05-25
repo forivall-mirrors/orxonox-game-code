@@ -197,7 +197,7 @@ namespace orxonox
                 const std::map<unsigned int, PlayerInfo*> clients = PlayerManager::getInstance().getClients();
                 for(std::map<unsigned int, PlayerInfo*>::const_iterator it = clients.begin(); it != clients.end(); it++)
                 {
-                    callStaticNetworkFunction(Script::executeHelper, it->first, this->getCode(), this->getMode(), this->getNeedsGraphics());
+                    callStaticNetworkFunction(&Script::executeHelper, it->first, this->getCode(), this->getMode(), this->getNeedsGraphics());
                     if(this->times_ != Script::INF) // Decrement the number of remaining executions.
                     {
                         this->remainingExecutions_--;
@@ -209,7 +209,7 @@ namespace orxonox
             // Else we execute the code just for the specified client.
             else
             {
-                callStaticNetworkFunction(Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
+                callStaticNetworkFunction(&Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
                 if(this->times_ != Script::INF) // Decrement the number of remaining executions.
                     this->remainingExecutions_--;
             }
@@ -247,7 +247,7 @@ namespace orxonox
         // If this is the server and the Script is specified as being 'onLoad'.
         if(GameMode::isServer() && this->isOnLoad())
         {
-            callStaticNetworkFunction(Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
+            callStaticNetworkFunction(&Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
         }
     }
 

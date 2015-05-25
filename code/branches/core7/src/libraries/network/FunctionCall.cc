@@ -68,36 +68,36 @@ bool FunctionCall::execute(){
   }
 }
 
-void FunctionCall::setCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
+void FunctionCall::setCall( uint32_t networkID, uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5){
 
   // first determine the size that has to be reserved for this call
   uint32_t callsize = 3*sizeof(uint32_t); //size for network-function-id and nrOfArguments and the objectID
   uint32_t nrOfArguments = 0;
-  if(mt1)
+  if(!mt1.null())
   {
     nrOfArguments++;
-    callsize += mt1->getNetworkSize();
-    this->arguments_.push_back(*mt1);
-    if(mt2)
+    callsize += mt1.getNetworkSize();
+    this->arguments_.push_back(mt1);
+    if(!mt2.null())
     {
       nrOfArguments++;
-      callsize += mt2->getNetworkSize();
-      this->arguments_.push_back(*mt2);
-      if(mt3)
+      callsize += mt2.getNetworkSize();
+      this->arguments_.push_back(mt2);
+      if(!mt3.null())
       {
         nrOfArguments++;
-        callsize += mt3->getNetworkSize();
-        this->arguments_.push_back(*mt3);
-        if(mt4)
+        callsize += mt3.getNetworkSize();
+        this->arguments_.push_back(mt3);
+        if(!mt4.null())
         {
           nrOfArguments++;
-          callsize += mt4->getNetworkSize();
-          this->arguments_.push_back(*mt4);
-          if(mt5)
+          callsize += mt4.getNetworkSize();
+          this->arguments_.push_back(mt4);
+          if(!mt5.null())
           {
             nrOfArguments++;
-            callsize += mt5->getNetworkSize();
-            this->arguments_.push_back(*mt5);
+            callsize += mt5.getNetworkSize();
+            this->arguments_.push_back(mt5);
           }
         }
       }
