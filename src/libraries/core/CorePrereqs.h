@@ -154,6 +154,7 @@ namespace orxonox
     class ConfigValueContainer;
     class Context;
     class Core;
+    class CoreConfig;
     class Destroyable;
     class DestroyLaterManager;
     class DestructionListener;
@@ -163,6 +164,7 @@ namespace orxonox
     class EventState;
     class Factory;
     class Game;
+    class GameConfig;
     class GameState;
     struct GameStateInfo;
     struct GameStateTreeNode;

@@ -49,7 +49,6 @@
 #include "util/Output.h"
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "config/Configurable.h"
 
 /**
 @brief
@@ -81,7 +80,7 @@ namespace orxonox
 // tolua_begin
     class _CoreExport Game
 // tolua_end
-        : public Singleton<Game>, public Configurable
+        : public Singleton<Game>
     { // tolua_export
         friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
@@ -95,8 +94,6 @@ namespace orxonox
         ~Game() {}
         /// Destructor that also executes when object fails to construct
         void destroy();
-
-        void setConfigValues();
 
         void setStateHierarchy(const std::string& str);
         shared_ptr<GameState> getState(const std::string& name);
@@ -188,10 +185,8 @@ namespace orxonox
         int                                excessSleepTime_;
         unsigned int                       minimumSleepTime_;
 
-        // config values
-        unsigned int                       statisticsRefreshCycle_;
-        unsigned int                       statisticsAvgLength_;
-        unsigned int                       fpsLimit_;
+        /// Helper object that stores the config values
+        GameConfig*                        config_;
 
         /// Helper object that executes the surrogate destructor destroy()
         DestructionHelper<Game>            destructionHelper_;

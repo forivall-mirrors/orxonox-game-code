@@ -25,6 +25,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   DynLibManager.cc
   Event.cc
   Game.cc
+  GameConfig.cc
   GameMode.cc
   GameState.cc
   Language.cc
@@ -42,6 +43,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
 
   BaseObject.cc
   Core.cc
+  CoreConfig.cc
 
 BUILD_UNIT OgreBuildUnit.cc
   GraphicsManager.cc

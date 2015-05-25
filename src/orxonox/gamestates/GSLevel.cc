@@ -169,7 +169,7 @@ namespace orxonox
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
         bool loaded = Loader::getInstance().open(startFile_);
 
-        Core::getInstance().updateLastLevelTimestamp();
+        Core::getInstance().getConfig()->updateLastLevelTimestamp();
         if(!loaded)
             GSRoot::delayedStartMainMenu();
     }

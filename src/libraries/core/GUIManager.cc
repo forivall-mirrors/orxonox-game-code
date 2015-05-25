@@ -834,7 +834,7 @@ namespace orxonox
     */
     /*static*/ bool GUIManager::inDevMode()
     {
-         return Core::getInstance().inDevMode();
+         return Core::getInstance().getConfig()->inDevMode();
     }
 
     /**

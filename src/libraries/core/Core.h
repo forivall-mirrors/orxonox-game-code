@@ -46,26 +46,17 @@
 #include <string>
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
-#include "config/Configurable.h"
+#include "CoreConfig.h"
 
 namespace orxonox
 {
-    //! Informs about changes in the Development Mode.
-    class DevModeListener : virtual public Listable
-    {
-    public:
-        DevModeListener();
-        virtual ~DevModeListener() {}
-        virtual void devModeChanged(bool value) = 0;
-    };
-
     /**
     @brief
         The Core class is a singleton used to configure the program basics.
     @remark
         You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core : public Singleton<Core>, public Configurable
+    class _CoreExport Core : public Singleton<Core>
     {
         friend class Singleton<Core>;
         friend class Game;
@@ -85,31 +76,11 @@ namespace orxonox
             /// Destructor that also executes when the object fails to construct
             void destroy();
 
-            void setConfigValues();
-
-            //! Returns the configured language.
-            const std::string& getLanguage()
-                { return this->language_; }
-            void resetLanguage();
-
-            void updateLastLevelTimestamp();
-            inline long long getLastLevelTimestamp() const
-                { return this->lastLevelTimestamp_; }
-
-            void updateOgreConfigTimestamp();
-            inline long long getOgreConfigTimestamp() const
-                { return this->ogreConfigTimestamp_; }
-
-            //! Developers bit. If returns false, some options are not available as to not confuse the normal user.
-            inline bool inDevMode(void) const
-                { return this->bDevMode_; }
+            inline CoreConfig* getConfig() const
+                { return this->config_; }
 
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
-
-            void devModeChanged();
-            void languageChanged();
-            void initRandomNumberGenerator();
 
             void preUpdate(const Clock& time);
             void postUpdate(const Clock& time);
@@ -134,14 +105,10 @@ namespace orxonox
             InputManager*             inputManager_;               //!< Interface to OIS
             GUIManager*               guiManager_;                 //!< Interface to GUI
             Scope<ScopeID::GRAPHICS>* graphicsScope_;
-
             bool                      bGraphicsLoaded_;
-            std::string               language_;                   //!< The language
-            bool                      bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
-            bool                      bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole
-            long long                 lastLevelTimestamp_;         ///< Timestamp when the last level was started
-            long long                 ogreConfigTimestamp_;        ///< Timestamp wehen the ogre config level was modified
-            bool                      bDevMode_;                   //!< Developers bit. If set to false, some options are not available as to not confuse the normal user.
+
+            /// Helper object that stores the config values
+            CoreConfig*               config_;
 
             /// Helper object that executes the surrogate destructor destroy()
             DestructionHelper<Core>   destructionHelper_;
