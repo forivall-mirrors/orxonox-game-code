@@ -258,7 +258,7 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
-        BOOST_STATIC_ASSERT(boost::is_base_of<Identifiable, T>::value);
+        BOOST_STATIC_ASSERT((boost::is_base_of<Identifiable, T>::value));
 
         #ifndef DOXYGEN_SHOULD_SKIP_THIS
           #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
