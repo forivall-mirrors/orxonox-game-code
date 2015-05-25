@@ -75,6 +75,13 @@ class _NetworkExport NetworkFunctionBase {
     inline uint32_t     getNetworkID() const            { return this->networkID_; }
     inline const std::string& getName() const           { return name_; }
 
+    virtual bool call(uint32_t objectID)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)=0;
+
   private:
     uint32_t networkID_;
     std::string name_;
@@ -89,12 +96,13 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
         , functor_(functor)
     { }
 
-    inline void call(){ (*this->functor_)(); }
-    inline void call(const MultiType& mt1){ (*this->functor_)(mt1); }
-    inline void call(const MultiType& mt1, const MultiType& mt2){ (*this->functor_)(mt1, mt2); }
-    inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3){ (*this->functor_)(mt1, mt2, mt3); }
-    inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4){ (*this->functor_)(mt1, mt2, mt3, mt4); }
-    inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5){ (*this->functor_)(mt1, mt2, mt3, mt4, mt5); }
+    // ignore the objectID because its a static function
+    virtual bool call(uint32_t objectID){ (*this->functor_)(); return true; }
+    virtual bool call(uint32_t objectID, const MultiType& mt1){ (*this->functor_)(mt1); return true; }
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2){ (*this->functor_)(mt1, mt2); return true; }
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3){ (*this->functor_)(mt1, mt2, mt3); return true; }
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4){ (*this->functor_)(mt1, mt2, mt3, mt4); return true; }
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5){ (*this->functor_)(mt1, mt2, mt3, mt4, mt5); return true; }
 
   private:
     FunctorStaticPtr functor_;
@@ -107,14 +115,6 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
     NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p)
         : NetworkFunctionBase(name, p)
     { }
-
-    //
-    virtual bool call(uint32_t objectID)=0;
-    virtual bool call(uint32_t objectID, const MultiType& mt1)=0;
-    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)=0;
-    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)=0;
-    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)=0;
-    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)=0;
 };
 
 

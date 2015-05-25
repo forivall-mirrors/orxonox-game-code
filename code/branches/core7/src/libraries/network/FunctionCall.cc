@@ -46,68 +46,26 @@ FunctionCall::~FunctionCall()
 
 
 bool FunctionCall::execute(){
-  if( this->bIsStatic_ )
+  NetworkFunctionBase* fct = static_cast<NetworkFunctionStatic*>(NetworkFunctionManager::getFunction( this->functionID_ ));
+  assert( this->nrOfArguments_==this->arguments_.size() );
+  switch(this->nrOfArguments_)
   {
-    NetworkFunctionStatic *fct = static_cast<NetworkFunctionStatic*>(NetworkFunctionManager::getFunction( this->functionID_ ));
-    assert( this->nrOfArguments_==this->arguments_.size() );
-    switch(this->nrOfArguments_)
-    {
-      case 0:
-        fct->call();
-        break;
-      case 1:
-        fct->call(this->arguments_[0]);
-        break;
-      case 2:
-        fct->call(this->arguments_[0], this->arguments_[1]);
-        break;
-      case 3:
-        fct->call(this->arguments_[0], this->arguments_[1], this->arguments_[2]);
-        break;
-      case 4:
-        fct->call(this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]);
-        break;
-      case 5:
-        fct->call(this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]);
-        break;
-      default:
-        assert(0);
-    }
+    case 0:
+      return !fct->call(this->objectID_);
+    case 1:
+      return !fct->call(this->objectID_, this->arguments_[0]);
+    case 2:
+      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1]);
+    case 3:
+      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2]);
+    case 4:
+      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]);
+    case 5:
+      return !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]);
+    default:
+      assert(0);
+      return true; // return true to avoid that this functions gets called over and over again
   }
-  else // not a static function, so also handle with the objectID
-  {
-    NetworkMemberFunctionBase *fct = static_cast<NetworkMemberFunctionBase*>(NetworkFunctionManager::getFunction( this->functionID_ ));
-    switch(this->nrOfArguments_)
-    {
-      case 0:
-        if( !fct->call(this->objectID_) )
-          return false;
-        break;
-      case 1:
-        if( !fct->call(this->objectID_, this->arguments_[0]) )
-          return false;
-        break;
-      case 2:
-        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1]) )
-          return false;
-        break;
-      case 3:
-        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2]) )
-          return false;
-        break;
-      case 4:
-        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]) )
-          return false;
-        break;
-      case 5:
-        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]) )
-          return false;
-        break;
-      default:
-        assert(0);
-    }
-  }
-  return true;
 }
 
 void FunctionCall::setCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
@@ -147,7 +105,6 @@ void FunctionCall::setCallStatic( uint32_t networkID, const MultiType* mt1, cons
   }
   this->nrOfArguments_ = nrOfArguments;
   this->size_ = callsize;
-  this->bIsStatic_ = true;
   this->functionID_ = networkID;
 }
 
@@ -187,7 +144,6 @@ void FunctionCall::setCallMember( uint32_t networkID, uint32_t objectID, const M
     }
   }
   this->nrOfArguments_ = nrOfArguments;
-  this->bIsStatic_ = false;
   this->functionID_ = networkID;
   this->size_ = callsize;
   this->objectID_ = objectID;
@@ -196,17 +152,9 @@ void FunctionCall::setCallMember( uint32_t networkID, uint32_t objectID, const M
 void FunctionCall::loadData(uint8_t*& mem)
 {
   this->functionID_ = *(uint32_t*)mem;
-  this->bIsStatic_ = *(uint8_t*)(mem+sizeof(uint32_t));
-  this->nrOfArguments_ = *(uint32_t*)(mem+sizeof(uint32_t)+sizeof(uint8_t));
-  if( this->bIsStatic_ )
-  {
-    mem += 2*sizeof(uint32_t)+sizeof(uint8_t);
-  }
-  else
-  {
-    this->objectID_ = *(uint32_t*)(mem+2*sizeof(uint32_t)+sizeof(uint8_t));
-    mem += 3*sizeof(uint32_t)+sizeof(uint8_t);
-  }
+  this->nrOfArguments_ = *(uint32_t*)(mem+sizeof(uint32_t));
+  this->objectID_ = *(uint32_t*)(mem+2*sizeof(uint32_t));
+  mem += 3*sizeof(uint32_t);
   for( unsigned int i=0; i<this->nrOfArguments_; ++i )
   {
     this->arguments_.push_back(MultiType());
@@ -218,17 +166,9 @@ void FunctionCall::saveData(uint8_t*& mem)
 {
   // now serialise the mt values and copy the function id and isStatic
   *(uint32_t*)mem = this->functionID_;
-  *(uint8_t*)(mem+sizeof(uint32_t)) = this->bIsStatic_;
-  *(uint32_t*)(mem+sizeof(uint32_t)+sizeof(uint8_t)) = this->nrOfArguments_;
-  if( this->bIsStatic_ )
-  {
-    mem += 2*sizeof(uint32_t)+sizeof(uint8_t);
-  }
-  else
-  {
-    *(uint32_t*)(mem+2*sizeof(uint32_t)+sizeof(uint8_t)) = this->objectID_;
-    mem += 3*sizeof(uint32_t)+sizeof(uint8_t);
-  }
+  *(uint32_t*)(mem+sizeof(uint32_t)) = this->nrOfArguments_;
+  *(uint32_t*)(mem+2*sizeof(uint32_t)) = this->objectID_;
+  mem += 3*sizeof(uint32_t);
   for( std::vector<MultiType>::iterator it = this->arguments_.begin(); it!=this->arguments_.end(); ++it )
   {
     it->exportData( mem );

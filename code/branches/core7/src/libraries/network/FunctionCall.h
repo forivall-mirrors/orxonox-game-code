@@ -58,7 +58,6 @@ public:
   void loadData( uint8_t*& mem );
 private:
   uint32_t                  nrOfArguments_;
-  bool                      bIsStatic_;
   uint32_t                  functionID_;
   uint32_t                  objectID_;
   uint32_t                  size_;
