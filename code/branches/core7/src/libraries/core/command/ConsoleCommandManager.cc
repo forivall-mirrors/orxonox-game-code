@@ -38,17 +38,23 @@
 
 namespace orxonox
 {
+    /* static */ ConsoleCommandManager& ConsoleCommandManager::getInstance()
+    {
+        static ConsoleCommandManager instance;
+        return instance;
+    }
+
     /**
         @brief Returns the command with given group an name.
         @param group The group of the requested command
         @param name The group of the requested command
         @param bPrintError If true, an error is printed if the command doesn't exist
     */
-    /* static */ ConsoleCommand* ConsoleCommandManager::getCommand(const std::string& group, const std::string& name, bool bPrintError)
+    ConsoleCommand* ConsoleCommandManager::getCommand(const std::string& group, const std::string& name, bool bPrintError)
     {
         // find the group
-        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommandMap().find(group);
-        if (it_group != ConsoleCommandManager::getCommandMap().end())
+        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = this->commandMap_.find(group);
+        if (it_group != this->commandMap_.end())
         {
             // find the name
             std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.find(name);
@@ -74,14 +80,14 @@ namespace orxonox
         @param name The group of the requested command in lowercase
         @param bPrintError If true, an error is printed if the command doesn't exist
     */
-    /* static */ ConsoleCommand* ConsoleCommandManager::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
+    ConsoleCommand* ConsoleCommandManager::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
     {
         std::string groupLC = getLowercase(group);
         std::string nameLC = getLowercase(name);
 
         // find the group
-        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommandMapLC().find(groupLC);
-        if (it_group != ConsoleCommandManager::getCommandMapLC().end())
+        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = this->commandMapLC_.find(groupLC);
+        if (it_group != this->commandMapLC_.end())
         {
             // find the name
             std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.find(nameLC);
@@ -102,45 +108,27 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the static map that stores all console commands.
-    */
-    /* static */ std::map<std::string, std::map<std::string, ConsoleCommand*> >& ConsoleCommandManager::getCommandMap()
-    {
-        static std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMap;
-        return commandMap;
-    }
-
-    /**
-        @brief Returns the static map that stores all console commands in lowercase.
-    */
-    /* static */ std::map<std::string, std::map<std::string, ConsoleCommand*> >& ConsoleCommandManager::getCommandMapLC()
-    {
-        static std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMapLC;
-        return commandMapLC;
-    }
-
-    /**
         @brief Registers a new command with the groups and names that are defined by ConsoleCommand::getNames().
     */
-    /* static */ void ConsoleCommandManager::registerCommand(ConsoleCommand* command)
+    void ConsoleCommandManager::registerCommand(ConsoleCommand* command)
     {
         for (size_t i = 0; i < command->getNames().size(); ++i)
         {
             const ConsoleCommand::CommandName& name = command->getNames()[i];
-            ConsoleCommandManager::registerCommand(name.group_, name.name_, command);
+            this->registerCommand(name.group_, name.name_, command);
         }
     }
 
     /**
         @brief Registers a new command with given group an name by adding it to the command map.
     */
-    /* static */ void ConsoleCommandManager::registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command)
+    void ConsoleCommandManager::registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command)
     {
         if (name == "")
             return;
 
         // check if a command with this name already exists
-        if (ConsoleCommandManager::getCommand(group, name) != 0)
+        if (this->getCommand(group, name) != 0)
         {
             if (group == "")
                 orxout(internal_warning, context::commands) << "A console command with shortcut \"" << name << "\" already exists." << endl;
@@ -150,18 +138,18 @@ namespace orxonox
         else
         {
             // add the command to the map
-            ConsoleCommandManager::getCommandMap()[group][name] = command;
-            ConsoleCommandManager::getCommandMapLC()[getLowercase(group)][getLowercase(name)] = command;
+            this->commandMap_[group][name] = command;
+            this->commandMapLC_[getLowercase(group)][getLowercase(name)] = command;
         }
     }
 
     /**
         @brief Removes the command from the command map.
     */
-    /* static */ void ConsoleCommandManager::unregisterCommand(ConsoleCommand* command)
+    void ConsoleCommandManager::unregisterCommand(ConsoleCommand* command)
     {
         // iterate through all groups
-        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = ConsoleCommandManager::getCommandMap().begin(); it_group != ConsoleCommandManager::getCommandMap().end(); )
+        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = this->commandMap_.begin(); it_group != this->commandMap_.end(); )
         {
             // iterate through all commands of each group
             for (std::map<std::string, ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
@@ -175,7 +163,7 @@ namespace orxonox
 
             // erase the group if it is empty now
             if (it_group->second.empty())
-                ConsoleCommandManager::getCommandMap().erase(it_group++);
+                this->commandMap_.erase(it_group++);
             else
                 ++it_group;
         }
@@ -183,7 +171,7 @@ namespace orxonox
         // now the same for the lowercase-map:
 
         // iterate through all groups
-        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = ConsoleCommandManager::getCommandMapLC().begin(); it_group != ConsoleCommandManager::getCommandMapLC().end(); )
+        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = this->commandMapLC_.begin(); it_group != this->commandMapLC_.end(); )
         {
             // iterate through all commands of each group
             for (std::map<std::string, ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
@@ -197,7 +185,7 @@ namespace orxonox
 
             // erase the group if it is empty now
             if (it_group->second.empty())
-                ConsoleCommandManager::getCommandMapLC().erase(it_group++);
+                this->commandMapLC_.erase(it_group++);
             else
                 ++it_group;
         }
@@ -206,10 +194,10 @@ namespace orxonox
     /**
         @brief Deletes all commands
     */
-    /* static */ void ConsoleCommandManager::destroyAll()
+    void ConsoleCommandManager::destroyAll()
     {
         // delete entries until the map is empty
-        while (!ConsoleCommandManager::getCommandMap().empty() && !ConsoleCommandManager::getCommandMap().begin()->second.empty())
-            delete ConsoleCommandManager::getCommandMap().begin()->second.begin()->second;
+        while (!this->commandMap_.empty() && !this->commandMap_.begin()->second.empty())
+            delete this->commandMap_.begin()->second.begin()->second;
     }
 }

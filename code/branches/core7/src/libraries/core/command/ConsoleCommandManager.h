@@ -39,37 +39,39 @@
 namespace orxonox
 {
     /**
-     * A static class that stores all existing ConsoleCommands.
+     * A singleton that stores all existing ConsoleCommands.
      */
     class _CoreExport ConsoleCommandManager
     {
         public:
-            static void registerCommand(ConsoleCommand* command);
-            static void registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command);
-            static void unregisterCommand(ConsoleCommand* command);
+            static ConsoleCommandManager& getInstance();
+
+            void registerCommand(ConsoleCommand* command);
+            void registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command);
+            void unregisterCommand(ConsoleCommand* command);
 
             /// Returns the map with all groups and commands.
-            static inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommands()
-                { return ConsoleCommandManager::getCommandMap(); }
+            inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommands()
+                { return this->commandMap_; }
             /// Returns the map with all groups and commands in lowercase.
-            static inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandsLC()
-                { return ConsoleCommandManager::getCommandMapLC(); }
+            inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandsLC()
+                { return this->commandMapLC_; }
 
             /// Returns a command (shortcut) with given name. @param name The name of the command shortcut @param bPrintError If true, an error is printed if the command doesn't exist
-            static inline ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
-                { return ConsoleCommandManager::getCommand("", name, bPrintError); }
+            inline ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
+                { return this->getCommand("", name, bPrintError); }
             /// Returns a command (shortcut) with given name in lowercase. @param name The lowercase name of the command shortcut @param bPrintError If true, an error is printed if the command doesn't exist
-            static inline ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
-                { return ConsoleCommandManager::getCommandLC("", name, bPrintError); }
+            inline ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
+                { return this->getCommandLC("", name, bPrintError); }
 
-            static ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
-            static ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
+            ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+            ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
 
-            static void destroyAll();
+            void destroyAll();
 
         private:
-            static std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandMap();
-            static std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandMapLC();
+            std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMap_;
+            std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMapLC_;
     };
 }
 

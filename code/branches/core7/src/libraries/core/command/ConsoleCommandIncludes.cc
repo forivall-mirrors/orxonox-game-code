@@ -34,11 +34,11 @@ namespace orxonox
 {
     void StaticallyInitializedConsoleCommand::load()
     {
-        ConsoleCommandManager::registerCommand(this->command_);
+        ConsoleCommandManager::getInstance().registerCommand(this->command_);
     }
 
     void StaticallyInitializedConsoleCommand::unload()
     {
-        ConsoleCommandManager::unregisterCommand(this->command_);
+        ConsoleCommandManager::getInstance().unregisterCommand(this->command_);
     }
 }

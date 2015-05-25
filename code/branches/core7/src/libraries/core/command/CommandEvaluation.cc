@@ -305,7 +305,7 @@ namespace orxonox
             {
                 // the user typed 1-2 arguments, check what he tried to type and print a suitable error
                 std::string groupLC = getLowercase(this->getToken(0));
-                for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommandsLC().begin(); it_group != ConsoleCommandManager::getCommandsLC().end(); ++it_group)
+                for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getInstance().getCommandsLC().begin(); it_group != ConsoleCommandManager::getInstance().getCommandsLC().end(); ++it_group)
                     if (it_group->first == groupLC)
                         return std::string("Error: There is no command in group \"") + this->getToken(0) + "\" starting with \"" + this->getToken(1) + "\".";
 
@@ -327,7 +327,7 @@ namespace orxonox
         unsigned int nearestDistance = (unsigned int)-1;
 
         // iterate through all groups and their commands and calculate the distance to the current command. keep the best.
-        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommandsLC().begin(); it_group != ConsoleCommandManager::getCommandsLC().end(); ++it_group)
+        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getInstance().getCommandsLC().begin(); it_group != ConsoleCommandManager::getInstance().getCommandsLC().end(); ++it_group)
         {
             if (it_group->first != "")
             {
@@ -345,8 +345,8 @@ namespace orxonox
         }
 
         // now also iterate through all shortcuts and keep the best if it's better than the one found above.
-        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getCommandsLC().find("");
-        if (it_group !=  ConsoleCommandManager::getCommandsLC().end())
+        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommandManager::getInstance().getCommandsLC().find("");
+        if (it_group !=  ConsoleCommandManager::getInstance().getCommandsLC().end())
         {
             for (std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); ++it_name)
             {
