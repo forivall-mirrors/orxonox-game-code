@@ -49,6 +49,7 @@ namespace orxonox
             static IdentifierManager& getInstance();
 
             void addIdentifier(Identifier* identifier);
+            void removeIdentifier(Identifier* identifier);
 
             unsigned int getUniqueClassId()
                 { return this->classIDCounter_s++; }

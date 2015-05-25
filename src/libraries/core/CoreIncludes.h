@@ -166,9 +166,7 @@ namespace orxonox
     template <class T>
     inline Identifier* registerClass(const std::string& name, Factory* factory, bool bLoadable = true)
     {
-        Identifier* identifier = new ClassIdentifier<T>(name, factory, bLoadable);
-        IdentifierManager::getInstance().addIdentifier(identifier);
-        return identifier;
+        return new ClassIdentifier<T>(name, factory, bLoadable);
     }
 
     /**
@@ -241,12 +239,14 @@ namespace orxonox
 
             virtual void load()
             {
+                IdentifierManager::getInstance().addIdentifier(this->identifier_);
                 for (size_t i = 0; i < this->parents_.size(); ++i)
                     this->identifier_->inheritsFrom(this->parents_[i]->getParent());
             }
 
             virtual void unload()
             {
+                IdentifierManager::getInstance().removeIdentifier(this->identifier_);
             }
 
             inline Identifier& getIdentifier()

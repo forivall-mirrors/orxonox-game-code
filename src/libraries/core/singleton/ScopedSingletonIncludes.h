@@ -76,7 +76,6 @@
 
 namespace orxonox
 {
-
     class _CoreExport StaticallyInitializedScopedSingletonWrapper : public StaticallyInitializedInstance
     {
         public:
