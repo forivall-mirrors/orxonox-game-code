@@ -37,7 +37,6 @@ namespace orxonox
         this->networkID_ = networkID++;
         this->name_ = name;
         this->pointer_ = pointer;
-        NetworkFunctionManager::getInstance().registerFunction(this);
     }
 
     void NetworkFunctionBase::setNetworkID(uint32_t id)
