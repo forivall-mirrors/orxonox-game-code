@@ -31,6 +31,7 @@
 #include <cassert>
 #include "util/MultiType.h"
 #include "NetworkFunction.h"
+#include "NetworkFunctionManager.h"
 
 namespace orxonox {
 
@@ -47,7 +48,7 @@ FunctionCall::~FunctionCall()
 bool FunctionCall::execute(){
   if( this->bIsStatic_ )
   {
-    NetworkFunctionStatic *fct = NetworkFunctionStatic::getFunction( this->functionID_ );
+    NetworkFunctionStatic *fct = static_cast<NetworkFunctionStatic*>(NetworkFunctionManager::getFunction( this->functionID_ ));
     assert( this->nrOfArguments_==this->arguments_.size() );
     switch(this->nrOfArguments_)
     {
@@ -75,7 +76,7 @@ bool FunctionCall::execute(){
   }
   else // not a static function, so also handle with the objectID
   {
-    NetworkMemberFunctionBase *fct = NetworkMemberFunctionBase::getFunction( this->functionID_ );
+    NetworkMemberFunctionBase *fct = static_cast<NetworkMemberFunctionBase*>(NetworkFunctionManager::getFunction( this->functionID_ ));
     switch(this->nrOfArguments_)
     {
       case 0:
