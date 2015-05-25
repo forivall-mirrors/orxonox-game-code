@@ -37,15 +37,15 @@ namespace orxonox
         this->networkID_ = networkID++;
 
         this->name_ = name;
-        NetworkFunctionManager::getNameMap()[name] = this;
-        NetworkFunctionManager::getFunctorMap()[p] = this;
-        NetworkFunctionManager::getIdMap()[this->getNetworkID()] = this;
+        NetworkFunctionManager::getInstance().getNameMap()[name] = this;
+        NetworkFunctionManager::getInstance().getFunctorMap()[p] = this;
+        NetworkFunctionManager::getInstance().getIdMap()[this->getNetworkID()] = this;
     }
 
     void NetworkFunctionBase::setNetworkID(uint32_t id)
     {
-        NetworkFunctionManager::getIdMap().erase(this->networkID_);  // remove old id
+        NetworkFunctionManager::getInstance().getIdMap().erase(this->networkID_);  // remove old id
         this->networkID_ = id;
-        NetworkFunctionManager::getIdMap()[this->networkID_] = this; // add new id
+        NetworkFunctionManager::getInstance().getIdMap()[this->networkID_] = this; // add new id
     }
 }

@@ -55,7 +55,7 @@ FunctionIDs::FunctionIDs( ) : Packet()
   std::queue<std::pair<uint32_t, std::string> > tempQueue;
 
   //calculate total needed size (for all strings and integers)
-  std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionManager::getNameMap();
+  std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionManager::getInstance().getNameMap();
   std::map<std::string, NetworkFunctionBase*>::iterator it;
   for (it = map.begin(); it != map.end(); ++it)
   {
@@ -139,7 +139,7 @@ bool FunctionIDs::process(orxonox::Host* host)
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     functionname = temp+2*sizeof(uint32_t);
     orxout(internal_info, context::packets) << "processing functionid: " << networkID << " name: " << functionname << endl;
-    NetworkFunctionManager::setNetworkID((const char*)functionname, networkID);
+    NetworkFunctionManager::getInstance().setNetworkID((const char*)functionname, networkID);
     temp += 2*sizeof(uint32_t) + stringsize;
   }
   delete this;
