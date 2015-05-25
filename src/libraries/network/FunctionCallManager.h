@@ -45,19 +45,12 @@ namespace orxonox {
 class _NetworkExport FunctionCallManager
 {
 public:
-  static void addCallStatic(uint32_t functionID, uint32_t peerID);
-  static void addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1);
-  static void addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2);
-  static void addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3);
-  static void addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4);
-  static void addCallStatic(uint32_t functionID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5);
-
-  static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID);
-  static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1);
-  static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2);
-  static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3);
-  static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4);
-  static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5);
+  static void addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID);
+  static void addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1);
+  static void addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2);
+  static void addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3);
+  static void addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4);
+  static void addCall(uint32_t functionID, uint32_t objectID, uint32_t peerID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5);
 
   static void sendCalls(orxonox::Host* host);
   

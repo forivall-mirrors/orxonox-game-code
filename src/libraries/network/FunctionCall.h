@@ -51,15 +51,14 @@ public:
   inline unsigned int getSize() const { return this->size_; }
   bool execute();
 
-  void setCallStatic( uint32_t networkID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
-  void setCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
+  void setCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
   
   void saveData( uint8_t*& mem );
   void loadData( uint8_t*& mem );
 private:
   uint32_t                  nrOfArguments_;
   uint32_t                  functionID_;
-  uint32_t                  objectID_;
+  uint32_t                  objectID_; // equals OBJECTID_UNKNOWN for static functions
   uint32_t                  size_;
   std::vector<MultiType>    arguments_;
 };

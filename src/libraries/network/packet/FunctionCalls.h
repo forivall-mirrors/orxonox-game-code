@@ -55,8 +55,7 @@ public:
     { assert(!this->isDataENetAllocated()); return currentSize_; }
   virtual bool process(orxonox::Host* host);
 
-  void addCallStatic( uint32_t networkID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
-  void addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
+  void addCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
   virtual bool send(orxonox::Host* host);
 private:
   std::queue<orxonox::FunctionCall> functionCalls_;

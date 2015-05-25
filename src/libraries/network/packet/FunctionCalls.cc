@@ -81,21 +81,12 @@ bool FunctionCalls::process(orxonox::Host* host)
   return true;
 }
 
-void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5)
+void FunctionCalls::addCall( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5)
 {
   assert(!isDataENetAllocated());
   
   this->functionCalls_.push(orxonox::FunctionCall());
-  this->functionCalls_.back().setCallStatic( networkID, mt1, mt2, mt3, mt4, mt5 );
-  this->currentSize_ += this->functionCalls_.back().getSize();
-}
-
-void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5)
-{
-  assert(!isDataENetAllocated());
-  
-  this->functionCalls_.push(orxonox::FunctionCall());
-  this->functionCalls_.back().setCallMember( networkID, objectID, mt1, mt2, mt3, mt4, mt5 );
+  this->functionCalls_.back().setCall( networkID, objectID, mt1, mt2, mt3, mt4, mt5 );
   this->currentSize_ += this->functionCalls_.back().getSize();
 }
 
