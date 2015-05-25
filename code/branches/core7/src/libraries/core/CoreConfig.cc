@@ -46,6 +46,7 @@ namespace orxonox
         , ogreConfigTimestamp_(0)
     {
         RegisterObject(CoreConfig);
+        this->setConfigValues();
     }
 
     //! Function to collect the SetConfigValue-macro calls.
@@ -113,7 +114,13 @@ namespace orxonox
     void CoreConfig::languageChanged()
     {
         // Read the translation file after the language was configured
-        Language::getInstance().readTranslatedLanguageFile();
+        bool success = Language::getInstance().readTranslatedLanguageFile(this->language_);
+        if (!success)
+        {
+            // Set the language in the config-file back to the default.
+            ResetConfigValue(language_);
+            orxout(internal_info, context::language) << "Reset language to " << this->language_ << '.' << endl;
+        }
     }
 
     void CoreConfig::initRandomNumberGenerator()
@@ -125,12 +132,6 @@ namespace orxonox
             rand();
             bInitialized = true;
         }
-    }
-
-    //! Sets the language in the config-file back to the default.
-    void CoreConfig::resetLanguage()
-    {
-        ResetConfigValue(language_);
     }
 
     void CoreConfig::updateLastLevelTimestamp()

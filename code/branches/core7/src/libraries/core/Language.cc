@@ -36,7 +36,6 @@
 #include <fstream>
 #include "util/Output.h"
 #include "util/StringUtils.h"
-#include "Core.h"
 #include "PathConfig.h"
 
 namespace orxonox
@@ -246,12 +245,13 @@ namespace orxonox
 
     /**
         @brief Reads the language file of the configured language and assigns the localisation to the corresponding LanguageEntry object.
+        @return Returns false if the language file couldn't be found.
     */
-    void Language::readTranslatedLanguageFile()
+    bool Language::readTranslatedLanguageFile(const std::string& language)
     {
-        orxout(internal_info, context::language) << "Read translated language file (" << Core::getInstance().getConfig()->getLanguage() << ")." << endl;
+        orxout(internal_info, context::language) << "Read translated language file (" << language << ")." << endl;
 
-        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getConfig()->getLanguage());
+        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(language);
 
         // Open the file
         std::ifstream file;
@@ -260,10 +260,8 @@ namespace orxonox
         if (!file.is_open())
         {
             orxout(internal_error, context::language) << "An error occurred in Language.cc:" << endl;
-            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(Core::getInstance().getConfig()->getLanguage()) << " to read the translated language entries!" << endl;
-            Core::getInstance().getConfig()->resetLanguage();
-            orxout(internal_info, context::language) << "Reset language to " << this->defaultLanguage_ << '.' << endl;
-            return;
+            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(language) << " to read the translated language entries!" << endl;
+            return false;
         }
 
         // Iterate through the file and create the LanguageEntries
@@ -290,12 +288,13 @@ namespace orxonox
                 }
                 else
                 {
-                    orxout(internal_warning, context::language) << "Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getConfig()->getLanguage()) << endl;
+                    orxout(internal_warning, context::language) << "Invalid language entry \"" << lineString << "\" in " << getFilename(language) << endl;
                 }
             }
         }
 
         file.close();
+        return true;
     }
 
     /**

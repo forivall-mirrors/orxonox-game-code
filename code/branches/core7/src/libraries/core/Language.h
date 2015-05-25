@@ -173,7 +173,7 @@ namespace orxonox
             Language(const Language&);
 
             void readDefaultLanguageFile();
-            void readTranslatedLanguageFile();
+            bool readTranslatedLanguageFile(const std::string& language);
             void writeDefaultLanguageFile() const;
             static std::string getFilename(const std::string& language);
             LanguageEntry* createEntry(const LanguageEntryLabel& label, const std::string& entry);
