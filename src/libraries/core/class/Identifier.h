@@ -79,6 +79,8 @@
 #include <string>
 #include <typeinfo>
 #include <loki/TypeTraits.h>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 
 #include "util/Output.h"
 #include "util/OrxAssert.h"
@@ -256,6 +258,8 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
+        BOOST_STATIC_ASSERT(boost::is_base_of<Identifiable, T>::value);
+
         #ifndef DOXYGEN_SHOULD_SKIP_THIS
           #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
           #include "Super.h"

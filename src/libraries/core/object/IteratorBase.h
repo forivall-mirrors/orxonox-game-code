@@ -37,6 +37,9 @@
 
 #include "core/CorePrereqs.h"
 
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_base_of.hpp>
+
 #include "ObjectListBase.h"
 
 namespace orxonox
@@ -48,6 +51,8 @@ namespace orxonox
     template <class T, class I>
     class IteratorBase : public ObjectListElementRemovalListener
     {
+        BOOST_STATIC_ASSERT(boost::is_base_of<Listable, T>::value);
+
         public:
             /**
                 @brief Constructor: Sets the element, whereon the iterator points, to zero.
