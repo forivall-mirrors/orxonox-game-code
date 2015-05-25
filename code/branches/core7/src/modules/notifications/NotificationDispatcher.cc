@@ -36,7 +36,7 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 #include "network/Host.h"
 
 #include "infos/PlayerInfo.h"

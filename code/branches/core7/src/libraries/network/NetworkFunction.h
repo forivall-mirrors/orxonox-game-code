@@ -35,8 +35,6 @@
 #include <cstring>
 #include <map>
 #include <string>
-#include <boost/preprocessor/cat.hpp>
-#include <boost/static_assert.hpp>
 
 #include "core/object/Listable.h"
 #include "core/class/Identifier.h"
@@ -235,44 +233,6 @@ template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)
 //   for(unsigned int i=0; i<(sizeof(T)-1/4)+1; i++)
 //     *((uint32_t*)destptr+i) = p2>>32*i;
 }
-
-template<class T> inline void* registerStaticNetworkFunctionFct( T ptr, const std::string& name )
-{
-  BOOST_STATIC_ASSERT( sizeof(T)<=sizeof(NetworkFunctionPointer) ); // if this fails your compiler uses bigger pointers for static functions than defined above
-  NetworkFunctionPointer destptr;
-  copyPtr( ptr, destptr );
-  new NetworkFunctionStatic( createFunctor(ptr), name, destptr );
-  return 0;
-}
-
-template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT ptr, const std::string& name )
-{
-  BOOST_STATIC_ASSERT( sizeof(PT)<=sizeof(NetworkFunctionPointer) ); // if this fails your compiler uses bigger pointers for a specific kind of member functions than defined above
-  NetworkFunctionPointer destptr;
-  copyPtr( ptr, destptr );
-  new NetworkMemberFunction<T>( createFunctor(ptr), name, destptr );
-  return 0;
-}
-
-#define registerStaticNetworkFunction( functionPointer ) \
-  static void* BOOST_PP_CAT( NETWORK_FUNCTION_, __UNIQUE_NUMBER__ ) = registerStaticNetworkFunctionFct( functionPointer, #functionPointer );
-#define registerMemberNetworkFunction( class, function ) \
-  static void* BOOST_PP_CAT( NETWORK_FUNCTION_##class, __UNIQUE_NUMBER__ ) = registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function);
-  // call it with functionPointer, clientID, args
-#define callStaticNetworkFunction( functionPointer, ...) \
-  { \
-    NetworkFunctionPointer p1; \
-    copyPtr( functionPointer, p1 ); \
-    FunctionCallManager::addCallStatic(NetworkFunctionStatic::getFunction(p1)->getNetworkID(), __VA_ARGS__); \
-  }
-  // call it with class, function, objectID, clientID, args
-#define callMemberNetworkFunction( class, function, objectID, ...) \
-  { \
-    NetworkFunctionPointer p1; \
-    copyPtr( &class::function, p1 ); \
-    FunctionCallManager::addCallMember(NetworkMemberFunctionBase::getFunction(p1)->getNetworkID(), objectID, __VA_ARGS__); \
-  }
-
 
 }
 

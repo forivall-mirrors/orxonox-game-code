@@ -37,7 +37,7 @@
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
 #include "core/command/ConsoleCommandIncludes.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 
 #include "infos/HumanPlayer.h"
 #include "interfaces/PlayerTrigger.h"

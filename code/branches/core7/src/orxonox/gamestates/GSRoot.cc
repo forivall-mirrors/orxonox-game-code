@@ -33,7 +33,7 @@
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/command/ConsoleCommandIncludes.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 #include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
 

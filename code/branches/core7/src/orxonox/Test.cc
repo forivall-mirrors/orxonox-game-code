@@ -29,7 +29,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommandIncludes.h"
-#include "network/NetworkFunction.h"
+#include "network/NetworkFunctionIncludes.h"
 #include "Test.h"
 #include "util/MultiType.h"
 
