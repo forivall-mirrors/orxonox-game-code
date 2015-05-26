@@ -46,6 +46,8 @@ namespace orxonox
         RegisterObject(LightningGunProjectile);
 
         this->textureIndex_ = 1;
+        this->setMass(2);
+        this->setCollisionType(Dynamic);
         this->maxTextureIndex_ = 8;
         this->textureTimer_.setTimer(0.01f, true, createExecutor(createFunctor(&LightningGunProjectile::changeTexture, this)));
 
