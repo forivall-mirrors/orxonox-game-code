@@ -1,8 +1,8 @@
 <!-- First levelFile of mkronig and samuezu. It was copied from dockingToASpaceStation.oxw and modified a little bit -->
 <LevelInfo
- name = "levelTry"
- description = "Docking into a spacestation."
- tags = "showcase"
+ name = "ScriptController"
+ description = "A testlevel for the scriptable controller."
+ tags = "test"
  screenshot = "emptylevel.png"
 />
 
