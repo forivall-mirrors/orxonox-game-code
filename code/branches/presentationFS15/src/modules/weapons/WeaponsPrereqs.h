@@ -74,6 +74,7 @@ namespace orxonox
     class LaserMunition;
     class ReplenishingMunition;
     class RocketMunition;
+    class GravityBombMuntion;
 
     // projectiles
     class BillboardProjectile;
@@ -83,6 +84,7 @@ namespace orxonox
     class Rocket;
     class RocketOld;
     class SimpleRocket;
+    class GravityBomb;
 
     // weaponmodes
     class EnergyDrink;
@@ -93,6 +95,7 @@ namespace orxonox
     class RocketFire;
     class RocketFireOld;
     class SimpleRocketFire;
+    class GravityBombFire;
 }
 
 #endif /* _WeaponsPrereqs_H__ */

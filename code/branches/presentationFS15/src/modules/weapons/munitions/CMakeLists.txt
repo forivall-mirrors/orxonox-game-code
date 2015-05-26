@@ -3,4 +3,5 @@ ADD_SOURCE_FILES(WEAPONS_SRC_FILES
   LaserMunition.cc
   FusionMunition.cc
   RocketMunition.cc
+  GravityBombMunition.cc
 )

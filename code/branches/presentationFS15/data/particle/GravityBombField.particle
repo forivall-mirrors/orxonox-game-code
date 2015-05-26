@@ -1,0 +1,65 @@
+particle_system Orxonox/GravityBombField
+{
+	material PE/lensflare
+	particle_width 33.6500015258789
+	particle_height 1.91999995708466
+	quota 2000
+	cull_each false
+	sorted false
+	local_space true
+	iteration_interval 0.0
+	nonvisible_update_timeout 0.0
+	billboard_type point
+	billboard_origin center
+	billboard_rotation_type vertex
+	point_rendering false
+	accurate_facing false
+
+	emitter HollowEllipsoid
+	{
+		position 0.0 0.0 0.0
+		direction 0.0 1.0 0.0
+		angle 180
+		width 350
+		height 350
+		depth 350
+		inner_width 0.99
+		inner_height 0.99
+		inner_depth 0.99
+		emission_rate 2000
+		velocity_min 0
+		velocity_max 5
+		time_to_live_min 2
+		time_to_live_max 5
+		duration_min 0
+		duration_max 0
+		repeat_delay_min 0
+		repeat_delay_max 0
+		colour_range_start 1 0.666667 0 1
+		colour_range_end 1 0 0 1
+	}
+
+	affector Rotator
+	{
+		rotation_speed_range_start 0
+		rotation_speed_range_end 0
+		rotation_range_start 0
+		rotation_range_end 180
+	}
+
+	affector ColourInterpolator
+	{
+		time0 0
+		colour0 1 0.666667 0 1
+		time1 0.2
+		colour1 1 0.584314 0 1
+		time2 0.4
+		colour2 1 0 0 1
+		time3 0.6
+		colour3 1 0 0 1
+		time4 0.8
+		colour4 0.666667 0 0 1
+		time5 1
+		colour5 0 0 0 1
+	}
+}
