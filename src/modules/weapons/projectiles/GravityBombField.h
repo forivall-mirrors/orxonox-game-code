@@ -21,7 +21,7 @@
 #include <time.h>
 #include <math.h>
 #include "graphics/Backlight.h"
-#include "sound\WorldSound.h"
+#include "sound/WorldSound.h"
 
 namespace orxonox {
 
