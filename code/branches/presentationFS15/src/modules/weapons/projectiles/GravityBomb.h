@@ -21,7 +21,7 @@
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "../../../orxonox/worldentities/WorldEntity.h"
 #include "GravityBombField.h"
-#include "sound\WorldSound.h"
+#include "sound/WorldSound.h"
 
 namespace orxonox
 {
