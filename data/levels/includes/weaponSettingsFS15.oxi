@@ -8,6 +8,7 @@
       <WeaponSet firemode=1 />
       <WeaponSet firemode=2 />
       <WeaponSet firemode=3 />
+      <WeaponSet firemode=4 />
     </weaponsets>
     <weapons>
       <WeaponPack>
@@ -16,6 +17,7 @@
           <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
           <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
           <DefaultWeaponmodeLink firemode=3 weaponmode=3 />
+          <DefaultWeaponmodeLink firemode=4 weaponmode=4 />
         </links>
         <Weapon>
           <attached>
@@ -39,7 +41,8 @@
         </Weapon>
         <Weapon>
           <SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
-          <RocketFire mode=3 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
+          <RocketFireOld mode=3 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
+          <RocketFire mode=4 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
         </Weapon>
       </WeaponPack>
       <WeaponPack>

@@ -1,0 +1,58 @@
+
+particle_system orxonox/explosion_flame
+{
+	quota	500
+	material	PE/bigFlame
+	particle_width	20.52
+	particle_height	20.25
+	cull_each	false
+	renderer	billboard
+	billboard_type	point
+
+	emitter Box
+	{
+		angle	180
+		colour	1 0.533333 0.0631577 1
+		colour_range_start	1 0.533333 0.0631577 1
+		colour_range_end	0.441667 0 0 1
+		direction	1 0 0
+		emission_rate	2000
+		position	0 0 0
+		velocity	30
+		velocity_min	30
+		velocity_max	80
+		time_to_live	0.2
+		time_to_live_min	0.2
+		time_to_live_max	3
+		duration	0.1
+		duration_min	0.1
+		duration_max	0.1
+		repeat_delay	20
+		repeat_delay_min	20
+		repeat_delay_max	20
+		width	2
+		height	2
+		depth	2
+	}
+
+	affector Scaler
+	{
+		rate	20
+	}
+
+	affector ColourFader
+	{
+		red	-1
+		green	-1
+		blue	-1
+		alpha	-1
+	}
+
+	affector Rotator
+	{
+		rotation_speed_range_start	-360
+		rotation_speed_range_end	360
+		rotation_range_start	0
+		rotation_range_end	360
+	}
+}

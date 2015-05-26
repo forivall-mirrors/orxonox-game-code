@@ -1,0 +1,48 @@
+
+particle_system orxonox/explosion_shockwave2
+{
+	quota	4000
+	material	orxonox/explosion_shockwave
+	particle_width	20
+	particle_height	20
+	cull_each	false
+	renderer	billboard
+	billboard_type	oriented_common
+	common_direction	0 0.25 0.5
+
+	emitter Point
+	{
+		angle	0
+		colour	0.85 0.85 1 1
+		colour_range_start	0.85 0.85 1 1
+		colour_range_end	0.85 0.85 1 1
+		direction	0 1 0
+		emission_rate	10
+		position	0 0 0
+		velocity	0
+		velocity_min	0
+		velocity_max	0
+		time_to_live	1
+		time_to_live_min	1
+		time_to_live_max	1
+		duration	0.1
+		duration_min	0.1
+		duration_max	0.1
+		repeat_delay	20
+		repeat_delay_min	20
+		repeat_delay_max	20
+	}
+
+	affector Scaler
+	{
+		rate	500
+	}
+
+	affector ColourFader
+	{
+		red	-1
+		green	-1
+		blue	-1
+		alpha	0
+	}
+}
