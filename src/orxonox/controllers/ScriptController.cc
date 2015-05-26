@@ -26,12 +26,32 @@
  *
  */
 
+ /*
+  * Currently available lua commands:
+  *
+  * IMPORTANT: ALL COMMANDS DO REQUIRE 7 PARAMETERS TO BE PROVIDED. FILL UP WITH ZEROES IN UNIMPORTANT PLACES.
+  *
+  * Command             | Abbreviation | Parameter 1          | '' 2     | '' 3    | '' 4                 | '' 5     | '' 6     | '' 7
+  *
+  * "Move And Look"     | mal          | GoTo X Coordinate    | '' Y ''  | '' Z '' | LookAt X Coordinate  |  '' Y '' |  '' Y '' | Duration
+  * "Rotate And Look"   | ral          | GoTo X Coordinate    | '' Y ''  | '' Z '' | Axis (1=x, 2=z, 3=z) |     -    |     -    | Duration
+  * "Spiral"            | spi          | GoTo X Coordinate    | '' Y ''  | '' Z '' |          -           |     -    |     -    | Duration
+  * "Transition Look"   | chl          | From X Coordinate    | '' Y ''  | '' Z '' | To X Coordinate      |  '' Y '' |  '' Y '' | Duration
+  * "Idle (Do nothing)" | idle         | Duration
+  */
+
+// TODO: Which library can this be found in?
+
+#define M_PI 3.14159265358979323846 /* pi */
+
 #include "ScriptController.h"
 #include "infos/PlayerInfo.h"
 #include "core/CoreIncludes.h"
 #include "worldentities/ControllableEntity.h"
 #include "core/LuaState.h"
+#include "core/LuaState.h"
 #include <cmath>
+
 
 namespace orxonox
 {
@@ -65,6 +85,12 @@ namespace orxonox
         /* - Counters */
         this->eventno = 0;
 
+        /* - First "previous event" scheduled at t=0 */
+        /* - Needed for automatically updating event times */
+        this->prevEventTime = 0;
+
+        /* hack */
+        this->deltat = 0;
     }
 
     void ScriptController::takeControl(int ctrlid)
@@ -145,6 +171,9 @@ namespace orxonox
 
     void ScriptController::tick(float dt)
     {
+        /* hack */
+        this->deltat = dt;
+
         /* Call the tick function of the classes we derive from */
         SUPER(ScriptController, tick, dt);
 
@@ -177,24 +206,72 @@ namespace orxonox
         }
 
         /* Get a variable that specifies how far along the trajectory
-         * we are 
+         * we are currently.
          */
         float dl = eventTime / currentEvent.duration; 
 
-        /* Depending  */
+        /* Depending on command */
         /* Do some moving */
         if( this->processing )
-        { 
-          if( this->currentEvent.fctName == "mal" )
+        {
+          // Abbreviation for "spiral" (rotation + translation)
+          if (this->currentEvent.fctName == "spi") {
+
+            // Need to know a perpendicular basis to the translation vector:
+            // Given (a, b, c) we chose (b, -a, 0)norm and (0, c, -b)norm
+            // Currently we set a fix rotational radius of 400
+            // TODO: Add an option to adjust radius of spiral movement
+            Vector3 direction = this->currentEvent.v1 - startpos;
+
+            Vector3* ortho1 = new Vector3(direction.y, -direction.x, 0);
+            float absOrtho1 = sqrt(direction.y * direction.y + direction.x * direction.x);
+            *ortho1 = 400 * cos(2 * M_PI * dl) * (*ortho1)/absOrtho1;
+
+            Vector3* ortho2 = new Vector3(0, direction.z, -direction.y);
+            float absOrtho2 = sqrt(direction.y * direction.y + direction.z * direction.z);
+            *ortho2 = 400 * sin(2 * M_PI * dl) * (*ortho2)/absOrtho2;
+
+            this->entity_->setPosition( (1-dl)*startpos + dl * this->currentEvent.v1 + *ortho1 + *ortho2);
+
+            delete ortho1;
+            delete ortho2;
+          }
+
+          // Abbreviation for "rotate and look"
+          if (this->currentEvent.fctName == "ral")
+          { 
+            // Specify the axis
+            Vector3* a;
+              switch ((int) currentEvent.d) {
+                case 3:
+                  a = new Vector3(this->currentEvent.v1.x + 3000*cos(2*M_PI*dl),
+                                  this->currentEvent.v1.y + 3000*sin(2*M_PI*dl),
+                                  this->currentEvent.v1.z);
+                break;
+                case 2:
+                  a = new Vector3(this->currentEvent.v1.x + 3000*cos(2*M_PI*dl),
+                                  this->currentEvent.v1.y,
+                                  this->currentEvent.v1.z + 3000*cos(2*M_PI*dl));
+                break;
+                case 1:
+                  a = new Vector3(this->currentEvent.v1.x,
+                                  this->currentEvent.v1.y + 3000*sin(2*M_PI*dl),
+                                  this->currentEvent.v1.z + 3000*cos(2*M_PI*dl));
+                break;
+              }
+
+            this->entity_->setPosition(*a);
+
+            /* Look at the specified position */
+            this->entity_->lookAt(this->currentEvent.v1);
+          }
+          else if( this->currentEvent.fctName == "mal" )
           {
             /* Set the position to the correct place in the trajectory */
             this->entity_->setPosition( (1-dl)*startpos + dl * this->currentEvent.v1);
 
             /* Look at the specified position */
             this->entity_->lookAt(this->currentEvent.v2);
-
-            /* Update look at position */
-            //this->lookAtPosition = this->currentEvent.v2;
           }
           else if( this->currentEvent.fctName == "chl" )
           {
@@ -223,14 +300,33 @@ namespace orxonox
 
       /* Fill the structure with all the provided information */
       tmp.fctName = instruction;
+
       //tmp.x1 = x1; tmp.y1 = y1; tmp.z1 = z1;
       //tmp.x2 = x2; tmp.y2 = y2; tmp.z2 = z2;
       tmp.v1 = Vector3(x1,y1,z1);
       tmp.v2 = Vector3(x2,y2,z2);
-      tmp.duration = duration;
-      tmp.eventTime = executionTime;
 
-      orxout(verbose) << tmp.fctName << endl;
+      // the parameters are not required to be vector coordinates!
+      // for convenience they are however stored twice if they have some kind of different meaning
+      tmp.a = x1;
+      tmp.b = y1;
+      tmp.c = z1;
+      tmp.d = x2;
+      tmp.e = y2;
+      tmp.f = z2;
+
+      tmp.duration = duration;
+
+      /* This is kind of a hack. If we hit the function idle all we want to do is
+         advance event execution time, not schedule anything */
+      if (instruction == "idle") {
+        tmp.eventTime = this->prevEventTime;
+        this->prevEventTime += x1;
+        return;
+      } else {
+        tmp.eventTime = this->prevEventTime;
+        this->prevEventTime += duration;
+      }
 
       /* Add the created event to the event list */
       if(eventList.size()==0)
