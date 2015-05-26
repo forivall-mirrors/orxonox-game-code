@@ -27,11 +27,11 @@
  */
 
 /**
-    @file Rocket.h
-    @brief Implementation of the Rocket class.
+    @file RocketOld.h
+    @brief Implementation of the RocketOld class.
 */
 
-#include "Rocket.h"
+#include "RocketOld.h"
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
@@ -51,18 +51,18 @@
 
 namespace orxonox
 {
-    RegisterClass(Rocket);
+    RegisterClass(RocketOld);
 
     /**
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    Rocket::Rocket(Context* context)
+    RocketOld::RocketOld(Context* context)
         : ControllableEntity(context)
         , BasicProjectile()
         , RadarViewable(this, static_cast<WorldEntity*>(this))
     {
-        RegisterObject(Rocket);// Register the Rocket class to the core
+        RegisterObject(RocketOld);// Register the RocketOld class to the core
 
         this->localAngularVelocity_ = 0;
         this->lifetime_ = 100.0f;
@@ -72,7 +72,7 @@ namespace orxonox
             this->setCollisionType(WorldEntity::Kinematic);
             this->setVelocity(0,0,-100);
 
-            // Create rocket model
+            // Create RocketOld model
             Model* model = new Model(this->getContext());
             model->setMeshSource("rocket.mesh");
             model->scale(0.7f);
@@ -135,7 +135,7 @@ namespace orxonox
     @brief
         Destructor. Destroys controller, if present and kills sounds, if playing.
     */
-    Rocket::~Rocket()
+    RocketOld::~RocketOld()
     {
         if(this->isInitialized())
         {
@@ -157,11 +157,11 @@ namespace orxonox
 
     /**
     @brief
-        Sets the entity that fired the Rocket.
+        Sets the entity that fired the RocketOld.
     @param shooter
-        A pointer to the Pawn that fired the Rocket.
+        A pointer to the Pawn that fired the RocketOld.
     */
-    void Rocket::setShooter(Pawn* shooter)
+    void RocketOld::setShooter(Pawn* shooter)
     {
         this->BasicProjectile::setShooter(shooter);
         
@@ -178,13 +178,13 @@ namespace orxonox
 
     /**
     @brief
-        Defines which actions the Rocket has to take in each tick.
+        Defines which actions the RocketOld has to take in each tick.
     @param dt
         The length of the tick.
     */
-    void Rocket::tick(float dt)
+    void RocketOld::tick(float dt)
     {
-        SUPER(Rocket, tick, dt);
+        SUPER(RocketOld, tick, dt);
 
         if( this->hasLocalController() )
         {
@@ -196,16 +196,16 @@ namespace orxonox
        this->destroyCheck();
     }
 
-    bool Rocket::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
+    bool RocketOld::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
     {
         return this->processCollision(otherObject, contactPoint, cs);
     }
 
     /**
     @brief
-        Destroys the Rocket and stops the sound,
+        Destroys the RocketOld and stops the sound,
     */
-    void Rocket::destroyObject(void)
+    void RocketOld::destroyObject(void)
     {
         if (GameMode::isMaster() && this->defSndWpnEngine_->isPlaying())
             this->defSndWpnEngine_->stop();
@@ -215,75 +215,51 @@ namespace orxonox
 
     /**
     @brief
-        Destroys the Rocket upon pressing "fire".
+        Destroys the RocketOld upon pressing "fire".
     */
-    void Rocket::fired(unsigned int firemode)
+    void RocketOld::fired(unsigned int firemode)
     {
         this->destroyObject();
     }
 
     /**
     @brief
-        The effects that are displayed, when the Rocket is destroyed.
+        The effects that are displayed, when the RocketOld is destroyed.
     */
-    void Rocket::destructionEffect()
+    void RocketOld::destructionEffect()
     {
-        ParticleSpawner *effect1, *effect2, *effect3, *effect4, *effect5;
+        ParticleSpawner *effect1, *effect2;
         if(this->getShooter())
         {
             effect1 = new ParticleSpawner(this->getShooter()->getContext());
             effect2 = new ParticleSpawner(this->getShooter()->getContext());
-            effect3 = new ParticleSpawner(this->getShooter()->getContext());
-            effect4 = new ParticleSpawner(this->getShooter()->getContext());
-            effect5 = new ParticleSpawner(this->getShooter()->getContext());
         }
         else
         {
             effect1 = new ParticleSpawner(this->getContext());
             effect2 = new ParticleSpawner(this->getContext());
-            effect3 = new ParticleSpawner(this->getContext());
-            effect4 = new ParticleSpawner(this->getContext());
-            effect5 = new ParticleSpawner(this->getContext());
         }
 
         effect1->setPosition(this->getPosition());
         effect1->setOrientation(this->getOrientation());
         effect1->setDestroyAfterLife(true);
-        effect1->setSource("orxonox/explosion_flash");
+        effect1->setSource("Orxonox/explosion4");
         effect1->setLifetime(2.0f);
 
         effect2->setPosition(this->getPosition());
         effect2->setOrientation(this->getOrientation());
         effect2->setDestroyAfterLife(true);
-        effect2->setSource("orxonox/explosion_flame");
+        effect2->setSource("Orxonox/smoke4");
         effect2->setLifetime(3.0f);
-
-        effect3->setPosition(this->getPosition());
-        effect3->setOrientation(this->getOrientation());
-        effect3->setDestroyAfterLife(true);
-        effect3->setSource("orxonox/explosion_shockwave");
-        effect3->setLifetime(3.0f);
-
-        effect4->setPosition(this->getPosition());
-        effect4->setOrientation(this->getOrientation());
-        effect4->setDestroyAfterLife(true);
-        effect4->setSource("orxonox/explosion_sparks");
-        effect4->setLifetime(3.0f);
-
-        effect5->setPosition(this->getPosition());
-        effect5->setOrientation(this->getOrientation());
-        effect5->setDestroyAfterLife(true);
-        effect5->setSource("orxonox/explosion_streak1");
-        effect5->setLifetime(3.0f);
     }
 
     /**
     @brief
-        Rotates the Rocket around the y-axis by the amount specified by the first component of the input 2-dim vector.
+        Rotates the RocketOld around the y-axis by the amount specified by the first component of the input 2-dim vector.
     @param value
         The vector determining the amount of the angular movement.
     */
-    void Rocket::rotateYaw(const Vector2& value)
+    void RocketOld::rotateYaw(const Vector2& value)
     {
         ControllableEntity::rotateYaw(value);
 
@@ -293,11 +269,11 @@ namespace orxonox
 
     /**
     @brief
-        Rotates the Rocket around the x-axis by the amount specified by the first component of the input 2-dim vector.
+        Rotates the RocketOld around the x-axis by the amount specified by the first component of the input 2-dim vector.
     @param value
         The vector determining the amount of the angular movement.
     */
-    void Rocket::rotatePitch(const Vector2& value)
+    void RocketOld::rotatePitch(const Vector2& value)
     {
         ControllableEntity::rotatePitch(value);
 
@@ -307,11 +283,11 @@ namespace orxonox
 
     /**
     @brief
-        Rotates the Rocket around the z-axis by the amount specified by the first component of the input 2-dim vector.
+        Rotates the RocketOld around the z-axis by the amount specified by the first component of the input 2-dim vector.
     @param value
         The vector determining the amount of the angular movement.
     */
-    void Rocket::rotateRoll(const Vector2& value)
+    void RocketOld::rotateRoll(const Vector2& value)
     {
         ControllableEntity::rotateRoll(value);
 

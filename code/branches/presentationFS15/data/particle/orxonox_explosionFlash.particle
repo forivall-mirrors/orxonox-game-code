@@ -1,0 +1,55 @@
+
+particle_system orxonox/explosion_flash
+{
+	quota	50
+	material	orxonox/explosion_flash
+	particle_width	50
+	particle_height	50
+	cull_each	false
+	renderer	billboard
+	billboard_type	point
+
+	emitter Point
+	{
+		angle	180
+		colour	1 1 1 1
+		colour_range_start	1 1 1 1
+		colour_range_end	1 1 1 1
+		direction	0 0 0
+		emission_rate	10
+		position	0 0 0
+		velocity	0
+		velocity_min	0
+		velocity_max	0
+		time_to_live	0.05
+		time_to_live_min	0.05
+		time_to_live_max	0.05
+		duration	0.1
+		duration_min	0.1
+		duration_max	0.1
+		repeat_delay	100000
+		repeat_delay_min	100000
+		repeat_delay_max	100000
+	}
+
+	affector Rotator
+	{
+		rotation_speed_range_start	0
+		rotation_speed_range_end	0
+		rotation_range_start	0
+		rotation_range_end	360
+	}
+
+	affector Scaler
+	{
+		rate	1000
+	}
+	
+	affector ColourFader
+	{
+		red	-1
+		green	-1
+		blue	-1
+		alpha	-1
+	}
+}
