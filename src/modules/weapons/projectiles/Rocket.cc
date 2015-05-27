@@ -73,7 +73,7 @@ namespace orxonox
 
             // Create rocket model
             Model* model = new Model(this->getContext());
-            model->setMeshSource("rocket.mesh");
+            model->setMeshSource("can.mesh");
             model->scale(0.7f);
             this->attach(model);
 

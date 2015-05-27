@@ -66,7 +66,8 @@ namespace orxonox
     void FusionFire::fire()
     {
         BillboardProjectile* projectile = new BillboardProjectile(this->getContext());
-
+	
+	this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
