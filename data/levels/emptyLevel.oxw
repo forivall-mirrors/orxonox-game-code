@@ -14,7 +14,7 @@
 <?lua
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
-  include("templates/spaceshipEscort.oxt")
+  include("templates/spaceshipHeartAttack.oxt")
 ?>
 
 <Level>
