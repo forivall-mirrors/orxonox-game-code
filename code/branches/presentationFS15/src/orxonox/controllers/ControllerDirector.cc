@@ -40,6 +40,7 @@ namespace orxonox
     void ControllerDirector::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ControllerDirector, XMLPort, xmlelement, mode);
+        XMLPortParam(ControllerDirector, "scriptname", setScriptName, getScriptName, xmlelement, mode).defaultValues("testscript");
 
         orxout(verbose)<< "ControllerDirector::XMLPort " 
           << "An instance of ControllerDirector has been created." << endl;
@@ -82,7 +83,7 @@ namespace orxonox
        }
        else
          return;
-       
+
        /* Set up a luastate to use for running the scripts */
        LuaState * ls = new LuaState();
        
@@ -97,8 +98,8 @@ namespace orxonox
        /* Now run the script on this controller. This will still have the above
         * variable "newctrlid" defined, which means it can make use of it.
         */
-
-       ls->doFile("testscript.lua");
+       std::string scr = this->scriptname_ + ".lua";
+       ls->doFile(scr);
 
        /* Increase the controller ID so we have a different one for
         * the next time it is triggered */

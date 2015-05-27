@@ -46,6 +46,9 @@ namespace orxonox
             bool party(bool bTriggered, BaseObject* trigger);
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
+            inline void setScriptName(const std::string& name) { this->scriptname_ = name; }
+            inline const std::string& getScriptName() const { return this->scriptname_; }
+
 
             /* Take over control of a given object */
             void takeControl(Controller * controller, BaseObject * trigger);
@@ -54,7 +57,8 @@ namespace orxonox
             // currently unused
             //void setNewController(Controller * controller);
 
-        private:
+        protected:
+            std::string scriptname_;   
             PlayerInfo* player_;
             ControllableEntity* entity_; 
             PlayerTrigger * pTrigger_;
