@@ -39,9 +39,7 @@
           <LightningGun mode=1 muzzleoffset="0,0,0" damage=23 />
         </Weapon>
         <Weapon>
-          <!--SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=30 shielddamage=20 /-->
-	  <LaserFire mode=2 muzzleoffset="5,5,0" damage=30 shielddamage=20 />
-	  <FusionFire mode=2 muzzleoffset="0,0,0" damage=30 shielddamage=20 />
+          <SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=30 shielddamage=20 />
           <RocketFire mode=3 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
         </Weapon>
       </WeaponPack>
