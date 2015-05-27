@@ -1,0 +1,52 @@
+    <weaponslots>
+     	<WeaponSlot position=" 0, 0, 0" />
+      	<WeaponSlot position=" 0, 0, 0" />
+      	<WeaponSlot position=" 0, 0, 0" />
+	<WeaponSlot position=" 0, 0, 0" />
+    </weaponslots>
+    <weaponsets>
+      <WeaponSet firemode=0 />
+      <WeaponSet firemode=1 />
+      <WeaponSet firemode=2 />
+      <WeaponSet firemode=3 />
+    </weaponsets>
+    <weapons>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+          <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
+          <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
+          <DefaultWeaponmodeLink firemode=3 weaponmode=3 />
+        </links>
+        <Weapon>
+          	<HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" -11.4, 0, -5" />
+          	<HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" -11.4, 0, -5" />
+		<HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 11.4, 0, -5" />
+          	<HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 11.4, 0, -5" />
+        </Weapon>
+        <Weapon>
+		<HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" -15, 1.6, -2" />
+          	<HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" -15, 1.6, -2" />
+		<HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 15, 1.6, -2" />
+          	<HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 15, 1.6, -2" />
+        </Weapon>
+        <Weapon>
+	  	<LaserFire mode=1 munitionpershot=0 muzzleoffset="2.2,6,16" damage=30 shielddamage=20 />
+	  	<LaserFire mode=1 munitionpershot=0 muzzleoffset="-2.2,6,16" damage=30 shielddamage=20 />
+          	<RocketFire mode=3 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
+		
+        </Weapon>
+	<Weapon>
+		
+		
+	</Weapon>
+      </WeaponPack>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=1 weaponmode=0 />
+        </links>
+        <!--Weapon>
+          <EnergyDrink mode=0 munitionpershot=0 delay=0  material="Flares/point_lensflare"muzzleoffset="2,-0.2,-1" />
+        </Weapon-->
+      </WeaponPack>
+    </weapons>
