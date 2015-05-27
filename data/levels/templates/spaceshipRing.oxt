@@ -45,10 +45,6 @@
       <Model position="0,0,0" yaw=90 pitch=0 roll=0 scale=4 mesh="ship.mesh" />
       <Model position="11,1,-9" yaw=-90 pitch=0 roll=90 scale=0.15 mesh="ringWeapon.mesh" />
       <Model position="-11,1,-9" yaw=-90 pitch=0 roll=90 scale=0.15 mesh="ringWeapon.mesh" />
-<!--Model mesh="cube.mesh" mass=10 position="0,0,3" scale3D="10,4,8" />
-<Model mesh="cube.mesh" mass=10 position="12.6,-2,3" scale3D="2.8,2.8,11" />
-<Model mesh="cube.mesh" mass=10 position="-12.6,-2,3" scale3D="2.8,2.8,11" />
-<Model mesh="cube.mesh" mass=10 position="0,0,-12" scale3D="4,4,7" /-->
     </attached>
     <collisionShapes>
       <BoxCollisionShape position="0    ,0 ,  3" halfExtents="10,   4,8" />
