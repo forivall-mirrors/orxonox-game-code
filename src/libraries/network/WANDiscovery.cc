@@ -40,7 +40,7 @@ namespace orxonox
   {
     /* debugging output */
     orxout(verbose, context::master_server) << "Creating WANDiscovery." << endl;
-  
+
     /* register object in orxonox */
     RegisterObject(WANDiscovery);
 
@@ -53,7 +53,7 @@ namespace orxonox
 
     /* connect and see if it worked */
     if( msc.connect( this->msaddress.c_str(), ORX_MSERVER_PORT ) )
-      orxout(internal_error, context::master_server) << "Could not connect to master server at " 
+      orxout(internal_error, context::master_server) << "Could not connect to master server at "
         << this->msaddress << endl;
 
     /* debugging output */
@@ -62,21 +62,21 @@ namespace orxonox
 
   void WANDiscovery::setConfigValues()
   {
-    /* update msaddress string from orxonox.ini config file, if it 
-     * has changed. 
+    /* update msaddress string from orxonox.ini config file, if it
+     * has changed.
      */
     SetConfigValue( msaddress, "master.orxonox.net");
-  } 
+  }
 
   WANDiscovery::~WANDiscovery()
-  { 
+  {
     /* clear server list */
-    this->servers_.clear();  
+    this->servers_.clear();
   }
 
   /* callback for the network reply poller */
   int WANDiscovery::rhandler( char *addr, ENetEvent *ev )
-  { 
+  {
     /* error recognition */
     if( !ev || !ev->packet || !ev->packet->data )
     { orxout(internal_warning, context::master_server) << "Bad arguments received in WANDiscovery's reply handler." << endl;
@@ -87,33 +87,37 @@ namespace orxonox
     /* if a list entry arrives add to list */
     if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_ITEM,
       MSPROTO_SERVERLIST_ITEM_LEN ) )
-    { 
+    {
       /* create server structure from that item */
       packet::ServerInformation toadd;
 
       /* fill in data, -1 for the index: index should be length -1 */
-      toadd.setServerName( std::string((char*)ev->packet->data + 
-        MSPROTO_SERVERLIST_ITEM_LEN+1) );
-      toadd.setServerIP( std::string((char*)ev->packet->data + 
-        MSPROTO_SERVERLIST_ITEM_LEN+1) );
+      std::string datastr = std::string((char*)ev->packet->data + MSPROTO_SERVERLIST_ITEM_LEN+1);
+      int separator = datastr.find(" ");
+      toadd.setServerIP(datastr.substr(0,separator));
+      int secondsep = datastr.find(" ", separator + 1);
+      toadd.setServerName(datastr.substr(separator + 1, secondsep - separator - 1));
+      toadd.setClientNumber(Ogre::StringConverter::parseInt(datastr.substr(secondsep+1)));
+
+      orxout(internal_info, context::network) << "Received WAN discovery server information; Name: " << toadd.getServerName() << ", Address: " << toadd.getServerIP() << ", Players: " << toadd.getClientNumber() << ", RTT: " << toadd.getServerRTT() << endl;
 
       /* add to list */
       this->servers_.push_back( toadd );
     }
     else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
-    { 
+    {
       /* this is the only case where 2 should be returned,
        * as 1 is used to signal that we're done receiving
        * the list
        */
-      return 2; 
+      return 2;
     }
 
     /* done handling, return all ok code 0 */
     return 1;
   }
- 
+
   void WANDiscovery::discover()
   {
     /* clear list */
@@ -130,7 +134,7 @@ namespace orxonox
       switch( this->msc.pollForReply( this, 500 ) )
       { case 0: /* no event occured, decrease timeout */
           --i; break;
-        case 1: /* got a list element, continue */ 
+        case 1: /* got a list element, continue */
           break;
         case 2: /* done. */
           i = 0; break;
@@ -158,5 +162,24 @@ namespace orxonox
       return this->servers_[index].getServerIP();
   }
 
+  std::string WANDiscovery::getServerListItemRTT(unsigned int index)
+ 	{
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else{
+      uint32_t serverrtt = this->servers_[index].getServerRTT();
+      return Ogre::StringConverter::toString(serverrtt);
+    }
+
+  }
+  std::string WANDiscovery::getServerListItemPlayerNumber(unsigned int index)
+  {
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else{
+      int playerNumber = this->servers_[index].getClientNumber();
+      return Ogre::StringConverter::toString(playerNumber);
+    }
+  }
 
 } // namespace orxonox

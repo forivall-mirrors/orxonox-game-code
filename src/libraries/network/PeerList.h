@@ -34,12 +34,12 @@
 #include <enet/enet.h>
 
 /* peer list */
-namespace orxonox 
+namespace orxonox
 {
-  /** This class keeps a list of open connections 
+  /** This class keeps a list of open connections
    * and some info about them.
    */
-  class PeerList 
+  class PeerList
   { public:
       /** constructor */
       PeerList();
@@ -49,24 +49,30 @@ namespace orxonox
 
       /** \param toadd The peer to add
        * \return 0 for success, -1 for error.
-       * 
-       * Add new peer to list 
+       *
+       * Add new peer to list
        */
       int addPeer( ENetPeer *toadd );
 
       /** \param addr Address to look for
        * \return if the peer was found or not
-       * 
-       * Remove peer from list by address 
+       *
+       * Remove peer from list by address
        */
       bool remPeerByAddr( ENetAddress addr );
 
       /** \param addr The address to find by
-       * 
-       * Find a connection by address */
+       *
+       * Find a connection by address
+       */
       ENetPeer *findPeerByAddr( ENetAddress addr );
 
-      /* NOTE: making this list public so it can easily 
+      /**
+       * Count current peers
+       */
+       int count();
+
+      /* NOTE: making this list public so it can easily
        * be iterated. This makes sense since iterating it
        * will happen all the time, and using getter methods
        * for the next in list would slow things down unnecessarily.

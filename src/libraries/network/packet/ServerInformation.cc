@@ -38,12 +38,11 @@ namespace orxonox
 {
   namespace packet
   {
-    
+
     ServerInformation::ServerInformation()
     {
-      
     }
-    
+
     ServerInformation::ServerInformation(ENetEvent* event)
     {
       char serverIP[64];
@@ -68,22 +67,23 @@ namespace orxonox
 
     ServerInformation::~ServerInformation()
     {
-      
+
     }
 
     void ServerInformation::send(ENetPeer* peer)
     {
-      uint32_t size = returnSize((char*&)LAN_DISCOVERY_ACK) + returnSize(this->serverName_);
+      std::string payload = this->serverName_ + Ogre::StringConverter::toString(this->clientNumber_);
+      uint32_t size = returnSize((char*&)LAN_DISCOVERY_ACK) + returnSize(payload);
       uint8_t* temp = new uint8_t[size];
       uint8_t* temp2 = temp;
       saveAndIncrease((char*&)LAN_DISCOVERY_ACK, temp2);
-      saveAndIncrease(this->serverName_, temp2);
+      saveAndIncrease(payload, temp2);
       ENetPacket* packet = enet_packet_create( temp, size, 0 );
       enet_peer_send(peer, 0, packet);
-      
+
       delete[] temp;
     }
-  
+
   } // namespace packet
 
   std::ostream& operator<<(std::ostream& out, const ENetAddress& address)
@@ -94,4 +94,3 @@ namespace orxonox
       return out;
   }
 } // namespace orxonox
-

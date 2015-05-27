@@ -29,6 +29,8 @@
 #include "../NetworkPrereqs.h"
 
 #include <string>
+#include <OgreStringConverter.h>
+
 
 #ifndef SERVERINFORMATION_H
 #define SERVERINFORMATION_H
@@ -44,16 +46,19 @@ namespace orxonox
         ServerInformation();
         ServerInformation(ENetEvent* event);
         ~ServerInformation();
-        
+
         void          send( ENetPeer* peer );
-        std::string   getServerIP() { return this->serverIP_; }
-        std::string   getServerName() { return this->serverName_; }
         void          setServerName(std::string name) { this->serverName_ = name; }
+        std::string   getServerName() { return this->serverName_; }
         void          setServerIP( std::string IP ) { this->serverIP_ = IP; }
+        std::string   getServerIP() { return this->serverIP_; }
+        void          setClientNumber( int clientNumber ) { this->clientNumber_ = clientNumber; }
+        int           getClientNumber() { return this->clientNumber_; }
         uint32_t      getServerRTT() { return this->serverRTT_; }
-        
+
       private:
         std::string   serverName_;
+        int           clientNumber_;
         std::string   serverIP_;
         uint32_t      serverRTT_;
     };

@@ -32,6 +32,7 @@
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
 #include "util/Singleton.h"
+#include <OgreStringConverter.h>
 
 #include <vector>
 
@@ -50,8 +51,10 @@ namespace orxonox
       void discover(); // tolua_export
       std::string getServerListItemName( unsigned int index ); // tolua_export
       std::string getServerListItemIP( unsigned int index ); // tolua_export
+      std::string getServerListItemRTT( unsigned int index ); // tolua_export
+      std::string getServerListItemPlayerNumber( unsigned int index ); // tolua_export
       static LANDiscovery& getInstance(){ return Singleton<LANDiscovery>::getInstance(); } // tolua_export
-      
+
     private:
       static LANDiscovery* singletonPtr_s;
       ENetHost* host_;

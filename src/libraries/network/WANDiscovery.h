@@ -34,6 +34,7 @@
 #include "core/config/ConfigValueIncludes.h"
 #include "MasterServerComm.h"
 #include "MasterServerProtocol.h"
+#include <OgreStringConverter.h>
 
 #include <vector>
 
@@ -55,8 +56,8 @@ namespace orxonox
       ~WANDiscovery();
 
       /** \return Address of the master server
-       * 
-       * Get the master server address 
+       *
+       * Get the master server address
        */
       std::string getMSAddress()
       { return this->msaddress; }
@@ -64,22 +65,36 @@ namespace orxonox
       /** ask server for server list  */
       void discover(); // tolua_export
 
-      /** \param index Index to get the name of 
+      /** \param index Index to get the name of
        * \return The name of the server
-       * 
-       * Get the name of the server at index index. 
+       *
+       * Get the name of the server at index index.
        */
       std::string getServerListItemName( unsigned int index ); // tolua_export
 
-      /** \param index Index to get the IP of 
+      /** \param index Index to get the IP of
        * \return The IP of the server
-       * 
-       * Get the IP of the server at index index. 
+       *
+       * Get the IP of the server at index index.
        */
       std::string getServerListItemIP( unsigned int index ); // tolua_export
 
+      /** \param index Index to get the RTT of
+       * \return The RTT of the server
+       *
+       * Get the RTT of the server at index index.
+       */
+      std::string getServerListItemRTT( unsigned int index ); // tolua_export
+
+      /** \param index Index to get the RTT of
+       * \return The number of players on the server
+       *
+       * Get the number of players on the server
+       */
+      std::string getServerListItemPlayerNumber( unsigned int index ); // tolua_export
+
       /* todo: might make this private and use getter/setter methods
-       * at some later time. 
+       * at some later time.
        */
       /** game server list */
       std::vector<packet::ServerInformation> servers_;
@@ -91,7 +106,7 @@ namespace orxonox
       MasterServerComm msc;
 
       int rhandler( char *addr, ENetEvent *ev );
-      
+
     private:
       /** master server address */
       std::string msaddress;
