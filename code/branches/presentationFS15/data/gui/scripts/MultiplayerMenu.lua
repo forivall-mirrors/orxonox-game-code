@@ -69,7 +69,7 @@ function P.MultiplayerJoinButton_clicked(e)
     local destination = nil
     if choice then
         local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
-        destination = P.serverList[index][2]
+        destination = P.serverList[index][1]
     else
         return
     end
@@ -92,6 +92,8 @@ function P.showServerList()
         local index = 0
         local servername = ""
         local serverip = ""
+        local serverrtt = ""
+        local playernumber = ""
         while true do
             servername = discovery:getServerListItemName(index)
             if servername == "" then
@@ -101,12 +103,15 @@ function P.showServerList()
             if serverip == "" then
                 break
             end
-            table.insert(P.serverList, {servername, serverip})
+            --serverrtt = discovery:getServerListItemRTT(index)
+            playernumber = discovery:getServerListItemPlayerNumber(index)
+
+            table.insert(P.serverList, {serverip, servername, playernumber})
             index = index + 1
         end
         index = 1
         for k,v in pairs(P.serverList) do
-            local item = CEGUI.createListboxTextItem( v[1] .. ": " .. v[2] )
+            local item = CEGUI.createListboxTextItem("IP: " .. v[1] .. " Name: " .. v[2] .. " Players: " .. v[3])
             item:setID(index)
             index = index + 1
             item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
@@ -124,6 +129,8 @@ function P.showServerList()
         local index = 0
         local servername = ""
         local serverip = ""
+        local serverrtt = ""
+        local playernumber = ""
         while true do
             servername = discovery:getServerListItemName(index)
             if servername == "" then
@@ -133,12 +140,15 @@ function P.showServerList()
             if serverip == "" then
                 break
             end
-            table.insert(P.serverList, {servername, serverip})
+            --serverrtt = discovery:getServerListItemRTT(index)
+            playernumber = discovery:getServerListItemPlayerNumber(index)
+
+            table.insert(P.serverList, {serverip, servername, playernumber})
             index = index + 1
         end
         index = 1
         for k,v in pairs(P.serverList) do
-            local item = CEGUI.createListboxTextItem( v[1] .. ": " .. v[2] )
+            local item = CEGUI.createListboxTextItem("IP: " .. v[1] .. " Name: " .. v[2] .. " Players: " .. v[3])
             item:setID(index)
             index = index + 1
             item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
@@ -149,4 +159,3 @@ function P.showServerList()
 end
 
 return P
-

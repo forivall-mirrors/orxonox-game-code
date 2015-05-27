@@ -34,6 +34,7 @@
 	  	<LaserFire mode=1 munitionpershot=0 muzzleoffset="2.2,6,16" damage=30 shielddamage=20 />
 	  	<LaserFire mode=1 munitionpershot=0 muzzleoffset="-2.2,6,16" damage=30 shielddamage=20 />
           	<RocketFire mode=3 muzzleoffset="0,0,0" damage=30 healthdamage=50 shielddamage=20 />
+          <GravityBombFire mode=2 muzzleoffset="0,0,0" damage=30 shielddamage=20 />
 		
         </Weapon>
 	<Weapon>

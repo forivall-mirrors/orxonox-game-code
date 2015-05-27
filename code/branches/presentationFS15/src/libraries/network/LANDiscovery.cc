@@ -88,7 +88,10 @@ namespace orxonox
         case ENET_EVENT_TYPE_RECEIVE:
           {
             packet::ServerInformation info(&event);
-            orxout(internal_info, context::network) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
+            std::string payload = info.getServerName();
+            info.setServerName(payload.substr(0,payload.length()-2));
+            info.setClientNumber( Ogre::StringConverter::parseInt(payload.substr(payload.length()-1)));
+            orxout(internal_info, context::network) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", Players: " << info.getClientNumber() << ", RTT: " << info.getServerRTT() << endl;
             std::vector<packet::ServerInformation>::iterator it;
             for( it=this->servers_.begin(); it!=this->servers_.end(); ++it )
             {
@@ -123,5 +126,23 @@ namespace orxonox
       return this->servers_[index].getServerIP();
   }
 
+  std::string LANDiscovery::getServerListItemRTT(unsigned int index)
+  {
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else{
+      uint32_t serverrtt = this->servers_[index].getServerRTT();
+      return Ogre::StringConverter::toString(serverrtt);
+    }
+  }
 
+  std::string LANDiscovery::getServerListItemPlayerNumber(unsigned int index)
+  {
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else{
+      int playerNumber = this->servers_[index].getClientNumber();
+      return Ogre::StringConverter::toString(playerNumber);
+    }
+  }
 } // namespace orxonox

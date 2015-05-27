@@ -76,7 +76,13 @@ namespace orxonox
     this->setPort( port );
     this->timeSinceLastUpdate_=0;
   }
-
+/*
+  Server::Server(int port, const std::string name)
+  {
+    this->setPort( port );
+    this->timeSinceLastUpdate_=0;
+    this->serverName_=name;
+  }*/
   /**
   * Constructor
   * @param port Port to listen on
@@ -107,9 +113,11 @@ namespace orxonox
 
     /* make discoverable on LAN */
     LANDiscoverable::setActivity(true);
+    LANDiscoverable::updateClientNumber(0);
 
     /* make discoverable on WAN */
     WANDiscoverable::setActivity(true);
+    WANDiscoverable::updateClientNumber(0);
 
     /* done */
     return;
@@ -282,12 +290,16 @@ namespace orxonox
 
     // inform all the listeners
     this->clientIDs_.push_back(peerID);
+    WANDiscoverable::updateClientNumber(this->clientIDs_.size());
+    LANDiscoverable::updateClientNumber(this->clientIDs_.size());
+
     ClientConnectionListener::broadcastClientConnected(peerID);
     GamestateManager::addPeer(peerID);
 
 //     ++newid;
 
     orxout(internal_info, context::network) << "Server: added client id: " << peerID << endl;
+
     createClient(peerID);
 }
 
@@ -308,6 +320,9 @@ namespace orxonox
       break;
     }
   }
+  WANDiscoverable::updateClientNumber(this->clientIDs_.size());
+  LANDiscoverable::updateClientNumber(this->clientIDs_.size());
+
   ClientConnectionListener::broadcastClientDisconnected(peerID);
   GamestateManager::removePeer(peerID);
       //ServerConnection::disconnectClient( client );

@@ -66,6 +66,9 @@ namespace orxonox
     unsigned int getRTT(unsigned int clientID);
     virtual void printRTT();
     float getPacketLoss(unsigned int clientID);
+    int getClientCount() { return this->clientIDs_.size();}
+    std::string getServerName() { return this->serverName_;}
+
   protected:
     void updateGamestate();
   private:
@@ -88,6 +91,7 @@ namespace orxonox
     float timeSinceLastUpdate_;
     std::deque<packet::Packet*> packetQueue_;
     std::vector<uint32_t>       clientIDs_;
+    std::string                 serverName_;
   };
 
 

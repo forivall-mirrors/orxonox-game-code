@@ -34,10 +34,10 @@
 #include <network/packet/ServerInformation.h>
 
 /* methods necessary */
-namespace orxonox 
-{ 
+namespace orxonox
+{
   /* HELPER STRUCTURES */
-  struct ServerListElem 
+  struct ServerListElem
   {
     /* server information (name, IP, etc) */
     packet::ServerInformation ServerInfo;
@@ -62,7 +62,7 @@ namespace orxonox
   /** This class is keeps a list of game servers
    * and some info about them.
    */
-  class ServerList 
+  class ServerList
   { public:
       /** constructor */
       ServerList();
@@ -73,43 +73,44 @@ namespace orxonox
 
       /* BASIC MANIPULATION */
       /** \param toadd the server to add.
-       * 
+       *
        * Add server to the game server list
        */
       int addServer( packet::ServerInformation toadd,
         ENetPeer *peer );
 
       /** \param name Name of the server to remove
-       * 
-       * Remove server by name 
+       *
+       * Remove server by name
        */
       bool delServerByName( std::string name );
 
       /** \param address IP address of the server to remove
-       * 
+       *
        * Remove server by address
        */
       bool delServerByAddress( std::string address );
 
+      bool setNameByAddress( std::string address, std::string name  );
 
-
+      bool setClientsByAddress( std::string address, int clientNumber );
 
       /* SEARCHING */
-      /* \param address The address of the server that is to be 
+      /* \param address The address of the server that is to be
        *  found
        * \return A struct containing a result of the search and a boolean
        *  that is only true if the search was successful
-       * 
+       *
        * Find and return the list handle of a given address.
        */
       ServerListSearchResult
       findServerByAddress( std::string address );
 
 
-      /* \param name The name of the server that is to be 
+      /* \param name The name of the server that is to be
        *  found
        * \return The struct containing the list entry of the server
-       * 
+       *
        * Find and return the list handle of a given name.
        */
       ServerListSearchResult
@@ -119,7 +120,7 @@ namespace orxonox
       /* SORTING */
       /** sort by name  */
       void sortByName();
-      
+
       /** sort by ping */
       void sortByPing();
 
