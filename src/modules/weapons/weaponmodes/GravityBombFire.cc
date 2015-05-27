@@ -18,7 +18,7 @@ namespace orxonox
 {
 	RegisterClass(GravityBombFire);
 
-	const float GravityBombFire::BOMB_VELOCITY = 400.0; ///< The velocity of the bomb after launch
+	const float GravityBombFire::BOMB_VELOCITY = 600.0; ///< The velocity of the bomb after launch
 
 	GravityBombFire::GravityBombFire(Context* context) : WeaponMode(context)
 	{
