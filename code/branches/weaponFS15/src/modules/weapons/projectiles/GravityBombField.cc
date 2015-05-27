@@ -15,7 +15,7 @@ namespace orxonox{
 	
 	const float GravityBombField::FORCE_FIELD_LIFETIME = 15;
 	const float GravityBombField::FORCE_SPHERE_START_RADIUS = 250;
-	const float GravityBombField::FORCE_SPHERE_START_STRENGTH = -500;
+	const float GravityBombField::FORCE_SPHERE_START_STRENGTH = -700;
 	const float GravityBombField::PEAK_EXPLOSION_FORCE = 5e4;
 	const float GravityBombField::FORCE_FIELD_EXPLOSION_DAMMAGE = 100;
 	const float GravityBombField::EXPLOSION_DURATION = 1;
@@ -39,9 +39,9 @@ namespace orxonox{
 		setCollisionResponse(false);
 
 		//Make the Field visible on Radar and minimap.
-		this->setRadarObjectColour(ColourValue(0.2, 0.2, 1.0,1)); // Blue
+		this->setRadarObjectColour(ColourValue(1.0, 0.0, 0.2,1)); // Red
 		this->setRadarObjectShape(RadarViewable::Dot);
-		this->setRadarObjectScale(0.5f);
+		this->setRadarObjectScale(1.0f);
 		
 
 		//Attach Model

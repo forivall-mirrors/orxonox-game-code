@@ -11,7 +11,7 @@
 namespace orxonox{
 	RegisterClass(GravityBomb);
 
-	const float GravityBomb::LIFETIME = 5;  ///< The gravity bomb lifetime in seconds.
+	const float GravityBomb::LIFETIME = 2.5;  ///< The gravity bomb lifetime in seconds.
 
 	GravityBomb::GravityBomb(Context* context):
 				BasicProjectile(),
@@ -21,7 +21,7 @@ namespace orxonox{
 			RegisterObject(GravityBomb);
 
 			this->setMass(10.0);
-			this->isDetonated_ = false;
+			this->hasCollided_ = false;
 			if (GameMode::isMaster())
 			{
 				//Define CollisionType of the bomb
@@ -66,35 +66,26 @@ namespace orxonox{
 
 	void GravityBomb::tick(float dt)
 	{
-			timeToLife_ -= dt;
-			if(timeToLife_ < 0)
-			{
-				//orxout(debug_output) << "bomb has stoped moving" <<endl;
-				setVelocity(Vector3::ZERO); //Stop the bomb.
-				isDetonated_ = true;
-			}
-			else
-			{
-				//orxout(debug_output)<< "Time to live:" << timeToLife_ <<endl;
-				destroyCheck(); //Every BasicProjectil has to call this method in each tick.
-			}
-			if(isDetonated_) detonate();
-			else SUPER(GravityBomb, tick, dt);
+		SUPER(GravityBomb, tick, dt);
+		timeToLife_ -= dt;
+		if (timeToLife_ < 0)
+		{
+			//orxout(debug_output) << "bomb has stoped moving" <<endl;
+			setVelocity(Vector3::ZERO); //Stop the bomb.
+			detonate();
+			this->destroy();
+		}
+		else 
+		{
+			if (hasCollided_) detonate();
+			destroyCheck(); //Bomb is going to be destroyed by destroyCheck(). As written in BasicProectile, this Method should be called by every Projectile.
+		}
 	}
 
 	bool GravityBomb::collidesAgainst(WorldEntity* otherObject, const btCollisionShape* cs, btManifoldPoint& contactPoint)
 	{
-		if(otherObject != getShooter()) //Ensure that the bomb cannot collide with its shooter.
-		{
-			orxout(debug_output) << "collides" << endl;
-			processCollision(otherObject, contactPoint,cs);
-			isDetonated_ = true;
-			return true;
-		}
-		else{
-			//orxout(debug_output) << "collided with shooter. Has no effect..." << endl;
-			return false;
-		}
+		hasCollided_ = processCollision(otherObject, contactPoint, cs);
+		return hasCollided_;
 	}
 
 	void GravityBomb::detonate()
@@ -105,7 +96,6 @@ namespace orxonox{
 		field->setPosition(getPosition());
 		//orxout(debug_output) << "detonating. Creating GravityBombField." <<endl;
 		//orxout(debug_output) << "Field is at Position: " << getPosition() << endl;
-		this->destroy();
 	}
 }
 
