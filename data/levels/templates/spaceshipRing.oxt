@@ -1,7 +1,7 @@
 <Template name=spaceshipring>
   <SpaceShip
    hudtemplate            = spaceshiphud
-   camerapositiontemplate = spaceshipescortcameras
+   camerapositiontemplate = spaceshipringcameras
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 4
@@ -38,8 +38,8 @@
    angularDamping    = 0.9999999
   >
     <engines>
-      <MultiStateEngine position=" 7.6, 0, 0" template=spaceshipescortengine />
-      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipescortengine />
+      <MultiStateEngine position=" 7.6, 0, 0" template=spaceshipringengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipringengine />
     </engines>
     <attached>
       <Model position="0,0,0" yaw=90 pitch=0 roll=0 scale=4 mesh="ship.mesh" />
@@ -62,7 +62,7 @@
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipescortcameras defaults=0>
+<Template name=spaceshipringcameras defaults=0>
   <SpaceShip>
     <camerapositions>
       <CameraPosition position="0,15, 60" drag=true mouselook=true />
@@ -72,7 +72,7 @@
   </SpaceShip>
 </Template>
 
-<Template name=spaceshipescortengine baseclass=MultiStateEngine>
+<Template name=spaceshipringengine baseclass=MultiStateEngine>
   <MultiStateEngine
    boostfactor    = 2.2
 
