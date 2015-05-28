@@ -14,6 +14,7 @@
 <?lua
   include("templates/spaceshipRing.oxt")
   include("templates/spaceshipFS15.oxt")
+  include("templates/orbStation.oxt")
 
 ?>
 
@@ -29,18 +30,7 @@
   >
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-2000,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipfs15/>
-    
-    
-    <SpaceShip position="0,500,500" lookat="0,1000,0" >
-      <attached>
-        <DistanceTriggerBeacon name="bcnDestroyer" />
-        <DockingTarget name="destroyer" />
-      </attached>
-      <templates>
-        <Template link=spaceshipring />
-      </templates>
-    </SpaceShip>
+    <SpawnPoint team=0 position="-500,0,0" lookat="-1000,0,0" spawnclass=SpaceShip pawndesign=spaceshipfs15/>
 
     <!-- Docking  -->
     <Dock position="-1000,0,0" roll=0 yaw=0 >
@@ -60,6 +50,45 @@
         </execute>
       </events>
     </Dock>
+
+    <SpaceShip position="0,0,0" lookat="0,1000,1000" >
+      <attached>
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+      </attached>
+      <templates>
+        <Template link=spaceshipring />
+      </templates>
+      <events>
+        <visibility>
+          <EventListener event="dockMe" />
+        </visibility>
+      </events>
+    </SpaceShip>
+
+    <Billboard position="0,500,500" material="Flares/ringflare2" colour="0.8,0.4,0.2" scale=1 />
+    <DistanceTrigger position="0,500,500" distance="200" target="Pawn" name="takeControl"/>
+
+    <MovableEntity position="0,1000,1000" >
+      <templates>
+        <Template link=orbStation/>
+      </templates>
+      <events>
+        <visibility>
+          <EventListener event="dockMe" />
+        </visibility>
+      </events>
+    </MovableEntity>
+
+    <ControllerDirector position="0,0,0" scriptname="presentation">
+      <events>
+        <takeControl>
+          <EventListener event="takeControl" />
+        </takeControl>
+      </events>
+    </ControllerDirector>
+
+
   </Scene>
 </Level>
 
