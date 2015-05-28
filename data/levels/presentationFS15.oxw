@@ -15,7 +15,7 @@
   include("templates/spaceshipRing.oxt")
   include("templates/spaceshipFS15.oxt")
   include("templates/orbStation.oxt")
-
+  include("templates/spaceshipSwallow.oxt")
 ?>
 
 <Level>
@@ -32,8 +32,17 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-500,0,0" lookat="-1000,0,0" spawnclass=SpaceShip pawndesign=spaceshipfs15/>
 
+    <?lua for i=0,4,1 do ?>
+      <SpaceShip position="-3000,<?lua print(i*200)?>,0" lookat="-500,0,0" visible="true">
+        <templates>
+          <Template link=spaceshipswallow />
+        </templates>
+      </SpaceShip>
+    <?lua end ?>
+
+
     <!-- Docking  -->
-    <Dock position="-1000,0,0" roll=0 yaw=0 >
+    <Dock position="-2000,-1000,0" roll=0 yaw=0 >
       <attached>
         <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
         <DistanceTrigger position="0,0,0" distance="200" target="Pawn" beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"/>
@@ -66,10 +75,7 @@
       </events>
     </SpaceShip>
 
-    <Billboard position="0,500,500" material="Flares/ringflare2" colour="0.8,0.4,0.2" scale=1 />
-    <DistanceTrigger position="0,500,500" distance="200" target="Pawn" name="takeControl"/>
-
-    <MovableEntity position="0,1000,1000" >
+    <MovableEntity position="2000,0,0" >
       <templates>
         <Template link=orbStation/>
       </templates>
@@ -80,7 +86,10 @@
       </events>
     </MovableEntity>
 
-    <ControllerDirector position="0,0,0" scriptname="presentation">
+    <Billboard position="0,500,500" material="Flares/ringflare2" colour="0.8,0.4,0.2" scale=1 />
+    <DistanceTrigger position="0,500,500" distance="20" target="Pawn" name="takeControl"/>
+    
+    <ControllerDirector position="0,500,500" scriptname="presentation">
       <events>
         <takeControl>
           <EventListener event="takeControl" />

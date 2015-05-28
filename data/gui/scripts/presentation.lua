@@ -1,20 +1,19 @@
 -- Set some test variables
-xm = 1000 
-ym = 0
-zm = 0
+x0 = 0
+y0 = 500
+z0 = 500
 
-xl = -1000 
-yl = 3000 
-zl = -1000
+xo = 2000 
+yo = 0
+zo = 0
 
-xr = 2000
-yr = 500
-zr = 2000
+x1 = 3000
+y1 = 0 
+z1 = 0
 
-d = 5
-Tabs = 0
-
-pi = 3.1415
+x2 = 2000
+y2 = 2000 
+z2 = 0
 
 -- Get a local pointer to a scriptcontroller
 local ctrl = orxonox.ScriptController:getScriptController()
@@ -22,19 +21,17 @@ local ctrl = orxonox.ScriptController:getScriptController()
 -- If it worked, call its "movetoposition" function
 if ctrl ~= nil then
 
-  ctrl:eventScheduler("mal", xl,yl,zl, xl,yl,zl, 2)
   ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("ral", xl, yl, zl, 3, 0, 0, math.pi)
+  ctrl:eventScheduler("chl", x0, y0, z0, xo, yo, zo, 2)
   ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("mal", 0,0,1000, xl,yl,zl, 3)
+  ctrl:eventScheduler("mal", x2, y2, z2, xo, yo, zo, 2)
+  ctrl:eventScheduler("mal", x1, y1, z1, xo, yo, zo, 2)
   ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("chl", xl, yl, zl, xr, yr, zr, 2)
+  ctrl:eventScheduler("ral", xo, yo, zo, 3, 1000, 0, 5)
   ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("mal", xr + 600,yr,zr, xr,yr,zr, 4)
+  ctrl:eventScheduler("ral", xo, yo, zo, 2, 1000, 0, 5)
   ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("chl", xr, yr, zr, xl, yl, zl, 3)
-  ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("spi", xm,ym,zm, 0,0,0, 4)
+  ctrl:eventScheduler("ral", xo, yo, zo, 1, 1000, 0, 5)
   ctrl:eventScheduler("idle", 1)
 
 end
