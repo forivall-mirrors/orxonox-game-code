@@ -42,9 +42,9 @@
 
 
     <!-- Docking  -->
-    <Dock position="-2000,-1000,0" roll=0 yaw=0 >
+    <Dock position="-2000,0,-1000" roll=0 yaw=0 >
       <attached>
-        <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.2,0.4,0.8" scale=1 />
+        <Billboard position="0,0,0" material="Alien" scale=5/>
         <DistanceTrigger position="0,0,0" distance="200" target="Pawn" beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"/>
       </attached>
       <animations>
