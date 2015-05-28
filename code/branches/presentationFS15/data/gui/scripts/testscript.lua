@@ -24,7 +24,7 @@ if ctrl ~= nil then
 
   ctrl:eventScheduler("mal", xl,yl,zl, xl,yl,zl, 2)
   ctrl:eventScheduler("idle", 1)
-  ctrl:eventScheduler("ral", xl, yl, zl, 3, 0, 0, math.pi)
+  ctrl:eventScheduler("ral", xl, yl, zl, 3, 3000, 0, math.pi)
   ctrl:eventScheduler("idle", 1)
   ctrl:eventScheduler("mal", 0,0,1000, xl,yl,zl, 3)
   ctrl:eventScheduler("idle", 1)

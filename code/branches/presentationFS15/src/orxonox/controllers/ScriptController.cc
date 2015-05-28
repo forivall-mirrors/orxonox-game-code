@@ -244,19 +244,19 @@ namespace orxonox
             Vector3* a;
               switch ((int) currentEvent.d) {
                 case 3:
-                  a = new Vector3(this->currentEvent.v1.x + 3000*cos(2*M_PI*dl),
-                                  this->currentEvent.v1.y + 3000*sin(2*M_PI*dl),
+                  a = new Vector3(this->currentEvent.v1.x + this->currentEvent.e *cos(2*M_PI*dl),
+                                  this->currentEvent.v1.y + this->currentEvent.e*sin(2*M_PI*dl),
                                   this->currentEvent.v1.z);
                 break;
                 case 2:
-                  a = new Vector3(this->currentEvent.v1.x + 3000*cos(2*M_PI*dl),
+                  a = new Vector3(this->currentEvent.v1.x + this->currentEvent.e*sin(2*M_PI*dl),
                                   this->currentEvent.v1.y,
-                                  this->currentEvent.v1.z + 3000*cos(2*M_PI*dl));
+                                  this->currentEvent.v1.z + this->currentEvent.e*cos(2*M_PI*dl));
                 break;
                 case 1:
                   a = new Vector3(this->currentEvent.v1.x,
-                                  this->currentEvent.v1.y + 3000*sin(2*M_PI*dl),
-                                  this->currentEvent.v1.z + 3000*cos(2*M_PI*dl));
+                                  this->currentEvent.v1.y + this->currentEvent.e*sin(2*M_PI*dl),
+                                  this->currentEvent.v1.z + this->currentEvent.e*cos(2*M_PI*dl));
                 break;
               }
 
