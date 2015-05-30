@@ -94,7 +94,7 @@ namespace orxonox
 
         this->xmlfile_ = new XMLFile(mask, this->xmlfilename_);
 
-        Loader::getInstance().open(this->xmlfile_);
+        Loader::getInstance().load(this->xmlfile_);
     }
 
     void Level::networkCallbackTemplatesChanged()

@@ -54,21 +54,9 @@ namespace orxonox
         friend class Singleton<Loader>;
 
         public:
-            bool open(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
-            void close();
-            void close(const XMLFile* file);
-
-            void add(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
-            void remove(const XMLFile* file);
-
-            bool load(const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
-            void unload(const ClassTreeMask& mask = ClassTreeMask());
-            bool reload(const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
-
             bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(),
                       bool bVerbose = true, bool bRemoveLuaTags = false);
             void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
-            bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
 
             static std::string replaceLuaTags(const std::string& text);
             static std::string removeLuaTags(const std::string& text);

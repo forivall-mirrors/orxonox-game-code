@@ -49,92 +49,6 @@ namespace orxonox
 {
     Loader* Loader::singletonPtr_s = 0;
 
-    bool Loader::open(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
-    {
-        this->add(file, mask);
-        return this->load(file, mask, bVerbose);
-    }
-
-    void Loader::close()
-    {
-        this->unload();
-        this->files_.clear();
-    }
-
-    void Loader::close(const XMLFile* file)
-    {
-        this->unload(file);
-        this->remove(file);
-    }
-
-    void Loader::add(const XMLFile* file, const ClassTreeMask& mask)
-    {
-        if (!file)
-            return;
-        this->files_.insert(this->files_.end(), std::pair<const XMLFile*, ClassTreeMask>(file, mask));
-    }
-
-    void Loader::remove(const XMLFile* file)
-    {
-        if (!file)
-            return;
-        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = this->files_.begin(); it != this->files_.end(); ++it)
-        {
-            if (it->first == file)
-            {
-                this->files_.erase(it);
-                break;
-            }
-        }
-    }
-
-    /**
-    @brief
-        Loads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
-    @param mask
-        A ClassTreeMask, which defines which types of classes are loaded and which aren't.
-    @param bVerbose
-        Whether the loader is verbose (prints its progress in a low output level) or not.
-    @return
-        Returns true if successful.
-    */
-    bool Loader::load(const ClassTreeMask& mask, bool bVerbose)
-    {
-        bool success = true;
-        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = this->files_.begin(); it != this->files_.end(); ++it)
-            if (!this->load(it->first, it->second * mask, bVerbose))
-                success = false;
-
-        return success;
-    }
-
-    void Loader::unload(const ClassTreeMask& mask)
-    {
-        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); )
-        {
-            if (mask.isIncluded(it->getIdentifier()))
-                (it++)->destroy();
-            else
-                ++it;
-        }
-    }
-
-    /**
-    @brief
-        Reloads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
-    @param mask
-        A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
-    @param bVerbose
-        Whether the loader is verbose (prints its progress in a low output level) or not.
-    @return
-        Returns true if successful.
-    */
-    bool Loader::reload(const ClassTreeMask& mask, bool bVerbose)
-    {
-        this->unload(mask);
-        return this->load(mask, bVerbose);
-    }
-
     /**
     @brief
         Loads the input file, while conforming to the restrictions given by the input ClassTreeMask.
@@ -301,24 +215,6 @@ namespace orxonox
             else
                 ++it;
         }
-    }
-
-    /**
-    @brief
-        Reloads the input file, while conforming to the restrictions given by the input ClassTreeMask.
-    @param file
-        The file to be reloaded.
-    @param mask
-        A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
-    @param bVerbose
-        Whether the loader is verbose (prints its progress in a low output level) or not.
-    @return
-        Returns true if successful.
-    */
-    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
-    {
-        this->unload(file, mask);
-        return this->load(file, mask, bVerbose);
     }
 
     bool Loader::getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags)
