@@ -116,7 +116,7 @@ namespace orxonox
         // Load resources
         resources_.reset(new XMLFile("DefaultResources.oxr"));
         resources_->setLuaSupport(false);
-        Loader::getInstance().open(resources_.get(), ClassTreeMask(), false);
+        Loader::getInstance().load(resources_.get(), ClassTreeMask(), false);
 
         // Only for runs in the build directory (not installed)
         if (PathConfig::buildDirectoryRun())
@@ -124,7 +124,7 @@ namespace orxonox
 
         extResources_.reset(new XMLFile("resources.oxr"));
         extResources_->setLuaSupport(false);
-        Loader::getInstance().open(extResources_.get(), ClassTreeMask(), false);
+        Loader::getInstance().load(extResources_.get(), ClassTreeMask(), false);
 
         if (bLoadRenderer)
         {
@@ -329,7 +329,7 @@ namespace orxonox
         // Load debug overlay to show info about fps and tick time
         orxout(internal_info) << "Loading Debug Overlay..." << endl;
         debugOverlay_.reset(new XMLFile("debug.oxo"));
-        Loader::getInstance().open(debugOverlay_.get(), ClassTreeMask(), false);
+        Loader::getInstance().load(debugOverlay_.get(), ClassTreeMask(), false);
     }
 
     /**

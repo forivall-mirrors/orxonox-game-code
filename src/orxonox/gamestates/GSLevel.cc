@@ -167,7 +167,7 @@ namespace orxonox
 
         // call the loader
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
-        bool loaded = Loader::getInstance().open(startFile_);
+        bool loaded = Loader::getInstance().load(startFile_);
 
         Core::getInstance().getConfig()->updateLastLevelTimestamp();
         if(!loaded)
