@@ -105,7 +105,7 @@ extern "C" {
 #include "Game.h"
 #include "GraphicsManager.h"
 #include "LuaState.h"
-#include "PathConfig.h"
+#include "ConfigurablePaths.h"
 #include "Resource.h"
 #include "command/ConsoleCommandIncludes.h"
 #include "input/InputManager.h"
@@ -330,7 +330,7 @@ namespace orxonox
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
-        ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
+        ceguiLogger->setLogFilename(ConfigurablePaths::getLogPathString() + "cegui.log");
         ceguiLogger->setLoggingLevel(static_cast<CEGUI::LoggingLevel>(this->outputLevelCeguiLog_));
         this->ceguiLogger_ = ceguiLogger.release();
 

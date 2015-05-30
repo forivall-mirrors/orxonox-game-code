@@ -36,7 +36,8 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/config/ConfigFile.h"
-#include "core/PathConfig.h"
+#include "core/ApplicationPaths.h"
+#include "core/ConfigurablePaths.h"
 #include "InputCommands.h"
 #include "JoyStick.h"
 
@@ -254,13 +255,13 @@ namespace orxonox
     {
         orxout(internal_info, context::input) << "KeyBinder: Loading key bindings..." << endl;
 
-        this->configFile_ = new ConfigFile(this->filename_, !PathConfig::buildDirectoryRun());
+        this->configFile_ = new ConfigFile(this->filename_, !ApplicationPaths::buildDirectoryRun());
         this->configFile_->load();
 
-        if (PathConfig::buildDirectoryRun())
+        if (ApplicationPaths::buildDirectoryRun())
         {
             // Dev users should have combined key bindings files
-            std::string defaultFilepath(PathConfig::getDataPathString() + ConfigFile::DEFAULT_CONFIG_FOLDER + '/' + this->filename_);
+            std::string defaultFilepath(ConfigurablePaths::getDataPathString() + ConfigFile::DEFAULT_CONFIG_FOLDER + '/' + this->filename_);
             std::ifstream file(defaultFilepath.c_str());
             if (file.is_open())
             {
@@ -288,7 +289,7 @@ namespace orxonox
         {
             addButtonToCommand(binding, it->second);
             std::string str = binding;
-            if (PathConfig::buildDirectoryRun() && binding.empty())
+            if (ApplicationPaths::buildDirectoryRun() && binding.empty())
                 str = "NoBinding";
             it->second->setBinding(this->configFile_, this->fallbackConfigFile_, binding, bTemporary);
             return true;

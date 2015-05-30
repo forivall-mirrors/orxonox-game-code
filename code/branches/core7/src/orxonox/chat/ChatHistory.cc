@@ -28,6 +28,7 @@
 
 #include "ChatHistory.h"
 #include "core/singleton/ScopedSingletonIncludes.h"
+#include "core/ConfigurablePaths.h"
 
 #ifndef CHATTEST
 namespace orxonox
@@ -120,7 +121,7 @@ namespace orxonox
      *       and set the this->hist_logfile_path variable to it
      */
 #ifndef CHATTEST
-    this->hist_logfile.open( (PathConfig::getInstance().getLogPathString() +
+    this->hist_logfile.open( (ConfigurablePaths::getLogPathString() +
       "chatlog.log").c_str(),
       std::fstream::out | std::fstream::app );
 #else

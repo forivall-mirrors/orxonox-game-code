@@ -58,7 +58,8 @@
 #include "core/singleton/Scope.h"
 #include "core/singleton/ScopedSingletonIncludes.h"
 #include "util/SignalHandler.h"
-#include "PathConfig.h"
+#include "ApplicationPaths.h"
+#include "ConfigurablePaths.h"
 #include "commandline/CommandLineIncludes.h"
 #include "config/ConfigFileManager.h"
 #include "DynLibManager.h"
@@ -93,7 +94,8 @@ namespace orxonox
 #endif
 
     Core::Core(const std::string& cmdLine)
-        : pathConfig_(NULL)
+        : applicationPaths_(NULL)
+        , configurablePaths_(NULL)
         , dynLibManager_(NULL)
         , signalHandler_(NULL)
         , configFileManager_(NULL)
@@ -114,14 +116,14 @@ namespace orxonox
         orxout(internal_status) << "initializing Core object..." << endl;
 
         // Set the hard coded fixed paths
-        this->pathConfig_ = new PathConfig();
+        this->applicationPaths_ = new ApplicationPaths();
 
         // Create a new dynamic library manager
         this->dynLibManager_ = new DynLibManager();
 
         // Load modules
         orxout(internal_info) << "Loading modules:" << endl;
-        const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
+        const std::vector<std::string>& modulePaths = ApplicationPaths::getInstance().getModulePaths();
         for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
         {
             try
@@ -145,20 +147,22 @@ namespace orxonox
         CommandLineParser::parse(cmdLine);
 
         // Set configurable paths like log, config and media
-        this->pathConfig_->setConfigurablePaths();
+        this->configurablePaths_ = new ConfigurablePaths();
+        this->configurablePaths_->setConfigurablePaths(ApplicationPaths::getInstance());
 
-        orxout(internal_info) << "Root path:       " << PathConfig::getRootPathString() << endl;
-        orxout(internal_info) << "Executable path: " << PathConfig::getExecutablePathString() << endl;
-        orxout(internal_info) << "Data path:       " << PathConfig::getDataPathString() << endl;
-        orxout(internal_info) << "Ext. data path:  " << PathConfig::getExternalDataPathString() << endl;
-        orxout(internal_info) << "Config path:     " << PathConfig::getConfigPathString() << endl;
-        orxout(internal_info) << "Log path:        " << PathConfig::getLogPathString() << endl;
-        orxout(internal_info) << "Modules path:    " << PathConfig::getModulePathString() << endl;
+        orxout(internal_info) << "Root path:       " << ApplicationPaths::getRootPathString() << endl;
+        orxout(internal_info) << "Executable path: " << ApplicationPaths::getExecutablePathString() << endl;
+        orxout(internal_info) << "Modules path:    " << ApplicationPaths::getModulePathString() << endl;
 
-        // create a signal handler (only active for Linux)
+        orxout(internal_info) << "Data path:       " << ConfigurablePaths::getDataPathString() << endl;
+        orxout(internal_info) << "Ext. data path:  " << ConfigurablePaths::getExternalDataPathString() << endl;
+        orxout(internal_info) << "Config path:     " << ConfigurablePaths::getConfigPathString() << endl;
+        orxout(internal_info) << "Log path:        " << ConfigurablePaths::getLogPathString() << endl;
+
+        // create a signal handler
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_ = new SignalHandler();
-        this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
+        this->signalHandler_->doCatch(ApplicationPaths::getExecutablePathString(), ConfigurablePaths::getLogPathString() + "orxonox_crash.log");
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
@@ -185,7 +189,7 @@ namespace orxonox
         this->config_ = new CoreConfig();
 
         // Set the correct log path and rewrite the log file with the correct log levels
-        OutputManager::getInstance().getLogWriter()->setLogDirectory(PathConfig::getLogPathString());
+        OutputManager::getInstance().getLogWriter()->setLogDirectory(ConfigurablePaths::getLogPathString());
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
@@ -208,7 +212,7 @@ namespace orxonox
         this->graphicsManager_ = new GraphicsManager(false);
 
         // initialise Tcl
-        this->tclBind_ = new TclBind(PathConfig::getDataPathString());
+        this->tclBind_ = new TclBind(ConfigurablePaths::getDataPathString());
         this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
 
         // Create singletons that always exist (in other libraries)
@@ -254,7 +258,8 @@ namespace orxonox
         IdentifierManager::getInstance().destroyAllIdentifiers();
         safeObjectDelete(&signalHandler_);
         safeObjectDelete(&dynLibManager_);
-        safeObjectDelete(&pathConfig_);
+        safeObjectDelete(&configurablePaths_);
+        safeObjectDelete(&applicationPaths_);
 
         orxout(internal_status) << "finished destroying Core object" << endl;
     }

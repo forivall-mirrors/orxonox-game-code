@@ -44,7 +44,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
-#include "core/PathConfig.h"
+#include "core/ConfigurablePaths.h"
 #include "core/Resource.h"
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/singleton/ScopedSingletonIncludes.h"
@@ -153,7 +153,7 @@ namespace orxonox
         if(finalImage != NULL)
         {
             // Save it.
-            finalImage->save(PathConfig::getInstance().getLogPathString() + "screenshot_" + getTimestamp() + this->fileExtension_);
+            finalImage->save(ConfigurablePaths::getLogPathString() + "screenshot_" + getTimestamp() + this->fileExtension_);
             delete finalImage;
             orxout(user_info) << "Finished taking " << this->gridSize_*this->windowWidth_ << "x" << this->gridSize_*this->windowHeight_ << " pixel HD screenshot. Storing in log/." << endl;
         }

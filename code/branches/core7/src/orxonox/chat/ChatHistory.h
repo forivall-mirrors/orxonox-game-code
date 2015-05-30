@@ -40,7 +40,6 @@
 
 #include "util/Singleton.h"
 #include "core/BaseObject.h"
-#include "core/PathConfig.h"
 #include "chat/ChatListener.h"
 #include "infos/PlayerInfo.h"
 #include "PlayerManager.h"

@@ -37,7 +37,7 @@
 
 #include "util/Convert.h"
 #include "util/StringUtils.h"
-#include "core/PathConfig.h"
+#include "core/ConfigurablePaths.h"
 #include "ConfigFileEntryComment.h"
 #include "ConfigFileEntryValue.h"
 
@@ -80,13 +80,13 @@ namespace orxonox
         boost::filesystem::path filepath(this->filename_);
         if (!filepath.is_complete())
         {
-            filepath = PathConfig::getConfigPath() / filepath;
+            filepath = ConfigurablePaths::getConfigPath() / filepath;
             if (this->bCopyFallbackFile_)
             {
                 // Look for default file in the data folder
                 if (!boost::filesystem::exists(filepath))
                 {
-                    boost::filesystem::path defaultFilepath(PathConfig::getDataPath() / DEFAULT_CONFIG_FOLDER / this->filename_);
+                    boost::filesystem::path defaultFilepath(ConfigurablePaths::getDataPath() / DEFAULT_CONFIG_FOLDER / this->filename_);
                     if (boost::filesystem::exists(defaultFilepath))
                     {
                         // Try to copy default file from the data folder
@@ -215,7 +215,7 @@ namespace orxonox
     {
         boost::filesystem::path filepath(filename);
         if (!filepath.is_complete())
-            filepath = PathConfig::getConfigPath() / filename;
+            filepath = ConfigurablePaths::getConfigPath() / filename;
         std::ofstream file;
         file.open(filepath.string().c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);

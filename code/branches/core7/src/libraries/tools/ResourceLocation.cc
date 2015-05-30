@@ -34,7 +34,8 @@
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "core/PathConfig.h"
+#include "core/ApplicationPaths.h"
+#include "core/ConfigurablePaths.h"
 #include "core/XMLFile.h"
 #include "core/XMLPort.h"
 
@@ -73,10 +74,10 @@ namespace orxonox
         // Find the path
         namespace bf = boost::filesystem;
         bf::path path;
-        if (bf::exists(PathConfig::getDataPath() / this->getPath()))
-            path = PathConfig::getDataPath() / this->getPath();
-        else if (PathConfig::buildDirectoryRun() && bf::exists(PathConfig::getExternalDataPath() / this->getPath()))
-            path = PathConfig::getExternalDataPath() / this->getPath();
+        if (bf::exists(ConfigurablePaths::getDataPath() / this->getPath()))
+            path = ConfigurablePaths::getDataPath() / this->getPath();
+        else if (ApplicationPaths::buildDirectoryRun() && bf::exists(ConfigurablePaths::getExternalDataPath() / this->getPath()))
+            path = ConfigurablePaths::getExternalDataPath() / this->getPath();
         else
         {
             orxout(internal_warning) << "ResourceLocation '" << this->getPath() << "' does not seem to exist" << endl;

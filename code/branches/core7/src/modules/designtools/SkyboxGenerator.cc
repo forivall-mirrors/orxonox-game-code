@@ -40,7 +40,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
-#include "core/PathConfig.h"
+#include "core/ConfigurablePaths.h"
 #include "core/Resource.h"
 #include "core/command/ConsoleCommandIncludes.h"
 #include "core/command/CommandExecutor.h"
@@ -174,7 +174,7 @@ namespace orxonox
                 // Setup the render window.
                 this->setupRenderWindow(renderWindow);
                 // Add the log path to the standard resource group.
-                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getInstance().getLogPathString(), "FileSystem", Resource::getDefaultResourceGroup());
+                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(ConfigurablePaths::getLogPathString(), "FileSystem", Resource::getDefaultResourceGroup());
                 
                 orxout(internal_status) << "Setting up SkyboxGenerator..." << endl;
                 
@@ -209,7 +209,7 @@ namespace orxonox
                 // Restore the render window.
                 this->restoreRenderWindow(renderWindow);
                 // Remove the log path from the standard resource group.
-                Ogre::ResourceGroupManager::getSingleton().removeResourceLocation(PathConfig::getInstance().getLogPathString(), Resource::getDefaultResourceGroup());
+                Ogre::ResourceGroupManager::getSingleton().removeResourceLocation(ConfigurablePaths::getLogPathString(), Resource::getDefaultResourceGroup());
                 
                 // Reset the flow parameters for the next skybox generation.
                 this->bGenerateSkybox_ = false;
@@ -307,14 +307,14 @@ namespace orxonox
     */
     void SkyboxGenerator::saveImage(Ogre::Image* image, const std::string& name) const
     {
-        image->save(PathConfig::getInstance().getLogPathString()+name);
+        image->save(ConfigurablePaths::getLogPathString()+name);
         delete image;
         // Loading the resizing, then saving again. This seems stupid, but resizing doesn't seem to work otherwise.
         // If someone figures this out, feel free to adjust.
         image = new Ogre::Image();
         image->load(name, Resource::getDefaultResourceGroup());
         image->resize(this->size_, this->size_);
-        image->save(PathConfig::getInstance().getLogPathString()+name);
+        image->save(ConfigurablePaths::getLogPathString()+name);
         delete image;
         ScreenshotManager::getInstance().cleanup(); // Free memory in ScreenshotManager.
     }

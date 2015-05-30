@@ -41,7 +41,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigFileManager.h"
 #include "core/config/ConfigValueIncludes.h"
-#include "core/PathConfig.h"
+#include "core/ApplicationPaths.h"
 #include "core/input/InputBuffer.h"
 #include "CommandExecutor.h"
 
@@ -83,7 +83,7 @@ namespace orxonox
         ConfigFileManager::getInstance().setFilename(ConfigFileType::CommandHistory, "commandHistory.ini");
 
         // Choose the default level according to the path Orxonox was started (build directory or not)
-        OutputLevel defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+        OutputLevel defaultDebugLevel = (ApplicationPaths::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
         this->setLevelMax(defaultDebugLevel);
 
         this->setConfigValues();
@@ -163,7 +163,7 @@ namespace orxonox
     */
     void Shell::devModeChanged(bool value)
     {
-        bool isNormal = (value == PathConfig::buildDirectoryRun());
+        bool isNormal = (value == ApplicationPaths::buildDirectoryRun());
         if (isNormal)
         {
             ModifyConfigValueExternal(this->configurableMaxLevel_, this->getConfigurableMaxLevelName(), update);

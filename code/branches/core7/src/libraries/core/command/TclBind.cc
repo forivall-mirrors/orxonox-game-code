@@ -36,7 +36,7 @@
 #include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
-#include "core/PathConfig.h"
+#include "core/ApplicationPaths.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommandIncludes.h"
 #include "TclThreadManager.h"
@@ -142,10 +142,10 @@ namespace orxonox
     std::string TclBind::getTclLibraryPath()
     {
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-        if (PathConfig::buildDirectoryRun())
+        if (ApplicationPaths::buildDirectoryRun())
             return (std::string(specialConfig::dependencyLibraryDirectory) + "/tcl");
         else
-            return (PathConfig::getRootPathString() + specialConfig::defaultLibraryPath + "/tcl");
+            return (ApplicationPaths::getRootPathString() + specialConfig::defaultLibraryPath + "/tcl");
 #else
         return "";
 #endif

@@ -36,7 +36,7 @@
 #include <fstream>
 #include "util/Output.h"
 #include "util/StringUtils.h"
-#include "PathConfig.h"
+#include "ConfigurablePaths.h"
 
 namespace orxonox
 {
@@ -201,7 +201,7 @@ namespace orxonox
     {
         orxout(internal_info, context::language) << "Read default language file." << endl;
 
-        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
+        const std::string& filepath = ConfigurablePaths::getConfigPathString() + getFilename(this->defaultLanguage_);
 
         // This creates the file if it's not existing
         std::ofstream createFile;
@@ -251,7 +251,7 @@ namespace orxonox
     {
         orxout(internal_info, context::language) << "Read translated language file (" << language << ")." << endl;
 
-        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(language);
+        const std::string& filepath = ConfigurablePaths::getConfigPathString() + getFilename(language);
 
         // Open the file
         std::ifstream file;
@@ -304,7 +304,7 @@ namespace orxonox
     {
         orxout(verbose, context::language) << "Write default language file." << endl;
 
-        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
+        const std::string& filepath = ConfigurablePaths::getConfigPathString() + getFilename(this->defaultLanguage_);
 
         // Open the file
         std::ofstream file;

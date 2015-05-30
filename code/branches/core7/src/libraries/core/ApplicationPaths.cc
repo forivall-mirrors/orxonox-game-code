@@ -26,7 +26,7 @@
  *
  */
 
-#include "PathConfig.h"
+#include "ApplicationPaths.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -52,17 +52,14 @@
 #include "SpecialConfig.h"
 #include "util/Output.h"
 #include "util/Exception.h"
-#include "commandline/CommandLineIncludes.h"
 
 // Differentiate Boost Filesystem v2 and v3
 #if (BOOST_FILESYSTEM_VERSION < 3)
 #  define BF_LEAF leaf
 #  define BF_GENERIC_STRING string
-#  define BF_NATIVE_STRING file_string
 #else
 #  define BF_LEAF path().filename().string
 #  define BF_GENERIC_STRING generic_string
-#  define BF_NATIVE_STRING string
 #endif
 
 namespace orxonox
@@ -70,19 +67,12 @@ namespace orxonox
     namespace bf = boost::filesystem;
 
     //! Static pointer to the singleton
-    PathConfig* PathConfig::singletonPtr_s  = 0;
+    ApplicationPaths* ApplicationPaths::singletonPtr_s  = 0;
 
-    SetCommandLineArgument(externalDataPath, "").information("Path to the external data files");
-    SetCommandLineArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
-
-    PathConfig::PathConfig()
+    ApplicationPaths::ApplicationPaths()
         : rootPath_(*(new bf::path()))
         , executablePath_(*(new bf::path()))
         , modulePath_(*(new bf::path()))
-        , dataPath_(*(new bf::path()))
-        , externalDataPath_(*(new bf::path()))
-        , configPath_(*(new bf::path()))
-        , logPath_(*(new bf::path()))
         , bBuildDirectoryRun_(false)
     {
         //////////////////////////
@@ -137,7 +127,7 @@ namespace orxonox
         if (bf::exists(executablePath_ / "orxonox_dev_build.keep_me"))
         {
             orxout(internal_info) << "Running from the build tree." << endl;
-            PathConfig::bBuildDirectoryRun_ = true;
+            ApplicationPaths::bBuildDirectoryRun_ = true;
             modulePath_ = specialConfig::moduleDevDirectory;
         }
         else
@@ -166,92 +156,14 @@ namespace orxonox
         }
     }
 
-    PathConfig::~PathConfig()
+    ApplicationPaths::~ApplicationPaths()
     {
         delete &rootPath_;
         delete &executablePath_;
         delete &modulePath_;
-        delete &dataPath_;
-        delete &externalDataPath_;
-        delete &configPath_;
-        delete &logPath_;
     }
 
-    void PathConfig::setConfigurablePaths()
-    {
-        if (bBuildDirectoryRun_)
-        {
-            dataPath_         = specialConfig::dataDevDirectory;
-            configPath_       = specialConfig::configDevDirectory;
-            logPath_          = specialConfig::logDevDirectory;
-
-            // Check for data path override by the command line
-            if (!CommandLineParser::getArgument("externalDataPath")->hasDefaultValue())
-                externalDataPath_ = CommandLineParser::getValue("externalDataPath").get<std::string>();
-            else
-                externalDataPath_ = specialConfig::externalDataDevDirectory;
-        }
-        else
-        {
-
-#ifdef INSTALL_COPYABLE // --> relative paths
-
-            // Using paths relative to the install prefix, complete them
-            dataPath_   = rootPath_ / specialConfig::defaultDataPath;
-            configPath_ = rootPath_ / specialConfig::defaultConfigPath;
-            logPath_    = rootPath_ / specialConfig::defaultLogPath;
-
-#else
-
-            dataPath_  = specialConfig::dataInstallDirectory;
-
-            // Get user directory
-#ifdef ORXONOX_PLATFORM_UNIX
-            char* userDataPathPtr(getenv("HOME"));
-#else
-            char* userDataPathPtr(getenv("APPDATA"));
-#endif
-            if (userDataPathPtr == NULL)
-                ThrowException(General, "Could not retrieve user data path.");
-            bf::path userDataPath(userDataPathPtr);
-            userDataPath /= ".orxonox";
-
-            configPath_ = userDataPath / specialConfig::defaultConfigPath;
-            logPath_    = userDataPath / specialConfig::defaultLogPath;
-
-#endif
-
-        }
-
-        // Option to put all the config and log files in a separate folder
-        if (!CommandLineParser::getArgument("writingPathSuffix")->hasDefaultValue())
-        {
-            const std::string& directory(CommandLineParser::getValue("writingPathSuffix").get<std::string>());
-            configPath_ = configPath_ / directory;
-            logPath_    = logPath_    / directory;
-        }
-
-        // Create directories to avoid problems when opening files in non existent folders.
-        std::vector<std::pair<bf::path, std::string> > directories;
-        directories.push_back(std::make_pair(bf::path(configPath_), std::string("config")));
-        directories.push_back(std::make_pair(bf::path(logPath_), std::string("log")));
-
-        for (std::vector<std::pair<bf::path, std::string> >::iterator it = directories.begin();
-            it != directories.end(); ++it)
-        {
-            if (bf::exists(it->first) && !bf::is_directory(it->first))
-            {
-                ThrowException(General, std::string("The ") + it->second + " directory has been preoccupied by a file! \
-                                         Please remove " + it->first.BF_GENERIC_STRING());
-            }
-            if (bf::create_directories(it->first)) // function may not return true at all (bug?)
-            {
-                orxout(internal_info) << "Created " << it->second << " directory" << endl;
-            }
-        }
-    }
-
-    std::vector<std::string> PathConfig::getModulePaths()
+    std::vector<std::string> ApplicationPaths::getModulePaths()
     {
         std::vector<std::string> modulePaths;
 
@@ -287,37 +199,17 @@ namespace orxonox
         return modulePaths;
     }
 
-    /*static*/ std::string PathConfig::getRootPathString()
+    /*static*/ std::string ApplicationPaths::getRootPathString()
     {
         return getInstance().rootPath_.BF_GENERIC_STRING() + '/';
     }
 
-    /*static*/ std::string PathConfig::getExecutablePathString()
+    /*static*/ std::string ApplicationPaths::getExecutablePathString()
     {
         return getInstance().executablePath_.BF_GENERIC_STRING() + '/';
     }
 
-    /*static*/ std::string PathConfig::getDataPathString()
-    {
-        return getInstance().dataPath_.BF_GENERIC_STRING() + '/';
-    }
-
-    /*static*/ std::string PathConfig::getExternalDataPathString()
-    {
-        return getInstance().externalDataPath_.BF_GENERIC_STRING() + '/';
-    }
-
-    /*static*/ std::string PathConfig::getConfigPathString()
-    {
-        return getInstance().configPath_.BF_GENERIC_STRING() + '/';
-    }
-
-    /*static*/ std::string PathConfig::getLogPathString()
-    {
-        return getInstance().logPath_.BF_GENERIC_STRING() + '/';
-    }
-
-    /*static*/ std::string PathConfig::getModulePathString()
+    /*static*/ std::string ApplicationPaths::getModulePathString()
     {
         return getInstance().modulePath_.BF_GENERIC_STRING() + '/';
     }

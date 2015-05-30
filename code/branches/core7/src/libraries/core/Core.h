@@ -90,7 +90,8 @@ namespace orxonox
 
             void setThreadAffinity(int limitToCPU);
 
-            PathConfig*               pathConfig_;
+            ApplicationPaths*         applicationPaths_;
+            ConfigurablePaths*        configurablePaths_;
             DynLibManager*            dynLibManager_;
             SignalHandler*            signalHandler_;
             ConfigFileManager*        configFileManager_;
