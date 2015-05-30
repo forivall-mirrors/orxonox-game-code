@@ -55,10 +55,24 @@ struct _NetworkExport NetworkFunctionPointer {
   bool operator<(const NetworkFunctionPointer& b) const
   {
 #if defined(ORXONOX_COMPILER_GCC) && defined(ORXONOX_ARCH_32)
-    return pointer[0]<b.pointer[0] ? true : pointer[1]<b.pointer[1];
-#else //ORXONOX_COMPILER_GCC
-    return pointer[0]<b.pointer[0] ? true : ( pointer[1]<b.pointer[1] ? true : ( pointer[2]<b.pointer[2] ? true : pointer[3]<b.pointer[3] ) );
-#endif //ORXONOX_COMPILER_GCC
+    if (pointer[0] != b.pointer[0])
+        return pointer[0] < b.pointer[0];
+    else if (pointer[1] != b.pointer[1])
+        return pointer[1] < b.pointer[1];
+    else
+        return false;
+#else
+    if (pointer[0] != b.pointer[0])
+        return pointer[0] < b.pointer[0];
+    else if (pointer[1] != b.pointer[1])
+        return pointer[1] < b.pointer[1];
+    else if (pointer[2] != b.pointer[2])
+        return pointer[2] < b.pointer[2];
+    else if (pointer[3] != b.pointer[3])
+        return pointer[3] < b.pointer[3];
+    else
+        return false;
+#endif
   }
 };
 
