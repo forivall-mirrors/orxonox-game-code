@@ -54,7 +54,8 @@ END_BUILD_UNIT
 BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
   config/ConfigFile.cc
-  PathConfig.cc
+  ApplicationPaths.cc
+  Configurablepaths.cc
 END_BUILD_UNIT
 
 BUILD_UNIT ThreadBuildUnit.cc
@@ -83,13 +84,14 @@ ORXONOX_ADD_LIBRARY(core
   TOLUA_FILES
     command/CommandExecutor.h
     config/SettingsConfigFile.h
+    ApplicationPaths.h
+    ConfigurablePaths.h
     Game.h
     GameMode.h
     GraphicsManager.h
     GUIManager.h
     Loader.h
     LuaState.h
-    PathConfig.h
     input/InputManager.h
     input/KeyBinder.h
     input/KeyBinderManager.h

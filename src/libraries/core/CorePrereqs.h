@@ -131,6 +131,7 @@ namespace orxonox
     template <class T, class U>
     T orxonox_cast(U*);
 
+    class ApplicationPaths;
     class BaseObject;
     template <class T>
     class ClassFactory;
@@ -151,6 +152,7 @@ namespace orxonox
     class ConfigFileManager;
     class ConfigFileSection;
     class Configurable;
+    class ConfigurablePaths;
     class ConfigValueContainer;
     class Context;
     class Core;
@@ -195,7 +197,6 @@ namespace orxonox
     class OgreWindowEventListener;
     class OrxonoxClass;
     class OrxonoxInterface;
-    class PathConfig;
     struct ResourceInfo;
     template <ScopeID::Value>
     class Scope;

@@ -33,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/config/ConfigValueIncludes.h"
 #include "core/Language.h"
-#include "core/PathConfig.h"
+#include "core/ApplicationPaths.h"
 
 namespace orxonox
 {
@@ -71,7 +71,7 @@ namespace orxonox
             .description("Additional output contexts shown in the log file")
             .callback(static_cast<BaseWriter*>(OutputManager::getInstance().getLogWriter()), &BaseWriter::changedConfigurableAdditionalContexts);
 
-        SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
+        SetConfigValue(bDevMode_, ApplicationPaths::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")
             .callback(this, &CoreConfig::devModeChanged);
         SetConfigValue(language_, Language::getInstance().defaultLanguage_)

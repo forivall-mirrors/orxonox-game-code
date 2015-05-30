@@ -58,7 +58,8 @@
 #include "GameMode.h"
 #include "GUIManager.h"
 #include "Loader.h"
-#include "PathConfig.h"
+#include "ApplicationPaths.h"
+#include "ConfigurablePaths.h"
 #include "ViewportEventListener.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
@@ -112,15 +113,15 @@ namespace orxonox
         this->loadOgreRoot();
 
         // At first, add the root paths of the data directories as resource locations
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem");
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(ConfigurablePaths::getDataPathString(), "FileSystem");
         // Load resources
         resources_.reset(new XMLFile("DefaultResources.oxr"));
         resources_->setLuaSupport(false);
         Loader::getInstance().load(resources_.get(), ClassTreeMask(), false);
 
         // Only for runs in the build directory (not installed)
-        if (PathConfig::buildDirectoryRun())
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
+        if (ApplicationPaths::buildDirectoryRun())
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(ConfigurablePaths::getExternalDataPathString(), "FileSystem");
 
         extResources_.reset(new XMLFile("resources.oxr"));
         extResources_->setLuaSupport(false);
@@ -219,8 +220,8 @@ namespace orxonox
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
-        boost::filesystem::path ogreConfigFilepath(PathConfig::getConfigPath() / this->ogreConfigFile_);
-        boost::filesystem::path ogreLogFilepath(PathConfig::getLogPath() / this->ogreLogFile_);
+        boost::filesystem::path ogreConfigFilepath(ConfigurablePaths::getConfigPath() / this->ogreConfigFile_);
+        boost::filesystem::path ogreLogFilepath(ConfigurablePaths::getLogPath() / this->ogreLogFile_);
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
@@ -259,13 +260,13 @@ namespace orxonox
         // Plugin path can have many different locations...
         std::string pluginPath = specialConfig::ogrePluginsDirectory;
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-        if (!PathConfig::buildDirectoryRun())
+        if (!ApplicationPaths::buildDirectoryRun())
         {
 #  if defined(ORXONOX_PLATFORM_WINDOWS)
-            pluginPath = PathConfig::getExecutablePathString();
+            pluginPath = ApplicationPaths::getExecutablePathString();
 #  elif defined(ORXONOX_PLATFORM_APPLE)
             // TODO: Where are the plugins being installed to?
-            pluginPath = PathConfig::getExecutablePathString();
+            pluginPath = ApplicationPaths::getExecutablePathString();
 #  endif
         }
 #endif
@@ -558,6 +559,6 @@ namespace orxonox
     void GraphicsManager::printScreen()
     {
         assert(this->renderWindow_);
-        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".png");
+        this->renderWindow_->writeContentsToTimestampedFile(ConfigurablePaths::getLogPathString() + "screenShot_", ".png");
     }
 }
