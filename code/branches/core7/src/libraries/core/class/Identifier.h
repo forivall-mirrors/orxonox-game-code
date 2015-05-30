@@ -111,6 +111,13 @@ namespace orxonox
     class _CoreExport Identifier : public Destroyable
     {
         public:
+            struct InheritsFrom //! helper class to manually define inheritance
+            {
+                virtual ~InheritsFrom() {}
+                virtual Identifier* getParent() const = 0;
+            };
+
+        public:
             Identifier(const std::string& name, Factory* factory, bool bLoadable);
             Identifier(const Identifier& identifier); // don't copy
             virtual ~Identifier();
@@ -148,7 +155,7 @@ namespace orxonox
             /////////////////////////////
             ////// Class Hierarchy //////
             /////////////////////////////
-            Identifier& inheritsFrom(Identifier* directParent);
+            Identifier& inheritsFrom(InheritsFrom* directParent);
 
             void initializeParents(const std::list<const Identifier*>& initializationTrace);
             void finishInitialization();
@@ -218,6 +225,7 @@ namespace orxonox
             void verifyIdentifierTrace() const;
             void addIfNotExists(std::list<const Identifier*>& list, const Identifier* identifierToAdd) const;
 
+            std::list<const InheritsFrom*> manualDirectParents_;            //!< Manually defined direct parents
             std::list<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to (sorted by their order of initialization)
             std::list<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to (sorted by their order of initialization)
 

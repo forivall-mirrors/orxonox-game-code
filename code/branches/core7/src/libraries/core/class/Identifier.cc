@@ -78,6 +78,9 @@ namespace orxonox
         if (this->factory_)
             delete this->factory_;
 
+        for (std::list<const InheritsFrom*>::const_iterator it = this->manualDirectParents_.begin(); it != this->manualDirectParents_.end(); ++it)
+            delete (*it);
+
         for (std::map<std::string, ConfigValueContainer*>::iterator it = this->configValues_.begin(); it != this->configValues_.end(); ++it)
             delete (it->second);
         for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
@@ -120,12 +123,12 @@ namespace orxonox
     /**
      * @brief Used to define the direct parents of an Identifier of an abstract class.
      */
-    Identifier& Identifier::inheritsFrom(Identifier* directParent)
+    Identifier& Identifier::inheritsFrom(InheritsFrom* directParent)
     {
-        if (this->parents_.empty())
-            this->directParents_.push_back(directParent);
+        if (this->directParents_.empty())
+            this->manualDirectParents_.push_back(directParent);
         else
-            orxout(internal_error) << "Trying to add " << directParent->getName() << " as a direct parent of " << this->getName() << " after the latter was already initialized" << endl;
+            orxout(internal_error) << "Trying to manually add direct parent of " << this->getName() << " after the latter was already initialized" << endl;
 
         return *this;
     }
@@ -182,13 +185,17 @@ namespace orxonox
 
             this->verifyIdentifierTrace();
         }
-        else if (!this->directParents_.empty())
+        else if (!this->manualDirectParents_.empty())
         {
             // no parents defined -> this class was manually initialized by calling inheritsFrom<Class>()
 
             // initialize all direct parents
-            for (std::list<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
-                const_cast<Identifier*>(*it)->finishInitialization(); // initialize parent
+            for (std::list<const InheritsFrom*>::const_iterator it = this->manualDirectParents_.begin(); it != this->manualDirectParents_.end(); ++it)
+            {
+                Identifier* directParent = (*it)->getParent();
+                this->directParents_.push_back(directParent);
+                directParent->finishInitialization(); // initialize parent
+            }
 
             // direct parents and their parents are also parents of this identifier (but only add them once)
             for (std::list<const Identifier*>::const_iterator it_parent = this->directParents_.begin(); it_parent != this->directParents_.end(); ++it_parent)

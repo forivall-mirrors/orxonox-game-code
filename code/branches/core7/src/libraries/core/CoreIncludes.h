@@ -217,31 +217,18 @@ namespace orxonox
      */
     class _CoreExport StaticallyInitializedIdentifier : public StaticallyInitializedInstance
     {
-        struct InheritsFrom
-        {
-            virtual ~InheritsFrom() {}
-            virtual Identifier* getParent() = 0;
-        };
-
         template <class T>
-        struct InheritsFromClass : public InheritsFrom
+        struct InheritsFromClass : public Identifier::InheritsFrom
         {
-            virtual Identifier* getParent() { return Class(T); }
+            virtual Identifier* getParent() const { return Class(T); }
         };
 
         public:
             StaticallyInitializedIdentifier(Identifier* identifier) : identifier_(identifier) {}
-            ~StaticallyInitializedIdentifier()
-            {
-                for (size_t i = 0; i < this->parents_.size(); ++i)
-                    delete parents_[i];
-            }
 
             virtual void load()
             {
                 IdentifierManager::getInstance().addIdentifier(this->identifier_);
-                for (size_t i = 0; i < this->parents_.size(); ++i)
-                    this->identifier_->inheritsFrom(this->parents_[i]->getParent());
             }
 
             virtual void unload()
@@ -254,14 +241,13 @@ namespace orxonox
 
             template <class T>
             inline StaticallyInitializedIdentifier& inheritsFrom()
-                { this->parents_.push_back(new InheritsFromClass<T>()); return *this; }
+                { this->identifier_->inheritsFrom(new InheritsFromClass<T>()); return *this; }
 
             inline StaticallyInitializedIdentifier& virtualBase()
                 { this->identifier_->setVirtualBase(true); return *this; }
 
         private:
             Identifier* identifier_;
-            std::vector<InheritsFrom*> parents_;
     };
 
     typedef StaticallyInitializedIdentifier SI_I;
