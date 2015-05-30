@@ -55,7 +55,7 @@ BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
   config/ConfigFile.cc
   ApplicationPaths.cc
-  Configurablepaths.cc
+  ConfigurablePaths.cc
 END_BUILD_UNIT
 
 BUILD_UNIT ThreadBuildUnit.cc
