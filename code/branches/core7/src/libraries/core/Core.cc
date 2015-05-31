@@ -110,6 +110,7 @@ namespace orxonox
         , guiManager_(NULL)
         , graphicsScope_(NULL)
         , bGraphicsLoaded_(false)
+        , rootModule_(NULL)
         , config_(NULL)
         , destructionHelper_(this)
     {
@@ -121,27 +122,13 @@ namespace orxonox
         // Create a new dynamic library manager
         this->dynLibManager_ = new DynLibManager();
 
-        // Load modules
-        orxout(internal_info) << "Loading modules:" << endl;
-        const std::vector<std::string>& modulePaths = ApplicationPaths::getInstance().getModulePaths();
-        for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
-        {
-            try
-            {
-                this->dynLibManager_->load(*it);
-            }
-            catch (...)
-            {
-                orxout(user_error) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << endl;
-            }
-        }
-
         // TODO: initialize Root-Context
         // TODO: initialize IdentifierManager here
         // TODO: initialize ScopeManager here
         // TODO: initialize CommandLineParser here
         // TODO: initialize ConsoleCommandManager here
-        ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+        this->rootModule_ = ModuleInstance::getCurrentModuleInstance();
+        this->rootModule_->loadAllStaticallyInitializedInstances();
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLineParser::parse(cmdLine);
@@ -257,11 +244,65 @@ namespace orxonox
         Context::setRootContext(NULL);
         IdentifierManager::getInstance().destroyAllIdentifiers();
         safeObjectDelete(&signalHandler_);
+//        if (this->rootModule_)
+//            this->rootModule_->unloadAllStaticallyInitializedInstances();
+//        safeObjectDelete(&rootModule_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&configurablePaths_);
         safeObjectDelete(&applicationPaths_);
 
         orxout(internal_status) << "finished destroying Core object" << endl;
+    }
+
+    void Core::loadModules()
+    {
+        orxout(internal_info) << "Loading modules:" << endl;
+
+        const std::vector<std::string>& modulePaths = ApplicationPaths::getInstance().getModulePaths();
+        for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
+        {
+            try
+            {
+                ModuleInstance* module = new ModuleInstance(*it);
+                this->loadModule(module);
+                this->modules_.push_back(module);
+            }
+            catch (...)
+            {
+                orxout(user_error) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << endl;
+            }
+        }
+
+        orxout(internal_info) << "finished loading modules" << endl;
+    }
+
+    void Core::loadModule(ModuleInstance* module)
+    {
+        ModuleInstance::setCurrentModuleInstance(module);
+        DynLib* dynLib = this->dynLibManager_->load(module->getName());
+        module->setDynLib(dynLib);
+        module->loadAllStaticallyInitializedInstances();
+        IdentifierManager::getInstance().createClassHierarchy();
+        ScopeManager::getInstance().updateListeners();
+    }
+
+    void Core::unloadModules()
+    {
+        for (std::list<ModuleInstance*>::iterator it = this->modules_.begin(); it != this->modules_.end(); ++it)
+        {
+            ModuleInstance* module = (*it);
+            this->unloadModule(module);
+            delete module;
+        }
+        this->modules_.clear();
+    }
+
+    void Core::unloadModule(ModuleInstance* module)
+    {
+        module->unloadAllStaticallyInitializedInstances();
+        module->deleteAllStaticallyInitializedInstances();
+        this->dynLibManager_->unload(module->getDynLib());
+        module->setDynLib(NULL);
     }
 
     void Core::loadGraphics()

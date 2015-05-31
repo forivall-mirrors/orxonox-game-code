@@ -34,34 +34,47 @@ namespace orxonox
 {
     ModuleInstance* ModuleInstance::currentModuleInstance_s = NULL;
 
+    ModuleInstance::ModuleInstance(const std::string& name)
+        : name_(name)
+        , dynLib_(NULL)
+    {
+    }
+
     ModuleInstance::~ModuleInstance()
     {
-        std::list<StaticallyInitializedInstance*> copy(this->staticallyInitializedInstances_);
-        for (std::list<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
-            delete (*it);
+        this->deleteAllStaticallyInitializedInstances();
     }
 
     void ModuleInstance::addStaticallyInitializedInstance(StaticallyInitializedInstance* instance)
     {
-        this->staticallyInitializedInstances_.push_back(instance);
+        this->staticallyInitializedInstances_.insert(instance);
     }
 
     void ModuleInstance::loadAllStaticallyInitializedInstances()
     {
-        for (std::list<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+        for (std::set<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
             (*it)->load();
     }
 
     void ModuleInstance::unloadAllStaticallyInitializedInstances()
     {
-        for (std::list<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+        for (std::set<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
             (*it)->unload();
     }
 
     void ModuleInstance::removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance)
     {
-        this->staticallyInitializedInstances_.remove(instance);
+        this->staticallyInitializedInstances_.erase(instance);
     }
+
+    void ModuleInstance::deleteAllStaticallyInitializedInstances()
+    {
+        std::set<StaticallyInitializedInstance*> copy(this->staticallyInitializedInstances_);
+        this->staticallyInitializedInstances_.clear();
+        for (std::set<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+            delete (*it);
+    }
+
 
     /*static*/ void ModuleInstance::setCurrentModuleInstance(ModuleInstance* instance)
     {
@@ -71,7 +84,7 @@ namespace orxonox
     /*static*/ ModuleInstance* ModuleInstance::getCurrentModuleInstance()
     {
         if (!ModuleInstance::currentModuleInstance_s)
-            ModuleInstance::currentModuleInstance_s = new ModuleInstance();
+            ModuleInstance::currentModuleInstance_s = new ModuleInstance("");
         return ModuleInstance::currentModuleInstance_s;
     }
 }

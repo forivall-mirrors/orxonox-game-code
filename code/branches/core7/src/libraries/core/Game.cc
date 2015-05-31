@@ -109,6 +109,7 @@ namespace orxonox
         // Create the Core
         orxout(internal_info) << "creating Core object:" << endl;
         this->core_ = new Core(cmdLine);
+        this->core_->loadModules();
 
         // Do this after the Core creation!
         this->config_ = new GameConfig();
@@ -140,6 +141,8 @@ namespace orxonox
 
         GameStateFactory::getFactories().clear();
         safeObjectDelete(&config_);
+//        if (this->core_)
+//            this->core_->unloadModules();
         safeObjectDelete(&core_);
         safeObjectDelete(&gameClock_);
 
