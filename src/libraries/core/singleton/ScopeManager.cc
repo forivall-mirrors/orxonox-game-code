@@ -76,13 +76,13 @@ namespace orxonox
 
     void ScopeManager::activateListenersForScope(ScopeID::Value scope)
     {
-        for (typename std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
+        for (std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
             this->activateListener(*it);
     }
 
     void ScopeManager::deactivateListenersForScope(ScopeID::Value scope)
     {
-        for (typename std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
+        for (std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
             this->deactivateListener(*it);
     }
 
