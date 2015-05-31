@@ -55,10 +55,6 @@ namespace orxonox
     DynLib::DynLib( const std::string& name )
     {
         mName = name;
-#if defined(ORXONOX_PLATFORM_WINDOWS)
-        //altered search path doesn't work with paths with forward slashes
-        std::replace(mName.begin(), mName.end(), '/', '\\');
-#endif
         m_hInst = NULL;
     }
 
@@ -83,6 +79,8 @@ namespace orxonox
         if (name.substr(name.length() - 6, 6) != ".dylib")
             name += ".dylib";
 #elif defined(ORXONOX_PLATFORM_WINDOWS)
+        //altered search path doesn't work with paths with forward slashes
+        std::replace(name.begin(), name.end(), '/', '\\');
         // Although LoadLibraryEx will add .dll itself when you only specify the library name,
         // if you include a relative path then it does not. So, add it to be sure.
         if (name.substr(name.length() - 4, 4) != ".dll")
