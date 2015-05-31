@@ -60,14 +60,14 @@ namespace orxonox
         return this->activeScopes_.find(scope) != this->activeScopes_.end();
     }
 
-    void ScopeManager::addListener(ScopeListener* listener)
+    void ScopeManager::addListener(ScopeListener* listener, ScopeID::Value scope)
     {
-        this->listeners_[listener->getScope()].insert(listener);
+        this->listeners_[scope].insert(listener);
     }
 
-    void ScopeManager::removeListener(ScopeListener* listener)
+    void ScopeManager::removeListener(ScopeListener* listener, ScopeID::Value scope)
     {
-        this->listeners_[listener->getScope()].erase(listener);
+        this->listeners_[scope].erase(listener);
     }
 
     void ScopeManager::activateListenersForScope(ScopeID::Value scope)
