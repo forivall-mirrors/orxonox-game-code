@@ -41,6 +41,9 @@ namespace orxonox
 
             virtual void load() = 0;
             virtual void unload() = 0;
+
+        private:
+            ModuleInstance* module_;
     };
 }
 

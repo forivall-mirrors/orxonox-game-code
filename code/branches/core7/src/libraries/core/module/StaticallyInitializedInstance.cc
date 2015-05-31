@@ -34,11 +34,12 @@ namespace orxonox
 {
     StaticallyInitializedInstance::StaticallyInitializedInstance()
     {
-        ModuleInstance::getCurrentModuleInstance()->addStaticallyInitializedInstance(this);
+        this->module_ = ModuleInstance::getCurrentModuleInstance();
+        this->module_->addStaticallyInitializedInstance(this);
     }
 
     StaticallyInitializedInstance::~StaticallyInitializedInstance()
     {
-        ModuleInstance::getCurrentModuleInstance()->removeStaticallyInitializedInstance(this);
+        this->module_->removeStaticallyInitializedInstance(this);
     }
 }
