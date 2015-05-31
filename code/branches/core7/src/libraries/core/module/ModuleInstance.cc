@@ -71,7 +71,7 @@ namespace orxonox
     {
         std::set<StaticallyInitializedInstance*> copy(this->staticallyInitializedInstances_);
         this->staticallyInitializedInstances_.clear();
-        for (std::set<StaticallyInitializedInstance*>::iterator it = this->staticallyInitializedInstances_.begin(); it != this->staticallyInitializedInstances_.end(); ++it)
+        for (std::set<StaticallyInitializedInstance*>::iterator it = copy.begin(); it != copy.end(); ++it)
             delete (*it);
     }
 
