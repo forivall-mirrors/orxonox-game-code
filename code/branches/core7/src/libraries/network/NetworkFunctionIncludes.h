@@ -51,6 +51,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedNetworkFunction(NetworkFunctionBase* function) : function_(function) {}
+            ~StaticallyInitializedNetworkFunction() { delete function_; }
 
             virtual void load();
             virtual void unload();

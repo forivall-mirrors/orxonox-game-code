@@ -160,8 +160,6 @@ namespace orxonox
             return !(it == _getInstance().cmdLineArgs_.end());
         }
 
-        static void destroyAllArguments();
-
         static void generateDoc(std::ofstream& file);
 
     private:

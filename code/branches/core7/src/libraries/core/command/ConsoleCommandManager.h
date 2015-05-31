@@ -67,8 +67,6 @@ namespace orxonox
             ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
             ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
 
-            void destroyAll();
-
         private:
             std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMap_;
             std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMapLC_;

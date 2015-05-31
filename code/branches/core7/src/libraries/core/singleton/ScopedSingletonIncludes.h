@@ -83,6 +83,7 @@ namespace orxonox
                 : wrapper_(wrapper)
                 , scope_(scope)
             {}
+            ~StaticallyInitializedScopedSingletonWrapper() { delete wrapper_; }
 
             virtual void load();
             virtual void unload();

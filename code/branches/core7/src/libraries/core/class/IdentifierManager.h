@@ -86,8 +86,6 @@ namespace orxonox
             inline const std::map<uint32_t, Identifier*>& getIdentifierByNetworkIdMap()
                 { return this->identifierByNetworkId_; }
 
-            void destroyAllIdentifiers();
-
         private:
             IdentifierManager();
             IdentifierManager(const IdentifierManager&);

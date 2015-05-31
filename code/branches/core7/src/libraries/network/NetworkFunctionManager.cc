@@ -53,13 +53,6 @@ namespace orxonox
         this->functorMap_.erase(function->getPointer());
     }
 
-    void NetworkFunctionManager::destroyAllNetworkFunctions()
-    {
-        std::set<NetworkFunctionBase*>::iterator it;
-        for (it = this->functions_.begin(); it != this->functions_.end(); ++it)
-            delete (*it);
-    }
-
     NetworkFunctionBase* NetworkFunctionManager::getFunctionByName(const std::string& name)
     {
         std::map<std::string, NetworkFunctionBase*>::iterator it = nameMap_.find(name);

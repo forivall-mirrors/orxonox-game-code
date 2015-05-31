@@ -45,8 +45,6 @@ namespace orxonox
             void registerFunction(NetworkFunctionBase* function);
             void unregisterFunction(NetworkFunctionBase* function);
 
-            void destroyAllNetworkFunctions();
-
             inline const std::set<NetworkFunctionBase*>& getAllFunctions()
                 { return functions_; }
 
