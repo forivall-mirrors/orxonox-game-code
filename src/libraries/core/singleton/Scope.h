@@ -67,8 +67,7 @@ namespace orxonox
     */
     class _CoreExport ScopeListener
     {
-        template <ScopeID::Value scope>
-        friend class Scope;
+        friend class ScopeManager;
 
         protected:
             ScopeListener(ScopeID::Value scope) : scope_(scope), bActivated_(false) { }
@@ -107,11 +106,6 @@ namespace orxonox
 
                 Loki::ScopeGuard deactivator = Loki::MakeObjGuard(*this, &Scope::deactivateScope);
                 ScopeManager::getInstance().addScope(scope);
-                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
-                {
-                    (*it)->activated();
-                    (*(it++))->bActivated_ = true;
-                }
                 deactivator.Dismiss();
 
                 orxout(internal_status) << "created scope (" << scope << ")" << endl;
@@ -131,19 +125,6 @@ namespace orxonox
             void deactivateScope()
             {
                 ScopeManager::getInstance().removeScope(scope);
-                for (typename std::set<ScopeListener*>::iterator it = ScopeManager::getInstance().getListeners(scope).begin(); it != ScopeManager::getInstance().getListeners(scope).end(); )
-                {
-                    if ((*it)->bActivated_)
-                    {
-                        try
-                            { (*it)->deactivated(); }
-                        catch (...)
-                            { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
-                        (*(it++))->bActivated_ = false;
-                    }
-                    else
-                        ++it;
-                }
             }
 
             //! Returns true if the scope is active.

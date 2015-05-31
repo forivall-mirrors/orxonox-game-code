@@ -56,17 +56,25 @@ namespace orxonox
         public:
             static ScopeManager& getInstance();
 
+            /** Adds a scope and activates all listeners which are registered for this scope */
             void addScope(ScopeID::Value scope);
+            /** Removes a scope and deactivates all listeners which are registered for this scope */
             void removeScope(ScopeID::Value scope);
+            /** Returns true if this scope is active */
             bool isActive(ScopeID::Value scope);
 
+            /** Registers a listener for the given scope. */
             void addListener(ScopeListener* listener);
+            /** Unregisters a listener for the given scope. */
             void removeListener(ScopeListener* listener);
 
-            inline std::set<ScopeListener*>& getListeners(ScopeID::Value scope)
-                { return this->listeners_[scope]; }
-
         private:
+            void activateListenersForScope(ScopeID::Value scope);
+            void deactivateListenersForScope(ScopeID::Value scope);
+
+            void activateListener(ScopeListener* listener);
+            void deactivateListener(ScopeListener* listener);
+
             std::set<ScopeID::Value> activeScopes_;
             std::map<ScopeID::Value, std::set<ScopeListener*> > listeners_; //!< Stores all listeners for a scope
     };

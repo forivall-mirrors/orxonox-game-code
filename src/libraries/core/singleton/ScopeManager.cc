@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Static linkage of the two maps in orxonox::ScopeManager.
+    @brief Implementation of orxonox::ScopeManager.
 */
 
 #include "ScopeManager.h"
@@ -46,11 +46,13 @@ namespace orxonox
     void ScopeManager::addScope(ScopeID::Value scope)
     {
         this->activeScopes_.insert(scope);
+        this->activateListenersForScope(scope);
     }
 
     void ScopeManager::removeScope(ScopeID::Value scope)
     {
         this->activeScopes_.erase(scope);
+        this->deactivateListenersForScope(scope);
     }
 
     bool ScopeManager::isActive(ScopeID::Value scope)
@@ -66,5 +68,33 @@ namespace orxonox
     void ScopeManager::removeListener(ScopeListener* listener)
     {
         this->listeners_[listener->getScope()].erase(listener);
+    }
+
+    void ScopeManager::activateListenersForScope(ScopeID::Value scope)
+    {
+        for (typename std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
+            this->activateListener(*it);
+    }
+
+    void ScopeManager::deactivateListenersForScope(ScopeID::Value scope)
+    {
+        for (typename std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
+            if ((*it)->bActivated_)
+                this->deactivateListener(*it);
+    }
+
+    void ScopeManager::activateListener(ScopeListener* listener)
+    {
+        listener->activated();
+        listener->bActivated_ = true;
+    }
+
+    void ScopeManager::deactivateListener(ScopeListener* listener)
+    {
+        try
+            { listener->deactivated(); }
+        catch (...)
+            { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
+        listener->bActivated_ = false;
     }
 }
