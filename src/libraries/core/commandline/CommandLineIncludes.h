@@ -58,6 +58,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedCommandLineArgument(CommandLineArgument* argument) : argument_(argument) {}
+            ~StaticallyInitializedCommandLineArgument() { delete argument_; }
 
             virtual void load()
                 { CommandLineParser::addArgument(this->argument_); }

@@ -310,6 +310,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedConsoleCommand(ConsoleCommand* command) : command_(command) {}
+            ~StaticallyInitializedConsoleCommand() { delete command_; }
 
             virtual void load();
             virtual void unload();

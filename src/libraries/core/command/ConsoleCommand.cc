@@ -91,7 +91,6 @@ namespace orxonox
     */
     ConsoleCommand::~ConsoleCommand()
     {
-        ConsoleCommandManager::getInstance().unregisterCommand(this);
     }
 
     /**

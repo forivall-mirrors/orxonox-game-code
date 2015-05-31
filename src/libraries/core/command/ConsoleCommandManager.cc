@@ -190,14 +190,4 @@ namespace orxonox
                 ++it_group;
         }
     }
-
-    /**
-        @brief Deletes all commands
-    */
-    void ConsoleCommandManager::destroyAll()
-    {
-        // delete entries until the map is empty
-        while (!this->commandMap_.empty() && !this->commandMap_.begin()->second.empty())
-            delete this->commandMap_.begin()->second.begin()->second;
-    }
 }

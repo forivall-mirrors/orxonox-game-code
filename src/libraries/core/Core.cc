@@ -240,9 +240,7 @@ namespace orxonox
         safeObjectDelete(&config_);
         safeObjectDelete(&languageInstance_);
         safeObjectDelete(&configFileManager_);
-        ConsoleCommandManager::getInstance().destroyAll();
         Context::setRootContext(NULL);
-        IdentifierManager::getInstance().destroyAllIdentifiers();
         safeObjectDelete(&signalHandler_);
 //        if (this->rootModule_)
 //            this->rootModule_->unloadAllStaticallyInitializedInstances();

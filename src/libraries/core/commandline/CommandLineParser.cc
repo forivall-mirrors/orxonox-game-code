@@ -84,7 +84,6 @@ namespace orxonox
     */
     CommandLineParser::~CommandLineParser()
     {
-        CommandLineParser::destroyAllArguments();
     }
 
     /**
@@ -95,19 +94,6 @@ namespace orxonox
     {
         static CommandLineParser instance;
         return instance;
-    }
-
-    /**
-    @brief
-        Destroys all command line arguments. This should be called at the end
-        of main. Do not use before that.
-    */
-    void CommandLineParser::destroyAllArguments()
-    {
-        for (std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.begin();
-            it != _getInstance().cmdLineArgs_.end(); ++it)
-            delete it->second;
-        _getInstance().cmdLineArgs_.clear();
     }
 
     /** Parses the command line string for arguments and stores these.
