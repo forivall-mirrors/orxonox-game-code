@@ -63,10 +63,14 @@ namespace orxonox
     void ScopeManager::addListener(ScopeListener* listener, ScopeID::Value scope)
     {
         this->listeners_[scope].insert(listener);
+        if (this->isActive(scope))
+            this->activateListener(listener);
     }
 
     void ScopeManager::removeListener(ScopeListener* listener, ScopeID::Value scope)
     {
+        if (this->isActive(scope))
+            this->deactivateListener(listener);
         this->listeners_[scope].erase(listener);
     }
 
@@ -79,8 +83,7 @@ namespace orxonox
     void ScopeManager::deactivateListenersForScope(ScopeID::Value scope)
     {
         for (typename std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
-            if ((*it)->bActivated_)
-                this->deactivateListener(*it);
+            this->deactivateListener(*it);
     }
 
     void ScopeManager::activateListener(ScopeListener* listener)
@@ -91,10 +94,13 @@ namespace orxonox
 
     void ScopeManager::deactivateListener(ScopeListener* listener)
     {
-        try
-            { listener->deactivated(); }
-        catch (...)
-            { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
-        listener->bActivated_ = false;
+        if (listener->bActivated_)
+        {
+            try
+                { listener->deactivated(); }
+            catch (...)
+                { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
+            listener->bActivated_ = false;
+        }
     }
 }
