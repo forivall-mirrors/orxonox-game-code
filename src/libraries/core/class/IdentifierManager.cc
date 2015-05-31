@@ -130,19 +130,12 @@ namespace orxonox
         }
 
         // finish the initialization of all identifiers
-        for (std::set<Identifier*>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
-        {
-            Identifier* identifier = (*it);
-
-            if (initializedIdentifiers.find(identifier) != initializedIdentifiers.end())
-                identifier->finishInitialization();
-            else if (!identifier->isInitialized())
-                orxout(internal_error) << "Identifier was registered late and is not initialized: " << identifier->getName() << " / " << identifier->getTypeInfo().name() << endl;
-        }
+        for (std::set<Identifier*>::const_iterator it = initializedIdentifiers.begin(); it != initializedIdentifiers.end(); ++it)
+            (*it)->finishInitialization();
 
         // only check class hierarchy in dev mode because it's an expensive operation and it requires a developer to fix detected problems anyway.
         if (!Core::exists() || Core::getInstance().getConfig()->inDevMode())
-            this->verifyClassHierarchy();
+            this->verifyClassHierarchy(initializedIdentifiers);
 
         this->stopCreatingHierarchy();
         orxout(internal_status) << "Finished class-hierarchy creation" << endl;
@@ -151,10 +144,16 @@ namespace orxonox
     /**
      * Verifies if the class hierarchy is consistent with the RTTI.
      */
-    void IdentifierManager::verifyClassHierarchy()
+    void IdentifierManager::verifyClassHierarchy(const std::set<Identifier*>& initializedIdentifiers)
     {
+        // check if there are any uninitialized identifiers remaining
+        for (std::set<Identifier*>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
+            if (!(*it)->isInitialized())
+                orxout(internal_error) << "Identifier was registered late and is not initialized: " << (*it)->getName() << " / " << (*it)->getTypeInfo().name() << endl;
+
+        // for all initialized identifiers, check if a sample instance behaves as expected according to the class hierarchy
         Context temporaryContext(NULL);
-        for (std::set<Identifier*>::const_iterator it1 = this->identifiers_.begin(); it1 != this->identifiers_.end(); ++it1)
+        for (std::set<Identifier*>::const_iterator it1 = initializedIdentifiers.begin(); it1 != initializedIdentifiers.end(); ++it1)
         {
             if (!(*it1)->hasFactory())
                 continue;

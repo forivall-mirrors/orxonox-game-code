@@ -56,7 +56,7 @@ namespace orxonox
             ////// Class Hierarchy //////
             /////////////////////////////
             void createClassHierarchy();
-            void verifyClassHierarchy();
+            void verifyClassHierarchy(const std::set<Identifier*>& initializedIdentifiers);
             void destroyClassHierarchy();
 
             void createdObject(Identifiable* identifiable);
