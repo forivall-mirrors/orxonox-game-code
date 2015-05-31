@@ -64,9 +64,9 @@ namespace orxonox
             bool isActive(ScopeID::Value scope);
 
             /** Registers a listener for the given scope. */
-            void addListener(ScopeListener* listener);
+            void addListener(ScopeListener* listener, ScopeID::Value scope);
             /** Unregisters a listener for the given scope. */
-            void removeListener(ScopeListener* listener);
+            void removeListener(ScopeListener* listener, ScopeID::Value scope);
 
         private:
             void activateListenersForScope(ScopeID::Value scope);

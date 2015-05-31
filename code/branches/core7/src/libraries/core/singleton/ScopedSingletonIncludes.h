@@ -72,14 +72,17 @@
 #define ManageScopedSingleton(className, scope, allowedToFail) \
     className* className::singletonPtr_s = NULL; \
     static ScopedSingletonWrapper& className##ScopedSingletonWrapper \
-        = (new orxonox::SI_SSW(new ClassScopedSingletonWrapper<className, scope, allowedToFail>(#className)))->getWrapper()
+        = (new orxonox::SI_SSW(new ClassScopedSingletonWrapper<className, allowedToFail>(#className), scope))->getWrapper()
 
 namespace orxonox
 {
     class _CoreExport StaticallyInitializedScopedSingletonWrapper : public StaticallyInitializedInstance
     {
         public:
-            StaticallyInitializedScopedSingletonWrapper(ScopedSingletonWrapper* wrapper) : wrapper_(wrapper) {}
+            StaticallyInitializedScopedSingletonWrapper(ScopedSingletonWrapper* wrapper, ScopeID::Value scope)
+                : wrapper_(wrapper)
+                , scope_(scope)
+            {}
 
             virtual void load();
             virtual void unload();
@@ -89,6 +92,7 @@ namespace orxonox
 
         private:
             ScopedSingletonWrapper* wrapper_;
+            ScopeID::Value scope_;
     };
 
     typedef StaticallyInitializedScopedSingletonWrapper SI_SSW;

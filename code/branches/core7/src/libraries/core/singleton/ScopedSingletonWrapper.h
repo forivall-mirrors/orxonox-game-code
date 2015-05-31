@@ -60,9 +60,8 @@ namespace orxonox
     {
         public:
             /// Constructor: Initializes all the values
-            ScopedSingletonWrapper(const std::string& className, ScopeID::Value scope)
-                : ScopeListener(scope)
-                , className_(className)
+            ScopedSingletonWrapper(const std::string& className)
+                : className_(className)
             { }
             virtual ~ScopedSingletonWrapper() { }
 
@@ -73,12 +72,11 @@ namespace orxonox
     /**
         @anchor ClassScopedSingletonWrapper
 
-        @brief Manages a scoped singleton for a given scope.
+        @brief Manages a scoped singleton
         @param T The managed singleton class
-        @param scope The scope in which the singleton @a T should be active
         @param allowedToFail If true, a specialization of this template is used, that uses try-catch blocks to handle possible failures.
 
-        This class inherits from ScopeListener for the given scope and thus its functions
+        This class inherits from ScopeListener and is registered for a scope in ScopeManager and thus its functions
         activated() and deactivated() are called whenever the Scope changes its state.
 
         If the Scope is activated, a new instance of @a T (which must be a singleton) is created.
@@ -86,13 +84,12 @@ namespace orxonox
 
         @see Singleton
     */
-    template <class T, ScopeID::Value scope, bool allowedToFail>
+    template <class T, bool allowedToFail>
     class ClassScopedSingletonWrapper : public ScopedSingletonWrapper
     {
     public:
-        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonWrapper and ScopeListener
         ClassScopedSingletonWrapper(const std::string& className)
-            : ScopedSingletonWrapper(className, scope)
+            : ScopedSingletonWrapper(className)
             , singletonPtr_(NULL)
         {
         }
@@ -134,20 +131,18 @@ namespace orxonox
     /**
         @brief This class partially spezializes ClassScopedSingletonWrapper for classes @a T that are allowed to fail.
         @param T The managed singleton class
-        @param scope The scope in which the singleton @a T should be active
 
         Because @a T could fail when being created, this partial spezialization of ClassScopedSingletonWrapper
         uses a try-catch block to handle exceptions.
 
         See @ref ClassScopedSingletonWrapper for a full documentation of the basis template.
     */
-    template <class T, ScopeID::Value scope>
-    class ClassScopedSingletonWrapper<T, scope, true> : public ScopedSingletonWrapper
+    template <class T>
+    class ClassScopedSingletonWrapper<T, true> : public ScopedSingletonWrapper
     {
     public:
-        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonWrapper and ScopeListener
         ClassScopedSingletonWrapper(const std::string& className)
-            : ScopedSingletonWrapper(className, scope)
+            : ScopedSingletonWrapper(className)
             , singletonPtr_(NULL)
         {
         }

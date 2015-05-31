@@ -70,7 +70,7 @@ namespace orxonox
         friend class ScopeManager;
 
         protected:
-            ScopeListener(ScopeID::Value scope) : scope_(scope), bActivated_(false) { }
+            ScopeListener() : bActivated_(false) { }
             virtual ~ScopeListener() { }
 
             //! Gets called if the scope is activated
@@ -78,12 +78,7 @@ namespace orxonox
             //! Gets called if the scope is deactivated
             virtual void deactivated() = 0;
 
-        public:
-            inline ScopeID::Value getScope() const
-                { return this->scope_; }
-
         private:
-            ScopeID::Value scope_; //!< Store the scope to unregister on destruction
             bool bActivated_;
     };
 
