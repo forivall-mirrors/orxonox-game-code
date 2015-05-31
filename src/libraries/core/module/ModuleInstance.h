@@ -31,25 +31,38 @@
 
 #include "core/CorePrereqs.h"
 
-#include <list>
+#include <set>
+#include <string>
 
 namespace orxonox
 {
     class _CoreExport ModuleInstance
     {
         public:
+            ModuleInstance(const std::string& name);
             ~ModuleInstance();
 
             void addStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
             void loadAllStaticallyInitializedInstances();
             void unloadAllStaticallyInitializedInstances();
             void removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
+            void deleteAllStaticallyInitializedInstances();
+
+            inline const std::string& getName() const
+                { return this->name_; }
+
+            inline void setDynLib(DynLib* dynLib)
+                { this->dynLib_ = dynLib; }
+            inline DynLib* getDynLib() const
+                { return this->dynLib_; }
 
             static void setCurrentModuleInstance(ModuleInstance* instance);
             static ModuleInstance* getCurrentModuleInstance();
 
         private:
-            std::list<StaticallyInitializedInstance*> staticallyInitializedInstances_;
+            std::set<StaticallyInitializedInstance*> staticallyInitializedInstances_;
+            std::string name_;
+            DynLib* dynLib_;
 
             static ModuleInstance* currentModuleInstance_s;
     };

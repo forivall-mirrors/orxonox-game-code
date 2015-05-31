@@ -59,7 +59,6 @@ namespace orxonox
     class _CoreExport Core : public Singleton<Core>
     {
         friend class Singleton<Core>;
-        friend class Game;
 
         public:
             /**
@@ -76,17 +75,22 @@ namespace orxonox
             /// Destructor that also executes when the object fails to construct
             void destroy();
 
-            inline CoreConfig* getConfig() const
-                { return this->config_; }
-
-        private:
-            Core(const Core&); //!< Don't use (undefined symbol)
-
             void preUpdate(const Clock& time);
             void postUpdate(const Clock& time);
 
             void loadGraphics();
             void unloadGraphics();
+
+            void loadModules();
+            void unloadModules();
+            void loadModule(ModuleInstance* module);
+            void unloadModule(ModuleInstance* module);
+
+            inline CoreConfig* getConfig() const
+                { return this->config_; }
+
+        private:
+            Core(const Core&); //!< Don't use (undefined symbol)
 
             void setThreadAffinity(int limitToCPU);
 
@@ -107,6 +111,8 @@ namespace orxonox
             GUIManager*               guiManager_;                 //!< Interface to GUI
             Scope<ScopeID::GRAPHICS>* graphicsScope_;
             bool                      bGraphicsLoaded_;
+            ModuleInstance*           rootModule_;
+            std::list<ModuleInstance*>modules_;
 
             /// Helper object that stores the config values
             CoreConfig*               config_;

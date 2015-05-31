@@ -99,6 +99,8 @@ namespace orxonox
             for (std::set<Identifier*>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); ++it)
             {
                 Identifier* identifier = (*it);
+                if (identifier->isInitialized())
+                    continue;
 
                 orxout(verbose, context::identifier) << "Initialize ClassIdentifier<" << identifier->getName() << ">-Singleton." << endl;
                 // To initialize the identifier, we create a new object and delete it afterwards.
@@ -134,7 +136,7 @@ namespace orxonox
 
             if (initializedIdentifiers.find(identifier) != initializedIdentifiers.end())
                 identifier->finishInitialization();
-            else
+            else if (!identifier->isInitialized())
                 orxout(internal_error) << "Identifier was registered late and is not initialized: " << identifier->getName() << " / " << identifier->getTypeInfo().name() << endl;
         }
 
