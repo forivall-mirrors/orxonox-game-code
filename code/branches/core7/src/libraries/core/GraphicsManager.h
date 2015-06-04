@@ -94,6 +94,7 @@ namespace orxonox
 
         void upgradeToGraphics();
         void loadDebugOverlay();
+        void unloadDebugOverlay();
         bool rendererLoaded() const { return renderWindow_ != NULL; }
 
         void setCamera(Ogre::Camera* camera);
