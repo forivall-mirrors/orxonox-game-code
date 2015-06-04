@@ -517,7 +517,7 @@ namespace orxonox
             orxout(internal_info) << "loading graphics in Game" << endl;
 
             core_->loadGraphics();
-            Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
+            Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics, true);
 
             // Construct all the GameStates that require graphics
             for (std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.begin();
@@ -538,7 +538,7 @@ namespace orxonox
         }
     }
 
-    void Game::unloadGraphics()
+    void Game::unloadGraphics(bool loadGraphicsManagerWithoutRenderer)
     {
         if (GameMode::showsGraphics())
         {
@@ -554,7 +554,7 @@ namespace orxonox
                     ++it;
             }
 
-            core_->unloadGraphics();
+            core_->unloadGraphics(loadGraphicsManagerWithoutRenderer);
         }
     }
 
@@ -575,7 +575,7 @@ namespace orxonox
         LOKI_ON_BLOCK_EXIT_OBJ(*this, &Game::resetChangingState); (void)LOKI_ANONYMOUS_VARIABLE(scopeGuard);
 
         // If state requires graphics, load it
-        Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
+        Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics, true);
         if (gameStateDeclarations_s[name].bGraphicsMode && !GameMode::showsGraphics())
             this->loadGraphics();
         else
@@ -611,14 +611,11 @@ namespace orxonox
             orxout(internal_warning) << "There might be potential resource leaks involved! To avoid this, improve exception-safety." << endl;
         }
         // Check if graphics is still required
-        if (!bAbort_)
-        {
-            bool graphicsRequired = false;
-            for (unsigned i = 0; i < loadedStates_.size(); ++i)
-                graphicsRequired |= loadedStates_[i]->getInfo().bGraphicsMode;
-            if (!graphicsRequired)
-                this->unloadGraphics();
-        }
+        bool graphicsRequired = false;
+        for (unsigned i = 0; i < loadedStates_.size(); ++i)
+            graphicsRequired |= loadedStates_[i]->getInfo().bGraphicsMode;
+        if (!graphicsRequired)
+            this->unloadGraphics(!this->bAbort_); // if abort is false, that means the game is still running while unloading graphics. in this case we load a graphics manager without renderer (to keep all necessary ogre instances alive)
         this->bChangingState_ = false;
     }
 

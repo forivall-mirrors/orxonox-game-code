@@ -147,7 +147,7 @@ namespace orxonox
         Game(Game&); // don't mess with singletons
 
         void loadGraphics();
-        void unloadGraphics();
+        void unloadGraphics(bool loadGraphicsManagerWithoutRenderer = true);
 
         void parseStates(std::vector<std::pair<std::string, int> >::const_iterator& it, shared_ptr<GameStateTreeNode> currentNode);
         bool checkState(const std::string& name) const;
