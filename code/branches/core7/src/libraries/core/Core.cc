@@ -308,7 +308,7 @@ namespace orxonox
         orxout(internal_info) << "loading graphics in Core" << endl;
 
         // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
-        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
+        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics, true);
 
         // Upgrade OGRE to receive a render window
         try
@@ -356,7 +356,7 @@ namespace orxonox
         orxout(internal_info) << "finished loading graphics in Core" << endl;
     }
 
-    void Core::unloadGraphics()
+    void Core::unloadGraphics(bool loadGraphicsManagerWithoutRenderer)
     {
         orxout(internal_info) << "unloading graphics in Core" << endl;
 
@@ -367,7 +367,10 @@ namespace orxonox
 
         // Load Ogre::Root again, but without the render system
         try
-            { this->graphicsManager_ = new GraphicsManager(false); }
+        {
+            if (loadGraphicsManagerWithoutRenderer)
+                this->graphicsManager_ = new GraphicsManager(false);
+        }
         catch (...)
         {
             orxout(user_error) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << endl

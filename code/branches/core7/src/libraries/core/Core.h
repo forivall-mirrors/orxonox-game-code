@@ -79,7 +79,7 @@ namespace orxonox
             void postUpdate(const Clock& time);
 
             void loadGraphics();
-            void unloadGraphics();
+            void unloadGraphics(bool loadGraphicsManagerWithoutRenderer = true);
 
             void loadModules();
             void unloadModules();
