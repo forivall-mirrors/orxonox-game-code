@@ -360,6 +360,9 @@ namespace orxonox
     {
         orxout(internal_info) << "unloading graphics in Core" << endl;
 
+        if (this->graphicsManager_)
+            this->graphicsManager_->unloadDebugOverlay();
+
         safeObjectDelete(&graphicsScope_);
         safeObjectDelete(&guiManager_);
         safeObjectDelete(&inputManager_);

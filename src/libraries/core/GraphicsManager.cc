@@ -140,8 +140,6 @@ namespace orxonox
     {
         orxout(internal_status) << "destroying GraphicsManager..." << endl;
 
-        Loader::getInstance().unload(debugOverlay_.get());
-
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_);
         ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
         ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).resetFunction();
@@ -331,6 +329,11 @@ namespace orxonox
         orxout(internal_info) << "Loading Debug Overlay..." << endl;
         debugOverlay_.reset(new XMLFile("debug.oxo"));
         Loader::getInstance().load(debugOverlay_.get(), ClassTreeMask(), false);
+    }
+
+    void GraphicsManager::unloadDebugOverlay()
+    {
+        Loader::getInstance().unload(debugOverlay_.get());
     }
 
     /**
