@@ -129,7 +129,7 @@ namespace orxonox
         // TODO: initialize ConsoleCommandManager here
         // TODO: initialize NetworkFunctionManager here
         this->rootModule_ = ModuleInstance::getCurrentModuleInstance();
-        this->rootModule_->loadAllStaticallyInitializedInstances();
+        this->rootModule_->loadAllStaticallyInitializedInstances(0);
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLineParser::parse(cmdLine);
@@ -245,7 +245,7 @@ namespace orxonox
         Context::getRootContext()->unregisterObject(); // unregister context from object lists - otherwise the root context would be destroyed while unloading the root module
         if (this->rootModule_)
         {
-            this->rootModule_->unloadAllStaticallyInitializedInstances();
+            this->rootModule_->unloadAllStaticallyInitializedInstances(0);
             this->rootModule_->deleteAllStaticallyInitializedInstances();
         }
         Context::setRootContext(NULL);
@@ -286,7 +286,7 @@ namespace orxonox
         ModuleInstance::setCurrentModuleInstance(module);
         DynLib* dynLib = this->dynLibManager_->load(module->getName());
         module->setDynLib(dynLib);
-        module->loadAllStaticallyInitializedInstances();
+        module->loadAllStaticallyInitializedInstances(0);
         IdentifierManager::getInstance().createClassHierarchy();
         ScopeManager::getInstance().updateListeners();
     }
@@ -306,7 +306,7 @@ namespace orxonox
     {
         orxout(internal_info) << "Unloading module " << module->getName() << "..." << endl;
 
-        module->unloadAllStaticallyInitializedInstances();
+        module->unloadAllStaticallyInitializedInstances(0);
         module->deleteAllStaticallyInitializedInstances();
         this->dynLibManager_->unload(module->getDynLib());
         module->setDynLib(NULL);

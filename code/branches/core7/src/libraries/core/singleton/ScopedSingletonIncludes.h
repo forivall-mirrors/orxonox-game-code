@@ -80,7 +80,8 @@ namespace orxonox
     {
         public:
             StaticallyInitializedScopedSingletonWrapper(ScopedSingletonWrapper* wrapper, ScopeID::Value scope)
-                : wrapper_(wrapper)
+                : StaticallyInitializedInstance(0)
+                , wrapper_(wrapper)
                 , scope_(scope)
             {}
             ~StaticallyInitializedScopedSingletonWrapper() { delete wrapper_; }

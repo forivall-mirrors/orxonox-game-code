@@ -50,7 +50,10 @@ namespace orxonox
     class _NetworkExport StaticallyInitializedNetworkFunction : public StaticallyInitializedInstance
     {
         public:
-            StaticallyInitializedNetworkFunction(NetworkFunctionBase* function) : function_(function) {}
+            StaticallyInitializedNetworkFunction(NetworkFunctionBase* function)
+                : StaticallyInitializedInstance(0)
+                , function_(function)
+            {}
             ~StaticallyInitializedNetworkFunction() { delete function_; }
 
             virtual void load();

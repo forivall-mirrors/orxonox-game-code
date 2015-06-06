@@ -224,7 +224,10 @@ namespace orxonox
         };
 
         public:
-            StaticallyInitializedIdentifier(Identifier* identifier) : identifier_(identifier) {}
+            StaticallyInitializedIdentifier(Identifier* identifier)
+                : StaticallyInitializedInstance(0)
+                , identifier_(identifier)
+            {}
             ~StaticallyInitializedIdentifier() { delete identifier_; }
 
             virtual void load()

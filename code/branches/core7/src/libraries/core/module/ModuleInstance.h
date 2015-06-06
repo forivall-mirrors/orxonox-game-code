@@ -32,7 +32,10 @@
 #include "core/CorePrereqs.h"
 
 #include <set>
+#include <map>
 #include <string>
+
+#include "StaticallyInitializedInstance.h"
 
 namespace orxonox
 {
@@ -43,9 +46,11 @@ namespace orxonox
             ~ModuleInstance();
 
             void addStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
-            void loadAllStaticallyInitializedInstances();
-            void unloadAllStaticallyInitializedInstances();
             void removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
+
+            void loadAllStaticallyInitializedInstances(StaticallyInitializedInstance::Type type);
+            void unloadAllStaticallyInitializedInstances(StaticallyInitializedInstance::Type type);
+
             void deleteAllStaticallyInitializedInstances();
 
             inline const std::string& getName() const
@@ -60,7 +65,7 @@ namespace orxonox
             static ModuleInstance* getCurrentModuleInstance();
 
         private:
-            std::set<StaticallyInitializedInstance*> staticallyInitializedInstances_;
+            std::map<StaticallyInitializedInstance::Type, std::set<StaticallyInitializedInstance*> > staticallyInitializedInstancesByType_;
             std::string name_;
             DynLib* dynLib_;
 

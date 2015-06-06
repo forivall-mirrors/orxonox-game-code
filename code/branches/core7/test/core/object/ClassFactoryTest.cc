@@ -15,12 +15,12 @@ namespace orxonox
                 virtual void SetUp()
                 {
                     Context::setRootContext(new Context(NULL));
-                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(0);
                 }
 
                 virtual void TearDown()
                 {
-                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(0);
                     Context::setRootContext(NULL);
                 }
         };
