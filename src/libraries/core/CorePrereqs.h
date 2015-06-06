@@ -206,6 +206,8 @@ namespace orxonox
     template <class T>
     class SmartPtr;
     class StaticallyInitializedInstance;
+    class StaticInitializationHandler;
+    class StaticInitializationManager;
     template <class T>
     class SubclassIdentifier;
     class Template;
