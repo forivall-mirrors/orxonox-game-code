@@ -27,7 +27,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 
 FIND_LIBRARY(VLD_LIBRARY
   NAMES vld
-  PATH_SUFFIXES "Visual Leak Detector/lib/Win32"
+  PATH_SUFFIXES "Visual Leak Detector/lib/Win32" "../../lib/Win32"
 )
 
 # Handle the REQUIRED argument and set POCO_FOUND
