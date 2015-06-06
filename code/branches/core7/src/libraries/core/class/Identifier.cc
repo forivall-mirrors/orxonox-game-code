@@ -81,6 +81,16 @@ namespace orxonox
         for (std::list<const InheritsFrom*>::const_iterator it = this->manualDirectParents_.begin(); it != this->manualDirectParents_.end(); ++it)
             delete (*it);
 
+        // erase this Identifier from all related identifiers
+        for (std::list<const Identifier*>::const_iterator it = this->parents_.begin(); it != this->parents_.end(); ++it)
+            const_cast<Identifier*>(*it)->children_.erase(this);
+        for (std::list<const Identifier*>::const_iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+            const_cast<Identifier*>(*it)->directChildren_.erase(this);
+        for (std::set<const Identifier*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
+            const_cast<Identifier*>(*it)->parents_.remove(this);
+        for (std::set<const Identifier*>::const_iterator it = this->directChildren_.begin(); it != this->directChildren_.end(); ++it)
+            const_cast<Identifier*>(*it)->directParents_.remove(this);
+
         for (std::map<std::string, ConfigValueContainer*>::iterator it = this->configValues_.begin(); it != this->configValues_.end(); ++it)
             delete (it->second);
         for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
