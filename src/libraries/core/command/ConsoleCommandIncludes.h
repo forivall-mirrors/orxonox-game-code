@@ -310,7 +310,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedConsoleCommand(ConsoleCommand* command)
-                : StaticallyInitializedInstance(0)
+                : StaticallyInitializedInstance(StaticInitialization::CONSOLE_COMMAND)
                 , command_(command)
             {}
             ~StaticallyInitializedConsoleCommand() { delete command_; }

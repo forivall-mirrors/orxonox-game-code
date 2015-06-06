@@ -46,13 +46,34 @@ namespace orxonox
 
     void CoreStaticInitializationHandler::loadModule(ModuleInstance* module)
     {
-        module->loadAllStaticallyInitializedInstances(0);
+        this->loadInstances(module);
+        if (this->bInitInstances_)
+            this->initInstances(module);
+    }
+
+    void CoreStaticInitializationHandler::loadInstances(ModuleInstance* module)
+    {
+        // the order of initialization is important
+        module->loadAllStaticallyInitializedInstances(StaticInitialization::STATIC_INITIALIZATION_HANDLER);
+        module->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+        module->loadAllStaticallyInitializedInstances(StaticInitialization::SCOPED_SINGLETON_WRAPPER);
+        module->loadAllStaticallyInitializedInstances(StaticInitialization::COMMAND_LINE_ARGUMENT);
+        module->loadAllStaticallyInitializedInstances(StaticInitialization::CONSOLE_COMMAND);
+    }
+
+    void CoreStaticInitializationHandler::initInstances(ModuleInstance* module)
+    {
         IdentifierManager::getInstance().createClassHierarchy();
         ScopeManager::getInstance().updateListeners();
     }
 
     void CoreStaticInitializationHandler::unloadModule(ModuleInstance* module)
     {
-        module->unloadAllStaticallyInitializedInstances(0);
+        // inverted order of initialization
+        module->unloadAllStaticallyInitializedInstances(StaticInitialization::CONSOLE_COMMAND);
+        module->unloadAllStaticallyInitializedInstances(StaticInitialization::COMMAND_LINE_ARGUMENT);
+        module->unloadAllStaticallyInitializedInstances(StaticInitialization::SCOPED_SINGLETON_WRAPPER);
+        module->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+        module->unloadAllStaticallyInitializedInstances(StaticInitialization::STATIC_INITIALIZATION_HANDLER);
     }
 }

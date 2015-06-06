@@ -48,8 +48,8 @@ namespace orxonox
             void addStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
             void removeStaticallyInitializedInstance(StaticallyInitializedInstance* instance);
 
-            void loadAllStaticallyInitializedInstances(StaticallyInitializedInstance::Type type);
-            void unloadAllStaticallyInitializedInstances(StaticallyInitializedInstance::Type type);
+            void loadAllStaticallyInitializedInstances(StaticInitialization::Type type);
+            void unloadAllStaticallyInitializedInstances(StaticInitialization::Type type);
 
             void deleteAllStaticallyInitializedInstances();
 
@@ -65,7 +65,7 @@ namespace orxonox
             static ModuleInstance* getCurrentModuleInstance();
 
         private:
-            std::map<StaticallyInitializedInstance::Type, std::set<StaticallyInitializedInstance*> > staticallyInitializedInstancesByType_;
+            std::map<StaticInitialization::Type, std::set<StaticallyInitializedInstance*> > staticallyInitializedInstancesByType_;
             std::string name_;
             DynLib* dynLib_;
 

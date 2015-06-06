@@ -125,18 +125,18 @@ namespace orxonox
         // Create a new dynamic library manager
         this->dynLibManager_ = new DynLibManager();
 
-        // TODO: initialize StaticInitializationManager
-        this->staticInitHandler_ = new CoreStaticInitializationHandler();
-        StaticInitializationManager::getInstance().addHandler(this->staticInitHandler_);
-
         // TODO: initialize Root-Context
         // TODO: initialize IdentifierManager here
         // TODO: initialize ScopeManager here
         // TODO: initialize CommandLineParser here
         // TODO: initialize ConsoleCommandManager here
         // TODO: initialize NetworkFunctionManager here
+        // TODO: initialize StaticInitializationManager
+        this->staticInitHandler_ = new CoreStaticInitializationHandler();
+        StaticInitializationManager::getInstance().addHandler(this->staticInitHandler_);
+
         this->rootModule_ = ModuleInstance::getCurrentModuleInstance();
-        this->rootModule_->loadAllStaticallyInitializedInstances(0);
+        StaticInitializationManager::getInstance().loadModule(this->rootModule_);
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLineParser::parse(cmdLine);
@@ -197,7 +197,8 @@ namespace orxonox
 
         // creates the class hierarchy for all classes with factories
         orxout(internal_info) << "creating class hierarchy" << endl;
-        IdentifierManager::getInstance().createClassHierarchy();
+        this->staticInitHandler_->initInstances(this->rootModule_);
+        this->staticInitHandler_->setInitInstances(true);
 
         // Loader
         this->loaderInstance_ = new Loader();
@@ -252,7 +253,7 @@ namespace orxonox
         Context::getRootContext()->unregisterObject(); // unregister context from object lists - otherwise the root context would be destroyed while unloading the root module
         if (this->rootModule_)
         {
-            this->rootModule_->unloadAllStaticallyInitializedInstances(0);
+            StaticInitializationManager::getInstance().unloadModule(this->rootModule_);
             this->rootModule_->deleteAllStaticallyInitializedInstances();
         }
         if (this->staticInitHandler_)

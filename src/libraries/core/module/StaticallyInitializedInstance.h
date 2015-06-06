@@ -36,20 +36,19 @@ namespace orxonox
     class _CoreExport StaticallyInitializedInstance
     {
         public:
-            typedef int Type;
 
-            StaticallyInitializedInstance(Type type);
+            StaticallyInitializedInstance(StaticInitialization::Type type);
             virtual ~StaticallyInitializedInstance();
 
             virtual void load() = 0;
             virtual void unload() = 0;
 
-            inline Type getType() const
+            inline StaticInitialization::Type getType() const
                 { return this->type_; }
 
         private:
             ModuleInstance* module_;
-            Type type_;
+            StaticInitialization::Type type_;
     };
 }
 

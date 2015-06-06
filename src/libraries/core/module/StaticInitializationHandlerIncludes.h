@@ -47,7 +47,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedStaticInitializationHandler(StaticInitializationHandler* handler)
-                : StaticallyInitializedInstance(0)
+                : StaticallyInitializedInstance(StaticInitialization::STATIC_INITIALIZATION_HANDLER)
                 , handler_(handler)
             {}
             ~StaticallyInitializedStaticInitializationHandler() { delete handler_; }

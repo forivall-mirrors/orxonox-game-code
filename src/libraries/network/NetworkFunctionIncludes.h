@@ -51,7 +51,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedNetworkFunction(NetworkFunctionBase* function)
-                : StaticallyInitializedInstance(0)
+                : StaticallyInitializedInstance(StaticInitialization::NETWORK_FUNCTION)
                 , function_(function)
             {}
             ~StaticallyInitializedNetworkFunction() { delete function_; }

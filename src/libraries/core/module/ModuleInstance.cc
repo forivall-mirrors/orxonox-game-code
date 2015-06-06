@@ -55,14 +55,14 @@ namespace orxonox
         this->staticallyInitializedInstancesByType_[instance->getType()].erase(instance);
     }
 
-    void ModuleInstance::loadAllStaticallyInitializedInstances(StaticallyInitializedInstance::Type type)
+    void ModuleInstance::loadAllStaticallyInitializedInstances(StaticInitialization::Type type)
     {
         const std::set<StaticallyInitializedInstance*>& instances = this->staticallyInitializedInstancesByType_[type];
         for (std::set<StaticallyInitializedInstance*>::iterator it = instances.begin(); it != instances.end(); ++it)
             (*it)->load();
     }
 
-    void ModuleInstance::unloadAllStaticallyInitializedInstances(StaticallyInitializedInstance::Type type)
+    void ModuleInstance::unloadAllStaticallyInitializedInstances(StaticInitialization::Type type)
     {
         const std::set<StaticallyInitializedInstance*>& instances = this->staticallyInitializedInstancesByType_[type];
         for (std::set<StaticallyInitializedInstance*>::iterator it = instances.begin(); it != instances.end(); ++it)
@@ -71,9 +71,9 @@ namespace orxonox
 
     void ModuleInstance::deleteAllStaticallyInitializedInstances()
     {
-        std::map<StaticallyInitializedInstance::Type, std::set<StaticallyInitializedInstance*> > copy(this->staticallyInitializedInstancesByType_);
+        std::map<StaticInitialization::Type, std::set<StaticallyInitializedInstance*> > copy(this->staticallyInitializedInstancesByType_);
         this->staticallyInitializedInstancesByType_.clear();
-        for (std::map<StaticallyInitializedInstance::Type, std::set<StaticallyInitializedInstance*> >::iterator it1 = copy.begin(); it1 != copy.end(); ++it1)
+        for (std::map<StaticInitialization::Type, std::set<StaticallyInitializedInstance*> >::iterator it1 = copy.begin(); it1 != copy.end(); ++it1)
             for (std::set<StaticallyInitializedInstance*>::iterator it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
                 delete (*it2);
     }
