@@ -96,6 +96,8 @@ namespace orxonox
 
         ~ClassScopedSingletonWrapper()
         {
+            if (singletonPtr_)
+                this->destroy(singletonPtr_);
         }
 
         //! Called if the Scope of the Singleton gets active (creates the instance)
@@ -149,6 +151,8 @@ namespace orxonox
 
         ~ClassScopedSingletonWrapper()
         {
+            if (singletonPtr_)
+                this->destroy(singletonPtr_);
         }
 
         //! Called if the Scope of the Singleton gets active (creates the instance)
