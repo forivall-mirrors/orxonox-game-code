@@ -127,6 +127,7 @@ namespace orxonox
         // TODO: initialize ScopeManager here
         // TODO: initialize CommandLineParser here
         // TODO: initialize ConsoleCommandManager here
+        // TODO: initialize NetworkFunctionManager here
         this->rootModule_ = ModuleInstance::getCurrentModuleInstance();
         this->rootModule_->loadAllStaticallyInitializedInstances();
 
@@ -240,11 +241,15 @@ namespace orxonox
         safeObjectDelete(&config_);
         safeObjectDelete(&languageInstance_);
         safeObjectDelete(&configFileManager_);
-        Context::setRootContext(NULL);
         safeObjectDelete(&signalHandler_);
-//        if (this->rootModule_)
-//            this->rootModule_->unloadAllStaticallyInitializedInstances();
-//        safeObjectDelete(&rootModule_);
+        Context::getRootContext()->unregisterObject(); // unregister context from object lists - otherwise the root context would be destroyed while unloading the root module
+        if (this->rootModule_)
+        {
+            this->rootModule_->unloadAllStaticallyInitializedInstances();
+            this->rootModule_->deleteAllStaticallyInitializedInstances();
+        }
+        Context::setRootContext(NULL);
+        safeObjectDelete(&rootModule_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&configurablePaths_);
         safeObjectDelete(&applicationPaths_);
@@ -276,6 +281,8 @@ namespace orxonox
 
     void Core::loadModule(ModuleInstance* module)
     {
+        orxout(internal_info) << "Loading module " << module->getName() << "..." << endl;
+
         ModuleInstance::setCurrentModuleInstance(module);
         DynLib* dynLib = this->dynLibManager_->load(module->getName());
         module->setDynLib(dynLib);
@@ -297,6 +304,8 @@ namespace orxonox
 
     void Core::unloadModule(ModuleInstance* module)
     {
+        orxout(internal_info) << "Unloading module " << module->getName() << "..." << endl;
+
         module->unloadAllStaticallyInitializedInstances();
         module->deleteAllStaticallyInitializedInstances();
         this->dynLibManager_->unload(module->getDynLib());
