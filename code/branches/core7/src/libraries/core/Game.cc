@@ -141,8 +141,8 @@ namespace orxonox
 
         GameStateFactory::getFactories().clear();
         safeObjectDelete(&config_);
-//        if (this->core_)
-//            this->core_->unloadModules();
+        if (this->core_)
+            this->core_->unloadModules();
         safeObjectDelete(&core_);
         safeObjectDelete(&gameClock_);
 
