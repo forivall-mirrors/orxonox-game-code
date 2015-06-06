@@ -122,6 +122,7 @@ namespace orxonox
         // Create a new dynamic library manager
         this->dynLibManager_ = new DynLibManager();
 
+        // TODO: initialize StaticInitializationManager
         // TODO: initialize Root-Context
         // TODO: initialize IdentifierManager here
         // TODO: initialize ScopeManager here

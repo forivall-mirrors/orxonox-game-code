@@ -44,6 +44,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   BaseObject.cc
   Core.cc
   CoreConfig.cc
+  CoreStaticInitializationHandler.cc
 
 BUILD_UNIT OgreBuildUnit.cc
   GraphicsManager.cc
