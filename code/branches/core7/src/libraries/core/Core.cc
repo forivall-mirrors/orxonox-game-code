@@ -77,6 +77,8 @@
 #include "input/InputManager.h"
 #include "object/ObjectList.h"
 #include "module/ModuleInstance.h"
+#include "module/StaticInitializationManager.h"
+#include "CoreStaticInitializationHandler.h"
 #include "UpdateListener.h"
 
 namespace orxonox
@@ -110,6 +112,7 @@ namespace orxonox
         , guiManager_(NULL)
         , graphicsScope_(NULL)
         , bGraphicsLoaded_(false)
+        , staticInitHandler_(NULL)
         , rootModule_(NULL)
         , config_(NULL)
         , destructionHelper_(this)
@@ -123,6 +126,9 @@ namespace orxonox
         this->dynLibManager_ = new DynLibManager();
 
         // TODO: initialize StaticInitializationManager
+        this->staticInitHandler_ = new CoreStaticInitializationHandler();
+        StaticInitializationManager::getInstance().addHandler(this->staticInitHandler_);
+
         // TODO: initialize Root-Context
         // TODO: initialize IdentifierManager here
         // TODO: initialize ScopeManager here
@@ -249,8 +255,11 @@ namespace orxonox
             this->rootModule_->unloadAllStaticallyInitializedInstances(0);
             this->rootModule_->deleteAllStaticallyInitializedInstances();
         }
+        if (this->staticInitHandler_)
+            StaticInitializationManager::getInstance().removeHandler(this->staticInitHandler_);
         Context::setRootContext(NULL);
         safeObjectDelete(&rootModule_);
+        safeObjectDelete(&staticInitHandler_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&configurablePaths_);
         safeObjectDelete(&applicationPaths_);
@@ -287,9 +296,8 @@ namespace orxonox
         ModuleInstance::setCurrentModuleInstance(module);
         DynLib* dynLib = this->dynLibManager_->load(module->getName());
         module->setDynLib(dynLib);
-        module->loadAllStaticallyInitializedInstances(0);
-        IdentifierManager::getInstance().createClassHierarchy();
-        ScopeManager::getInstance().updateListeners();
+
+        StaticInitializationManager::getInstance().loadModule(module);
     }
 
     void Core::unloadModules()
@@ -307,7 +315,8 @@ namespace orxonox
     {
         orxout(internal_info) << "Unloading module " << module->getName() << "..." << endl;
 
-        module->unloadAllStaticallyInitializedInstances(0);
+        StaticInitializationManager::getInstance().unloadModule(module);
+
         module->deleteAllStaticallyInitializedInstances();
         this->dynLibManager_->unload(module->getDynLib());
         module->setDynLib(NULL);
