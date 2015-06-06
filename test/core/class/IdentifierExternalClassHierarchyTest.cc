@@ -71,25 +71,6 @@ namespace orxonox
         }
     }
 
-    TEST(IdentifierExternalClassHierarchyTest_NoFixture, NoInitialization)
-    {
-        {
-            Identifier* identifier = Class(Interface);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(RealClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-    }
-
     TEST_F(IdentifierExternalClassHierarchyTest, TestInterface)
     {
         Identifier* identifier = Class(Interface);

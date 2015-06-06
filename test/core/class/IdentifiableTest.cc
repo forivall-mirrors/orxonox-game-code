@@ -1,36 +1,52 @@
 #include <gtest/gtest.h>
 #include "core/CoreIncludes.h"
 #include "core/class/Identifiable.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
     namespace
     {
-        class IdentifiableTest : public Identifiable
+        class IdentifiableClass : public Identifiable
         {
             public:
-                IdentifiableTest() { RegisterObject(IdentifiableTest); }
+                IdentifiableClass() { RegisterObject(IdentifiableClass); }
         };
 
-        RegisterClassNoArgs(IdentifiableTest);
+        RegisterClassNoArgs(IdentifiableClass);
+
+        // Fixture
+        class IdentifiableTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                }
+
+                virtual void TearDown()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
+                }
+        };
     }
 
-    TEST(IdentifiableTest, CanCreate)
+    TEST_F(IdentifiableTest, CanCreate)
     {
-        IdentifiableTest* test = new IdentifiableTest();
+        IdentifiableClass* test = new IdentifiableClass();
         ASSERT_TRUE(test != NULL);
         delete test;
     }
 
-    TEST(IdentifiableTest, HasIdentifierAssigned)
+    TEST_F(IdentifiableTest, HasIdentifierAssigned)
     {
-        IdentifiableTest test;
+        IdentifiableClass test;
         EXPECT_TRUE(test.getIdentifier());
     }
 
-    TEST(IdentifiableTest, CanBeIdentified)
+    TEST_F(IdentifiableTest, CanBeIdentified)
     {
-        IdentifiableTest test;
-        EXPECT_TRUE(test.isA(Class(IdentifiableTest)));
+        IdentifiableClass test;
+        EXPECT_TRUE(test.isA(Class(IdentifiableClass)));
     }
 }

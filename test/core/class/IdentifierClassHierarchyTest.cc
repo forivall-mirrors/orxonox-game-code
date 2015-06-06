@@ -164,60 +164,6 @@ namespace orxonox
         }
     }
 
-    TEST(IdentifierClassHierarchyTest_NoFixture, NoInitialization)
-    {
-        {
-            Identifier* identifier = Class(BaseInterface1);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseInterface2);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Interface1);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Interface2);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(BaseClass);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class0);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class1);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class2a);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class2b);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-        {
-            Identifier* identifier = Class(Class3);
-            EXPECT_EQ(0u, identifier->getChildren().size());
-            EXPECT_EQ(0u, identifier->getParents().size());
-        }
-    }
-
     TEST_F(IdentifierClassHierarchyTest, TestBaseInterface1)
     {
         Identifier* identifier = Class(BaseInterface1);

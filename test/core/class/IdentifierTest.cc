@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "core/CoreIncludes.h"
 #include "core/class/Identifiable.h"
+#include "core/module/ModuleInstance.h"
 
 namespace orxonox
 {
@@ -20,9 +21,24 @@ namespace orxonox
 
         RegisterClassNoArgs(TestClass);
         RegisterClassNoArgs(TestSubclass);
+
+        // Fixture
+        class IdentifierTest : public ::testing::Test
+        {
+            public:
+                virtual void SetUp()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                }
+
+                virtual void TearDown()
+                {
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
+                }
+        };
     }
 
-    TEST(IdentifierTest, IdentifierExistsOfClass)
+    TEST_F(IdentifierTest, IdentifierExistsOfClass)
     {
         TestClass test;
 
@@ -30,7 +46,7 @@ namespace orxonox
         EXPECT_TRUE(identifier != NULL);
     }
 
-    TEST(IdentifierTest, IdentifierExistsOfSubclass)
+    TEST_F(IdentifierTest, IdentifierExistsOfSubclass)
     {
         TestSubclass test;
 
@@ -38,7 +54,7 @@ namespace orxonox
         EXPECT_TRUE(identifier != NULL);
     }
 
-    TEST(IdentifierTest, HasNameOfClass)
+    TEST_F(IdentifierTest, HasNameOfClass)
     {
         TestClass test;
 
@@ -46,7 +62,7 @@ namespace orxonox
         EXPECT_EQ("TestClass", identifier->getName());
     }
 
-    TEST(IdentifierTest, HasNameOfSubClass)
+    TEST_F(IdentifierTest, HasNameOfSubClass)
     {
         TestSubclass test;
 
