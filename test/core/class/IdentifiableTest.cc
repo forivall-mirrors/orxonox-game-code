@@ -21,12 +21,12 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
-                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances();
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(0);
                 }
 
                 virtual void TearDown()
                 {
-                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances();
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(0);
                 }
         };
     }
