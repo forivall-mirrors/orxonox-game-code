@@ -64,8 +64,9 @@ namespace orxonox
 
     void ModuleInstance::unloadAllStaticallyInitializedInstances(StaticInitialization::Type type)
     {
+        // unload in reversed order
         const std::set<StaticallyInitializedInstance*>& instances = this->staticallyInitializedInstancesByType_[type];
-        for (std::set<StaticallyInitializedInstance*>::iterator it = instances.begin(); it != instances.end(); ++it)
+        for (std::set<StaticallyInitializedInstance*>::reverse_iterator it = instances.rbegin(); it != instances.rend(); ++it)
             (*it)->unload();
     }
 

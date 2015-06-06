@@ -50,13 +50,16 @@ namespace orxonox
 
     void StaticInitializationManager::loadModule(ModuleInstance* module)
     {
+        // attention: loading a module may add new handlers to the list
         for (std::list<StaticInitializationHandler*>::iterator it = this->handlers_.begin(); it != this->handlers_.end(); ++it)
             (*it)->loadModule(module);
     }
 
     void StaticInitializationManager::unloadModule(ModuleInstance* module)
     {
-        for (std::list<StaticInitializationHandler*>::iterator it = this->handlers_.begin(); it != this->handlers_.end(); ++it)
-            (*it)->unloadModule(module);
+        // unload in reversed order
+        // attention: unloading a module may remove handlers from the list
+        for (std::list<StaticInitializationHandler*>::reverse_iterator it = this->handlers_.rbegin(); it != this->handlers_.rend(); )
+            (*(it++))->unloadModule(module);
     }
 }
