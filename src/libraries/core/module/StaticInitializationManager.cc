@@ -28,6 +28,8 @@
 
 #include "StaticInitializationManager.h"
 
+#include "StaticInitializationHandler.h"
+
 namespace orxonox
 {
     /* static */ StaticInitializationManager& StaticInitializationManager::getInstance()
@@ -46,8 +48,15 @@ namespace orxonox
         this->handlers_.remove(handler);
     }
 
-    void StaticInitializationManager::addCoreHandler()
+    void StaticInitializationManager::loadModule(ModuleInstance* module)
     {
-        // TODO
+        for (std::list<StaticInitializationHandler*>::iterator it = this->handlers_.begin(); it != this->handlers_.end(); ++it)
+            (*it)->loadModule(module);
+    }
+
+    void StaticInitializationManager::unloadModule(ModuleInstance* module)
+    {
+        for (std::list<StaticInitializationHandler*>::iterator it = this->handlers_.begin(); it != this->handlers_.end(); ++it)
+            (*it)->unloadModule(module);
     }
 }

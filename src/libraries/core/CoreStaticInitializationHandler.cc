@@ -28,6 +28,31 @@
 
 #include "CoreStaticInitializationHandler.h"
 
+#include "module/ModuleInstance.h"
+#include "class/IdentifierManager.h"
+#include "singleton/ScopeManager.h"
+
 namespace orxonox
 {
+    void CoreStaticInitializationHandler::setupHandler()
+    {
+        // TODO
+    }
+
+    void CoreStaticInitializationHandler::shutdownHandler()
+    {
+        // TODO
+    }
+
+    void CoreStaticInitializationHandler::loadModule(ModuleInstance* module)
+    {
+        module->loadAllStaticallyInitializedInstances(0);
+        IdentifierManager::getInstance().createClassHierarchy();
+        ScopeManager::getInstance().updateListeners();
+    }
+
+    void CoreStaticInitializationHandler::unloadModule(ModuleInstance* module)
+    {
+        module->unloadAllStaticallyInitializedInstances(0);
+    }
 }

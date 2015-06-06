@@ -48,9 +48,10 @@ namespace orxonox
             void addHandler(StaticInitializationHandler* handler);
             void removeHandler(StaticInitializationHandler* handler);
 
-        private:
-            void addCoreHandler();
+            void loadModule(ModuleInstance* module);
+            void unloadModule(ModuleInstance* module);
 
+        private:
             std::list<StaticInitializationHandler*> handlers_;
     };
 }

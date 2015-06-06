@@ -38,8 +38,11 @@ namespace orxonox
     class _CoreExport CoreStaticInitializationHandler : public StaticInitializationHandler
     {
         public:
-            CoreStaticInitializationHandler() {}
-            virtual ~CoreStaticInitializationHandler() {}
+            virtual void setupHandler();
+            virtual void shutdownHandler();
+
+            virtual void loadModule(ModuleInstance* module);
+            virtual void unloadModule(ModuleInstance* module);
     };
 }
 

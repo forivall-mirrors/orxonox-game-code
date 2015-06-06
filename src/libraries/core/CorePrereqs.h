@@ -157,6 +157,7 @@ namespace orxonox
     class Context;
     class Core;
     class CoreConfig;
+    class CoreStaticInitializationHandler;
     class Destroyable;
     class DestroyLaterManager;
     class DestructionListener;

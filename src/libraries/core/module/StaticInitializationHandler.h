@@ -38,6 +38,12 @@ namespace orxonox
         public:
             StaticInitializationHandler() {}
             virtual ~StaticInitializationHandler() {}
+
+            virtual void setupHandler() = 0;
+            virtual void shutdownHandler() = 0;
+
+            virtual void loadModule(ModuleInstance* module) = 0;
+            virtual void unloadModule(ModuleInstance* module) = 0;
     };
 }
 

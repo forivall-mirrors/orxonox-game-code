@@ -94,33 +94,35 @@ namespace orxonox
 
             void setThreadAffinity(int limitToCPU);
 
-            ApplicationPaths*         applicationPaths_;
-            ConfigurablePaths*        configurablePaths_;
-            DynLibManager*            dynLibManager_;
-            SignalHandler*            signalHandler_;
-            ConfigFileManager*        configFileManager_;
-            Language*                 languageInstance_;
-            Loader*                   loaderInstance_;
-            IOConsole*                ioConsole_;
-            TclBind*                  tclBind_;
-            TclThreadManager*         tclThreadManager_;
-            Scope<ScopeID::ROOT>*     rootScope_;
+            ApplicationPaths*                applicationPaths_;
+            ConfigurablePaths*               configurablePaths_;
+            DynLibManager*                   dynLibManager_;
+            SignalHandler*                   signalHandler_;
+            ConfigFileManager*               configFileManager_;
+            Language*                        languageInstance_;
+            Loader*                          loaderInstance_;
+            IOConsole*                       ioConsole_;
+            TclBind*                         tclBind_;
+            TclThreadManager*                tclThreadManager_;
+            Scope<ScopeID::ROOT>*            rootScope_;
             // graphical
-            GraphicsManager*          graphicsManager_;            //!< Interface to OGRE
-            InputManager*             inputManager_;               //!< Interface to OIS
-            GUIManager*               guiManager_;                 //!< Interface to GUI
-            Scope<ScopeID::GRAPHICS>* graphicsScope_;
-            bool                      bGraphicsLoaded_;
-            ModuleInstance*           rootModule_;
-            std::list<ModuleInstance*>modules_;
+            GraphicsManager*                 graphicsManager_;            //!< Interface to OGRE
+            InputManager*                    inputManager_;               //!< Interface to OIS
+            GUIManager*                      guiManager_;                 //!< Interface to GUI
+            Scope<ScopeID::GRAPHICS>*        graphicsScope_;
+            bool                             bGraphicsLoaded_;
+
+            CoreStaticInitializationHandler* staticInitHandler_;
+            ModuleInstance*                  rootModule_;
+            std::list<ModuleInstance*>       modules_;
 
             /// Helper object that stores the config values
-            CoreConfig*               config_;
+            CoreConfig*                      config_;
 
             /// Helper object that executes the surrogate destructor destroy()
-            DestructionHelper<Core>   destructionHelper_;
+            DestructionHelper<Core>          destructionHelper_;
 
-            static Core*              singletonPtr_s;
+            static Core*                     singletonPtr_s;
     };
 }
 
