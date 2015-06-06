@@ -32,8 +32,9 @@
 
 namespace orxonox
 {
-    StaticallyInitializedInstance::StaticallyInitializedInstance()
+    StaticallyInitializedInstance::StaticallyInitializedInstance(Type type)
     {
+        this->type_ = type;
         this->module_ = ModuleInstance::getCurrentModuleInstance();
         this->module_->addStaticallyInitializedInstance(this);
     }

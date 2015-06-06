@@ -309,7 +309,10 @@ namespace orxonox
     class _CoreExport StaticallyInitializedConsoleCommand : public StaticallyInitializedInstance
     {
         public:
-            StaticallyInitializedConsoleCommand(ConsoleCommand* command) : command_(command) {}
+            StaticallyInitializedConsoleCommand(ConsoleCommand* command)
+                : StaticallyInitializedInstance(0)
+                , command_(command)
+            {}
             ~StaticallyInitializedConsoleCommand() { delete command_; }
 
             virtual void load();

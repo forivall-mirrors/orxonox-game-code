@@ -57,7 +57,10 @@ namespace orxonox
     class _CoreExport StaticallyInitializedCommandLineArgument : public StaticallyInitializedInstance
     {
         public:
-            StaticallyInitializedCommandLineArgument(CommandLineArgument* argument) : argument_(argument) {}
+            StaticallyInitializedCommandLineArgument(CommandLineArgument* argument)
+                : StaticallyInitializedInstance(0)
+                , argument_(argument)
+            {}
             ~StaticallyInitializedCommandLineArgument() { delete argument_; }
 
             virtual void load()
