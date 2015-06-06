@@ -225,7 +225,7 @@ namespace orxonox
 
         public:
             StaticallyInitializedIdentifier(Identifier* identifier)
-                : StaticallyInitializedInstance(0)
+                : StaticallyInitializedInstance(StaticInitialization::IDENTIFIER)
                 , identifier_(identifier)
             {}
             ~StaticallyInitializedIdentifier() { delete identifier_; }

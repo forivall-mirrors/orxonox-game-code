@@ -26,21 +26,24 @@
  *
  */
 
-#include "StaticallyInitializedInstance.h"
+#ifndef _NetworkStaticInitializationHandler_H__
+#define _NetworkStaticInitializationHandler_H__
 
-#include "ModuleInstance.h"
+#include "network/NetworkPrereqs.h"
+
+#include "core/module/StaticInitializationHandler.h"
 
 namespace orxonox
 {
-    StaticallyInitializedInstance::StaticallyInitializedInstance(StaticInitialization::Type type)
+    class _NetworkExport NetworkStaticInitializationHandler : public StaticInitializationHandler
     {
-        this->type_ = type;
-        this->module_ = ModuleInstance::getCurrentModuleInstance();
-        this->module_->addStaticallyInitializedInstance(this);
-    }
+        public:
+            virtual void setupHandler();
+            virtual void shutdownHandler();
 
-    StaticallyInitializedInstance::~StaticallyInitializedInstance()
-    {
-        this->module_->removeStaticallyInitializedInstance(this);
-    }
+            virtual void loadModule(ModuleInstance* module);
+            virtual void unloadModule(ModuleInstance* module);
+    };
 }
+
+#endif /* _NetworkStaticInitializationHandler_H__ */

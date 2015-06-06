@@ -35,6 +35,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   NetworkFunction.cc
   NetworkFunctionIncludes.cc
   NetworkFunctionManager.cc
+  NetworkStaticInitializationHandler.cc
   Host.cc
   Server.cc
   MasterServer.cc

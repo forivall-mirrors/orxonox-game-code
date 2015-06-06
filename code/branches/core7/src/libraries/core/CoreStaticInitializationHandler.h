@@ -37,12 +37,25 @@ namespace orxonox
 {
     class _CoreExport CoreStaticInitializationHandler : public StaticInitializationHandler
     {
+        friend class Core;
+
         public:
+            CoreStaticInitializationHandler() : bInitInstances_(false) {}
+
             virtual void setupHandler();
             virtual void shutdownHandler();
 
             virtual void loadModule(ModuleInstance* module);
             virtual void unloadModule(ModuleInstance* module);
+
+            inline void setInitInstances(bool bInitInstances)
+                { this->bInitInstances_ = bInitInstances; }
+
+        private:
+            void loadInstances(ModuleInstance* module);
+            void initInstances(ModuleInstance* module);
+
+            bool bInitInstances_;
     };
 }
 

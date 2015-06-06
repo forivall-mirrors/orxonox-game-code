@@ -85,6 +85,17 @@ namespace orxonox
         static const Value GRAPHICS = 2;
     }
 
+    namespace StaticInitialization
+    {
+        typedef int Type;
+
+        static const Type STATIC_INITIALIZATION_HANDLER = 1;
+        static const Type IDENTIFIER = 2;
+        static const Type SCOPED_SINGLETON_WRAPPER = 3;
+        static const Type COMMAND_LINE_ARGUMENT = 4;
+        static const Type CONSOLE_COMMAND = 5;
+    }
+
     namespace XMLPort
     {
         enum Mode

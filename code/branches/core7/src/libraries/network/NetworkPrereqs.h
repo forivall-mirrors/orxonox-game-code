@@ -96,6 +96,12 @@ namespace orxonox
       };
     }
   }
+
+  namespace StaticInitialization
+  {
+    typedef int Type;
+    static const Type NETWORK_FUNCTION = 6;
+  }
 }
 
 //-----------------------------------------------------------------------

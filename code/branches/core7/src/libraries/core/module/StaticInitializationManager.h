@@ -37,8 +37,6 @@ namespace orxonox
 {
     class _CoreExport StaticInitializationManager
     {
-        friend class Core;
-
         public:
             static StaticInitializationManager& getInstance();
 

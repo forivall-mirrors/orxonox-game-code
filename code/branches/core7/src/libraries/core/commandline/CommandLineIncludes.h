@@ -58,7 +58,7 @@ namespace orxonox
     {
         public:
             StaticallyInitializedCommandLineArgument(CommandLineArgument* argument)
-                : StaticallyInitializedInstance(0)
+                : StaticallyInitializedInstance(StaticInitialization::COMMAND_LINE_ARGUMENT)
                 , argument_(argument)
             {}
             ~StaticallyInitializedCommandLineArgument() { delete argument_; }

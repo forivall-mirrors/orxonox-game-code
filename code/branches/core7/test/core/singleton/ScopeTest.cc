@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "core/singleton/ScopedSingletonIncludes.h"
 #include "core/module/ModuleInstance.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -26,12 +27,14 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
-                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(0);
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::SCOPED_SINGLETON_WRAPPER);
                 }
 
                 virtual void TearDown()
                 {
-                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(0);
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::SCOPED_SINGLETON_WRAPPER);
+                    ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
                 }
         };
     }

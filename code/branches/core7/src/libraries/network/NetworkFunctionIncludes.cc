@@ -29,8 +29,13 @@
 #include "NetworkFunctionIncludes.h"
 #include "NetworkFunctionManager.h"
 
+#include "core/module/StaticInitializationHandlerIncludes.h"
+#include "NetworkStaticInitializationHandler.h"
+
 namespace orxonox
 {
+    RegisterStaticInitializationHandler(NetworkStaticInitializationHandler);
+
     void StaticallyInitializedNetworkFunction::load()
     {
         NetworkFunctionManager::getInstance().registerFunction(this->function_);
