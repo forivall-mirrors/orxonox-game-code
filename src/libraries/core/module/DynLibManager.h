@@ -38,7 +38,7 @@ Torus Knot Software Ltd.
 #ifndef _Core_DynLibManager_H__
 #define _Core_DynLibManager_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <map>
 #include <string>
