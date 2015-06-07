@@ -51,6 +51,9 @@ namespace orxonox
             void loadAllStaticallyInitializedInstances(StaticInitialization::Type type);
             void unloadAllStaticallyInitializedInstances(StaticInitialization::Type type);
 
+            inline const std::set<StaticallyInitializedInstance*>& getInstances(StaticInitialization::Type type)
+                { return this->staticallyInitializedInstancesByType_[type]; }
+
             void deleteAllStaticallyInitializedInstances();
 
             inline const std::string& getName() const

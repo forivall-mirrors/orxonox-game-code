@@ -151,6 +151,12 @@ namespace orxonox
             /// Returns true if the Identifier was completely initialized.
             inline bool isInitialized() const { return this->bInitialized_; }
 
+            virtual void destroyObjects() = 0;
+
+            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const = 0;
+
+            static bool initConfigValues_s; // TODO: this is a hack - remove it as soon as possible
+
 
             /////////////////////////////
             ////// Class Hierarchy //////
@@ -213,10 +219,6 @@ namespace orxonox
 
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
-
-            virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const = 0;
-
-            static bool initConfigValues_s; // TODO: this is a hack - remove it as soon as possible
 
         protected:
             virtual void createSuperFunctionCaller() const = 0;
@@ -296,6 +298,8 @@ namespace orxonox
             virtual bool canDynamicCastObjectToIdentifierClass(Identifiable* object) const
                 { return dynamic_cast<T*>(object) != 0; }
 
+            virtual void destroyObjects();
+
             static ClassIdentifier<T>* getIdentifier();
 
         private:
@@ -306,6 +310,12 @@ namespace orxonox
 
             void addObjectToList(T* object, Listable*);
             void addObjectToList(T* object, Identifiable*);
+
+            void destroyObjects(Listable*);
+            void destroyObjects(void*);
+
+            void destroyObject(Destroyable* object);
+            void destroyObject(void* object);
 
             void updateConfigValues(bool updateChildren, Listable*) const;
             void updateConfigValues(bool updateChildren, Identifiable*) const;
@@ -388,6 +398,50 @@ namespace orxonox
     void ClassIdentifier<T>::addObjectToList(T*, Identifiable*)
     {
         // no action
+    }
+
+    /**
+     * @brief Destroy all objects of this class (must be Listable).
+     * Destroyables are destroyed with destroy(), all other classes with delete.
+     */
+    template <class T>
+    void ClassIdentifier<T>::destroyObjects()
+    {
+        this->destroyObjects((T*)0);
+    }
+
+    /**
+     * @brief Only searches and destroys objects if is a @ref Listable
+     */
+    template <class T>
+    void ClassIdentifier<T>::destroyObjects(Listable*)
+    {
+        ObjectListBase* objectList = Context::getRootContext()->getObjectList(this);
+        ObjectListElement<T>* begin = static_cast<ObjectListElement<T>*>(objectList->begin());
+        ObjectListElement<T>* end = static_cast<ObjectListElement<T>*>(objectList->end());
+        for (typename ObjectList<T>::iterator it = begin; it != end; )
+            this->destroyObject(*(it++));
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::destroyObjects(void*)
+    {
+        // no action
+    }
+
+    /**
+     * @brief Call 'object->destroy()' for Destroyables and 'delete object' for all other types.
+     */
+    template <class T>
+    void ClassIdentifier<T>::destroyObject(Destroyable* object)
+    {
+        object->destroy();
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::destroyObject(void* object)
+    {
+        delete static_cast<Identifiable*>(object);
     }
 
     /**
