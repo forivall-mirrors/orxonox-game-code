@@ -75,15 +75,12 @@ namespace orxonox
 
     /*static*/ void Context::setRootContext(Context* context)
     {
-        if (Context::rootContext_s)
-            delete Context::rootContext_s;
         Context::rootContext_s = context;
     }
 
     /*static*/ Context* Context::getRootContext()
     {
-        if (!Context::rootContext_s)
-            Context::rootContext_s = new Context(NULL);
+        OrxVerify(Context::rootContext_s != NULL, "Root Context is undefined");
         return Context::rootContext_s;
     }
 
