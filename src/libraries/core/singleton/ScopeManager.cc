@@ -63,10 +63,14 @@ namespace orxonox
     void ScopeManager::addListener(ScopeListener* listener, ScopeID::Value scope)
     {
         this->listeners_[scope].insert(listener);
+        if (this->isActive(scope))
+            this->activateListener(listener);
     }
 
     void ScopeManager::removeListener(ScopeListener* listener, ScopeID::Value scope)
     {
+        if (this->isActive(scope))
+            this->deactivateListener(listener);
         this->listeners_[scope].erase(listener);
     }
 
@@ -79,8 +83,7 @@ namespace orxonox
     void ScopeManager::deactivateListenersForScope(ScopeID::Value scope)
     {
         for (std::set<ScopeListener*>::iterator it = this->listeners_[scope].begin(); it != this->listeners_[scope].end(); ++it)
-            if ((*it)->bActivated_)
-                this->deactivateListener(*it);
+            this->deactivateListener(*it);
     }
 
     void ScopeManager::activateListener(ScopeListener* listener)
@@ -91,31 +94,13 @@ namespace orxonox
 
     void ScopeManager::deactivateListener(ScopeListener* listener)
     {
-        try
-            { listener->deactivated(); }
-        catch (...)
-            { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
-        listener->bActivated_ = false;
-    }
-
-    void ScopeManager::updateListeners()
-    {
-        std::map<ScopeID::Value, std::set<ScopeListener*> >::iterator it1;
-        for (it1 = this->listeners_.begin(); it1 != this->listeners_.end(); ++it1)
+        if (listener->bActivated_)
         {
-            const ScopeID::Value& scope = it1->first;
-            const std::set<ScopeListener*>& listeners = it1->second;
-
-            bool scopeIsActive = this->isActive(scope);
-            for (std::set<ScopeListener*>::const_iterator it2 = listeners.begin(); it2 != listeners.end(); ++it2)
-            {
-                ScopeListener* listener = (*it2);
-
-                if (scopeIsActive && !listener->bActivated_)
-                    this->activateListener(listener);
-                else if (!scopeIsActive && listener->bActivated_)
-                    this->deactivateListener(listener);
-            }
+            try
+                { listener->deactivated(); }
+            catch (...)
+                { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
+            listener->bActivated_ = false;
         }
     }
 }

@@ -63,16 +63,10 @@ namespace orxonox
             /** Returns true if this scope is active */
             bool isActive(ScopeID::Value scope);
 
-            /** Registers a listener for the given scope. */
+            /** Registers a listener for the given scope. If the scope is already active, the listener is activate immediately. */
             void addListener(ScopeListener* listener, ScopeID::Value scope);
-            /** Unregisters a listener for the given scope. */
+            /** Unregisters a listener for the given scope. If the scope is still active, the listener is deactivated before removal. */
             void removeListener(ScopeListener* listener, ScopeID::Value scope);
-
-            /**
-             * Checks for all listeners if their activity matches the activity of the scope.
-             * If not, listeners are activated or deactivated depending on their state.
-             */
-            void updateListeners();
 
         private:
             void activateListenersForScope(ScopeID::Value scope);

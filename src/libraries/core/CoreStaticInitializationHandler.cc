@@ -30,7 +30,6 @@
 
 #include "module/ModuleInstance.h"
 #include "class/IdentifierManager.h"
-#include "singleton/ScopeManager.h"
 
 namespace orxonox
 {
@@ -64,7 +63,6 @@ namespace orxonox
     void CoreStaticInitializationHandler::initInstances(ModuleInstance* module)
     {
         IdentifierManager::getInstance().createClassHierarchy();
-        ScopeManager::getInstance().updateListeners();
     }
 
     void CoreStaticInitializationHandler::unloadModule(ModuleInstance* module)
