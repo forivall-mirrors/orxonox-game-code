@@ -139,7 +139,10 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    new IdentifierManager();
+                    new ConsoleCommandManager();
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::CONSOLE_COMMAND);
+                    Context::setRootContext(new Context(NULL));
                     Identifier::initConfigValues_s = false; // TODO: hack!
                     IdentifierManager::getInstance().createClassHierarchy();
                 }
@@ -147,7 +150,10 @@ namespace orxonox
                 virtual void TearDown()
                 {
                     IdentifierManager::getInstance().destroyClassHierarchy();
+                    Context::destroyRootContext();
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::CONSOLE_COMMAND);
+                    delete &ConsoleCommandManager::getInstance();
+                    delete &IdentifierManager::getInstance();
                 }
         };
     }
