@@ -254,8 +254,7 @@ namespace orxonox
         }
         if (this->staticInitHandler_)
             StaticInitializationManager::getInstance().removeHandler(this->staticInitHandler_);
-        delete Context::getRootContext();
-        Context::setRootContext(NULL);
+        Context::destroyRootContext();
         safeObjectDelete(&rootModule_);
         safeObjectDelete(&staticInitHandler_);
         delete &StaticInitializationManager::getInstance();

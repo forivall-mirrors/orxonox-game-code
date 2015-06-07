@@ -15,14 +15,16 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
-                    Context::setRootContext(new Context(NULL));
+                    new IdentifierManager();
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
+                    Context::destroyRootContext();
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
-                    Context::setRootContext(NULL);
+                    delete &IdentifierManager::getInstance();
                 }
         };
     }

@@ -27,14 +27,20 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    new IdentifierManager();
+                    new ScopeManager();
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::SCOPED_SINGLETON_WRAPPER);
+                    Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
+                    Context::destroyRootContext();
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::SCOPED_SINGLETON_WRAPPER);
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    delete &ScopeManager::getInstance();
+                    delete &IdentifierManager::getInstance();
                 }
         };
     }

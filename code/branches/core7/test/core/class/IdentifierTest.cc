@@ -28,12 +28,14 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    new IdentifierManager();
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
                 }
 
                 virtual void TearDown()
                 {
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    delete &IdentifierManager::getInstance();
                 }
         };
     }

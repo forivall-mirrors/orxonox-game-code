@@ -46,6 +46,7 @@ namespace orxonox
     {
         public:
             static void setRootContext(Context* context);
+            static void destroyRootContext();
             static Context* getRootContext();
 
             Context(Context* context);

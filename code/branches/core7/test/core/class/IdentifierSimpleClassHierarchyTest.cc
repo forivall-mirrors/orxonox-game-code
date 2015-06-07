@@ -50,7 +50,9 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    new IdentifierManager();
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    Context::setRootContext(new Context(NULL));
                     Identifier::initConfigValues_s = false; // TODO: hack!
                     IdentifierManager::getInstance().createClassHierarchy();
                 }
@@ -58,7 +60,9 @@ namespace orxonox
                 virtual void TearDown()
                 {
                     IdentifierManager::getInstance().destroyClassHierarchy();
+                    Context::destroyRootContext();
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    delete &IdentifierManager::getInstance();
                 }
         };
 

@@ -71,19 +71,19 @@ namespace orxonox
             public:
                 virtual void SetUp()
                 {
+                    new IdentifierManager();
                     ModuleInstance::getCurrentModuleInstance()->loadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    Context::setRootContext(new Context(NULL));
                     Identifier::initConfigValues_s = false; // TODO: hack!
                     IdentifierManager::getInstance().createClassHierarchy();
-
-                    Context::setRootContext(new Context(NULL));
                 }
 
                 virtual void TearDown()
                 {
-                    Context::setRootContext(NULL);
-
                     IdentifierManager::getInstance().destroyClassHierarchy();
+                    Context::destroyRootContext();
                     ModuleInstance::getCurrentModuleInstance()->unloadAllStaticallyInitializedInstances(StaticInitialization::IDENTIFIER);
+                    delete &IdentifierManager::getInstance();
                 }
         };
     }
