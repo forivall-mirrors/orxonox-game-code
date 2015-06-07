@@ -288,12 +288,6 @@ namespace orxonox
 
             bool initializeObject(T* object);
 
-            void setConfigValues(T* object, Configurable*) const;
-            void setConfigValues(T* object, Identifiable*) const;
-
-            void addObjectToList(T* object, Listable*);
-            void addObjectToList(T* object, Identifiable*);
-
             virtual void updateConfigValues(bool updateChildren = true) const;
 
             virtual const std::type_info& getTypeInfo()
@@ -306,6 +300,12 @@ namespace orxonox
 
         private:
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
+
+            void setConfigValues(T* object, Configurable*) const;
+            void setConfigValues(T* object, Identifiable*) const;
+
+            void addObjectToList(T* object, Listable*);
+            void addObjectToList(T* object, Identifiable*);
 
             void updateConfigValues(bool updateChildren, Listable*) const;
             void updateConfigValues(bool updateChildren, Identifiable*) const;
