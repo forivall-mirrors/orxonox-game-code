@@ -55,6 +55,8 @@ namespace orxonox
             void loadInstances(ModuleInstance* module);
             void initInstances(ModuleInstance* module);
 
+            void destroyObjects(ModuleInstance* module);
+
             bool bInitInstances_;
     };
 }

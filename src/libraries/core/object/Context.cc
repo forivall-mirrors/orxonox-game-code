@@ -96,4 +96,11 @@ namespace orxonox
             this->objectLists_[classID] = new ObjectListBase();
         return this->objectLists_[classID];
     }
+
+    void Context::destroyObjectList(const Identifier* identifier)
+    {
+        ObjectListBase* objectList = this->getObjectList(identifier);
+        delete objectList;
+        this->objectLists_[identifier->getClassID()] = NULL;
+    }
 }

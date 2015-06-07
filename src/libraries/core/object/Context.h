@@ -70,6 +70,8 @@ namespace orxonox
                     this->getParentContext()->addObject(object);
             }
 
+            void destroyObjectList(const Identifier* identifier);
+
         private:
             Context* parentContext_;
             std::vector<ObjectListBase*> objectLists_;
