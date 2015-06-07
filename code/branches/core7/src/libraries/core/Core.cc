@@ -122,11 +122,12 @@ namespace orxonox
         // Create a new dynamic library manager
         this->dynLibManager_ = new DynLibManager();
 
-        // TODO: initialize Root-Context
+        // create handler for static initialization
         new StaticInitializationManager(); // create singleton
         this->staticInitHandler_ = new CoreStaticInitializationHandler();
         StaticInitializationManager::getInstance().addHandler(this->staticInitHandler_);
 
+        // load root module (all libraries which are linked to the executable, including core, network, and orxonox)
         this->rootModule_ = ModuleInstance::getCurrentModuleInstance();
         StaticInitializationManager::getInstance().loadModule(this->rootModule_);
 
@@ -169,6 +170,9 @@ namespace orxonox
         // Required as well for the config values
         orxout(internal_info) << "Loading language:" << endl;
         this->languageInstance_ = new Language();
+
+        // initialize root context
+        Context::setRootContext(new Context(NULL));
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
@@ -250,6 +254,7 @@ namespace orxonox
         }
         if (this->staticInitHandler_)
             StaticInitializationManager::getInstance().removeHandler(this->staticInitHandler_);
+        delete Context::getRootContext();
         Context::setRootContext(NULL);
         safeObjectDelete(&rootModule_);
         safeObjectDelete(&staticInitHandler_);
