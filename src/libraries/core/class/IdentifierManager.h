@@ -41,12 +41,17 @@
 #include <list>
 #include <string>
 
+#include "util/Singleton.h"
+
 namespace orxonox
 {
-    class _CoreExport IdentifierManager
+    class _CoreExport IdentifierManager : public Singleton<IdentifierManager>
     {
+        friend class Singleton<IdentifierManager>;
+
         public:
-            static IdentifierManager& getInstance();
+            IdentifierManager();
+            ~IdentifierManager() {}
 
             void addIdentifier(Identifier* identifier);
             void removeIdentifier(Identifier* identifier);
@@ -87,9 +92,7 @@ namespace orxonox
                 { return this->identifierByNetworkId_; }
 
         private:
-            IdentifierManager();
-            IdentifierManager(const IdentifierManager&);
-            ~IdentifierManager() {}
+            IdentifierManager(const IdentifierManager&); // not implemented
 
             /// Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
             inline void startCreatingHierarchy()
@@ -109,6 +112,8 @@ namespace orxonox
             /// a consequence of this, e.g. nested member objects).
             std::map<Identifiable*, std::list<const Identifier*> > identifierTraceOfNewObject_;
             Identifier* recordTraceForIdentifier_; //!< The identifier for which we want to record the trace of identifiers during object creation. If null, no trace is recorded.
+
+            static IdentifierManager* singletonPtr_s;
     };
 }
 

@@ -57,7 +57,6 @@
 #include "util/output/LogWriter.h"
 #include "util/output/OutputManager.h"
 #include "core/singleton/Scope.h"
-#include "core/singleton/ScopedSingletonIncludes.h"
 #include "ApplicationPaths.h"
 #include "ConfigurablePaths.h"
 #include "commandline/CommandLineIncludes.h"
@@ -65,11 +64,9 @@
 #include "GameMode.h"
 #include "GraphicsManager.h"
 #include "GUIManager.h"
-#include "class/Identifier.h"
 #include "Language.h"
 #include "Loader.h"
 #include "LuaState.h"
-#include "command/ConsoleCommandManager.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
 #include "command/TclThreadManager.h"
@@ -126,12 +123,7 @@ namespace orxonox
         this->dynLibManager_ = new DynLibManager();
 
         // TODO: initialize Root-Context
-        // TODO: initialize IdentifierManager here
-        // TODO: initialize ScopeManager here
-        // TODO: initialize CommandLineParser here
-        // TODO: initialize ConsoleCommandManager here
-        // TODO: initialize NetworkFunctionManager here
-        // TODO: initialize StaticInitializationManager
+        new StaticInitializationManager(); // create singleton
         this->staticInitHandler_ = new CoreStaticInitializationHandler();
         StaticInitializationManager::getInstance().addHandler(this->staticInitHandler_);
 
@@ -261,6 +253,7 @@ namespace orxonox
         Context::setRootContext(NULL);
         safeObjectDelete(&rootModule_);
         safeObjectDelete(&staticInitHandler_);
+        delete &StaticInitializationManager::getInstance();
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&configurablePaths_);
         safeObjectDelete(&applicationPaths_);

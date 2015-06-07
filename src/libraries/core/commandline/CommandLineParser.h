@@ -47,6 +47,7 @@
 #include <map>
 #include "util/OrxAssert.h"
 #include "util/MultiType.h"
+#include "util/Singleton.h"
 
 namespace orxonox
 {
@@ -133,13 +134,18 @@ namespace orxonox
     @see
         CommandLineArgument
     */
-    class _CoreExport CommandLineParser
+    class _CoreExport CommandLineParser : public Singleton<CommandLineParser>
     {
+        friend class Singleton<CommandLineParser>;
+
     public:
+        //! Constructor initialises bFirstTimeParse_ with true.
+        CommandLineParser() : bFirstTimeParse_(true) { }
+        ~CommandLineParser();
 
         //! Parse redirection to internal member method.
         static void parse(const std::string& cmdLine)
-        { _getInstance()._parse(cmdLine); }
+        { getInstance()._parse(cmdLine); }
 
         static std::string getUsageInformation();
 
@@ -156,20 +162,15 @@ namespace orxonox
 
         static bool existsArgument(const std::string& name)
         {
-            std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
-            return !(it == _getInstance().cmdLineArgs_.end());
+            std::map<std::string, CommandLineArgument*>::const_iterator it = getInstance().cmdLineArgs_.find(name);
+            return !(it == getInstance().cmdLineArgs_.end());
         }
 
         static void generateDoc(std::ofstream& file);
 
     private:
-        //! Constructor initialises bFirstTimeParse_ with true.
-        CommandLineParser() : bFirstTimeParse_(true) { }
         //! Undefined copy constructor
         CommandLineParser(const CommandLineParser& instance);
-        ~CommandLineParser();
-
-        static CommandLineParser& _getInstance();
 
         void _parse(const std::string& cmdLine);
         void checkFullArgument(const std::string& name, const std::string& value);
@@ -186,6 +187,8 @@ namespace orxonox
         std::map<std::string, CommandLineArgument*> cmdLineArgs_;
         //! Search map by shortcut for the arguments.
         std::map<std::string, CommandLineArgument*> cmdLineArgsShortcut_;
+
+        static CommandLineParser* singletonPtr_s;
     };
 
     template <>

@@ -31,11 +31,7 @@
 
 namespace orxonox
 {
-    /* static */NetworkFunctionManager& NetworkFunctionManager::getInstance()
-    {
-        static NetworkFunctionManager instance;
-        return instance;
-    }
+    NetworkFunctionManager* NetworkFunctionManager::singletonPtr_s = 0;
 
     void NetworkFunctionManager::registerFunction(NetworkFunctionBase* function)
     {

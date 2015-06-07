@@ -30,19 +30,29 @@
 
 #include "CoreIncludes.h"
 #include "module/ModuleInstance.h"
-#include "class/IdentifierManager.h"
 #include "object/Iterator.h"
+#include "class/IdentifierManager.h"
+#include "singleton/ScopeManager.h"
+#include "command/ConsoleCommandManager.h"
+#include "commandline/CommandLineParser.h"
 
 namespace orxonox
 {
     void CoreStaticInitializationHandler::setupHandler()
     {
-        // TODO
+        // initialize singletons
+        new IdentifierManager();
+        new ScopeManager();
+        new CommandLineParser();
+        new ConsoleCommandManager();
     }
 
     void CoreStaticInitializationHandler::shutdownHandler()
     {
-        // TODO
+        delete &ConsoleCommandManager::getInstance();
+        delete &CommandLineParser::getInstance();
+        delete &ScopeManager::getInstance();
+        delete &IdentifierManager::getInstance();
     }
 
     void CoreStaticInitializationHandler::loadModule(ModuleInstance* module)

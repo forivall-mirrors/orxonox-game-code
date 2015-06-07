@@ -43,11 +43,7 @@
 
 namespace orxonox
 {
-    /* static */ IdentifierManager& IdentifierManager::getInstance()
-    {
-        static IdentifierManager instance;
-        return instance;
-    }
+    IdentifierManager* IdentifierManager::singletonPtr_s = 0;
 
     IdentifierManager::IdentifierManager()
     {

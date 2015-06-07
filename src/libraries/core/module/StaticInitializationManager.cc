@@ -32,20 +32,18 @@
 
 namespace orxonox
 {
-    /* static */ StaticInitializationManager& StaticInitializationManager::getInstance()
-    {
-        static StaticInitializationManager instance;
-        return instance;
-    }
+    StaticInitializationManager* StaticInitializationManager::singletonPtr_s = 0;
 
     void StaticInitializationManager::addHandler(StaticInitializationHandler* handler)
     {
+        handler->setupHandler();
         this->handlers_.push_back(handler);
     }
 
     void StaticInitializationManager::removeHandler(StaticInitializationHandler* handler)
     {
         this->handlers_.remove(handler);
+        handler->shutdownHandler();
     }
 
     void StaticInitializationManager::loadModule(ModuleInstance* module)

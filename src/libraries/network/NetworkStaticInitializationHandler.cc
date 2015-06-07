@@ -29,17 +29,19 @@
 #include "NetworkStaticInitializationHandler.h"
 
 #include "core/module/ModuleInstance.h"
+#include "NetworkFunctionManager.h"
 
 namespace orxonox
 {
     void NetworkStaticInitializationHandler::setupHandler()
     {
-        // TODO
+        // initialize singleton
+        new NetworkFunctionManager();
     }
 
     void NetworkStaticInitializationHandler::shutdownHandler()
     {
-        // TODO
+        delete &NetworkFunctionManager::getInstance();
     }
 
     void NetworkStaticInitializationHandler::loadModule(ModuleInstance* module)

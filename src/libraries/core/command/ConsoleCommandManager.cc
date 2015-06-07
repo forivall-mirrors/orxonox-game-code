@@ -38,11 +38,7 @@
 
 namespace orxonox
 {
-    /* static */ ConsoleCommandManager& ConsoleCommandManager::getInstance()
-    {
-        static ConsoleCommandManager instance;
-        return instance;
-    }
+    ConsoleCommandManager* ConsoleCommandManager::singletonPtr_s = 0;
 
     /**
         @brief Returns the command with given group an name.
