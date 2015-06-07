@@ -37,11 +37,7 @@
 
 namespace orxonox
 {
-    /* static */ ScopeManager& ScopeManager::getInstance()
-    {
-        static ScopeManager instance;
-        return instance;
-    }
+    ScopeManager* ScopeManager::singletonPtr_s = 0;
 
     void ScopeManager::addScope(ScopeID::Value scope)
     {

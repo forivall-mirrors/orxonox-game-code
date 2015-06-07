@@ -35,13 +35,16 @@
 #include <map>
 #include <set>
 
+#include "util/Singleton.h"
+#include "NetworkFunction.h"
+
 namespace orxonox
 {
-    class _NetworkExport NetworkFunctionManager
+    class _NetworkExport NetworkFunctionManager : public Singleton<NetworkFunctionManager>
     {
-        public:
-            static NetworkFunctionManager& getInstance();
+        friend class Singleton<NetworkFunctionManager>;
 
+        public:
             void registerFunction(NetworkFunctionBase* function);
             void unregisterFunction(NetworkFunctionBase* function);
 
@@ -57,6 +60,8 @@ namespace orxonox
             std::map<std::string, NetworkFunctionBase*> nameMap_;
             std::map<NetworkFunctionPointer, NetworkFunctionBase*> functorMap_;
             std::map<uint32_t, NetworkFunctionBase*> idMap_;
+
+            static NetworkFunctionManager* singletonPtr_s;
     };
 }
 

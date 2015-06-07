@@ -36,16 +36,18 @@
 
 #include "core/CorePrereqs.h"
 
+#include "util/Singleton.h"
+
 namespace orxonox
 {
     /**
      * A singleton that stores all existing ConsoleCommands.
      */
-    class _CoreExport ConsoleCommandManager
+    class _CoreExport ConsoleCommandManager : public Singleton<ConsoleCommandManager>
     {
-        public:
-            static ConsoleCommandManager& getInstance();
+        friend class Singleton<ConsoleCommandManager>;
 
+        public:
             void registerCommand(ConsoleCommand* command);
             void registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command);
             void unregisterCommand(ConsoleCommand* command);
@@ -70,6 +72,8 @@ namespace orxonox
         private:
             std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMap_;
             std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMapLC_;
+
+            static ConsoleCommandManager* singletonPtr_s;
     };
 }
 

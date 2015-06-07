@@ -33,13 +33,15 @@
 
 #include <list>
 
+#include "util/Singleton.h"
+
 namespace orxonox
 {
-    class _CoreExport StaticInitializationManager
+    class _CoreExport StaticInitializationManager : public Singleton<StaticInitializationManager>
     {
-        public:
-            static StaticInitializationManager& getInstance();
+        friend class Singleton<StaticInitializationManager>;
 
+        public:
             StaticInitializationManager() {}
             virtual ~StaticInitializationManager() {}
 
@@ -51,6 +53,8 @@ namespace orxonox
 
         private:
             std::list<StaticInitializationHandler*> handlers_;
+
+            static StaticInitializationManager* singletonPtr_s;
     };
 }
 

@@ -39,6 +39,8 @@
 
 namespace orxonox
 {
+    CommandLineParser* CommandLineParser::singletonPtr_s = 0;
+
     /**
     @brief
         Parses a value string for a command line argument.
@@ -84,16 +86,6 @@ namespace orxonox
     */
     CommandLineParser::~CommandLineParser()
     {
-    }
-
-    /**
-    @brief
-        Returns a unique instance (Meyers Singleton).
-    */
-    CommandLineParser& CommandLineParser::_getInstance()
-    {
-        static CommandLineParser instance;
-        return instance;
     }
 
     /** Parses the command line string for arguments and stores these.
@@ -259,7 +251,7 @@ namespace orxonox
 
     std::string CommandLineParser::getUsageInformation()
     {
-        CommandLineParser& inst = _getInstance();
+        CommandLineParser& inst = getInstance();
         std::ostringstream infoStr;
 
         // determine maximum name size
@@ -312,8 +304,8 @@ namespace orxonox
     */
     const CommandLineArgument* CommandLineParser::getArgument(const std::string& name)
     {
-        std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
-        if (it == _getInstance().cmdLineArgs_.end())
+        std::map<std::string, CommandLineArgument*>::const_iterator it = getInstance().cmdLineArgs_.find(name);
+        if (it == getInstance().cmdLineArgs_.end())
         {
             ThrowException(Argument, "Could find command line argument '" + name + "'.");
         }
@@ -330,13 +322,13 @@ namespace orxonox
     */
     void CommandLineParser::addArgument(CommandLineArgument* argument)
     {
-        OrxAssert(!_getInstance().existsArgument(argument->getName()),
+        OrxAssert(!getInstance().existsArgument(argument->getName()),
             "Cannot add a command line argument with name '" + argument->getName() + "' twice.");
         OrxAssert(!argument->getDefaultValue().isType<bool>() || argument->getDefaultValue().get<bool>() != true,
                "Boolean command line arguments with positive default values are not supported." << endl
             << "Please use SetCommandLineSwitch and adjust your argument: " << argument->getName());
 
-        _getInstance().cmdLineArgs_[argument->getName()] = argument;
+        getInstance().cmdLineArgs_[argument->getName()] = argument;
     }
 
     /**
@@ -344,6 +336,6 @@ namespace orxonox
      */
     void CommandLineParser::removeArgument(CommandLineArgument* argument)
     {
-        _getInstance().cmdLineArgs_.erase(argument->getName());
+        getInstance().cmdLineArgs_.erase(argument->getName());
     }
 }

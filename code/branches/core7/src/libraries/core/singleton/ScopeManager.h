@@ -40,6 +40,8 @@
 #include <map>
 #include <set>
 
+#include "util/Singleton.h"
+
 namespace orxonox
 {
     /**
@@ -51,11 +53,11 @@ namespace orxonox
 
         @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
     */
-    class _CoreExport ScopeManager
+    class _CoreExport ScopeManager : public Singleton<ScopeManager>
     {
-        public:
-            static ScopeManager& getInstance();
+        friend class Singleton<ScopeManager>;
 
+        public:
             /** Adds a scope and activates all listeners which are registered for this scope */
             void addScope(ScopeID::Value scope);
             /** Removes a scope and deactivates all listeners which are registered for this scope */
@@ -77,6 +79,8 @@ namespace orxonox
 
             std::set<ScopeID::Value> activeScopes_;
             std::map<ScopeID::Value, std::set<ScopeListener*> > listeners_; //!< Stores all listeners for a scope
+
+            static ScopeManager* singletonPtr_s;
     };
 }
 
